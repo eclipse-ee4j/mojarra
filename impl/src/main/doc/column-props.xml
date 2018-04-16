@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== Table Properties =========================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root>
+    <property>
+        <description>
+          Space-separated list of CSS style class(es) that will be
+          applied to the "td" of this column
+        </description>
+        <display-name>CSS Classes</display-name>
+        <icon></icon>
+        <property-name>styleClass</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Space-separated list of CSS style class(es) that will be
+          applied to any header generated for this column.
+        </description>
+        <display-name>Header CSS Classes</display-name>
+        <icon></icon>
+        <property-name>headerClass</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Space-separated list of CSS style class(es) that will be
+          applied to any footer generated for this column.
+        </description>
+        <display-name>Footer CSS Classes</display-name>
+        <icon></icon>
+        <property-name>footerClass</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Flag indicating that this column is a row header column and
+          therefore cells in this column should be rendered with "th"
+          instead of "td" and must have the 'scope="row"' attribute.
+        </description>
+        <display-name>Column is Row Header</display-name>
+        <icon></icon>
+        <property-name>rowHeader</property-name>
+        <property-class>boolean</property-class>
+    </property>
+
+</root>

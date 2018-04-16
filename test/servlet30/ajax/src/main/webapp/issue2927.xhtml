@@ -1,0 +1,65 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!--
+****** NOTE: There is NO HtmlUnit test for this page (issue) because HtmlUnit cannot
+      handle programmatic creation of IFrame onload callback (done in JSF) 
+      for IE. IFrame is still used because the form is multipart/form-data.
+      This tests standard ajax in conjuction with that form enc type.
+******
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+</h:head>
+<h:body>
+   <script type="text/javascript">
+      var statusUpdate = function statusUpdate(data) {
+          var statusArea = document.getElementById("statusArea");
+          var text = statusArea.value;
+          text = text + "Name: "+data.source.id;
+          if (data.type === "event") {
+              text = text +" Event: "+data.status+" ";
+          }
+          statusArea.value = text;
+      }
+   </script>
+
+   <h:form id="testform" enctype="multipart/form-data">
+      <br/>
+      <br/>
+      Color: #{bean.radioValue}
+      <br/>
+      <br/>
+      <h:commandButton id="button" value="Submit" >
+         <f:ajax execute="@this" render="@form" immediate="true" listener="#{bean.processIt}"
+            onerror="statusUpdate" onevent="statusUpdate"/>
+      </h:commandButton>
+   </h:form>
+
+   <p>
+   <h3> Status:</h3>
+   <textarea id="statusArea" cols="40" rows="10" readonly="readonly" />
+   </p>
+
+</h:body>
+</html>

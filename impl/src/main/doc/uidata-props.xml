@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== UIData Properties ========================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+    <xi:include href="uicomponent-props.xml" xpointer="xpointer(/root/*)"/>
+
+    <property>
+        <description>
+          Zero-relative row number of the first row to be displayed.  If this
+          property is set to zero, rendering will begin with the first row of
+          the underlying data.
+        </description>
+        <display-name>First Row Index</display-name>
+        <icon></icon>
+        <property-name>first</property-name>
+        <property-class>int</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Flag indicating whether there is model data available for the row
+          selected by the current value of the "rowIndex" property.
+        </description>
+        <display-name>Row Available Flag</display-name>
+        <icon></icon>
+        <property-name>rowAvailable</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+            <![CDATA[
+            <span class="changed_added_2_1 changed_modified_2_3">
+                Boolean flag directing how the per-row component state should 
+                be handled. See UIData.setRowStatePreserved for more information.
+            </span>
+            ]]>
+        </description> 
+        <display-name>Preserve Row Component State</display-name>
+        <icon></icon>
+        <property-name>rowStatePreserved</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>        
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          The number of rows of model data that are available for processing
+          by this component.  If the number of rows is unknown, this property
+          will be set to -1.
+        </description>
+        <display-name>Row Count</display-name>
+        <icon></icon>
+        <property-name>rowCount</property-name>
+        <property-class>int</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          An object representing the model data for the row selected by the
+          current value of the "rowIndex" property.
+        </description>
+        <display-name>Row Data</display-name>
+        <icon></icon>
+        <property-name>rowData</property-name>
+        <property-class>java.lang.Object</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Zero-relative index of the currently selected row from the underlying
+          model data.  No error will occur if this property is set to point at
+          a row for which no model data exists.  To ensure data availability,
+          check the state of the "rowAvailable" property after modifying this
+          property.
+        </description>
+        <display-name>Row Index</display-name>
+        <icon></icon>
+        <property-name>rowIndex</property-name>
+        <property-class>int</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+            <value-expression-enabled>true</value-expression-enabled>        
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          The number of rows to display, starting with the one identified by the
+          "first" property.  If this value is set to zero, all available rows in
+          the underlying data model will be displayed.
+        </description>
+        <display-name>Rows To Display</display-name>
+        <icon></icon>
+        <property-name>rows</property-name>
+        <property-class>int</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          The current value of this component.
+        </description>
+        <display-name>Value</display-name>
+        <icon></icon>
+        <property-name>value</property-name>
+        <property-class>java.lang.Object</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Name of a request-scope attribute under which the model data for the
+          row selected by the current value of the "rowIndex" property (i.e.
+          also the current value of the "rowData" property) will be exposed.
+        </description>
+        <display-name>Row Data Attribute</display-name>
+        <icon></icon>
+        <property-name>var</property-name>
+        <property-class>java.lang.String</property-class>       
+    </property>
+</root>

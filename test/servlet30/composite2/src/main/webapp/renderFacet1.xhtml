@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+
+
+
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:renderFacet="http://java.sun.com/jsf/composite/renderFacet">
+    <h:head>
+        <title>Panel test</title>
+    </h:head>
+    <h:body>
+        <renderFacet:renderFacet title="this works">
+            <f:facet name="body">
+                Just literal text
+            </f:facet>
+        </renderFacet:renderFacet>
+
+        <renderFacet:renderFacet title="this works">
+            <f:facet name="body">
+                <h:outputText value="JSF Component" />
+            </f:facet>
+        </renderFacet:renderFacet>
+
+        <renderFacet:renderFacet title="this works">
+            <f:facet name="body">
+                <h:panelGrid columns="2">
+                    <h:outputText value="just a" />
+                    <h:outputText value="panelGrid" />
+                </h:panelGrid>
+            </f:facet>
+        </renderFacet:renderFacet>
+
+        <renderFacet:renderFacet id="renderFacet" title="this doesnt render the panelGrid">
+            <f:facet name="body">
+                <h:panelGrid id="notfound" columns="2">
+                    <h:outputText value="panelGrid" />
+                    <h:outputText value="and another component" />
+                </h:panelGrid>
+                <h:outputText value="JSF Component" />
+            </f:facet>
+        </renderFacet:renderFacet>
+
+        <renderFacet:renderFacet title="why this render the panelGrid?">
+            <f:facet name="body">
+                <!-- Yeah! it's a comment! -->
+                <h:panelGrid columns="2">
+                    <h:outputText value="panelGrid" />
+                    <h:outputText value="and another component" />
+                </h:panelGrid>
+                <h:outputText value="JSF Component" />
+            </f:facet>
+        </renderFacet:renderFacet>
+    </h:body>
+</html>

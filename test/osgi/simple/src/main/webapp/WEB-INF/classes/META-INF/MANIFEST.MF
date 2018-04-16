@@ -1,0 +1,37 @@
+Manifest-Version: 1.0
+Export-Package: org.glassfish.osgi.web.dummy;uses:="javax.enterprise.c
+ ontext,javax.inject,javax.servlet,javax.servlet.annotation,javax.serv
+ let.http,javax.ejb"
+Embed-Directory: WEB-INF/lib
+Bundle-ClassPath: .,WEB-INF/classes,WEB-INF/lib/commons-beanutils-1.8.
+ 0.jar,WEB-INF/lib/commons-logging-1.1.1.jar,WEB-INF/lib/prettyfaces-j
+ sf2-3.2.0.jar,WEB-INF/lib/commons-digester-2.0.jar
+Tool: Bnd-1.15.0
+Bundle-Name: dummy-web Web App
+Created-By: 1.6.0_22 (Sun Microsystems Inc.)
+Web-ContextPath: /test-osgi-simple
+Bundle-Version: 1.0.0.SNAPSHOT
+Bnd-LastModified: 1297281223933
+Embed-Transitive: true
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.glassfish.osgi.dummy-web
+Import-Package: javax.annotation;version="1.1",javax.ejb;version="3.1"
+ ,javax.el;version="2.1.2",javax.enterprise.context,javax.enterprise.c
+ ontext.spi,javax.enterprise.event,javax.enterprise.inject,javax.enter
+ prise.inject.spi,javax.enterprise.util,javax.faces;version="2.0",java
+ x.faces.application;version="2.0",javax.faces.bean;version="2.0",java
+ x.faces.component;version="2.0",javax.faces.component.behavior;versio
+ n="2.0",javax.faces.component.html;version="2.0",javax.faces.componen
+ t.visit;version="2.0",javax.faces.context;version="2.0",javax.faces.c
+ onvert;version="2.0",javax.faces.el;version="2.0",javax.faces.event;v
+ ersion="2.0",javax.faces.lifecycle;version="2.0",javax.faces.model,ja
+ vax.faces.render;version="2.0",javax.faces.validator;version="2.0",ja
+ vax.faces.view;version="2.0",javax.faces.view.facelets;version="2.0",
+ javax.imageio,javax.inject,javax.interceptor;version="[3.1,4)",javax.
+ naming,javax.servlet,javax.servlet.annotation,javax.servlet.http,java
+ x.validation,javax.validation.constraints,javax.xml.parsers,javax.xml
+ .stream,javax.xml.stream.events,javax.xml.transform,org.glassfish.osg
+ icdi;version="[1.0,2)",org.w3c.dom,org.w3c.dom.css,org.xml.sax,org.xm
+ l.sax.helpers
+Embed-Dependency: *;scope=compile|runtime;inline=false
+

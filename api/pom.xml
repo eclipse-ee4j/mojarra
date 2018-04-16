@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- 
+
+    Project to create the JSF API jar and docs (vdldoc, tlddoc, renderkit docs).
+    
+    This depends on [mojarra home]/impl being installed first (mvn build install).
+
+ -->
+ 
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+         
+    <parent>
+        <groupId>com.sun.faces</groupId>
+        <artifactId>project</artifactId>
+        <version>2.4.0-m01-SNAPSHOT</version>
+    </parent>
+    
+    <groupId>javax.faces</groupId>
+    <artifactId>javax.faces-api</artifactId>
+    <version>2.4-SNAPSHOT</version>
+    
+    <packaging>jar</packaging>
+    <name>JSF API ${project.version}</name>
+    
+    <properties>
+        <mojarra.version>2.4.0-m01-SNAPSHOT</mojarra.version>
+    </properties>
+    
+    <inceptionYear>1997</inceptionYear>
+    
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <id>edburns</id>
+            <name>Ed Burns</name>
+            <email>edward.burns@oracle.com</email>
+            <organization>Oracle America, Inc.</organization>
+            <roles>
+                <role>project-owner</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        
+        <developer>
+            <id>mriem</id>
+            <name>Manfred Riem</name>
+            <email>manfred.riem@oracle.com</email>
+            <organization>Oracle America, Inc.</organization>
+            <roles>
+                <role>project-owner</role>
+            </roles>
+            <timezone>-6</timezone>
+        </developer>
+        
+        <developer>
+            <id>ren.zhijun.oracle</id>
+            <name>Zhijun Ren</name>
+            <email>ren.zhijun@oracle.com></email>
+            <organization>Oracle America, Inc.</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+    
+    <contributors>
+        <contributor>
+            <name>Jennifer Ball</name>
+        </contributor>
+        <contributor>
+            <name>Deepak Gothe</name>
+        </contributor>
+        <contributor>
+            <name>Jacob Hookom</name>
+        </contributor>
+        <contributor>
+            <name>Justyna Horwat</name>
+        </contributor>
+        <contributor>
+            <name>Roger Kitain</name>
+        </contributor>
+        <contributor>
+            <name>Jason Lee</name>
+        </contributor>
+        <contributor>
+            <name>Craig McClanahan</name>
+        </contributor>
+        <contributor>
+            <name>Gregory Murray</name>
+        </contributor>
+        <contributor>
+            <name>Raj Premkumar</name>
+        </contributor>
+        <contributor>
+            <name>Stan Silvert</name>
+        </contributor>
+        <contributor>
+            <name>Jayashri Visvanathan</name>
+        </contributor>
+        <contributor>
+            <name>Mike Youngstrom</name>
+        </contributor>
+    </contributors>
+    
+    <mailingLists>
+        <mailingList>
+            <name>JSF Specification Mailing List</name>
+            <post>https://javaee.groups.io/g/jsf-spec</post>
+        </mailingList>
+    </mailingLists>
+    
+    <build>
+        <plugins>
+        
+           <!-- 
+               Unpack the sources jar that was build and installed by the [mojarra home]/impl project. This way
+               we can compile that source again in this project, but for the final artifact jar we only include
+               the javax.* classes then.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>org.glassfish</groupId>
+                            <artifactId>javax.faces</artifactId>
+                            <version>${mojarra.version}</version>
+                            <classifier>sources</classifier>
+                            <outputDirectory>src/main/java</outputDirectory>
+                            <includes>**/*.java</includes>
+                        </artifactItem>
+                        
+                        <artifactItem>
+                            <groupId>org.glassfish</groupId>
+                            <artifactId>javax.faces</artifactId>
+                            <version>${mojarra.version}</version>
+                            <classifier>sources</classifier>
+                            <outputDirectory>src/main/resources</outputDirectory>
+                            <excludes>**/*.java</excludes>
+                        </artifactItem>
+                    </artifactItems>
+                </configuration>
+            </plugin>
+        
+            <!-- 
+                Create VDL docs
+             -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>Copy-vdldoc-css</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/vdldoc</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/vdldoc</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.matinh.vdldoc</groupId>
+                <artifactId>vdldoc-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-vdldoc</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>vdldoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <srcDirectory>src/main/resources/com/sun/faces/metadata/taglib</srcDirectory>
+                    <css>jsf-api.css</css>
+                    <browserTitle>JSF ${project.version} VDL Documentation</browserTitle>
+                    <documentTitle>JSF ${project.version} VDL Documentation</documentTitle>
+                    <hideGeneratedBy>true</hideGeneratedBy>
+                    <reportOutputDirectory>${project.build.directory}</reportOutputDirectory>
+                </configuration>
+            </plugin>
+            
+            <!-- 
+                Create RenderkitDocs
+             -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+               
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <target>
+                                <delete dir="src/main/java"/>
+                                <delete dir="src/main/resources"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+               
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <target>
+                                <property name="jsf-tools-dir" value="${project.build.directory}/../../jsf-tools"/>
+                                
+                                <!--
+                                
+                                    Generate RenderkitDocs
+                                
+                                -->
+                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces">
+                                    <fileset dir="src/main/resources/com/sun/faces" includes="LogStrings.properties"/>
+                                </copy>
+                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" flatten="true">
+                                    <fileset dir="src/main/resources/com/sun/faces" includes="*.dtd,*.xsd"/>
+                                </copy>
+                                
+                                <taskdef name="generateRenderkitDocs" classname="com.sun.faces.ant.RenderkitDocGenTask">
+                                    <classpath>
+                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${mojarra.version}.jar"/>
+                                    </classpath>
+                                </taskdef>        
+                                <generateRenderkitDocs
+                                    generatorConfig="${jsf-tools-dir}/conf/HtmlBasicTaglib21.properties"
+                                    facesConfig="src/main/resources/com/sun/faces/standard-html-renderkit.xml"
+                                    fork="true">
+                                    <classpath>
+                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${mojarra.version}.jar"/>
+                                        <pathelement location="${jsf-tools-dir}/build/classes"/>
+                                        <path refid="maven.plugin.classpath"/>
+                                    </classpath>
+                                </generateRenderkitDocs>
+                                                           
+                                <copy todir="${project.build.directory}/renderkitdocs">
+                                    <fileset dir="build/generate/facesdoc"/>
+                                </copy>
+                                <delete dir="build"/>
+                                <delete dir="${jsf-tools-dir}/build"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                
+                <dependencies>
+                    <dependency>
+                        <groupId>commons-digester</groupId>
+                        <artifactId>commons-digester</artifactId>
+                        <version>2.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            
+            <!-- 
+               Create API binary jar
+            
+               For the final artifact jar we only include the javax.* classes and resources that we compiled from
+               the unpackaged implementation source attachment jar. See the maven-dependency-plugin for this
+               unpackaging. This effectively gives us the API jar.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <includes>
+                        <include>javax/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            
+             <!-- 
+               Create sources for API jar
+             -->
+             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-api-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>com/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+             <!-- 
+               Create Javadoc for API jar
+             -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-api-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <windowtitle>JavaServer Faces 2.4 EDR 1 API</windowtitle>
+                            <doctitle>JavaServer Faces 2.4 EDR 1 API</doctitle>
+                            <excludePackageNames>com</excludePackageNames>
+                            <footer>DRAFT DRAFT DRAFT DRAFT</footer>
+                            <header>DRAFT DRAFT DRAFT DRAFT</header>
+                        </configuration>
+                        
+                    </execution>
+                    
+                    <execution>
+                        <id>attach-managedbeandocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>managed-bean-javadoc</classifier>
+                            <outputDirectory>${project.build.directory}/managed-bean-javadocs</outputDirectory>
+                            <reportOutputDirectory>${project.build.directory}/site/managed-bean-javadocs</reportOutputDirectory>
+                            <subpackages>javax.faces.bean</subpackages>
+                        </configuration>
+                        
+                    </execution>
+                </executions>
+            </plugin>
+           
+        </plugins>
+    </build>
+    
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+    
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- For the @PreParseFacesConfig annotation -->
+        <dependency>
+            <groupId>com.sun.faces.build</groupId>
+            <artifactId>jsf-tools</artifactId>
+            <version>2.4.0-m01-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- 
+           Depend on the source jar of the full implementation Mojarra jar. This is used for
+           unpacking and re-compiling. This jar is created by executing mvn clean install
+           in the [mojarra home]/impl project.       
+        -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.faces</artifactId>
+            <version>${mojarra.version}</version>
+            <scope>provided</scope>
+            <classifier>sources</classifier>
+        </dependency>
+        
+         <!-- 
+            For the vendor SPI implementations shipped with Mojarra.
+            Although we don't use them and they don't end up in the API jar, they
+            still need to be compiled
+         -->
+         
+         <!-- Jetty 6 -->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>6.1.26</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-annotations</artifactId>
+            <version>6.1.26</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Tomcat 6 -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>catalina</artifactId>
+            <version>6.0.51</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>com.phasebash.jsdoc</groupId>
+                <artifactId>jsdoc3-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <configFile>${project.build.directory}/../src/main/jsdoc/conf.json</configFile>
+                    <includePrivate>false</includePrivate>
+                    <lenient>true</lenient>
+                    <sourceFiles>
+                        <sourceFile>src/main/resources/META-INF/resources/javax.faces/jsf-uncompressed.js</sourceFile>
+                    </sourceFiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+    
+</project>

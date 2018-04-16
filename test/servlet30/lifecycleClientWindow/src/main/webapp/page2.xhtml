@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>page 2</title>
+        <h:outputScript library="javax.faces" name="jsf.js" />
+    </h:head>
+    <h:body>
+    <script type="text/javascript">
+        //<![CDATA[
+        var clientWindow = "";
+        var callGetClientWindow = function callGetClientWindow() {
+            clientWindow = jsf.getClientWindow(document.forms[0]);
+            var echoClientWindow = document.getElementById("echoClientWindow");
+            echoClientWindow.innerHTML = "<b>" + clientWindow + "</b>";
+            return true;
+        }
+        //]]>        
+        
+    </script>
+        
+        <h:form prependId="false">
+        
+            <p><input type="submit" id="getClientWindow" onclick="callGetClientWindow(); return false;"
+                   name="getClientWindow" value="getClientWindow" /></p>
+            
+            <p><h:commandButton value="back" id="back" action="main" /></p>
+            
+            <p>|ClientWindow: <span id="echoClientWindow" />|</p>
+            
+        </h:form>
+        
+        
+    </h:body>
+</html>
+

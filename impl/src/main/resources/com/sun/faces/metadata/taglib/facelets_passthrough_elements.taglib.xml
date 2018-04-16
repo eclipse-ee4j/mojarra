@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2009, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<facelet-taglib id="jsf" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_3.xsd"
+                version="2.3">
+    <description><![CDATA[
+
+<p class="changed_added_2_2">The presence of an <br />
+        attribute from this namespace on an otherwise non-JSF aware<br />
+        markup element indicates that the markup element must be treated<br />
+        as a JSF component that will be rendered equivalently to what is<br />
+        specified directly in the Facelet page, with the added benefit<br />
+        of being associated with a server side <code>UIComponent</code><br />
+        instance.
+
+        </p>
+
+        <div class="changed_added_2_2">
+
+        <p>Please see the documentation for Java class <code>javax.faces.view.facelets.TagDecorator</code>.</p>
+
+        </div>
+
+    
+    ]]></description>
+    <namespace>http://xmlns.jcp.org/jsf</namespace>
+    <tag>
+        <description><![CDATA[
+
+     <p class="changed_added_2_2">Markup element
+     that causes a component of <code>component-family:
+     javax.faces.Panel</code> with <code>renderer-type:
+     javax.faces.passthrough.Element</code> to be inserted in the tree.
+     This element is primarily intended to be used by the default
+     <code>TagDecorator</code>, when no match is found as described in
+     the javadoc for that class.  The component that backs this element
+     must implement
+     <code>javax.faces.component.behavior.ClientBehaviorHolder</code>
+     and return "click" from its <code>getDefaultEventName()</code>
+     method.  The list of events returned from its
+     <code>getEventNames()</code> method must include the "on*"
+     attributes below, ommitting the leading "on".</p>
+
+        
+        ]]></description>
+        <tag-name>element</tag-name>
+        <attribute>
+          <description><![CDATA[
+
+         <p class="changed_added_2_2">This attribute must be in the
+         <code>http://xmlns.jcp.org/jsf/passthrough</code> namespace and
+         its value must be set into the component's pass through
+         attributes map under the key given by the value of the symbolic
+         constant
+         <code>javax.faces.render.Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY</code>.</p>
+          
+            ]]></description>
+            <name>elementName</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a pointer button is
+          clicked over this element.
+        ]]></description>
+        
+        
+        <name>onclick</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a pointer button is
+          double clicked over this element.
+        ]]></description>
+        
+        
+        <name>ondblclick</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a pointer button is
+          pressed down over this element.
+        ]]></description>
+        
+        
+        <name>onmousedown</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a pointer button is
+          released over this element.
+        ]]></description>
+        
+        
+        <name>onmouseup</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a pointer button is
+          moved onto this element.
+        ]]></description>
+        
+        
+        <name>onmouseover</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a pointer button is
+          moved within this element.
+        ]]></description>
+        
+        
+        <name>onmousemove</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a pointer button is
+          moved away from this element.
+        ]]></description>
+        
+        
+        <name>onmouseout</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a key is
+          pressed and released over this element.
+        ]]></description>
+        
+        
+        <name>onkeypress</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a key is
+          pressed down over this element.
+        ]]></description>
+        
+        
+        <name>onkeydown</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+    <attribute>
+        <description><![CDATA[<p class="changed_added_2_2">
+          Javascript code executed when a key is
+          released over this element.
+        ]]></description>
+        
+        
+        <name>onkeyup</name>
+        <required>false</required>
+        <type>java.lang.String</type>
+        
+    </attribute>
+
+        
+    </tag>
+
+
+</facelet-taglib>

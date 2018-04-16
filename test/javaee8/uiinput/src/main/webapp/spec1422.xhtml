@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+
+    <f:view locale="en">
+        <h:head>
+            <title>Spec1422IT - Improve UISelectMany to find Converter based on first non-null UISelectItem when type is java.util.Collection</title>
+        </h:head>
+        <h:body>
+            <h:form id="form">
+                <h:selectManyCheckbox id="items" value="#{spec1422.selectedItems}">
+                    <f:selectItems value="#{spec1422.availableItems}" />
+                </h:selectManyCheckbox>
+                <h:selectManyCheckbox id="numbers" value="#{spec1422.selectedNumbers}">
+                    <f:selectItems value="#{spec1422.availableNumbers}" var="number" itemLabel="number #{number}"/>
+                </h:selectManyCheckbox>
+                <h:commandButton id="button" action="#{spec1422.submit}" />
+                <h:outputText id="result" value="#{spec1422.selectedItems}#{spec1422.selectedNumbers}" />
+            </h:form>
+        </h:body>
+    </f:view>
+</html>

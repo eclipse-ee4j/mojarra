@@ -1,0 +1,97 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+      <h:head>
+
+      </h:head>
+
+      <h:body>
+
+        <script type="text/javascript">
+         var statusUpdate = function statusUpdate(data) {
+            var statusArea = document.getElementById("statusArea");
+            var text = statusArea.value;
+            text = text + "Name: "+data.source.id;
+            if (data.type === "event") {
+                text = text +" Event: "+data.status+" ";
+            }
+            statusArea.value = text;
+         }
+        </script>
+
+
+      <form jsf:id="form" jsf:prependId="false" >
+
+        <p>
+
+        <h1 jsf:id="header1">
+          This is textual content within an h1 element.
+        </h1>
+
+        <br/>
+
+        <h2 jsf:id="header2">
+          <f:ajax event="mouseover" onevent="statusUpdate"/>
+          This is textual content within an h2 element.<br/> 
+          Mouse over me to fire an Ajax request.
+        </h2>
+
+        <br/>
+
+        <h3 jsf:id="header3">
+          This is textual content within an h3 element.
+        </h3>
+
+        <br/>
+
+        <h4 jsf:id="header4">
+          This is textual content within an h4 element.
+        </h4>
+
+        <br/>
+
+        <h5 jsf:id="header5">
+          This is textual content within an h5 element.
+        </h5>
+
+        <br/>
+
+        <h6 jsf:id="header6">
+          This is textual content within an h6 element.
+        </h6>
+
+        <br/>
+
+       </p>
+
+     </form>
+
+      <p>
+        <h3> Status:</h3>
+        <textarea id="statusArea" cols="40" rows="10" readonly="readonly" />
+      </p>
+
+    </h:body>
+    
+</html>

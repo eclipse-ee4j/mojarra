@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+    version="1.2">
+
+  <!-- bean that is a List of Integers -->
+  <managed-bean>
+    <managed-bean-name>simpleList</managed-bean-name>
+    <managed-bean-class>java.util.ArrayList</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+    <list-entries>
+      <value-class>java.lang.Integer</value-class>
+      <value>10</value>
+      <value>20</value>
+      <value>60</value>
+      <null-value/>
+    </list-entries>
+  </managed-bean>
+
+  <!-- bean that is a List of SimpleBeans -->
+  <managed-bean>
+    <managed-bean-name>objectList</managed-bean-name>
+    <managed-bean-class>java.util.ArrayList</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+    <list-entries>
+      <value-class>com.sun.faces.test.servlet30.configBasic.SimpleBean</value-class>
+      <value>#{SimpleBean}</value>
+      <value>#{SimpleBean}</value>
+      <value>#{SimpleBean}</value>
+      <null-value/>
+    </list-entries>
+  </managed-bean>
+
+  <!-- bean that is a Map of Maps of Float/SimpleBean pairs -->
+  <managed-bean>
+    <managed-bean-name>crazyMap</managed-bean-name>
+    <managed-bean-class>java.util.HashMap</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+    <map-entries>
+      <key-class>java.lang.String</key-class>
+      <value-class>java.util.Map</value-class>
+      <map-entry>
+        <key>one</key>
+        <value>#{floatMap}</value>
+      </map-entry>
+      <map-entry>
+        <key>two</key>
+        <value>#{floatMap}</value>
+      </map-entry>
+      <map-entry>
+        <key>three</key>
+        <null-value/>
+      </map-entry>
+    </map-entries>
+  </managed-bean>
+
+
+  <!-- bean that is a Map of SimpleBeans -->
+  <managed-bean>
+    <managed-bean-name>floatMap</managed-bean-name>
+    <managed-bean-class>java.util.HashMap</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+    <map-entries>
+      <key-class>java.lang.Float</key-class>
+      <value-class>com.sun.faces.test.servlet30.configBasic.SimpleBean</value-class>
+      <map-entry>
+        <key>3.1415</key>
+        <value>#{SimpleBean}</value>
+      </map-entry>
+      <map-entry>
+        <key>3.14</key>
+        <value>#{SimpleBean}</value>
+      </map-entry>
+      <map-entry>
+        <key>6.02</key>
+        <value>#{SimpleBean}</value>
+      </map-entry>
+      <map-entry>
+        <key>0.00001</key>
+        <null-value/>
+      </map-entry>
+    </map-entries>
+  </managed-bean>
+
+<managed-bean>
+    <managed-bean-name>headAndFoot</managed-bean-name>
+    <managed-bean-class>java.util.TreeMap</managed-bean-class>
+    <managed-bean-scope>none</managed-bean-scope>
+    <map-entries>
+        <value-class>java.util.TreeMap</value-class>
+        <map-entry>
+            <key>banners</key>
+            <value>#{banners}</value>
+        </map-entry>
+    </map-entries>
+</managed-bean>
+
+<managed-bean>
+    <managed-bean-name>banners</managed-bean-name>
+    <managed-bean-class>java.util.TreeMap</managed-bean-class>
+    <managed-bean-scope>none</managed-bean-scope>
+    <map-entries>
+        <map-entry>
+            <key>headerUrl</key>
+            <value>http://foo.utah.edu</value>
+        </map-entry>
+        <map-entry>
+            <key>urlName</key>
+            <value>Request For Change</value>
+        </map-entry>
+    </map-entries>
+</managed-bean>
+
+
+</faces-config>

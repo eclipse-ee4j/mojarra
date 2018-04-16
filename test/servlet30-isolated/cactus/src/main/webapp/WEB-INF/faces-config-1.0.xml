@@ -1,0 +1,403 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_0.dtd">
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config>
+
+
+  <!-- Initial application element with partial values -->
+  <application>
+    <action-listener>com.sun.faces.TestActionListener</action-listener>
+    <message-bundle>com.sun.faces.TestMessages</message-bundle>
+    <variable-resolver>com.sun.faces.TestOldVariableResolver</variable-resolver>
+  </application>
+
+
+  <!-- Second validator -->
+  <validator>
+    <description>Second Validator Description</description>
+    <display-name>Second Validator Display Name</display-name>
+    <icon>
+      <small-icon>secondValidator.jpg</small-icon>
+      <large-icon>secondValidator.gif</large-icon>
+    </icon>
+    <validator-id>Second</validator-id>
+    <validator-class>com.sun.faces.TestSecondValidator</validator-class>
+    <property>
+      <description>Second Validator Property 1 Description</description>
+      <display-name>Second Validator Property 1 Display Name</display-name>
+      <property-name>prop1</property-name>
+      <property-class>java.lang.String</property-class>
+    </property>
+  </validator>
+
+
+  <!-- First validator -->
+  <validator>
+    <description>First Validator Description</description>
+    <display-name>First Validator Display Name</display-name>
+    <icon>
+      <small-icon>firstValidator.jpg</small-icon>
+      <large-icon>firstValidator.gif</large-icon>
+    </icon>
+    <validator-id>First</validator-id>
+    <validator-class>com.sun.faces.TestFirstValidator</validator-class>
+    <attribute>
+      <description>First Validator Attribute 1 Description</description>
+      <display-name>First Validator Attribute 1 Display Name</display-name>
+      <attribute-name>attr1</attribute-name>
+      <attribute-class>java.lang.String</attribute-class>
+    </attribute>
+  </validator>
+
+
+  <!-- First component -->
+  <component>
+    <description>User Interface Command Component</description>
+    <display-name>User Interface Command</display-name>
+    <component-type>Command</component-type>
+    <component-class>javax.faces.component.UICommand</component-class>
+  </component>
+
+
+  <!-- First converter -->
+  <converter>
+    <description>First Converter Description</description>
+    <display-name>First Converter Display Name</display-name>
+    <icon>
+      <small-icon>firstConverter.jpg</small-icon>
+      <large-icon>firstConverter.gif</large-icon>
+    </icon>
+    <converter-id>First</converter-id>
+    <converter-class>com.sun.faces.TestFirstConverter</converter-class>
+    <attribute>
+      <description>First Converter Attribute 1 Description</description>
+      <display-name>First Converter Attribute 1 Display Name</display-name>
+      <attribute-name>attr1</attribute-name>
+      <attribute-class>java.lang.String</attribute-class>
+    </attribute>
+  </converter>
+
+
+  <!-- Second application element with overapping values -->
+  <application>
+    <navigation-handler>
+      com.sun.faces.TestNavigationHandler
+    </navigation-handler>
+    <property-resolver>com.sun.faces.TestPropertyResolver</property-resolver>
+    <variable-resolver>com.sun.faces.TestVariableResolver</variable-resolver>
+    <view-handler>com.sun.faces.TestViewHandler</view-handler>
+    
+    <locale-config>
+        <default-locale>en_US</default-locale>
+        <supported-locale>ps_PS</supported-locale>
+        <supported-locale>fr_FR</supported-locale>
+        <supported-locale>de_DE</supported-locale>
+        <supported-locale>en</supported-locale>
+    </locale-config>
+  </application>
+
+
+  <!-- Third application element with an adapter PropertyResolver -->
+  <application>
+    <property-resolver>com.sun.faces.AdapterPropertyResolver</property-resolver>
+  </application>
+
+  <!-- Second converter -->
+  <converter>
+    <description>Second Converter Description</description>
+    <display-name>Second Converter Display Name</display-name>
+    <icon>
+      <small-icon>secondConverter.jpg</small-icon>
+      <large-icon>secondConverter.gif</large-icon>
+    </icon>
+    <converter-id>Second</converter-id>
+    <converter-class>com.sun.faces.TestSecondConverter</converter-class>
+    <property>
+      <description>Second Converter Property 1 Description</description>
+      <display-name>Second Converter Property 1 Display Name</display-name>
+      <property-name>prop1</property-name>
+      <property-class>java.lang.String</property-class>
+    </property>
+  </converter>
+
+
+  <!-- First navigation rule (global) -->
+  <navigation-rule>
+    <!-- Can also be omitted, since this is the default -->
+    <from-view-id> * </from-view-id>
+    <!-- Logout button on every page -->
+    <navigation-case>
+      <from-action>#{UserBean.Logout}</from-action>
+      <to-view-id>/logout.jsp</to-view-id>
+    </navigation-case>
+    <!-- Generic "not logged in" handler -->
+    <navigation-case>
+      <from-outcome>loginRequired</from-outcome>
+      <to-view-id>/must-login-first.jsp</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+
+  <!-- Second navigation rule (login page only) -->
+  <navigation-rule>
+    <from-view-id> /login.jsp </from-view-id>
+    <!-- Login action was invoked successfully -->
+    <navigation-case>
+      <from-action>#{UserBean.login}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/home.jsp</to-view-id>
+    </navigation-case>
+    <!-- User registration required -->
+    <navigation-case>
+      <from-action>#{UserBean.register}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/get-user-info.jsp</to-view-id>
+    </navigation-case>
+    <!-- User registration failed -->
+    <navigation-case>
+      <from-action>#{UserBean.register}</from-action>
+      <from-outcome>duplicate</from-outcome>
+      <to-view-id>/try-another-name.jsp</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+
+  <!-- Third navigation rule (more global stuff) -->
+  <navigation-rule>
+    <!-- Omit the request view id this time -->
+    <!-- General search form handling -->
+    <navigation-case>
+      <from-action>#{SearchForm.go}</from-action>
+      <to-view-id>/search-results.jsp</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+
+  <!-- Fourth navigation rule (special search handling) -->
+  <navigation-rule>
+    <!-- Search works differently for part of the app -->
+    <from-view-id>/movies/*</from-view-id>
+    <!-- Special search form handling -->
+    <navigation-case>
+      <from-action>#{SearchForm.go}</from-action>
+      <to-view-id>/movies/movie-search-results.jsp</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+
+  <!-- First managed bean -->
+  <managed-bean>
+    <!-- Basic information about this bean -->
+    <description>
+      Auto-creates the form handler for new customers into request scope
+      if it is not already present.
+    </description>
+    <display-name>New Customer Form Handler</display-name>
+    <managed-bean-name>NewCustomerFormHandler</managed-bean-name>
+    <managed-bean-class>
+      com.sun.faces.config.NewCustomerFormHandler
+    </managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+    <!-- Managed property initializations -->
+    <managed-property>
+      <property-name>minimumAge</property-name>
+      <value>#{initParam.minimumCustomerAge}</value>
+    </managed-property>
+    <managed-property>
+      <property-name>maximumAge</property-name>
+      <value>65</value>
+    </managed-property>
+    <managed-property>
+      <property-name>nationality</property-name>
+      <null-value/>
+    </managed-property>
+    <managed-property>
+      <property-name>allowableValues</property-name>
+      <!-- Assume the type is java.util.List -->
+      <list-entries>
+        <value-class>java.lang.Integer</value-class>
+        <value>10</value>
+        <value>20</value>
+        <value>60</value>
+        <null-value/>
+      </list-entries>
+    </managed-property>
+    <managed-property>
+      <property-name>firstNames</property-name>
+      <!-- Assume the type is java.util.List or java.lang.String[] -->
+      <list-entries>
+        <value>Thomas</value>
+        <value>#{someOtherBean.someName}</value>
+        <null-value/>
+      </list-entries>
+    </managed-property>
+    <managed-property>
+      <description>
+        Map property with a description.
+      </description>
+      <display-name>Claim Amounts</display-name>
+      <property-name>claimAmounts</property-name>
+      <map-entries>
+        <key-class>java.lang.String</key-class> <!-- Default so redundant -->
+        <value-class>java.lang.Double</value-class>
+        <map-entry>
+          <key>fire</key>
+          <value>1000.00</value>
+        </map-entry>
+        <map-entry>
+          <key>water</key>
+          <value>#{claimConfiguration.waterDamageAmount}</value>
+        </map-entry>
+        <map-entry>
+          <key>earthquake</key>
+          <null-value/>
+        </map-entry>
+      </map-entries>
+    </managed-property>
+  </managed-bean>
+
+  <managed-bean>
+    <managed-bean-name>mixedBean</managed-bean-name>
+    <managed-bean-class>com.sun.faces.TestBean</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+    <managed-property>
+      <property-name>prop</property-name>
+      <value>mixed value #{SimpleBean.simpleProperty}</value>
+    </managed-property>
+  </managed-bean>
+
+  <managed-bean>
+    <description>
+      Will throw PropertyNotFoundException when accessed.
+    </description>
+    <managed-bean-name>threeBeanSaladNegative</managed-bean-name>
+    <managed-bean-class>com.sun.faces.TestBean</managed-bean-class>
+    <managed-bean-scope>application</managed-bean-scope>
+    <managed-property>
+      <property-name>prop</property-name>
+      <value>request #{tbsRequest.simpleProperty} session #{tbsSession.simpleProperty} none #{tbsNone.simpleProperty} </value>
+    </managed-property>
+  </managed-bean>
+
+  <managed-bean>
+    <managed-bean-name>threeBeanSaladPositive</managed-bean-name>
+    <managed-bean-class>com.sun.faces.TestBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+    <managed-property>
+      <property-name>prop</property-name>
+      <value>request #{tbsRequest.simpleProperty} session #{tbsSession.simpleProperty} none #{tbsNone.simpleProperty} </value>
+    </managed-property>
+  </managed-bean>
+
+  <managed-bean>
+    <managed-bean-name>tbsRequest</managed-bean-name>
+    <managed-bean-class>com.sun.faces.config.SimpleBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+    <managed-property>
+      <property-name>simpleProperty</property-name>
+      <value>request</value>
+    </managed-property>
+  </managed-bean>
+
+  <managed-bean>
+    <managed-bean-name>tbsSession</managed-bean-name>
+    <managed-bean-class>com.sun.faces.config.SimpleBean</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+    <managed-property>
+      <property-name>simpleProperty</property-name>
+      <value>session</value>
+    </managed-property>
+  </managed-bean>
+
+  <managed-bean>
+    <managed-bean-name>tbsNone</managed-bean-name>
+    <managed-bean-class>com.sun.faces.config.SimpleBean</managed-bean-class>
+    <managed-bean-scope>none</managed-bean-scope>
+    <managed-property>
+      <property-name>simpleProperty</property-name>
+      <value>none</value>
+    </managed-property>
+  </managed-bean>
+
+  <managed-bean>
+    <managed-bean-name>SimpleBean</managed-bean-name>
+    <managed-bean-class>com.sun.faces.config.SimpleBean</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+    <managed-property>
+      <property-name>simpleProperty</property-name>
+      <value>Bobby Orr</value>
+    </managed-property>
+  </managed-bean>
+
+
+  <!-- First referenced bean -->
+  <referenced-bean>
+    <description>
+      This element represents a JDBC DataSource that will be
+      initialized through some external means, and made available
+      in some scope (most likely application).
+    </description>
+    <display-name>Database Connection Pool</display-name>
+    <referenced-bean-name>connectionPool</referenced-bean-name>
+    <referenced-bean-class>javax.sql.DataSource</referenced-bean-class>
+  </referenced-bean>
+
+<!--  <managed-bean>
+  <managed-bean-name>testBean</managed-bean-name>
+  <managed-bean-class>
+    com.sun.faces.TestBean
+  </managed-bean-class>
+  <managed-bean-scope>none</managed-bean-scope>
+  <managed-property>
+    <property-name>customerBean</property-name>
+    <value>#{customerBean}</value>
+  </managed-property>
+</managed-bean>-->
+
+<managed-bean>
+  <managed-bean-name>customerBean</managed-bean-name>
+  <managed-bean-class>
+    com.sun.faces.CustomerBean
+  </managed-bean-class>
+  <managed-bean-scope>none</managed-bean-scope>
+  <managed-property>
+    <property-name>name</property-name>
+    <value>Bobby</value>
+  </managed-property>
+  <managed-property>
+    <property-name>symbol</property-name>
+    <value>GDP</value>
+  </managed-property>
+</managed-bean>
+
+<managed-bean>
+  <managed-bean-name>exceptionBean</managed-bean-name>
+  <managed-bean-class>
+    com.sun.faces.TestExceptionBean
+  </managed-bean-class>
+  <managed-bean-scope>request</managed-bean-scope>
+</managed-bean>
+
+</faces-config>

@@ -1,0 +1,315 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- =========== RI CONFIGURATION FILE ===================================== -->
+
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
+    metadata-complete="true"
+    version="2.3">
+
+
+  <!-- Configure Object Factories -->
+
+  <factory>
+    <application-factory>
+      com.sun.faces.application.ApplicationFactoryImpl
+    </application-factory>
+    <exception-handler-factory>
+      com.sun.faces.context.ExceptionHandlerFactoryImpl
+    </exception-handler-factory>
+    <visit-context-factory>
+      com.sun.faces.component.visit.VisitContextFactoryImpl
+    </visit-context-factory>
+    <faces-context-factory>
+      com.sun.faces.context.FacesContextFactoryImpl
+    </faces-context-factory>
+    <client-window-factory>
+      com.sun.faces.lifecycle.ClientWindowFactoryImpl
+    </client-window-factory>
+    <flash-factory>
+      com.sun.faces.context.flash.FlashFactoryImpl
+    </flash-factory>
+    <partial-view-context-factory>
+      com.sun.faces.context.PartialViewContextFactoryImpl
+    </partial-view-context-factory>
+    <lifecycle-factory>
+      com.sun.faces.lifecycle.LifecycleFactoryImpl
+    </lifecycle-factory>
+    <render-kit-factory>
+      com.sun.faces.renderkit.RenderKitFactoryImpl
+    </render-kit-factory>
+    <view-declaration-language-factory>
+      com.sun.faces.application.view.ViewDeclarationLanguageFactoryImpl
+    </view-declaration-language-factory>
+    <tag-handler-delegate-factory>
+      com.sun.faces.facelets.tag.jsf.TagHandlerDelegateFactoryImpl
+    </tag-handler-delegate-factory>
+    <external-context-factory>
+      com.sun.faces.context.ExternalContextFactoryImpl
+    </external-context-factory>
+    <facelet-cache-factory>
+      com.sun.faces.facelets.impl.FaceletCacheFactoryImpl
+    </facelet-cache-factory>
+    <flow-handler-factory>
+      com.sun.faces.flow.FlowHandlerFactoryImpl
+    </flow-handler-factory>
+    <search-expression-context-factory>
+        com.sun.faces.component.search.SearchExpressionContextFactoryImpl
+    </search-expression-context-factory>
+  </factory>
+
+
+  <!-- Configure Application Objects -->
+
+  <application>
+    <action-listener>
+      com.sun.faces.application.ActionListenerImpl
+    </action-listener>     
+    <navigation-handler>
+      com.sun.faces.application.NavigationHandlerImpl
+    </navigation-handler>     
+    <state-manager>
+      com.sun.faces.application.StateManagerImpl
+    </state-manager>
+    <view-handler>
+        com.sun.faces.application.view.MultiViewHandler
+    </view-handler>
+    <resource-handler>
+      com.sun.faces.application.resource.ResourceHandlerImpl
+    </resource-handler>
+    <search-expression-handler>
+      com.sun.faces.component.search.SearchExpressionHandlerImpl
+    </search-expression-handler>
+    <system-event-listener>
+        <system-event-listener-class>com.sun.faces.application.view.ViewScopeEventListener</system-event-listener-class>
+        <system-event-class>javax.faces.event.PostConstructViewMapEvent</system-event-class>
+        <source-class>javax.faces.component.UIViewRoot</source-class>
+    </system-event-listener>
+    <system-event-listener>
+        <system-event-listener-class>com.sun.faces.application.view.ViewScopeEventListener</system-event-listener-class>
+        <system-event-class>javax.faces.event.PreDestroyViewMapEvent</system-event-class>
+        <source-class>javax.faces.component.UIViewRoot</source-class>
+    </system-event-listener>
+  </application>
+
+
+  <!-- Configure Standard By-Id Converters -->
+
+  <converter>
+    <converter-id>javax.faces.BigDecimal</converter-id>
+    <converter-class>javax.faces.convert.BigDecimalConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.BigInteger</converter-id>
+    <converter-class>javax.faces.convert.BigIntegerConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Boolean</converter-id>
+    <converter-class>javax.faces.convert.BooleanConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Byte</converter-id>
+    <converter-class>javax.faces.convert.ByteConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Character</converter-id>
+    <converter-class>javax.faces.convert.CharacterConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.DateTime</converter-id>
+    <converter-class>javax.faces.convert.DateTimeConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Double</converter-id>
+    <converter-class>javax.faces.convert.DoubleConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Float</converter-id>
+    <converter-class>javax.faces.convert.FloatConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Integer</converter-id>
+    <converter-class>javax.faces.convert.IntegerConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Long</converter-id>
+    <converter-class>javax.faces.convert.LongConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Number</converter-id>
+    <converter-class>javax.faces.convert.NumberConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-id>javax.faces.Short</converter-id>
+    <converter-class>javax.faces.convert.ShortConverter</converter-class>
+  </converter>
+
+  <!-- Configure Standard By-Class Converters -->
+
+  <converter>
+    <converter-for-class>java.math.BigDecimal</converter-for-class>
+    <converter-class>javax.faces.convert.BigDecimalConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.math.BigInteger</converter-for-class>
+    <converter-class>javax.faces.convert.BigIntegerConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Boolean</converter-for-class>
+    <converter-class>javax.faces.convert.BooleanConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Byte</converter-for-class>
+    <converter-class>javax.faces.convert.ByteConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Character</converter-for-class>
+    <converter-class>javax.faces.convert.CharacterConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Double</converter-for-class>
+    <converter-class>javax.faces.convert.DoubleConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Float</converter-for-class>
+    <converter-class>javax.faces.convert.FloatConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Integer</converter-for-class>
+    <converter-class>javax.faces.convert.IntegerConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Long</converter-for-class>
+    <converter-class>javax.faces.convert.LongConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Short</converter-for-class>
+    <converter-class>javax.faces.convert.ShortConverter</converter-class>
+  </converter>
+  <converter>
+    <converter-for-class>java.lang.Enum</converter-for-class>
+    <converter-class>javax.faces.convert.EnumConverter</converter-class>
+  </converter>
+    
+    <!-- Add our implementation specific PhaseListeners -->
+    <lifecycle>
+        <phase-listener>com.sun.faces.lifecycle.ELResolverInitPhaseListener</phase-listener>
+    </lifecycle>
+
+  <!-- Configure Behaviors -->
+
+  <behavior>
+    <behavior-id>javax.faces.behavior.Ajax</behavior-id>
+    <behavior-class>javax.faces.component.behavior.AjaxBehavior</behavior-class>
+  </behavior>
+
+  <!-- Configure Standard Validators -->
+
+  <validator>
+      <validator-id>javax.faces.Bean</validator-id>
+      <validator-class>javax.faces.validator.BeanValidator</validator-class>
+  </validator>
+  <validator>
+    <validator-id>javax.faces.DoubleRange</validator-id>
+    <validator-class>
+      javax.faces.validator.DoubleRangeValidator
+  </validator-class>
+  </validator>
+  <validator>
+    <validator-id>javax.faces.Length</validator-id>
+    <validator-class>javax.faces.validator.LengthValidator</validator-class>
+  </validator>
+  <validator>
+    <validator-id>javax.faces.LongRange</validator-id>
+    <validator-class>javax.faces.validator.LongRangeValidator</validator-class>
+  </validator>
+  <validator>
+      <validator-id>javax.faces.RegularExpression</validator-id>
+      <validator-class>javax.faces.validator.RegexValidator</validator-class>
+  </validator>
+  <validator>
+      <validator-id>javax.faces.Required</validator-id>
+      <validator-class>javax.faces.validator.RequiredValidator</validator-class>
+  </validator>
+
+  <!-- Add our implementation specific Validators -->
+  <validator>
+      <validator-id>com.sun.faces.ext.validator.CreditCardValidator</validator-id>
+      <validator-class>com.sun.faces.ext.validator.CreditCardValidator</validator-class>
+  </validator>
+
+  <!-- Add our implementation specific Components  -->
+    <component>
+        <component-type>com.sun.faces.ext.focus</component-type>
+        <component-class>com.sun.faces.ext.component.UIFocus</component-class>
+    </component>
+
+    <component>
+        <component-type>com.sun.faces.ext.validateWholeBean</component-type>
+        <component-class>com.sun.faces.ext.component.UIValidateWholeBean</component-class>
+    </component>
+
+
+    <!-- Facelets Custom Components -->
+    
+    <component>
+        <component-type>facelets.ui.Repeat</component-type>
+        <component-class>com.sun.faces.facelets.component.UIRepeat</component-class>
+    </component>
+    <component>
+        <component-type>facelets.ui.ComponentRef</component-type>
+        <component-class>com.sun.faces.facelets.tag.ui.ComponentRef</component-class>
+    </component>
+    <component>
+        <component-type>facelets.ui.Debug</component-type>
+        <component-class>com.sun.faces.facelets.tag.ui.UIDebug</component-class>
+    </component>
+    <component>
+        <component-type>javax.faces.Composite</component-type>
+        <component-class>com.sun.faces.facelets.tag.jsf.CompositeComponentImpl
+        </component-class>
+    </component>
+
+    <!-- Custom component to contain component resources -->
+    <component>
+        <component-type>javax.faces.ComponentResourceContainer</component-type>
+        <component-class>com.sun.faces.component.ComponentResourceContainer</component-class>
+    </component>
+    <!-- Add our implementation specific Renderers -->
+    <render-kit>
+        <render-kit-id>HTML_BASIC</render-kit-id>
+        <renderer>
+            <component-family>FocusFamily</component-family>
+            <renderer-type>com.sun.faces.ext.render.FocusHTMLRenderer</renderer-type>
+            <renderer-class>com.sun.faces.ext.render.FocusHTMLRenderer</renderer-class>
+        </renderer>
+        <!-- Facelets Custom Renderers -->
+        <renderer>
+            <component-family>facelets</component-family>
+            <renderer-type>facelets.ui.Repeat</renderer-type>
+            <renderer-class>com.sun.faces.facelets.component.RepeatRenderer</renderer-class>
+        </renderer>
+        <client-behavior-renderer>
+            <client-behavior-renderer-type>javax.faces.behavior.Ajax</client-behavior-renderer-type>
+            <client-behavior-renderer-class>com.sun.faces.renderkit.html_basic.AjaxBehaviorRenderer</client-behavior-renderer-class>
+        </client-behavior-renderer>
+    </render-kit>
+</faces-config>

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+    <head>
+        <title>Outside of flow</title>
+    </head>
+    <body>
+        <h1>Outside of flow</h1>
+        
+        <p>This is the ideal test matrix.</p>        
+        
+        <pre><code>
+
+flow-a and flow-b call eachother
+
+           inbound params     outbound params
+
+flow-a     y                  y
+           n                  n
+           y                  n
+           n                  y
+
+flow-b     y                  y
+           n                  n
+           y                  n
+           n                  y
+
+        </code></pre>
+        
+        <p>Cases covered in this test</p>
+        <pre><code>
+flow-a-no-inbound-no-outbound calls flow-b-no-inbound-no-outbound
+
+flow-a-yes-inbound-no-outbound calls flow-b-no-inbound-no-outbound
+
+flow-a-no-inbound-yes-outbound calls flow-b-no-inbound-no-outbound
+
+        </code></pre>
+        
+        
+        
+    <h:form prependId="false">
+        <p><h:commandButton id="flow-a-no-inbound-no-outbound" value="enter flow-a-no-inbound-no-outbound" 
+                            action="flow-a-no-inbound-no-outbound">
+            </h:commandButton></p>
+        <p><h:commandButton id="flow-a-yes-inbound-no-outbound" value="enter flow-a-yes-inbound-no-outbound" 
+                            action="flow-a-yes-inbound-no-outbound">
+            </h:commandButton></p>
+        <p><h:commandButton id="flow-a-no-inbound-yes-outbound" value="enter flow-a-no-inbound-yes-outbound" 
+                            action="flow-a-no-inbound-yes-outbound">
+            </h:commandButton></p>
+            
+            
+    </h:form>
+</body>
+</html>

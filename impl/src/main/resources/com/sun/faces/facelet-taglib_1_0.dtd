@@ -1,0 +1,37 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!ELEMENT facelet-taglib (library-class|(namespace,(tag|function)+))>
+<!ATTLIST facelet-taglib xmlns CDATA #FIXED "http://java.sun.com/JSF/Facelet">
+<!ELEMENT namespace (#PCDATA)>
+<!ELEMENT library-class (#PCDATA)>
+<!ELEMENT tag (tag-name,(handler-class|component|converter|validator|source))>
+<!ELEMENT tag-name (#PCDATA)>
+<!ELEMENT handler-class (#PCDATA)>
+<!ELEMENT component (component-type,renderer-type?,handler-class?)>
+<!ELEMENT component-type (#PCDATA)>
+<!ELEMENT renderer-type (#PCDATA)>
+<!ELEMENT converter (converter-id, handler-class?)>
+<!ELEMENT converter-id (#PCDATA)>
+<!ELEMENT validator (validator-id, handler-class?)>
+<!ELEMENT validator-id (#PCDATA)>
+<!ELEMENT source (#PCDATA)>
+<!ELEMENT function (function-name,function-class,function-signature)>
+<!ELEMENT function-name (#PCDATA)>
+<!ELEMENT function-class (#PCDATA)>
+<!ELEMENT function-signature (#PCDATA)>

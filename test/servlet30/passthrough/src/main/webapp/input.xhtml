@@ -1,0 +1,55 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<form jsf:id="form" jsf:prependId="false" >
+
+    <p>
+        <input jsf:id="inputText" type="text" jsf:value="#{bean.text1}" disabled="disabled" />
+    </p>
+
+    <p>
+        <input name="textField" type="text" jsf:value="#{bean.text1}" />
+    </p>
+
+    <p>
+        <input jsf:id="inputText2" type="text" jsf:value="#{bean.text2}"/>
+    </p>
+
+    <p>
+        <input jsf:id="emailField" type="email" jsf:value="#{bean.email}" />
+    </p>
+
+    <p>
+        <input jsf:id="numberField" type="number" jsf:value="#{bean.number}" pattern="[0-9]*" />
+    </p>
+
+    <p>
+        <input jsf:id="checkBox" type="checkbox" jsf:value="#{bean.checkboxValue}" />
+    </p>
+
+    <input type="reset" jsf:id="resetButton" value="reset"/>
+
+    <input type="submit" jsf:id="submitButton" value="submit" />
+
+</form>
+    
+</html>

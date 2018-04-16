@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== Event Properties =========================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root>
+
+    <property>
+        <description>
+          Javascript code executed when a pointer button is
+          double clicked over this element.
+        </description>
+        <display-name>Double Click Script</display-name>
+        <icon></icon>
+        <property-name>ondblclick</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Javascript code executed when a pointer button is
+          pressed down over this element.
+        </description>
+        <display-name>Mouse Down Script</display-name>
+        <icon></icon>
+        <property-name>onmousedown</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Javascript code executed when a pointer button is
+          released over this element.
+        </description>
+        <display-name>Mouse Up Script</display-name>
+        <icon></icon>
+        <property-name>onmouseup</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Javascript code executed when a pointer button is
+          moved onto this element.
+        </description>
+        <display-name>Mouse Over Script</display-name>
+        <icon></icon>
+        <property-name>onmouseover</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Javascript code executed when a pointer button is
+          moved within this element.
+        </description>
+        <display-name>Mouse Move Script</display-name>
+        <icon></icon>
+        <property-name>onmousemove</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Javascript code executed when a pointer button is
+          moved away from this element.
+        </description>
+        <display-name>Mouse Out Script</display-name>
+        <icon></icon>
+        <property-name>onmouseout</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Javascript code executed when a key is
+          pressed and released over this element.
+        </description>
+        <display-name>Key Press Script</display-name>
+        <icon></icon>
+        <property-name>onkeypress</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Javascript code executed when a key is
+          pressed down over this element.
+        </description>
+        <display-name>Key Down Script</display-name>
+        <icon></icon>
+        <property-name>onkeydown</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Javascript code executed when a key is
+          released over this element.
+        </description>
+        <display-name>Key Up Script</display-name>
+        <icon></icon>
+        <property-name>onkeyup</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+            <behavior/>
+        </property-extension>
+    </property>
+</root>

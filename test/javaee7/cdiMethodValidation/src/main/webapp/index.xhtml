@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core">
+    <head>
+        <title></title>
+    </head>
+    <body>
+    <f:event type="preRenderView" listener="#{userBean.preRenderViewListener}"  />
+        
+        <h:form prependId="false">
+            <p>method validation test. A non-foo value here invokes method validation during Render Response without correctly dealing with the exception: <h:inputText id="firstName" value="#{userBean.methodValidationValue}" /> </p>
+            <p>value validation test. A non-foo value here invokes value validation during Process Validations: <h:inputText id="lastName" value="#{userBean.valueValidationValue}" /> </p>
+            <p>method validation test. A bar value here invokes method validation before Render Response and does correctly handle the exception.
+            <h:inputText id="requestValue" value="#{requestScope.value}" />
+            
+            </p>
+            
+            <p id="helloValue">#{userBean.helloValue}</p>
+            
+            <h:commandButton id="button" value="submit" />
+            
+            <h:messages />
+
+            
+            
+        </h:form>
+    </body>
+</html>
+

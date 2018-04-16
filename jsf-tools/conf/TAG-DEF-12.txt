@@ -1,0 +1,55 @@
+  <tag>
+    <name>column</name>
+    <tag-class>com.sun.faces.taglib.html_basic.ColumnTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      <![CDATA[<p>Renders a UIComponent that represents a single column of data within a parent <code>UIData</code> component.</p>]]>
+    </description>
+    <attribute>
+      <name>rendered</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+
+          Flag indicating whether or not this component should be rendered
+          (during Render Response Phase), or processed on any subsequent
+          form submit.
+      </description>
+    </attribute>
+    <attribute>
+      <name>binding</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        The value binding expression linking this component to a property in a backing bean 
+      </description>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        The component identifier for the associated component
+      </description>
+    </attribute>
+    <attribute>
+      <name>footerClass</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Space-separated list of CSS style class(es) that will be applied to any column footer generated for this table.
+      </description>
+    </attribute>
+    <attribute>
+      <name>headerClass</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Space-separated list of CSS style class(es) that will be applied to any column header generated for this table.
+      </description>
+    </attribute>
+  </tag>

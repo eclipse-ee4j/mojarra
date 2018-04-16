@@ -1,0 +1,126 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!--
+****** NOTE: There is NO HtmlUnit test for this page (issue) because HtmlUnit cannot
+      handle programmatic creation of IFrame onload callback (done in JSF)
+      for IE. IFrame is still used because the form is multipart/form-data.
+      This tests standard ajax in conjuction with that form enc type.
+******
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<f:view contentType="text/html"/>
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Ajax</title>
+</h:head>
+<h:body>
+   <!-- Displays Form Elements Through Lifecycle Of Ajax Request -->
+
+   <script type="text/javascript">
+      var statusUpdate = function statusUpdate(data) {
+          var statusArea = document.getElementById("statusArea");
+          var text = statusArea.value;
+          if (data.type === "event") {
+              if (data.status === "begin") {
+                  statusArea.value = "";
+                  text = statusArea.value;
+              }
+              text = text +" Event: "+data.status+" ";
+              statusArea.value = text;
+              if (data.status === "begin" || data.status === "complete" ||
+                  data.status === "success") {
+                  displayFormElements();
+              }
+          }
+      }
+      var displayFormElements = function displayFormElements() {
+           var statusArea = document.getElementById("statusArea");
+           var text = statusArea.value;
+           var form = document.forms[0];
+           var elements = form.childNodes;
+           var i = 0;
+           while(true) {
+               if (i == elements.length) {
+                   break;
+               }
+               if (typeof elements[i].name === "undefined") {
+                   i++;
+                   continue;
+               }
+               text = text + elements[i].name+" ";
+               statusArea.value = text;
+               i++;
+           }
+      }
+      var beforeAjax = function beforeAjax() {
+          var statusArea = document.getElementById("statusArea");
+          statusArea.value = "";
+          displayFormElements();
+      }
+      var afterAjax = function beforeAjax() {
+          var statusArea = document.getElementById("statusArea");
+          statusArea.value = "";
+          displayFormElements();
+      }
+
+   </script>
+    <h:form id="form1" enctype="multipart/form-data"> 
+        <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        <h:outputScript name="echo1.js" target="head"/>
+        <b>This page displays form elements before, during an after an Ajax request.</b><br/>
+        <b>The Status box displays the form elements after each button push.</b>
+        <ul>
+        <li>Press the <i>Before Ajax</i> button.</li>
+        <li>Enter a value in the input field and press the <i>Ajax</i>button to cause an Ajax Request.<br/>
+            You will see form elements through the lifecycle of an Ajax request.</li>
+        <li>Press the <i>After Ajax</i> button.</li>
+        </ul>
+         
+        Output: <h:outputText id="out1" value="#{ajaxecho.str}"/>
+        <br/>
+        Input: <h:inputText id="in1" value="#{ajaxecho.str}"/>
+        <!-- Increment the counter on the server, and the client -->
+        <br/>
+        <br/>
+        <h:commandButton id="button1" value="Before Ajax" onclick="beforeAjax(); return false;"/>
+        <br/>
+        <br/>
+        <h:commandButton id="button2" value="Ajax">
+           <f:ajax render="@form" execute="@this form1:in1" onevent="statusUpdate"/>
+        </h:commandButton>
+        <br/>
+        <br/>
+        <h:commandButton id="button3" value="After Ajax" onclick="afterAjax(); return false;"/>
+        <br/>
+        <h:messages/>
+    </h:form>
+
+   <p>
+   <h3> Status:</h3>
+   <textarea id="statusArea" cols="40" rows="10" readonly="readonly" />
+   </p>
+
+</h:body>
+</html>

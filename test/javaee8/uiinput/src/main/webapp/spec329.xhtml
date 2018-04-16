@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+>
+    <h:head>
+        <title>JAVASERVERFACES_SPEC_PUBLIC-329 - Integration Test - h:selectOneRadio group</title>
+    </h:head>
+    <h:body>
+        <h:messages id="messages" />
+
+        <h:form id="inDataTableWithEntityList">
+            <h:dataTable id="table" value="#{spec329.entityList}" var="entity">
+                <h:column>
+                    <h:selectOneRadio id="radio" group="foo" value="#{spec329.selectedEntity}" required="true" requiredMessage="required">
+                        <f:selectItem itemValue="#{entity}" />
+                    </h:selectOneRadio>
+                </h:column>
+            </h:dataTable>
+
+            <h:commandButton id="button" />
+            <h:outputText id="selectedItem" value="#{spec329.selectedEntity.property}" />
+        </h:form>
+
+        <h:form id="inRepeatWithSelectItemList">
+            <ui:repeat id="repeat" value="#{spec329.selectItemList}" var="item">
+                <h:outputLabel for="radio" value="#{item.label}" />
+                <h:selectOneRadio id="radio" group="foo" value="#{spec329.selectedItem1}" required="true" requiredMessage="required">
+                    <f:selectItem itemValue="#{item.value}" />
+                </h:selectOneRadio>
+            </ui:repeat>
+
+            <h:commandButton id="button" />
+            <h:outputText id="selectedItem" value="#{spec329.selectedItem1}" />
+        </h:form>
+
+        <h:form id="multipleRadioButtonsWithStaticItemsInFirstRadio">
+            <h:selectOneRadio id="radio1" group="foo" value="#{spec329.selectedItem2}" required="true" requiredMessage="required1">
+                <f:selectItem itemValue="one" />
+                <f:selectItem itemValue="two" />
+                <f:selectItem itemValue="three" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio2" group="foo" required="true" requiredMessage="required2" />
+            <h:selectOneRadio id="radio3" group="foo" required="true" requiredMessage="required3" />
+
+            <h:commandButton id="button" />
+            <h:outputText id="selectedItem" value="#{spec329.selectedItem2}" />
+        </h:form>
+
+        <h:form id="multipleRadioButtonsWithStaticItemsInEachRadio">
+            <h:selectOneRadio id="radio1" group="foo" value="#{spec329.selectedItem3}" required="true" requiredMessage="required1">
+                <f:selectItem itemValue="one" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio2" group="foo" value="#{spec329.selectedItem3}" required="true" requiredMessage="required2">
+                <f:selectItem itemValue="two" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio3" group="foo" value="#{spec329.selectedItem3}" required="true" requiredMessage="required3">
+                <f:selectItem itemValue="three" />
+            </h:selectOneRadio>
+
+            <h:commandButton id="button" />
+            <h:outputText id="selectedItem" value="#{spec329.selectedItem3}" />
+        </h:form>
+
+        <h:form id="multipleRadioButtonsWithSelectItemList">
+            <h:selectOneRadio id="radio1" group="foo" value="#{spec329.selectedItem4}" required="true" requiredMessage="required1">
+                <f:selectItems value="#{spec329.selectItemList}" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio2" group="foo" required="true" requiredMessage="required2" />
+            <h:selectOneRadio id="radio3" group="foo" required="true" requiredMessage="required3" />
+
+            <h:commandButton id="button" />
+            <h:outputText id="selectedItem" value="#{spec329.selectedItem4}" />
+        </h:form>
+    </h:body>
+</html>

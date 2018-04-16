@@ -1,0 +1,11 @@
+id:root
+value= null
+  id:helloForm
+  value= null
+  attr=com.sun.faces.FormNumber : 0
+  attr=name : helloForm
+    id:userNo
+    value= NUMBER
+    id:submit
+    value= Submit
+    attr=type : submit

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== UISelectItem Properties ==================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+    <xi:include href="uicomponent-props.xml" xpointer="xpointer(/root/*)"/>
+
+    <property>
+        <description>
+          Description of the selection item represented by this component.
+          This property may be used by tools.
+        </description>
+        <display-name>Item Description</display-name>
+        <icon></icon>
+        <property-name>itemDescription</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Flag indicating that the selection item represented by this component
+          must be rendered as disabled.
+        </description>
+        <display-name>Item Disabled</display-name>
+        <icon></icon>
+        <property-name>itemDisabled</property-name>
+        <property-class>boolean</property-class>
+    </property>
+
+    <property>
+        <description>
+          Label of the selection item represented by this component.  This
+          property is displayed to the user when the containing input
+          component is rendered.
+        </description>
+        <display-name>Item Label</display-name>
+        <icon></icon>
+        <property-name>itemLabel</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          The value returned to the server when a user chooses the selection
+          item represented by this component.
+        </description>
+        <display-name>Item Value</display-name>
+        <icon></icon>
+        <property-name>itemValue</property-name>
+        <property-class>java.lang.Object</property-class>
+    </property>
+
+    <property>
+        <description>
+          The current value of this component.
+        </description>
+        <display-name>Value</display-name>
+        <icon></icon>
+        <property-name>value</property-name>
+        <property-class>java.lang.Object</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+</root>

@@ -1,0 +1,66 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+    </h:head>
+    <h:body>
+       <h3>These examples work off an array of 10 values: str0 str1 str2 str3 str4 str5 str6 str7 str8 str9</h3>
+       <h3>Example: UIRepeat With Literal Size Attribute: 5</h3>
+       <ui:repeat value="#{test.strList}" size="5" var="item">
+           l<h:outputText value="#{item}" />
+       </ui:repeat>
+
+       <br/>
+
+       <h3>Example: UIRepeat With ValueExpression Size Attribute: 5</h3>
+       <ui:repeat value="#{test.strList}" size="#{test.size}" var="item">
+           v<h:outputText value="#{item}" />
+       </ui:repeat>
+
+       <br/>
+
+       <h3>Example: UIRepeat With Size Attribute Set From ui:param Value Of 5</h3>
+       <ui:param name="size" value="5"/>
+       <ui:repeat value="#{test.strList}" size="#{size}" var="item">
+           p<h:outputText value="#{item}" />
+       </ui:repeat>
+
+       <br/>
+
+       <h3>Example: UIRepeat With Literal Size Attribute: 10</h3>
+       <ui:repeat value="#{test.strList}" size="10" var="item">
+           m<h:outputText value="#{item}" />
+       </ui:repeat>
+
+       <br/>
+
+       <h3>Example: UIRepeat With Literal Size Attribute: 5 And offset Attribute: 2</h3>
+       <ui:repeat value="#{test.strList}" size="5" offset="2" var="item">
+           o<h:outputText value="#{item}" />
+       </ui:repeat>
+       
+       
+       <p id="bean_in_jar">Bean in jar: #{bean_in_jar.name}</p>
+       
+       
+    </h:body>
+</html>
+

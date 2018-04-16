@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2009, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<facelet-taglib xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd"
+                version="2.2">
+  <description>
+<![CDATA[<p>JSTL 1.2 core library</p>
+
+<p>The pre JSF 2.0 version of Facelets incorrectly declared the taglib
+uri to be <code>http://xmlns.jcp.org/jstl/core</code>.  For backwards
+compatibility implementations must correctly handle inclusions with the
+incorrect uri, and the correct uri, declared here.</p>
+]]>
+</description>
+
+    <namespace>http://xmlns.jcp.org/jsp/jstl/core</namespace>
+    <tag>
+        <description><![CDATA[
+            Catches any Throwable that occurs in its body and optionally
+            exposes it.
+        ]]></description>
+        <tag-name>catch</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jstl.core.CatchHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                Name of the exported scoped variable for the
+                exception thrown from a nested action. The type of the
+                scoped variable is the type of the exception thrown.
+            ]]></description>
+            <name>var</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            Simple conditional tag that establishes a context for
+            mutually exclusive conditional operations, marked by
+            <when> and <otherwise>
+        ]]></description>
+        <tag-name>choose</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jstl.core.ChooseHandler</handler-class>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            Simple conditional tag, which evalutes its body if the
+            supplied condition is true and optionally exposes a Boolean
+            scripting variable representing the evaluation of this condition
+        ]]></description>
+        <tag-name>if</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jstl.core.IfHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                The test condition that determines whether or
+                not the body content should be processed.
+            ]]></description>
+            <name>test</name>
+            <required>true</required>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Name of the exported scoped variable for the
+                resulting value of the test condition. The type
+                of the scoped variable is Boolean.
+            ]]></description>
+            <name>var</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Scope for var.
+            ]]></description>
+            <name>scope</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            The basic iteration tag, accepting many different
+            collection types and supporting subsetting and other
+            functionality
+        ]]></description>
+        <tag-name>forEach</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jstl.core.ForEachHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                Collection of items to iterate over.
+            ]]></description>
+            <name>items</name>
+            <required>false</required>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                If items specified:
+                Iteration begins at the item located at the
+                specified index. First item of the collection has
+                index 0.
+                If items not specified:
+                Iteration begins with index set at the value
+                specified.
+            ]]></description>
+            <name>begin</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                If items specified:
+                Iteration ends at the item located at the
+                specified index (inclusive).
+                If items not specified:
+                Iteration ends when index reaches the value
+                specified.
+            ]]></description>
+            <name>end</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Iteration will only process every step items of
+                the collection, starting with the first one.
+            ]]></description>
+            <name>step</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Name of the exported scoped variable for the
+                current item of the iteration. This scoped
+                variable has nested visibility. Its type depends
+                on the object of the underlying collection.
+            ]]></description>
+            <name>var</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Name of the exported scoped variable for the
+                status of the iteration. Object exported is of type
+                javax.servlet.jsp.jstl.core.LoopTagStatus. This scoped variable
+                has nested
+                visibility.
+            ]]></description>
+            <name>varStatus</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            Subtag of <choose> that follows <when> tags
+            and runs only if all of the prior conditions evaluated to
+            'false'
+        ]]></description>
+        <tag-name>otherwise</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jstl.core.ChooseOtherwiseHandler</handler-class>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            <p>Sets the result of an expression evaluation based on the
+            value of the attributes. If "scope" the is present, but has a zero
+            length or is equal to the string "page", <code>TagException</code>
+            is
+            thrown with an informative error message, ensuring page location
+            information is saved.</p>
+
+            <p>This handler operates in one of two ways.
+
+            <ol>
+
+            <li><p>The user has set "var", "value" and (optionally)
+            "scope" attributes.</p></li>
+
+            <li><p>The user has set "target", "property", and
+            "value"
+            attributes.</p></li>
+
+
+            </ol>
+
+            <p>The first case takes precedence over the second.</p>
+
+
+        ]]></description>
+        <tag-name>set</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jstl.core.SetHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                Name of the exported scoped variable to hold the value
+                specified in the action. The type of the scoped variable is
+                whatever type the value expression evaluates to.
+            ]]></description>
+            <name>var</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Expression to be evaluated.
+            ]]></description>
+            <name>value</name>
+            <required>false</required>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Target object whose property will be set. Must evaluate to
+                a JavaBeans object with setter property property, or to a
+                java.util.Map object.
+            ]]></description>
+            <name>target</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Name of the property to be set in the target object.
+            ]]></description>
+            <name>property</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Scope for var.
+            ]]></description>
+            <name>scope</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            Subtag of &lt;choose&gt; that includes its body if its
+            condition evalutes to 'true'
+        ]]></description>
+        <tag-name>when</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jstl.core.ChooseWhenHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                The test condition that determines whether or not the
+                body content should be processed.
+            ]]></description>
+            <name>test</name>
+            <required>true</required>
+            <type>boolean</type>
+        </attribute>
+    </tag>
+</facelet-taglib>

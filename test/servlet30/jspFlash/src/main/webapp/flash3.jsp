@@ -1,0 +1,89 @@
+<%--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+--%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>RoR Flash Test Page 3</title>
+    <%@ taglib uri="http://java.sun.com/jsf/core"  prefix="f" %>
+    <%@ taglib uri="http://java.sun.com/jsf/html"  prefix="h" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+  </head>
+
+  <body>
+    <h1>RoR Flash Test Page 3</h1>
+
+<f:view>
+
+  <p>If you have something in flash.now that you later, during the same
+  request, decide you want to promote to stick around for the next
+  request, use flash.keep.</p>
+
+  <h:form prependId="false" id="form1">
+
+  <h:panelGrid columns="2" border="1">
+
+    Value of the previous request's foo
+
+    <h:outputText value="#{flash.foo}" />
+
+    Value of the this request's bar.  Should be null.
+
+    <h:outputText value="#{flash.bar}" />
+
+    Put <code>banzai</code> in the flash.now under key
+    <code>buckaroo</code>.
+
+    <c:set target="${flash.now}" property="buckaroo" value="banzai" />
+
+    <f:verbatim>
+      &lt;c:set target="\${flash.now}" property="buckaroo" value="banzai" /&gt;
+    </f:verbatim>
+
+    Value of <code>\#{flash.now.buckaroo}</code>, should be
+    <code>banzai</code>.
+
+    <h:outputText id="flash3NowValueId" value="#{flash.now.buckaroo}" />
+
+    Promote buckaroo to stick around for the next request.
+
+    <c:set target="${flash.keep}" property="buckaroo" 
+           value="${flash.now.buckaroo}" />
+
+    <f:verbatim>
+      &lt;c:set target="\${flash.keep}" property="buckaroo" 
+                     value="\${flash.now.buckaroo}" /&gt;
+    </f:verbatim>
+
+    <h:commandButton id="reload" value="reload" />
+
+    <h:commandButton id="back" value="back" action="back" />
+
+    &nbsp;
+
+    <h:commandButton id="next" value="next" action="next" />
+
+   </h:panelGrid>
+
+  </h:form>
+
+</f:view>
+
+  </body>
+</html>

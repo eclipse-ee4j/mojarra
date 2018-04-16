@@ -1,0 +1,11 @@
+<input id="myCheckbox" type="checkbox" name="myCheckbox" checked="checked" />
+<input id="myCheckbox" type="checkbox" name="myCheckbox" />
+<input id="myCheckbox" type="checkbox" name="myCheckbox" />
+<select id="myListbox" name="myListbox" size="4">	<option value="100" selected="selected">Long1</option>
+	<option value="101">Long2</option>
+	<option value="102">Long3</option>
+	<option value="103">Long4</option>
+</select>
+<input id="mySecret" type="password" name="mySecret" value="" />
+<input id="myInputText" type="text" name="myInputText" value="text" /><span id="myOutputText"></span><textarea id="myTextarea" name="myTextarea" class="bar" style="foo">TextareaRenderer</textarea>
+<img id="myGraphicImage" src="/test-servlet30_isolated-cactus/nonModelReferenceImage.gif;jsessionid=059BAE8BD400E6DD20A675D2ACEF8C75" usemap="usemap" ismap="ismap" /><img src="/test-servlet30_isolated-cactus/foo/modelReferenceImage.gif;jsessionid=059BAE8BD400E6DD20A675D2ACEF8C75" usemap="usemap" ismap="ismap" /><span id="myOutputMessage">My name is Bobby Orr</span>

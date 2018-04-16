@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="MacRoman"?>
+<!--
+
+    Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:f="http://java.sun.com/jsf/core" version="2.0">
+
+    <jsp:directive.page contentType="text/html" pageEncoding="MacRoman"/>
+
+    <!-- any content can be specified here, e.g.: -->
+    <jsp:element name="text">
+        <jsp:attribute name="lang">EN</jsp:attribute>
+        <jsp:body>
+            <f:view>
+
+<h:form prependId="false">
+
+
+    <p>
+        Array Values
+    </p>
+    <h:selectManyListbox id="array" value="#{select05.arrayValues}">
+        <f:selectItems value="#{select05.hobbitCollection}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Null List Values
+    </p>
+    <h:selectManyListbox id="list" value="#{select05.listValues}">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Null Set Values
+    </p>
+    <h:selectManyListbox id="set" value="#{select05.setValues}">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Null Sorted Set Values
+    </p>
+    <h:selectManyListbox id="sortedset" value="#{select05.sortedSetValues}">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Null Collection Values
+    </p>
+    <h:selectManyListbox id="collection" value="#{select05.collectionValues}">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <!-- ///////////////////////////////////////////////////////////// -->
+
+    <p>
+        Initially Non-Null List Values/Collection non-select item
+    </p>
+    <h:selectManyListbox id="ilist" value="#{select05.initialListValues}">
+        <f:selectItems value="#{select05.hobbitCollection}"
+                       var="hobbit"
+                       itemLabel="#{hobbit.name}"
+                       itemDescription="#{hobbit.bio}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Non-Null List Values/DataModel non-select item
+    </p>
+    <h:selectManyListbox id="ilist2" value="#{select05.initialListValues}">
+        <f:selectItems value="#{select05.hobbitDataModel}"
+                       var="hobbit"
+                       itemLabel="#{hobbit.name}"
+                       itemDescription="#{hobbit.bio}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Non-Null Set Values
+    </p>
+    <h:selectManyListbox id="iset" value="#{select05.initialSetValues}">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Non-Null Sorted Set Values
+    </p>
+    <h:selectManyListbox id="isortedset" value="#{select05.initialSortedSetValues}">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Non-Null Collection Values
+    </p>
+    <h:selectManyListbox id="icollection" value="#{select05.initialCollectionValues}">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <!-- ///////////////////////////////////////////////////////////// -->
+
+    <p>
+        Initially Null Collection Values using f:attribute hint (java.lang.String)
+    </p>
+    <h:selectManyListbox id="hintString"
+                         value="#{select05.collectionFromHintValues}"
+                         collectionType="java.util.LinkedList">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <p>
+        Initially Null Collection Values using f:attribute hint (java.lang.String)
+    </p>
+    <h:selectManyListbox id="hintClass" value="#{select05.collectionFromHintValues2}">
+        <f:attribute name="collectionType" value="#{select05.collectionType}"/>
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <!-- ///////////////////////////////////////////////////////////// -->
+
+    <p>
+        Initially Null Object type field
+    </p>
+    <h:selectManyListbox id="object" value="#{select05.someValues}">
+        <f:selectItems value="#{select05.possibleValues}"/>
+    </h:selectManyListbox>
+
+    <!-- //////////////////////////////////////////////////////////// -->
+
+    <p>
+        int values
+    </p>
+     <h:selectManyListbox id="intList1" value="#{select05.selectedIntValues}">
+        <f:selectItems value="#{select05.intOptions}"
+                       var="x"
+                       itemLabel="#{x}"
+                       itemDescription="#{x}"/>
+    </h:selectManyListbox>
+
+    <!-- //////////////////////////////////////////////////////////// -->
+
+    <p>
+        Integer values
+    </p>
+     <h:selectManyListbox id="integerList1" value="#{select05.selectedIntegerValues}">
+        <f:selectItems value="#{select05.integerOptions}"
+                       var="n"
+                       itemLabel="#{n}"
+                       itemDescription="#{n}"/>
+    </h:selectManyListbox>
+
+    <!-- //////////////////////////////////////////////////////////// -->
+
+    <p>
+        Item Label Escape (true)
+    </p>
+    <h:selectManyListbox id="escape01" value="#{select05.initialCollectionValues}">
+       <f:selectItems value="#{select05.hobbitCollection}"
+                      var="n"
+                      itemValue="#{n}"
+                      itemLabel="#{n.bio}"
+                      itemLabelEscaped="true"/>
+    </h:selectManyListbox>
+
+    <!-- //////////////////////////////////////////////////////////// -->
+
+    <p>
+        Item Label Escape (false)
+    </p>
+    <h:selectManyListbox id="escape02" value="#{select05.initialCollectionValues}">
+       <f:selectItems value="#{select05.hobbitCollection}"
+                      var="n"
+                      itemValue="#{n}"
+                      itemLabel="#{n.bio}"
+                      itemLabelEscaped="false"/>
+    </h:selectManyListbox>
+
+     <!-- ////////////////////////////////////////////////////////////// -->
+
+
+    <p>
+        Non-null select item with empty f:selectItems Collection
+    </p>
+    <h:selectManyListbox id="emptyItems">
+        <f:selectItem itemValue="Choose" itemLabel="Choose" />
+        <f:selectItems value="#{select05.emptyCollection}"
+                       var="n"
+                       itemValue="#{n}" />
+    </h:selectManyListbox>
+
+
+    <!-- ////////////////////////////////////////////////////////////// -->
+
+
+    <p>
+    <h:commandButton id="command" value="Submit" />
+    </p>
+
+
+</h:form>
+
+
+            </f:view>
+
+
+
+        </jsp:body>
+    </jsp:element>
+
+</jsp:root>

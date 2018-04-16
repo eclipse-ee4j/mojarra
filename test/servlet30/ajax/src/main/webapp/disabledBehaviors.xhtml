@@ -1,0 +1,53 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:be="http://javaserverfaces.dev.java.net/demo/behavior">
+<f:view contentType="text/html"/>
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Ajax</title>
+</h:head>
+<h:body>
+    <h:form id="form1">    <!-- Note that unlike previous examples, prependid='true' -->
+<!-- Test one: No behaviors rendered -->
+       <h:inputText id="input1">
+	  <f:ajax execute="@all" render="@all" disabled="true"/>
+          <f:ajax execute="@this" render="@all" disabled="true"/>
+       </h:inputText>
+       <br/>
+<!-- Test two: Second behavior rendered -->
+       <h:inputText id="input2">
+	  <f:ajax execute="@all" render="@all" disabled="true"/>
+          <f:ajax execute="@this" render="@all"/>
+       </h:inputText>
+       <br/>
+<!-- Test three: First behavior rendered -->
+       <h:inputText id="input3">
+          <be:greet/>
+	  <f:ajax execute="@all" render="@all" disabled="true"/>
+       </h:inputText>
+    </h:form>
+
+</h:body>
+</html>

@@ -1,0 +1,105 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html
+      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+    <title>Ajax Table</title>
+</h:head>
+<body>
+    <h:form id="form" prependId="false">
+
+        <h:dataTable id="table" value="#{ajaxTable.list}" var="item">
+
+            <f:facet name="header">
+                    <h:outputText id="head" value="'dataTable' ajax test" />
+            </f:facet>
+
+            <h:column>
+                    <f:facet name="header">
+                    <h:outputText value="id" />
+                    </f:facet>
+                         <h:outputText id="outId" value="#{item.id}"/>
+            </h:column>
+
+            <h:column>
+                    <f:facet name="header">
+                    <h:outputText value="name"/>
+                    </f:facet>
+                         <h:outputText id="outName" value="#{item.name}"/>
+            </h:column>
+
+            <h:column id="city">
+                    <f:facet name="header">
+                    <h:outputText value="city"/>
+                    </f:facet>
+                         <h:inputText id="inCity" value="#{item.city}">
+                             <f:ajax/>
+                         </h:inputText>
+            </h:column>
+
+            <h:column>
+                <f:facet name="likescheese">
+                    <h:outputText value="likescheese"/>
+                </f:facet>
+                <h:selectBooleanCheckbox id="cheesecheck" value="#{item.likesCheese}">
+                    <f:ajax render="cheesepref"/>
+                </h:selectBooleanCheckbox>
+            </h:column>
+            
+            <h:column>
+                <f:facet name="cheesepref">
+                    <h:outputText value="Cheese Pref"/>
+                </f:facet>
+                <h:outputText id="cheesepref" value="#{item.cheesePreference}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="countlink">
+                    <h:outputText value="Count Link"/>
+                </f:facet>
+                <h:commandLink id="countlink" value="Count">
+                    <f:ajax render="count :form:count"/>
+                </h:commandLink>
+            </h:column>
+
+            <h:column>
+                <f:facet name="count">
+                    <h:outputText value="Count"/>
+                </f:facet>
+                <h:outputText id="count" value="#{ajaxcount.count1}"/>
+            </h:column>
+        </h:dataTable>
+
+        <!-- Submits with out executing the table, so tests the city change -->
+        <h:commandButton id="submitButton" value="Submit" type="submit">
+            <f:ajax render="form:table"/>
+        </h:commandButton>
+
+        <br/>
+
+        <h:outputText value="Count:"/><h:outputText id="count" value="#{ajaxcount.count2}"/>
+
+    </h:form>
+</body>
+</html>

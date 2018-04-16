@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== Concrete HTML Components ==================================== -->
+
+
+
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents a column that will be rendered 
+      in an HTML <code>table</code> element.</p>]]>
+        </description>
+        <display-name>Column</display-name>
+        <component-type>javax.faces.HtmlColumn</component-type>
+        <component-class>javax.faces.component.html.HtmlColumn</component-class>
+
+        <xi:include href="uicolumn-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="column-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Column</base-component-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>input</code> element
+      for a button of type <code>submit</code> or <code>reset</code>.
+      The label text is specified by the component value.</p>]]>
+        </description>
+        <display-name>Command Button</display-name>
+        <component-type>javax.faces.HtmlCommandButton</component-type>
+        <component-class>javax.faces.component.html.HtmlCommandButton</component-class>
+
+        <xi:include href="uicommand-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="image-button-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="command-button-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Command</base-component-type>
+            <renderer-type>javax.faces.Button</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>a</code> element for a hyperlink that acts
+      like a submit button.  This component must be placed inside
+      a form, and requires JavaScript to be enabled in the client.</p>]]>
+        </description>
+        <display-name>Command Hyperlink</display-name>
+        <component-type>javax.faces.HtmlCommandLink</component-type>
+        <component-class>javax.faces.component.html.HtmlCommandLink</component-class>
+
+        <xi:include href="uicommand-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="link-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Command</base-component-type>
+            <renderer-type>javax.faces.Link</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>script</code> element for a function that acts
+      like an ajax form submit.  This component must be placed inside
+      a form, and requires JavaScript to be enabled in the client.</p>]]>
+        </description>
+        <display-name>Command Script</display-name>
+        <component-type>javax.faces.HtmlCommandScript</component-type>
+        <component-class>javax.faces.component.html.HtmlCommandScript</component-class>
+
+        <xi:include href="uicomponent-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="actionsource-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="command-script-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Command</base-component-type>
+            <renderer-type>javax.faces.Script</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents a set of repeating data (segregated into
+      columns by child UIColumn components) that will
+      be rendered in an HTML <code>table</code> element.</p>]]>
+        </description>
+        <display-name>Data Table</display-name>
+        <component-type>javax.faces.HtmlDataTable</component-type>
+        <component-class>javax.faces.component.html.HtmlDataTable</component-class>
+
+        <xi:include href="uidata-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="table-props.xml" xpointer="xpointer(/root/*)" />
+        
+        <property>
+            <description>
+              <![CDATA[<span class="changed_added_2_1">Boolean flag directing how the per-row component state should be handled.</span>]]>
+            </description>
+            <display-name>Preserve Row Component State</display-name>
+            <icon></icon>
+            <property-name>rowStatePreserved</property-name>
+            <property-class>boolean</property-class>
+            <property-extension>
+                <tag-attribute>false</tag-attribute>
+            </property-extension>
+        </property>
+
+        <component-extension>
+            <base-component-type>javax.faces.Data</base-component-type>
+            <renderer-type>javax.faces.Table</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>form</code> element.  Child input components
+      will be submitted unless they have been disabled.</p>]]>
+        </description>
+        <display-name>Form</display-name>
+        <component-type>javax.faces.HtmlForm</component-type>
+        <component-class>javax.faces.component.html.HtmlForm</component-class>
+
+        <xi:include href="uiform-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="form-form-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Form</base-component-type>
+            <renderer-type>javax.faces.Form</renderer-type>
+        </component-extension>
+    </component>
+    
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>img</code> element, used to retrieve
+      and render a graphical image.</p>]]>
+        </description>
+        <display-name>Graphic Image</display-name>
+        <component-type>javax.faces.HtmlGraphicImage</component-type>
+        <component-class>javax.faces.component.html.HtmlGraphicImage</component-class>
+
+        <xi:include href="uigraphic-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="graphic-image-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Graphic</base-component-type>
+            <renderer-type>javax.faces.Image</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>input</code> element
+      of type <code>file</code>.</p>]]>
+        </description>
+        <display-name>Input File</display-name>
+        <component-type>javax.faces.HtmlInputFile</component-type>
+        <component-class>javax.faces.component.html.HtmlInputFile</component-class>
+
+        <xi:include href="uiinput-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="text-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <ignore>true</ignore>
+            <base-component-type>javax.faces.Input</base-component-type>
+            <renderer-type>javax.faces.File</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>input</code> element
+      of type <code>hidden</code>.</p>]]>
+        </description>
+        <display-name>Input Hidden</display-name>
+        <component-type>javax.faces.HtmlInputHidden</component-type>
+        <component-class>javax.faces.component.html.HtmlInputHidden</component-class>
+
+        <xi:include href="uiinput-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Input</base-component-type>
+            <renderer-type>javax.faces.Hidden</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>input</code> element
+      of type <code>password</code>.  On a redisplay,
+      any previously entered value will <em>not</em>
+      be rendered (for security reasons) unless the
+      <code>redisplay</code> property is set to
+      <code>true</code>.</p>]]>
+        </description>
+        <display-name>Input Secret</display-name>
+        <component-type>javax.faces.HtmlInputSecret</component-type>
+        <component-class>javax.faces.component.html.HtmlInputSecret</component-class>
+
+        <xi:include href="uiinput-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="text-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-secret-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Input</base-component-type>
+            <renderer-type>javax.faces.Secret</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+
+        <description>
+            <![CDATA[<p>Represents an HTML <code>input</code> element
+      of type <code>text</code>.</p>]]>
+        </description>
+        <display-name>Input Text</display-name>
+        <component-type>javax.faces.HtmlInputText</component-type>
+        <component-class>javax.faces.component.html.HtmlInputText</component-class>
+
+        <xi:include href="uiinput-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="text-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Input</base-component-type>
+            <renderer-type>javax.faces.Text</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>textarea</code> element.</p>]]>
+        </description>
+        <display-name>Input Textarea</display-name>
+        <component-type>javax.faces.HtmlInputTextarea</component-type>
+        <component-class>javax.faces.component.html.HtmlInputTextarea</component-class>
+
+        <xi:include href="uiinput-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-textarea-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Input</base-component-type>
+            <renderer-type>javax.faces.Textarea</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <display-name>Message</display-name>
+        <component-type>javax.faces.HtmlMessage</component-type>
+        <component-class>javax.faces.component.html.HtmlMessage</component-class>
+
+        <xi:include href="uimessage-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="message-message-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Message</base-component-type>
+            <renderer-type>javax.faces.Message</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <display-name>Messages</display-name>
+        <component-type>javax.faces.HtmlMessages</component-type>
+        <component-class>javax.faces.component.html.HtmlMessages</component-class>
+
+        <xi:include href="uimessages-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="messages-messages-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Messages</base-component-type>
+            <renderer-type>javax.faces.Messages</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents a component that looks up a localized message in a
+      resource bundle, optionally uses it as a
+      <code>MessageFormat</code> pattern string and substitutes in
+      parameter values from nested <em>UIParameter</em> components, and
+      renders the result.  If the "dir" or "lang" attributes are
+      present, render a <code>span</code> element and pass them through
+      as attributes on the span.</p>]]>
+        </description>
+        <display-name>Output Format</display-name>
+        <component-type>javax.faces.HtmlOutputFormat</component-type>
+        <component-class>javax.faces.component.html.HtmlOutputFormat</component-class>
+
+        <xi:include href="uioutput-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="output-format-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Output</base-component-type>
+            <renderer-type>javax.faces.Format</renderer-type>
+        </component-extension>
+
+    </component>
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>label</code> element, used to define
+      an accessible label for a corresponding input element.</p>]]>
+        </description>
+        <display-name>Output Label</display-name>
+        <component-type>javax.faces.HtmlOutputLabel</component-type>
+        <component-class>javax.faces.component.html.HtmlOutputLabel</component-class>
+
+        <xi:include href="uioutput-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="output-label-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Output</base-component-type>
+            <renderer-type>javax.faces.Label</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>a</code> (hyperlink) element that may be
+      used to link to an arbitrary URL defined by the <code>value</code>
+      property.</p>]]>
+        </description>
+        <display-name>Output Hyperlink</display-name>
+        <component-type>javax.faces.HtmlOutputLink</component-type>
+        <component-class>javax.faces.component.html.HtmlOutputLink</component-class>
+
+        <xi:include href="uioutput-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="link-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="direct-link-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Output</base-component-type>
+            <renderer-type>javax.faces.Link</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>a</code> (hyperlink) element that may be
+      used to link to a URL handled by the Faces Servlet resolved preemptively using the logical
+      outcome defined by the <code>outcome</code> property.]]></description>
+        <display-name>Outcome Target Hyperlink</display-name>
+        <component-type>javax.faces.HtmlOutcomeTargetLink</component-type>
+        <component-class>javax.faces.component.html.HtmlOutcomeTargetLink</component-class>
+
+        <xi:include href="uioutcometarget-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="link-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="direct-link-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.OutcomeTarget</base-component-type>
+            <renderer-type>javax.faces.Link</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents an HTML <code>input</code> element of type "button" or image that
+            may be used to link to a URL handled by the Faces Servlet resolved preemptively using
+            the logical outcome defined by the <code>outcome</code> property. The button behaves like
+            a link, so the current form is not submitted when it is activated (the transitive of how
+            the UICommandLink behaves like a submit button).]]></description>
+        <display-name>Outcome Target Button</display-name>
+        <component-type>javax.faces.HtmlOutcomeTargetButton</component-type>
+        <component-class>javax.faces.component.html.HtmlOutcomeTargetButton</component-class>
+
+        <xi:include href="uioutcometarget-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="outcometargetbutton-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="image-button-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="direct-link-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.OutcomeTarget</base-component-type>
+            <renderer-type>javax.faces.Button</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[
+              <p>
+               Renders the component value as text, optionally wrapping in a
+               <code>span</code> element if I18N attributes, CSS styles or style
+               classes are specified.
+              </p>
+              <p class="changed_modified_2_3">
+               If you are using h:outputText (or an equivalent inline EL 
+               expression) within a script or style block the value is NOT
+               escaped by default.
+              </p>
+            ]]>
+        </description>
+        <display-name>Output Text</display-name>
+        <component-type>javax.faces.HtmlOutputText</component-type>
+        <component-class>javax.faces.component.html.HtmlOutputText</component-class>
+
+        <xi:include href="uioutput-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="output-text-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Output</base-component-type>
+            <renderer-type>javax.faces.Text</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Renders child components in a table, starting a new
+      row after the specified number of columns.</p>]]>
+        </description>
+        <display-name>Panel Grid</display-name>
+        <component-type>javax.faces.HtmlPanelGrid</component-type>
+        <component-class>javax.faces.component.html.HtmlPanelGrid</component-class>
+
+        <xi:include href="uipanel-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="table-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="panel-grid-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Panel</base-component-type>
+            <renderer-type>javax.faces.Grid</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Causes all child components of this component
+      to be rendered.  This is useful in scenarios
+      where a parent component is expecting a single
+      component to be present, but the application
+      wishes to render more than one.</p>]]>
+        </description>
+        <display-name>Panel Group</display-name>
+        <component-type>javax.faces.HtmlPanelGroup</component-type>
+        <component-class>javax.faces.component.html.HtmlPanelGroup</component-class>
+
+        <xi:include href="uipanel-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="panel-group-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Panel</base-component-type>
+            <renderer-type>javax.faces.Group</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p><span
+            class="changed_modified_2_0_rev_a">Represents</span> an HTML
+            <code>input</code> element of type <code>checkbox</code>.
+            The checkbox will be rendered as checked, or not, based on
+            the value of the <code>value</code> property.</p>]]>
+        </description>
+        <display-name>Checkbox</display-name>
+        <component-type>javax.faces.HtmlSelectBooleanCheckbox</component-type>
+        <component-class>javax.faces.component.html.HtmlSelectBooleanCheckbox</component-class>
+
+        <xi:include href="uiselectboolean-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props-noclick.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props-nochange.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-valueChanged-click.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.SelectBoolean</base-component-type>
+            <renderer-type>javax.faces.Checkbox</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p><span
+            class="changed_modified_2_0_rev_a">Represents</span> a
+            multiple-selection component that is rendered as a set of
+            HTML <code>input</code> elements of type
+            <code>checkbox</code>.</p>]]>
+        </description>
+        <display-name>Multi-Select Checkbox</display-name>
+        <component-type>javax.faces.HtmlSelectManyCheckbox</component-type>
+        <component-class>javax.faces.component.html.HtmlSelectManyCheckbox</component-class>
+
+        <xi:include href="uiselectmany-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props-noclick.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props-nochange.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-valueChanged-click.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="selectmany-checkbox-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.SelectMany</base-component-type>
+            <renderer-type>javax.faces.Checkbox</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents a multiple-selection component that is rendered
+      as an HTML <code>select</code> element, showing either all
+      available options or the specified number of options.</p>]]>
+        </description>
+        <display-name>Multi-Select Listbox</display-name>
+        <component-type>javax.faces.HtmlSelectManyListbox</component-type>
+        <component-class>javax.faces.component.html.HtmlSelectManyListbox</component-class>
+
+        <xi:include href="uiselectmany-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props-noselect.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="listbox-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.SelectMany</base-component-type>
+            <renderer-type>javax.faces.Listbox</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents a multiple-selection component that is rendered
+      as an HTML <code>select</code> element, showing a single
+      available option at a time.</p>]]>
+        </description>
+        <display-name>Multi-Select Menu</display-name>
+        <component-type>javax.faces.HtmlSelectManyMenu</component-type>
+        <component-class>javax.faces.component.html.HtmlSelectManyMenu</component-class>
+
+        <xi:include href="uiselectmany-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props-noselect.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="menu-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.SelectMany</base-component-type>
+            <renderer-type>javax.faces.Menu</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p>Represents a single-selection component that is rendered
+      as an HTML <code>select</code> element, showing either all
+      available options or the specified number of options.</p>]]>
+        </description>
+        <display-name>Listbox</display-name>
+        <component-type>javax.faces.HtmlSelectOneListbox</component-type>
+        <component-class>javax.faces.component.html.HtmlSelectOneListbox</component-class>
+
+        <xi:include href="uiselectone-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props-noselect.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="listbox-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.SelectOne</base-component-type>
+            <renderer-type>javax.faces.Listbox</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+
+        <description>
+            <![CDATA[<p>Represents a single-selection component that is rendered
+      as an HTML <code>select</code> element, showing a single
+      available option at a time.</p>]]>
+        </description>
+        <display-name>Menu</display-name>
+        <component-type>javax.faces.HtmlSelectOneMenu</component-type>
+        <component-class>javax.faces.component.html.HtmlSelectOneMenu</component-class>
+
+        <xi:include href="uiselectone-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props-noselect.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="menu-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.SelectOne</base-component-type>
+            <renderer-type>javax.faces.Menu</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>
+            <![CDATA[<p><span
+            class="changed_modified_2_0_rev_a">Represents</span> a
+            single-selection component that is rendered as a set of HTML
+            <code>input</code> elements of type
+            <code>radio</code>.</p>]]>
+        </description>
+        <display-name>Radio</display-name>
+        <component-type>javax.faces.HtmlSelectOneRadio</component-type>
+        <component-class>javax.faces.component.html.HtmlSelectOneRadio</component-class>
+
+        <xi:include href="uiselectone-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props-noclick.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="focus-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="input-props-nochange.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-valueChanged-click.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="selectone-radio-props.xml" xpointer="xpointer(/root/*)" />
+        <component-extension>
+            <base-component-type>javax.faces.SelectOne</base-component-type>
+            <renderer-type>javax.faces.Radio</renderer-type>
+        </component-extension>
+    </component>
+
+
+
+    <!-- the following components are here merely for AttributeManager generation. -->
+
+    <component>
+        <description>NONE</description>
+        <display-name>doctype</display-name>
+        <component-type>javax.faces.OutputDoctype</component-type>
+        <component-class>javax.faces.component.html.HtmlDoctype</component-class>
+
+        <xi:include href="doctype-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Output</base-component-type>
+            <renderer-type>javax.faces.Doctype</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>NONE</description>
+        <display-name>head</display-name>
+        <component-type>javax.faces.OutputHead</component-type>
+        <component-class>javax.faces.component.html.HtmlHead</component-class>
+
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="document-props.xml" xpointer="xpointer(/root/*)" />
+
+        <component-extension>
+            <base-component-type>javax.faces.Output</base-component-type>
+            <renderer-type>javax.faces.Head</renderer-type>
+        </component-extension>
+    </component>
+
+
+    <component>
+        <description>NONE</description>
+        <display-name>body</display-name>
+        <component-type>javax.faces.OutputBody</component-type>
+        <component-class>javax.faces.component.html.HtmlBody</component-class>
+
+        <xi:include href="i18n-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="document-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="core-props.xml" xpointer="xpointer(/root/*)" />
+        <xi:include href="events-props.xml" xpointer="xpointer(/root/*)" />
+        <property>
+            <description>
+            </description>
+            <display-name></display-name>
+            <icon></icon>
+            <property-name>onload</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <ignored-by-renderer>true</ignored-by-renderer>
+                <behavior />
+            </property-extension>
+        </property>
+
+        <property>
+            <description>
+            </description>
+            <display-name></display-name>
+            <icon></icon>
+            <property-name>onunload</property-name>
+            <property-class>java.lang.String</property-class>
+            <property-extension>
+                <ignored-by-renderer>true</ignored-by-renderer>
+                <behavior />
+            </property-extension>
+        </property>
+
+        <component-extension>
+            <base-component-type>javax.faces.Output</base-component-type>
+            <renderer-type>javax.faces.Body</renderer-type>
+        </component-extension>
+    </component>
+
+
+</root>

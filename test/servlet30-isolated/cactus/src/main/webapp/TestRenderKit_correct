@@ -1,0 +1,7 @@
+javax.faces.component.UIForm
+javax.faces.component.UIOutput
+javax.faces.component.UICommand
+javax.faces.component.UISelectBoolean
+javax.faces.component.UITextEntry
+javax.faces.component.UISelectOne
+javax.faces.component.UISelectOne

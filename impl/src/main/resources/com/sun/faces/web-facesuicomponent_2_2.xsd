@@ -1,0 +1,198 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!--
+
+    Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<xsd:schema
+     targetNamespace="http://xmlns.jcp.org/xml/ns/javaee"
+     xmlns:javaee="http://xmlns.jcp.org/xml/ns/javaee"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     elementFormDefault="qualified"
+     attributeFormDefault="unqualified"
+     version="2.2">
+
+    <xsd:annotation>
+        <xsd:documentation>
+
+            <![CDATA[
+
+            <p>The XML Schema for a JavaServer Faces UIComponent (Version 2.0).</p>
+
+            <p>The elements in this schema may be used in an XHTML page for
+            a composite component, by pulling in the composite namespace:</p>
+<pre><code>            
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:composite="http://xmlns.jcp.org/jsf/composite"&gt;
+      
+      &lt;composite:interface&gt;
+         &lt;composite:attribute name="foo" default="bar" /&gt;
+      &lt;/composite:/interface&gt;
+      &lt;!-- the rest omitted --&gt;
+&lt;/html&gt;
+</code></pre>
+
+            <p>The elements in this schema may also be used in a facelet taglibrary
+            file in the same manner:</p>
+            
+<pre><code>
+&lt;facelet-taglib xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibary_2_0.xsd"
+              version="2.0"&gt;
+  &lt;namespace&gt;http://domain.com/test_schema&lt;/namespace&gt;
+  &lt;tag&gt;
+    &lt;tag-name&gt;testSchema&lt;/tag-name&gt;
+    &lt;component&gt;
+      &lt;component-type&gt;javax.faces.Input&lt;/component-type&gt;
+      &lt;renderer-type&gt;javax.faces.Text&lt;/renderer-type&gt;
+      &lt;handler-class&gt;com.sun.faces.facelets.tag.jsf.ComponentHandler&lt;/handler-class&gt;
+      &lt;component-extension&gt;
+
+        &lt;composite:attribute name="foo" default="bar" /&gt;
+
+      &lt;/component-extension&gt;
+    &lt;/component&gt;
+  &lt;/tag&gt;
+&lt;/facelet-taglib&gt;
+</code></pre>
+            
+            <p>The instance documents may indicate the published
+            version of the schema using xsi:schemaLocation attribute
+            for javaee namespace with the following location:</p>
+
+            <p>http://xmlns.jcp.org/xml/ns/javaee/web-facesuicomponent_2_2.xsd</p>
+
+            ]]>
+
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:include schemaLocation="javaee_7.xsd"/>
+
+    <!-- **************************************************** -->
+
+    <xsd:element name = "attribute" type="javaee:uicomponent-attributeType">
+    </xsd:element>
+
+    <!-- **************************************************** -->
+
+    <xsd:complexType name="uicomponent-attributeType">
+        <xsd:annotation>
+            <xsd:documentation>
+
+                The "attribute" element declares an attribute of this 
+                ui component.
+
+            </xsd:documentation>
+        </xsd:annotation>
+        
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="attribute"
+                         type="javaee:uicomponent-attributeType"/>
+        </xsd:choice>
+
+        <xsd:attribute name="name"
+                       type="xsd:string"
+                       use="required"/>
+
+        <xsd:attribute name="displayName"
+                       type="xsd:string"
+                       use="optional"/>
+
+        <xsd:attribute name="shortDescription"
+                       type="xsd:string"
+                       use="optional"/>
+
+        <xsd:attribute name="default"
+                       type="xsd:string"
+                       use="optional"/>
+
+        <xsd:attribute name="method-signature"
+                       type="xsd:string"
+                       use="optional">
+
+	  <xsd:annotation>
+	      <xsd:documentation>
+                <![CDATA[
+
+	    <p>Provides the signature of the Java method.  The syntax of
+	    the method-signature element is as follows (taken from the
+	    function-signature EBNF in web-jsptaglibrary_2_1.xsd):</p>
+
+<code>
+
+<p>MethodSignature ::= ReturnType S MethodName S? '(' S? Parameters? S? ')'</p>
+
+<p>ReturnType        ::= Type</p>
+
+<p>MethodName        ::= Identifier</p>
+
+<p>Parameters        ::= Parameter | ( Parameter S? ',' S? Parameters )</p>
+
+<p>Parameter         ::= Type</p>
+
+</code>
+
+<p>Where:</p>
+
+<ul>
+
+	  <li><p><code>Type</code> is a basic type or a fully qualified
+	  Java class name (including package name), as per the 'Type'
+	  production in the Java Language Specification, Second Edition,
+	  Chapter 18.</p></li>
+
+	  <li><p><code>Identifier</code> is a Java identifier, as per the
+	  'Identifier' production in the Java Language Specification,
+	  Second Edition, Chapter 18.</p></li>
+
+</ul>
+
+<p>Example:</p>
+
+<p><code>java.lang.String nickName( java.lang.String, int )</code></p>
+
+                ]]>
+	      </xsd:documentation>
+	  </xsd:annotation>
+
+        </xsd:attribute>
+
+        <xsd:attribute name="applyTo"
+                       type="xsd:string"
+                       use="optional"/>
+
+        <xsd:attribute name="required"
+                       type="xsd:boolean"
+                       use="optional"/>
+
+        <xsd:attribute name="preferred"
+                       type="xsd:boolean"
+                       use="optional"/>
+
+        <xsd:attribute name="expert"
+                       type="xsd:boolean"
+                       use="optional"/>
+
+        
+    </xsd:complexType>
+
+    <!-- **************************************************** -->
+
+</xsd:schema>

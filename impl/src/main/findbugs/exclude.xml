@@ -1,0 +1,106 @@
+<!--
+
+    Copyright (c) 2011, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<FindBugsFilter>
+    <!--
+        Sure, these inner classes might be more efficient if they
+        were static, but the code would be harder to read too.
+    -->
+    <Match>
+	<Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+    </Match>
+
+    <!--
+        We ignore Exception all over the place.  Mostly it's on purpose.
+    -->
+    <Match>
+	<Bug pattern="DE_MIGHT_IGNORE"/>
+    </Match>
+
+    <!--
+        And sometimes we catch Exception even though it's not throw,
+        just to be sure to catch any problems that might occur.
+    -->
+    <Match>
+	<Bug pattern="REC_CATCH_EXCEPTION"/>
+    </Match>
+
+    <!--
+        Arrays are passed in and out of internal APIs all over the place.
+        Mostly this is just fine.  Finding the few places where this might
+        be a real issue is a problem for another day.
+    -->
+    <Match>
+        <Or>
+            <Bug pattern="EI_EXPOSE_REP"/>
+            <Bug pattern="EI_EXPOSE_REP2"/>
+        </Or>
+    </Match>
+
+    <!--
+        Yes, zero length arrays are preferred, but this isn't worth fixing.
+    -->
+    <Match>
+	<Bug pattern="PZLA_PREFER_ZERO_LENGTH_ARRAYS"/>
+    </Match>
+
+    <!--
+        Lots of classes extend serializable classes but we never depend
+        on their serialized state, so we don't worry about this.
+    -->
+    <Match>
+	<Bug pattern="SE_NO_SERIALVERSIONID"/>
+    </Match>
+
+    <!--
+        We do I/O using the default encoding everywhere, usually
+        to local files that we expect to be encoded with the default
+        encoding.  Some of these are probably real errors, but most
+        are not.
+    -->
+    <Match>
+	<Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+
+    <!--
+        Exclude all low priority bugs in the EJB CMP code,
+	which we really don't want to touch.
+    -->
+    <Match>
+	<Or>
+	    <Priority value="2"/>
+	    <Priority value="3"/>
+	</Or>
+	<Or>
+	    <Class name="~com\.sun\.jdo\.spi\.persistence\..*"/>
+	    <Class name="~com\.sun\.jdo\.api\.persistence\..*"/>
+	</Or>
+    </Match>
+
+    <!--
+        Exclude these logging related errors for now.
+        There are way too many of these errors and we need to reduce
+        the error count before we can check these by default.
+    -->
+    <Match>
+	<Or>
+            <Bug pattern="GF_MISSING_LOGMESSAGE_INFO_ANNOTATION"/>
+            <Bug pattern="GF_INVALID_MSG_ID_PATTERN"/>
+	</Or>
+    </Match>
+</FindBugsFilter>

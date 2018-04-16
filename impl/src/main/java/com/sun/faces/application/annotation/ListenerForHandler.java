@@ -1,0 +1,90 @@
+/*
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0, which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the
+ * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+ * version 2 with the GNU Classpath Exception, which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ */
+
+package com.sun.faces.application.annotation;
+
+import javax.faces.application.Application;
+import javax.faces.event.ListenerFor;
+import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.context.FacesContext;
+import javax.faces.component.UIComponent;
+import javax.faces.event.SystemEventListener;
+
+/**
+ * {@link RuntimeAnnotationHandler} responsible for processing {@link ListenerFor} annotations.
+ */
+class ListenerForHandler implements RuntimeAnnotationHandler {
+
+    private ListenerFor[] listenersFor;
+
+
+    // ------------------------------------------------------------ Constructors
+
+
+    public ListenerForHandler(ListenerFor[] listenersFor) {
+
+        this.listenersFor = listenersFor;
+
+    }
+
+
+    // ----------------------------------- Methods from RuntimeAnnotationHandler
+
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    @Override
+    public void apply(FacesContext ctx, Object... params) {
+
+        Object listener;
+        UIComponent target;
+        if (params.length == 2) {
+            // handling @ListenerFor on a Renderer
+            listener = params[0];
+            target = (UIComponent) params[1];
+        } else {
+            // handling @ListenerFor on a UIComponent
+            listener = params[0];
+            target = (UIComponent) params[0];
+        }
+
+        if (listener instanceof ComponentSystemEventListener) {
+            for (int i = 0, len = listenersFor.length; i < len; i++) {
+                    target.subscribeToEvent(listenersFor[i].systemEventClass(),
+                                            (ComponentSystemEventListener) listener);
+            }
+        }
+	else if (listener instanceof SystemEventListener) {
+	    Class sourceClassValue = null;
+	    Application app = ctx.getApplication();
+            for (int i = 0, len = listenersFor.length; i < len; i++) {
+		sourceClassValue = listenersFor[i].sourceClass();
+		if (sourceClassValue == Void.class) {
+		    app.subscribeToEvent(listenersFor[i].systemEventClass(), 
+					 (SystemEventListener) listener); 
+                }
+                else {
+		    app.subscribeToEvent(listenersFor[i].systemEventClass(), 
+					 listenersFor[i].sourceClass(),
+					 (SystemEventListener) listener); 
+                    
+                }
+	    }
+	}
+
+
+    }
+
+}

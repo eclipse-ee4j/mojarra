@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== UIComponent Properties ===================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+    <property>
+        <description><![CDATA[
+          A mutable Map of the attributes associated with
+          this component, keyed by attribute name.
+        ]]></description>
+        <display-name>Attributes Map</display-name>
+        <icon></icon>
+        <property-name>attributes</property-name>
+        <property-class>java.util.Map</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+            <read-only>true</read-only>
+        </property-extension>
+    </property>
+
+    <property>
+        <description><![CDATA[
+          The number of child components associated with
+          this component.
+        ]]></description>
+        <display-name>Child Component Count</display-name>
+        <icon></icon>
+        <property-name>childCount</property-name>
+        <property-class>int</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+            <read-only>true</read-only>
+        </property-extension>
+    </property>
+
+    <property>
+        <description><![CDATA[
+          A mutable List of the child components associated with
+          this component.
+        ]]></description>
+        <display-name>Child Component List</display-name>
+        <icon></icon>
+        <property-name>children</property-name>
+        <property-class>java.util.List</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+            <read-only>true</read-only>
+        </property-extension>
+    </property>
+
+    <property>
+        <description><![CDATA[
+          A mutable Map of the facets associated with
+          this component, keyed by facet name.
+        ]]></description>
+        <display-name>Facets Map</display-name>
+        <icon></icon>
+        <property-name>facets</property-name>
+        <property-class>java.util.Map</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+            <read-only>true</read-only>
+        </property-extension>
+    </property>
+
+    <property>
+        <description><![CDATA[
+          The component family to which this component belongs.  This property
+          is used to select an appropriate Renderer.
+        ]]></description>
+        <display-name>Component Family</display-name>
+        <icon></icon>
+        <property-name>family</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+            <read-only>true</read-only>
+        </property-extension>
+    </property>
+
+    <!-- PENDING(edburns): Replace this with a call to &lt;xi:include
+         href="id-props.xml" xpointer="xpointer(/root/*)"/&gt; for the
+         final spec generation.  -->
+
+    <property>
+        <description><![CDATA[
+          The component identifier for this component.  This value must be
+          unique within the closest parent component that is a naming
+          container.
+        ]]></description>
+        <display-name>Component Identifier</display-name>
+        <icon></icon>
+        <property-name>id</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+          The parent component for this component.  On the root component
+          in the component tree (which must be of type UIViewRoot), this
+          property is null.
+        ]]></description>
+        <display-name>Parent Component</display-name>
+        <icon></icon>
+        <property-name>parent</property-name>
+        <property-class>javax.faces.component.UIComponent</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+            <read-only>true</read-only>
+        </property-extension>
+    </property>
+
+    <property>
+        <description><![CDATA[
+          Flag indicating whether or not this component should be rendered
+          (during Render Response Phase), or processed on any subsequent
+          form submit.  The default value for this property is true.
+        ]]></description>
+        <display-name>Rendered Flag</display-name>
+        <icon></icon>
+        <property-name>rendered</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description><![CDATA[
+          Identifier used (in conjunction with the "family" property) to
+          select an appropriate Renderer to encode and decode this component.
+        ]]></description>
+        <display-name>Renderer Type</display-name>
+        <icon></icon>
+        <property-name>rendererType</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+        </property-extension>
+    </property>
+
+    <property>
+        <description><![CDATA[
+          Flag indicating whether or not this component takes responsibility
+          for rendering its own children.  This decision is normally delegated
+          to the associated Renderer, if there is one.
+        ]]></description>
+        <display-name>Renders Children</display-name>
+        <icon></icon>
+        <property-name>rendersChildren</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+            <read-only>true</read-only>
+        </property-extension>
+    </property>
+</root>

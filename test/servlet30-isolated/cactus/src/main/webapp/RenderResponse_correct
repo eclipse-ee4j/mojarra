@@ -1,0 +1,749 @@
+
+
+
+
+<HTML>
+    <HEAD> <TITLE> JSF Basic Components Test Page </TITLE> </HEAD>
+
+    
+    
+
+    <BODY>
+        <H3> JSF Basic Components Test Page </H3>
+
+
+<form id="basicForm" name="basicForm" method="post" action="/test/faces/TestRenderResponsePhase.jsp;jsessionid=45707ec485aedd976d7b06553498" class="formClass" accept-charset="some-charset" accept="html,wml" enctype="application/x-www-form-urlencoded" target="_self" title="basicForm">
+<input type="hidden" name="basicForm" value="basicForm" />
+<input type="hidden" name="basicForm:javax.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
+<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+
+
+  <TABLE BORDER="1">
+
+      <tr>
+         <td>
+                 <table id="basicForm:logonPanel1" border="1" cellpadding="3" cellspacing="3" summary="Grid with hardcoded data" title="Grid with hardcoded data">
+<tbody>
+<tr>
+<td><span id="basicForm:formHeader2"><span id="basicForm:A2">Logon&nbsp;</span><span id="basicForm:B2">Form</span></span></td>
+<td><span id="basicForm:text1">Username:</span></td>
+</tr>
+<tr>
+<td><input id="basicForm:username1" type="text" name="basicForm:username1" value="JavaServerFaces" class="inputClass" /></td>
+<td><input id="basicForm:username2" type="text" name="basicForm:username2" value="JavaServerFaces" class="inputClass" disabled="disabled" /></td>
+</tr>
+<tr>
+<td><span id="basicForm:text2" class="outputClass">Password:</span></td>
+<td><input id="basicForm:password1" type="password" name="basicForm:password1" value="" class="secretClass" /></td>
+</tr>
+<tr>
+<td><input id="basicForm:submit1" type="submit" name="basicForm:submit1" value="Login" class="commandClass" /></td>
+<td><input id="basicForm:reset1" type="reset" name="basicForm:reset1" value="Reset" /></td>
+</tr>
+</tbody>
+</table>
+
+             </td>
+           </tr>
+
+      <TR>
+
+	<TD>
+
+            <input id="basicForm:pushButton" type="image" src="duke.gif;jsessionid=45707ec485aedd976d7b06553498" name="basicForm:pushButton" style="someStyle" disabled="disabled" />
+	</TD>
+
+      </TR>
+
+
+      <TR>
+
+	<TD>
+
+            <input id="basicForm:imageOnlyButton" type="image" src="/test/duke.gif;jsessionid=45707ec485aedd976d7b06553498?title=LOGIN&amp;color=red" name="basicForm:imageOnlyButton" />
+	</TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+
+	      
+<script type="text/javascript" src="/test/faces/javax.faces.resource/jsf.js?ln=javax.faces&amp;stage=UnitTest"></script>
+<a id="basicForm:link" href="#" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:link':'basicForm:link'},'');return false" class="hyperlinkClass">link text with localized outputMessage with &euro;</a>
+
+	</TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+
+	      <a id="basicForm:linkWithValue1" href="#" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:linkWithValue1':'basicForm:linkWithValue1'},'');return false" class="hyperlinkClass">link text</a>
+	</TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+
+	      <a id="basicForm:linkWithValue2" href="#" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:linkWithValue2':'basicForm:linkWithValue2'},'');return false" class="hyperlinkClass">link textwith some ~ text</a>   
+	</TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+
+	      <a id="basicForm:imageLink" href="#" style="someStyle" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:imageLink':'basicForm:imageLink'},'');return false"><img src="duke.gif;jsessionid=45707ec485aedd976d7b06553498?title=LOGIN&amp;color=red" /></a>
+
+	</TD>
+
+        <TD> 
+            <img id="basicForm:graphicImage" src="/test/duke.gif;jsessionid=45707ec485aedd976d7b06553498" style="someStyle" usemap="#map1" ismap="ismap" /> 
+        </TD>
+
+      </TR>
+
+      <TR>
+        <TD>
+            <a id="basicForm:commandLink" href="#" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:commandLink':'basicForm:commandLink'},'');return false" class="hyperlinkClass">link text</a>
+       </TD>
+      </TR>
+
+      <TR>
+        <TD>
+            <a id="basicForm:commandParamLink" href="#" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:commandParamLink':'basicForm:commandParamLink','name':'horwat','value':'password'},'');return false" class="hyperlinkClass">link text</a>
+        </TD>
+      </TR>
+
+      <TR>
+        <TD>
+            <a id="basicForm:hrefLink" href="#" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:hrefLink':'basicForm:hrefLink'},'');return false"><img src="duke.gif"></a>
+        </TD>
+      </TR>
+
+      <TR>
+        <TD>
+            <a id="basicForm:hrefParamLink" href="#" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:hrefParamLink':'basicForm:hrefParamLink','name':'horwat','value':'password'},'_top');return false"><img src="duke.gif;jsessionid=45707ec485aedd976d7b06553498" /></a>
+        </TD>
+      </TR>
+
+      <TR>
+
+	<TD>
+
+	      <a id="basicForm:outputLink" name="basicForm:outputLink" href="test.html;jsessionid=45707ec485aedd976d7b06553498" target="_blank" class="hyperlinkClass">output link text</a>
+
+	</TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+
+	      <a id="basicForm:output_imageLink" name="basicForm:output_imageLink" href="test.html;jsessionid=45707ec485aedd976d7b06553498" style="position: absolute; left: 96px; top: 168px"><img src="duke.gif;jsessionid=45707ec485aedd976d7b06553498" /></a>
+
+	</TD>
+
+        <TD> 
+            <img id="basicForm:output_graphicImage" src="/test/duke.gif;jsessionid=45707ec485aedd976d7b06553498" usemap="#map1" ismap="ismap" /> 
+        </TD>
+
+      </TR>
+
+      <TR>
+        <TD>
+            <a id="basicForm:output_commandLink" name="basicForm:output_commandLink" href="test.html;jsessionid=45707ec485aedd976d7b06553498" style="position: absolute; left: 96px; top: 168px" class="hyperlinkClass">link text</a>
+       </TD>
+      </TR>
+
+      <TR>
+        <TD>
+            <a id="basicForm:output_commandParamLink" name="basicForm:output_commandParamLink" href="test.html;jsessionid=45707ec485aedd976d7b06553498?name=horwat&amp;value=password&amp;name_2=" class="hyperlinkClass">link text</a>
+        </TD>
+      </TR>
+
+      <TR>
+        <TD>
+            <a id="basicForm:output_hrefLink" name="basicForm:output_hrefLink" href="test.html;jsessionid=45707ec485aedd976d7b06553498"><img src="duke.gif"></a>
+        </TD>
+      </TR>
+
+      <TR>
+        <TD>
+            <a id="basicForm:output_hrefParamLink" name="basicForm:output_hrefParamLink" href="test.html;jsessionid=45707ec485aedd976d7b06553498?name=horwat&amp;value=password"><img src="duke.gif;jsessionid=45707ec485aedd976d7b06553498" /></a>
+        </TD>
+      </TR>
+
+
+
+      <TR>
+
+	<TD>
+              
+             <span id="basicForm:outputText" style="someStyle">Output Text</span>
+            
+              
+              
+
+	</TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+            
+            <input id="basicForm:checkbox1" type="checkbox" name="basicForm:checkbox1" class="selectbooleanClass" /><label id="basicForm:labe11" for="basicForm:checkbox1" style="position: absolute; left: 96px; top: 168px">
+<span id="basicForm:outputlabel1">CheckboxAndLabelWithFor</span></label>
+             
+	</TD>
+        </TR>
+
+        <TR>
+        <TD>
+             <label id="basicForm:labe13" style="position: absolute; left: 96px; top: 168px">
+<span id="basicForm:outputlabel3">CheckboxAndLabelWithoutFor</span><input id="basicForm:checkbox3" type="checkbox" name="basicForm:checkbox3" class="selectbooleanClass" /></label>
+	</TD> 
+        </TR>
+        <TR>
+        <TD>
+             <label id="basicForm:labe14" style="position: absolute; left: 96px; top: 168px">
+<input id="basicForm:checkbox4" type="checkbox" name="basicForm:checkbox4" class="selectbooleanClass" /><span id="basicForm:outputlabel4">CheckboxAndLabelWithoutFor</span></label>
+	</TD>
+
+      </TR>
+
+      <TR>
+        <TD>
+             <label id="basicForm:labe15" for="basicForm:checkbox5" style="position: absolute; left: 96px; top: 168px">
+<span id="basicForm:outputlabel5">LabelBeforeForComponent</span></label><input id="basicForm:checkbox5" type="checkbox" name="basicForm:checkbox5" class="selectbooleanClass" />
+              
+	</TD>
+
+      </TR>
+
+      <TR>
+        <TD>
+             <label id="basicForm:labe16" for="basicForm:checkbox6">
+LabelWithValue</label><input id="basicForm:checkbox6" type="checkbox" name="basicForm:checkbox6" class="selectbooleanClass" />
+           
+              
+	</TD>
+
+      </TR>
+   
+      <TR>
+        <TD>
+             <label id="basicForm:labe17" for="basicForm:checkbox7">
+LabelWithValue<span id="basicForm:outputlabel7">andsometext</span></label><input id="basicForm:checkbox7" type="checkbox" name="basicForm:checkbox7" class="selectbooleanClass" />
+           
+              
+	</TD>
+
+      </TR>
+
+      <TR>
+        <TD>
+             <label id="basicForm:labe18" for="basicForm:checkbox8">
+escape&lt;p&gt;this markup&lt;/p&gt;<span id="basicForm:outputlabel8">andsometext</span></label><input id="basicForm:checkbox8" type="checkbox" name="basicForm:checkbox8" class="selectbooleanClass" />
+           
+              
+	</TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+
+	     <select name="basicForm:j_id_id306" class="selectoneClass" size="10" style="someStyle" tabindex="20" title="Select Quantity">	<option value="0" disabled="disabled" class="dclass">0</option>
+	<option value="1" class="eclass">1</option>
+	<option value="2" class="eclass">2</option>
+	<option value="3" class="eclass">3</option>
+	<option value="4" class="eclass">4</option>
+	<option value="5" class="eclass">5</option>
+	<option value="6" class="eclass">6</option>
+	<option value="7" class="eclass">7</option>
+	<option value="8" class="eclass">8</option>
+	<option value="9" class="eclass">9</option>
+</select>
+
+	</TD>
+
+      </TR>
+
+      <TR>
+
+        <TD>
+
+             <select name="basicForm:j_id_id333" class="selectoneClass" size="1" style="someStyle" tabindex="20" title="Select Quantity" disabled="disabled">	<option value="0" class="dclass">0</option>
+	<option value="&amp;1&amp;amp;" class="dclass">1</option>
+	<option value="2" class="dclass">2</option>
+	<option value="3" class="dclass">3</option>
+	<option value="4" class="dclass">4</option>
+	<option value="5" class="dclass">5</option>
+	<option value="6" class="dclass">6</option>
+	<option value="7" class="dclass">7</option>
+	<option value="8" class="dclass">8</option>
+	<option value="9" class="dclass">9</option>
+</select>
+
+        </TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+
+	    <table id="basicForm:shipType" class="someStyleClass" style="someStyle">
+	<tr>
+<td>
+<input type="radio" name="basicForm:shipType" id="basicForm:shipType:0" value="nextDay&amp;" accesskey="A" tabindex="3" disabled="disabled" /><label for="basicForm:shipType:0" class="disabledClass"> Next Day</label></td>
+<td>
+<input type="radio" name="basicForm:shipType" id="basicForm:shipType:1" value="nextWeek" accesskey="A" tabindex="3" disabled="disabled" /><label for="basicForm:shipType:1" class="disabledClass"> &lt;Next Week&gt;</label></td>
+<td>
+<input type="radio" name="basicForm:shipType" id="basicForm:shipType:2" value="nextMonth" accesskey="A" tabindex="3" disabled="disabled" /><label for="basicForm:shipType:2" class="disabledClass"> <Next Month></label></td>
+	</tr>
+</table>
+
+	</TD>
+
+      </TR>
+
+      <TR>
+
+	<TD>
+            <table border="1" id="basicForm:verticalRadio">
+	<tr>
+<td>
+<input type="radio" name="basicForm:verticalRadio" id="basicForm:verticalRadio:0" value="nextDay" disabled="disabled" /><label for="basicForm:verticalRadio:0"> Next Day</label></td>
+	</tr>
+	<tr>
+<td>
+<input type="radio" name="basicForm:verticalRadio" id="basicForm:verticalRadio:1" value="nextWeek" disabled="disabled" /><label for="basicForm:verticalRadio:1"> Next Week</label></td>
+	</tr>
+	<tr>
+<td>
+<input type="radio" name="basicForm:verticalRadio" id="basicForm:verticalRadio:2" value="nextMonth" disabled="disabled" /><label for="basicForm:verticalRadio:2"> Next Month</label></td>
+	</tr>
+</table>
+
+	</TD>
+
+      </TR>
+
+      <TR>
+
+        <TD>Float: 
+        </TD>
+
+	<TD><input type="text" name="basicForm:j_id_id388" value="3.1415" style="someStyle" />
+	</TD>
+
+      </TR>
+
+
+
+      <TR>
+
+        <TD>Date: 
+        </TD>
+
+	<TD><input type="text" name="basicForm:j_id_id399" value="July 10, 1996" class="inputClass" />
+	</TD>
+
+      </TR>
+
+
+      <TR>
+
+        <TD>Disabled Date: 
+        </TD>
+
+	<TD><input id="basicForm:date2" type="text" name="basicForm:date2" value="July 11, 1996" accesskey="D" maxlength="20" size="3" tabindex="1" readonly="readonly" />
+	</TD>
+
+      </TR>
+
+      <TR>
+
+        <TD>DateTime: 
+        </TD>
+
+	<TD><input id="basicForm:date3" type="text" name="basicForm:date3" value="Wed, Jul 10, 1996 AD at 12:31:31 PM" />
+	</TD>
+
+      </TR>
+
+
+      <tr>
+          <td>
+            <input id="basicForm:testPattern" type="text" name="basicForm:testPattern" value="10000" class="inputClass" accesskey="D" maxlength="20" size="3" tabindex="2" />
+              </td>
+
+      </tr>
+
+      <tr>
+          <td> <span id="basicForm:percentLabel" class="outputClass">OUTPUT-PERCENT</span> </td>
+              <td>
+                   <span id="basicForm:testPercent">45%</span>
+              </td>
+      </tr>
+
+      <TR>
+
+        <TD>OutputDate: 
+        </TD>
+
+	<TD><span id="basicForm:date4" class="outputClass">July 10, 1996</span>
+	</TD>
+
+      </TR>
+
+      <TR>
+
+        <TD>OutputDateTime: 
+        </TD>
+
+	<TD><span id="basicForm:date5">Wed, Jul 10, 1996 AD at 12:31:31 PM</span>
+	</TD>
+
+      </TR>
+
+      <TR>
+
+        <TD>InputTime: 
+        </TD>
+
+	<TD><input id="basicForm:date6" type="text" name="basicForm:date6" value="12:31:31 PM" />
+	</TD>
+
+      </TR>
+
+      <TR>
+
+        <TD>OutputTime: 
+        </TD>
+
+	<TD><span id="basicForm:date7">12:31:31 PM</span>
+	</TD>
+
+      </TR>
+
+           <tr>
+
+             <td>
+
+               <input id="basicForm:inputDate1" type="text" name="basicForm:inputDate1" value="Jan 12, 1952" accesskey="D" alt="input_date medium readonly" maxlength="20" size="10" title="input_date medium readonly" readonly="readonly" />
+
+
+             </td>
+
+            </tr>
+
+           <tr>
+
+             <td>
+
+               <input id="basicForm:inputDate2" type="text" name="basicForm:inputDate2" value="Jan 12, 1952" alt="input_date medium" title="input_date medium" />
+
+             </td>
+
+            </tr>
+
+           <tr>
+
+             <td>
+
+               <input id="basicForm:inputDate3" type="text" name="basicForm:inputDate3" value="1/12/52" alt="input_date short" title="input_date short" />
+
+             </td>
+
+            </tr>
+
+           <tr>
+
+             <td>
+
+               <input id="basicForm:inputDate4" type="text" name="basicForm:inputDate4" value="January 12, 1952" accesskey="d" alt="input_date long" maxlength="40" size="20" title="input_date long" />
+
+
+             </td>
+
+            </tr>
+
+<tr>
+					<TD>Multi-select menu:</TD>
+					<TD><select id="basicForm:ManyApples" name="basicForm:ManyApples" class="selectmanyClass" multiple="multiple" size="1" style="someStyle">	<option value="0" class="eclass">zero</option>
+	<option value="1" class="eclass">one</option>
+	<option value="2" class="eclass">two</option>
+	<option value="3" class="eclass">three</option>
+	<option value="4" disabled="disabled" class="dclass">four</option>
+	<option value="5" class="eclass">five</option>
+	<option value="6" class="eclass">six</option>
+	<option value="7" class="eclass">seven</option>
+	<option value="8" class="eclass">eight</option>
+	<option value="9" class="eclass">nine</option>
+</select></TD>
+
+</tr>
+<td><input id="basicForm:iescape" type="text" name="basicForm:iescape" value="&amp; a &amp;amp;&amp;" /></td>
+<tr>
+					<TD>Multi-select listbox:</TD>
+					<TD><select name="basicForm:j_id_id565" multiple="multiple" size="10" style="someStyle" disabled="disabled">	<option value="0" class="dclass">zero</option>
+	<option value="1" class="dclass">one</option>
+	<option value="2" class="dclass">two</option>
+	<option value="3" class="dclass">three</option>
+	<option value="4" class="dclass">four</option>
+	<option value="5" class="dclass">five</option>
+	<option value="6" class="dclass">six</option>
+	<option value="7" class="dclass">seven</option>
+	<option value="8" class="dclass">eight</option>
+	<option value="9" class="dclass">nine</option>
+</select></TD>
+</tr>
+
+<tr>
+					<TD>>
+						<table border="1" id="basicForm:ManyApples3" class="styleClass" style="someStyle">
+	<tr>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:0" value="0" type="checkbox" disabled="disabled" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:0" class="disabledClass"> zero</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:1" value="1" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:1" class="enabledClass"> one</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:2" value="2" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:2" class="enabledClass"> two</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:3" value="3" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:3" class="enabledClass"> three</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:4" value="4" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:4" class="enabledClass"> four</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:5" value="5" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:5" class="enabledClass"> five</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:6" value="6" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:6" class="enabledClass"> six</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:7" value="7" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:7" class="enabledClass"> seven</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:8" value="8" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:8" class="enabledClass"> eight</label></td>
+<td>
+<input name="basicForm:ManyApples3" id="basicForm:ManyApples3:9" value="9" type="checkbox" accesskey="A" tabindex="3" /><label for="basicForm:ManyApples3:9" class="enabledClass"> nine</label></td>
+	</tr>
+</table></TD>
+</tr>
+
+<tr>
+                                        <TD><table id="basicForm:checklistmodel">
+	<tr>
+<td>
+<input name="basicForm:checklistmodel" id="basicForm:checklistmodel:0" value="1" type="checkbox" disabled="disabled" /><label for="basicForm:checklistmodel:0" class="disabedClass"> &lt;one&gt;</label></td>
+<td>
+<input name="basicForm:checklistmodel" id="basicForm:checklistmodel:1" value="2" type="checkbox" disabled="disabled" /><label for="basicForm:checklistmodel:1" class="disabedClass"> <two></label></td>
+<td>
+<input name="basicForm:checklistmodel" id="basicForm:checklistmodel:2" value="3" type="checkbox" disabled="disabled" /><label for="basicForm:checklistmodel:2" class="disabedClass"> three</label></td>
+	</tr>
+</table></TD>
+</tr>
+
+<tr>
+<td>
+<span class="walleye" style="color:red">style this text like a red walleye</span>
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="walleye" style="color:red">style this text like a red walleye</div>
+</td>
+</tr>
+
+<input type="hidden" name="basicForm:j_id_id647" value="48%" />
+
+<tr><td>
+
+1. You should see the &lt;i&gt;angle brackets&lt;/i&gt; on this
+text
+
+</td>
+</tr>
+
+<tr><td>
+
+2. You should not see the <i>angle brackets</i> on this
+text
+
+</td>
+</tr>
+
+<tr><td>
+
+3. You should not see the <i>angle
+brackets</i> on this text
+
+</td>
+</tr>
+
+<tr><td>
+
+4. You should see the &lt;i&gt;angle
+brackets&lt;/i&gt; on this text
+
+</td>
+</tr>
+<tr><td>
+
+5. You should not see the
+<i>angle brackets</i> on this text
+
+</td>
+</tr>
+
+<tr><td>
+
+6. You should see the &lt;i&gt;angle
+brackets&lt;/i&gt; on this text
+
+</td>
+</tr>
+
+<tr><td>
+
+<span id="basicForm:value7">7. &amp; You should see the &lt;i&gt;angle brackets&lt;/i&gt; on
+this text</span>
+
+</td>
+</tr>
+
+<tr><td>
+
+8. You should not see the <i>angle
+brackets</i> on this text
+
+</td>
+</tr>
+
+<tr><td>
+
+9. You should see
+the &lt;i&gt;angle brackets&lt;/i&gt; on this text
+
+</td>
+</tr>
+
+<tr><td>
+
+10. You should not
+see the <i>angle brackets</i> on this text
+
+</td>
+</tr>
+
+<tr><td>
+
+<table>
+<tbody>
+<tr><td></td></tr></tbody>
+</table>
+
+
+</td></tr>
+
+<tr><td>
+
+<table>
+<tbody>
+<tr><td></td></tr></tbody>
+</table>
+
+
+</td></tr>
+
+<tr><td>
+
+<table>
+<tbody><tr><td></td></tr></tbody></table>
+<span title="output text with title">should be spanned</span><span id="basicForm:userMsg">Param 0: my param</span>
+
+
+
+
+
+
+
+
+
+
+</td></tr>
+
+<tr><td>
+
+<table>
+<thead>
+<tr><th class="table-header" colspan="2" scope="colgroup">Overall Table Header</th></tr>
+<tr>
+<th class="column-header" scope="col">Account Id</th>
+<th class="table-header" scope="col">Customer Name</th>
+</tr>
+</thead>
+<tfoot>
+<tr>
+<td class="column-footer">A.I. Footer</td>
+<td class="table-footer">C.N. Footer</td>
+</tr>
+<tr><td class="table-footer" colspan="2">Overall Table Footer</td></tr>
+</tfoot>
+<tbody>
+<tr><td></td></tr></tbody>
+</table>
+
+
+</td></tr>
+
+</table>
+
+
+</form>
+<form id="form2" name="form2" method="post" action="/test/faces/TestRenderResponsePhase.jsp;jsessionid=45707ec485aedd976d7b06553498" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="form2" value="form2" />
+<input type="hidden" name="form2:javax.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
+<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+<input type="submit" name="form2:j_id_id827" value="form2 button1" />
+   <p />
+  <input type="submit" name="form2:j_id_id830" value="form2 button2" /> <p />
+
+</form>
+<form id="form3" name="form3" method="post" action="/test/faces/TestRenderResponsePhase.jsp;jsessionid=45707ec485aedd976d7b06553498" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="form3" value="form3" />
+<input type="hidden" name="form3:javax.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
+<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+<input type="submit" name="form3:j_id_id836" value="form3 button1" />
+   <p />
+  <a href="#" onclick="mojarra.jsfcljs(document.getElementById('form3'),{'form3:j_id_id839':'form3:j_id_id839'},'');return false">form3 link1</a> <p />
+
+</form>
+<form id="form4" name="form4" method="post" action="/test/faces/TestRenderResponsePhase.jsp;jsessionid=45707ec485aedd976d7b06553498" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="form4" value="form4" />
+<input type="hidden" name="form4:javax.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
+<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+<a href="test.html;jsessionid=45707ec485aedd976d7b06553498">
+      Link Enabled
+  </a><span>
+      Link Disabled
+  </span><span class="myClass">
+      Link Disabled With Class
+  </span><span>
+      Command Link Disabled
+  </span><span class="myClass">
+      Command Link Disabled with Class
+  </span>
+</form>
+
+    </BODY>
+</HTML>

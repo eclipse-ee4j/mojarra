@@ -1,0 +1,271 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== Table Properties =========================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root>
+
+    <property>
+        <description>
+          Name or code of the background color for this table.
+        </description>
+        <display-name>Background Color</display-name>
+        <icon></icon>
+        <property-name>bgcolor</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Width (in pixels) of the border to be drawn
+          around this table.
+        </description>
+        <display-name>Table Border</display-name>
+        <icon></icon>
+        <property-name>border</property-name>
+        <property-class>int</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Definition of how much space the user agent should
+          leave between the border of each cell and its contents.
+        </description>
+        <display-name>Cell Padding</display-name>
+        <icon></icon>
+        <property-name>cellpadding</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Definition of how much space the user agent should
+          leave between the left side of the table and the
+          leftmost column, the top of the table and the top of
+          the top side of the topmost row, and so on for the
+          right and bottom of the table.  It also specifies
+          the amount of space to leave between cells.
+        </description>
+        <display-name>Cell Spacing</display-name>
+        <icon></icon>
+        <property-name>cellspacing</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Comma-delimited list of CSS style classes that will be applied
+          to the columns of this table.  A space separated list of
+          classes may also be specified for any individual column.  If
+          the number of elements in this list is less than the number of
+          actual column children of the UIData, no "class"
+          attribute is output for each column greater than the number of
+          elements in the list.  If the number of elements in the list
+          is greater than the number of actual column children of the
+          UIData, the elements at the posisiton in the list
+          after the last column are ignored.
+        </description>
+        <display-name>Column CSS Classes</display-name>
+        <icon></icon>
+        <property-name>columnClasses</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Space-separated list of CSS style class(es) that will be
+          applied to any footer generated for this table.
+        </description>
+        <display-name>Footer CSS Classes</display-name>
+        <icon></icon>
+        <property-name>footerClass</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Code specifying which sides of the frame surrounding
+          this table will be visible.  Valid values are:
+          none (no sides, default value); above (top side only);
+          below (bottom side only); hsides (top and bottom sides
+          only); vsides (right and left sides only); lhs (left
+          hand side only); rhs (right hand side only); box
+          (all four sides); and border (all four sides).
+        </description>
+        <display-name>Table Frame</display-name>
+        <icon></icon>
+        <property-name>frame</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Space-separated list of CSS style class(es) that will be
+          applied to any caption generated for this table.
+        </description>
+        <display-name>Caption CSS Classes</display-name>
+        <icon></icon>
+        <property-name>captionClass</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+                                                                                        
+    <property>
+        <description>
+          CSS style(s) to be applied when this caption is rendered.
+        </description>
+        <display-name>Caption CSS Styles</display-name>
+        <icon></icon>
+        <property-name>captionStyle</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Space-separated list of CSS style class(es) that will be
+          applied to any header generated for this table.
+        </description>
+        <display-name>Header CSS Classes</display-name>
+        <icon></icon>
+        <property-name>headerClass</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Comma-delimited list of CSS style classes that will be applied
+          to the rows of this table.  A space separated list of classes
+          may also be specified for any individual row.  Thes styles are
+          applied, in turn, to each row in the table.  For example, if
+          the list has two elements, the first style class in the list
+          is applied to the first row, the second to the second row, the
+          first to the third row, the second to the fourth row, etc.  In
+          other words, we keep iterating through the list until we reach
+          the end, and then we start at the beginning again.
+        </description>
+        <display-name>Row CSS Classes</display-name>
+        <icon></icon>
+        <property-name>rowClasses</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+    
+      <property>
+        <description>
+
+          <![CDATA[
+
+          <div class="changed_added_2_3">
+
+          <p>Assigns one or more space-separated CSS class names to each
+          "tr"</p>
+
+          </div>
+
+          ]]>
+        </description>
+        <display-name>Row CSS Class</display-name>
+        <icon></icon>
+        <property-name>rowClass</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+          Code specifying which rules will appear between cells
+          within this table.  Valid values are:  none (no rules,
+          default value); groups (between row groups); rows
+          (between rows only); cols (between columns only); and
+          all (between all rows and columns).
+        </description>
+        <display-name>Table Rules</display-name>
+        <icon></icon>
+        <property-name>rules</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Summary of this table's purpose and structure, for
+          user agents rendering to non-visual media such as
+          speech and Braille.
+        </description>
+        <display-name>Table Summary</display-name>
+        <icon></icon>
+        <property-name>summary</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Width of the entire table, for visual user agents.
+        </description>
+        <display-name>Table Width</display-name>
+        <icon></icon>
+        <property-name>width</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+    <property>
+        <description>
+          Comma separated list of row indices for which a new
+          "tbody" element should be started (and any
+          previously opened one should be ended).
+        </description>
+        <display-name>Body Rows</display-name>
+        <icon></icon>
+        <property-name>bodyrows</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+</root>

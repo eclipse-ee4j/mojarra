@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2009, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<facelet-taglib id="p" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_3.xsd"
+                version="2.3">
+    <description><![CDATA[
+
+        <p class="changed_added_2_2">Facelet tag attributes in 
+        this namespace must be added to the pass through attribute map <br />
+        on the <code>UIComponent</code> corresponding to the facelet 
+        tag.  There are no tags in this tag library.</p>
+
+         <div class="changed_added_2_2">
+ 
+        <p>Usage example</p>
+
+        <code><pre>&lt;h:outputText value="Namespaced Attributes" p:foo="bar" /&gt;</pre></code>
+
+        <p>Would cause <code>&lt;span foo="bar"&gt;Namespaced Attributes&lt;/span&gt;</code> to be rendered.</p>
+
+
+        </div>
+    
+    ]]></description>
+    <namespace>http://xmlns.jcp.org/jsf/passthrough</namespace>
+    <tag>
+        <description><![CDATA[
+
+        ]]></description>
+        <tag-name> </tag-name>
+    </tag>        
+
+</facelet-taglib>

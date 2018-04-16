@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    
+    <head>
+        <title>pageB</title>
+    </head>
+    <body bgcolor="blue">
+        
+        <p>explicit in flow nav 02</p>
+        
+    <h:form prependId="false">
+        
+        <p><h:commandButton id="pageD_redirect" value="pageD via redirect" action="pageD_redirect" /></p>
+
+        <p><h:button id="pageD_redirect_params" value="pageD_redirect_params"
+                     outcome="pageD_redirect_params">
+        </h:button></p>
+
+        <p><h:commandButton id="pageC_true" value="pageC with true" action="pageC" /></p>
+        <h:inputHidden id="gotoC" value="true" />
+        
+    </h:form>
+        
+    <h:form prependId="false">
+        
+        <p><h:commandButton id="pageC_false" value="pageC with false" action="pageC" /></p>
+        
+    </h:form>
+        
+    </body>
+</html>

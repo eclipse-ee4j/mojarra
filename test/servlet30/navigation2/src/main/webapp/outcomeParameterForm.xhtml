@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+    <h:head>
+        <title>JSF Bug #3023</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h1>Hello</h1>
+            <p>This is a test case for the <a href="https://java.net/jira/browse/JAVASERVERFACES-3023 ">JSF Bug #3023.</a></p>
+
+
+            <h2>Example A: JSF Redirect with URL-encoded parameter</h2>
+            <h:panelGrid columns="3">
+                <h:outputLabel for="searchTermFieldA" value="Enter search term"/>
+                <h:inputText id="searchTermFieldA" value="#{outcomeParameterBean.searchTermA}"/>
+                <h:commandButton id="submit1" action="#{outcomeParameterBean.startSearchWithUrlEncode()}"  value="Search"/>
+            </h:panelGrid>
+
+            <h2>Example B: JSF Redirect without URL-encoded parameter</h2>
+            <h:panelGrid columns="3">
+                <h:outputLabel for="searchTermFieldB" value="Enter search term"/>
+                <h:inputText id="searchTermFieldB" value="#{outcomeParameterBean.searchTermB}"/>
+                <h:commandButton id="submit2" action="#{outcomeParameterBean.startSearchWithoutUrlEncode()}"  value="Search"/>
+            </h:panelGrid>
+
+            <h2>Example C: Redirect via external ServletContext</h2>
+            <h:panelGrid columns="3">
+                <h:outputLabel for="searchTermFieldC" value="Enter search term"/>
+                <h:inputText id="searchTermFieldC" value="#{outcomeParameterBean.searchTermC}"/>
+                <h:commandButton id="submit3" action="#{outcomeParameterBean.startSearchViaExternalContext()}"  value="Search"/>
+            </h:panelGrid>
+
+            <h2>Example D: JSF Redirect using outcomeTargetButton</h2>
+            <h:panelGrid columns="3">
+                <h:outputLabel for="searchTermFieldD" value="Enter search term"/>
+                <h:inputText id="searchTermFieldD" value="#{outcomeParameterBean.searchTermD}"/>
+                <h:button id="submit4" outcome="outcomeParameterResults" value="Search">
+                    <f:param name="query" value="#{outcomeParameterBean.searchTermD}" />
+                    <f:param name="otherParameter" value="someValue" />
+                    <f:param name="faces-redirect" value="true" />
+                </h:button>
+            </h:panelGrid>
+            
+            <h2>Example E: JSF Redirect using outcomeTargetButton</h2>
+            <h:panelGrid columns="3">
+                <h:outputLabel for="searchTermFieldE" value="Enter search term"/>
+                <h:inputText id="searchTermFieldE" value="#{outcomeParameterBean.searchTermE}"/>
+                <h:link id="submit5" outcome="outcomeParameterResults" value="Search">
+                    <f:param name="query" value="#{outcomeParameterBean.searchTermE}" />
+                    <f:param name="otherParameter" value="someValue" />
+                    <f:param name="faces-redirect" value="true" />
+                </h:link>
+            </h:panelGrid>
+        </h:form>
+    </h:body>
+</html>
+

@@ -1,0 +1,2942 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2009, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<facelet-taglib id="f" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_3.xsd"
+                version="2.3">
+    <description><![CDATA[
+
+    <p><span class="changed_modified_2_3">The</span> core JavaServer
+    Faces custom actions that are independent of any particular
+    RenderKit.</p>
+    
+    ]]></description>
+    <namespace>http://xmlns.jcp.org/jsf/core</namespace>
+    <tag>
+        <description><![CDATA[
+
+            <p>Register an ActionListener instance on the
+            UIComponent associated with the closest parent UIComponent
+            custom action.</p>
+        ]]></description>
+        <tag-name>actionListener</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.ActionListenerHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                Value binding expression that evaluates to an object that
+                implements javax.faces.event.ActionListener.
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>javax.faces.event.ActionListener</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Fully qualified Java class name of an ActionListener to be
+                created and registered.
+            ]]></description>
+            <name>type</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+
+        <p class="changed_added_2_0"><span
+        class="changed_modified_2_0_rev_a changed_modified_2_2 changed_modified_2_3">Register</span> an
+        AjaxBehavior instance on one or more UIComponents implementing
+        the ClientBehaviorHolder interface.  This tag may be nested
+        witin a single component (enabling Ajax for a single component),
+        or it may be "wrapped" around multiple components (enabling Ajax
+        for many components).</p>
+
+        <p class="changed_added_2_0">The String value for ids
+        specified for execute and render may be specified as a search
+        expression as outlined in the JavaDocs for
+        <code>UIComponent.findComponent()</code>. The implementation
+        must resolve these ids as specified for
+        <code>UIComponent.findComponent()</code>.  For example, consider
+        the following Facelets code.</p>
+
+<div class="xml" style="font-family:monospace;"><ol><li style="background: #fcfcfc;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;"><span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;h:form</span> <span style="color: #000000;">id</span>=<span style="color: #000000;">&quot;form_1&quot;</span><span style="color: #000000; font-weight: bold;">&gt;</span></span></div></li> 
+<li style="background: #f0f0f0;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; <span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;h:panelGrid</span> <span style="color: #000000;">id</span>=<span style="color: #000000;">&quot;panel_1&quot;</span> <span style="color: #000000;">rows</span>=<span style="color: #000000;">&quot;2&quot;</span><span style="color: #000000; font-weight: bold;">&gt;</span></span></div></li> 
+<li style="background: #fcfcfc;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; &nbsp; <span style="color: #808080; font-style: italic;">&lt;!-- content irrelevant --&gt;</span></div></li> 
+<li style="background: #f0f0f0;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; <span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;/h:panelGrid<span style="color: #000000; font-weight: bold;">&gt;</span></span></span></div></li> 
+<li style="background: #fcfcfc;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;"><span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;/h:form<span style="color: #000000; font-weight: bold;">&gt;</span></span></span></div></li> 
+<li style="background: #f0f0f0;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp;</div></li> 
+<li style="background: #fcfcfc;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;"><span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;h:form</span> <span style="color: #000000;">id</span>=<span style="color: #000000;">&quot;form_2&quot;</span><span style="color: #000000; font-weight: bold;">&gt;</span></span></div></li> 
+<li style="background: #f0f0f0;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; <span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;h:commandButton</span> <span style="color: #000000;">id</span>=<span style="color: #000000;">&quot;button&quot;</span><span style="color: #000000; font-weight: bold;">&gt;</span></span></div></li> 
+<li style="background: #fcfcfc;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; &nbsp; <span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;f:ajax</span> <span style="color: #000000;">render</span>=<span style="color: #000000;">&quot;:form1:panel_1 panel_2&quot;</span> <span style="color: #000000; font-weight: bold;">/&gt;</span></span></div></li> 
+<li style="background: #f0f0f0;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; <span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;/h:commandButton<span style="color: #000000; font-weight: bold;">&gt;</span></span></span></div></li> 
+<li style="background: #fcfcfc;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; <span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;h:panelGrid</span> <span style="color: #000000;">id</span>=<span style="color: #000000;">&quot;panel_2&quot;</span><span style="color: #000000; font-weight: bold;">&gt;</span></span></div></li> 
+<li style="background: #f0f0f0;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; &nbsp; <span style="color: #808080; font-style: italic;">&lt;!-- content irrelevant --&gt;</span></div></li> 
+<li style="background: #fcfcfc;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;">&nbsp; <span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;/h:panelGrid<span style="color: #000000; font-weight: bold;">&gt;</span></span></span></div></li> 
+<li style="background: #f0f0f0;"><div style="font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;"><span style="color: #000000;"><span style="color: #000000; font-weight: bold;">&lt;/h:form<span style="color: #000000; font-weight: bold;">&gt;</span></span></span></div></li> 
+</ol></div>
+
+        <p class="changed_added_2_0">When the button is pressed,
+        panel_1, in form_1 will be re-rendered, along with panel_2 in
+        form_2.</p>
+
+        ]]></description>
+        <tag-name>ajax</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.AjaxHandler</handler-class>
+        <attribute>
+          <description><![CDATA[ <p class="changed_added_2_2">If less than
+      <em>delay</em> milliseconds elapses between calls to
+      <em>request()</em> only the most recent one is sent and all other
+      requests are discarded. If this option is not specified, or if the
+      value of <em>delay</em> is the literal string <code>'none'</code>
+      without the quotes, no delay is used. </p>
+          
+          ]]></description>
+          <name>delay</name>
+          <required>false</required>
+          <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">A value of "true" indicates
+                the
+                AjaxBehavior should not be rendered. A value of "false"
+                indicates
+                the AjaxBehavior should be rendered. "false" is the default.</p>
+
+            ]]></description>
+            <name>disabled</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+             <p class="changed_added_2_0">A String <span class="changed_modified_2_2">or
+             ValueExpression (that evalulates to a String)</span> identifying the type of event 
+             the Ajax action will apply to. If specified, it must be one of the 
+             events supported by the component the Ajax behavior is being applied to. 
+             For HTML components this would be the set of supported DOM events for the
+             component, plus "action" for Faces ActionSource components and "valueChange"
+             for Faces EditableValueHolder components.  If not specified, the default 
+             event is determined for the component.  The DOM event name is the actual DOM
+             event name (for example: "click") as opposed to (for example: "onclick").</p>
+
+
+            ]]></description>
+            <name>event</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+          <description><![CDATA[
+          
+         <p class="changed_added_2_0"><span
+         class="changed_modified_2_0_rev_a">Evaluates</span> to
+         Collection&lt;String&gt;. This is a space separated list of
+         <span class="changed_modified_2_3">search expressions to
+         components</span> that will participate in the "execute"
+         portion of the Request Processing Lifecycle.  <span
+         class="changed_added_2_3">See the javadoc for
+         <code>SearchKeywordResolver</code> for the complete list of
+         keywords.</span> If a literal is specified the ids must be
+         space delimited.  <span class="changed_modified_2_0_rev_a">If
+         not specified, the default value of "@this" is assumed.  For
+         example, <code>@this clientIdOne clientIdTwo</code>.</span></p>
+
+         ]]></description>
+            <name>execute</name>
+            <required>false</required>
+            <type>java.util.Collection</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">If "true" behavior events
+                generated from this behavior
+                are broadcast during Apply Request Values phase. Otherwise, the
+                events will be
+                broadcast during Invoke Aplications phase</p>
+            ]]></description>
+            <name>immediate</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">Method expression referencing
+                a method
+                that will be called when an AjaxBehaviorEvent has been
+                broadcast for the listener.</p>
+            ]]></description>
+            <name>listener</name>
+            <required>false</required>
+            <method-signature>public void
+                processAjaxBehavior(javax.faces.event.AjaxBehaviorEvent event)
+                throws javax.faces.event.AbortProcessingException
+            </method-signature>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">The name of the JavaScript
+                function that will handle errors.</p>
+
+            ]]></description>
+            <name>onerror</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">The name of the JavaScript
+                function that will handle UI events.</p>
+           ]]></description>
+            <name>onevent</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+          <description><![CDATA[
+          
+         <p class="changed_added_2_0"><span
+         class="changed_modified_2_0_rev_a">Evaluates</span> to
+         Collection&lt;String&gt;. The <span
+         class="changed_modified_2_3">search expressions to
+         components</span> that will participate in the "render" portion
+         of the Request Processing Lifecycle.  <span
+         class="changed_added_2_3">See the javadoc for
+         <code>SearchKeywordResolver</code> for the complete list of
+         keywords.</span> If a literal is specified the identifiers must
+         be space delimited.  <span
+         class="changed_modified_2_0_rev_a">If not specified, the
+         default value of "@none" is assumed.  For example, <code>@this
+         clientIdOne clientIdTwo</code>.</span></p>
+         
+            ]]></description>
+            <name>render</name>
+            <required>false</required>
+            <type>java.util.Collection</type>
+        </attribute>
+        <attribute>
+          <description><![CDATA[ 
+
+            <p class="changed_added_2_2">Reset specific input values.
+            Interpret the value of the <code>render</code> attribute as
+            a space separated list of client identifiers suitable for
+            passing directly to <code>UIViewRoot.resetValues()</code>.
+            The implementation must cause an <code>ActionListener</code>
+            to be attached to the <code>ActionSource</code> component
+            in which this tag is nested that calls
+            <code>UIViewRoot.resetValues()</code> passing the value of
+            the <code>render</code> attribute as the argument.</p>
+          
+          ]]></description>
+          <name>resetValues</name>
+          <required>false</required>
+          <type>java.lang.Boolean</type>
+        </attribute>
+        
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p>Add an attribute to the UIComponent associated with the closest
+            parent UIComponent custom action.</p>
+        ]]></description>
+        <tag-name>attribute</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.AttributeHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                <p>The name of the component attribute to be set.</p>
+            ]]></description>
+            <name>name</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>The value of the component attribute to be set.</p>
+            ]]></description>
+            <name>value</name>
+            <type>java.lang.Object</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[<p class="changed_added_2_2">
+            Add attributes to the UIComponent associated with the closest
+            parent UIComponent custom action.  
+            For each <code>Map.Entry</code> in the <code>Map&lt;String, Object&gt;</code>
+            referenced by the value attribute of this tag, take the following action.
+            If <code>parent.getAttributes().containsKey(entry.getKey())</code> returns 
+            <code>true</code>, take no action for this entry.  Otherwise, if 
+            <code>entry.getValue()</code> is a <code>ValueExpression</code> call 
+            <code>parent.setValueExpression(entry.getKey(), entry.getValue())</code>.
+            Otherwise, call <code>parent.getAttributes.put(entry.getKey(), entry.getValue()).</code>
+            </p>
+
+]]>
+        </description>
+        <tag-name>attributes</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.AttributesHandler</handler-class>
+        <attribute>
+            <description><![CDATA[<p class="changed_added_2_2">An EL <code>ValueExpression</code> that evaluates to a <code>Map&lt;String, Object&gt;</code>.</p>]]></description>
+            <name>value</name>
+            <required>true</required>
+            <type>java.util.Map</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+            <p><span class="changed_modified_2_3">Register</span> a
+            DateTimeConverter instance on the UIComponent associated
+            with the closest parent UIComponent custom action.</p>
+
+        ]]></description>
+        <tag-name>convertDateTime</tag-name>
+        <converter>
+            <converter-id>javax.faces.DateTime</converter-id>
+            <handler-class>com.sun.faces.facelets.tag.jsf.core.ConvertDateTimeHandler</handler-class>
+        </converter>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression that evaluates to an instance of
+                javax.faces.convert.DateTimeConverter.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.convert.DateTimeConverter</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+
+                <p><span class="changed_modified_2_3">Predefined</span>
+                formatting style which determines how the date component
+                of a date string is to be formatted and parsed.  Applied
+                only if type is "date", "both", <span
+                class="changed_added_2_3">"localDate",
+                "localDateTime", or "zonedDateTime"</span>. Valid values
+                are "default", "short", "medium", "long", and "full".
+                Default value is "default".  <span
+                class="changed_added_2_3">If a <code>java.time</code> 
+                formatter is being used, yet the dateStyle is set to "default", 
+                the value "medium" is assumed.</span></p>
+
+            ]]></description>
+            <name>dateStyle</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p>Locale whose predefined styles for dates and times are used
+                during formatting or parsing. If not specified, the Locale
+                returned by FacesContext.getViewRoot().getLocale() will be used.
+                Value must be either a VB expression that evaluates to a
+                java.util.Locale instance, or a String that is valid to pass as
+                the first argument to the constructor java.util.Locale(String
+                language, String country). The empty string is passed as the
+                second argument.</p>
+            ]]></description>
+            <name>locale</name>
+            <required>false</required>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Custom formatting pattern which determines how the
+                date/time string should be formatted and parsed.</p>
+            ]]></description>
+            <name>pattern</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p><span class="changed_modified_2_3">Predefined</span> 
+                formatting style which determines how the time component of a 
+                date string is to be formatted and
+                parsed. Applied only if type is "time", "both",
+                <span class="changed_modified_2_3">"localTime" or 
+                "offsetTime"</span>.
+                Valid values are "default", "short", "medium", "long",
+                and "full". Default value is "default".  <span
+                class="changed_added_2_3">If a <code>java.time</code> 
+                formatter is being used, yet the timeStyle is set to "default", 
+                the value "medium" is assumed.</span></p>
+
+            ]]></description>
+            <name>timeStyle</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Time zone in which to interpret any time information in the date
+                String. Value must be either a ValueExpression that evaluates to
+                a java.util.TimeZone instance, or a String that is a timezone ID
+                as described in the javadocs for
+                java.util.TimeZone.getTimeZone().</p>
+            ]]></description>
+            <name>timeZone</name>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[ 
+
+            <p><span class="changed_modified_2_3">Specifies</span> what
+            contents the string value will be formatted to include, or
+            parsed expecting. Valid values are "date", "time",
+            "both"<span class="changed_added_2_3">, "localDate",
+            "localDateTime", "localTime", "offsetTime",
+            "offsetDateTime", and "zonedDateTime".  The values starting
+            with "local", "offset" and "zoned" correspond to Java SE 8
+            Date Time API classes in package <code>java.time</code> with
+            the name derived by upper casing the first letter.  For
+            example, <code>java.time.LocalDate</code> for the value
+            "localDate".</span> Default value is "date".</p>
+
+            ]]></description>
+            <name>type</name>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            Register a NumberConverter instance on the UIComponent associated
+            with the closest parent UIComponent custom action.
+        ]]></description>
+        <tag-name>convertNumber</tag-name>
+         <converter>
+            <converter-id>javax.faces.Number</converter-id>
+            <handler-class>com.sun.faces.facelets.tag.jsf.core.ConvertNumberHandler</handler-class>
+        </converter>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression that evaluates to an instance of
+                javax.faces.convert.NumberConverter.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.convert.NumberConverter</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p>ISO 4217 currency code, applied only when
+                formatting currencies.</p>
+            ]]></description>
+            <name>currencyCode</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Currency symbol, applied only when formatting
+                currencies.</p>
+            ]]></description>
+            <name>currencySymbol</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p>Flag specifying whether formatted output will
+                contain grouping separators. Expressions must
+                evaluate to a boolean. Default value
+                is true.</p>
+            ]]></description>
+            <name>groupingUsed</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Flag specifying whether only the integer part
+                of the value will be formatted and parsed.
+                Expressions must evaluate to a boolean.
+                Default value is false.</p>
+            ]]></description>
+            <name>integerOnly</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[<p>
+
+                <p><span class="changed_modified_2_0">Locale</span>
+                whose
+                predefined styles for numbers are used during formatting
+                and parsing. If not specified, the Locale returned by
+                FacesContext.getViewRoot().getLocale() will be used.
+                Expressions must evaluate to a java.util.Locale <span
+                class="changed_modified_2_0">or a String that is valid to
+                pass as the first argument to the constructor
+                java.util.Locale(String language, String country). The
+                empty string is passed as the second argument.</span></p>
+
+                </p>]]></description>
+            <name>locale</name>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Maximum number of digits that will be formatted
+                in the fractional portion of the output. Expressions
+                must evaluate to an int.</p>
+            ]]></description>
+            <name>maxFractionDigits</name>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Maximum number of digits that will be formatted
+                in the integer portion of the output. Expressions
+                must evaluate to an int.</p>
+            ]]></description>
+            <name>maxIntegerDigits</name>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Minimum number of digits that will be formatted
+                in the fractional portion of the output. Expressions
+                must evaluate to an int.</p>
+            ]]></description>
+            <name>minFractionDigits</name>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Minimum number of digits that will be formatted
+                in the integer portion of the output. Expressions
+                must evaluate to an int.</p>
+            ]]></description>
+            <name>minIntegerDigits</name>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Custom formatting pattern which determins how the
+                number string should be formatted and parsed.</p>
+            ]]></description>
+            <name>pattern</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Specifies how the number string will be formatted
+                and parsed. Valid values are "number", "currency",
+                and "percent". Default value is "number".</p>
+            ]]></description>
+            <name>type</name>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p>Register a named Converter instance on the UIComponent
+            associated with the closest parent UIComponent custom action.</p>
+        ]]></description>
+        <tag-name>converter</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.ConvertDelegateHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression that evaluates to an object that
+                implements javax.faces.convert.Converter.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.convert.Converter</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Converter identifier of the Converter instance to be
+                created and registered.
+            ]]></description>
+            <name>converterId</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+            <p class="changed_added_2_0">Allow JSF page authors to
+            install <code>ComponentSystemEventListener</code>
+            instances
+            on a component in a page.</p>
+
+            <div class="changed_added_2_0">
+
+            <p></p>
+
+            </div>
+
+        ]]></description>
+        <tag-name>event</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.EventHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+              <p class="changed_modified_2_0_rev_a">The expression must
+              evaluate to a public method that takes a
+              <code>ComponentSystemEvent</code> parameter, with a return
+              type of void, or to a public method that takes no
+              arguments with a return type of void. In the latter case,
+              the method has no way of easily knowing where the event
+              came from, but this can be useful in cases where a
+              notification is needed that "an event happened".</p>
+            ]]></description>
+            <name>listener</name>
+            <required>true</required>
+            <method-signature>public void
+                listener(javax.faces.event.ComponentSystemEvent event) throws
+                javax.faces.event.AbortProcessingException
+            </method-signature>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">Name of the event for which
+                to install a listener.  The following table lists the
+                valid values for this attribute, and the corresponding
+                event type for which the listener action is
+                registered.</p>
+
+<table border="1">
+<tr>
+
+<th>value for "<code><span
+class="changed_modified_2_0_rev_a">type</span></code>" tag
+attribute</th>
+
+<th>Type of event sent to listener method
+</th>
+
+</tr>
+
+<tr>
+
+<td>preRenderComponent
+</td>
+
+<td>javax.faces.event.PreRenderComponentEvent
+</td>
+
+</tr>
+
+<tr>
+
+<td>preRenderView
+</td>
+
+<td>javax.faces.event.PreRenderViewEvent
+</td>
+
+</tr>
+
+<tr>
+
+<td><span class="changed_modified_2_0_rev_a">postAddToView</span>
+</td>
+
+<td>javax.faces.event.PostAddToViewEvent
+</td>
+
+</tr>
+
+<tr>
+
+<td>preValidate
+</td>
+
+<td>javax.faces.event.PreValidateEvent
+</td>
+
+</tr>
+
+<tr>
+
+<td>postValidate
+</td>
+
+<td>javax.faces.event.PostValidateEvent
+</td>
+
+</tr>
+
+</table>
+
+<div class="changed_added_2_0">
+
+<p>In addition to these values, the fully qualified class name of any
+java class that extends
+<code>javax.faces.event.ComponentSystemEvent</code> may be used as the
+value of the "type" attribute.</p>
+
+<p>Also, the <code>@javax.faces.event.NamedEvent</code> annotation may
+be attached to any java class that extends
+<code>javax.faces.event.ComponentSystemEvent</code>.  This enables that
+event to be referenced from this attribute, as descibed in the javadocs
+for <code>@NamedEvent</code>.</p>
+
+</div>
+
+
+            ]]></description>
+            <name>type</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+
+            <p><span class="changed_modified_2_3">Register</span> a named
+            facet on the UIComponent associated with the closest parent
+            UIComponent custom action.</p>
+
+            <p class="changed_added_2_3">
+              When the facet contains more than one child the children will be
+              automatically put in a container UIPanel.
+            </p>
+
+        ]]></description>
+        <tag-name>facet</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.FacetHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                <p>Name of the facet to be created.</p>
+            ]]></description>
+            <name>name</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p class="changed_added_2_3">
+                Used inside of the metadata facet of a view, this tag will import a mapping of all constant field values of the given type in the current view.
+                Constant field values are all <code>public static final</code> fields of the given type.
+                The map key represents the constant field name as <code>String</code>.
+                The map value represents the actual constant field value.
+                This works for classes, interfaces and enums. 
+            </p>
+        ]]></description>
+        <tag-name>importConstants</tag-name>
+        <component>
+            <component-type>javax.faces.ImportConstants</component-type>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                <p>
+                    The fully qualified name of the type to import the constant field values for.
+                </p>
+            ]]></description>
+            <name>type</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>
+                    Name of request scope attribute under which constants will be exposed as a Map.
+                    Defaults to the simple name of the given type.
+                </p>
+            ]]></description>
+            <name>var</name>
+            <required>false</required>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p>Load a resource bundle localized for the Locale of the current
+            view, and expose it as a java.util.Map in the request attributes
+            of the current request under the key specified by the value of the
+            "var" attribute of this tag. The Map must behave such that if a
+            get() call is made for a key that does not exist in the Map, the
+            literal string ???KEY??? is returned from the Map, where KEY is
+            the key being looked up in the Map, instead of a
+            MissingResourceException being thrown. If the ResourceBundle does
+            not exist, a JspException must be thrown.</p>
+        ]]></description>
+        <tag-name>loadBundle</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.LoadBundleHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                <p>Base name of the resource bundle
+                to be loaded.</p>
+            ]]></description>
+            <name>basename</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Name of a request scope attribute under which
+                the resource bundle will be exposed as a Map.</p>
+            ]]></description>
+            <name>var</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+            <p class="changed_added_2_0">Declare the metadata
+            facet for this view. This must be a child of the
+            <code>&lt;f:view&gt;</code>. This tag
+            must reside within the top level XHTML file for the given
+            viewId<span class="changed_modified_2_0_rev_a">, or in a
+            template client, but</span> not in a template. The
+            implementation must insure that the direct child of the
+            facet is a <code>UIPanel</code>, even if there
+            is only one child of the facet. The implementation must set
+            the id of the <code>UIPanel</code> to be the
+            value of the
+            <code>UIViewRoot.METADATA_FACET_NAME</code>
+            symbolic constant.</p>
+
+            <div class="changed_added_2_0">
+
+            <p>The implementation must allow templating for this element
+            according
+            to the following pattern.</p>
+
+            <p>template client XHTML view, view01.xhtml</p>
+
+            </div>
+
+            <div class="html4strict" style="font-family: monospace;"><ol><li
+            class="li1"><div class="de1"><span class="sc2">&lt;ui:composition
+            template=<span class="st0">&quot;template.xhtml&quot;</span><span
+            class="kw2">&gt;</span></span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;
+            <span class="sc2">&lt;ui:define <span class="kw3">name</span>=<span
+            class="st0">&quot;metadata&quot;</span><span
+            class="kw2">&gt;</span></span></div></li>
+            <li class="li1"><div class="de1">&nbsp; &nbsp;
+            &nbsp; <span class="sc2">&lt;f:metadata&gt;</span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;
+            &nbsp; &nbsp; <span class="sc2">&lt;f:viewParam
+            <span class="kw3">name</span>=<span class="st0">&quot;id&quot;</span>/<span
+            class="kw2">&gt;</span></span></div></li>
+            <li class="li1"><div class="de1">&nbsp; &nbsp;
+            &nbsp; <span class="sc2"><span class="kw2">&lt;</span>/f:metadata&gt;</span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;
+            <span class="sc2"><span class="kw2">&lt;</span>/ui:define&gt;</span></div></li>
+            <li class="li1"><div class="de1">&nbsp; &nbsp;
+            <span class="sc2">&lt;ui:define <span class="kw3">name</span>=<span
+            class="st0">&quot;content&quot;</span><span
+            class="kw2">&gt;</span></span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;
+            &nbsp; &nbsp; <span class="sc2"><span class="kw2">&lt;h1&gt;</span></span>The
+            big news stories of the day<span class="sc2"><span
+            class="kw2">&lt;/h1&gt;</span></span></div></li>
+            <li class="li1"><div class="de1">&nbsp; &nbsp;
+            <span class="sc2"><span class="kw2">&lt;</span>/ui:define&gt;</span></div></li>
+            <li class="li2"><div class="de2"><span class="sc2"><span
+            class="kw2">&lt;</span>/ui:composition&gt;</span>
+            </div></li></ol></div></div>
+
+            <div class="changed_added_2_0">
+            <p>Note line 4. The page author must ensure that the
+            <code>&lt;f:metadata&gt;</code> element does not
+            appear on a template or
+            included page. It must reside on the root page that corresponds to
+            the
+            viewId.</p>
+
+            <p>The template page, template.xhtml</p>
+
+            </div>
+
+
+            <div class="html4strict" style="font-family: monospace;"><ol><li
+            class="li1"><div class="de1"><span class="sc2"><span
+            class="kw2">&lt;html</span> xmlns=<span class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;
+            &nbsp; xmlns:ui=<span class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span></div></li>
+            <li class="li1"><div class="de1">&nbsp; &nbsp;
+            &nbsp; xmlns:f=<span class="st0">&quot;http://xmlns.jcp.org/jsf/core&quot;</span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;
+            &nbsp; xml:<span class="kw3">lang</span>=<span
+            class="st0">&quot;en&quot;</span> <span
+            class="kw3">lang</span>=<span class="st0">&quot;en&quot;</span><span
+            class="kw2">&gt;</span></span></div></li>
+            <li class="li1"><div class="de1">&nbsp;</div></li>
+            <li class="li2"><div class="de2"><span class="sc2"><span
+            class="kw2">&lt;body&gt;</span></span></div></li>
+            <li class="li1"><div class="de1"><span class="sc2">&lt;f:view&gt;</span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;
+            </div></li>
+            <li class="li1"><div class="de1">&nbsp; &nbsp;
+            &nbsp; &nbsp; <span class="sc2">&lt;ui:insert <span
+            class="kw3">name</span>=<span class="st0">&quot;metadata&quot;</span>/<span
+            class="kw2">&gt;</span></span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;</div></li>
+            <li class="li1"><div class="de1">&nbsp; &nbsp;
+            <span class="sc2"><span class="kw2">&lt;div</span>
+            <span class="kw3">id</span>=<span class="st0">&quot;container&quot;</span><span
+            class="kw2">&gt;</span></span></div></li>
+            <li class="li2"><div class="de2">&nbsp; &nbsp;
+            &nbsp; &nbsp; <span class="sc2">&lt;ui:insert <span
+            class="kw3">name</span>=<span class="st0">&quot;content&quot;</span>/<span
+            class="kw2">&gt;</span></span></div></li>
+            <li class="li1"><div class="de1">&nbsp; &nbsp;
+            <span class="sc2"><span class="kw2">&lt;/div&gt;</span></span></div></li>
+            <li class="li2"><div class="de2"><span class="sc2"><span
+            class="kw2">&lt;</span>/f:view&gt;</span></div></li>
+            <li class="li1"><div class="de1"><span class="sc2"><span
+            class="kw2">&lt;/body&gt;</span></span></div></li>
+            <li class="li2"><div class="de2"><span class="sc2"><span
+            class="kw2">&lt;/html&gt;</span></span> </div></li></ol></div></div>
+
+            <p>The page author is not <em>required</em> to use
+            templating, but if
+            they do, it must be done as shown above, (or with
+            <code>&lt;ui:include&gt;</code> in a similar
+            manner).</p>
+
+            </div>
+
+
+        ]]></description>
+        <tag-name>metadata</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.MetadataHandler</handler-class>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+        <p><span
+        class="changed_modified_2_0_rev_a">Add</span> a child UIParameter
+        component to the UIComponent associated with the closest parent
+        UIComponent custom action.</p>
+        ]]></description>
+        <tag-name>param</tag-name>
+        <component>
+            <component-type>javax.faces.Parameter</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                <p>ValueExpression to a backing bean
+                property bound to the component instance for
+                the UIComponent created by this custom action.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p>Flag enabling or disabling the inclusion of the
+                parameter.  <span
+                class="changed_modified_2_0_rev_a">This flag is
+                consulted by renderers that consider the
+                <code>UIParameter</code> component associated with this
+                <code><f:param></code> during their rendering.
+                Such renderers include <code>javax.faces.Output
+                javax.faces.Link</code> and
+                <code>javax.faces.OutcomeTarget
+                javax.faces.Link</code>.</span></p>
+
+
+            ]]></description>
+            <name>disable</name>
+            <type>boolean</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p>Component identifier of the UIParameter component
+                to be created.</p>
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Name of the parameter to be created.</p>
+            ]]></description>
+            <name>name</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Value of the parameter to be set.</p>
+            ]]></description>
+            <name>value</name>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+
+        <p class="changed_added_2_2">Add an attribute to the 
+            <code>passThroughAttributes Map</code> of the <code>UIComponent</code> 
+            associated with the closest parent <code>UIComponent</code> tag.</p>
+
+        ]]></description>
+        <tag-name>passThroughAttribute</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.PassThroughAttributeHandler</handler-class>
+        <attribute>
+            <description><![CDATA[<p class="changed_added_2_2">The name
+            of the pass through attribute.  An attribute with this name,
+            and the corresponding value will appear on the outer most
+            markup element in the rendered markup for the component, as
+            specified in the overview for the HTML_BASIC RenderKit.  If
+            the name of this attribute conflicts with
+            <code>Renderer</code> specific attribute, the value
+            specified here supercedes the one that would otherwise be
+            rendered by the <code>Renderer</code></p>]]></description>
+            <name>name</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[<p class="changed_added_2_2">The value
+            of the pass through attribute.  </p>]]></description>
+            <name>value</name>
+            <required>true</required>
+            <type>java.lang.Object</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>
+            <![CDATA[<p class="changed_added_2_2">Add attributes to the 
+            <code>passThroughAttributes Map</code> of the <code>UIComponent</code> 
+            associated with the closest parent <code>UIComponent</code> tag.
+            For each <code>Map.Entry</code> in the <code>Map&lt;String, Object&gt;</code>
+            referenced by the value attribute of this tag, take the following action.
+            Call <code>component.getPassThroughAttributes().put(entry.getKey(), entry.getValue())</code>.</p>
+
+]]>
+        </description>
+        <tag-name>passThroughAttributes</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.PassThroughAttributesHandler</handler-class>
+        <attribute>
+            <description><![CDATA[<p class="changed_added_2_2">An EL <code>ValueExpression</code> that evaluates to a <code>Map&lt;String, Object&gt;</code>.</p>]]></description>
+            <name>value</name>
+            <required>true</required>
+            <type>java.util.Map</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p>Register a PhaseListener instance on the UIViewRoot in which
+            this tag is nested.</p>
+        ]]></description>
+        <tag-name>phaseListener</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.PhaseListenerHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                <p>Value binding expression that evaluates to an object that
+                implements javax.faces.event.PhaseListener.</p>
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>javax.faces.event.PhaseListener</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p>Fully qualified Java class name of a PhaseListener to be
+                created and registered.</p>
+            ]]></description>
+            <name>type</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            <p>Add a child UISelectItem component to the UIComponent
+            associated with the closest parent UIComponent custom
+            action.</p>
+        ]]></description>
+        <tag-name>selectItem</tag-name>
+        <component>
+            <component-type>javax.faces.SelectItem</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                <p>Value binding expression to a backing bean
+                property bound to the component instance for
+                the UIComponent created by this custom action.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Component identifier of the UISelectItem
+                component to be created.</p>
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Description of this option, for use in
+                development tools.</p>
+            ]]></description>
+            <name>itemDescription</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Flag indicating whether the option created
+                by this component is disabled. Expressions
+                must evaluate to a boolean. Default value
+                is false.</p>
+            ]]></description>
+            <name>itemDisabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Flag indicating that characters that are sensitive in
+                the value of the <code>itemLabel</code>
+                attribute must be escaped. This flag is set to "true" by
+                default.</p>
+            ]]></description>
+            <name>itemEscaped</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Label to be displayed to the user
+                for this option.</p>
+            ]]></description>
+            <name>itemLabel</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Value to be returned to the server if this
+                option is selected by the user.</p>
+            ]]></description>
+            <name>itemValue</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Flag indicating whether the option created by this
+                component represents the special "no selection"
+                option. Expressions must evaluate to a boolean.
+                Default value is false.</p>
+            ]]></description>
+            <name>noSelectionOption</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Value binding expression pointing at a
+                SelectItem instance containing the
+                information for this option.</p>
+            ]]></description>
+            <name>value</name>
+            <type>javax.faces.model.SelectItem</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p><span class="changed_modified_2_0">Add</span> a
+            child UISelectItems component to the UIComponent associated
+            with the closed parent UIComponent custom action.</p>
+
+            <p class="changed_modified_2_0">When iterating over the
+            select items, <code>toString()</code> must be called on
+            the
+            string rendered attribute values.</p>
+
+            <p class="changed_added_2_0">Version 2 of the specification
+            introduces
+            several new attributes, described below. These are: var, itemValue,
+            itemLabel, itemDescription, itemDisabled, and itemLabelEscaped.</p>
+
+
+        ]]></description>
+        <tag-name>selectItems</tag-name>
+        <component>
+            <component-type>javax.faces.SelectItems</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                <p>Value binding expression to a backing bean
+                property bound to the component instance for
+                the UIComponent created by this custom action.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Component identifier of the UISelectItems
+                component to be created.
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute> 
+         <attribute>
+            <description><![CDATA[
+
+
+                <p class="changed_added_2_0">evaluates to a String that
+                will
+                serve as the description to be shown for the item.</p>
+
+            ]]></description>
+            <name>itemDescription</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">evaluates to a boolean that
+                will
+                determine if the item value is selectable or not.</p>
+
+            ]]></description>
+            <name>itemDisabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">evaluates to a String that
+                will
+                serve as the label to be shown for the item.</p>
+
+            ]]></description>
+            <name>itemLabel</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+<p class="changed_added_2_0">evaluates to a boolean that will
+determine if the rendered markup for the item receives normal JSF HTML
+escaping or not.  <span class="changed_added_2_2">If not specified, the
+runtime must behave as if the value were <code>true</code>.</span></p>
+
+            ]]></description>
+            <name>itemLabelEscaped</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+            <p class="changed_added_2_0"><span
+            class="changed_modified_2_2">This attribute lets you refer
+            to a property of the current member of the collection
+            referenced by the "value" attribute, using the value of the
+            "var" attribute as the base.  For example,
+            #{n.id}.</span></p>
+
+            ]]></description>
+            <name>itemValue</name>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+            <p class="changed_added_2_0"><span
+            class="changed_modified_2_0_rev_a">Is</span> either an EL
+            expression pointing to the element in the value collection
+            whose value should be marked as a &#8220;no selection&#8221;
+            item, or a literal string that exactly matches the value of
+            the item in the collection that must be marked as the
+            &#8220;no selection&#8221; item.  If the user selects such
+            an item <strong>and</strong> the field is marked as
+            required, then it will not pass validation.</p>
+
+
+            ]]></description>
+            <name>noSelectionValue</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+
+                <p>Value expression pointing at <span
+                class="changed_modified_2_0">any <code>Collection</code>
+                or array.</span> The member elements may be instances of
+                <code>SelectItem</code> <span
+                class="changed_added_2_0">or any Java Object.  In the
+                case where the member elements are plain Java Objects,
+                several additional attributes must be used by the page
+                author to correctly identify the data to the enclosing
+                <code>UISelectOne</code> or <code>UISelectMany</code>
+                component, as shown in the following example.</span>
+
+<div class="syntax"><div class="html4strict" style="font-family: monospace;"><ol><li class="li1"><div class="de1"><span class="sc2">&lt;h:selectOneListbox <span class="kw3">size</span>=<span class="st0">&quot;1&quot;</span> <span class="kw3">id</span>=<span class="st0">&quot;escape02&quot;</span> <span class="kw3">value</span>=<span class="st0">&quot;#{select05NoSelection.initialCollectionValues}&quot;</span><span class="kw2">&gt;</span></span></div></li>
+<li class="li2"><div class="de2">&nbsp; <span class="sc2">&lt;f:selectItems <span class="kw3">value</span>=<span class="st0">&quot;#{select05NoSelection.hobbitList}&quot;</span></div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var=<span class="st0">&quot;n&quot;</span></div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;itemValue=<span class="st0">&quot;#{n.id}&quot;</span></div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;itemLabel=<span class="st0">&quot;#{n.bio}&quot;</span></div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;itemDescription=<span class="st0">&quot;#{n.description}&quot;</span></div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;itemDisabled=<span class="st0">&quot;#{n.disabled}&quot;</span></div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;itemLabelEscaped=<span class="st0">&quot;true&quot;</span></div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;noSelectionValue=<span class="st0">&quot;#{select05NoSelection.hobbitList[0]}&quot;</span>/<span class="kw2">&gt;</span></span></div></li>
+<li class="li2"><div class="de2"><span class="sc2"><span class="kw2">&lt;</span>/h:selectOneListbox&gt;</span> </div></li></ol></div></div>
+
+<p class="changed_added_2_0">In the preceding example, the
+<code>value</code> attribute on line 1 points to a
+<code>Collection&lt;HobbitBean&gt;</code>.  <code>HobbitBean</code> is
+just a regular Java Object (POJO) that conforms to JavaBeans naming
+conventions for its properties.  The <code>value</code> attribute on
+line 2 points to a <code>List&lt;HobbitBean&gt;</code>, though it could
+just as well point to a <code>Collection</code>, array, or
+<code>javax.faces.model.DataModel</code>.  The attributes on lines 3
+through 9, inclusive, leverage the fact that the value is a collection
+of POJOs.
+</p>
+
+
+</p>
+
+
+
+            ]]></description>
+            <name>value</name>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+
+                <p class="changed_added_2_0">Expose the value from the
+                <code>value</code> attribute under this request
+                scoped key so that it
+                may be referred to in EL for the value of other attributes.</p>
+
+
+            ]]></description>
+            <name>var</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p>Register an ActionListener instance on the UIComponent
+            associated with the closest parent UIComponent custom action.
+            This actionListener will cause the value given by the "value"
+            attribute to be set into the ValueExpression given by the "target"
+            attribute.</p>
+
+            <p>The implementation of this tag creates a special
+            <code>ActionListener</code> instance and registers it on
+            the
+            <code>ActionSource</code> associated with our most
+            immediate surrounding
+            instance of a tag whose implementation class is a subclass of
+            <code>UIComponentTag</code>. This tag creates no output
+            to the page
+            currently being created.</p>
+
+            <p>The <code>ActionListener</code> instance
+            created and installed by
+            this tag has the following behavior and contract.</p>
+
+            <ul>
+
+            <li>Only create and register the <code>ActionListener</code>
+            instance
+            the first time the component for this tag is created</li>
+
+            <li>The "target" and "value" tag attributes are
+            ValueExpression
+            instances and are stored unevaluated as instance variables of the
+            listener.</li>
+
+            <li>When the listener executes, perform the following:
+            <ul>
+            Call getValue() on the "value" ValueExpression.
+            </ul>
+            <ul>
+            If value of the "value" expression is null, call setValue() on
+            the "target" ValueExpression with the null value.
+            </ul>
+            <ul>
+            If the value of the "value" expression is not null, call getType()
+            on the "value" and "target" ValueExpressions to determine their
+            property types.
+            </ul>
+            <ul>
+            Coerce the value of the "value" expression to the "target"
+            expression value type following the Expression Language coercion
+            rules. Call setValue() on the "target" ValueExpression with the
+            resulting value.
+            </ul>
+            <ul>
+            If either coercion or the execution of setValue() fails throw an
+            AbortProcessingException.
+            </ul>
+            </li>
+
+            </ul>
+        ]]></description>
+        <tag-name>setPropertyActionListener</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.SetPropertyActionListenerHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>ValueExpression that is the destination of the value
+                attribute.</p>
+            ]]></description>
+            <name>target</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>ValueExpression to be stored as the value of the target
+                attribute.</p>
+            ]]></description>
+            <name>value</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p class="changed_deleted_2_0_rev_a">Container
+            action for all JavaServer Faces core and custom component
+            actions used on a nested page via "jsp:include" or any
+            custom action that dynamically includes another page from
+            the same web application, such as JSTL's "c:import".</p>        
+        ]]></description>
+        <tag-name>subview</tag-name>
+        <component>
+            <component-type>javax.faces.NamingContainer</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                <p>Value binding expression to a backing bean
+                property bound to the component instance for
+                the UIComponent created by this custom action.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Component identifier of the UINamingContainer
+                component to be created.</p>
+            ]]></description>
+            <name>id</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Flag indicating whether this component (and its
+                children) should be rendered. Expressions must
+                evaluate to a boolean.</p>
+            ]]></description>
+            <name>rendered</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[<p>
+
+            <span class="changed_added_2_0">
+
+            <p><span class="changed_modified_2_3">A validator</span> that
+            delegates the validation of the local value to the Bean
+            Validation API. The validationGroups attribute serves as a
+            filter that instructs the Bean Validation API which
+            contraints to enforce. If there are any constraint
+            violations reported by Bean Validation, the value is
+            considered invalid.  <span class="changed_added_2_3">An
+            instance of this validator can participate in class-level
+            validation provided the preconditions mentioned in
+            <code>&lt;f:validateWholeBean /&gt;</code> are met.  Please
+            see the documentation for <code>&lt;f:validateWholeBean
+            /&gt;</code> and 
+            <code>javax.faces.validator.BeanValidator.validate()</code> for 
+            the specification and usage example.</span></p>
+
+        ]]></description>
+        <tag-name>validateBean</tag-name>
+        <validator>
+            <validator-id>javax.faces.Bean</validator-id>
+            <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
+        </validator>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression that evaluates to an instance of
+                BeanValidator.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.validator.BeanValidator</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">A boolean value
+                enabling page level determination of whether or not this
+                validator is enabled on the enclosing component.</p>
+
+
+            ]]></description>
+            <name>disabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>A comma-separated list of validation groups. A validation group
+                is a fully-qualified class name.</p>
+            ]]></description>
+            <name>validationGroups</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p>Register a DoubleRangeValidator instance on the
+            UIComponent associated with the closest parent
+            UIComponent custom action.</p>
+        ]]></description>
+        <tag-name>validateDoubleRange</tag-name>
+        <validator>
+            <validator-id>javax.faces.DoubleRange</validator-id>
+            <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
+        </validator>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression that evaluates to an instance of
+                DoubleRangeValidator.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.validator.DoubleRangeValidator</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">A boolean value
+                enabling page level determination of whether or not this
+                validator is enabled on the enclosing component.</p>
+
+            ]]></description>
+            <name>disabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Maximum value allowed for this component.</p>
+            ]]></description>
+            <name>maximum</name>
+            <type>java.lang.Double</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Minimum value allowed for this component.</p>
+            ]]></description>
+            <name>minimum</name>
+            <type>java.lang.Double</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p>Register a LengthValidator instance on the
+            UIComponent associated with the closest parent
+            UIComponent custom action.</p>
+        ]]></description>
+        <tag-name>validateLength</tag-name>
+        <validator>
+            <validator-id>javax.faces.Length</validator-id>
+            <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
+        </validator>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression that evaluates to an instance of
+                LengthValidator.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.validator.LengthValidator</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">A boolean value
+                enabling page level determination of whether or not this
+                validator is enabled on the enclosing component.</p>
+
+
+            ]]></description>
+            <name>disabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Maximum length allowed for this component.</p>
+            ]]></description>
+            <name>maximum</name>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Minimum length allowed for this component.</p>
+            ]]></description>
+            <name>minimum</name>
+            <type>java.lang.Integer</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            <p>Register a LongRangeValidator instance on the
+            UIComponent associated with the closest parent
+            UIComponent custom action.</p>
+        ]]></description>
+        <tag-name>validateLongRange</tag-name>
+        <validator>
+            <validator-id>javax.faces.LongRange</validator-id>
+            <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
+        </validator>
+        <attribute>
+            <description><![CDATA[
+                A ValueExpression that evaluates to an instance of
+                LongRangeValidator.
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.validator.LongRangeValidator</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">A boolean value
+                enabling page level determination of whether or not this
+                validator is enabled on the enclosing component.</p>
+
+
+            ]]></description>
+            <name>disabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Maximum value allowed for this component.</p>
+            ]]></description>
+            <name>maximum</name>
+            <type>java.lang.Long</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Minimum value allowed for this component.</p>
+            ]]></description>
+            <name>minimum</name>
+            <type>java.lang.Long</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[<p>
+
+            <span class="changed_added_2_0">
+            A validator that uses the pattern attribute to validate the
+            wrapping component. The entire pattern is matched against
+            the String value of the component. If it matches, it's
+            valid.</span>
+
+            </p>
+        ]]></description>
+        <tag-name>validateRegex</tag-name>
+        <validator>
+            <validator-id>javax.faces.RegularExpression</validator-id>
+            <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
+        </validator>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression that evaluates to an instance of
+                RegexValidator.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.validator.RegexValidator</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">A boolean value
+                enabling page level determination of whether or not this
+                validator is enabled on the enclosing component.</p>
+
+
+            ]]></description>
+            <name>disabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>A regular expression pattern. Remember that, like in
+                all Java strings, backslash must be escaped with another
+                backslash.</p>
+            ]]></description>
+            <name>pattern</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+
+            <p class="changed_added_2_0">A validator that enforces
+            the presence of a value. It has the same affect as setting the
+            required attribute on a UIInput to true.</p>
+
+        ]]></description>
+        <tag-name>validateRequired</tag-name>
+        <validator>
+            <validator-id>javax.faces.Required</validator-id>
+            <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
+        </validator>
+        <attribute>
+            <description><![CDATA[
+                A ValueExpression that evaluates to an instance of
+                RequiredValidator.
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.validator.RequiredValidator</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">A boolean value
+                enabling page level determination of whether or not this
+                validator is enabled on the enclosing component.</p>
+
+
+            ]]></description>
+            <name>disabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+
+            <p class="changed_added_2_3">Support multi-field validation
+            by enabling class-level bean validation on CDI based backing
+            beans.  This feature causes a temporary copy of the bean
+            referenced by the <code>value</code> attribute, for the sole
+            purpose of populating the bean with field values already
+            validated by <code>&lt;f:validateBean /&gt;</code> and then
+            performing class-level validation on the copy.  Regardless
+            of the result of the class-level validation, the copy is
+            discarded.  This feature must explicitly be enabled by
+            setting the application parameter specified in the javadoc
+            for the symbolic constant
+            <code>javax.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME</code>.
+            If this parameter is not set, or is set to false, this tag
+            must be a no-op.  A non-normative example follows the
+            specification of the feature.</p>
+
+            <div class="changed_added_2_3">
+
+            <p>At a high level, the feature provides for
+            a <code>UIInput</code> subclass that maintains its own
+            special private <code>Validator</code> that uses information
+            from one or more <code>&lt;f:validateBean /&gt;</code>s to
+            perform class-level bean validation.  For discussion, this
+            special <code>Validator</code> is called
+            the <em>wholeBeanValidator</em>.</p>
+
+            <p>This tag must be backed by a <code>UIInput</code>
+            component with the following specializations.</p>
+
+            <ul>
+
+            <li><p>Override <code>getSubmittedValue()</code> to return a
+            non-null non empty String.  This
+            allows <code>UIInput.validate()</code> to
+            call <em>wholeBeanValidator.validate()</em>.</p></li>
+
+        <li><p>Override <code>setConverter()</code> to be a no-op.
+        It does not make sense to allow a converter to be
+        installed.</p></li>
+
+
+        <li><p>Override <code>addValidator()</code> to be a no-op
+        unless the argument is an instance
+        of <em>wholeBeanValidator</em>.  It does not make sense to
+        allow additional validators to be installed.</p></li>
+
+            <li><p>Override <code>validate()</code> to take the
+            following actions.</p>
+
+          <ul>
+                
+            <li><p>If the feature is not enabled, return
+            immediately.</p></li>
+
+            <li><p>If the <em>wholeBeanValidator</em> has not yet
+            been installed, instantiate and pass it to 
+                <code>this.addValidator()</code>.</p></li>
+
+            <li><p>Call <code>super.validate()</code>.</p></li>
+                
+          </ul>
+
+            </li>
+
+            </ul>
+
+            <p>The <em>wholeBeanValidator</em> must have
+            a <code>validate()</code> method that performs the following
+            actions.  Due to the above specification, this method will
+            only ever be passed the special <code>UIInput</code>
+            component.</p>
+            
+            <ul>
+
+            <p>Resolve the <code>value</code> of the component to
+            its <code>Object</code>.  Assume that
+            this <code>value</code> is the bean whose properties are
+            intended to be populated by components whose values are each
+            validated by <code>&lt;f:validateBean /&gt;</code> tags.
+            For discussion, this bean is called the <em>candidate
+            bean</em> and the properties and their respective values are
+            called the <em>candidate values</em>.  If the <em>candidate
+            bean</em> cannot be referenced, return immediately
+            from <code>validate()</code>.  Use the information recorded
+            by each of those <code>&lt;f:validateBean /&gt;</code> tags
+            to ensure that none of the <em>candidate values</em> are
+            invalid.  If any of them are invalid, return immediately
+            from <code>validate()</code>.  This ensures class-level
+            validation is only performed on an instance whose fields are
+            all individually valid.</p>
+
+            <p>Otherwise it can be assumed that all field-level
+            validations for this class-level validation have passed.</p>
+
+            <p>Class-level bean validation must operate on a
+            sufficiently populated bean instance.  This differs from JSF
+            field-level validation, which prevents beans from being
+            populated with invalid values.  To accomodate this
+            difference, the <em>candidate bean</em> must be copied,
+            populated with the already-validated <em>candidate
+            values</em>, and then subjected to class-level validation.
+            The copying must proceed in the following order.</p>
+
+            <ol>
+            
+        <li><p>Invoke the <code>newInstance()</code> method on the
+            bean's <code>Class</code>.  If this throws
+            any <code>Exception</code>, swallow it and
+            continue.</p></li>
+
+        <li><p>If the bean implements <code>Serializable</code>, use
+            that to copy the bean instance.</p></li>
+
+            <li><p>Otherwise, if the bean
+            implements <code>Cloneable</code>, clone the bean
+            instance.</p></li>
+
+        <li><p>Otherwise, if the bean has a copy constructor, use
+            that to copy the bean instance.</p></li>
+
+        <li><p>If none of these techniques yields a copy,
+            throw <code>FacesException</code>.</p></li>
+
+            </ol>
+
+            <p>Populate the copied bean with the <em>candidate
+            values</em>.</p>
+
+            <p>Obtain a reference to
+            a <code>javax.validation.Validator</code> instance using the
+            same steps described in the javadoc
+            for <code>javax.faces.validator.BeanValidator.validate()</code>.
+            Let the instance be called <em>beanValidator</em> for
+            discussion.</p>
+
+            <p>Obtain the value of the <code>validationGroups</code>
+            attribute using the same steps described in the javadoc
+            for <code>javax.faces.validator.BeanValidator.validate()</code>.
+            If this value is not present or not valid,
+            throw <code>FacesException</code>.</p>
+
+            <p>Call the <code>validate</code> method on
+            <em>beanValidator</em>, passing the populated copied bean
+            and the validation groups as arguments.  The copied bean can
+            be discarded at this point.</p>
+
+            <p>If the
+            returned <code>Set&lt;ConstraintViolation&gt;</code> is
+            non-empty, for each element in the <code>Set</code>, create
+            a <code>FacesMessage</code> where the summary and detail are
+            the return from
+            calling <code>ConstraintViolation.getMessage()</code>.
+            Capture all such <code>FacesMessage</code> instances into
+            a <code>Collection</code> and pass them
+            to <code>ValidatorException</code>.  Using information
+            recorded by the <code>&lt;f:validateBean /&gt;</code>
+            tag(s), call <code>setValid(false)</code> on all of the
+            components whose values contributed to this class-level
+            validation.  This is essential to prevent the invalid value
+            from being set into the model during the update model values
+            phase.  Finally, throw the exception.</p>
+
+            </ul>
+
+            <p>This tag must be placed in the component tree after all
+            of the fields that are to be included in the multi-field
+            validation.  If this precondition is not met, the results
+            of applying this tag are unspecified.</p>
+
+            <p>This tag must be used in concert
+            with <code>&lt;f:validateBean /&gt;</code> and Bean
+            Validation. Here is a brief example of the common case of
+            ensuring two password fields are individually valid and also
+            both the same.  The feature requires the use of
+            the <code>validationGroups</code> attribute on all of
+            the <code>&lt;f:validateBean /&gt;</code> tags and
+            the <code>&lt;f:validateWholeBean /&gt;</code> tag.</p>
+
+            <p>First, the <code>ConstraintValidator</code>
+            implementation.</p>
+
+<pre><code>
+public class PasswordValidator implements ConstraintValidator&lt;Password, PasswordHolder&gt; {
+
+  @Override
+  public void initialize(Password constraintAnnotation) { }
+
+  @Override
+  public boolean isValid(PasswordHolder value, ConstraintValidatorContext context) {
+    boolean result;
+    
+    result = value.getPassword1().equals(value.getPassword2());
+
+    return result;
+  }
+
+}
+</code></pre>
+
+            <p>Note that a <code>PasswordHolder</code> instance is
+            passed to the <code>isValid()</code> method.  This method
+            will only be called if the individual properties of
+            the <code>PasswordHolder</code> are valid.  This fact allows
+            the <code>isValid()</code> method to inspect the properties
+            and perform effective class-level validtion.</p>
+
+            <p>Next, the <code>Constraint</code>.</p>
+
+<pre><code>
+@Constraint(validatedBy=PasswordValidator.class)
+@Target(TYPE)
+@Retention(RUNTIME)
+@interface Password {
+
+    String message() default "Password fields must match";
+    Class[] groups() default {};
+    Class[] payload() default {};
+}
+</code></pre>
+
+            <p>Now the backing bean constrained by
+            this <code>Constraint</code>.  Note the use
+            of <code>groups</code>.  Note the fact that the bean
+            implements <code>Cloneable</code>.</p>
+
+<pre><code>
+@Named
+@RequestScoped
+@Password(groups = PasswordValidationGroup.class)
+public class BackingBean implements PasswordHolder, Cloneable {
+    
+    private String password1;
+    
+    private String password2;
+
+    public BackingBean() {
+        password1="";
+        password2="";
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        BackingBean other = (BackingBean) super.clone();
+        other.setPassword1(this.getPassword1());
+        other.setPassword2(this.getPassword2());
+        return other;
+    }
+    
+    @NotNull(groups=PasswordValidationGroup.class)
+    @Size(max=16, min=8, message="Password must be between 8 and 16 characters long",
+            groups = PasswordValidationGroup.class)
+    @Override
+    public String getPassword1() {
+        return password1;
+    }
+
+    public void setPassword1(String password1) {
+        this.password1 = password1;
+    }
+
+    @NotNull(groups=PasswordValidationGroup.class)
+    @Size(max=16, min=8, message="Password must be between 8 and 16 characters long",
+            groups = PasswordValidationGroup.class)
+    @Override
+    public String getPassword2() {
+        return password2;
+    }
+
+    public void setPassword2(String password2) {
+        this.password2 = password2;
+    }
+    
+}
+</code></pre>
+
+            <p>Finally, the Facelets view.</p>
+<pre><code>
+&lt;h:panelGrid columns="2"&gt;
+
+    &lt;h:outputText value="Password" /&gt;  
+    &lt;h:inputSecret id="password1" value='#{backingBean.password1}'&gt;
+        &lt;f:validateBean validationGroups="PasswordValidationGroup" /&gt;
+    &lt;/h:inputSecret&gt;
+    
+    &lt;h:outputText value="Password again" /&gt; 
+    &lt;h:inputSecret id="password2" value='#{backingBean.password2}'&gt;
+        &lt;f:validateBean validationGroups="PasswordValidationGroup" /&gt;
+    &lt;/h:inputSecret&gt;
+    
+&lt;/h:panelGrid&gt;
+
+&lt;f:validateWholeBean value='#{backingBean}' 
+   validationGroups="PasswordValidationGroup" /&gt;
+</code></pre>
+
+            </div>
+
+
+]]></description>
+        <tag-name>validateWholeBean</tag-name>
+        <component>
+            <component-type>com.sun.faces.ext.validateWholeBean</component-type>
+            <renderer-type/>
+        </component>
+
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_3">A boolean value enabling or
+                disabling this validation component.</p>
+
+
+            ]]></description>
+            <name>disabled</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">Component identifier of the
+                UIInput component to be created.</p>
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_3">A comma-separated list of
+                validation groups. A validation group is a
+                fully-qualified class name.</p>
+
+            ]]></description>
+            <name>validationGroups</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_3">A ValueExpression referencing the bean to be validated.</p>
+
+            ]]></description>
+            <name>value</name>
+            <required>true</required>
+            <type>java.lang.Object</type>
+        </attribute>
+
+    </tag>
+
+
+    <tag>
+        <description><![CDATA[
+
+            <p><span class="changed_modified_2_0">Register</span>
+            a named
+            Validator instance on the UIComponent associated with the
+            closest parent UIComponent custom action.</p>
+
+            <div class="changed_added_2_0">
+
+            <p>Usage outside of an <code>EditableValueHolder</code>
+            parent</p>
+
+            <p>If this element is nested within a
+            <code>UIComponent</code> tag that has other
+            <code>UIComponent</code> children, the validator will be
+            automatically added to all the child components as well as
+            this one. The implementation must ensure this occurs even if
+            the parent of this element is not an instance of
+            <code>EditableValueHolder</code>.</p>
+
+            </div>
+
+        ]]></description>
+        <tag-name>validator</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression that evaluates to an object that implements
+                the javax.faces.validator.Validator interface.</p>
+            ]]></description>
+            <name>binding</name>
+            <type>javax.faces.validator.Validator</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">A boolean value
+                enabling page level determination of whether or not this
+                validator is enabled on the enclosing component.</p>
+
+
+            ]]></description>
+            <name>disabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Validator identifier of the Validator
+                to be created and registered.</p>
+            ]]></description>
+            <name>validatorId</name>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p>Register a ValueChangeListener instance on the UIComponent
+            associated with the closest parent UIComponent custom
+            action.</p>
+        ]]></description>
+        <tag-name>valueChangeListener</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.jsf.core.ValueChangeListenerHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                <p>Value binding expression that evaluates to an object that
+                implements javax.faces.event.ValueChangeListener.</p>
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>javax.faces.event.ValueChangeListener</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0">If present, this attribute
+                refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Fully qualified Java class name of a
+                ValueChangeListener to be created and registered.</p>
+            ]]></description>
+            <name>type</name>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p class="changed_deleted_2_0_rev_a">The use of
+            this element has been deprecated in Facelets for JSF 2.0 and
+            beyond. Create and register a child UIOutput component
+            associated with the closest parent UIComponent custom
+            action, which renders nested body content.</p>
+        ]]></description>
+        <tag-name>verbatim</tag-name>
+        <component>
+            <component-type>javax.faces.Output</component-type>
+            <renderer-type>javax.faces.Text</renderer-type>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                <p>Flag indicating that generated markup must
+                be escaped in a manner that is appropriate
+                for the markup language to be rendered.
+                Expressions must evaluate to a boolean.
+                Default value is false.</p>
+            ]]></description>
+            <name>escape</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Flag indicating whether or not this component should be rendered
+                (during Render Response Phase), or processed on any subsequent
+                form submit. The default value for this property is true.</p>
+            ]]></description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+            <p><span class="changed_modified_2_0_rev_a
+            changed_modified_2_2">Container</span> for all JavaServer
+            Faces core and custom component actions used on a
+            page.</p>        ]]></description>
+        <tag-name>view</tag-name>
+        <component>
+            <component-type>javax.faces.ViewRoot</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+
+                <p>MethodBinding pointing to a method that takes a
+                javax.faces.event.PhaseEvent and returns void. This
+                method will be called after every phase except for
+                restore view on an initial request.</p>
+
+            ]]></description>
+            <name>afterPhase</name>
+            <required>false</required>
+            <method-signature>void afterPhase(javax.faces.event.PhaseEvent)
+            </method-signature>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p>MethodBinding pointing to a method that takes a
+                javax.faces.event.PhaseEvent and returns void. This method
+                will be called before every phase except for restore view.</p>
+
+            ]]></description>
+            <name>beforePhase</name>
+            <required>false</required>
+            <method-signature>void beforePhase(javax.faces.event.PhaseEvent)
+            </method-signature>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_modified_2_0_rev_a">Specifies the
+                content-type of the response.</p>
+            ]]></description>
+            <name>contentType</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+          <description><![CDATA[
+          
+          <p class="changed_added_2_2 changed_modified_2_3">A comma separated list of
+          resource library contracts that may be used from within
+          the Facelets chain.  If this attribute is present, it
+          must only be on the outer-most file in the chain of
+          files that started ultimately with a call to
+          <code>ViewDeclarationLanguage.createView()</code>.  Any
+          use of this attribute on a non-outer-most file is undefined.</p>
+          
+          <p class="changed_added_2_2">If this attribute exists on the tag,
+          empty or not, the tag handler must create a
+          <code>List&lt;String&gt;</code> for the value of the attribute and
+          unconditionally call
+          <code>FacesContext.setRresourceLibraryContracts()</code> passing
+          that list value.</p>
+          
+          ]]></description>
+          <name>contracts</name>
+          <required>false</required>
+          <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+             <p class="changed_modified_2_0_rev_a">Specifies the
+            character encoding that should be used for the
+            response.</p>
+            ]]></description>
+            <name>encoding</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Locale to use for localizing this page. Expressions
+                must evaluate to a java.util.Locale or to a String
+                that is converted to a Locale.</p>
+            ]]></description>
+            <name>locale</name>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Identifier for the RenderKit to use for
+                rendering this page.
+            ]]></description>
+            <name>renderKitId</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<p class="changed_added_2_2">If
+                <code>true</code>, this view must not participate in
+                state saving or restoring.  Note that transient views
+                may not be used with <code>@ViewScoped</code> managed
+                beans.  The implementation must call
+                <code>setTransient()</code> on the
+                <code>UIViewRoot</code>, passing the value of the
+                attribute as specified in the markup.</p>]]>
+            </description>
+            <name>transient</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+
+
+    </tag>
+
+    <tag>
+        <description>
+            <p class="changed_added_2_2">This action component specifies
+            an application-specific command (or action), using an EL
+            method expression, to be invoked during one of the JSF
+            lifecycle phases, by default <em>Invoke Application</em>.</p>
+
+        </description>
+        <tag-name>viewAction</tag-name>
+        <component>
+            <component-type>javax.faces.ViewAction</component-type>
+        </component>
+        <attribute>
+            <description>
+
+                <p>MethodExpression representing the application action
+            to invoke when this component is activated by the user. The
+            expression must evaluate to a public method that takes no
+            parameters, and returns an Object (the toString() of which
+            is called to derive the logical outcome) which is passed to
+            the NavigationHandler for this application.</p>
+
+            </description>
+            <name>action</name>
+            <required>true</required>
+            <method-signature>public 
+                java.lang.Object action()
+            </method-signature>
+
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+            <p>
+                
+                MethodExpression representing an action listener method that
+                will be notified when this component is activated by the user.
+                The expression must evaluate to a public method that takes an
+                ActionEvent parameter, with a return type of void, <span
+                class="changed_added_2_0">or to a public method that takes no
+                arguments with a return type of void.  In the latter case, the
+                method has no way of easily knowing where the event came from,
+                but this can be useful in cases where a notification is needed
+                that "some action happened".</span>
+                
+                </p>
+            ]]></description>
+            <name>actionListener</name>
+            <required>false</required>
+            <method-signature>public void
+                actionListener(javax.faces.event.ActionEvent)
+            </method-signature>
+        </attribute>
+        <attribute>
+            <description>
+                <p>Flag indicating that, if this component is activated
+                by the user, notifications should be delivered to
+                interested listeners and actions immediately (that is,
+                during Apply Request Values phase) rather than waiting
+                until Invoke Application phase.</p>
+            </description>
+            <name>immediate</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>
+                <p>View actions are most commonly used on the initial
+            view request.  Therefore, view actions do not operate on
+            postback, by default.  This attribute enables a view action
+            to operate on postback.</p>
+            </description>
+            <name>onPostback</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>
+                <p>Specifies the phase in which the action invocation
+                should occur using the name of the phase constant in the
+                PhaseId class (the case does not matter). The value must
+                be one of APPLY_REQUEST_VALUES, PROCESS_VALIDATIONS,
+                UPDATE_MODEL_VALUES, or INVOKE_APPLICATION. The default
+                is INVOKE_APPLICATION.</p>
+            </description>
+            <name>phase</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <p>Like all children of <code>&lt;f:metadata&gt;</code>,
+            a view action has no visual representation in the view.
+            This attribute has exactly the same effect on a view action
+            as the <code>rendered</code> attribute has on a visual
+            component.  Specifically, if the value of this attribute
+            evaluates to <code>false</code> the component has no
+            effect.</p>
+            </description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+
+            <p class="changed_added_2_0"><span
+            class="changed_modified_2_0_rev_a changed_modified_2_2">Used</span> inside of the
+            metadata facet of a view, this tag causes a <a target="_"
+            href="../../../javadocs/javax/faces/component/UIViewParameter.html">UIViewParameter</a>
+            to be attached as metadata for the current view.  Because
+            <code>UIViewParameter</code> extends <code>UIInput</code>
+            all of the attributes and nested child content for any
+            <code>UIInput</code> tags are valid on this tag as well.</p>
+
+        ]]></description>
+        <tag-name>viewParam</tag-name>
+        <component>
+            <component-type>javax.faces.Parameter</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                <p>The ValueExpression linking this component to a property in a
+                backing bean.</p>
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>javax.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Converter instance registered with this component.</p>
+            ]]></description>
+            <name>converter</name>
+            <required>false</required>
+            <type>javax.faces.convert.Converter</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression enabled attribute that, if present, will be
+                used as the text of the converter message, replacing any message
+                that comes from the converter.</p>
+            ]]></description>
+            <name>converterMessage</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <p class="changed_added_2_0"><span
+                class="changed_deleted_2_0_rev_a">If present, this
+                attribute refers to the value of one of the exposed
+                attached objects within the composite component inside
+                of which this tag is nested.</span></p>
+
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>The component identifier for this component. This value must be
+                unique within the closest parent component that is a naming
+                container.</p>
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_modified_2_0_rev_a">The name
+                of the request parameter from which the value for this
+                component is retrieved on an initial request or to
+                override the stored value on a postback.</p>
+            ]]></description>
+            <name>name</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p>Flag indicating that the user is required to provide a submitted
+                value for this input component.</p>
+            ]]></description>
+            <name>required</name>
+            <required>false</required>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression enabled attribute that, if present, will be
+                used as the text of the validation message for the "required"
+                facility, if the "required" facility is used.</p>
+            ]]></description>
+            <name>requiredMessage</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>MethodExpression representing a validator method that will be
+                called
+                during Process Validations to perform correctness checks on the
+                value of this component. The expression must evaluate to a
+                public
+                method that takes FacesContext, UIComponent, and Object
+                parameters,
+                with a return type of void.</p>
+            ]]></description>
+            <name>validator</name>
+            <required>false</required>
+            <method-signature>void validate(javax.faces.context.FacesContext,
+                javax.faces.component.UIComponent, java.lang.Object)
+            </method-signature>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression enabled attribute that, if present, will be
+                used as the text of the validator message, replacing any
+                message that comes from the validator.</p>
+            ]]></description>
+            <name>validatorMessage</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>A ValueExpression to which the value of the request parameter, as
+                determined by the name attribute, is bound. The resolved value of this
+                expression is used when encoding the view parameter into a bookmarkable link or
+                redirect URL with view parameter encoding enabled. If this attribute is omitted,
+                the value of the request parameter will instead be the local value of the
+                UIViewParameter.</p>
+            ]]></description>
+            <name>value</name>
+            <required>false</required>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>
+
+                MethodExpression representing a value change listener method
+                that will be notified when a new value has been set for this
+                input component. The expression must evaluate to a public
+                method that takes a <code>ValueChangeEvent</code>
+                parameter,
+                with a return type of void, <span class="changed_added_2_0">or
+                to a public method that takes no arguments with a return type
+                of void. In the latter case, the method has no way of easily
+                knowing what the new value is, but this can be useful in cases
+                where a notification is needed that "this value
+                changed".</span>
+
+                </p>
+            ]]></description>
+            <name>valueChangeListener</name>
+            <required>false</required>
+            <method-signature>void
+                valueChange(javax.faces.event.ValueChangeEvent)
+            </method-signature>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                The maximum number of characters that may
+                be entered in this field.
+            ]]></description>
+            <name>maxlength</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+
+        <p class="changed_added_2_3">Registers a websocket push
+        connection in client side by rendering the necessary scripts.
+        Push messages can be sent from server side via
+        <code>javax.faces.push.PushContext</code> interface.  See also
+        <code>javax.faces.push.Push</code> API documentation for an
+        elaborate instruction on how to use
+        <code>&lt;f:websocket&gt;</code>.  </p>
+                
+        ]]></description>
+        <tag-name>websocket</tag-name>
+        <component>
+        	<component-type>javax.faces.Websocket</component-type>
+        </component>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                	Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this tag.
+                </p>
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>javax.faces.component.UIComponent</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                	Component identifier of the <code>UIWebsocket</code> component to be created.
+                </p>
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                    The name of the websocket channel.
+                    It may not be an EL expression and it may only contain alphanumeric characters, hyphens, underscores and periods.
+                    All open websockets on the same channel name will receive the same push notification from the server.
+                </p>
+            ]]></description>
+            <name>channel</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                    The scope of the websocket channel.
+                    It may not be an EL expression and allowed values are <code>application</code>, <code>session</code> and <code>view</code>, case insensitive.
+                    When the value is <code>application</code>, then all channels with the same name throughout the application will receive the same push message.
+                    When the value is <code>session</code>, then only the channels with the same name in the current user session will receive the same push message.
+                    When the value is <code>view</code>, then only the channel in the current view will receive the push message.
+                    The default scope is <code>application</code>.
+                    When the <code>user</code> attribute is specified, then the default scope is <code>session</code>.
+                </p>
+            ]]></description>
+            <name>scope</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                    The user identifier of the websocket channel, so that user-targeted push messages can be sent.
+                    It must implement <code>Serializable</code> and preferably have low memory footprint.
+                    Suggestion: use <code>#{request.remoteUser}</code> or <code>#{someLoggedInUser.id}</code>.
+                    All open websockets on the same channel and user will receive the same push message from the server.
+                </p>
+            ]]></description>
+            <name>user</name>
+            <required>false</required>
+            <type>java.io.Serializable</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                    The JavaScript event handler function that is invoked when the websocket is opened.
+                    The function will be invoked with one argument: the channel name.
+                </p>
+            ]]></description>
+            <name>onopen</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                    The JavaScript event handler function that is invoked when a push message is received from the server.
+                    The function will be invoked with three arguments: the push message, the channel name and the raw <code>MessageEvent</code> itself.
+                </p>
+            ]]></description>
+            <name>onmessage</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                    The JavaScript event handler function that is invoked when the websocket is closed.
+                    The function will be invoked with three arguments: the close reason code, the channel name and the raw <code>CloseEvent</code> itself.
+                    Note that this will also be invoked on errors and that you can inspect the close reason code if an error occurred and which one (i.e. when the code is not 1000).
+                    See also 
+                    <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
+                    and
+                    <a href="http://docs.oracle.com/javaee/7/api/javax/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
+                    API for an elaborate list of all close codes.
+                </p>
+            ]]></description>
+            <name>onclose</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                    Whether to (auto)connect the websocket or not.
+                    Defaults to <code>true</code>.
+                    It's interpreted as a JavaScript instruction whether to open or close the websocket push connection.
+                    This attribute is implicitly re-evaluated on every ajax request by a <code>PreRenderViewEvent</code> listener on the <code>UIViewRoot</code>.
+                    You can also explicitly set it to <code>false</code> and then manually control in JavaScript by <code>jsf.push.open(clientId)</code> and <code>jsf.push.close(clientId)</code>.
+                </p>
+            ]]></description>
+            <name>connected</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_3">
+                    Whether to render the websocket scripts or not.
+                    Defaults to <code>true</code>.
+                    This attribute is implicitly re-evaluated on every ajax request by a <code>PreRenderViewEvent</code> listener on the <code>UIViewRoot</code>.
+                    If the value changes to <code>false</code> while the websocket is already opened, then the websocket will implicitly be closed.
+                </p>
+            ]]></description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+
+
+
+</facelet-taglib>

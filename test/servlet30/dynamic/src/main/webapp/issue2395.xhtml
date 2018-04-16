@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+
+    <f:view contentType="text/html">
+        <h:head>
+            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+        </h:head>
+        <h:body>
+            <h:form id="form">
+                <h:panelGroup binding="#{issue2395Bean.panelGroup}">
+                    <h:inputText id="removeMe" value="Remove Me"/>
+                </h:panelGroup> <br/>
+                <h:commandButton id="add" value="add" actionListener="#{issue2395Bean.doAdd}"/> <br/>
+                <h:commandButton id="addRemove" value="addRemove" actionListener="#{issue2395Bean.doAddRemove}"/> <br/>
+                <h:commandButton id="addRemoveAdd" value="addRemoveAdd" actionListener="#{issue2395Bean.doAddRemoveAdd}"/> <br/>
+                <h:commandButton id="remove" value="remove" actionListener="#{issue2395Bean.doRemove}"/> <br/>
+                <h:commandButton id="removeAdd" value="removeAdd" actionListener="#{issue2395Bean.doRemoveAdd}"/> <br/>
+                <h:commandButton id="removeAddRemove" value="removeAddRemove" actionListener="#{issue2395Bean.doRemoveAddRemove}"/> <br/>
+            </h:form>
+            <h:messages/>
+        </h:body>
+    </f:view>
+</html>

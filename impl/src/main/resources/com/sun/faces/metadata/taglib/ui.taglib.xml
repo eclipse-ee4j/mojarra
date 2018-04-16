@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2009, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<facelet-taglib id="ui" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_3.xsd"
+                version="2.3">
+    <description><![CDATA[
+
+        <div class="changed_added_2_0">
+
+        <p><span class="changed_modified_2_3">The</span> tags in this
+        library add templating &mdash; a powerful view composition
+        technique &mdash; to JSF.  Templating is so useful that there
+        are entire frameworks, such as Tiles and SiteMesh, that are
+        built around the concept of templating. So what is templating,
+        how can you benefit from it, and how does this tag library
+        implement it?  </p>
+
+        <p>If you've used JSP before, you've probably used <code>jsp:include</code>.
+        The prototypical example for
+        <code>jsp:include</code> is a header on each page in a web
+        application. One JSP page, say header.jsp,
+        encapsulates the header content, and the header is included by each
+        page. You <em>encapsulate and reuse
+        content</em>, so that changes to one file, header.jsp, affect the
+        header on every page.
+        </p>
+
+        <p>This tab library contains a tag &mdash;<code>ui:include</code> &mdash;
+        that's analagous to <code>jsp:include</code>,
+        but encapsulating and reusing content is only half the templating story,
+        because templating also lets you
+        <em>encapsulate and reuse <b>layout</b></em>.
+        You define a single <em>template</em> (meaning layout), and
+        you reuse
+        that template with multiple <em>compositions</em>. So now
+        you can control the layout of many pages with a single
+        template (layout). Let's take a look at an example.
+        </p>
+
+        <h3>A Templating Example</h3>
+
+        <p>
+        First, we define a template:
+        </p>
+        <div class="syntax"><div class="html4strict"
+        style="font-family: monospace;"><ol><li class="li1"><div
+        class="de1"><span class="sc0">&lt;!DOCTYPE html PUBLIC
+        &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div></li>
+
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
+        <li class="li1"><div class="de1">&nbsp;</div></li>
+        <li class="li2"><div class="de2"><span class="sc3"><span
+        class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span
+        class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; xmlns:<span class="re0">ui</span>=<span
+        class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span></div></li>
+
+        <li class="li1"><div class="de1">&nbsp; &nbsp; <span
+        class="sc3"><span class="re1">&lt;head<span class="re2">&gt;</span></span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;link</span>
+        <span class="re0">href</span>=<span class="st0">&quot;styles.css&quot;</span>
+        <span class="re0">rel</span>=<span class="st0">&quot;stylesheet&quot;</span>
+        <span class="re0">type</span>=<span class="st0">&quot;text/css&quot;</span><span
+        class="re2">/&gt;</span></span></div></li>
+
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;title<span
+        class="re2">&gt;</span></span></span><span
+        class="sc3"><span class="re1">&lt;ui</span>:insert
+        <span class="re0">name</span>=<span class="st0">&quot;title&quot;</span><span
+        class="re2">&gt;</span></span>Default Title<span
+        class="sc3"><span class="re1">&lt;/ui</span>:insert<span
+        class="re2">&gt;</span></span><span class="sc3"><span
+        class="re1">&lt;/title<span class="re2">&gt;</span></span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; <span
+        class="sc3"><span class="re1">&lt;/head<span class="re2">&gt;</span></span></span></div></li>
+
+        <li class="li1"><div class="de1">&nbsp;</div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; <span
+        class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;ui</span>:debug<span
+        class="re2">/&gt;</span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;div</span>
+        <span class="re0">class</span>=<span class="st0">&quot;heading&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:insert
+        <span class="re0">name</span>=<span class="st0">&quot;heading&quot;</span><span
+        class="re2">/&gt;</span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;/div<span
+        class="re2">&gt;</span></span></span></div></li>
+        <li class="li1"><div class="de1">&nbsp;</div></li>
+
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;div</span>
+        <span class="re0">class</span>=<span class="st0">&quot;content&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:insert
+        <span class="re0">name</span>=<span class="st0">&quot;content&quot;</span><span
+        class="re2">/&gt;</span></span></div></li>
+
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;/div<span
+        class="re2">&gt;</span></span></span></div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; <span
+        class="sc3"><span class="re1">&lt;/body<span class="re2">&gt;</span></span></span></div></li>
+        <li class="li2"><div class="de2"><span class="sc3"><span
+        class="re1">&lt;/html<span class="re2">&gt;</span></span></span>
+        </div></li></ol></div></div>
+
+        <p>
+        In the preceeding listing, we've defined a layout, also known as a
+        template. That template uses the
+        <code>ui:insert</code> tag to insert pieces of a page &mdash; namely,
+        title, heading, and content &mdash;
+        defined in a <em>composition</em>. Notice that on line 8, we
+        define a default title, in case one isn't provided
+        by the composition. Also note that on line 12 we have the <code>ui:debug</code>
+        tag, which lets the user activate
+        a popup window with debugging information by typing CTRL + Shift + d.
+        </p>
+
+        <p>
+        The title, heading, and content pieces of the page referenced in the
+        template are defined in a separate XHTML
+        file in a composition, like this:
+        </p>
+
+        <div class="syntax"><div class="html4strict"
+        style="font-family: monospace;"><ol><li class="li1"><div
+        class="de1"><span class="sc0">&lt;!DOCTYPE html PUBLIC
+        &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div></li>
+
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
+        <li class="li1"><div class="de1">&nbsp;</div></li>
+        <li class="li2"><div class="de2"><span class="sc3"><span
+        class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span
+        class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp;xmlns:<span
+        class="re0">ui</span>=<span class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li2"><div class="de2">&nbsp;</div></li>
+        <li class="li1"><div class="de1">&nbsp; <span
+        class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; <span
+        class="sc3"><span class="re1">&lt;ui</span>:composition
+        <span class="re0">template</span>=<span class="st0">&quot;/layout.xhtml&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
+        <li class="li1"><div class="de1">&nbsp;</div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;ui</span>:define
+        <span class="re0">name</span>=<span class="st0">&quot;title&quot;</span><span
+        class="re2">&gt;</span></span>A List of Contacts<span
+        class="sc3"><span class="re1">&lt;/ui</span>:define<span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;ui</span>:define
+        <span class="re0">name</span>=<span class="st0">&quot;heading&quot;</span><span
+        class="re2">&gt;</span></span>Contacts<span
+        class="sc3"><span class="re1">&lt;/ui</span>:define<span
+        class="re2">&gt;</span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp;</div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;ui</span>:define
+        <span class="re0">name</span>=<span class="st0">&quot;content&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:include
+        <span class="re0">src</span>=<span class="st0">&quot;contactsTable.xhtml&quot;</span>
+        <span class="re2">/&gt;</span></span></div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;/ui</span>:define<span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp;</div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; <span
+        class="sc3"><span class="re1">&lt;/ui</span>:composition<span
+        class="re2">&gt;</span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp; <span
+        class="sc3"><span class="re1">&lt;/body<span class="re2">&gt;</span></span></span></div></li>
+        <li class="li1"><div class="de1"><span class="sc3"><span
+        class="re1">&lt;/html<span class="re2">&gt;</span></span></span>
+        </div></li></ol></div></div>
+
+        <p>
+        At runtime, JSF synthesizes the two previous XHTML pages to create a
+        single JSF view by inserting the
+        pieces defined in the composition into the template (that template is
+        layout.xhtml, which is the first
+        listing above). JSF also disregards everything outside of the <code>composition</code>
+        tag so that we don't
+        wind up with two <code>body</code> elements in the view.
+        Also, note that we use the <code>ui:include</code>
+        tag on line 14 to include content (which happens to be a table) from
+        another XHTML page, so that we can reuse
+        that table in other views.
+        </p>
+
+        <p>
+        So why do we have two XHTML pages to define a single view? Why not
+        simply take the pieces and manually insert
+        them into the layout so that we have only a single XHTML page? The
+        answer is simple: we have separated layout
+        from the content so that we can <em>reuse that layout</em>
+        among multiple compositions. For example, now we can
+        define another composition that uses the same layout:
+        </p>
+
+        <div class="syntax"><div class="html4strict"
+        style="font-family: monospace;"><ol><li class="li1"><div
+        class="de1"><span class="sc0">&lt;!DOCTYPE html PUBLIC
+        &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div></li>
+
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
+        <li class="li1"><div class="de1">&nbsp;</div></li>
+        <li class="li2"><div class="de2"><span class="sc3"><span
+        class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span
+        class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        xmlns:<span class="re0">ui</span>=<span class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li2"><div class="de2">&nbsp;</div></li>
+        <li class="li1"><div class="de1">&nbsp; <span
+        class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; <span
+        class="sc3"><span class="re1">&lt;ui</span>:composition
+        <span class="re0">template</span>=<span class="st0">&quot;/layout.xhtml&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li2"><div class="de2">&nbsp;</div></li>
+
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;ui</span>:define
+        <span class="re0">name</span>=<span class="st0">&quot;title&quot;</span><span
+        class="re2">&gt;</span></span>Create a Contact<span
+        class="sc3"><span class="re1">&lt;/ui</span>:define<span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;ui</span>:define
+        <span class="re0">name</span>=<span class="st0">&quot;heading&quot;</span><span
+        class="re2">&gt;</span></span>Create Contact&lt;/ui</span>:define<span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li2"><div class="de2">&nbsp;</div></li>
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;ui</span>:define
+        <span class="re0">name</span>=<span class="st0">&quot;content&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
+        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
+        &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:include
+        <span class="re0">src</span>=<span class="st0">&quot;createContactForm.xhtml&quot;</span><span
+        class="re2">/&gt;</span></span></div></li>
+
+        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
+        <span class="sc3"><span class="re1">&lt;/ui</span>:define<span
+        class="re2">&gt;</span></span></div></li>
+
+        <li class="li2"><div class="de2">&nbsp;</div></li>
+
+        <li class="li2"><div class="de2">&nbsp; &nbsp; <span
+        class="sc3"><span class="re1">&lt;/ui</span>:composition<span
+        class="re2">&gt;</span></span></div></li>
+        <li class="li1"><div class="de1">&nbsp; <span
+        class="sc3"><span class="re1">&lt;/body<span class="re2">&gt;</span></span></span></div></li>
+        <li class="li2"><div class="de2"><span class="sc3"><span
+        class="re1">&lt;/html<span class="re2">&gt;</span></span></span>
+        </div></li></ol></div></div>
+
+        <p>
+        By encapsulating the layout, we can reuse that layout among multiple
+        compositions. Just like
+        <code>ui:include</code> lets us encapsulate and reuse
+        conent, JSF compositions let us encapsulate and reuse
+        layout, so that changes to a single layout can affect multiple views.
+        Fundamentally, that's what this
+        tag library is all about.
+        </p>
+
+        </div>
+        <pre>
+
+]]></description>
+    <namespace>http://xmlns.jcp.org/jsf/facelets</namespace>
+    <tag>
+        <description><![CDATA[
+
+  <p><span class="changed_modified_2_0_rev_a
+  changed_added_2_0 changed_modified_2_2">This</span> <span
+  class="changed_added_2_0">tag is the same as 
+  <code>ui:composition</code>, except for two things: JSF creates a
+  component and adds it directly to the tree, and there's no associated
+  template.</span>
+  </p>
+
+  <p class="changed_added_2_0">Use this tag to create a component and
+  specify a filename for the component as either the source of a
+  <code>ui:include</code>, or the source of a Facelets tag.
+  </p>
+
+        ]]></description>
+        <tag-name>component</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.ComponentRefHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0">
+                <p>
+                The identifier of the component that JSF inserts into the
+                component tree. If an identifier is
+                not explicitly specified by the page author, JSF will assign an
+                identifier based on the algorithm
+                that it uses for all components.
+                </p>
+                </div>
+
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+<div class="changed_added_2_0">
+  <p>
+
+	Binds the component to a backing bean property, as specified in
+	the JSF specification.  <span class="changed_modified_2_2">The
+	Java language type of this property must be a class that extends
+	<code>javax.faces.component.UIComponent</code>.  The scope of
+	the bean on which this property resides must be no wider than
+	request scope.  If either of these conditions are not met, the
+	results are undefined.</span>
+
+  </p>
+</div>
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+<div class="changed_added_2_0_rev_a">
+  <p>
+        Controls whether the component is rendered. Valid values for this attribute are either the strings "true" or "false" or an EL expression that evaluates to either "true" or "false".<p>If this attribute's value is "false" or the value is an EL expression that evaluates to "false", the component is not rendered in the page.</p>
+  </p>
+
+</div>
+            ]]></description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>boolean</type>
+        </attribute>
+        
+    </tag>
+    <tag>
+      <description><![CDATA[
+
+<div class="changed_added_2_0">
+  <p>
+
+<span class="changed_modified_2_2">Defines</span> a composition that
+optionally uses a template, as outlined in the description of the ui tag
+library. Multiple compositions can use the same template, thus
+encapsulating and reusing layout. JSF disregards everything outside of
+the composition, which lets developers embed compositions in well-formed
+XHTML pages that can be viewed in an XHTML viewer, such as Dreamweaver
+or a browser, without including extraneous elements such as
+<code>head</code> and <code>body</code>.
+
+  </p>
+	<div class="syntax"><div class="html4strict" style="font-family: monospace;"><ol><li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div></li>
+
+<li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li2"><div class="de2"><span class="sc3"><span class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp;xmlns:<span class="re0">ui</span>=<span class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span><span class="re2">&gt;</span></span></div></li>
+
+<li class="li2"><div class="de2">&nbsp;</div></li>
+<li class="li1"><div class="de1">&nbsp; <span class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>
+<li class="li2"><div class="de2">&nbsp;</div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; THIS LINE, AND EVERYTHING ABOVE IT IS DISREGARDED BY JSF</div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:composition <span class="re0">template</span>=<span class="st0">&quot;/layout.xhtml&quot;</span><span class="re2">&gt;</span></span></div></li>
+
+<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:define <span class="re0">name</span>=<span class="st0">&quot;title&quot;</span><span class="re2">&gt;</span></span>#{msgs.contactsWindowTitle}<span class="sc3"><span class="re1">&lt;/ui</span>:define<span class="re2">&gt;</span></span></div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:define <span class="re0">name</span>=<span class="st0">&quot;heading&quot;</span><span class="re2">&gt;</span></span>#{msgs.contactsHeading}<span class="sc3"><span class="re1">&lt;/ui</span>:define<span class="re2">&gt;</span></span></div></li>
+
+<li class="li2"><div class="de2">&nbsp;</div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:define <span class="re0">name</span>=<span class="st0">&quot;content&quot;</span><span class="re2">&gt;</span></span></div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:include <span class="re0">src</span>=<span class="st0">&quot;contactsTable.xhtml&quot;</span> <span class="re2">/&gt;</span></span></div></li>
+
+<li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;/ui</span>:define<span class="re2">&gt;</span></span></div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;/ui</span>:composition<span class="re2">&gt;</span></span></div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; THIS LINE, AND EVERYTHING BELOW IT IS DISREGARDED BY JSF</div></li>
+
+<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li2"><div class="de2">&nbsp; <span class="sc3"><span class="re1">&lt;/body<span class="re2">&gt;</span></span></span></div></li>
+<li class="li1"><div class="de1"><span class="sc3"><span class="re1">&lt;/html<span class="re2">&gt;</span></span></span> </div></li></ol></div></div>
+
+</div>
+      
+
+        ]]></description>
+        <tag-name>composition</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.CompositionHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+<div class="changed_added_2_0">
+  <p>
+
+<span class="changed_modified_2_2">A</span> URI that points to a
+template, also known as a layout, that inserts pieces of the page
+defined in the composition. <span class="changed_added_2_2">If the URI
+cannot be resolved a <code>TagAttributeException</code> must be thrown,
+including accurate location information to help the page author resolve
+the problem.  When the template is intended to come from a resource
+library contract, the value of this attribute must be an absolute path
+starting with "/".</span>
+
+  </p>
+</div>
+            ]]></description>
+            <name>template</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+
+            <div class="changed_added_2_0 changed_modified_2_3">
+            <p>
+            When the <code>ui:debug</code> tag is placed in an XHTML
+            page, it creates a component and adds it to the
+            component tree. That debug component captures debugging information,
+            namely the current state of the component
+            tree and the scoped variables in the application, when the component
+            is rendered. If the user presses CTRL + SHIFT + d,
+            JSF opens a window that shows the debugging information captured by
+            the debug component.
+            </p>
+
+            <p>
+            Typically, the best place to put the <code>ui:debug</code>
+            tag is in an application's main template, which
+            lets developers enable or disable viewing of debugging information
+            in one central location. Additionally, page
+            authors can change the hotkey (which by default is CTRL + SHIFT + d,
+            where the d stands for debug) to CTRL + SHIFT + ?,
+            where ? represents the key specified as the value of the <code>hotkey</code>
+            attribute.
+            </p>
+
+            <p>
+            You can use the <code>rendered</code> attribute to
+            control whether the debug component is rendered.
+            Using an EL expression as the value for the <code>rendered</code>
+            attribute lets you control whether
+            debug output is enabled for multiple views based on a single bean
+            property.
+            </p>
+            
+            <p class="changed_added_2_3">
+              Note ui:debug only works when the ProjectStage is set to Development.
+            </p>
+            </div>
+
+        ]]></description>
+        <tag-name>debug</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.UIDebug</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0">
+                <p>
+                Defines a single character, that, pressed in conjunction with
+                CTRL and SHIFT, will display the JSF debug window.
+                By default, the hotkey is 'd'. <em>The value for the
+                hotkey attribute cannot be an EL expression.</em>
+                </p>
+
+                </div>
+
+            ]]></description>
+            <name>hotkey</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0">
+                <p>
+                Controls whether the debug component is rendered. Valid values
+                for this attribute are either the strings "true" or "false" or
+                an EL expression that evaluates to either "true" or "false".<p>If
+                this attribute's value is "false" or the value is an EL
+                expression that evaluates to "false", the debug component is not
+                rendered in the page, the hotkey attribute is disregarded, and
+                users cannot open the debugging information window with a
+                hotkey.</p>
+                </p>
+
+                </div>
+
+            ]]></description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+
+            <div class="changed_added_2_0">
+
+            <p>The <code>define</code> tag defines content
+            that is inserted into a page by a template. The <code>define</code>
+            tag can be used inside <code>ui:composition</code>, <code>ui:component</code>,
+            <code>ui:decorate</code>, and <code>ui:fragment</code>
+            tags.</p>
+
+            <p>Content defined by the <code>define</code> tag
+            can be inserted into a page by using <code>ui:insert</code>.
+            </p>
+
+            </div>
+
+        ]]></description>
+        <tag-name>define</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.DefineHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0">
+
+                <p>Assigns a name to the content inside a <code>define</code>
+                tag. That name is used by corresponding <code>ui:insert</code>
+                tags in a template that insert the named content into a page.</p>
+                </div>
+
+            ]]></description>
+            <name>name</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+<div class="changed_added_2_0">
+
+<p>
+<span class="changed_modified_2_2">The</span> <code>decorate</code> tag
+is identical to the <code>composition</code> tag, except that
+<code>ui:decorate</code>, unlike <code>ui:composition</code>, does not
+disregard all content outside of the tag. The <code>decorate</code> is
+useful when you want to decorate some content in a page, for example,
+you might want to decorate a list of items, like this:
+	
+<div class="syntax"><div class="html4strict" style="font-family: monospace;"><ol><li class="li1"><div class="de1">
+	
+<span class="sc2">&lt;ui:decorate template=<span class="st0">&quot;/layout.xhtml&quot;</span><span class="kw2">&gt;</span></span></div></li>
+<li class="li2"><div class="de2">&nbsp; <span class="sc2">&lt;ui:define <span class="kw3">name</span>=<span class="st0">&quot;listHeading&quot;</span><span class="kw2">&gt;</span></span></div></li>
+
+<li class="li1"><div class="de1">&nbsp; &nbsp; <span class="sc2">&lt;ui:include <span class="kw3">src</span>="shared/listHeading.xhtml"/<span class="kw2">&gt;</span></span></div></li>
+<li class="li2"><div class="de2">&nbsp; <span class="sc2"><span class="kw2">&lt;</span>/ui:define&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; &nbsp; </div></li>
+<li class="li2"><div class="de2">&nbsp; <span class="sc2">&lt;c:forEach items="#<span class="br0">&#123;</span>items<span class="br0">&#125;"</span> var="item"<span class="kw2">&gt;</span></span></div></li>
+
+<li class="li1"><div class="de1">&nbsp; &nbsp; ...</div></li>
+<li class="li2"><div class="de2">&nbsp; <span class="sc2"><span class="kw2">&lt;</span>/c:forEach&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp; ...</div></li>
+<li class="li2"><div class="de2"><span class="sc2"><span class="kw2">&lt;</span>/ui:decorate&gt;</span> </div></li></ol></div></div>
+</p>
+
+Because JSF does not disregard everything outside of the <code>ui:decorate</code> tag, <code>ui:decorate</code> can
+be used to decorate pieces of a page.
+
+</div>
+        ]]></description>
+        <tag-name>decorate</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.DecorateHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+<div class="changed_added_2_0">
+
+<span class="changed_modified_2_2">A</span> URI that points to a
+template, also known as a layout, that inserts pieces of the page
+defined in the decorator. <span class="changed_added_2_2">If the URI
+cannot be resolved a <code>TagAttributeException</code> must be thrown,
+including accurate location information to help the page author resolve
+the problem.  When the template is intended to come from a resource
+library contract, the value of this attribute must be an absolute path
+starting with "/".</span>
+
+</div>
+
+            ]]></description>
+            <name>template</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+        <div class="changed_added_2_0">
+
+          <p><span
+          class="changed_modified_2_2">The</span> <code>fragment</code>
+          tag is identical to the <code>component</code> tag, except
+          that <code>ui:fragment</code>, unlike
+          <code>ui:component</code>, JSF does not disregard all content
+          outside of the tag.</p>
+
+        </div>
+
+        ]]></description>
+        <tag-name>fragment</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.ComponentRefHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0">
+                The identifier of the component that JSF inserts into the
+                component tree. If an identifier is
+                not explicitly specified by the page author, JSF will assign an
+                identifier based on the algorithm
+                that it uses for all components.
+                </div>
+
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+<div class="changed_added_2_0">
+
+        <p>Binds the component to a backing bean property, as specified
+        in the JSF specification. <span class="changed_added_2_2">The
+	Java language type of this property must be a class that extends
+	<code>javax.faces.component.UIComponent</code>.  The scope of
+	the bean on which this property resides must be no wider than
+	request scope.  If either of these conditions are not met, the
+	results are undefined.</span></p>
+
+</div>
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+            <![CDATA[
+                <div class="changed_added_2_3">
+                    <p>
+                        Controls whether the fragment component is rendered. 
+                        Valid values for this attribute are either the strings 
+                        "true" or "false" or an EL expression that evaluates to
+                         either "true" or "false".
+                    </p>
+                    <p>
+                        If this attribute's value is "false" or the value is an
+                        EL expression that evaluates to "false", the fragment 
+                        is not rendered in the page.
+                    </p>
+                </div>
+            ]]>
+            </description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+
+            <div class="changed_added_2_0"> <p>Use this tag &mdash;which
+            is very similar to JSP's <code>jsp:include</code> &mdash; to
+            encapsulate and reuse content among multiple XHTML
+            pages. There are three things this tag can include: plain
+            XHTML, and XHTML pages that have either a
+            <code>composition</code> tag or a <code>component</code>
+            tag.  </p> <p>You supply a filename, through
+            <code>ui:include</code>'s <code>src</code> attribute for JSF
+            to include. That filename is relative to the XHTML file that
+            was rendered as a result of the last request. So, for
+            example, if JSF loaded the view <code>login.xhtml</code>,
+            and that file included
+            <code>pageDecorations/header.xhtml</code>, and <code>
+            pageDecorations/header.xhtml</code> included
+            <code>companyLogo.xhtml</code>, then
+            <code>companyLogo.xhtml</code> will not be found if it's in
+            the <code>pageDecorations</code> directory, because
+            <code>companyLogo.xhtml</code> has to be in the same
+            directory as <code>login.xhtml</code>.  </p>
+
+            </div>
+
+        ]]></description>
+        <tag-name>include</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.IncludeHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+<p>
+
+<span class="changed_added_2_0">The filename of an XHTML page to
+include. The filename is relative to the XHTML page that was originally
+loaded.</span> <span class="changed_added_2_2">When the included file is
+intended to come from a resource library contract, the value of this
+attribute must be an absolute path starting with "/".</span>
+
+</p>
+            ]]></description>
+            <name>src</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+
+            <div class="changed_added_2_0">
+            <p>Inserts content into a template. That content is defined &mdash;with
+            the <code>ui:define</code> tag &mdash; in either a
+            <code>ui:composition</code>, <code>ui:component</code>,
+            <code>ui:decorate</code>, or <code>ui:fragment</code>.</p>
+            </div>
+
+        ]]></description>
+        <tag-name>insert</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.IncludeHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0">
+
+                The optional name attribute matches the associated &lt;ui:define/&gt;
+                tag in this template's client. If no name is specified, it's
+                expected
+                that the whole template client will be inserted.
+
+                </div>
+
+            ]]></description>
+            <name>name</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+
+            <div class="changed_added_2_0">
+            <p>Use this tag to pass parameters to an included file (using
+            <code>ui:include</code>), or a template
+            (linked to either a composition or decorator). Embed <code>ui:param</code>
+            tags in either <code>ui:include</code>,
+            <code>ui:composition</code>, or <code>ui:decorate</code>
+            to pass the parameters.
+            </div>
+
+        ]]></description>
+        <tag-name>param</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.ParamHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+
+
+<div class="changed_added_2_0">
+<span class="changed_modified_2_0_rev_a">The</span> name of the parameter.
+</div>
+            ]]></description>
+            <name>name</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+            <div class="changed_added_2_0">
+            <span class="changed_modified_2_0_rev_a">The</span> value of the
+            parameter. Notice that this attribute's value can be an EL expression,
+            which means that you can pass objects to either an included file or a
+            template.  </div>
+
+            ]]></description>
+            <name>value</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+        <div class="changed_added_2_0">
+	
+        <p><span class="changed_modified_2_2
+        changed_modified_2_3">Use</span> this tag as an alternative to
+        <code>h:dataTable</code> or <code>c:forEach</code>, especially
+        when you are using the <code>jsfc</code> feature of
+        Facelets. You can specify this component as the value of the
+        <code>jsfc</code> attribute, like this:
+        &lt;div... jsfc="ui:repeat" value="#{contacts}"
+        var="contact"&gt;...  </p> </div>
+        
+        ]]></description>
+        <tag-name>repeat</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.RepeatHandler</handler-class>
+        <attribute>
+            <description>
+            <![CDATA[
+                <div class="changed_modified_2_3">
+                    <p>
+                        If value specified: Iteration begins at the item located at the specified index.
+                        First item of the collection has index 0.
+                        If value not specified: Iteration begins with index set at the specified value.
+                    </p>
+                </div>
+            ]]>
+            </description>
+            <name>begin</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>
+            <![CDATA[
+                <div class="changed_modified_2_3">
+                    <p>
+                        If value specified: Iteration ends at the item located at the specified index (inclusive).
+                        If value not specified: Iteration ends when index reaches the specified value (inclusive).
+                    </p>
+                </div>
+            ]]>
+            </description>
+            <name>end</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0">
+
+                <p>Read-write property setting the offset from the
+                beginning of the
+                collection from which to start the iteration. If not set, this
+                offset
+                is not considered and iteration will start at the beginning of
+                the
+                collection.</p>
+
+                </div>
+
+            ]]></description>
+            <name>offset</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0">
+
+                <p>Read-write property setting the size of the collection
+                to iterate.
+                If this value is less than the actual size of the collection, a
+                <code>FacesException</code> must be thrown.</p>
+
+                </div>
+
+            ]]></description>
+            <name>size</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+                <div class="changed_added_2_0"><p>Iteration
+                will only process every step items of the collection,
+                starting with the first one.</p></div>
+
+            ]]></description>
+            <name>step</name>
+            <required>false</required>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+
+
+                <div class="changed_added_2_0 changed_modified_2_3">
+
+                <p>The name of a collection of items that this tag
+                iterates over. The
+                collection may be a <code>List</code>, <code>array</code>,
+                <code>java.sql.ResultSet</code>, <code>java.lang.Iterable</code>, 
+                <code>java.util.Map</code> or an individual java Object. If the
+                collection is null, this tag does nothing.</p>
+
+                </div>
+
+            ]]></description>
+            <name>value</name>
+            <required>true</required>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[
+                <div class="changed_added_2_0 changed_modified_2_3">
+                 <p>
+                  Name of the exported scoped variable for the current item of 
+                  the iteration. This scoped variable has nested visibility.
+                 </p>
+                </div>
+                ]]>
+            </description>
+            <name>var</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[ 
+                 <div class="changed_added_2_0">
+                  <p>
+                   Name of the exported request scoped variable for the status 
+                   of the iteration. The object the name points to is a POJO 
+                   with the following read-only JavaBeans properties. This 
+                   scoped variable has nested visibility.
+                  </p>
+                  <p><code>begin</code> of type Integer</p>
+                  <p><code>end</code> of type Integer</p>
+                  <p><code>index</code> of type int</p>
+                  <p><code>step</code> of type Integer</p>
+                  <p><code>even</code> of type boolean</p>
+                  <p><code>odd</code> of type boolean</p>
+                  <p><code>first</code> of type boolean</p>
+                  <p><code>last</code> of type boolean</p>
+                 </div>
+                ]]>
+            </description>
+            <name>varStatus</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+            <![CDATA[
+                <div class="changed_added_2_3">
+                    <p>
+                        Controls whether the repeat component is rendered. 
+                        Valid values for this attribute are either the strings 
+                        "true" or "false" or an EL expression that evaluates to
+                         either "true" or "false".
+                    </p>
+                    <p>
+                        If this attribute's value is "false" or the value is an
+                        EL expression that evaluates to "false", the repeat 
+                        is not rendered in the page.
+                    </p>
+                </div>
+            ]]>
+            </description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description><![CDATA[
+
+
+            <div class="changed_added_2_0">
+            <p>Remove content from a page. This tag is often used in
+            conjunction with the <code>jsfc</code> feature of
+            Facelets,
+            to wrap additional markup. When Facelets removes markup from a page
+            by substituting markup items that have
+            a <code>jsfc</code> attribute with the specified
+            component, Facelets also removes anything in the page that
+            is contained in a <code>ui:remove</code> tag.</p>
+            </div>
+
+        ]]></description>
+        <tag-name>remove</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.ui.SchemaCompliantRemoveHandler</handler-class>
+
+    </tag>
+</facelet-taglib>

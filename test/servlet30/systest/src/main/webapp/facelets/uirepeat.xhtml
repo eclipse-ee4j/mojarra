@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html
+      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+<head>
+    <title>ui:repeat test</title>
+</head>
+<body>
+<h:form id="form">
+
+<h1>Iterate over <code>List</code> property</h1>
+<ui:repeat value="#{repeatBean.flavorsList}" var="cur" varStatus="curStatus">
+
+  <p>ListFlavor is #{cur}.  Begin is #{curStatus.begin}. End is #{curStatus.end}. Index is #{curStatus.index}. Step is #{curStatus.step}.  Index is even: #{curStatus.even}. Index is odd: #{curStatus.odd}.  Index is first: #{curStatus.first}. Index is last: #{curStatus.last}.</p>
+
+</ui:repeat>
+
+<h1>Iterate over <code>array</code> property</h1>
+<ui:repeat value="#{repeatBean.flavorsArray}" var="cur" varStatus="curStatus">
+
+  <p>ArrayFlavor is #{cur}.  Begin is #{curStatus.begin}. End is #{curStatus.end}. Index is #{curStatus.index}. Step is #{curStatus.step}.  Index is even: #{curStatus.even}. Index is odd: #{curStatus.odd}.  Index is first: #{curStatus.first}. Index is last: #{curStatus.last}.</p>
+
+</ui:repeat>
+
+  
+</h:form>
+<h:messages id="messages"/>
+</body>
+</html>

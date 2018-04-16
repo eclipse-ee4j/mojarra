@@ -1,0 +1,89 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+</h:head>
+<h:body>
+   <h:form>
+      Triggered item: #{output}
+      <br />
+      <br />
+      Double nested ui:repeat WITH ajax:<br />
+      <ui:repeat id="repeat1" var="item" value="#{issue1817Bean.items}">
+          <h:commandLink value="#{item.label}">
+             <f:setPropertyActionListener target="#{requestScope.output}" value="#{item.label}" />
+             <f:ajax render="@form" />
+          </h:commandLink>
+          &nbsp;
+          <ui:repeat var="subItem" value="#{item.subItems}">
+              <h:commandLink value="#{subItem.label}">
+                 <f:setPropertyActionListener target="#{requestScope.output}" value="#{subItem.label}" />
+                 <f:ajax render="@form" />
+              </h:commandLink>
+              &nbsp;
+          </ui:repeat>
+          <br />
+      </ui:repeat>
+      <br />
+      <br />
+      Double nested ui:repeat WITHOUT ajax:<br />
+      <ui:repeat var="item" value="#{issue1817Bean.items}">
+          <h:commandLink id="force" value="#{item.label}">
+             <f:setPropertyActionListener target="#{requestScope.output}" value="#{item.label}" />
+          </h:commandLink>
+          &nbsp;
+          <ui:repeat var="subItem" value="#{item.subItems}">
+              <h:commandLink id="force2" value="#{subItem.label}">
+                 <f:setPropertyActionListener target="#{requestScope.output}" value="#{subItem.label}" />
+              </h:commandLink>
+              &nbsp;
+          </ui:repeat>
+          <br />
+      </ui:repeat>
+      <br />
+      <br />
+      Double nested h:dataTable WITH ajax:<br />
+      <h:dataTable var="item" value="#{issue1817Bean.items}">
+         <h:column>
+            <h:commandLink id="force3" value="#{item.label}">
+               <f:setPropertyActionListener target="#{requestScope.output}" value="#{item.label}" />
+               <f:ajax render="@form" />
+            </h:commandLink>
+            &nbsp;
+            <h:dataTable var="subItem" value="#{item.subItems}">
+               <h:column>
+                  <h:commandLink id="force4" value="#{subItem.label}">
+                     <f:setPropertyActionListener target="#{requestScope.output}" value="#{subItem.label}" />
+                     <f:ajax render="@form" />
+                  </h:commandLink>
+                  &nbsp;
+               </h:column>
+            </h:dataTable>
+            <br />
+         </h:column>
+      </h:dataTable>
+   </h:form>
+</h:body>
+</html>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== ActionSource Properties ==================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root>
+    <property>
+        <description>
+          MethodExpression representing the application action to invoke
+          when this component is activated by the user.  The expression
+          must evaluate to a public method that takes no parameters, and
+          returns an Object (the toString() of which is called to derive
+          the logical outcome) which is passed to the NavigationHandler
+          for this application.
+        </description>
+        <display-name>Application Action</display-name>
+        <icon></icon>
+        <property-name>action</property-name>
+        <property-class>javax.el.MethodExpression</property-class>
+        <property-extension>
+            <method-signature>
+                java.lang.Object action()
+            </method-signature>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+            <![CDATA[<p>
+
+          MethodExpression representing an action listener method that
+          will be notified when this component is activated by the user.
+          The expression must evaluate to a public method that takes an
+          ActionEvent parameter, with a return type of void, <span
+          class="changed_added_2_0">or to a public method that takes no
+          arguments with a return type of void.  In the latter case, the
+          method has no way of easily knowing where the event came from,
+          but this can be useful in cases where a notification is needed
+          that "some action happened".</span>
+
+</p>]]>
+        </description>
+        <display-name>Action Listener</display-name>
+        <icon></icon>
+        <property-name>actionListener</property-name>
+        <property-class>javax.el.MethodExpression</property-class>
+        <property-extension>
+            <method-signature>
+                void actionListener(javax.faces.event.ActionEvent)
+            </method-signature>
+<!-- PENDING modify tlddoc to handle an OR of method signatures 
+as required by 
+https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447 
+            <method-signature>
+                void actionListener()
+            </method-signature>
+-->
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Flag indicating that, if this component is activated by the user,
+          notifications should be delivered to interested listeners and actions
+          immediately (that is, during Apply Request Values phase) rather than
+          waiting until Invoke Application phase.
+        </description>
+        <display-name>Immediate Action</display-name>
+        <icon></icon>
+        <property-name>immediate</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+</root>

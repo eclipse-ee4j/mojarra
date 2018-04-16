@@ -1,0 +1,97 @@
+===>Type:Root
+id:root
+value=null
+attr=componentId : root
+  ===>Type:javax.faces.component.UIForm
+  id:basicForm
+  value=basicForm
+  attr=componentId : basicForm
+  attr=parent : com.sun.faces.tree.XmlTreeFactoryImpl
+  attr=value : basicForm
+    ===>Type:javax.faces.component.UIOutput
+    id:userLabel
+    value=UserName
+    attr=componentId : userLabel
+    attr=parent : javax.faces.component.UIForm
+    attr=value : UserName
+    ===>Type:javax.faces.component.UITextEntry
+    id:userName
+    value=default
+    attr=componentId : userName
+    attr=parent : javax.faces.component.UIForm
+    attr=value : default
+    ===>Type:javax.faces.component.UIOutput
+    id:pwdLabel
+    value=Password
+    attr=componentId : pwdLabel
+    attr=parent : javax.faces.component.UIForm
+    attr=value : Password
+    ===>Type:javax.faces.component.UITextEntry
+    id:password
+    value=null
+    attr=componentId : password
+    attr=parent : javax.faces.component.UIForm
+    attr=type : password
+    ===>Type:javax.faces.component.UIOutput
+    id:addrLabel
+    value=Address
+    attr=componentId : addrLabel
+    attr=parent : javax.faces.component.UIForm
+    attr=value : Address
+    ===>Type:javax.faces.component.UITextEntry
+    id:address
+    value=null
+    attr=multiline : true
+    attr=componentId : address
+    attr=parent : javax.faces.component.UIForm
+    ===>Type:javax.faces.component.UISelectBoolean
+    id:validUser
+    modelReference:${TestBean.boolProp}
+    value=false
+    attr=modelReference : 
+    attr=label : Checker
+    attr=componentId : validUser
+    attr=parent : javax.faces.component.UIForm
+    attr=value : false
+    ===>Type:javax.faces.component.UISelectOne
+    id:shipType
+    modelReference:${TestBean.prop}
+     {
+    	 value=nextDay label=Next Day description=null
+    	 value=nextWeek label=Next Week description=null
+    	 value=nextMonth label=Next Month description=null
+     }
+    ===>Type:javax.faces.component.UISelectOne
+    id:appleQuantity
+    modelReference:${TestBean.prop}
+     {
+    	 value=0 label=0.00 description=null
+    	 value=1 label=1.00 description=null
+    	 value=2 label=2.00 description=null
+    	 value=3 label=3.00 description=null
+    	 value=4 label=4.00 description=null
+    	 value=5 label=5.00 description=null
+    	 value=6 label=6.00 description=null
+    	 value=7 label=7.00 description=null
+    	 value=8 label=8.00 description=null
+    	 value=9 label=9.00 description=null
+     }
+    ===>Type:javax.faces.component.UICommand
+    id:mylink
+    value=null
+    attr=componentId : mylink
+    attr=parent : javax.faces.component.UIForm
+    attr=target : foo
+    attr=text : This is a hyperlink
+    ===>Type:javax.faces.component.UICommand
+    id:login
+    value=null
+    attr=label : Login
+    attr=componentId : login
+    attr=parent : javax.faces.component.UIForm
+    ===>Type:javax.faces.component.UICommand
+    id:login2
+    value=null
+    attr=componentId : login2
+    attr=parent : javax.faces.component.UIForm
+    attr=src : duke.gif

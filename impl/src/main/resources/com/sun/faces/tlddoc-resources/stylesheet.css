@@ -1,0 +1,566 @@
+/*
+ * Copyright (c) 2003, 2018 Oracle and/or its affiliates. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Distribution License v. 1.0, which is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+/* Define colors, fonts and other style attributes here to override the defaults */
+
+/* Page background color */
+body { 
+  background-color: #FFFFFF;
+  background-image: url(expert-draft-bg.png);
+}
+
+
+/* Table colors */
+.TableHeadingColor     { background: #CCCCFF } /* Dark mauve */
+.TableSubHeadingColor  { background: #EEEEFF } /* Light mauve */
+.TableRowColor         { background: #FFFFFF } /* White */
+
+/* Font used in left-hand frame lists */
+.FrameTitleFont   { font-size: 10pts; font-family: Helvetica, Arial, san-serif }
+.FrameHeadingFont { font-size: 10pts; font-family: Helvetica, Arial, san-serif }
+.FrameItemFont    { font-size: 10pts; font-family: Helvetica, Arial, san-serif }
+
+/* Example of smaller, sans-serif font in frames */
+/* .FrameItemFont  { font-size: 10pt; font-family: Helvetica, Arial, sans-serif } */
+
+/* Navigation bar fonts and colors */
+.NavBarCell1    { background-color:#EEEEFF;}/* Light mauve */
+.NavBarCell1Rev { background-color:#00008B;}/* Dark Blue */
+.NavBarFont1    { font-family: Arial, Helvetica, sans-serif; color:#000000;}
+.NavBarFont1Rev { font-family: Arial, Helvetica, sans-serif; color:#FFFFFF;}
+
+.NavBarCell2    { font-family: Arial, Helvetica, sans-serif; background-color:#FFFFFF;}
+.NavBarCell3    { font-family: Arial, Helvetica, sans-serif; background-color:#FFFFFF;}
+
+.TagLibraryTable { margin-left: 1em; margin-right: 2em; }
+
+
+.html4strict .de1, .html4strict .de2 {font-family: 'Courier New', Courier, monospace; font-weight: normal;}
+.html4strict  {font-family: monospace;}
+.html4strict .imp {font-weight: bold; color: red;}
+.html4strict li {background: #ffffff;}
+.html4strict li.li2 {background: #f8f8f8;}
+.html4strict .kw1 {color: #000000;}
+.html4strict .kw2 {color: #000000;}
+.html4strict .kw3 {color: #000066;}
+.html4strict .coMULTI {color: #000000;}
+.html4strict .es0 {color: #000000;}
+.html4strict .br0 {color: #000000;}
+.html4strict .st0 {color: #000000;}
+.html4strict .nu0 {color: #000000;}
+.html4strict .sc0 {color: #000000;}
+.html4strict .sc1 {color: #000000;}
+.html4strict .sc2 {color: #000000;}
+.html4strict .sc3 {color: #000000;}
+
+/*
+The cleverer parts of this stylesheet came from
+The Layout Reservoir - well worth a look.
+http://www.bluerobot.com/web/layouts/
+*/
+
+body {
+	color:#333;
+	margin:0px;
+	padding:0px;
+	font:11px verdana, arial, helvetica, sans-serif;
+}
+
+h1 {
+	xborder-top: 1px solid #3d8ea8;
+	xborder-bottom: 1px solid #005069;
+	xborder-right: 1px solid #3d8ea8;
+	xborder-left: 1px solid #3d8ea8;
+	background-color: #BFB8AC;
+	color: #ffffff;
+	font-family: trebuchet ms, verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	text-align: left;
+	padding: 3px 0px 3px 10px;
+	margin-bottom: 0px;
+	margin-top: 0px; 
+}
+	
+
+p {
+	font:11px/20px verdana, arial, helvetica, sans-serif;
+	margin:0px 10px 10px 10px;
+}
+
+select{
+font:11px/20px verdana, arial, helvetica, sans-serif;
+		
+}
+
+label
+{
+	font-weight:bold;
+}
+
+div.syntax
+{
+background:white;
+}
+
+div.syntax a
+{
+	font-family: 'Courier New', Courier, monospace; 
+	font-weight: normal;
+	color:black;
+	text-decoration:underline;
+}
+
+h1 a{color:white; text-decoration:underline;font-weight:bold;}
+h1 a:link{color:white;}
+h1 a:visited{color:white;}
+h1 a:hover{color:yellow;background-color:transparent;}
+
+#content h1
+{
+background-color: #807A73;
+
+}
+
+#titlebar a{color:white; text-decoration:underline;font-weight:bold;}
+#titlebar a:link{color:white;}
+#titlebar a:visited{color:white;}
+#titlebar a:hover{color:yellow;background-color:transparent;}
+
+/* Change bars from http://www.geocities.com/hentaihelper/2atimlin.htm */
+
+/* put a red "change" bar in the left margin			*/
+/*
+
+a[href^="composite"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="f/ajax.html"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="ajax"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="ui"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="f/event.html"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="event"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="f/metadata.html"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="metadata"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="f/viewParam.html"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="viewParam"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="f/selectItems.html"] { cursor: url(changed_modified_2_0_cursor.png), pointer;
+                 background: url(changed_modified_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="selectItems"] { cursor: url(changed_modified_2_0_cursor.png), pointer;
+                 background: url(changed_modified_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="f/validat"] { cursor: url(changed_modified_2_0_cursor.png), pointer;
+                 background: url(changed_modified_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="validat"] { cursor: url(changed_modified_2_0_cursor.png), pointer;
+                 background: url(changed_modified_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="f/validateBean.html"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="validateBean"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="f/validateRequired.html"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="validateRequired"] { cursor: url(changed_added_2_0_cursor.png), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+
+*/
+
+code { font-size:12px;width:98%;}
+
+.codeedit {	font-size:12px;width:98%;}
+
+
+#titlebar {
+	padding: 0px 0px 0px 5px;
+	height:16px;
+	xborder-top: solid 1px #73a5d3;
+	xborder-bottom: solid 1px #39526b;
+	background-color: #807A73;
+	color: #fff;
+	margin-bottom: 11px;
+}
+
+.nav { margin: 0px 5px 0px 5px; }
+	
+
+
+#Content>p {margin:0px;}
+#Content>p+p {text-indent:30px;}
+
+#content {
+	/* margin:0px 0px 50px 150px; */
+	padding:5px;
+	xbackground-color: #FFF8EC;
+	xborder:1px solid black;
+}
+
+#menu {
+	position:absolute;
+	top:16px;
+	left:0px;
+	width:162px;
+	xpadding:5px;
+	background-color: #FFF5E6;
+	xborder:1px solid black;
+	line-height:17px;
+	overflow: hidden;
+
+	/* IE5 Hack */
+	voice-family: "\"}\"";
+	voice-family:inherit;
+	width:140px;
+}
+
+/* be nice to Opera 5 */
+body>#Menu {width:150px;}
+
+#menu>p {margin:5px 10px 5px 10px;line-height:1.5em;}
+
+li.highlight{ background-color: #D9D0C3; }
+
+#menu ul {
+	margin-left:15px;
+	margin-top:0px;
+	padding-left:0px;
+}
+
+#menu li {
+	list-style-type: square;
+	line-height: 11px;
+	padding-bottom: 3px;
+}
+
+
+#namebox
+{
+	float:left;
+}
+
+#expirybox
+{
+	float:left;
+	margin-left:20px;
+}
+
+#expirybox label
+{
+	padding-left:3px;
+	padding-right:3px;
+	
+}
+
+#expirybox label.current
+{
+	background:#FFF5E6;
+	
+}
+
+#expiryinfo
+{
+	color:#000000;
+	font-style:italic;
+}
+
+#end
+{
+	clear:both;
+}
+
+table.diff 
+{
+	background:white;
+}
+
+table.diff td
+{
+	text-align:right;
+	padding-left:3px;
+	padding-right:3px;
+	font-size:8pt;
+}
+
+table.diff td.code
+{
+	text-align:left;
+	font-family: 'Courier New', Courier, monospace; 
+	font-weight: normal;
+}
+
+table.diff td.code pre
+{
+	margin:0;
+	padding:0;
+}
+
+table.diff tr.new
+{
+	background:#ddddff;
+}
+table.diff tr.old
+{
+	background:#ffdddd;
+}
+table.diff tr.hidenew
+{
+	display:none;
+}
+table.diff tr.hideold
+{
+	display:none;
+}
+
+/* Change bars from http://www.geocities.com/hentaihelper/2atimlin.htm */
+
+/* put a red "change" bar in the left margin			*/
+
+/*
+
+   .changed_added_2_0 { cursor: url(changed_added_2_0_cursor.cur), pointer;
+                 background: url(changed_added_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+   .changed_modified_2_0 { cursor: url(changed_modified_2_0_cursor.cur), pointer;
+                 background: url(changed_modified_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+   .changed_deleted_2_0 { cursor: url(changed_deleted_2_0_cursor.cur), pointer;
+                 background: url(changed_deleted_2_0.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:red }
+*/
+
+/*
+ *
+ * Ensure the lefthand nav pane links have the right attribution
+ *
+ */
+
+/*
+
+a[href^="composite/tld-frame"], a[href^="f/tld-frame"], a[href^="h/tld-frame"], a[href^="c/tld-frame"], a[href^="ui/tld-frame"], a[href^="actionSource"], a[href^="editableValueHolder"], a[href^="attribute"], a[href^="facet"], a[href^="interface"], a[href^="valueHolder"], a[href^="ajax"], a[href^="event"], a[href^="metadata"], a[href^="param"], a[href^="selectItems"], a[href^="view"], a[href^="viewParam"], a[href^="commandButton"], a[href^="commandLink"], a[href^="dataTable"], a[href^="button"], a[href^="link"], a[href^="head"], a[href^="outputLink"], a[href^="outputScript"], a[href^="outputStylesheet"], a[href^="selectManyCheckbox"], a[href^="selectmanyListbox"] { cursor: url(changed_modified_2_1.cur), pointer;
+                 background: url(changed_modified_2_1.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+a[href^="head"], a[href^="title"], a[href^="clientBehavior"] { cursor: url(changed_added_2_1_cursor.cur), pointer;
+                 background: url(changed_added_2_1.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+a[href^="subview"], a[href^="verbatim"] { cursor: url(changed_deleted_2_1_cursor.cur), pointer;
+                 background: url(changed_deleted_2_1.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:red }
+a[href^="c/"] { cursor: url(changed_modified_2_0_rev_a_cursor.cur), pointer;
+                 background: url(changed_modified_2_0_rev_a.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+a[href^="f/"] { cursor: url(changed_modified_2_0_rev_a_cursor.cur), pointer;
+                 background: url(changed_modified_2_0_rev_a.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+a[href^="h/"] { cursor: url(changed_modified_2_0_rev_a_cursor.cur), pointer;
+                 background: url(changed_modified_2_0_rev_a.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+a[href^="ui/"] { cursor: url(changed_modified_2_0_rev_a_cursor.cur), pointer;
+                 background: url(changed_modified_2_0_rev_a.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+   .changed_added_2_0_rev_a { cursor: url(changed_added_2_0_rev_a_cursor.cur), pointer;
+                 background: url(changed_added_2_0_rev_a.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+   .changed_modified_2_0_rev_a { cursor: url(changed_modified_2_0_rev_a_cursor.cur), pointer;
+                 background: url(changed_modified_2_0_rev_a.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+   .changed_deleted_2_0_rev_a { cursor: url(changed_deleted_2_0_rev_a_cursor.cur), pointer;
+                 background: url(changed_deleted_2_0_rev_a.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:red }
+
+   .changed_added_2_1 { cursor: url(changed_added_2_1_cursor.cur), pointer;
+                 background: url(changed_added_2_1.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+   .changed_modified_2_1 { cursor: url(changed_modified_2_1_cursor.cur), pointer;
+                 background: url(changed_modified_2_1.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+   .changed_deleted_2_1 { cursor: url(changed_deleted_2_1_cursor.cur), pointer;
+                 background: url(changed_deleted_2_1.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:red }
+*/
+
+
+.javadocSection { font-size: large; }
+
+/*
+
+   .changed_added_2_2 { cursor: url(changed_added_2_2_cursor.cur), auto;
+                 background: url(changed_added_2_2.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+   .changed_modified_2_2 { cursor: url(changed_modified_2_2_cursor.cur), auto;
+                 background: url(changed_modified_2_2.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+   .changed_deleted_2_2 { cursor: url(changed_deleted_2_2_cursor.cur), auto;
+                 background: url(changed_deleted_2_2.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:red;
+                 text-decoration: line-through; }
+*/
+
+   .changed_added_2_3 { cursor: url(changed_added_2_3_cursor.cur), auto;
+                 background: url(changed_added_2_3.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+   .changed_modified_2_3 { cursor: url(changed_modified_2_3_cursor.cur), auto;
+                 background: url(changed_modified_2_3.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+   .changed_deleted_2_3 { cursor: url(changed_deleted_2_3_cursor.cur), auto;
+                 background: url(changed_deleted_2_3.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:red;
+                 text-decoration: line-through; }
+
+/*
+
+a[href^="h/body.html"], a[href^="composite/insertChildren.html"], a[href^="composite/insertFacet.html"], a[href^="selectItems.html"], a[href^="f/selectItems.html"],a[href^="viewParam.html"], a[href^="f/viewParam.html"], a[href^="f/tld-frame"], a[href^="h/tld-frame"], a[href^="ui/tld-frame"], a[href^="f/tld-frame"], a[href^="ui/component.html"], a[href^="component.html"], a[href^="ui/fragment.html"], a[href^="fragment.html"], a[href^="ui/composition.html"], a[href^="composition.html"], a[href^="ui/include.html"], a[href^="include.html"], a[href^="ui/decorate.html"], a[href^="decorate.html"], a[href^="ajax.html"], a[href^="f/ajax.html"], a[href^="outputStylesheet.html"], a[href^="h/outputStylesheet.html"], a[href^="button.html"], a[href^="h/button.html"], a[href^="commandButton.html"], a[href^="h/commandButton.html"], a[href^="commandLink.html"], a[href^="h/commandLink.html"], a[href^="link.html"], a[href^="h/link.html"], a[href^="view.html"], a[href^="f/view.html"] { cursor: url(changed_modified_2_2_cursor.cur), auto;
+                 background: url(changed_modified_2_2.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:orange }
+
+a[href^="jsf/tld-frame"], a[href^="p/tld-frame"], a[href^="f/attributes.html"], a[href^="element.html"], a[href^="jsf/element.html"], a[href^="passThroughAttribute.html"], a[href^="f/passThroughAttribute.html"], a[href^="passThroughAttributes.html"], a[href^="f/passThroughAttribute.html"], a[href^="f/passThroughAttributes.html"], a[href^="finalizer.html"], a[href^="j/finalizer.html"], a[href^="initializer.html"], a[href^="j/initializer.html"], a[href^="vdl-document.html"], a[href^="j/vdl-document.html"], a[href^="j/view.html"], a[href^="from-outcome.html"], a[href^="j/from-outcome.html"], a[href^="if.html"], a[href^="j/if.html"], a[href^="switch.html"], a[href^="j/switch.html"], a[href^="navigation-case.html"], a[href^="j/navigation-case.html"], a[href^="faces-flow-return.html"], a[href^="j/faces-flow-return.html"], a[href^="start-node.html"], a[href^="j/start-node.html"], a[href^="flow-definition.html"], a[href^="j/flow-definition.html"], a[href^="j/tld-frame.html"], a[href^="viewAction.html"], a[href^="f/viewAction.html"], a[href^="h/inputFile.html"], a[href^="inputFile.html"] { cursor: url(changed_added_2_2_cursor.cur), auto;
+                 background: url(changed_added_2_2.png); 
+                 padding-left:0.2em; border-left:solid;
+                 border-left-width:thin; border-right:none;
+                 border-top:none; border-bottom:none; border-color:green }
+
+*/

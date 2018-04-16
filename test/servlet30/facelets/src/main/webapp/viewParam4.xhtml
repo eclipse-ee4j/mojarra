@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>starting page for testing JSF includeViewParams issue</title>
+    </h:head>
+    <h:body>
+        start the test app by clicking the link below, this will pass in parameters (input1=1 and input2=2)
+        to be picked up via &lt;f:viewParam .. &gt; in viewParam5.xhtml
+        <br />
+        <br />
+
+        once you are on   viewParam5.xhtml   there are two ways to navigate to   viewParam6.xhtml. 
+        both use a &lt; h:button&gt;  but the first uses   includeViewParams="true" 
+        and the second uses &lt;f:param .. &gt; to pass the parameters. Only the second works
+        correctly
+        <br /> 
+        <br />
+        <h:link id="link" outcome="viewParam5.xhtml?input1=1&amp;input2=2" value="viewParam5.xhtml" />  
+    </h:body>
+</html>
+

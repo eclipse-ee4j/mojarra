@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+
+
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{personPage.selectedId}"/>
+        <f:viewAction action="#{personPage.loadPerson}"/>
+    </f:metadata>
+    <head jsf:id="head">
+        <title>HTML5 Facelets Processing</title>
+    </head>
+    <body jsf:id="body">
+        <form jsf:id="form">
+            <h:messages/>
+            <h:panelGrid columns="2">
+                <h:outputText value="ID:"/>
+                <h:outputText value="#{personPage.selectedPerson.id}"/>
+                <label jsf:for="name">Name:</label>
+                <input type="text" jsf:id="name" jsf:value="#{personPage.selectedPerson.name}"
+                       placeholder="Enter name" data-required="true">
+                    <f:validateLength minimum="3"/>
+                </input>
+                <label jsf:for="email">Email:</label>
+                <h:inputText id="email" value="#{personPage.selectedPerson.email}"
+                             pt:type="email" pt:placeholder="Enter email">
+                    <f:passThroughAttribute name="data-required" value="true"/>
+                    <f:validateLength minimum="3"/>
+                </h:inputText>
+            </h:panelGrid>
+            <button jsf:action="personDetails?faces-redirect=true&amp;includeViewParams=true">Submit</button>
+        </form>
+        <script type="text/javascript" jsf:name="jquery-1.10.2.min.js" jsf:target="head"></script>
+        <script type="text/javascript" jsf:name="script.js"></script>
+    </body>
+</html>

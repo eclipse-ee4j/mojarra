@@ -1,0 +1,55 @@
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>Putting it all together</title>
+        <script target="body" name="js.js"/>
+        <link name="css.css" rel="stylesheet" type="text/css" />
+    </h:head>
+    <body id="body">
+        <h:form id="form" prependId="false">
+            <fieldset></fieldset>
+            <br/>
+            <button id="button" name="button" type="button" value="button"/>
+            <br/>
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" value="aaa"/>
+            <br/>
+            <label for="tel">Tel</label>
+            <input id="tel" name="tel" type="tel" value="bbb"/>
+            <br/>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" value="ccc"/>
+            <br/>
+            <br/>
+            <h:commandButton id="submit" value="submit">
+               <f:ajax execute="@this" render="@form" />
+            </h:commandButton>
+            <br/>
+            <br/>
+            #{issue2613Bean.parameterNames}
+            <br/>
+            #{issue2613Bean.parameterCount}
+  
+        </h:form>
+    </body>
+</html>

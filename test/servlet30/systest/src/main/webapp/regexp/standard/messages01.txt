@@ -1,0 +1,1 @@
+(?s).*<head>\s*<title>\s*messages01.jsp\s*</title>\s*<style\s*type="text/css"\s*media="screen">.*\.errors.*</style>\s*</head>\s*<body>\s*<ul\s*class="errors">\s*<li>\s*\{0\}:\s*Validation\s*Error:\s*Value\s*is\s*required.\s*</li>\s*</ul>\s*</body>.*

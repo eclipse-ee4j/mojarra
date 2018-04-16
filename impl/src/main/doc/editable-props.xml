@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== EditableValueHolder Properties ============================= -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root>
+    <property>
+        <description>
+          Flag indicating whether the "localValue" property
+          of this component has been set.  This property is
+          reset automatically when the "value" propertyis set.
+        </description>
+        <display-name>Local Value Set</display-name>
+        <icon></icon>
+        <property-name>localValueSet</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Flag indicating that the user is required to provide a submitted
+          value for this input component.
+        </description>
+        <display-name>Required Flag</display-name>
+        <icon></icon>
+        <property-name>required</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          A ValueExpression enabled attribute that, if present, will be
+          used as the text of the validation message for the "required"
+          facility, if the "required" facility is used.
+        </description>
+        <display-name>Required Message</display-name>
+        <icon></icon>
+        <property-name>requiredMessage</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          A ValueExpression enabled attribute that, if present, will be
+          used as the text of the converter message, replacing any message
+          that comes from the converter.
+        </description>
+        <display-name>Converter Message</display-name>
+        <icon></icon>
+        <property-name>converterMessage</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          A ValueExpression enabled attribute that, if present, will be
+          used as the text of the validator message, replacing any
+          message that comes from the validator.
+        </description>
+        <display-name>Validator Message</display-name>
+        <icon></icon>
+        <property-name>validatorMessage</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          The value submitted for this input component by the user, prior to
+          any required conversion or validation.
+        </description>
+        <display-name>Submitted Value</display-name>
+        <icon></icon>
+        <property-name>submittedValue</property-name>
+        <property-class>java.lang.Object</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          MethodExpression representing a validator method that will be called
+          during Process Validations to perform correctness checks on the
+          value of this component.  The expression must evaluate to a public
+          method that takes FacesContext, UIComponent, and Object parameters,
+          with a return type of void. As a convenience this attribute is also 
+          allowed to evaluate to a &lt;code&gt;java.lang.String&lt;/code&gt;, 
+          which will be used in a call to &lt;code&gt;Application.createValidator(String validatorId&lt;/code&gt;
+          to create the validator instance.
+        </description>
+        <display-name>Validator</display-name>
+        <icon></icon>
+        <property-name>validator</property-name>
+        <property-class>javax.el.MethodExpression</property-class>
+        <property-extension>
+            <method-signature>
+                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+            </method-signature>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+            <![CDATA[<p>
+
+          MethodExpression representing a value change listener method
+          that will be notified when a new value has been set for this
+          input component.  The expression must evaluate to a public
+          method that takes a <code>ValueChangeEvent</code> parameter,
+          with a return type of void, <span class="changed_added_2_0">or
+          to a public method that takes no arguments with a return type
+          of void.  In the latter case, the method has no way of easily
+          knowing what the new value is, but this can be useful in cases
+          where a notification is needed that "this value
+          changed".</span>
+
+</p>]]>
+        </description>
+        <display-name>Value Change Listener</display-name>
+        <icon></icon>
+        <property-name>valueChangeListener</property-name>
+        <property-class>javax.el.MethodExpression</property-class>
+        <property-extension>
+            <method-signature>
+                void valueChange(javax.faces.event.ValueChangeEvent)
+            </method-signature>
+<!-- PENDING modify tlddoc to handle an OR of method signatures 
+as required by 
+https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447 
+            <method-signature>
+                void valueChange()
+            </method-signature>
+-->
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Flag indicating that this component's value must be
+          converted and validated immediately (that is, during
+          Apply Request Values phase), rather than waiting
+          until Process Validations phase.
+        </description>
+        <display-name>Immediate Action</display-name>
+        <icon></icon>
+        <property-name>immediate</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <value-expression-enabled>true</value-expression-enabled>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+          Flag indicating whether or not any required conversion or validation
+          on this component value has been performed successfully.
+        </description>
+        <display-name>Valid Flag</display-name>
+        <icon></icon>
+        <property-name>valid</property-name>
+        <property-class>valid</property-class>
+        <property-extension>
+            <tag-attribute>false</tag-attribute>
+        </property-extension>
+    </property>
+</root>

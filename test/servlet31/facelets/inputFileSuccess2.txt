@@ -1,0 +1,4 @@
+This file contains the string JSR-344 and will be successfully set into
+the model.
+
+Additional bytes here.

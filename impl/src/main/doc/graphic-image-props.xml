@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== Graphic+Image Properties =================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root>
+    <property>
+        <description>
+        Alternate textual description of the
+        element rendered by this component.
+        </description>
+        <display-name>Alternate Text</display-name>
+        <icon></icon>
+        <property-name>alt</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+        Override for the height of this image.
+        </description>
+        <display-name>Image Height</display-name>
+        <icon></icon>
+        <property-name>height</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+        Flag indicating that this image is to be used as a server side
+        image map.  Such an image must be enclosed within a hyperlink
+        ("a").  A value of false causes no attribute to be rendered, 
+        while a value of true causes the attribute to be rendered as
+        ismap=&quot;ismap&quot;.
+        </description>
+        <display-name>Image Map Flag</display-name>
+        <icon></icon>
+        <property-name>ismap</property-name>
+        <property-class>boolean</property-class>
+        <property-extension>
+            <ignored-by-renderer>false</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+        URI to a long description of the image
+        represented by this element.
+        </description>
+        <display-name>Long Description</display-name>
+        <icon></icon>
+        <property-name>longdesc</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+        The name of a client side image map (an HTML "map"
+        element) for which this element provides the image.
+        </description>
+        <display-name>Use Image Map</display-name>
+        <icon></icon>
+        <property-name>usemap</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+
+    <property>
+        <description>
+        Override for the width of this image.
+        </description>
+        <display-name>Image Width</display-name>
+        <icon></icon>
+        <property-name>width</property-name>
+        <property-class>java.lang.String</property-class>
+        <property-extension>
+            <ignored-by-renderer>true</ignored-by-renderer>
+        </property-extension>
+    </property>
+</root>

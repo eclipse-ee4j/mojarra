@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== Command+Script Properties ================================== -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-name></display-name>
+        <icon></icon>
+        <property-name></property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root>
+
+    <property>
+        <description><![CDATA[
+            Name of JavaScript function to be declared, e.g. <code>name="functionName"</code>.
+            This can be a namespaced function name, e.g. <code>name="ez.functionName"</code>.
+        ]]></description>
+        <icon></icon>
+        <property-name>name</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            Whether to execute declared JavaScript function during <code>load</code> event of the <code>window</code>.
+            Defaults to <code>false</code>.
+        ]]></description>
+        <icon></icon>
+        <property-name>autorun</property-name>
+        <property-class>boolean</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            This is a space separated list of client identifiers of components
+            that will participate in the "execute" portion of the Request Processing Lifecycle.
+            If a literal is specified the identifiers must be space delimited.
+            Any of the keywords "@this", "@form", "@all", "@none" may be specified in the identifier list.
+            If not specified, the default value of "@this" is assumed. 
+            For example, <code>@this clientIdOne clientIdTwo</code>.
+        ]]></description>
+        <icon></icon>
+        <property-name>execute</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            This is a space separated list of client identifiers of components
+            that will participate in the "render" portion of the Request Processing Lifecycle.
+            If a literal is specified the identifiers must be space delimited.
+            Any of the keywords "@this", "@form", "@all", "@none" may be specified in the identifier list.
+            If not specified, the default value of "@none" is assumed.
+            For example, <code>@this clientIdOne clientIdTwo</code>.
+        ]]></description>
+        <icon></icon>
+        <property-name>render</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            Reset specific input values.
+            Interpret the value of the <code>render</code> attribute as a space separated list of client identifiers
+            suitable for passing directly to <code>UIViewRoot.resetValues()</code>.
+            The implementation must cause an <code>ActionListener</code> to be attached to the <code>ActionSource</code>
+            component in which this tag is nested that calls <code>UIViewRoot.resetValues()</code> passing the value
+            of the <code>render</code> attribute as the argument.
+        ]]></description>
+        <icon></icon>
+        <property-name>resetValues</property-name>
+        <property-class>java.lang.Boolean</property-class>
+    </property>
+
+    <property>
+        <description>
+            The name of the JavaScript function that will handle UI events.
+        </description>
+        <icon></icon>
+        <property-name>onevent</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description>
+            The name of the JavaScript function that will handle errors.
+        </description>
+        <icon></icon>
+        <property-name>onerror</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+</root>

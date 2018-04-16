@@ -1,0 +1,15 @@
+{
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "plugins": [
+    ],
+    "templates": {
+        "default" : {
+            "layoutFile": "src/main/jsdoc/mojarra.tmpl"
+        },
+        "cleverLinks": false,
+        "monospaceLinks": false
+    }
+}

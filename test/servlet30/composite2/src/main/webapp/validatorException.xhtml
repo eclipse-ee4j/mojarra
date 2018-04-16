@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!--
+
+    Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:validatorException="http://java.sun.com/jsf/composite/validatorException"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/validatorException.xhtml">
+    <ui:define name="page.title">Issue 2665</ui:define>
+    <ui:define name="page.content">
+        <fieldset>
+            <legend>Issue 2665</legend>
+            Type any piece of text and click on submit, then check your log files.
+            <validatorException:inputText 
+                id="composite"
+                value="#{validatorExceptionBean.name}" label="Enter name"
+                editable="true"
+                validatorMessage="Name is invalid"
+                validator="#{validatorExceptionBean.validateName}"/>
+            <h:commandButton id="submitButton" value="Submit"/>
+        </fieldset>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,144 @@
+/*
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0, which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the
+ * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+ * version 2 with the GNU Classpath Exception, which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ */
+
+package com.sun.faces.renderkit.html_basic;
+
+import java.io.StringWriter;
+import java.io.Writer;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIOutput;
+import javax.faces.context.FacesContext;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class HtmlResponseWriterTest {
+    
+    /**
+     * Test cloneWithWriter method.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCloneWithWriter() throws Exception {
+        
+        Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
+        method.setAccessible(true);
+        method.invoke(null, new Object[] { null });
+        
+        Writer writer = new StringWriter();
+        HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, "text/html", "UTF-8");
+        Field field = responseWriter.getClass().getDeclaredField("dontEscape");
+        field.setAccessible(true);
+        field.set(responseWriter, Boolean.TRUE);
+
+        HtmlResponseWriter clonedWriter = (HtmlResponseWriter) responseWriter.cloneWithWriter(writer);
+        assertTrue((Boolean) field.get(clonedWriter));
+
+        responseWriter = new HtmlResponseWriter(writer, "text/html", "UTF-8");
+        field.set(responseWriter, Boolean.FALSE);
+
+        clonedWriter = (HtmlResponseWriter) responseWriter.cloneWithWriter(writer);
+        assertFalse((Boolean) field.get(clonedWriter));
+    }
+
+    /**
+     * Test cloneWithWriter method.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCloneWithWriter2() throws Exception {
+
+        Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
+        method.setAccessible(true);
+        method.invoke(null, new Object[] { null });        
+        
+        Writer writer = new StringWriter();
+        HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, "text/html", "UTF-8");
+        Field field = responseWriter.getClass().getDeclaredField("writingCdata");
+        field.setAccessible(true);
+        field.set(responseWriter, Boolean.TRUE);
+
+        HtmlResponseWriter clonedWriter = (HtmlResponseWriter) responseWriter.cloneWithWriter(writer);
+        assertTrue((Boolean) field.get(clonedWriter));
+
+        responseWriter = new HtmlResponseWriter(writer, "text/html", "UTF-8");
+        field.set(responseWriter, Boolean.FALSE);
+
+        clonedWriter = (HtmlResponseWriter) responseWriter.cloneWithWriter(writer);
+        assertFalse((Boolean) field.get(clonedWriter));
+    }
+
+    /**
+     * Test CDATA.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCDATAWithXHTML() throws Exception {
+        
+        Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
+        method.setAccessible(true);
+        method.invoke(null, new Object[] { null });
+
+        UIComponent componentForElement = new UIOutput();
+        String expected = "<script>\n//<![CDATA[\n\n function queueEvent() {\n  return false;\n}\n\n\n//]]>\n</script>";
+
+        // Case 1 start is // end is //
+        StringWriter stringWriter = new StringWriter();
+        HtmlResponseWriter responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("script", componentForElement);
+        responseWriter.write("    // <![CDATA[\n function queueEvent() {\n  return false;\n}\n\n//   ]]>  \n");
+        responseWriter.endElement("script");
+        responseWriter.flush();
+        assertEquals(expected, stringWriter.toString());
+
+        // Case 2 start is // end is /* */
+        stringWriter = new StringWriter();
+        responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("script", componentForElement);
+        responseWriter.write("    // <![CDATA[\n function queueEvent() {\n  return false;\n}\n\n/*\n  ]]> \n*/ \n");
+        responseWriter.endElement("script");
+        responseWriter.flush();
+        assertEquals(expected, stringWriter.toString());
+
+        // Case 3 start is /* */  end is /* */
+        stringWriter = new StringWriter();
+        responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("script", componentForElement);
+        responseWriter.write("    /* \n <![CDATA[ \n*/\n function queueEvent() {\n  return false;\n}\n\n/*\n  ]]> \n*/ \n");
+        responseWriter.endElement("script");
+        responseWriter.flush();
+        assertEquals(expected, stringWriter.toString());
+
+        // Case 4 start is /* */  end is //
+        stringWriter = new StringWriter();
+        responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("script", componentForElement);
+        responseWriter.write("    /* \n <![CDATA[ \n*/\n function queueEvent() {\n  return false;\n}\n\n//\n  ]]>\n");
+        responseWriter.endElement("script");
+        responseWriter.flush();
+        assertEquals(expected, stringWriter.toString());
+
+        // Case 5 start is /* */  end is //
+        stringWriter = new StringWriter();
+        responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("script", componentForElement);
+        responseWriter.write("    /* \n <![CDATA[ \n*/\n function queueEvent() {\n  return false;\n}\n\n//\n  ]]>\n");
+        responseWriter.endElement("script");
+        responseWriter.flush();
+        assertEquals(expected, stringWriter.toString());
+    }
+}

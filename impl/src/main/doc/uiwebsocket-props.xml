@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!-- ========== UIWebsocket Properties ======================================= -->
+
+
+<!-- template
+
+      <property>
+        <description>
+        </description>
+        <display-property-name></display-property-name>
+        <icon></icon>
+        <property-property-name></property-property-name>
+        <property-class>java.lang.String</property-class>
+      </property>
+
+-->
+<root xmlns:xi="http://www.w3.org/2001/XInclude">
+    <xi:include href="uicomponent-props.xml" xpointer="xpointer(/root/*)"/>
+
+    <property>
+        <description><![CDATA[
+            The name of the websocket channel.
+            It may not be an EL expression and it may only contain alphanumeric characters, hyphens, underscores and periods.
+            All open websockets on the same channel name will receive the same push notification from the server.
+        ]]></description>
+        <icon></icon>
+        <property-name>channel</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            The scope of the websocket channel.
+            It may not be an EL expression and allowed values are <code>application</code>, <code>session</code> and <code>view</code>, case insensitive.
+            When the value is <code>application</code>, then all channels with the same name throughout the application will receive the same push message.
+            When the value is <code>session</code>, then only the channels with the same name in the current user session will receive the same push message.
+            When the value is <code>view</code>, then only the channel in the current view will receive the push message.
+            The default scope is <code>application</code>.
+            When the <code>user</code> attribute is specified, then the default scope is <code>session</code>.
+        ]]></description>
+        <icon></icon>
+        <property-name>scope</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            The user identifier of the websocket channel, so that user-targeted push messages can be sent.
+            It must implement <code>Serializable</code> and preferably have low memory footprint.
+            Suggestion: use <code>#{request.remoteUser}</code> or <code>#{someLoggedInUser.id}</code>.
+            All open websockets on the same channel and user will receive the same push message from the server.
+        ]]></description>
+        <icon></icon>
+        <property-name>user</property-name>
+        <property-class>java.io.Serializable</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            The JavaScript event handler function that is invoked when the websocket is opened.
+            The function will be invoked with one argument: the channel name.
+        ]]></description>
+        <icon></icon>
+        <property-name>onopen</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            The JavaScript event handler function that is invoked when a push message is received from the server.
+            The function will be invoked with three arguments: the push message, the channel name and the raw <code>MessageEvent</code> itself.
+        ]]></description>
+        <icon></icon>
+        <property-name>onmessage</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            The JavaScript event handler function that is invoked when the websocket is closed.
+            The function will be invoked with three arguments: the close reason code, the channel name and the raw <code>CloseEvent</code> itself.
+            Note that this will also be invoked on errors and that you can inspect the close reason code if an error occurred and which one (i.e. when the code is not 1000).
+            See also 
+            <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
+            and
+            <a href="http://docs.oracle.com/javaee/7/api/javax/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
+            API for an elaborate list of all close codes.
+        ]]></description>
+        <icon></icon>
+        <property-name>onclose</property-name>
+        <property-class>java.lang.String</property-class>
+    </property>
+
+    <property>
+        <description><![CDATA[
+            Whether to (auto)connect the websocket or not.
+            Defaults to <code>true</code>.
+            It's interpreted as a JavaScript instruction whether to open or close the websocket push connection.
+            The <code>connected</code> and <code>rendered</code> attributes are implicitly re-evaluated on every ajax request by a <code>PreRenderViewEvent</code> listener on the <code>UIViewRoot</code>.
+            If the value of <code>connected</code> or <code>rendered</code> attribute changes to <code>false</code> while the websocket is already opened, then the websocket will implicitly be closed.
+            You can also explicitly set <code>connected</code> attribute to <code>false</code> and then manually control in JavaScript by <code>jsf.push.open(clientId)</code> and <code>jsf.push.close(clientId)</code>.
+        ]]></description>
+        <icon></icon>
+        <property-name>connected</property-name>
+        <property-class>java.lang.Boolean</property-class>
+    </property>
+
+</root>

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+
+      
+    <h:head>
+        <title>Component test</title>
+    </h:head>
+    
+    <h:body>
+        <h:panelGrid id="component1" >
+            <c:if test="#{component.id eq 'component1'}">
+                id1-1:#{component.id}
+            </c:if>
+            
+            <c:if test="#{component.id eq 'component1'}">
+                <h:panelGrid id="componentA">
+                    <c:if test="#{component.id eq 'componentA'}">
+                        id2-1:#{component.id}
+                    </c:if>
+                </h:panelGrid>
+            </c:if>
+            
+            <c:if test="#{component.id eq 'component1'}">
+                id1-2:#{component.id}
+            </c:if>
+        </h:panelGrid>
+        <br />
+        
+        <h:panelGrid id="component2" >
+            
+            <c:if test="#{component.id eq 'component2'}">
+                id1-3:#{component.id}
+            </c:if>
+            
+            <c:if test="#{component.id eq 'component2'}">
+                <h:panelGrid id="componentA">
+                    <c:if test="#{component.id eq 'componentA'}">
+                        id2-2:#{component.id}
+                    </c:if>
+                </h:panelGrid>
+            </c:if>
+            
+            <c:if test="#{component.id eq 'component2'}">
+                id1-4:#{component.id}
+            </c:if>
+        </h:panelGrid>
+    </h:body>
+</html>

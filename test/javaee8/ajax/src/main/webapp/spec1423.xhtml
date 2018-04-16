@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+>
+    <h:head>
+        <title>JAVASERVERFACES_SPEC_PUBLIC-1423 - Integration Test</title>
+    </h:head>
+    <h:body>
+        <h:form id="form1">
+            <f:ajax render="@form">
+                <h:commandButton id="addViaHead" value="add component resource to head" action="#{spec1423.addComponentResourceToHead}" />
+                <h:commandButton id="addViaBody" value="add component resource to body" action="#{spec1423.addComponentResourceToBody}" />
+                <h:commandButton id="addProgrammatically" value="add component programmatically" action="#{spec1423.addComponentProgrammatically}" />
+            </f:ajax>
+            <h:panelGroup id="parent" />
+        </h:form>
+
+        <h:form id="form2">
+            <h:commandButton id="addViaInclude" value="add component via include" action="#{spec1423.addComponentViaInclude}">
+                <f:ajax execute="@form" render="@form" />
+            </h:commandButton>
+            <ui:include src="#{spec1423.include}" />
+        </h:form>
+
+        <div id="scriptResult" />
+        <div id="stylesheetResult" />
+    </h:body>
+</html>

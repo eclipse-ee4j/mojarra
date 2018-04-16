@@ -1,0 +1,32 @@
+<select id="myMenu" name="myMenu" multiple="multiple" size="1">	<option value="Red">Red</option>
+	<option value="Blue" selected="selected">Blue</option>
+	<option value="Green">Green</option>
+	<option value="Yellow">Yellow</option>
+</select>
+<select id="myListbox" name="myListbox" multiple="multiple" size="5">	<option value="Red">Red</option>
+	<option value="Blue" selected="selected">Blue</option>
+<optgroup label="group" disabled="disabled">	<option value="Green">Green</option>
+	<option value="Yellow">Yellow</option>
+</optgroup></select>
+<table border="0" id="myCheckboxlist" class="styleClass">
+	<tr>
+<td>
+<input name="myCheckboxlist" id="myCheckboxlist:0" value="Red" type="checkbox" disabled="disabled" tabindex="5" title="title" /><label for="myCheckboxlist:0" class="disabledClass"> Red</label></td>
+<td>
+<input name="myCheckboxlist" id="myCheckboxlist:1" value="Blue" type="checkbox" checked="checked" tabindex="5" title="title" /><label for="myCheckboxlist:1" class="enabledClass"> Blue</label></td>
+<td>group</td><td>
+<table border="0">
+	<tr>
+<td>
+<input name="myCheckboxlist" id="myCheckboxlist:2" value="Green" type="checkbox" tabindex="5" title="title" /><label for="myCheckboxlist:2" class="enabledClass"> Green</label></td>
+<td>
+<input name="myCheckboxlist" id="myCheckboxlist:3" value="Yellow" type="checkbox" tabindex="5" title="title" /><label for="myCheckboxlist:3" class="enabledClass"> Yellow</label></td>
+	</tr>
+</table></td>	</tr>
+</table>
+<select id="myOnemenu" name="myOnemenu" size="1">	<option value="Red">Red</option>
+	<option value="Blue" selected="selected">Blue</option>
+	<option value="Green">Green</option>
+	<option value="Yellow">Yellow</option>
+</select>
+<input id="myInputDateHidden" type="hidden" name="myInputDateHidden" value="Jan 12, 1952" /><input id="myNumberHidden" type="hidden" name="myNumberHidden" value="47%" />

@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">  
+
+
+
+    <h:head>
+        <title>Rockstar</title>  
+        <META HTTP-EQUIV="Cache-Control" CONTENT="max-age=0"/>
+        <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache"/>
+        <META http-equiv="expires" content="0"/>
+        <META HTTP-EQUIV="Expires" CONTENT="Tue, 01 Jan 1980 1:00:00 GMT"/>
+        <META HTTP-EQUIV="Pragma" CONTENT="no-cache"/> 
+        <h:outputStylesheet name="template.css"/>  
+    </h:head> 
+    <body>
+        <div id="wrapper">
+            <div id="header">
+                <ui:insert name="header"/>
+            </div>
+            <div id="menu">
+                <ui:insert name="menu"/>
+            </div>
+            <div id="content">
+                <ui:insert name="content"/>
+            </div>
+        </div>
+        <div id="footer">
+            <ui:insert name="footer">
+                &copy; footer here
+            </ui:insert>
+        </div>
+    </body>
+</html>
+
