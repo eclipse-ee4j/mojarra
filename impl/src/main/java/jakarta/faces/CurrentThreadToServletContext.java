@@ -239,8 +239,8 @@ final class CurrentThreadToServletContext {
                     if (matchingClassLoader != null) {
                         // If the match was found on a previous iteration...
                         if (matchingKey != null) {
-                            LOGGER.log(WARNING,
-                                    "Multiple Jakarta Server Faces Applications found on same ClassLoader.  Unable to safely determine which FactoryFinder instance to use. Defaulting to first match.");
+                            // LOGGER.log(WARNING,
+                            //        "Multiple Jakarta Server Faces Applications found on same ClassLoader.  Unable to safely determine which FactoryFinder instance to use. Defaulting to first match.");
                             break;
                         }
                         matchingKey = currentKey;
