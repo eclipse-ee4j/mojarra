@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>org.glassfish</groupId>
+    <artifactId>javax.faces</artifactId>
+    <version>2.3.3.101</version>
+    <packaging>jar</packaging>
+    
+    <name>Mojarra 2.3.3.101</name>
+
+    <description>
+        This is the master POM file for Oracle's Implementation of the JSF 2.3 Specification.
+    </description>
+    <url>http://jsf.java.net/</url>
+    <licenses>
+        <license>
+            <name>
+                COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) plus GPL
+            </name>
+            <url>http://glassfish.java.net/nonav/public/CDDL+GPL.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>http://java.net/projects/mojarra/sources</url>
+        <connection>scm:git:git://java.net/mojarra~git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>edburns</id>
+            <name>Ed Burns</name>
+            <email>edward.burns@oracle.com</email>
+            <organization>Oracle America, Inc.</organization>
+            <roles>
+                <role>project-owner</role>
+            </roles>
+            <timezone>-6</timezone>
+        </developer>
+        <developer>
+            <id>ren.zhijun.oracle</id>
+            <name>Zhijun Ren</name>
+            <email>ren.zhijun@oracle.com</email>
+            <organization>Oracle America, Inc.</organization>
+            <roles>
+                <role>project-owner</role>
+            </roles>
+            <timezone>-6</timezone>
+        </developer>
+        <developer>
+            <id>manfredriem</id>
+            <name>Manfred Riem</name>
+            <email>manfred.riem@oracle.com</email>
+            <organization>Oracle America, Inc.</organization>
+            <roles>
+                <role>project-owner</role>
+            </roles>
+            <timezone>-6</timezone>
+        </developer>
+        <developer>
+            <id>juangon</id>
+            <name>Juan Gonzalez</name>
+            <email>juangon@gmail.com</email>
+            <organization>Liferay, Inc.</organization>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>ngriffin7a</id>
+            <name>Neil Griffin</name>
+            <email>neil.griffin.scm@gmail.com</email>
+            <organization>Liferay, Inc.</organization>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <id>juneau001</id>
+            <name>Josh Juneau</name>
+            <email>juneau001@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>-6</timezone>
+        </developer>       
+        <developer>
+            <id>ruolli</id>
+            <name>Ruolin Li</name>
+            <email>ruolin.li@oracle.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>     
+        <developer>
+            <id>balusc</id>
+            <name>Bauke Scholtz</name>
+            <email>balusc@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>vsingleton</id>
+            <name>Vernon Singleton</name>
+            <email>vsingleton@gmail.com</email>
+            <organization>Liferay, Inc.</organization>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <id>stiemannkj1</id>
+            <name>Kyle Stiemann</name>
+            <email>stiemannkj1@gmail.com</email>
+            <organization>Liferay, Inc.</organization>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <id>arjan_t</id>
+            <name>Arjan Tijms</name>
+            <email>arjan.tijms@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>emma0221</id>
+            <name>Xinyuan Zang</name>
+            <email>xinyuan.zhang@oracle.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://java.net/jira/browse/JAVASERVERFACES</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>Oracle's JavaServer Faces Implementation Dev List</name>
+            <post>dev@javaserverfaces.dev.java.net</post>
+            <archive>
+                https://javaserverfaces.dev.java.net/servlets/SummarizeList?listName=dev
+            </archive>
+        </mailingList>
+    </mailingLists>
+    <contributors>
+        <contributor><name>Dan Allen</name></contributor>
+        <contributor><name>Thomas Andraschko</name></contributor>
+        <contributor><name>Thomas Asel</name></contributor>
+        <contributor><name>Jennifer Ball</name></contributor>
+        <contributor><name>Lincoln Baxter III</name></contributor>
+        <contributor><name>Hans Bergsnten</name></contributor>
+        <contributor><name>Ed Burns</name></contributor>
+        <contributor><name>Shawn Bayern</name></contributor>
+        <contributor><name>Joseph Berkovitz</name></contributor>
+        <contributor><name>Dennis Bynre</name></contributor>
+        <contributor><name>Frank Caputo</name></contributor>
+        <contributor><name>Pete Carapetyan</name></contributor>
+        <contributor><name>Cagatay Civici</name></contributor>
+        <contributor><name>Ryan Delaplante</name></contributor>
+        <contributor><name>Keith Donald</name></contributor>
+        <contributor><name>Jim Driscoll</name></contributor>
+        <contributor><name>Hanspeter Dunnenberger</name></contributor>
+        <contributor><name>Ken Finnigan</name></contributor>
+        <contributor><name>Amy Fowler</name></contributor>
+        <contributor><name>Mike Freedman</name></contributor>
+        <contributor><name>Kin Fyten</name></contributor>
+        <contributor><name>David Geary</name></contributor>
+        <contributor><name>Manfred Geiler</name></contributor>
+        <contributor><name>Ted Goddard</name></contributor>
+        <contributor><name>Juan Gonzalez</name></contributor>
+        <contributor><name>Jeremy Grelle</name></contributor>
+        <contributor><name>Neil Griffin</name></contributor>
+        <contributor><name>Rick Hightower</name></contributor>
+        <contributor><name>Jacob Hookom</name></contributor>
+        <contributor><name>Justyna Horwat</name></contributor>
+        <contributor><name>Alexander Jesse</name></contributor>
+        <contributor><name>Josh Juneau</name></contributor>
+        <contributor><name>Max Katz</name></contributor>
+        <contributor><name>Roger Keayes</name></contributor>
+        <contributor><name>Gavin King</name></contributor>
+        <contributor><name>Roger Kitain</name></contributor>
+        <contributor><name>Eric Lazarus</name></contributor>
+        <contributor><name>Brian Leatham</name></contributor>
+        <contributor><name>Jason Lee</name></contributor>
+        <contributor><name>Felipe Leme</name></contributor>
+        <contributor><name>Cody Lerum</name></contributor>
+        <contributor><name>Ryan Lubke</name></contributor>
+        <contributor><name>Barbara Louis</name></contributor>
+        <contributor><name>Kito Mann</name></contributor>
+        <contributor><name>Martin Marinschek</name></contributor>
+        <contributor><name>Kumar Mettu</name></contributor>
+        <contributor><name>Craig McClanahan</name></contributor>
+        <contributor><name>Pete Muir</name></contributor>
+        <contributor><name>Bernd Müller</name></contributor>
+        <contributor><name>Michael Müller</name></contributor>
+        <contributor><name>Hans Muller</name></contributor>
+        <contributor><name>Michael Nash</name></contributor>
+        <contributor><name>Paul Nicolucci</name></contributor>
+        <contributor><name>Imre Osswald</name></contributor>
+        <contributor><name>Joe Ottinger</name></contributor>
+        <contributor><name>Ken Paulsen</name></contributor>
+        <contributor><name>Dhiru Pandey</name></contributor>
+        <contributor><name>Raj Premkumar</name></contributor>
+        <contributor><name>Werner Punz</name></contributor>
+        <contributor><name>Matt Raible</name></contributor>
+        <contributor><name>Manfred Riem</name></contributor>
+        <contributor><name>Hazem Saleh</name></contributor>
+        <contributor><name>Bauke Scholtz</name></contributor>
+        <contributor><name>Andy Schwartz</name></contributor>
+        <contributor><name>Yara Senger</name></contributor>
+        <contributor><name>Stan Silvert</name></contributor>
+        <contributor><name>Vernon Singleton</name></contributor>
+        <contributor><name>Amanpreet Singh</name></contributor>
+        <contributor><name>Bernhard Slominski</name></contributor>
+        <contributor><name>Alexander Smirnov</name></contributor>
+        <contributor><name>Thomas Spiegel</name></contributor>
+        <contributor><name>Alberto) Spock (Lemos</name></contributor>
+        <contributor><name>Kyle Stiemann</name></contributor>
+        <contributor><name>James Strachan</name></contributor>
+        <contributor><name>Arjan Tijms</name></contributor>
+        <contributor><name>Leonardo Uribe</name></contributor>
+        <contributor><name>Jayashri Visvanathan</name></contributor>
+        <contributor><name>Anna Von Klopp</name></contributor>
+        <contributor><name>Matthias Wessendorf</name></contributor>
+        <contributor><name>Adam Winer</name></contributor>
+        <contributor><name>Mike Youngstrom</name></contributor>
+        <contributor><name>John A. Zukowski</name></contributor>
+    </contributors>
+    <organization>
+        <name>Oracle America, Inc</name>
+        <url>http://www.oracle.com/</url>
+    </organization>
+
+  <distributionManagement>
+    <repository>
+      <id>java.net-maven2-repository</id>
+      <name>Nexus Repository</name>
+      <url>https://maven.java.net/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+    <dependencies>
+        <!-- Java EE Dependencies -->
+        
+        <!-- Servlet 4 dependency overriding Java EE 7 main dependency -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Expression Language 3.0.1 overriding Java EE 7 main dependency  -->
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.1-b04</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b04</version>
+        </dependency>
+    
+        <!-- The main dependency against which Mojarra 2.4 is created: Java EE 7 -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.faces.build</groupId>
+            <artifactId>jsf-tools</artifactId>
+            <version>2.3.3.100</version>
+            <optional>true</optional>
+        </dependency>
+        
+        <!-- 
+            For the vendor SPI implementations shipped with Mojarra.
+            See package com.sun.faces.vendor
+            TODO: Is this really needed still? These are extremely old
+         -->
+         
+         <!-- Jetty 6 -->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>6.1.26</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-annotations</artifactId>
+            <version>6.1.26</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Tomcat 6 -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>catalina</artifactId>
+            <version>6.0.51</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <scope>provided</scope>
+        </dependency>
+      
+    </dependencies>
+    
+</project>
