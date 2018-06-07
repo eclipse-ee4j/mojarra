@@ -597,7 +597,7 @@ public final class FacesServlet implements Servlet {
         }
     }
     
-    public void initializeAllowedKnownHttpMethods(List<String> allowedKnownHttpMethodsStringList) {
+    private void initializeAllowedKnownHttpMethods(List<String> allowedKnownHttpMethodsStringList) {
         if (5 == allowedKnownHttpMethodsStringList.size()) {
             allowedKnownHttpMethods = EnumSet.of(
                     HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
