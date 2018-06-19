@@ -36,11 +36,11 @@
     </licenses>
     
     <parent>
-        <groupId>net.java</groupId>
-        <artifactId>jvnet-parent</artifactId>
-        <version>5</version>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0</version>
     </parent>
-    
+
     <groupId>com.sun.faces</groupId>
     <artifactId>project</artifactId>
     <version>2.4.0-m01-SNAPSHOT</version>
