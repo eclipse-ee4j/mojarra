@@ -18,7 +18,6 @@ package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.FACES_PREFIX;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandler;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandlerDeprecated;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ValidateFacesConfigFiles;
 import static com.sun.faces.config.manager.Documents.getProgrammaticDocuments;
@@ -475,8 +474,7 @@ public class ConfigManager {
         } 
             
         return 
-            webConfig.isOptionEnabled(DisableFaceletJSFViewHandler) || 
-            webConfig.isOptionEnabled(DisableFaceletJSFViewHandlerDeprecated);
+            webConfig.isOptionEnabled(DisableFaceletJSFViewHandler);
     }
 
 
@@ -504,8 +502,7 @@ public class ConfigManager {
     private boolean _isFaceletsDisabled(WebConfiguration webconfig, FacesConfigInfo facesConfigInfo) {
 
         boolean isFaceletsDisabled = 
-            webconfig.isOptionEnabled(DisableFaceletJSFViewHandler) ||
-            webconfig.isOptionEnabled(DisableFaceletJSFViewHandlerDeprecated);
+            webconfig.isOptionEnabled(DisableFaceletJSFViewHandler);
         
         if (!isFaceletsDisabled) {
             // if not explicitly disabled, make a sanity check against

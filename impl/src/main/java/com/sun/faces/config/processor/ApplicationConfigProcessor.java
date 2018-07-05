@@ -17,7 +17,6 @@
 package com.sun.faces.config.processor;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandler;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandlerDeprecated;
 import static com.sun.faces.util.Util.getLocaleFromString;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
@@ -899,7 +898,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         // Make the application behave as 1.2 unless they use our ViewHandler
         
         WebConfiguration webConfig = WebConfiguration.getInstance();
-        if (!webConfig.isOptionEnabled(DisableFaceletJSFViewHandler) && !webConfig.isOptionEnabled(DisableFaceletJSFViewHandlerDeprecated)) {
+        if (!webConfig.isOptionEnabled(DisableFaceletJSFViewHandler)) {
             if (viewHandlers.containsKey("com.sun.facelets.FaceletViewHandler")) {
                 LOGGER.log(WARNING, "jsf.application.legacy_facelet_viewhandler_detected", "com.sun.facelets.FaceletViewHandler");
                 webConfig.overrideContextInitParameter(DisableFaceletJSFViewHandler, true);
