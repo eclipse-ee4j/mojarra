@@ -17,7 +17,6 @@
 package com.sun.faces.application.view;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandler;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandlerDeprecated;
 
 import com.sun.faces.config.WebConfiguration;
 
@@ -44,7 +43,7 @@ public class ViewHandlingStrategyManager {
     public ViewHandlingStrategyManager() {
 
         WebConfiguration webConfig = WebConfiguration.getInstance();
-        boolean pdlDisabled = webConfig.isOptionEnabled(DisableFaceletJSFViewHandler) || webConfig.isOptionEnabled(DisableFaceletJSFViewHandlerDeprecated);
+        boolean pdlDisabled = webConfig.isOptionEnabled(DisableFaceletJSFViewHandler);
         
         strategies = pdlDisabled
                       ? new ViewHandlingStrategy[] { new JspViewHandlingStrategy() }
