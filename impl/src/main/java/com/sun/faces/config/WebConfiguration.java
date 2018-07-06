@@ -1288,10 +1288,6 @@ public class WebConfiguration {
             "com.sun.faces.registerConverterPropertyEditors",
             false
         ),
-        DisableFaceletJSFViewHandler(
-              ViewHandler.DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME,
-              false
-        ),
         DisableDefaultBeanValidator(
                 BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME,
                 false),
@@ -1546,7 +1542,7 @@ public class WebConfiguration {
 
         @Override
         public boolean shouldBeLogged(WebConfiguration configuration) {
-            return !configuration.isOptionEnabled(BooleanWebContextInitParameter.DisableFaceletJSFViewHandler);
+            return true;
         }
 
     } // END FaceletsConfigParamLoggingStrategy

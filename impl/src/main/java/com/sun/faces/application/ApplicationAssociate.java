@@ -19,7 +19,6 @@ package com.sun.faces.application;
 import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
 import static com.sun.faces.RIConstants.FACES_PREFIX;
 import static com.sun.faces.config.ConfigManager.getAnnotatedClasses;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandler;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableFaceletsResourceResolverResolveCompositeComponents;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.FaceletsSkipComments;
@@ -336,13 +335,9 @@ public class ApplicationAssociate {
         }
 
         FacesContext ctx = FacesContext.getCurrentInstance();
-
-        if (!webConfig.isOptionEnabled(DisableFaceletJSFViewHandler)) {
-            Map<String, Object> appMap = ctx.getExternalContext().getApplicationMap();
-            compiler = createCompiler(appMap, webConfig);
-            faceletFactory = createFaceletFactory(ctx, compiler, webConfig);
-        }
-
+        Map<String, Object> appMap = ctx.getExternalContext().getApplicationMap();
+        compiler = createCompiler(appMap, webConfig);
+        faceletFactory = createFaceletFactory(ctx, compiler, webConfig);
     }
 
     public static ApplicationAssociate getInstance(ExternalContext externalContext) {

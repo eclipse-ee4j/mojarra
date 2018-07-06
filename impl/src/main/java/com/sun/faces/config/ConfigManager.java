@@ -17,7 +17,6 @@
 package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.FACES_PREFIX;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandler;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ValidateFacesConfigFiles;
 import static com.sun.faces.config.manager.Documents.getProgrammaticDocuments;
@@ -272,8 +271,6 @@ public class ConfigManager {
                 InjectionProvider containerConnector = InjectionProviderFactory.createInstance(facesContext.getExternalContext());
                 facesContext.getAttributes().put(INJECTION_PROVIDER_KEY, containerConnector);
 
-                boolean isFaceletsDisabled = isFaceletsDisabled(webConfig, lastFacesConfigInfo);
-                
                 if (!lastFacesConfigInfo.isWebInfFacesConfig() || !lastFacesConfigInfo.isMetadataComplete()) {
                     findAnnotations(facesDocuments, containerConnector, servletContext, facesContext, executor);
                 }
@@ -335,18 +332,14 @@ public class ConfigManager {
                     }
                 });
                 
-                
-                if (!isFaceletsDisabled) {
-                    faceletTaglibConfigProcessor.process(
-                          servletContext, 
-                          facesContext,
-                          getXMLDocuments(
-                              servletContext,
-                              getFaceletConfigResourceProviders(),
-                              executor,
-                              validating));
-                }
-
+                faceletTaglibConfigProcessor.process(
+                      servletContext, 
+                      facesContext,
+                      getXMLDocuments(
+                          servletContext,
+                          getFaceletConfigResourceProviders(),
+                          executor,
+                          validating));              
             } catch (Exception e) {
                 // Clear out any configured factories
                 releaseFactories();
@@ -458,60 +451,6 @@ public class ConfigManager {
                      .forEach(e -> configPopulators.add(e));
         
         return configPopulators;
-    }
-    
-    /**
-     * Utility method to check if JSF 2.0 Facelets should be disabled, but that doesn't perform <em>the</em> 
-     * check unless <code>lastFacesConfigInfo</code> is indeed *the* WEB-INF/faces-config.xml
-     * 
-     * @param webConfig configuration for this application
-     * @param lastFacesConfigInfo object representing WEB-INF/faces-config.xml
-     * @return <code>true</code> if Facelets should be disabled
-     */
-    private boolean isFaceletsDisabled(WebConfiguration webConfig, FacesConfigInfo lastFacesConfigInfo) {
-        if (lastFacesConfigInfo.isWebInfFacesConfig()) {
-            return _isFaceletsDisabled(webConfig, lastFacesConfigInfo);
-        } 
-            
-        return 
-            webConfig.isOptionEnabled(DisableFaceletJSFViewHandler);
-    }
-
-
-    /**
-     * Utility method to check if JSF 2.0 Facelets should be disabled.
-     * 
-     * <p>
-     * If it's not explicitly disabled by the context init parameter, then
-     * check the version of the WEB-INF/faces-config.xml document.  If the version
-     * is less than 2.0, then override the default value for the context init
-     * parameter so that other parts of the system that use that config option
-     * will know it has been disabled.
-     * </p>
-     *
-     * <p>
-     * <em>NOTE:</em> Since this method overrides a configuration value, it should
-     * be called before *any* document parsing is performed the configuration
-     * value may be queried by the <code>ConfigParser</code>s.
-     * </p>
-     *
-     * @param webconfig configuration for this application
-     * @param facesConfigInfo object representing WEB-INF/faces-config.xml
-     * @return <code>true</code> if Facelets should be disabled
-     */
-    private boolean _isFaceletsDisabled(WebConfiguration webconfig, FacesConfigInfo facesConfigInfo) {
-
-        boolean isFaceletsDisabled = 
-            webconfig.isOptionEnabled(DisableFaceletJSFViewHandler);
-        
-        if (!isFaceletsDisabled) {
-            // if not explicitly disabled, make a sanity check against
-            // /WEB-INF/faces-config.xml
-            isFaceletsDisabled = !facesConfigInfo.isVersionGreaterOrEqual(2.0);
-            webconfig.overrideContextInitParameter(DisableFaceletJSFViewHandler, isFaceletsDisabled);
-        }
-        
-        return isFaceletsDisabled;
     }
 
     /**

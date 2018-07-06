@@ -16,7 +16,6 @@
 
 package com.sun.faces.config.processor;
 
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableFaceletJSFViewHandler;
 import static com.sun.faces.util.Util.getLocaleFromString;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
@@ -75,6 +74,8 @@ import com.sun.faces.el.ChainAwareVariableResolver;
 import com.sun.faces.el.DummyPropertyResolverImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+import static java.util.logging.Level.SEVERE;
+import javax.faces.FacesException;
 
 /**
  * <p>
@@ -892,22 +893,12 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
     }
 
     private void processViewHandlers(ServletContext servletContext, FacesContext facesContext, Application application, LinkedHashMap<String, Node> viewHandlers) {
-        
-        // Take special action on the ViewHandlers that have been configured for the application. 
-        // If any of the ViewHandlers is the FaceletViewHandler, don't install the 2.0 FaceletViewHandler. 
-        // Make the application behave as 1.2 unless they use our ViewHandler
-        
-        WebConfiguration webConfig = WebConfiguration.getInstance();
-        if (!webConfig.isOptionEnabled(DisableFaceletJSFViewHandler)) {
-            if (viewHandlers.containsKey("com.sun.facelets.FaceletViewHandler")) {
-                LOGGER.log(WARNING, "jsf.application.legacy_facelet_viewhandler_detected", "com.sun.facelets.FaceletViewHandler");
-                webConfig.overrideContextInitParameter(DisableFaceletJSFViewHandler, true);
-            }
+        if (viewHandlers.containsKey("com.sun.facelets.FaceletViewHandler")) {
+            LOGGER.log(SEVERE, "jsf.application.legacy_facelet_viewhandler_detected", "com.sun.facelets.FaceletViewHandler");
+            throw new FacesException("Use of the pre-JSF 2.0 com.sun.facelets.FaceletViewHandler is no longer supported");
         }
-        
         for (Node viewHandlerNode : viewHandlers.values()) {
             setViewHandler(servletContext, facesContext, application, viewHandlerNode);
         }
     }
-
 }
