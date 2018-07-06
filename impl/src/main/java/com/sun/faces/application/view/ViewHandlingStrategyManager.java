@@ -30,11 +30,10 @@ public class ViewHandlingStrategyManager {
 
 
     /**
-     * Be default the strategies available (in order) will be {@link FaceletViewHandlingStrategy}
-     * and {@link com.sun.faces.application.view.JspViewHandlingStrategy}.  
+     * Be default the strategies available (in order) will be {@link FaceletViewHandlingStrategy}.  
      */
     public ViewHandlingStrategyManager() {
-        strategies = new ViewHandlingStrategy[] { new FaceletViewHandlingStrategy(), new JspViewHandlingStrategy() };
+        strategies = new ViewHandlingStrategy[] { new FaceletViewHandlingStrategy() };
     }
 
 
