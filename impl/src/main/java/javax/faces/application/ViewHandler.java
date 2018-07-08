@@ -215,16 +215,12 @@ public abstract class ViewHandler {
     public static final String FACELETS_DECORATORS_PARAM_NAME = "javax.faces.FACELETS_DECORATORS";
 
     /**
-     * <p class="changed_added_2_2">
-     * If this param is set, and calling toLowerCase().equals("true") on a String representation of
-     * its value returns true, the default ViewHandler must behave as specified in the latest 1.2
-     * version of this specification. Any behavior specified in Section "Default
-     * ViewDeclarationLanguage Implementation" of the spec prose document and implemented in the
-     * default ViewHandler that pertains to handling requests for pages authored in the JavaServer
-     * Faces View Declaration Language must not be executed by the runtime.
+     * <p class="changed_modified_3_0">
+     *  This constant is deprecated and is to be completely ignored by the JSF runtime.
      * </p>
      * 
      * @since 2.0
+     * @deprecated
      */
     public static final String DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME = "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
     
