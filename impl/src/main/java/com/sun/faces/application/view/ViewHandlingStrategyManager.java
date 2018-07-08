@@ -30,7 +30,7 @@ public class ViewHandlingStrategyManager {
 
 
     /**
-     * Be default the strategies available (in order) will be {@link FaceletViewHandlingStrategy}.  
+     * By default the strategies available (in order) will be {@link FaceletViewHandlingStrategy}.  
      */
     public ViewHandlingStrategyManager() {
         strategies = new ViewHandlingStrategy[] { new FaceletViewHandlingStrategy() };
