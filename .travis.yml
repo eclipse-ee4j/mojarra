@@ -9,3 +9,7 @@ jdk:
   - openjdk8
 script:
   - mvn -B clean install
+addons:
+  apt:
+    packages:
+    - xmllint
