@@ -12,4 +12,4 @@ script:
 addons:
   apt:
     packages:
-    - xmllint2
+    - libxml2-utils
