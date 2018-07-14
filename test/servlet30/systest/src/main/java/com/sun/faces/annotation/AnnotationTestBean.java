@@ -37,9 +37,6 @@ import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 
 import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.mgbean.BeanBuilder;
-import com.sun.faces.mgbean.BeanManager;
-import com.sun.faces.mgbean.ManagedBeanInfo;
 import javax.faces.FacesException;
 
 
@@ -127,35 +124,9 @@ public class AnnotationTestBean {
         ClientBehaviorRenderer br = rk.getClientBehaviorRenderer("AnnotatedBehaviorRenderer");
         assertNotNull(br);
         assertTrue(br instanceof AnnotatedBehaviorRenderer);
-        // validate class annotated with @ManagedBean
-        ApplicationAssociate associate =
-              ApplicationAssociate.getInstance(ctx.getExternalContext());
-        BeanManager manager = associate.getBeanManager();
-        BeanBuilder bean1 = manager.getBuilder("annotatedBean");
-        assertNotNull(bean1);
-        ManagedBeanInfo bean1Info = bean1.getManagedBeanInfo();
-        assertEquals("annotatedBean", bean1Info.getName());
-        assertEquals("request", bean1Info.getScope());
-        assertFalse(bean1Info.isEager());
-        List<ManagedBeanInfo.ManagedProperty> managedProperties =
-              bean1Info.getManagedProperties();
-        assertNotNull(managedProperties);
-        assertTrue(managedProperties.size() == 2);
-        ManagedBeanInfo.ManagedProperty p1 = managedProperties.get(0);
-        assertEquals("silly", p1.getPropertyName());
-        assertEquals(String.class.getName(), p1.getPropertyClass());
-        assertEquals("#{requestScope.name}", p1.getPropertyValue());
-        ManagedBeanInfo.ManagedProperty p2 = managedProperties.get(1);
-        assertEquals("age", p2.getPropertyName());
-        assertEquals(Integer.TYPE.getName(), p2.getPropertyClass());
-        assertEquals("#{requestScope.age}", p2.getPropertyValue());
         HttpServletRequest request = (HttpServletRequest) ctx.getExternalContext().getRequest();
         request.setAttribute("name", "Bill");
         request.setAttribute("age", 33);
-        AnnotatedBean bean1Instance =
-              (AnnotatedBean) manager.create("annotatedBean", ctx);
-        assertEquals("Bill", bean1Instance.getSilly());
-        assertEquals(33, bean1Instance.getAge());
         assertNotNull(request.getAttribute("annotatedBean"));
         request.removeAttribute("annotatedBean");
 

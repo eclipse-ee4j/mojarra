@@ -34,7 +34,6 @@
         <module>absoluteOrdering</module>
         <module>ajax</module>
         <module>ajaxNamespace</module>
-        <module>annotationRestrictions</module>
         <module>application</module>
         <module>appUsingJarWithExactlyTwoContracts</module>
         <module>bogusRenderKitId</module>

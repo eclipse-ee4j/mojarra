@@ -61,7 +61,6 @@ import javax.servlet.jsp.JspFactory;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.cdi.CdiExtension;
 import com.sun.faces.context.flash.FlashELResolver;
-import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.MessageUtils;
 
 /**
@@ -151,9 +150,6 @@ public class ELUtils {
 
     public static final ListELResolver LIST_RESOLVER = new ListELResolver();
 
-    public static final ManagedBeanELResolver MANAGED_BEAN_RESOLVER =
-        new ManagedBeanELResolver();
-
     public static final MapELResolver MAP_RESOLVER = new MapELResolver();
 
     public static final ResourceBundleELResolver BUNDLE_RESOLVER =
@@ -227,7 +223,6 @@ public class ELUtils {
         addVariableResolvers(composite, Faces, associate);
         addPropertyResolvers(composite, associate);
         composite.add(associate.getApplicationELResolvers());
-        composite.addRootELResolver(MANAGED_BEAN_RESOLVER);
         composite.addPropertyELResolver(RESOURCE_RESOLVER);
         composite.addPropertyELResolver(BUNDLE_RESOLVER);
         composite.addRootELResolver(FACES_BUNDLE_RESOLVER);
@@ -256,7 +251,6 @@ public class ELUtils {
         }
         
         composite.add(FLASH_RESOLVER);
-        composite.addRootELResolver(MANAGED_BEAN_RESOLVER);
         composite.addPropertyELResolver(RESOURCE_RESOLVER);
         composite.addRootELResolver(FACES_BUNDLE_RESOLVER);
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
@@ -770,12 +764,6 @@ public class ELUtils {
             // Perhaps the bean hasn't been created yet.  See what its
             // scope would be when it is created.
             if (firstSegment[0] != null) {
-                BeanManager manager =
-                     ApplicationAssociate.getCurrentInstance().getBeanManager();
-
-                if (manager.isManaged(firstSegment[0])) {
-                    valueScope = ELUtils.getScope(manager.getBuilder(firstSegment[0]).getScope());
-                }
             } else {
                 // we are referring to a bean that doesn't exist in the
                 // configuration file.  Give it a wide scope...
