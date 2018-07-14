@@ -210,61 +210,6 @@
                                 <delete dir="build"/>
                                 <delete dir="${jsf-tools-dir}/build"/>
                                 
-                                
-                                <echo message="${line.separator}${line.separator}Generate com.sun.faces.renderkit.html_basic sources${line.separator}${line.separator}" />
-                                <!--
-                                
-                                    Generate com.sun.faces.renderkit.html_basic sources
-                                    
-                                    -->
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" verbose="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="LogStrings.properties"/>
-                                </copy>
-                                
-                                <echo message="Copying *.dtd,*.xsd" />
-                                
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" flatten="true" verbose="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="*.dtd,*.xsd"/>
-                                </copy>
-                                
-                                <echo message="Copying TAG-*" />
-                                
-                                <copy todir="build" verbose="true">
-                                    <fileset dir="${jsf-tools-dir}/conf">
-                                        <include name="TAG-*"/>
-                                    </fileset>
-                                </copy>
-                                
-                                <echo message="generateTaglib" />
-                                
-                                <taskdef name="generateTaglib"
-                                         classname="com.sun.faces.ant.TaglibGenTask">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${project.version}.jar"/>
-                                        <pathelement location="${jsf-tools-dir}/build/classes/"/>
-                                    </classpath>
-                                </taskdef>
-                                <generateTaglib
-                                    generatorConfig="${jsf-tools-dir}/conf/HtmlBasicTaglib21.properties"
-                                    facesConfig="src/main/resources/com/sun/faces/standard-html-renderkit.xml"
-                                    fork="true">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${project.version}.jar"/>
-                                        <pathelement location="${jsf-tools-dir}/build/classes/"/>
-                                        <path refid="maven.plugin.classpath"/>
-                                    </classpath>
-                                </generateTaglib>
-                                
-                                <copy todir="${project.build.directory}/generated-sources/antrun/com" verbose="true">
-                                    <fileset dir="build/generate/com"/>
-                                </copy>
-                                
-                                <echo message="deleting build" />
-                                
-                                <delete dir="build"/>
-                                <delete dir="${jsf-tools-dir}/build"/>
-                                
-                                
                                 <echo message="${line.separator}${line.separator}${line.separator}${line.separator}Generate API components${line.separator}${line.separator}${line.separator}${line.separator}" />
                                 <!--
                                 
@@ -339,49 +284,6 @@
                                     value="${mojarra.logstrings.version}">
                                     <include name="**/LogStrings*.properties"/>
                                 </replace>
-                                
-                                
-                                <!--
-                                
-                                    Generate META-INF/html_basic.tld
-                                    
-                                -->
-                                <copy todir="build">
-                                    <fileset dir="${jsf-tools-dir}/conf">
-                                        <include name="TAG-*"/>
-                                    </fileset>
-                                </copy>
-                                
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" verbose="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="LogStrings.properties"/>
-                                </copy>
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" flatten="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="*.dtd,*.xsd"/>
-                                </copy>
-                                
-                                <taskdef name="generateTaglib" classname="com.sun.faces.ant.TaglibGenTask">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/build/classes"/>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${project.version}.jar"/>
-                                    </classpath>
-                                </taskdef>
-                                <generateTaglib
-                                    generatorConfig="${jsf-tools-dir}/conf/HtmlBasicTaglib21.properties"
-                                    facesConfig="src/main/resources/com/sun/faces/standard-html-renderkit.xml"
-                                    fork="true">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${project.version}.jar"/>
-                                        <pathelement location="${jsf-tools-dir}/build/classes"/>
-                                        <path refid="maven.plugin.classpath"/>
-                                    </classpath>
-                                </generateTaglib>
-                                
-                                <copy file="build/generate/conf/share/html_basic.tld"
-                                      toDir="${project.build.directory}/generated-resources/antrun/META-INF"/>
-                                      
-                                <delete dir="build"/>
-                                <delete dir="${jsf-tools-dir}/build"/>
-                                
                                 
                                 <!--
                                 
