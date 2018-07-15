@@ -693,15 +693,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 return;
             }
 
-            // register an empty resolver for now. It will be populated after the 
-            // first request is serviced.
-            FacesCompositeELResolver compositeELResolverForJsp =
-                    new ChainTypeCompositeELResolver(FacesCompositeELResolver.ELResolverChainType.JSP);
             ApplicationAssociate associate =
                     ApplicationAssociate.getInstance(context);
-            if (associate != null) {
-                associate.setFacesELResolverForJsp(compositeELResolverForJsp);
-            }
 
             // get JspApplicationContext.
             JspApplicationContext jspAppContext = JspFactory.getDefaultFactory()
@@ -710,19 +703,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             // cache the ExpressionFactory instance in ApplicationAssociate
             if (associate != null) {
                 associate.setExpressionFactory(jspAppContext.getExpressionFactory());
-            }
-
-            // register compositeELResolver with JSP
-            try {
-                jspAppContext.addELResolver(compositeELResolverForJsp);
-            }
-            catch (IllegalStateException e) {
-                ApplicationFactory factory = (ApplicationFactory)
-                        FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-                Application app = factory.getApplication();
-                if (app.getProjectStage() != ProjectStage.UnitTest && !reloaded) {
-                    throw e;
-                }
             }
 
             // register JSF ELContextListenerImpl with Jsp

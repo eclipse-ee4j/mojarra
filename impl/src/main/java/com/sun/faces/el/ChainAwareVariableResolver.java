@@ -74,12 +74,7 @@ public class ChainAwareVariableResolver extends VariableResolver {
             valueObject instanceof ELResolverChainType) {
             type = (ELResolverChainType) valueObject;
         }
-        if (ELResolverChainType.JSP == type) {
-            ValueExpression ve = context.getApplication().getExpressionFactory()
-                  .createValueExpression(context.getELContext(),
-                                         "#{" + name + "}", Object.class);
-            result = ve.getValue(context.getELContext());
-        } else if (ELResolverChainType.Faces == type) {
+        if (ELResolverChainType.Faces == type) {
             ELResolver elr = context.getApplication().getELResolver();
             result = elr.getValue(context.getELContext(), null, name);
         }
