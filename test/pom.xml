@@ -24,7 +24,7 @@
 
     <groupId>com.sun.faces.test</groupId>
     <artifactId>pom</artifactId>
-    <version>2.4.0-m01-SNAPSHOT</version>
+    <version>3.0.0-m01-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Mojarra ${project.version} - Test</name>
@@ -199,7 +199,7 @@
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>util</artifactId>
-            <version>2.4.0-m01-SNAPSHOT</version>
+            <version>3.0.0-m01-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
