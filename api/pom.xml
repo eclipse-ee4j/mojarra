@@ -33,7 +33,7 @@
     <parent>
         <groupId>com.sun.faces</groupId>
         <artifactId>project</artifactId>
-        <version>2.4.0-m01-SNAPSHOT</version>
+        <version>3.0.0-m01-SNAPSHOT</version>
     </parent>
     
     <groupId>javax.faces</groupId>
@@ -44,7 +44,7 @@
     <name>JSF API ${project.version}</name>
     
     <properties>
-        <mojarra.version>2.4.0-m01-SNAPSHOT</mojarra.version>
+        <mojarra.version>3.0.0-m01-SNAPSHOT</mojarra.version>
     </properties>
     
     <inceptionYear>1997</inceptionYear>
@@ -416,7 +416,7 @@
         <dependency>
             <groupId>com.sun.faces.build</groupId>
             <artifactId>jsf-tools</artifactId>
-            <version>2.4.0-m01-SNAPSHOT</version>
+            <version>3.0.0-m01-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         
