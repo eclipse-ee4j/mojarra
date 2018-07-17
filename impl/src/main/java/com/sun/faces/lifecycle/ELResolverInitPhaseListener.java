@@ -18,10 +18,6 @@ package com.sun.faces.lifecycle;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
-import com.sun.faces.el.ELUtils;
-
-import com.sun.faces.el.FacesCompositeELResolver;
-
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
@@ -30,9 +26,7 @@ import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import java.util.Iterator;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.Application;
 
 /**
  * <p>This class is used to register the JSF <code>ELResolver</code>
@@ -132,46 +126,6 @@ public class ELResolverInitPhaseListener implements PhaseListener {
 
     // ------------------------------------------------------- Protected Methods
 
-
-    /**
-     * Populate the FacesCompositeELResolver stack registered with JSP
-     * if a request is being processed for the very first time. At the
-     * application initialiazation time, an empty CompositeELResolver is
-     * registered with JSP because ELResolvers can be added until the first
-     * request is serviced.
-     *
-     * @param context - the <code>FacesContext</code> for the current request
-     */
-    protected void populateFacesELResolverForJsp(FacesContext context) {
-
-        ApplicationAssociate appAssociate =
-              ApplicationAssociate.getInstance(context.getExternalContext());
-        populateFacesELResolverForJsp(context.getApplication(), appAssociate);
-
-    }
-
-    public static void populateFacesELResolverForJsp(Application app,
-            ApplicationAssociate appAssociate) {
-        FacesCompositeELResolver compositeELResolverForJsp =
-              appAssociate.getFacesELResolverForJsp();
-        if (compositeELResolverForJsp == null) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.log(Level.INFO,
-                           "jsf.lifecycle.initphaselistener.resolvers_not_registered",
-                           new Object[] { appAssociate.getContextName() });
-            }
-            return;
-        }
-
-        ELUtils.buildJSPResolver(compositeELResolverForJsp, appAssociate);
-
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE,
-                       "jsf.lifecycle.initphaselistener.resolvers_registered",
-                       new Object[] { appAssociate.getContextName() });
-        }
-
-    }
 
     public static void removeELResolverInitPhaseListener() {
         LifecycleFactory factory = (LifecycleFactory)

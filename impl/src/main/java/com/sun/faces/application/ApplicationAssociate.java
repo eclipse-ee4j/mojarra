@@ -32,7 +32,6 @@ import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.Face
 import static com.sun.faces.facelets.impl.DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME;
 import static com.sun.faces.facelets.util.ReflectionUtil.decorateInstance;
 import static com.sun.faces.facelets.util.ReflectionUtil.forName;
-import static com.sun.faces.lifecycle.ELResolverInitPhaseListener.populateFacesELResolverForJsp;
 import static com.sun.faces.util.MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
@@ -451,7 +450,6 @@ public class ApplicationAssociate {
         if (applicationImpl.getCompositeELResolver() == null) {
             applicationImpl.setCompositeELResolver(new DemuxCompositeELResolver(Faces));
             buildFacesResolver(applicationImpl.getCompositeELResolver(), this);
-            populateFacesELResolverForJsp(applicationImpl, this);
         }
     }
 

@@ -26,14 +26,10 @@ import javax.el.CompositeELResolver;
 public abstract class FacesCompositeELResolver extends CompositeELResolver {
     
   /**
-   * <p><b>JSP</b> indicates this CompositeELResolver instance is the
-   * JSP chain, specified in section 5.6.1 of the spec.</p>
-   *
    * <p><b>Faces</b> indicates this CompositeELResolver instance is the
    * JSF chain, specified in section 5.6.2 of the spec.</p>
    */
   public enum ELResolverChainType {
-      JSP,
       Faces
   }
 
