@@ -317,7 +317,6 @@ public class AnnotationManager {
               new ValidatorConfigHandler(),
               new BehaviorConfigHandler(),
               new RenderKitConfigHandler(),
-              new ManagedBeanConfigHandler(),
               new NamedEventConfigHandler()
         };
         Map<Class<? extends Annotation>,ConfigAnnotationHandler> handlerMap =

@@ -22,7 +22,7 @@
     <parent>
         <artifactId>pom</artifactId>
         <groupId>com.sun.faces.test.cluster.servlet25.flash</groupId>
-        <version>2.4.0-m01-SNAPSHOT</version>
+        <version>3.0.0-m01-SNAPSHOT</version>
     </parent>
     <groupId>com.sun.faces.test.cluster.servlet25.flash</groupId>
     <artifactId>reaper</artifactId>
