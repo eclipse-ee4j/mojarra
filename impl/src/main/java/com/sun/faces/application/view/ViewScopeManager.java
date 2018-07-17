@@ -19,7 +19,6 @@ package com.sun.faces.application.view;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.LRUMap;
 import java.util.Collections;
 import java.util.Iterator;
@@ -138,23 +137,6 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @param viewMap the view map.
      */
     private void destroyBeans(ApplicationAssociate applicationAssociate, Map<String, Object> viewMap) {
-        for (Map.Entry<String, Object> entry : viewMap.entrySet()) {
-            String name = entry.getKey();
-            Object bean = entry.getValue();
-
-            try {
-                if (applicationAssociate != null) {
-                    BeanManager beanManager = applicationAssociate.getBeanManager();
-                    if (beanManager != null && beanManager.isManaged(name)) {
-                        beanManager.destroy(name, bean);
-                    }
-                }
-            } catch (Exception exception) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "Error calling @PreDestroy on bean with name: " + name, exception);
-                }
-            }
-        }
     }
 
     /**
