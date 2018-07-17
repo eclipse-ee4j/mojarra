@@ -80,7 +80,6 @@ import com.sun.faces.config.processor.FacesConfigExtensionProcessor;
 import com.sun.faces.config.processor.FacesFlowDefinitionConfigProcessor;
 import com.sun.faces.config.processor.FactoryConfigProcessor;
 import com.sun.faces.config.processor.LifecycleConfigProcessor;
-import com.sun.faces.config.processor.ManagedBeanConfigProcessor;
 import com.sun.faces.config.processor.NavigationConfigProcessor;
 import com.sun.faces.config.processor.ProtectedViewsConfigProcessor;
 import com.sun.faces.config.processor.RenderKitConfigProcessor;
@@ -148,7 +147,6 @@ public class ConfigManager {
             new ComponentConfigProcessor(),
             new ConverterConfigProcessor(),
             new ValidatorConfigProcessor(),
-            new ManagedBeanConfigProcessor(),
             new RenderKitConfigProcessor(),
             new NavigationConfigProcessor(),
             new BehaviorConfigProcessor(),

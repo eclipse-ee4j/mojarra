@@ -35,7 +35,6 @@ import javax.el.ELResolver;
 import com.sun.faces.util.Util;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.mgbean.BeanManager;
 
 public class ScopedAttributeELResolver extends ELResolver {
 
@@ -87,18 +86,6 @@ public class ScopedAttributeELResolver extends ELResolver {
         result = ec.getApplicationMap().get(attribute);
         if (result != null) {
             return result;
-        }
-
-        // if we get to this point, nothing was found in the standard scopes.
-        // If the attribute refers to an entity handled by the BeanManager
-        // try getting the value from there as the value may be in a custom
-        // scope.
-        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-        if (associate != null) {
-            BeanManager manager = associate.getBeanManager();
-            if (manager != null && manager.isManaged(attribute)) {
-                return manager.getBeanFromScope(attribute, facesContext);
-            }
         }
 
         return null;

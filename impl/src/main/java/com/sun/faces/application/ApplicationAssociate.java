@@ -119,7 +119,6 @@ import com.sun.faces.facelets.tag.ui.UILibrary;
 import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.facelets.util.FunctionLibrary;
 import com.sun.faces.facelets.util.ReflectionUtil;
-import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
 
@@ -196,7 +195,6 @@ public class ApplicationAssociate {
     private boolean requestServiced;
     private boolean errorPagePresent;
 
-    private BeanManager beanManager;
     private AnnotationManager annotationManager;
     private boolean devModeEnabled;
     private boolean hasPushBuilder;
@@ -245,11 +243,7 @@ public class ApplicationAssociate {
         navigationMap = new ConcurrentHashMap<>();
         injectionProvider = (InjectionProvider) facesContext.getAttributes().get(ConfigManager.INJECTION_PROVIDER_KEY);
         webConfig = WebConfiguration.getInstance(externalContext);
-        beanManager = new BeanManager(injectionProvider, webConfig.isOptionEnabled(EnableLazyBeanValidation));
         
-        // Install the bean manager as a system event listener for custom
-        // scopes being destoryed.
-        applicationImpl.subscribeToEvent(PreDestroyCustomScopeEvent.class, ScopeContext.class, beanManager);
         annotationManager = new AnnotationManager();
 
         devModeEnabled = appImpl.getProjectStage() == Development;
@@ -450,10 +444,6 @@ public class ApplicationAssociate {
         }
 
         servletContext.removeAttribute(ASSOCIATE_KEY);
-    }
-
-    public BeanManager getBeanManager() {
-        return beanManager;
     }
 
     public void initializeELResolverChains() {
