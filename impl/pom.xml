@@ -34,7 +34,7 @@
     <parent>
        <groupId>com.sun.faces</groupId>
         <artifactId>project</artifactId>
-        <version>2.4.0-m01-SNAPSHOT</version>
+        <version>3.0.0-m01-SNAPSHOT</version>
     </parent>
     
     <groupId>org.glassfish</groupId>
@@ -726,7 +726,7 @@
         <dependency>
             <groupId>com.sun.faces.build</groupId>
             <artifactId>jsf-tools</artifactId>
-            <version>2.4.0-m01-SNAPSHOT</version>
+            <version>3.0.0-m01-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         

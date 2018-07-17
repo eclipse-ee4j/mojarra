@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.sun.faces.test.servlet30</groupId>
         <artifactId>pom</artifactId>
-        <version>2.4.0-m01-SNAPSHOT</version>
+        <version>3.0.0-m01-SNAPSHOT</version>
     </parent>
     <artifactId>customPropertyResolverJsp</artifactId>
     <packaging>war</packaging>

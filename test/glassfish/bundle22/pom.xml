@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.sun.faces.test.glassfish</groupId>
         <artifactId>pom</artifactId>
-        <version>2.4.0-m01-SNAPSHOT</version>
+        <version>3.0.0-m01-SNAPSHOT</version>
     </parent>
     <groupId>com.sun.faces.test.glassfish</groupId>
     <artifactId>bundle22</artifactId>
