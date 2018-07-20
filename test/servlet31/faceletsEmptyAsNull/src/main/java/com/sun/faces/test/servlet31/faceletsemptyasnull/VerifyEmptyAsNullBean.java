@@ -16,13 +16,17 @@
 
 package com.sun.faces.test.servlet31.faceletsemptyasnull;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.event.ValueChangeEvent;
+import java.io.Serializable;
 
-@ManagedBean
+import javax.enterprise.context.SessionScoped;
+import javax.faces.event.ValueChangeEvent;
+import javax.inject.Named;
+
+@Named
 @SessionScoped
-public class VerifyEmptyAsNullBean {
+public class VerifyEmptyAsNullBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     Object integerPropertySet = "";
     Integer integerProperty;
@@ -64,13 +68,13 @@ public class VerifyEmptyAsNullBean {
     public boolean isStringNull() {
         boolean isNull = (this.stringPropertySet == null);
         this.stringPropertySet = "";
-        return (isNull);
+        return isNull;
     }
 
     public boolean isIntegerNull() {
         boolean isNull = (this.integerPropertySet == null);
         this.integerPropertySet = "";
-        return (isNull);
+        return isNull;
     }
 
     public void valueChange(ValueChangeEvent event) {
