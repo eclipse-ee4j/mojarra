@@ -19,9 +19,9 @@ package com.sun.faces.test.servlet40.facelets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 public class MapBean {
 
     public Map<String, Integer> getMap() {

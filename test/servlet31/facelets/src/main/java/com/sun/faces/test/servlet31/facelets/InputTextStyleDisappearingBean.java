@@ -16,16 +16,15 @@
 
 package com.sun.faces.test.servlet31.facelets;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class InputTextStyleDisappearingBean {
 
-    private static final long serialVersionUID = 1L;
     private HtmlInputText input;
 
     public HtmlInputText getInput() {

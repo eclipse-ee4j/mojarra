@@ -17,11 +17,12 @@
 package com.sun.faces.test.servlet40.systemevent;
 
 import java.io.IOException;
-import javax.faces.bean.ManagedBean;
+
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 public class PostRenderViewEventBean {
 
     public void pre(ComponentSystemEvent event) throws IOException {
