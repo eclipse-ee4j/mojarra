@@ -16,11 +16,6 @@
 
 package javax.faces.component;
 
-import javax.faces.el.ValueBinding;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -64,10 +59,10 @@ public class UISelectBooleanTestCase extends UIInputTestCase {
 
         selectBoolean.setSelected(false);
         assertEquals(Boolean.FALSE,
-                (Boolean) selectBoolean.getAttributes().get("selected"));
+                selectBoolean.getAttributes().get("selected"));
         selectBoolean.setSelected(true);
         assertEquals(Boolean.TRUE,
-                (Boolean) selectBoolean.getAttributes().get("selected"));
+                selectBoolean.getAttributes().get("selected"));
         selectBoolean.getAttributes().put("selected", Boolean.FALSE);
         assertTrue(!selectBoolean.isSelected());
         selectBoolean.getAttributes().put("selected", Boolean.TRUE);
@@ -89,67 +84,6 @@ public class UISelectBooleanTestCase extends UIInputTestCase {
         UISelectBoolean selectBoolean = (UISelectBoolean) component;
     }
 
-    // Test setting properties to valid values
-    @Override
-    public void testPropertiesValid() throws Exception {
-        super.testPropertiesValid();
-        UISelectBoolean selectBoolean = (UISelectBoolean) component;
-        selectBoolean.setSelected(true);
-        assertTrue(selectBoolean.isSelected());
-        assertEquals(Boolean.TRUE,
-                (Boolean) selectBoolean.getValue());
-        selectBoolean.setSelected(false);
-        assertTrue(!selectBoolean.isSelected());
-        assertEquals(Boolean.FALSE,
-                (Boolean) selectBoolean.getValue());
-
-        // Test transparency between "value" and "selected" properties
-        selectBoolean.setValue(Boolean.TRUE);
-        assertTrue(selectBoolean.isSelected());
-        selectBoolean.setValue(Boolean.FALSE);
-        assertTrue(!selectBoolean.isSelected());
-        selectBoolean.resetValue();
-        assertTrue(!selectBoolean.isSelected());
-
-        // Transparency applies to value bindings as well
-        assertNull(selectBoolean.getValueBinding("selected"));
-        assertNull(selectBoolean.getValueBinding("value"));
-        request.setAttribute("foo", Boolean.TRUE);
-        ValueBinding vb = application.createValueBinding("#{foo}");
-        selectBoolean.setValueBinding("selected", vb);
-        assertTrue(vb == selectBoolean.getValueBinding("selected"));
-        assertTrue(vb == selectBoolean.getValueBinding("value"));
-        selectBoolean.setValueBinding("selected", null);
-        assertNull(selectBoolean.getValueBinding("selected"));
-        assertNull(selectBoolean.getValueBinding("value"));
-        selectBoolean.setValueBinding("value", vb);
-        assertTrue(vb == selectBoolean.getValueBinding("selected"));
-        assertTrue(vb == selectBoolean.getValueBinding("value"));
-        selectBoolean.setValueBinding("selected", null);
-        assertNull(selectBoolean.getValueBinding("selected"));
-        assertNull(selectBoolean.getValueBinding("value"));
-    }
-
-    @Override
-    public void testValueBindings() {
-        super.testValueBindings();
-        UISelectBoolean test = (UISelectBoolean) component;
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.resetValue();
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.resetValue();
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
-    }
 
     // --------------------------------------------------------- Support Methods
     // Create a pristine component of the type to be used in state holder tests

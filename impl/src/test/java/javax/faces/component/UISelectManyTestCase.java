@@ -16,28 +16,24 @@
 
 package javax.faces.component;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import javax.faces.application.FacesMessage;
-import javax.faces.el.ValueBinding;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
-import javax.faces.model.ListDataModel;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.NoSuchElementException;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import java.util.Set;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.model.ListDataModel;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -114,47 +110,6 @@ public class UISelectManyTestCase extends UIInputTestCase {
         super.testPropertiesInvalid();
     }
 
-    // Test setting properties to valid values
-    @Override
-    public void testPropertiesValid() throws Exception {
-        super.testPropertiesValid();
-        UISelectMany selectMany = (UISelectMany) component;
-
-        Object values[] = new Object[]{"foo", "bar"};
-
-        selectMany.setSelectedValues(values);
-        assertEquals(values, selectMany.getSelectedValues());
-        assertEquals(values, selectMany.getValue());
-        selectMany.setSelectedValues(null);
-        assertNull(selectMany.getSelectedValues());
-        assertNull(selectMany.getValue());
-
-        // Test transparency between "value" and "selectedValues" properties
-        selectMany.setValue(values);
-        assertEquals(values, selectMany.getSelectedValues());
-        assertEquals(values, selectMany.getValue());
-        selectMany.resetValue();
-        assertNull(selectMany.getSelectedValues());
-        assertNull(selectMany.getValue());
-
-        // Transparency applies to value bindings as well
-        assertNull(selectMany.getValueBinding("selectedValues"));
-        assertNull(selectMany.getValueBinding("value"));
-        request.setAttribute("foo", new Object[]{"bar", "baz"});
-        ValueBinding vb = application.createValueBinding("#{foo}");
-        selectMany.setValueBinding("selectedValues", vb);
-        assertTrue(vb == selectMany.getValueBinding("selectedValues"));
-        assertTrue(vb == selectMany.getValueBinding("value"));
-        selectMany.setValueBinding("selectedValues", null);
-        assertNull(selectMany.getValueBinding("selectedValues"));
-        assertNull(selectMany.getValueBinding("value"));
-        selectMany.setValueBinding("value", vb);
-        assertTrue(vb == selectMany.getValueBinding("selectedValues"));
-        assertTrue(vb == selectMany.getValueBinding("value"));
-        selectMany.setValueBinding("selectedValues", null);
-        assertNull(selectMany.getValueBinding("selectedValues"));
-        assertNull(selectMany.getValueBinding("value"));
-    }
 
     // Test validation of value against the valid list
     public void testValidation() throws Exception {
@@ -423,30 +378,9 @@ public class UISelectManyTestCase extends UIInputTestCase {
         assertTrue(selectMany.isValid());
     }
 
-    // Test that appropriate properties are value binding enabled
-    @Override
-    public void testValueBindings() {
-        super.testValueBindings();
-        UISelectMany test = (UISelectMany) component;
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.resetValue();
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.resetValue();
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
-    }
 
     public void testSelectItemsIterator() {
-        // sub test 1: non-selectitem at end 
+        // sub test 1: non-selectitem at end
         UISelectMany selectMany = (UISelectMany) component;
         selectMany.getChildren().add(new UISelectItemSub("orr", null, null));
         UIParameter param = new UIParameter();

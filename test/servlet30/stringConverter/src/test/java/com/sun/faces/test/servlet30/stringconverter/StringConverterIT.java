@@ -17,17 +17,19 @@
 package com.sun.faces.test.servlet30.stringconverter;
 
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import java.util.List;
-import org.junit.After;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
-
+@Ignore("Update to EL Resolver")
 public class StringConverterIT  {
 
     private String webUrl;
@@ -54,7 +56,7 @@ public class StringConverterIT  {
 	HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
 	page = (HtmlPage) button.click();
 	assertTrue(-1 != page.asText().indexOf("String_newString"));
-        
+
 	button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
 	page = (HtmlPage) button.click();
 	assertTrue(-1 != page.asText().indexOf("String_String_newString"));

@@ -16,53 +16,43 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.FacesListener;
-import javax.faces.render.Renderer;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.faces.component.search.UntargetableComponent;
 
-@SuppressWarnings({"deprecation"})
+import javax.el.ValueExpression;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIComponentBase;
+import javax.faces.component.search.UntargetableComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.FacesListener;
+import javax.faces.render.Renderer;
+
 public class UILeaf extends UIComponentBase implements UntargetableComponent {
-    
+
     private final static Map<String,UIComponent> facets = new HashMap<String,UIComponent>(0, 1.0f){
-    
+
         private static final long serialVersionUID = 6132215325480325558L;
 
         @Override
         public void putAll(Map map) {
             // do nothing
         }
-    
+
         @Override
         public UIComponent put(String name, UIComponent value) {
             return null;
         }
     };
-    
+
     private UIComponent parent;
     private boolean returnLocalTransient = true;
 
-    @Override
-    public ValueBinding getValueBinding(String binding) {
-        return null;
-    }
-
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-        // do nothing
-    }
 
     @Override
     public ValueExpression getValueExpression(String name) {

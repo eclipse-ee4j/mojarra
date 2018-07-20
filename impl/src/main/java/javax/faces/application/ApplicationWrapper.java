@@ -35,11 +35,6 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
@@ -229,64 +224,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link Application#getPropertyResolver} on the
-     * wrapped {@link Application} object.
-     * </p>
-     *
-     * @deprecated See superclass for alternative.
-     */
-    @Override
-    @Deprecated
-    public PropertyResolver getPropertyResolver() {
-        return getWrapped().getPropertyResolver();
-    }
-
-    /**
-     * <p class="changed_added_2_0">
-     * The default behavior of this method is to call
-     * {@link Application#setPropertyResolver(javax.faces.el.PropertyResolver)} on the wrapped
-     * {@link Application} object.
-     * </p>
-     *
-     * @deprecated See superclass for alternative.
-     */
-    @Override
-    @Deprecated
-    public void setPropertyResolver(PropertyResolver resolver) {
-        getWrapped().setPropertyResolver(resolver);
-    }
-
-    /**
-     * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link Application#getVariableResolver} on the
-     * wrapped {@link Application} object.
-     * </p>
-     *
-     * @deprecated See superclass for alternative.
-     */
-    @Override
-    @Deprecated
-    public VariableResolver getVariableResolver() {
-        return getWrapped().getVariableResolver();
-    }
-
-    /**
-     * <p class="changed_added_2_0">
-     * The default behavior of this method is to call
-     * {@link Application#setVariableResolver(javax.faces.el.VariableResolver)} on the wrapped
-     * {@link Application} object.
-     * </p>
-     *
-     * @deprecated See superclass for alternative.
-     */
-    @Override
-    @Deprecated
-    public void setVariableResolver(VariableResolver resolver) {
-        getWrapped().setVariableResolver(resolver);
-    }
-
-    /**
-     * <p class="changed_added_2_0">
      * The default behavior of this method is to call {@link Application#getViewHandler} on the
      * wrapped {@link Application} object.
      * </p>
@@ -359,21 +296,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     @Override
     public UIComponent createComponent(String componentType) throws FacesException {
         return getWrapped().createComponent(componentType);
-    }
-
-    /**
-     * <p class="changed_added_2_0">
-     * The default behavior of this method is to call
-     * {@link Application#createComponent(javax.faces.el.ValueBinding, javax.faces.context.FacesContext, String)}
-     * on the wrapped {@link Application} object.
-     * </p>
-     *
-     * @deprecated See superclass for alternative.
-     */
-    @Override
-    @Deprecated
-    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException {
-        return getWrapped().createComponent(componentBinding, context, componentType);
     }
 
     /**
@@ -451,21 +373,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     @Override
     public Iterator<Class<?>> getConverterTypes() {
         return getWrapped().getConverterTypes();
-    }
-
-    /**
-     * <p class="changed_added_2_0">
-     * The default behavior of this method is to call
-     * {@link Application#createMethodBinding(String, Class[])} on the wrapped {@link Application}
-     * object.
-     * </p>
-     *
-     * @deprecated See superclass for alternative.
-     */
-    @Override
-    @Deprecated
-    public MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException {
-        return getWrapped().createMethodBinding(ref, params);
     }
 
     /**
@@ -555,17 +462,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     @Override
     public Iterator<String> getValidatorIds() {
         return getWrapped().getValidatorIds();
-    }
-
-    /**
-     * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link Application#createValueBinding(String)}
-     * on the wrapped {@link Application} object.
-     * </p>
-     */
-    @Override
-    public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException {
-        return getWrapped().createValueBinding(ref);
     }
 
     /**

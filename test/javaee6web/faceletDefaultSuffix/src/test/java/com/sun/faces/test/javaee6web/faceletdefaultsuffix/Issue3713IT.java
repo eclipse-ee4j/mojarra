@@ -16,12 +16,14 @@
 
 package com.sun.faces.test.javaee6web.faceletdefaultsuffix;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import static org.junit.Assert.assertTrue;
 
 public class Issue3713IT {
 
@@ -35,7 +37,6 @@ public class Issue3713IT {
         webClient = new WebClient();
     }
 
-
     @After
     public void tearDown() {
         webClient.close();
@@ -46,6 +47,6 @@ public class Issue3713IT {
         HtmlPage page = webClient.getPage(webUrl);
 
         assertTrue(page.getBody().asXml().indexOf("Hello from Facelets") != -1);
-        
+
     }
 }

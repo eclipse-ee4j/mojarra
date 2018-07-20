@@ -18,8 +18,6 @@ package javax.faces.component;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import javax.faces.convert.LongConverter;
-import javax.faces.convert.ShortConverter;
 
 /**
  * <p>
@@ -92,44 +90,6 @@ public class UIOutputTestCase extends ValueHolderTestCaseBase {
 
         super.testPropertiesValid();
         UIOutput output = (UIOutput) component;
-
-    }
-
-    @Override
-    public void testValueBindings() {
-
-        super.testValueBindings();
-        UIOutput test = (UIOutput) component;
-
-        // "converter" property
-        request.setAttribute("foo", new LongConverter());
-        test.setConverter(null);
-        assertNull(test.getConverter());
-        test.setValueBinding("converter", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("converter"));
-        assertTrue(test.getConverter() instanceof LongConverter);
-        test.setConverter(new ShortConverter());
-        assertTrue(test.getConverter() instanceof ShortConverter);
-        test.setConverter(null);
-        assertTrue(test.getConverter() instanceof LongConverter);
-        test.setValueBinding("converter", null);
-        assertNull(test.getValueBinding("converter"));
-        assertNull(test.getConverter());
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.resetValue();
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.resetValue();
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
 
     }
 

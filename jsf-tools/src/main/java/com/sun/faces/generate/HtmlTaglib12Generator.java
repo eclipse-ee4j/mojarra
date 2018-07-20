@@ -84,7 +84,6 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
         addImport("javax.faces.component.*");
         addImport("javax.faces.context.*");
         addImport("javax.faces.convert.*");
-        addImport("javax.faces.el.*");
         addImport("javax.faces.webapp.*");
         addImport("javax.servlet.jsp.JspException");
 

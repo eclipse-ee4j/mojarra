@@ -22,15 +22,11 @@ import static javax.faces.event.PhaseId.INVOKE_APPLICATION;
 import javax.el.MethodExpression;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.faces.event.FacesEvent;
 import javax.faces.render.Renderer;
-
-import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
-import com.sun.faces.application.MethodExpressionMethodBindingAdapter;
 
 /**
  * <p>
@@ -45,7 +41,7 @@ import com.sun.faces.application.MethodExpressionMethodBindingAdapter;
  * {@link ActionEvent}. Later on, the <code>broadcast()</code> method will ensure that this event is
  * broadcast to all interested listeners.
  * </p>
- * 
+ *
  * <p>
  * Listeners will be invoked in the following order:
  * <ol>
@@ -55,7 +51,7 @@ import com.sun.faces.application.MethodExpressionMethodBindingAdapter;
  * <li>The default {@link ActionListener}, retrieved from the {@link Application} - and therefore,
  * any attached "action" {@link MethodExpression}.
  * </ol>
- * 
+ *
  * <p>
  * By default, the <code>rendererType</code> property must be set to
  * "<code>javax.faces.Button</code>". This value can be changed by calling the
@@ -107,7 +103,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         return COMPONENT_FAMILY;
     }
 
-    
+
     // ------------------------------------------------- ActionSource/ActionSource2 Properties
 
 
@@ -131,7 +127,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      * Returns the <code>value</code> property of the <code>UICommand</code>. This is most often
      * rendered as a label.
      * </p>
-     * 
+     *
      * @return The object representing the value of this component.
      */
     public Object getValue() {
@@ -150,7 +146,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         getStateHelper().put(PropertyKeys.value, value);
     }
 
-    
+
     // ---------------------------------------------------- ActionSource / ActionSource2 Methods
 
     @Override
@@ -184,7 +180,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         removeFacesListener(listener);
     }
 
-    
+
     // ----------------------------------------------------- UIComponent Methods
 
     /**
@@ -213,9 +209,6 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         if (event instanceof ActionEvent) {
             FacesContext context = event.getFacesContext();
 
-            // Notify the specified action listener method (if any)
-            notifySpecifiedActionListener(context, event);
-
             // Invoke the default ActionListener
             ActionListener listener = context.getApplication().getActionListener();
             if (listener != null) {
@@ -225,7 +218,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
     }
 
     /**
-     * 
+     *
      * <p>
      * Intercept <code>queueEvent</code> and take the following action. If the event is an
      * <code>{@link ActionEvent}</code>, obtain the <code>UIComponent</code> instance from the
@@ -235,12 +228,12 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      * <code>PhaseId.INVOKE_APPLICATION</code>. The event must be passed on to
      * <code>super.queueEvent()</code> before returning from this method.
      * </p>
-     * 
+     *
      */
     @Override
     public void queueEvent(FacesEvent event) {
         UIComponent component = event.getComponent();
-        
+
         if (event instanceof ActionEvent && component instanceof ActionSource) {
             if (((ActionSource) component).isImmediate()) {
                 event.setPhaseId(APPLY_REQUEST_VALUES);
@@ -248,89 +241,8 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
                 event.setPhaseId(INVOKE_APPLICATION);
             }
         }
-        
+
         super.queueEvent(event);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // ---------------------------------------------------------- Deprecated code
-    
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated This has been replaced by {@link #getActionExpression}.
-     */
-    @Override
-    public MethodBinding getAction() {
-        MethodBinding result = null;
-        MethodExpression me;
 
-        if (null != (me = getActionExpression())) {
-            // if the MethodExpression is an instance of our private
-            // wrapper class.
-            if (me.getClass().equals(MethodExpressionMethodBindingAdapter.class)) {
-                result = ((MethodExpressionMethodBindingAdapter) me).getWrapped();
-            } else {
-                // otherwise, this is a real MethodExpression. Wrap it
-                // in a MethodBinding.
-                result = new MethodBindingMethodExpressionAdapter(me);
-            }
-        }
-        return result;
-
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated This has been replaced by
-     *             {@link #setActionExpression(javax.el.MethodExpression)}.
-     */
-    @Override
-    public void setAction(MethodBinding action) {
-        MethodExpressionMethodBindingAdapter adapter;
-        if (null != action) {
-            adapter = new MethodExpressionMethodBindingAdapter(action);
-            setActionExpression(adapter);
-        } else {
-            setActionExpression(null);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @deprecated Use {@link #getActionListeners} instead.
-     */
-    @Override
-    public MethodBinding getActionListener() {
-        return (MethodBinding) getStateHelper().get(PropertyKeys.methodBindingActionListener);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @deprecated This has been replaced by
-     *             {@link #addActionListener(javax.faces.event.ActionListener)}.
-     */
-    @Override
-    public void setActionListener(MethodBinding actionListener) {
-        getStateHelper().put(PropertyKeys.methodBindingActionListener, actionListener);
-    }
-
-    private void notifySpecifiedActionListener(FacesContext context, FacesEvent event) {
-        MethodBinding mb = getActionListener();
-        if (mb != null) {
-            mb.invoke(context, new Object[] { event });
-        }
-    }
-    
 }

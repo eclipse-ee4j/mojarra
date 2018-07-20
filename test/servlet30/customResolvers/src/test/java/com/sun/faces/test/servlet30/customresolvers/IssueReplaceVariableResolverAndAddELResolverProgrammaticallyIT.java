@@ -16,14 +16,17 @@
 
 package com.sun.faces.test.servlet30.customresolvers;
 
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 /**
  * <p>
@@ -31,6 +34,7 @@ import static org.junit.Assert.fail;
  * the decorator pattern to allow the existing ApplicationImpl to do the bulk of
  * the requests works.</p>
  */
+@Ignore("Needs updating for EL resolver")
 public class IssueReplaceVariableResolverAndAddELResolverProgrammaticallyIT {
 
     private String webUrl;

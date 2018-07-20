@@ -16,22 +16,13 @@
 
 package beans;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.NoneScoped;
+import javax.inject.Named;
 
-@ManagedBean
-@NoneScoped
+@Named
 public class Bean {
 
-    protected String foo = "bar";
-
     public String getFoo() {
-        return foo;
+        return "bar";
     }
-
-    public void setFoo(String foo) {
-        this.foo = foo;
-    }
-
 
 }

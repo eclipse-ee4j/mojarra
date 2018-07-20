@@ -17,9 +17,7 @@
 package javax.faces.component;
 
 import javax.faces.model.SelectItem;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -110,26 +108,6 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
         assertNull("erased value", selectItems.getValue());
     }
 
-    @Override
-    public void testValueBindings() {
-        super.testValueBindings();
-        UISelectItems test = (UISelectItems) component;
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.setValue(null);
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.setValue(null);
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
-    }
 
     // --------------------------------------------------------- Support Methods
     // Create a pristine component of the type to be used in state holder tests

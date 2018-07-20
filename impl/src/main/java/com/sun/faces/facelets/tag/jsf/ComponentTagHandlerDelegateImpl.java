@@ -536,8 +536,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * If the binding was used, then set the ValueExpression "binding" on the
      * created UIComponent.
      * 
-     * @see Application#createComponent(javax.faces.el.ValueBinding,
-     *      javax.faces.context.FacesContext, java.lang.String)
+     * 
      * @see Application#createComponent(java.lang.String)
      * @param ctx
      *            FaceletContext to use in creating a component

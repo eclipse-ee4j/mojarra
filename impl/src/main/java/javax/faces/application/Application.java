@@ -20,28 +20,22 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Map;
+import java.util.ResourceBundle;
 
+import javax.el.ELContextListener;
+import javax.el.ELException;
+import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.Behavior;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-
-import javax.el.ELContextListener;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.el.ELException;
-import javax.el.ELResolver;
 import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchKeywordResolver;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.flow.FlowHandler;
@@ -73,7 +67,6 @@ import javax.faces.view.ViewDeclarationLanguage;
 
 public abstract class Application {
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     private Application defaultApplication;
 
     // ------------------------------------------------------------- Properties
@@ -89,7 +82,7 @@ public abstract class Application {
      * </p>
      *
      * <p>
-     * Note that the specification for the default <code>ActionListener</code> contiues to call for
+     * Note that the specification for the default <code>ActionListener</code> continues to call for
      * the use of a <strong>deprecated</strong> property (<code>action</code>) and class
      * (<code>MethodBinding</code>). Unfortunately, this is necessary because the default
      * <code>ActionListener</code> must continue to work with components that do not implement
@@ -239,14 +232,14 @@ public abstract class Application {
      * In all of the above cases, the runtime must employ the decorator pattern as for every other
      * pluggable artifact in JSF.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code>
      * so that users that decorate <code>Application</code> can continue to function
      * </p>
      * .
-     * 
-     * 
+     *
+     *
      * </div>
      *
      * @return the resource handler.
@@ -288,58 +281,6 @@ public abstract class Application {
 
     /**
      * <p>
-     * Return a {@link PropertyResolver} instance that wraps the {@link ELResolver} instance that
-     * Faces provides to the unified EL for the resolution of expressions that appear
-     * programmatically in an application.
-     * </p>
-     *
-     * <p>
-     * Note that this no longer returns the default <code>PropertyResolver</code> since that class
-     * is now a no-op that aids in allowing custom <code>PropertyResolver</code>s to affect the EL
-     * resolution process.
-     * </p>
-     *
-     * @return the property resolver.
-     * @deprecated This has been replaced by {@link #getELResolver}.
-     */
-    public abstract PropertyResolver getPropertyResolver();
-
-    /**
-     * <p>
-     * Set the {@link PropertyResolver} instance that will be utilized to resolve method and value
-     * bindings.
-     * </p>
-     *
-     * <p>
-     * This method is now deprecated but the implementation must cause the argument to be set as the
-     * head of the legacy <code>PropertyResolver</code> chain, replacing any existing value that was
-     * set from the application configuration resources.
-     * </p>
-     *
-     * <p>
-     * It is illegal to call this method after the application has received any requests from the
-     * client. If an attempt is made to register a listener after that time it must have no effect.
-     * </p>
-     *
-     * @param resolver The new {@link PropertyResolver} instance
-     *
-     * @throws NullPointerException if <code>resolver</code> is <code>null</code>
-     *
-     * @deprecated The recommended way to affect the execution of the EL is to provide an
-     *             <code>&lt;el-resolver&gt;</code> element at the right place in the application
-     *             configuration resources which will be considered in the normal course of
-     *             expression evaluation. This method now will cause the argument
-     *             <code>resolver</code> to be wrapped inside an implementation of
-     *             {@link ELResolver} and exposed to the EL resolution system as if the user had
-     *             called {@link #addELResolver}.
-     *
-     * @throws IllegalStateException if called after the first request to the
-     *             {@link javax.faces.webapp.FacesServlet} has been serviced.
-     */
-    public abstract void setPropertyResolver(PropertyResolver resolver);
-
-    /**
-     * <p>
      * Find a <code>ResourceBundle</code> as defined in the application configuration resources
      * under the specified name. If a <code>ResourceBundle</code> was defined for the name, return
      * an instance that uses the locale of the current {@link javax.faces.component.UIViewRoot}.
@@ -372,7 +313,7 @@ public abstract class Application {
      * Return the project stage for the currently running application instance. The default value is
      * {@link ProjectStage#Production}
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
      * <p>
      * The implementation of this method must perform the following algorithm or an equivalent with
@@ -385,7 +326,7 @@ public abstract class Application {
      * If the value has already been determined by a previous call to this method, simply return
      * that value.
      * </p>
-     * 
+     *
      * <p>
      * Look for a <code>JNDI</code> environment entry under the key given by the value of
      * {@link ProjectStage#PROJECT_STAGE_JNDI_NAME} (return type of <code>java.lang.String</code>).
@@ -393,7 +334,7 @@ public abstract class Application {
      * <code>initParamMap</code> of the <code>ExternalContext</code> from the current
      * <code>FacesContext</code> with the key given by the value of
      * {@link ProjectStage#PROJECT_STAGE_PARAM_NAME}
-     * 
+     *
      * </p>
      *
      * <p>
@@ -409,13 +350,13 @@ public abstract class Application {
      * </p>
      *
      * </blockquote>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code>
      * so that users that decorate <code>Application</code> can continue to function
      * </p>
      * .
-     * 
+     *
      * </div>
      *
      * @return the project stage.
@@ -429,61 +370,6 @@ public abstract class Application {
 
         return ProjectStage.Production;
     }
-
-    /**
-     * <p>
-     * Return the {@link VariableResolver} that wraps the {@link ELResolver} instance that Faces
-     * provides to the unified EL for the resolution of expressions that appear programmatically in
-     * an application. The implementation of the <code>VariableResolver</code>must pass
-     * <code>null</code> as the base argument for any methods invoked on the underlying
-     * <code>ELResolver</code>.
-     * </p>
-     *
-     * <p>
-     * Note that this method no longer returns the default <code>VariableResolver</code>, since that
-     * class now is a no-op that aids in allowing custom <code>VariableResolver</code>s to affect
-     * the EL resolution process.
-     * </p>
-     *
-     * @return the variable resolver.
-     * @deprecated This has been replaced by {@link #getELResolver}.
-     */
-    public abstract VariableResolver getVariableResolver();
-
-    /**
-     * <p>
-     * Set the {@link VariableResolver} instance that will be consulted to resolve method and value
-     * bindings.
-     * </p>
-     *
-     * <p>
-     * This method is now deprecated but the implementation must cause the argument to be set as the
-     * head of the legacy <code>VariableResolver</code> chain, replacing any existing value that was
-     * set from the application configuration resources.
-     * </p>
-     *
-     * <p>
-     * It is illegal to call this method after the application has received any requests from the
-     * client. If an attempt is made to register a listener after that time it must have no effect.
-     * </p>
-     *
-     * @param resolver The new {@link VariableResolver} instance
-     *
-     * @throws NullPointerException if <code>resolver</code> is <code>null</code>
-     *
-     * @deprecated The recommended way to affect the execution of the EL is to provide an
-     *             <code>&lt;el-resolver&gt;</code> element at the
-     *
-     *             right place in the application configuration resources which will be considered
-     *             in the normal course of expression evaluation. This method now will cause the
-     *             argument <code>resolver</code> to be wrapped inside an implementation of
-     *             {@link ELResolver} and exposed to the EL resolution system as if the user had
-     *             called {@link #addELResolver}.
-     *
-     * @throws IllegalStateException if called after the first request to the
-     *             {@link javax.faces.webapp.FacesServlet} has been serviced.
-     */
-    public abstract void setVariableResolver(VariableResolver resolver);
 
     /**
      * <p>
@@ -511,7 +397,7 @@ public abstract class Application {
      * The default implementation throws <code>UnsupportedOperationException</code> and is provided
      * for the sole purpose of not breaking existing applications that extend {@link Application}.
      * </p>
-     * 
+     *
      * @throws IllegalStateException <span class="changed_modified_2_0_rev_a">if called after the
      *             first request to the {@link javax.faces.webapp.FacesServlet} has been
      *             serviced.</span>
@@ -747,12 +633,11 @@ public abstract class Application {
      * @return an iterator with behavior ids.
      */
     public Iterator<String> getBehaviorIds() {
-
         if (defaultApplication != null) {
             return defaultApplication.getBehaviorIds();
         }
-        return Collections.EMPTY_LIST.iterator();
 
+        return Collections.<String>emptyList().iterator();
     }
 
     /**
@@ -790,7 +675,7 @@ public abstract class Application {
      * {@link #createComponent(ValueExpression, FacesContext, String, String)} or
      * {@link #createComponent(FacesContext, String, String)}.
      * </p>
-     * 
+     *
      * @param componentType The component type for which to create and return a new
      *            {@link UIComponent} instance
      * @return the UI component.
@@ -798,27 +683,6 @@ public abstract class Application {
      * @throws NullPointerException if <code>componentType</code> is <code>null</code>
      */
     public abstract UIComponent createComponent(String componentType) throws FacesException;
-
-    /**
-     * <p>
-     * Wrap the argument <code>componentBinding</code> in an implementation of
-     * {@link ValueExpression} and call through to
-     * {@link #createComponent(javax.el.ValueExpression,javax.faces.context.FacesContext,java.lang.String)}.
-     * </p>
-     *
-     * @param componentBinding {@link ValueBinding} representing a component value binding
-     *            expression (typically specified by the <code>component</code> attribute of a
-     *            custom tag)
-     * @param context {@link FacesContext} for the current request
-     * @param componentType Component type to create if the {@link ValueBinding} does not return a
-     *            component instance
-     * @return the UI component.
-     * @throws FacesException if a {@link UIComponent} cannot be created
-     * @throws NullPointerException if any parameter is <code>null</code>
-     * @deprecated This has been replaced by
-     *             {@link #createComponent(javax.el.ValueExpression,javax.faces.context.FacesContext,java.lang.String)}.
-     */
-    public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException;
 
     /**
      * <p>
@@ -882,13 +746,13 @@ public abstract class Application {
      * <code>UIComponent</code> instance, passing the argument <code>rendererType</code> as the
      * argument.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code>
      * so that users that decorate <code>Application</code> can continue to function.
      * </p>
      *
-     * 
+     *
      * @param componentExpression {@link ValueExpression} representing a component value expression
      *            (typically specified by the <code>component</code> attribute of a custom tag)
      * @param context {@link FacesContext} for the current request
@@ -927,14 +791,14 @@ public abstract class Application {
      * <code>UIComponent</code> instance, passing the argument <code>rendererType</code> as the
      * argument.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code>
      * so that users that decorate <code>Application</code> can continue to function
      * </p>
      * .
      *
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param componentType Component type to create
      * @param rendererType The renderer-type of the <code>Renderer</code> that will render this
@@ -964,9 +828,9 @@ public abstract class Application {
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * Obtain a reference to the {@link ViewDeclarationLanguage} for this <code>Application</code>
@@ -975,8 +839,8 @@ public abstract class Application {
      * the {@link javax.faces.component.UIViewRoot} in the argument {@link FacesContext}.
      * </p>
      * </li>
-     * 
-     * 
+     *
+     *
      * <li>
      * <p>
      * Obtain a reference to the <em>composite component metadata</em> for this composite component
@@ -985,7 +849,7 @@ public abstract class Application {
      * version of JSF specification uses JavaBeans as the API to the component metadata.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Determine if the component author declared a <code><span
@@ -998,7 +862,7 @@ public abstract class Application {
      * {@link #createComponent(java.lang.String)} to create the component.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Otherwise, determine if a script based component for this <code>Resource</code> can be found
@@ -1008,7 +872,7 @@ public abstract class Application {
      * resource.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Otherwise, let <em>library-name</em> be the return from calling
@@ -1024,7 +888,7 @@ public abstract class Application {
      * log the exception and continue to the next step.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If none of the previous steps have yielded a <code>UIComponent</code> instance, call
@@ -1032,41 +896,41 @@ public abstract class Application {
      * as the argument.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Call {@link UIComponent#setRendererType} on the <code>UIComponent</code> instance, passing
      * "<code>javax.faces.Composite</code>" as the argument.
      * </p>
      * </li>
-     * 
+     *
      * <li>
-     * 
+     *
      * <p>
      * Store the argument <code>Resource</code> in the attributes <code>Map</code> of the
      * <code>UIComponent</code> under the key, {@link Resource#COMPONENT_RESOURCE_KEY}.
      * </p>
-     * 
+     *
      * </li>
-     * 
+     *
      * <li>
-     * 
+     *
      * <p>
      * Store <em>composite component metadata</em> in the attributes <code>Map</code> of the
      * <code>UIComponent</code> under the key, {@link UIComponent#BEANINFO_KEY}.
      * </p>
-     * 
+     *
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * Before the component instance is returned, it must be inspected for the presence of a
      * {@link javax.faces.event.ListenerFor} annotation. If this annotation is present, the action
      * listed in {@link javax.faces.event.ListenerFor} must be taken on the component, before it is
      * returned from this method.
      * </p>
-     * 
+     *
      * <p>
      * A default implementation is provided that throws <code>UnsupportedOperationException</code>
      * so that users that decorate <code>Application</code> can continue to function.
@@ -1151,7 +1015,7 @@ public abstract class Application {
      * {@link javax.faces.convert.DateTimeConverter#setTimeZone} must be called, passing the return
      * from <code>TimeZone.getDefault()</code>.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * The argument <code>converter</code> must be inspected for the presence of the
      * {@link javax.faces.application.ResourceDependency} annotation. If the
@@ -1343,25 +1207,6 @@ public abstract class Application {
 
     /**
      * <p>
-     * Call {@link #getExpressionFactory} then call
-     * {@link ExpressionFactory#createMethodExpression}, passing the given arguments, and wrap the
-     * result in a <code>MethodBinding</code> implementation, returning it.
-     * </p>
-     *
-     * @param ref Method binding expression for which to return a {@link MethodBinding} instance
-     * @param params Parameter signatures that must be compatible with those of the method to be
-     *            invoked, or a zero-length array or <code>null</code> for a method that takes no
-     *            parameters
-     * @return the method binding.
-     * @throws NullPointerException if <code>ref</code> is <code>null</code>
-     * @throws ReferenceSyntaxException if the specified <code>ref</code> has invalid syntax
-     * @deprecated This has been replaced by calling {@link #getExpressionFactory} then
-     *             {@link ExpressionFactory#createMethodExpression}.
-     */
-    public abstract MethodBinding createMethodBinding(String ref, Class<?> params[]) throws ReferenceSyntaxException;
-
-    /**
-     * <p>
      * Return an <code>Iterator</code> over the supported <code>Locale</code>s for this appication.
      * </p>
      *
@@ -1482,7 +1327,7 @@ public abstract class Application {
      * instance of the class specified by a previous call to <code>addValidator()</code> for the
      * specified validator id.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * The argument <code>validator</code> must be inspected for the presence of the
      * {@link javax.faces.application.ResourceDependency} annotation. If the
@@ -1493,7 +1338,7 @@ public abstract class Application {
      * <code>ResourceDependencies</code> annotation is present, the action described in
      * <code>ResourceDependencies</code> must be taken.
      * </p>
-     * 
+     *
      * @param validatorId The validator id for which to create and return a new {@link Validator}
      *            instance
      * @return the validator.
@@ -1511,23 +1356,6 @@ public abstract class Application {
      * @return an iterator of validator ids.
      */
     public abstract Iterator<String> getValidatorIds();
-
-    /**
-     * <p>
-     * Call {@link #getExpressionFactory} then call {@link ExpressionFactory#createValueExpression},
-     * passing the argument <code>ref</code>, <code>Object.class</code> for the expectedType, and
-     * <code>null</code>, for the fnMapper.
-     * </p>
-     *
-     *
-     * @param ref Value binding expression for which to return a {@link ValueBinding} instance
-     * @return the value binding.
-     * @throws NullPointerException if <code>ref</code> is <code>null</code>
-     * @throws ReferenceSyntaxException if the specified <code>ref</code> has invalid syntax
-     * @deprecated This has been replaced by calling {@link #getExpressionFactory} then
-     *             {@link ExpressionFactory#createValueExpression}.
-     */
-    public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
 
     /**
      * <p class="changed_added_2_0">
@@ -1570,7 +1398,7 @@ public abstract class Application {
      * <em>traverseListenerList</em> on the list.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If any <em>view</em> level listeners have been installed by previous calls to
@@ -1579,7 +1407,7 @@ public abstract class Application {
      * the list of listeners for that event installed on the <code>UIViewRoot</code>.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If any <code>Application</code> level listeners have been installed by previous calls to
@@ -1642,13 +1470,13 @@ public abstract class Application {
      * </li>
      *
      * </ul>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code>
      * so that users that decorate <code>Application</code> can continue to function
      * </p>
      * .
-     * 
+     *
      * </div>
      *
      * @param context the <code>FacesContext</code> for the current request
@@ -1728,17 +1556,17 @@ public abstract class Application {
      * </p>
      *
      * </div>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * It is valid to call this method <strong>during</strong> the processing of an event which was
      * subscribed to by a previous call to this method.
      * </p>
-     * 
+     *
      * </div>
      *
-     * 
+     *
      * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must
      *            be fired.
      *
@@ -1778,24 +1606,24 @@ public abstract class Application {
      * so that users that decorate <code>Application</code> can continue to function
      * </p>
      * .
-     * 
+     *
      * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must
      *            be fired.
-     * 
+     *
      * @param listener the implementation of {@link javax.faces.event.SystemEventListener} whose
      *            {@link javax.faces.event.SystemEventListener#processEvent} method must be called
      *            when events of type <code>systemEventClass</code> are fired.
-     * 
+     *
      *            <div class="changed_added_2_2">
-     * 
+     *
      *            <p>
      *            See
      *            {@link #subscribeToEvent(java.lang.Class,java.lang.Class,javax.faces.event.SystemEventListener)}
      *            for an additional requirement regarding when it is valid to call this method.
      *            </p>
-     * 
+     *
      *            </div>
-     * 
+     *
      * @throws NullPointerException if any combination of <code>systemEventClass</code>, or
      *             <code>listener</code> are <code>null</code>.
      *
@@ -1819,17 +1647,17 @@ public abstract class Application {
      * See {@link #subscribeToEvent(Class, Class, javax.faces.event.SystemEventListener)} for the
      * specification of how the listener is stored, and therefore, how it must be removed.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * See
      * {@link #subscribeToEvent(java.lang.Class,java.lang.Class,javax.faces.event.SystemEventListener)}
      * for an additional requirement regarding when it is valid to call this method.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must
      *            be fired.
      *
@@ -1864,15 +1692,15 @@ public abstract class Application {
      * </p>
      *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * See
      * {@link #subscribeToEvent(java.lang.Class,java.lang.Class,javax.faces.event.SystemEventListener)}
      * for an additional requirement regarding when it is valid to call this method.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must
      *            be fired.
      *

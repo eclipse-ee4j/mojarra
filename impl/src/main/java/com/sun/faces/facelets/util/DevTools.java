@@ -16,27 +16,39 @@
 
 package com.sun.faces.facelets.util;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.util.Util;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.Expression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -51,20 +63,20 @@ import java.util.logging.Logger;
  *
  */
 public final class DevTools {
-    
+
     public final static String Namespace = "http://java.sun.com/mojarra/private/functions";
     public final static String NewNamespace = "http://xmlns.jcp.org/mojarra/private/functions";
 
     private static final Logger LOGGER = Logger.getLogger(DevTools.class.getPackage().getName());
-    
+
     private final static String TS = "&lt;";
-    
+
     private static final String ERROR_TEMPLATE = "META-INF/facelet-dev-error.xml";
-    
+
     private static String[] ERROR_PARTS;
-    
+
     private static final String DEBUG_TEMPLATE = "META-INF/facelet-dev-debug.xml";
-    
+
     private static String[] DEBUG_PARTS;
 
 
@@ -171,7 +183,7 @@ public final class DevTools {
 
     }
 
-    
+
     public static void writeVariables(Writer writer, FacesContext faces)
     throws IOException {
 
@@ -267,7 +279,7 @@ public final class DevTools {
         if (ERROR_PARTS == null) {
             ERROR_PARTS = splitTemplate(ERROR_TEMPLATE);
         }
-        
+
         if (DEBUG_PARTS == null) {
             DEBUG_PARTS = splitTemplate(DEBUG_TEMPLATE);
         }
@@ -304,11 +316,11 @@ public final class DevTools {
         return str.split("@@");
 
     }
-    
 
 
 
-    
+
+
     private static void writeVariables(Writer writer, Map<String,?> vars, String caption) throws IOException {
 
         writer.write("<table style=\"border: 1px solid #CCC; border-collapse: collapse; border-spacing: 0px; width: 100%; text-align: left;\"><caption style=\"text-align: left; padding: 10px 0; font-size: large;\">");
@@ -339,9 +351,9 @@ public final class DevTools {
         writer.write("</tbody></table>");
 
     }
-    
 
-    
+
+
     private static void writeEnd(Writer writer, UIComponent c) throws IOException {
 
         if (!isText(c)) {
@@ -352,9 +364,9 @@ public final class DevTools {
         }
 
     }
-    
+
     private final static String[] IGNORE = new String[] { "parent", "rendererType" };
-    
+
     private static void writeAttributes(Writer writer, UIComponent c) {
 
         try {
@@ -378,10 +390,6 @@ public final class DevTools {
                             String str;
                             if (v instanceof Expression) {
                                 str = ((Expression) v).getExpressionString();
-                            } else if (v instanceof ValueBinding) {
-                                str = ((ValueBinding) v).getExpressionString();
-                            } else if (v instanceof MethodBinding) {
-                                str = ((MethodBinding) v).getExpressionString();
                             } else {
                                 str = v.toString();
                             }
@@ -400,20 +408,14 @@ public final class DevTools {
                 }
             }
 
-            ValueBinding binding = c.getValueBinding("binding");
-            if (binding != null) {
-                writer.write(" binding=\"");
-                writer.write(binding.getExpressionString().replaceAll("<", TS));
-                writer.write("\"");
-            }
-        } catch (IntrospectionException | IOException e) {
+        } catch (IntrospectionException e) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "Error writing out attributes", e);
             }
         }
 
     }
-    
+
     private static void writeStart(Writer writer, UIComponent c, boolean children) throws IOException {
 
         if (isText(c)) {
@@ -431,14 +433,14 @@ public final class DevTools {
         }
 
     }
-    
+
     private static String getName(UIComponent c) {
 
         String nm = c.getClass().getName();
         return nm.substring(nm.lastIndexOf('.') + 1);
 
     }
-    
+
     private static boolean isText(UIComponent c) {
 
         return (c.getClass().getName().startsWith("com.sun.faces.facelets.compiler"));

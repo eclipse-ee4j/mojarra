@@ -54,11 +54,4 @@ public class Spec1331IT {
         assertTrue(page.asXml().contains("Application"));
     }
 
-    @Test
-    @JsfTest(value = JsfVersion.JSF_2_3_0_M01,
-            excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
-    public void testApplicationJsp() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/application.jsp");
-        assertTrue(page.asXml().contains("Application"));
-    }
 }

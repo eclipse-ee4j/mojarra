@@ -26,7 +26,6 @@ import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.el.ValueBinding;
 
 
 /**
@@ -293,65 +292,6 @@ public class UISelectMany extends UIInput {
     // ---------------------------------------------------------------- Bindings
 
 
-    /**
-     * <p>Return any {@link ValueBinding} set for <code>value</code> if
-     * a {@link ValueBinding} for <code>selectedValues</code> is
-     * requested; otherwise, perform the default superclass processing
-     * for this method.</p>
-     *
-     * <p>This method relies on the superclass to provide the
-     * <code>ValueExpression</code> to <code>ValueBinding</code>
-     * wrapping.</p>
-     *
-     * @param name Name of the attribute or property for which to retrieve
-     *  a {@link ValueBinding}
-     * @return the value binding, or <code>null</code>
-     * @throws NullPointerException if <code>name</code>
-     *  is <code>null</code>
-     *
-     * @deprecated this has been replaced by {@link #getValueExpression(java.lang.String)}.
-     */
-    @Override
-    public ValueBinding getValueBinding(String name) {
-
-        if ("selectedValues".equals(name)) {
-            return (super.getValueBinding("value"));
-        } else {
-            return (super.getValueBinding(name));
-        }
-
-    }
-
-
-    /**
-     * <p>Store any {@link ValueBinding} specified for
-     * <code>selectedValues</code> under <code>value</code> instead;
-     * otherwise, perform the default superclass processing for this
-     * method.</p>
-     *
-     * <p>This method relies on the superclass to wrap the argument
-     * <code>ValueBinding</code> in a <code>ValueExpression</code>.</p>
-     *
-     * @param name Name of the attribute or property for which to set
-     *  a {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code>
-     *  to remove any currently set {@link ValueBinding}
-     *
-     * @throws NullPointerException if <code>name</code>
-     *  is <code>null</code>
-     *
-     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, javax.el.ValueExpression)}.
-     */
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-
-        if ("selectedValues".equals(name)) {
-            super.setValueBinding("value", binding);
-        } else {
-            super.setValueBinding(name, binding);
-        }
-
-    }
 
     /**
      * <p>Return any {@link ValueExpression} set for <code>value</code> if a

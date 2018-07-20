@@ -53,10 +53,7 @@ public interface ValueHolder {
      * <code>null</code>, see if we have a {@link ValueExpression} for
      * the <code>value</code> property.  If so, return the result of
      * evaluating the property, otherwise return <code>null</code>.
-     * Note that because the specification for {@link
-     * UIComponent#setValueBinding} requires a call through to {@link
-     * UIComponent#setValueExpression}, legacy tags will continue to
-     * work.</p>
+     *</p>
      * 
      * @return the value.
      */

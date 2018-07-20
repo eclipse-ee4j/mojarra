@@ -43,12 +43,12 @@ import javax.faces.view.ViewDeclarationLanguage;
  * changed_modified_2_3"> ViewHandler</span></strong> is the pluggablity mechanism for allowing
  * implementations of or applications using the JavaServer Faces specification to provide their own
  * handling of the activities in the <em>Render Response</em> and <em>Restore View</em> phases of
- * the request processing lifecycle. 
- * 
+ * the request processing lifecycle.
+ *
  * This allows for implementations to support different response
  * generation technologies, as well as alternative strategies for saving and restoring the state of
- * each view. 
- * 
+ * each view.
+ *
  * <span class="changed_added_2_0">An implementation of this class must be thread-safe.</span>
  * </p>
  *
@@ -71,7 +71,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 public abstract class ViewHandler {
 
     private static final Logger log = Logger.getLogger("javax.faces.application");
-    
+
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -102,7 +102,7 @@ public abstract class ViewHandler {
      * The value to use for the default extension if the webapp is using url extension mapping.
      * </p>
      */
-    public static final String DEFAULT_SUFFIX = ".xhtml .view.xml .jsp";
+    public static final String DEFAULT_SUFFIX = ".xhtml";
 
     /**
      * <p class="changed_added_2_2">
@@ -112,7 +112,7 @@ public abstract class ViewHandler {
      * facelets.SKIP_COMMENTS param name as an alias to this param name for backwards compatibility
      * with existing facelets tag libraries.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_SKIP_COMMENTS_PARAM_NAME = "javax.faces.FACELETS_SKIP_COMMENTS";
@@ -123,7 +123,7 @@ public abstract class ViewHandler {
      * containing JSF content. If this init parameter is not specified, the default value is taken
      * from the value of the constant {@link #DEFAULT_FACELETS_SUFFIX}
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_SUFFIX_PARAM_NAME = "javax.faces.FACELETS_SUFFIX";
@@ -133,7 +133,7 @@ public abstract class ViewHandler {
      * The value to use for the default extension for Facelet based XHTML pages if the webapp is
      * using url extension mapping.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String DEFAULT_FACELETS_SUFFIX = ".xhtml";
@@ -150,7 +150,7 @@ public abstract class ViewHandler {
      * runtime must also consider the <code>facelets.VIEW_MAPPINGS</code> param name as an alias to
      * this param name for backwards compatibility with existing Facelets applications.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "javax.faces.FACELETS_VIEW_MAPPINGS";
@@ -164,7 +164,7 @@ public abstract class ViewHandler {
      * facelets.BUFFER_SIZE param name as an alias to this param name for backwards compatibility
      * with existing facelets tag libraries.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_BUFFER_SIZE_PARAM_NAME = "javax.faces.FACELETS_BUFFER_SIZE";
@@ -180,7 +180,7 @@ public abstract class ViewHandler {
      * {@link javax.faces.application.ProjectStage} is set to {@code Production} and this value is
      * not otherwise specified, the runtime must act as if it is set to -1.</span>
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_REFRESH_PERIOD_PARAM_NAME = "javax.faces.FACELETS_REFRESH_PERIOD";
@@ -195,8 +195,8 @@ public abstract class ViewHandler {
      * the facelets.LIBRARIES param name as an alias to this param name for backwards compatibility
      * with existing facelets tag libraries.
      * </p>
-     * 
-     * 
+     *
+     *
      * @since 2.0
      */
     public static final String FACELETS_LIBRARIES_PARAM_NAME = "javax.faces.FACELETS_LIBRARIES";
@@ -209,7 +209,7 @@ public abstract class ViewHandler {
      * compilation.The runtime must also consider the facelets.DECORATORS param name as an alias to
      * this param name for backwards compatibility with existing facelets tag libraries.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_DECORATORS_PARAM_NAME = "javax.faces.FACELETS_DECORATORS";
@@ -218,13 +218,14 @@ public abstract class ViewHandler {
      * <p class="changed_modified_3_0">
      *  This constant is deprecated and is to be completely ignored by the JSF runtime.
      * </p>
-     * 
+     *
      * @since 2.0
      * @deprecated
      */
+    @Deprecated
     public static final String DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME = "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
-    
-    
+
+
 
     // ---------------------------------------------------------- Public Methods
 
@@ -249,7 +250,7 @@ public abstract class ViewHandler {
      * {@link ExternalContext#getRequestCharacterEncoding} returns non-<code>null</code> take no
      * action.
      * </p>
-     * 
+     *
      * @param context the Faces context.
      * @throws FacesException if a problem occurs setting the encoding, such as the
      *             <code>UnsupportedEncodingException</code> thrown by the underlying Servlet or
@@ -310,11 +311,11 @@ public abstract class ViewHandler {
      * <code>viewId</code> must be converted to a physical <code>viewId</code> that can refer to an
      * actual resource suitable for use by the <code>ViewDeclarationLanguage</code>
      * {@link ViewDeclarationLanguage#createView}, which must be called by this method.</span>
-     * 
+     *
      * @param context the Faces context.
      * @param viewId the view id.
      * @throws NullPointerException if <code>context</code> is <code>null</code>
-     * 
+     *
      * @return the viewroot.
      */
     public abstract UIViewRoot createView(FacesContext context, String viewId);
@@ -403,7 +404,7 @@ public abstract class ViewHandler {
 
         // Look for a charset in the Content-Type header first.
         if (contentType != null) {
-            
+
             // See if this header had a charset
             String charsetStr = "charset=";
             int len = charsetStr.length();
@@ -448,7 +449,7 @@ public abstract class ViewHandler {
      * Derive and return the viewId from the current request, or the argument input by following the
      * algorithm defined in specification section JSF.7.6.2.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_3">
      * This method should work correctly when the FacesServlet is invoked via either a
      * <code>path mapping</code>, <code>extension mapping</code> or an <code>exact match</code>
@@ -478,7 +479,7 @@ public abstract class ViewHandler {
      * algorithm defined in specification section JSF.7.6.2. Note that unlike
      * <code>deriveViewId()</code>, this method does not require that a physical view be present.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_3">
      * This method should work correctly when the FacesServlet is invoked via either a
      * <code>path mapping</code>, <code>extension mapping</code> or an <code>exact match</code>
@@ -491,7 +492,7 @@ public abstract class ViewHandler {
      * <p>
      * The default implementation of this method simply returns requestViewId unchanged.
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> for this request
      *
      * @param requestViewId the <code>viewId</code> to derive,
@@ -515,7 +516,7 @@ public abstract class ViewHandler {
      * </span><span class="changed_added_2_3"> and the behavior when the current request is to a URL
      * for which the FacesServlet has an exact mapping as defined by Servlet.12.2</span>.
      * </p>
-     * 
+     *
      *
      * @param context {@link FacesContext} for this request
      * @param viewId View identifier of the desired view
@@ -524,7 +525,7 @@ public abstract class ViewHandler {
      *             <code>ViewHandler</code>, or does not start with "/".
      * @throws NullPointerException if <code>context</code> or <code>viewId</code> is
      *             <code>null</code>.
-     * 
+     *
      * @return the action url.
      */
     public abstract String getActionURL(FacesContext context, String viewId);
@@ -563,9 +564,9 @@ public abstract class ViewHandler {
      * @param parameters A mapping of parameter names to one or more values
      * @param includeViewParams A flag indicating whether view parameters should be encoded into
      *            this URL
-     * 
+     *
      * @return the bookmarkable URL.
-     * 
+     *
      * @since 2.0
      */
     public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
@@ -590,7 +591,7 @@ public abstract class ViewHandler {
      *             <code>ViewHandler</code>.
      * @throws NullPointerException if <code>context</code> or <code>path</code> is
      *             <code>null</code>.
-     * 
+     *
      * @return the resource URL.
      */
     public abstract String getResourceURL(FacesContext context, String path);
@@ -607,10 +608,10 @@ public abstract class ViewHandler {
      *
      * @param context {@link FacesContext} for the current request.
      * @param channel The channel name of the websocket.
-     * 
+     *
      * @throws NullPointerException if <code>context</code> or <code>channel</code> is
      *             <code>null</code>.
-     * 
+     *
      * @return the websocket URL.
      * @see PushContext#URI_PREFIX
      */
@@ -626,7 +627,7 @@ public abstract class ViewHandler {
      * method at any time after application startup. The default implementation returns an
      * unmodifiable empty <code>Set</code>.
      * </p>
-     * 
+     *
      * @return the unmodifiable set of protected views.
      * @since 2.2
      */
@@ -642,9 +643,9 @@ public abstract class ViewHandler {
      * calling this method at any time after application startup. The default implementation takes
      * no action.
      * </p>
-     * 
+     *
      * @param urlPattern the url-pattern to add.
-     * 
+     *
      * @since 2.2
      */
     public void addProtectedView(String urlPattern) {
@@ -662,7 +663,7 @@ public abstract class ViewHandler {
      * if this <code>Set</code> contained the argument. The default implementation takes no action
      * and returns <code>false</code>.
      * </p>
-     * 
+     *
      * @param urlPattern the url-pattern to remove.
      * @return <code>true</code> if in the <code>Set</code>, <code>false</code> otherwise.
      * @since 2.2
@@ -676,9 +677,9 @@ public abstract class ViewHandler {
      * <span class="changed_modified_2_1">Return</span> the {@link ViewDeclarationLanguage} instance
      * used for this <code>ViewHandler</code> instance.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * The default implementation must use
      * {@link javax.faces.view.ViewDeclarationLanguageFactory#getViewDeclarationLanguage} to obtain
@@ -686,11 +687,11 @@ public abstract class ViewHandler {
      * <code>viewId</code>. Any exceptions thrown as a result of invoking that method must not be
      * swallowed.
      * </p>
-     * 
+     *
      * <p>
      * The default implementation of this method returns null.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param context the <code>FacesContext</code> for this request.
@@ -714,7 +715,7 @@ public abstract class ViewHandler {
      * {@link ViewDeclarationLanguage#getViews(FacesContext, String, int, ViewVisitOption...)}. The
      * elements in the stream are <em>logical</em> view ids.
      * </p>
-     * 
+     *
      * <p>
      * The {@code maxDepth} parameter is the maximum depth of directory levels to visit for each
      * {@code ViewDeclarationLanguage} <em>beyond the initial path</em>, which is always visited.
@@ -725,13 +726,13 @@ public abstract class ViewHandler {
      * the initial path means that only the initial path is visited. A value of
      * {@link Integer#MAX_VALUE MAX_VALUE} may be used to indicate that all levels should be
      * visited.
-     * 
+     *
      * <p>
      * In case more than one active {@code ViewDeclarationLanguage} is present, the order in which
      * view ids from each {@code ViewDeclarationLanguage} appear in the stream is undetermined,
      * except for the guarantee that every individual {@code ViewDeclarationLanguage} is traversed
      * <em>breadth-first</em>.
-     * 
+     *
      * @param facesContext The {@link FacesContext} for this request.
      * @param path The initial path from which to start looking for view ids.
      * @param maxDepth The absolute maximum depth of nested directories to visit counted from the
@@ -740,7 +741,7 @@ public abstract class ViewHandler {
      *            details on those.
      *
      * @return the {@link Stream} of view ids
-     * 
+     *
      * @since 2.3
      */
     public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options) {
@@ -756,30 +757,30 @@ public abstract class ViewHandler {
      * {@link ViewDeclarationLanguage#getViews(FacesContext, String, int, ViewVisitOption...)}. The
      * elements in the stream are <em>logical</em> view ids.
      * </p>
-     * 
+     *
      * <p>
      * This method works as if invoking it were equivalent to evaluating the expression:
      * <blockquote>
-     * 
+     *
      * <pre>
      * getViews(facesContext, start, Integer.MAX_VALUE, options)
      * </pre>
-     * 
+     *
      * </blockquote> Put differently, it visits all levels of the view tree.
-     * 
+     *
      * <p>
      * In case more than one active {@code ViewDeclarationLanguage} is present, the order in which
      * view ids from each {@code ViewDeclarationLanguage} appear in the stream is undetermined,
      * except for the guarantee that every individual {@code ViewDeclarationLanguage} is traversed
      * <em>breadth-first</em>.
-     * 
+     *
      * @param facesContext The {@link FacesContext} for this request.
      * @param path The initial path from which to start looking for view ids.
      * @param options The options to influence the traversal. See {@link ViewVisitOption} for
      *            details on those.
      *
      * @return the {@link Stream} of view ids
-     * 
+     *
      * @since 2.3
      */
     public Stream<String> getViews(FacesContext facesContext, String path, ViewVisitOption... options) {

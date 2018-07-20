@@ -16,25 +16,27 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-import com.sun.faces.facelets.el.LegacyValueBinding;
-import com.sun.faces.facelets.tag.TagHandlerImpl;
+import java.io.IOException;
+import java.io.Serializable;
 
-import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
-import javax.faces.view.facelets.*;
-import java.io.IOException;
-import java.io.Serializable;
 import javax.faces.view.ActionSource2AttachedObjectHandler;
+import javax.faces.view.facelets.ComponentHandler;
+import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.TagAttribute;
+import javax.faces.view.facelets.TagConfig;
+import javax.faces.view.facelets.TagException;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 
 public class SetPropertyActionListenerHandler extends TagHandlerImpl implements ActionSource2AttachedObjectHandler {
 
@@ -87,17 +89,7 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         ValueExpression targetExpr = this.target.getValueExpression(
                 ctx, Object.class);
 
-        ActionListener listener;
-
-        if (src instanceof ActionSource2) {
-            listener = new SetPropertyListener(valueExpr, targetExpr);
-        } else {
-            listener = new LegacySetPropertyListener(
-                    new LegacyValueBinding(valueExpr),
-                    new LegacyValueBinding(targetExpr));
-        }
-
-        src.addActionListener(listener);
+        src.addActionListener(new SetPropertyListener(valueExpr, targetExpr));
     }
 
 
@@ -116,35 +108,6 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
             }
         }
         return result;
-    }
-
-
-
-    private static class LegacySetPropertyListener implements ActionListener,
-            Serializable {
-
-        private static final long serialVersionUID = 3004987947382293693L;
-
-        private ValueBinding value;
-
-        private ValueBinding target;
-
-        public LegacySetPropertyListener() {
-        };
-
-        public LegacySetPropertyListener(ValueBinding value, ValueBinding target) {
-            this.value = value;
-            this.target = target;
-        }
-
-        @Override
-        public void processAction(ActionEvent evt)
-                throws AbortProcessingException {
-            FacesContext faces = FacesContext.getCurrentInstance();
-            Object valueObj = this.value.getValue(faces);
-            this.target.setValue(faces, valueObj);
-        }
-
     }
 
     private static class SetPropertyListener implements ActionListener,

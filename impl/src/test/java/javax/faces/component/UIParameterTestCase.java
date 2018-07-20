@@ -16,9 +16,6 @@
 
 package javax.faces.component;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -63,11 +60,11 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
         UIParameter parameter = (UIParameter) component;
 
         assertEquals(parameter.getValue(),
-                (String) component.getAttributes().get("value"));
+                component.getAttributes().get("value"));
         parameter.setValue("foo");
         assertEquals("foo", (String) component.getAttributes().get("value"));
         parameter.setValue(null);
-        assertNull((String) component.getAttributes().get("value"));
+        assertNull(component.getAttributes().get("value"));
         component.getAttributes().put("value", "bar");
         assertEquals("bar", parameter.getValue());
         component.getAttributes().put("value", null);
@@ -78,7 +75,7 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
         parameter.setName("foo");
         assertEquals("foo", (String) parameter.getAttributes().get("name"));
         parameter.setName(null);
-        assertNull((String) parameter.getAttributes().get("name"));
+        assertNull(parameter.getAttributes().get("name"));
         parameter.getAttributes().put("name", "bar");
         assertEquals("bar", parameter.getName());
         parameter.getAttributes().put("name", null);
@@ -126,41 +123,6 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
         assertNull(parameter.getName());
     }
 
-    @Override
-    public void testValueBindings() {
-        super.testValueBindings();
-        UIParameter test = (UIParameter) component;
-
-        // "name" property
-        request.setAttribute("foo", "bar");
-        test.setName(null);
-        assertNull(test.getName());
-        test.setValueBinding("name", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("name"));
-        assertEquals("bar", test.getName());
-        test.setName("baz");
-        assertEquals("baz", test.getName());
-        test.setName(null);
-        assertEquals("bar", test.getName());
-        test.setValueBinding("name", null);
-        assertNull(test.getValueBinding("name"));
-        assertNull(test.getName());
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.setValue(null);
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.setValue(null);
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
-    }
 
     // --------------------------------------------------------- Support Methods
     // Check that the properties on the specified components are equal
@@ -180,11 +142,4 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
         return (component);
     }
 
-    // Populate a pristine component to be used in state holder tests
-    @Override
-    protected void populateComponent(UIComponent component) {
-        super.populateComponent(component);
-        UIParameter p = (UIParameter) component;
-        p.setName("foo");
-    }
 }

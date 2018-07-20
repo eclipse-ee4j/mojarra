@@ -51,8 +51,6 @@
         <module>commandScript</module>
         <module>converter</module>
         <module>disableFaceletToXhtmlMapping</module>
-        <module>disableFaceletsViewHandler</module>
-        <module>disableFaceletsViewHandlerDeprecated</module>
         <module>el</module>
         <module>facelets</module>
         <module>flash</module>

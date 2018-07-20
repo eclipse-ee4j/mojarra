@@ -47,17 +47,17 @@ public class Issue4124IT {
     public void testIssue4124() throws Exception {
 
         HtmlPage page = webClient.getPage(webUrl + "faces/issue4124.xhtml");
-        
-        
+
+
         DomNode tbody = getTbody(page.getHtmlElementById("duplicatesTable"));
         int count = getRows(tbody).size();
-        
+
         assertTrue(
             "On Page \n" + page.asXml() +
             "\nDomNode " + tbody.asXml() + " should have 1 child, but has " + count,
             count == 1
         );
-        
+
         page = page.getHtmlElementById("duplicatesTable:pSplitButton").click();
         tbody = getTbody(page.getHtmlElementById("duplicatesTable"));
         count = getRows(tbody).size();
@@ -80,25 +80,24 @@ public class Issue4124IT {
                 return tablechild;
             }
         }
-        
+
         assertTrue("No tbody found", false);
-        
+
         return null;
     }
-    
+
     private List<DomNode> getRows(DomNode body) {
-        List<DomNode> rows = new ArrayList<>(); 
-                
+        List<DomNode> rows = new ArrayList<>();
+
         for (DomNode bodyChild : body.getChildNodes()) {
             if ("tr".equals(bodyChild.getLocalName())) {
                 rows.add(bodyChild);
             }
         }
-        
+
         return rows;
     }
-    
-    
+
     @After
     public void tearDown() {
         webClient.close();

@@ -57,7 +57,7 @@ public class Issue4194IT {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue4194.xhtml");
         HtmlElement he = page.getHtmlElementById("staticOnSubmitForm:AAA");
         he.click();
-        
+
         page = webClient.getPage(webUrl + "faces/issue4194.xhtml");
         he = page.getHtmlElementById("staticOnSubmitForm:BBB");
         he.click();
@@ -71,7 +71,6 @@ public class Issue4194IT {
         he.click();
 
         assertEquals(expectedAlerts, receivedAlerts);
-
     }
 
     @After

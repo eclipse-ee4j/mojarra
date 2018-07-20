@@ -41,7 +41,6 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
@@ -158,9 +157,9 @@ public class UIData extends UIComponentBase
          * <p>Last id vended by {@link UIData#createUniqueId(javax.faces.context.FacesContext, String)}.</p>
          */
         lastId,
-     
+
         /**
-         * 
+         *
          */
         rowStatePreserved
     }
@@ -218,7 +217,7 @@ public class UIData extends UIComponentBase
 
     private Map<String, Object> _rowDeltaStates = new HashMap<>();
     private Map<String, Object> _rowTransientStates = new HashMap<>();
-    
+
     private Object _initialDescendantFullComponentState = null;
 
     // -------------------------------------------------------------- Properties
@@ -235,7 +234,7 @@ public class UIData extends UIComponentBase
     /**
      * <p>Return the zero-relative row number of the first row to be
      * displayed.</p>
-     * 
+     *
      * @return the row number.
      */
     public int getFirst() {
@@ -266,7 +265,7 @@ public class UIData extends UIComponentBase
     /**
      * <p>Return the footer facet of this component (if any).  A convenience
      * method for <code>getFacet("footer")</code>.</p>
-     * 
+     *
      * @return the footer facet.
      */
     public UIComponent getFooter() {
@@ -294,7 +293,7 @@ public class UIData extends UIComponentBase
     /**
      * <p>Return the header facet of this component (if any).  A convenience
      * method for <code>getFacet("header")</code>.</p>
-     * 
+     *
      * @return the header facet.
      */
     public UIComponent getHeader() {
@@ -325,7 +324,7 @@ public class UIData extends UIComponentBase
      * <code>wrappedData</code> is available, return <code>false</code>.</p>
      *
      * @return whether the row is available.
-     * 
+     *
      * @throws FacesException if an error occurs getting the row availability
      */
     public boolean isRowAvailable() {
@@ -354,7 +353,7 @@ public class UIData extends UIComponentBase
      * selected row index, if any.</p>
      *
      * @return the row data.
-     * 
+     *
      * @throws FacesException           if an error occurs getting the row data
      * @throws IllegalArgumentException if now row data is available at the
      *                                  currently specified row index
@@ -372,7 +371,7 @@ public class UIData extends UIComponentBase
      * <strong>not</strong> enabled for value binding expressions.</p>
      *
      * @return the row index.
-     * 
+     *
      * @throws FacesException if an error occurs getting the row index
      */
     public int getRowIndex() {
@@ -473,17 +472,17 @@ public class UIData extends UIComponentBase
         // Save current state for the previous row index
         saveDescendantState();
 
-        // Update to the new row index        
+        // Update to the new row index
         //this.rowIndex = rowIndex;
         getStateHelper().put(PropertyKeys.rowIndex, rowIndex);
         DataModel localModel = getDataModel();
         localModel.setRowIndex(rowIndex);
-        
+
         // if rowIndex is -1, clear the cache
         if (rowIndex == -1) {
             setDataModel(null);
         }
-        
+
         // Clear or expose the current row data as a request scope attribute
         String var = (String) getStateHelper().get(PropertyKeys.var);
         if (var != null) {
@@ -506,7 +505,7 @@ public class UIData extends UIComponentBase
         restoreDescendantState();
 
     }
-    
+
     private void setRowIndexRowStatePreserved(int rowIndex)
     {
         if (rowIndex < -1)
@@ -535,17 +534,17 @@ public class UIData extends UIComponentBase
             }
         }
 
-        // Update to the new row index        
+        // Update to the new row index
         //this.rowIndex = rowIndex;
         getStateHelper().put(PropertyKeys.rowIndex, rowIndex);
         DataModel localModel = getDataModel();
         localModel.setRowIndex(rowIndex);
-        
+
         // if rowIndex is -1, clear the cache
         if (rowIndex == -1) {
             setDataModel(null);
         }
-        
+
         // Clear or expose the current row data as a request scope attribute
         String var = (String) getStateHelper().get(PropertyKeys.var);
         if (var != null) {
@@ -599,7 +598,7 @@ public class UIData extends UIComponentBase
     /**
      * <p>Return the number of rows to be displayed, or zero for all remaining
      * rows in the table.  The default value of this property is zero.</p>
-     * 
+     *
      * @return the number of rows.
      */
     public int getRows() {
@@ -632,7 +631,7 @@ public class UIData extends UIComponentBase
      * <p>Return the request-scope attribute under which the data object for the
      * current row will be exposed when iterating.  This property is
      * <strong>not</strong> enabled for value binding expressions.</p>
-     * 
+     *
      *  @return he request-scope attribute.
      */
     public String getVar() {
@@ -653,21 +652,21 @@ public class UIData extends UIComponentBase
         getStateHelper().put(PropertyKeys.var, var);
 
     }
-    
+
     /**
      * <p class="changed_added_2_1">Return the value of the
      * <code>rowStatePreserved</code> JavaBeans property. See
      * {@link #setRowStatePreserved}.</p>
      *
      * @return the value of the  <code>rowStatePreserved</code>.
-     * 
+     *
      * @since 2.1
      */
 
     public boolean isRowStatePreserved()
     {
         Boolean b = (Boolean) getStateHelper().get(PropertyKeys.rowStatePreserved);
-        return b == null ? false : b.booleanValue(); 
+        return b == null ? false : b.booleanValue();
     }
 
     /**
@@ -698,11 +697,11 @@ public class UIData extends UIComponentBase
 
      * </div>
      *
-     * @param preserveComponentState the flag if the state should be preserved. 
+     * @param preserveComponentState the flag if the state should be preserved.
      *
      * @since 2.1
      */
-    
+
     public void setRowStatePreserved(boolean preserveComponentState)
     {
         getStateHelper().put(PropertyKeys.rowStatePreserved, preserveComponentState);
@@ -728,7 +727,7 @@ public class UIData extends UIComponentBase
      * </ul>
      * <p>All other types will be adapted using the {@link ScalarDataModel}
      * class, which will treat the object as a single row of data.</p>
-     * 
+     *
      *  @return the object for the value.
      */
     public Object getValue() {
@@ -753,40 +752,6 @@ public class UIData extends UIComponentBase
 
     // ----------------------------------------------------- UIComponent Methods
 
-
-    /**
-     * <p>If "name" is something other than "value", "var", or "rowIndex", rely
-     * on the superclass conversion from <code>ValueBinding</code> to
-     * <code>ValueExpression</code>.</p>
-     *
-     * @param name    Name of the attribute or property for which to set a
-     *                {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code> to
-     *                remove any currently set {@link ValueBinding}
-     *
-     * @throws IllegalArgumentException if <code>name</code> is one of
-     *                                  <code>id</code>, <code>parent</code>,
-     *                                  <code>var</code>, or <code>rowIndex</code>
-     * @throws NullPointerException     if <code>name</code> is <code>null</code>
-     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String,
-     *javax.el.ValueExpression)}.
-     */
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-
-        if (null != name) {
-            switch (name) {
-                case "value":
-                    setDataModel(null);
-                    break;
-                case "var":
-                case "rowIndex":
-                    throw new IllegalArgumentException();
-            }
-        }
-        super.setValueBinding(name, binding);
-
-    }
 
     /**
      * <p>Set the {@link ValueExpression} used to calculate the value for the
@@ -983,7 +948,7 @@ public class UIData extends UIComponentBase
         }
 
         /*
-         * Check if we are looking for a component that is part of the 
+         * Check if we are looking for a component that is part of the
          * actual skeleton.
          */
         if (this.getChildCount() > 0) {
@@ -1340,14 +1305,14 @@ public class UIData extends UIComponentBase
 
      * <div class="changed_modified_2_0_rev_a">
 
-     *  <p>If this component has children, for each 
+     *  <p>If this component has children, for each
      * 	  <code>UIColumn</code> child:</p>
-     * 
-     *    <p>Call {@link VisitContext#invokeVisitCallback} on that 
+     *
+     *    <p>Call {@link VisitContext#invokeVisitCallback} on that
           <code>UIColumn</code> instance.
-     *    If such a call returns <code>true</code>, terminate visiting and 
+     *    If such a call returns <code>true</code>, terminate visiting and
           return <code>true</code> from this method.</p>
-     * 
+     *
      *    <p>If the child <code>UIColumn</code> has facets, call
      *    {@link UIComponent#visitTree} on each one.</p>
      *
@@ -1364,7 +1329,7 @@ public class UIData extends UIComponentBase
      *    #getRowIndex}.</p>
 
      *    <p>For each child component of this <code>UIData</code> that is
-     *    also an instance of {@link UIColumn}, 
+     *    also an instance of {@link UIColumn},
      *    </p>
 
      * 	  <p>Iterate over the rows.</p>
@@ -1416,10 +1381,10 @@ public class UIData extends UIComponentBase
      * @throws NullPointerException if any of the parameters are
      * <code>null</code>.
 
-     * 
+     *
      */
     @Override
-    public boolean visitTree(VisitContext context, 
+    public boolean visitTree(VisitContext context,
                              VisitCallback callback) {
 
         // First check to see whether we are visitable.  If not
@@ -1446,7 +1411,7 @@ public class UIData extends UIComponentBase
 
         try {
 
-            // Visit ourselves.  Note that we delegate to the 
+            // Visit ourselves.  Note that we delegate to the
             // VisitContext to actually perform the visit.
             VisitResult result = context.invokeVisitCallback(this, callback);
 
@@ -1545,11 +1510,11 @@ public class UIData extends UIComponentBase
                     childState = object[0];
                     descendantState = object[1];
                 }
-                
+
                 component.clearInitialState();
                 component.restoreState(facesContext, childState);
                 component.markInitialState();
-                
+
                 Iterator<UIComponent> childsIterator;
                 if (restoreChildFacets)
                 {
@@ -1601,7 +1566,7 @@ public class UIData extends UIComponentBase
         }
         return childStates;
     }
-    
+
     private Map<String,Object> saveFullDescendantComponentStates(FacesContext facesContext, Map<String,Object> stateMap,
             Iterator<UIComponent> childIterator, boolean saveChildFacets)
     {
@@ -1634,7 +1599,7 @@ public class UIData extends UIComponentBase
         }
         return stateMap;
     }
-    
+
     private void restoreFullDescendantComponentDeltaStates(FacesContext facesContext,
             Iterator<UIComponent> childIterator, Object state, Object initialState,
             boolean restoreChildFacets)
@@ -1670,11 +1635,11 @@ public class UIData extends UIComponentBase
                 if (descendantFullStateIterator != null
                         && descendantFullStateIterator.hasNext())
                 {
-                    Object[] object = (Object[]) descendantFullStateIterator.next();
+                    Object[] object = descendantFullStateIterator.next();
                     childInitialState = object[0];
                     descendantInitialState = object[1];
                 }
-                
+
                 component.clearInitialState();
                 if (childInitialState != null)
                 {
@@ -1687,7 +1652,7 @@ public class UIData extends UIComponentBase
                     component.restoreState(facesContext, childState);
                     component.markInitialState();
                 }
-                
+
                 Iterator<UIComponent> childsIterator;
                 if (restoreChildFacets)
                 {
@@ -1714,8 +1679,8 @@ public class UIData extends UIComponentBase
             component.setId(component.getId());
             if (!component.isTransient())
             {
-                component.restoreTransientState(facesContext, (state == null) ? null : state.get(component.getClientId(facesContext)));                    
-                
+                component.restoreTransientState(facesContext, (state == null) ? null : state.get(component.getClientId(facesContext)));
+
                 Iterator<UIComponent> childsIterator;
                 if (restoreChildFacets)
                 {
@@ -1770,7 +1735,7 @@ public class UIData extends UIComponentBase
         {
             return;
         }
-        
+
         Object values[] = (Object[]) state;
         super.restoreState(context, values[0]);
         Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
@@ -1784,7 +1749,7 @@ public class UIData extends UIComponentBase
         else
         {
             _rowDeltaStates = (Map<String, Object>) restoredRowStates;
-        } 
+        }
     }
 
     private void resetClientIds(UIComponent component) {
@@ -1795,15 +1760,15 @@ public class UIData extends UIComponentBase
             child.setId(child.getId());
         }
     }
-        
+
     @Override
     public Object saveState(FacesContext context)
     {
         resetClientIds(this);
-        
+
         if (initialStateMarked()) {
             Object superState = super.saveState(context);
-            
+
             if (superState == null && _rowDeltaStates.isEmpty()) {
                 return null;
             }
@@ -1813,7 +1778,7 @@ public class UIData extends UIComponentBase
                 if (superState != null || attachedState != null) {
                     values = new Object[] { superState, attachedState };
                 }
-                return values; 
+                return values;
             }
         } else {
             Object values[] = new Object[2];
@@ -1829,13 +1794,13 @@ public class UIData extends UIComponentBase
     /**
      * <p>Return the internal {@link DataModel} object representing the data
      * objects that we will iterate over in this component's rendering.</p>
-     * 
+     *
      * <p>If the model has been cached by a previous call to {@link
      * #setDataModel}, return it.  Otherwise call {@link #getValue}.  If the
      * result is null, create an empty {@link ListDataModel} and return it.  If
      * the result is an instance of {@link DataModel}, return it.  Otherwise,
      * adapt the result as described in {@link #getValue} and return it.</p>
-     * 
+     *
      * @return the data model.
      */
     protected DataModel getDataModel() {
@@ -1877,11 +1842,11 @@ public class UIData extends UIComponentBase
         return (model);
 
     }
-    
+
     @SuppressWarnings("all")
     static private class FacesDataModelAnnotationLiteral extends AnnotationLiteral<FacesDataModel> implements FacesDataModel {
         private static final long serialVersionUID = 1L;
-        
+
         /**
          * Stores the forClass attribute.
          */
@@ -1896,33 +1861,33 @@ public class UIData extends UIComponentBase
             return forClass;
         }
     }
-    
+
     private DataModel<?> createDataModel(final Class<?> forClass) {
-     
+
         List<DataModel<?>> dataModel = new ArrayList<DataModel<?>>(1);
         CDI<Object> cdi = CDI.current();
-        
+
         // Scan the map in order, the first class that is a super class or equal to the class for which
         // we're looking for a DataModel is the closest match, since the Map is sorted on inheritance relation
         getDataModelClassesMap(cdi).entrySet().stream()
             .filter(e -> e.getKey().isAssignableFrom(forClass))
             .findFirst()
             .ifPresent(
-                    
+
                  // Get the bean from CDI which is of the class type that we found during annotation scanning
                  // and has the @FacesDataModel annotation, with the "forClass" attribute set to the closest
                  // super class of our target class.
-                    
+
                 e -> dataModel.add(
                     cdi.select(
                         e.getValue(),
                         new FacesDataModelAnnotationLiteral(e.getKey())
                     ).get())
             );
-        
+
         return dataModel.isEmpty()? null : dataModel.get(0);
     }
-    
+
     @SuppressWarnings("unchecked")
     private Map<Class<?>, Class<? extends DataModel<?>>> getDataModelClassesMap(CDI<Object> cdi) {
         BeanManager beanManager = cdi.getBeanManager();
@@ -1930,7 +1895,7 @@ public class UIData extends UIComponentBase
         // Get the Map with classes for which a custom DataModel implementation is available from CDI
         Bean<?> bean = beanManager.resolve(beanManager.getBeans("comSunFacesDataModelClassesMap"));
         Object beanReference = beanManager.getReference(bean, Map.class, beanManager.createCreationalContext(bean));
-        
+
         return (Map<Class<?>, Class<? extends DataModel<?>>>) beanReference;
     }
 
@@ -1942,7 +1907,7 @@ public class UIData extends UIComponentBase
      * <code>DataModel</code> must be reset in a manner so that the next call to
      * {@link #getDataModel} causes lazy instantion of a newly refreshed
      * <code>DataModel</code>.</p>
-     * 
+     *
      * <p>Subclasses might call this method if they either want to restore the
      * internal <code>DataModel</code> during the <em>Restore View</em> phase or
      * if they want to explicitly refresh the current <code>DataModel</code> for
@@ -1974,7 +1939,7 @@ public class UIData extends UIComponentBase
      */
     private boolean requiresRowIteration(VisitContext ctx) {
 
-        return !ctx.getHints().contains(VisitHint.SKIP_ITERATION); 
+        return !ctx.getHints().contains(VisitHint.SKIP_ITERATION);
 
     }
 
@@ -2057,7 +2022,7 @@ public class UIData extends UIComponentBase
                 }
             }
         }
-        
+
         // collect rendered columns once
         List<UIColumn> renderedColumns = new ArrayList<>(getChildCount());
         if (getChildCount() > 0) {
@@ -2138,7 +2103,7 @@ public class UIData extends UIComponentBase
     private boolean doVisitChildren(VisitContext context, boolean visitRows) {
 
         // Just need to check whether there are any ids under this
-        // subtree.  Make sure row index is cleared out since 
+        // subtree.  Make sure row index is cleared out since
         // getSubtreeIdsToVisit() needs our row-less client id.
         if (visitRows) {
             setRowIndex(-1);
@@ -2549,7 +2514,7 @@ class SavedState implements Serializable {
 		return submittedValue != null || value != null || localValueSet
 				|| !valid || submitted;
 	}
-    
+
     @Override
     public String toString() {
         return ("submittedValue: " + submittedValue +

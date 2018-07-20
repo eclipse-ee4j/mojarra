@@ -16,16 +16,16 @@
 
 package com.sun.faces.systest.model;
 
+import javax.el.MethodExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpSession;
-
-import javax.faces.component.UIInput;
-import javax.faces.el.MethodBinding;
 
 import com.sun.faces.systest.TestValueChangeListener;
 
@@ -117,27 +117,34 @@ public class MethodRef extends Object {
                                                vce.getNewValue().toString());
         setChangeOutcome(vce.getNewValue().toString());
     }
-    
+
     public void inputFieldValueChange(ValueChangeEvent vce) {
         vce.getComponent().getAttributes().put("onblur",
                                                vce.getNewValue().toString());
     }
-    
+
     protected UIInput inputField = null;
     public void setInputField(UIInput input){
         this.inputField = input;
     }
-    
+
     public UIInput getInputField() {
         if (inputField == null) {
             inputField = new UIInput();
             inputField.addValueChangeListener(new TestValueChangeListener());
-            Class args[] = { ValueChangeEvent.class };
-            MethodBinding mb = 
-            FacesContext.getCurrentInstance().getApplication().
-            createMethodBinding("#{methodRef.inputFieldValueChange}", args);
-            inputField.setValueChangeListener(mb);
+
+            Class<?> args[] = { ValueChangeEvent.class };
+
+            MethodExpression mb =
+            FacesContext.getCurrentInstance().getApplication().getExpressionFactory().createMethodExpression(
+                    FacesContext.getCurrentInstance().getELContext(),
+                    "#{methodRef.inputFieldValueChange}",
+                    Object.class,
+                    args);
+
+            inputField.addValueChangeListener(new MethodExpressionValueChangeListener(mb));
         }
+
         return inputField;
     }
 

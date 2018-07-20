@@ -43,7 +43,9 @@
     
     <modules>
         <module>servlet30</module>
+        <!--  
         <module>servlet30-isolated</module>
+        -->
         <module>servlet31</module>
         <module>servlet40</module>
         <module>javaee6</module>
@@ -260,6 +262,7 @@
                                     <cargo.hostname>${glassfish.cargo.serverName}</cargo.hostname>
                                     <cargo.servlet.port>${glassfish.cargo.servletPort}</cargo.servlet.port>
                                     <cargo.glassfish.domain.name>${glassfish.cargo.domain}</cargo.glassfish.domain.name>
+                                    <cargo.glassfish.removeDefaultDatasource>false</cargo.glassfish.removeDefaultDatasource>
                                 </properties>
                             </configuration>
                         </configuration>

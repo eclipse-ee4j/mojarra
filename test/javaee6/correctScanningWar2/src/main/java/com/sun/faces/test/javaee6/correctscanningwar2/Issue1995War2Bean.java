@@ -22,16 +22,9 @@ import javax.inject.Named;
 @Named("war2Bean")
 @RequestScoped
 public class Issue1995War2Bean {
-    
-    protected String name = "war2Bean";
 
     public String getName() {
-        return name;
+        return "war2Bean";
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    
 }

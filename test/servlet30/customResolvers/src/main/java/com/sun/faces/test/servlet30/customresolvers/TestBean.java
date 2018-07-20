@@ -39,9 +39,6 @@ import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.SystemEvent;
@@ -58,10 +55,11 @@ import javax.servlet.http.HttpSession;
  */
 public class TestBean implements SystemEventListenerHolder {
 
+    @Override
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> arg0) {
         return Collections.EMPTY_LIST;
     }
-    
+
 public enum Suit { Hearts, Clubs, Diamonds, Spades }
 public enum Color { Red, Blue, Green, Orange }
 
@@ -72,11 +70,11 @@ public enum Color { Red, Blue, Green, Orange }
     private List newList3 = new ArrayList();
 
     ServletContext servletContext = null;
-    
+
     public Suit returnSpades() {
         return Suit.Spades;
     }
-    
+
     public Suit returnDiamonds() {
         return Suit.Diamonds;
     }
@@ -315,7 +313,7 @@ public enum Color { Red, Blue, Green, Orange }
     public void setMultiSelection(String [] newMultiSelection) {
     multiSelection = newMultiSelection;
     }
-    
+
     public Object getNullProperty() {
         return null;
     }
@@ -385,57 +383,59 @@ public enum Color { Red, Blue, Green, Orange }
     FacesContext context = FacesContext.getCurrentInstance();
     Application app = context.getApplication();
 
+    // Recode using EL Resolver?
+
     // see if we need to take action-
-    if (null == context.getExternalContext().getSessionMap().get("systest.replacePropertyResolver")) {
-        final PropertyResolver oldProp = app.getPropertyResolver();
-        PropertyResolver
-        newProp = new PropertyResolver() {
-            public Object getValue(Object base, Object property)
-            throws EvaluationException, PropertyNotFoundException {
-            return oldProp.getValue(base, property);
-            }
-
-            public Object getValue(Object base, int index)
-            throws EvaluationException, PropertyNotFoundException {
-            return oldProp.getValue(base, index);
-            }
-
-            public void setValue(Object base, Object property, Object value)
-            throws EvaluationException, PropertyNotFoundException {
-            TestBean.this.setValueChangeMessage("setValue() called");
-            oldProp.setValue(base, property, value);
-            }
-
-            public void setValue(Object base, int index, Object value)
-            throws EvaluationException, PropertyNotFoundException {
-            TestBean.this.setValueChangeMessage("setValue() called");
-            oldProp.setValue(base, index, value);
-            }
-
-            public boolean isReadOnly(Object base, Object property)
-            throws EvaluationException, PropertyNotFoundException {
-            return oldProp.isReadOnly(base, property);
-            }
-
-            public boolean isReadOnly(Object base, int index)
-            throws EvaluationException, PropertyNotFoundException {
-            return oldProp.isReadOnly(base, index);
-            }
-
-            public Class getType(Object base, Object property)
-            throws EvaluationException, PropertyNotFoundException {
-            return oldProp.getType(base, property);
-            }
-
-            public Class getType(Object base, int index)
-            throws EvaluationException, PropertyNotFoundException {
-            return oldProp.getType(base, index);
-            }
-
-        };
-        app.setPropertyResolver(newProp);
-        context.getExternalContext().getSessionMap().put("systest.replacePropertyResolver", oldProp);
-    }
+//    if (null == context.getExternalContext().getSessionMap().get("systest.replacePropertyResolver")) {
+//        final PropertyResolver oldProp = app.getPropertyResolver();
+//        PropertyResolver
+//        newProp = new PropertyResolver() {
+//            public Object getValue(Object base, Object property)
+//            throws EvaluationException, PropertyNotFoundException {
+//            return oldProp.getValue(base, property);
+//            }
+//
+//            public Object getValue(Object base, int index)
+//            throws EvaluationException, PropertyNotFoundException {
+//            return oldProp.getValue(base, index);
+//            }
+//
+//            public void setValue(Object base, Object property, Object value)
+//            throws EvaluationException, PropertyNotFoundException {
+//            TestBean.this.setValueChangeMessage("setValue() called");
+//            oldProp.setValue(base, property, value);
+//            }
+//
+//            public void setValue(Object base, int index, Object value)
+//            throws EvaluationException, PropertyNotFoundException {
+//            TestBean.this.setValueChangeMessage("setValue() called");
+//            oldProp.setValue(base, index, value);
+//            }
+//
+//            public boolean isReadOnly(Object base, Object property)
+//            throws EvaluationException, PropertyNotFoundException {
+//            return oldProp.isReadOnly(base, property);
+//            }
+//
+//            public boolean isReadOnly(Object base, int index)
+//            throws EvaluationException, PropertyNotFoundException {
+//            return oldProp.isReadOnly(base, index);
+//            }
+//
+//            public Class getType(Object base, Object property)
+//            throws EvaluationException, PropertyNotFoundException {
+//            return oldProp.getType(base, property);
+//            }
+//
+//            public Class getType(Object base, int index)
+//            throws EvaluationException, PropertyNotFoundException {
+//            return oldProp.getType(base, index);
+//            }
+//
+//        };
+//        app.setPropertyResolver(newProp);
+//        context.getExternalContext().getSessionMap().put("systest.replacePropertyResolver", oldProp);
+//    }
     }
 
 
@@ -447,15 +447,15 @@ public enum Color { Red, Blue, Green, Orange }
     public void restorePropertyResolver(ActionEvent action) {
     FacesContext context = FacesContext.getCurrentInstance();
     Application app = context.getApplication();
-    PropertyResolver oldProp = null;
-
-    // see if we need to take action-
-    if (null != (oldProp = (PropertyResolver) context.getExternalContext().getSessionMap().get("systest.replacePropertyResolver"))) {
-        app.setPropertyResolver(oldProp);
-        context.getExternalContext().getSessionMap().remove("systest.replacePropertyResolver");
-        setValueChangeMessage(null);
-
-    }
+//    PropertyResolver oldProp = null;
+//
+//    // see if we need to take action-
+//    if (null != (oldProp = (PropertyResolver) context.getExternalContext().getSessionMap().get("systest.replacePropertyResolver"))) {
+//        app.setPropertyResolver(oldProp);
+//        context.getExternalContext().getSessionMap().remove("systest.replacePropertyResolver");
+//        setValueChangeMessage(null);
+//
+//    }
     }
 
     protected HtmlCommandButton boundButton = new HtmlCommandButton();
@@ -575,14 +575,14 @@ public enum Color { Red, Blue, Green, Orange }
         }
         newList1.add(newValue);
    }
-   
+
    public void valueChange0() {
-       FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("valueChange0Called", 
+       FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("valueChange0Called",
                "true");
    }
-   
+
     public void actionListener0() {
-       FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("actionListener0Called", 
+       FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("actionListener0Called",
                "true");
    }
 
@@ -821,20 +821,20 @@ public enum Color { Red, Blue, Green, Orange }
         }
         return null;
     }
-    
+
     public Map getSelectItems() {
         Map<String,SpecialBean> map = new HashMap<String,SpecialBean>();
         map.put("key1", new SpecialBean("value1"));
         map.put("key2", new SpecialBean("value2"));
         map.put("key3", new SpecialBean("value3"));
-        return map;        
+        return map;
     }
-    
+
     private SpecialBean special;
     public void setSpecialModel(SpecialBean special) {
-        this.special = special;        
+        this.special = special;
     }
-    
+
     public SpecialBean getSpecialModel() {
         return special;
     }
@@ -961,7 +961,7 @@ public enum Color { Red, Blue, Green, Orange }
     }
 
     private Integer idcounter = new Integer(0);
- 
+
     public List getNewList3() {
         return newList3;
     }

@@ -16,16 +16,18 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import com.sun.faces.facelets.el.LegacyValueBinding;
-
 import javax.faces.component.UIComponent;
 import javax.faces.component.UISelectBoolean;
 import javax.faces.component.ValueHolder;
 import javax.faces.convert.Converter;
-import javax.faces.view.facelets.*;
+import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.MetaRule;
+import javax.faces.view.facelets.Metadata;
+import javax.faces.view.facelets.MetadataTarget;
+import javax.faces.view.facelets.TagAttribute;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -43,22 +45,6 @@ final class ValueHolderRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ValueHolder) instance).setConverter(ctx.getFacesContext()
                     .getApplication().createConverter(this.converterId));
-        }
-    }
-
-    final static class DynamicConverterMetadata extends Metadata {
-
-        private final TagAttribute attr;
-
-        public DynamicConverterMetadata(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueBinding("converter",
-                    new LegacyValueBinding(attr.getValueExpression(ctx,
-                            Converter.class)));
         }
     }
 
@@ -94,22 +80,6 @@ final class ValueHolderRule extends MetaRule {
         }
     }
 
-    final static class DynamicValueBindingMetadata extends Metadata {
-
-        private final TagAttribute attr;
-
-        public DynamicValueBindingMetadata(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueBinding("value",
-                    new LegacyValueBinding(attr.getValueExpression(ctx,
-                            Object.class)));
-        }
-    }
-
     public final static ValueHolderRule Instance = new ValueHolderRule();
 
     @Override
@@ -126,13 +96,10 @@ final class ValueHolderRule extends MetaRule {
             }
 
             if ("value".equals(name)) {
-                //if (attribute.isLiteral()) {
-                //    return new LiteralValueMetadata(attribute.getValue());
-                //} else {
                 return new DynamicValueExpressionMetadata(attribute);
-                //}
             }
         }
+
         return null;
     }
 

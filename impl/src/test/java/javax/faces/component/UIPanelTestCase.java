@@ -79,10 +79,6 @@ public class UIPanelTestCase extends UIComponentBaseTestCase {
         UIPanel panel = (UIPanel) component;
     }
 
-    public void PENDING_FIXME_testValueBindings() {
-        super.testValueBindings();
-        UIPanel test = (UIPanel) component;
-    }
 
     // --------------------------------------------------------- Support Methods
     // Create a pristine component of the type to be used in state holder tests
