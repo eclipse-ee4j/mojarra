@@ -9,6 +9,8 @@ jdk:
   - openjdk8
 env:
     - TEST_FOLDER=javaee8
+install:
+  - echo "Overriding default install"
 script:
   - pwd
   - wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip
