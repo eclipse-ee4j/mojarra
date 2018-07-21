@@ -8,7 +8,7 @@ jdk:
   - oraclejdk8
   - openjdk8
 env:
-  - TEST_FOLDER=test/glassfish
+# - TEST_FOLDER=test/glassfish
   - TEST_FOLDER=test/htmlunitaware
 #  - TEST_FOLDER=test/javaee6
 #  - TEST_FOLDER=test/javaee6web
