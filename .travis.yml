@@ -4,17 +4,17 @@ before_install:
   - unzip -qq apache-maven-3.5.3-bin.zip
   - export M2_HOME=$PWD/apache-maven-3.5.3
   - export PATH=$M2_HOME/bin:$PATH
+  - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
 jdk:
   - oraclejdk8
   - openjdk8
 env:
     - TEST_FOLDER=javaee8
 script:
-  - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
-  - mvn -B clean install
   - pwd
   - wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip
   - ls
+  - mvn -B clean install
 addons:
   apt:
     packages:
