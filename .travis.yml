@@ -7,8 +7,13 @@ before_install:
 jdk:
   - oraclejdk8
   - openjdk8
+env:
+    - TEST_FOLDER=javaee8
 script:
   - mvn -B clean install
+  - pwd
+  - wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip
+  - ls
 addons:
   apt:
     packages:
