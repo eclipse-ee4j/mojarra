@@ -8,6 +8,7 @@ jdk:
   - oraclejdk8
   - openjdk8
 env:
+    - TEST_FOLDER=test/javaee7
     - TEST_FOLDER=test/javaee8
 install:
   - echo "Overriding default install"
