@@ -583,9 +583,9 @@
                         </Require-Capability>
                         <Provide-Capability>
                             osgi.extender;osgi.extender="jsp.taglib";uri="http://java.sun.com/jsf/html";
-                                version:Version="2.3",
+                            version:Version="2.3",
                             osgi.extender;osgi.extender="jsp.taglib";uri="http://java.sun.com/jsf/core";
-                                version:Version="2.3"
+                            version:Version="2.3"
                         </Provide-Capability>
                     </instructions>
                 </configuration>
@@ -621,6 +621,17 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>clirr-maven-plugin</artifactId>
                 <version>2.8</version>
+                <configuration>
+                    <comparisonArtifacts>
+                        <comparisonArtifact>
+                            <groupId>javax.faces</groupId>
+                            <artifactId>javax.faces-api</artifactId>
+                            <version>2.3</version>
+                        </comparisonArtifact>
+                    </comparisonArtifacts>
+                    <failOnError>false</failOnError>
+                    <logResults>true</logResults>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>com.google.code.findbugs</groupId>
@@ -731,12 +742,12 @@
         </dependency>
         
         <!-- 
-            For the vendor SPI implementations shipped with Mojarra.
-            See package com.sun.faces.vendor
-            TODO: Is this really needed still? These are extremely old
-         -->
+           For the vendor SPI implementations shipped with Mojarra.
+           See package com.sun.faces.vendor
+           TODO: Is this really needed still? These are extremely old
+        -->
          
-         <!-- Jetty 6 -->
+        <!-- Jetty 6 -->
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
@@ -853,9 +864,9 @@
                     </includes>
                     <comparisonArtifacts>
                         <comparisonArtifact>
-                            <groupId>org.glassfish</groupId>
-                            <artifactId>javax.faces</artifactId>
-                            <version>2.3.0-m09</version>
+                            <groupId>javax.faces</groupId>
+                            <artifactId>javax.faces-api</artifactId>
+                            <version>2.3</version>
                         </comparisonArtifact>
                     </comparisonArtifacts>
                 </configuration>
