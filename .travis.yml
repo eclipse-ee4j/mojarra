@@ -8,15 +8,16 @@ jdk:
   - oraclejdk8
   - openjdk8
 env:
-    - TEST_FOLDER=javaee8
+    - TEST_FOLDER=test/javaee8
 install:
   - echo "Overriding default install"
 script:
-  - pwd
+  - export BASE_DIR=`pwd`
+  - echo $BASE_DIR
   - wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip
+  - unzip glassfish-5.0.zip
   - ls
-  - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
-  - mvn -B clean install
+  - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn" ; mvn -B clean install
 addons:
   apt:
     packages:
