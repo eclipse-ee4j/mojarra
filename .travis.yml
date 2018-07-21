@@ -23,13 +23,13 @@ script:
   - echo "Patching Mojarra JAR"
   - mvn -B -Dglassfish.patch.home=$BASE_DIR/glassfish5 -P glassfish-patch -N validate
   - echo "Starting Glassfish 5.0"
-  - mvn -Dglassfish.home=$BASE_DIR/glassfish5 -P glassfish-cargo -N cargo:start
+  - mvn -Dglassfish.cargo.home=$BASE_DIR/glassfish5 -P glassfish-cargo -N cargo:start
   - echo "Deploying applications"
-  - mvn -Dglassfish.home=$BASE_DIR/glassfish5 -P glassfish-cargo cargo:redeploy
+  - mvn -Dglassfish.cargo.home=$BASE_DIR/glassfish5 -P glassfish-cargo cargo:redeploy
   - echo "Running tests"
   - mvn -Pintegration verify
   - echo "Shutting down Glassfish 5.0"
-  - mvn -Dglassfish.home=$BASE_DIR/glassfish5 -P glassfish-cargo -N cargo:stop
+  - mvn -Dglassfish.cargo.home=$BASE_DIR/glassfish5 -P glassfish-cargo -N cargo:stop
 addons:
   apt:
     packages:
