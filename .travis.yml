@@ -1,15 +1,15 @@
 language: java
 before_install:
-  - wget https://archive.apache.org/dist/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.zip
-  - unzip -qq apache-maven-3.5.3-bin.zip
-  - export M2_HOME=$PWD/apache-maven-3.5.3
+  - wget https://archive.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.zip
+  - unzip -qq apache-maven-3.5.4-bin.zip
+  - export M2_HOME=$PWD/apache-maven-3.5.4
   - export PATH=$M2_HOME/bin:$PATH
 jdk:
   - oraclejdk8
   - openjdk8
 env:
-    - TEST_FOLDER=test/javaee7
-    - TEST_FOLDER=test/javaee8
+  - TEST_FOLDER=test/javaee7
+  - TEST_FOLDER=test/javaee8
 install:
   - echo "Overriding default install"
 script:
@@ -17,7 +17,8 @@ script:
   - wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip
   - unzip -q glassfish-5.0.zip
   - echo "Glassfish 5.0 is installed in " $BASE_DIR/glassfish5
-  - mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn clean install
+  - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
+  - mvn -B clean install
   - cd $BASE_DIR/test
   - echo "Patching Mojarra JAR"
   - mvn -B -Dglassfish.patch.home=$BASE_DIR/glassfish5 -P glassfish-patch -N validate
