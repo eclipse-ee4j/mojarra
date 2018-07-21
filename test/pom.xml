@@ -271,7 +271,7 @@
                 <glassfish.cargo.configType>standalone</glassfish.cargo.configType>
                 <glassfish.cargo.config>${glassfish.cargo.home}/glassfish/domains</glassfish.cargo.config>
                 <glassfish.cargo.domain>domain1</glassfish.cargo.domain>
-                <glassfish.cargo.id>glassfish4x</glassfish.cargo.id>
+                <glassfish.cargo.id>glassfish5x</glassfish.cargo.id>
                 <glassfish.cargo.serverName>localhost</glassfish.cargo.serverName>
                 <glassfish.cargo.servletPort>8080</glassfish.cargo.servletPort>
             </properties>
