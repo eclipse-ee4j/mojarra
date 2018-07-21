@@ -16,22 +16,27 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+import static java.util.Collections.unmodifiableSet;
+
+import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
-@ManagedBean(name = "bean")
+@Named
 @SessionScoped
-public class Bean {
+public class Bean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Collection<SelectItem> items;
     private String radioValue = "blue";
@@ -42,7 +47,7 @@ public class Bean {
         initialItems.add(new SelectItem("red"));
         initialItems.add(new SelectItem("blue"));
         initialItems.add(new SelectItem("white"));
-        items = Collections.unmodifiableSet(initialItems);
+        items = unmodifiableSet(initialItems);
     }
 
     public Collection<SelectItem> getItems() {
@@ -60,11 +65,11 @@ public class Bean {
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
     public String getStatus() {
         return status;
     }
-    
+
     public void processLink(ActionEvent ae) {
         status = "LINK ACTION";
     }
@@ -76,18 +81,17 @@ public class Bean {
     public void processIt(AjaxBehaviorEvent event) {
         setRadioValue("red");
     }
-    
+
     public String getThrowExceptionOnAjax() {
         FacesContext context = FacesContext.getCurrentInstance();
         PartialViewContext partialContext = context.getPartialViewContext();
-        if (null != partialContext) {
+
+        if (partialContext != null) {
             if (partialContext.isAjaxRequest()) {
                 throw new RuntimeException("Intentionally throwing exception on ajax request");
             }
         }
-        
-        String result = "not an ajax request";
-        
-        return result;
+
+        return "not an ajax request";
     }
 }

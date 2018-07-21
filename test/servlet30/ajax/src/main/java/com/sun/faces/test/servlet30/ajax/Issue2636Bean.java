@@ -19,11 +19,11 @@ package com.sun.faces.test.servlet30.ajax;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 public class Issue2636Bean {
-	
+
     public List<String> getValues() {
         List<String> values = new ArrayList<String>();
         values.add("test");

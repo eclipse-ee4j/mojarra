@@ -16,10 +16,10 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class DivInCompositeBean {
 

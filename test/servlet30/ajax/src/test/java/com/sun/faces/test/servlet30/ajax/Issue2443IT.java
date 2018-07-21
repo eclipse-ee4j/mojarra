@@ -14,12 +14,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax; 
+package com.sun.faces.test.servlet30.ajax;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -45,18 +43,16 @@ public class Issue2443IT {
         webClient.close();
     }
 
-
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies that an attribute nameed 'value' can be successfully updated
-     * from a partial response (over Ajax). 
+     * This test verifies that an attribute nameed 'value' can be successfully updated from a partial
+     * response (over Ajax).
      */
     @Test
     public void testQuotesInScript() throws Exception {
         String expectedText = '"' + "<div></div>" + '"' + ";";
-        HtmlPage page = webClient.getPage(webUrl+"faces/scriptQuote.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/scriptQuote.xhtml");
         assertTrue(page.asXml().contains(expectedText));
     }
 }
-

@@ -17,16 +17,19 @@
 package com.sun.faces.test.servlet30.ajax;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 
-@ManagedBean(name="multiPart1Bean")
+import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
+@Named
 @ViewScoped
 public class MultiPart1Bean implements Serializable {
-    
+
+    private static final long serialVersionUID = 1L;
+
     public void delay() {
-        
+
         Integer count = (Integer) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("multiPart1Count");
         if (count == null) {
             count = new Integer(1);
@@ -35,15 +38,14 @@ public class MultiPart1Bean implements Serializable {
             count = count + 1;
             FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put("multiPart1Count", count);
         }
-        
+
         try {
             Thread.sleep(2000);
-            
-        } catch(InterruptedException ex) {
+        } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
     }
-    
+
     public String getCount() {
         return "count is " + FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("multiPart1Count");
     }

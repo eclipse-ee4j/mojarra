@@ -16,11 +16,10 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 
-@ManagedBean
-public class AjaxScriptErrorBean implements Serializable {
+@Named
+public class AjaxScriptErrorBean {
 
     private Boolean renderedScript;
 

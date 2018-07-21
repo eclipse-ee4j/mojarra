@@ -16,20 +16,18 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
 
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @SessionScoped
-public class AjaxTable {
+public class AjaxTable implements Serializable {
 
+    private static final long serialVersionUID = 1L;
 
-    private Info[] list = new Info[]{
-            new Info(101, "Bob", ""),
-            new Info(102, "Joe", ""),
-            new Info(103, "Ron", ""),
-    };
+    private Info[] list = new Info[] { new Info(101, "Bob", ""), new Info(102, "Joe", ""), new Info(103, "Ron", ""), };
 
     private String selectedCity = "alpha";
 
@@ -56,7 +54,6 @@ public class AjaxTable {
             return name;
         }
 
-
         public String getCity() {
             return selectedCity;
         }
@@ -70,6 +67,7 @@ public class AjaxTable {
     public void setSelectedCity(String selectedCity) {
         this.selectedCity = selectedCity;
     }
+
     public String getSelectedCity() {
         return selectedCity;
     }

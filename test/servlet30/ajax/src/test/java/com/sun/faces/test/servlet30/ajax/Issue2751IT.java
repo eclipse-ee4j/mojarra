@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax; 
+package com.sun.faces.test.servlet30.ajax;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -46,22 +46,21 @@ public class Issue2751IT {
         webClient.close();
     }
 
-
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies that an attribute named 'disabled' can be successfully updated
-     * from a partial response (over Ajax). 
+     * This test verifies that an attribute named 'disabled' can be successfully updated from a partial
+     * response (over Ajax).
      */
     @Test
     public void testUpdateAttributeNamedClass() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl+"faces/attributeNameIsClass.xhtml");
-        HtmlTextInput input = (HtmlTextInput)page.getElementById("form1:foo");
+        HtmlPage page = webClient.getPage(webUrl + "faces/attributeNameIsClass.xhtml");
+        HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:foo");
         assertTrue(page.asXml().contains("foo"));
-        HtmlSubmitInput button = (HtmlSubmitInput)page.getElementById("form1:button");
+        HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("form1:button");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        input = (HtmlTextInput)page.getElementById("form1:foo");
+        input = (HtmlTextInput) page.getElementById("form1:foo");
         assertTrue(page.asXml().contains("myclass"));
     }
 }

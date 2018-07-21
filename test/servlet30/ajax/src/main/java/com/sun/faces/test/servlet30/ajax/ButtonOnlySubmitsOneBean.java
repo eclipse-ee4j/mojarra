@@ -16,31 +16,32 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.event.ActionEvent;
 
-@ManagedBean(name = "buttonOnlySubmitsOneBean")
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.event.ActionEvent;
+import javax.inject.Named;
+
+
+@Named
 @RequestScoped
-public class ButtonOnlySubmitsOneBean implements Serializable {
-    
+public class ButtonOnlySubmitsOneBean {
+
     private List<String> strings;
-    
+
     @PostConstruct
     public void init() {
-        strings = new ArrayList();
+        strings = new ArrayList<>();
         strings.add("value1");
         strings.add("value2");
     }
-    
+
     public void listener(ActionEvent event) {
         strings.remove(0);
     }
-    
+
     public String getValue() {
         StringBuilder result = new StringBuilder();
         for (String string : strings) {

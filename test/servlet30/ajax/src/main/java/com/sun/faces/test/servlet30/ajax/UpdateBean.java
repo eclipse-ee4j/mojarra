@@ -18,16 +18,16 @@ package com.sun.faces.test.servlet30.ajax;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.PartialResponseWriter;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.context.PartialResponseWriter;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
-
 public class UpdateBean {
 
     public String updateBodyTag() {
@@ -37,22 +37,22 @@ public class UpdateBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                    ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.startUpdate("javax.faces.ViewBody");
-                writer.startElement("body",null);
-                writer.writeAttribute("class","foo","class");
-                writer.writeAttribute("title","fooTitle","title");
-                writer.writeAttribute("lang","fooLang","lang");
+                writer.startElement("body", null);
+                writer.writeAttribute("class", "foo", "class");
+                writer.writeAttribute("title", "fooTitle", "title");
+                writer.writeAttribute("lang", "fooLang", "lang");
                 writer.startElement("span", null);
-                writer.writeAttribute("id","status","id");
+                writer.writeAttribute("id", "status", "id");
                 writer.endElement("span");
                 writer.endElement("body");
                 writer.endUpdate();
                 writer.startEval();
                 writer.write("var body = document.getElementsByTagName('body')[0];");
-                writer.write("document.getElementById('status').innerHTML='BODY CLASS:'+body.className+' BODY TITLE:'+body.title+' BODY LANG:'+body.lang");
+                writer.write(
+                        "document.getElementById('status').innerHTML='BODY CLASS:'+body.className+' BODY TITLE:'+body.title+' BODY LANG:'+body.lang");
                 writer.endEval();
                 writer.endDocument();
                 writer.flush();
@@ -69,14 +69,13 @@ public class UpdateBean {
         ExternalContext extContext = ctx.getExternalContext();
         if (ctx.getPartialViewContext().isAjaxRequest()) {
             try {
-                Map attrs = new HashMap();
+                Map<String, String> attrs = new HashMap<>();
                 attrs.put("value", "");
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                    ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.updateAttributes("form1:foo", attrs); 
+                writer.updateAttributes("form1:foo", attrs);
                 writer.startEval();
                 writer.write("document.getElementById('form1:foo').value = 'bar';");
                 writer.endEval();
@@ -95,12 +94,11 @@ public class UpdateBean {
         ExternalContext extContext = ctx.getExternalContext();
         if (ctx.getPartialViewContext().isAjaxRequest()) {
             try {
-                Map attrs = new HashMap();
+                Map<String, String> attrs = new HashMap<>();
                 attrs.put("disabled", "true");
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                    ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.updateAttributes("form1:foo", attrs);
                 writer.startEval();
@@ -125,8 +123,7 @@ public class UpdateBean {
                 attrs.put("class", "myclass");
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                    ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.updateAttributes("form1:foo", attrs);
                 writer.startEval();
@@ -151,8 +148,7 @@ public class UpdateBean {
                 attrs.put("checked", "true");
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                    ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.updateAttributes("form1:foo", attrs);
                 writer.endDocument();
@@ -174,8 +170,7 @@ public class UpdateBean {
                 attrs.put("readonly", "true");
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                    ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.updateAttributes("form1:foo", attrs);
                 writer.endDocument();
@@ -197,8 +192,7 @@ public class UpdateBean {
                 attrs.put("onclick", "document.getElementById('form1:out').innerHTML='ONCLICK CALLED';return;");
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                    ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.updateAttributes("form1:button1", attrs);
                 writer.endDocument();

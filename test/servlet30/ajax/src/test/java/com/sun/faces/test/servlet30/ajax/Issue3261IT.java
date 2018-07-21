@@ -17,7 +17,6 @@
 package com.sun.faces.test.servlet30.ajax;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.After;
@@ -53,7 +52,7 @@ public class Issue3261IT {
 
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        
+
         assertEquals(200, page.getWebResponse().getStatusCode());
     }
 }

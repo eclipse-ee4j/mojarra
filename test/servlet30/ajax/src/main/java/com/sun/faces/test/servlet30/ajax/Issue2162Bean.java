@@ -17,24 +17,28 @@
 package com.sun.faces.test.servlet30.ajax;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
-@ManagedBean(name = "issue2162Bean")
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
+@Named
 @SessionScoped
 public class Issue2162Bean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * Stores init called.
      */
     private StringBuilder initCalled = new StringBuilder();
-    
+
     /**
      * Init.
      */
     public void init() {
         this.initCalled.append("Init called\n");
     }
-    
+
     /**
      * Get init called.
      */
