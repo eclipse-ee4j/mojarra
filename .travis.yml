@@ -17,8 +17,7 @@ script:
   - wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip
   - unzip -q glassfish-5.0.zip
   - echo "Glassfish 5.0 is installed in " $BASE_DIR/glassfish5
-  - export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn
-  - mvn -B clean install
+  - mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn clean install
   - cd $BASE_DIR/test
   - echo "Patching Mojarra JAR"
   - mvn -B -Dglassfish.patch.home=$BASE_DIR/glassfish5 -P glassfish-patch -N validate
