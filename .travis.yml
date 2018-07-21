@@ -14,11 +14,11 @@ install:
   - echo "Overriding default install"
 script:
   - export BASE_DIR=`pwd`
-  - echo $BASE_DIR
   - wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip
-  - unzip glassfish-5.0.zip
-  - ls
-  - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn" ; mvn -B clean install
+  - unzip -q glassfish-5.0.zip
+  - echo "Glassfish 5.0 is installed in " $BASE_DIR/glassfish5
+  - export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn
+  - mvn -B clean install
 addons:
   apt:
     packages:
