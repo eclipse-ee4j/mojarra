@@ -110,7 +110,7 @@
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.6.2</version>
+                    <version>1.6.8</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.wagon</groupId>
@@ -271,7 +271,7 @@
                 <glassfish.cargo.configType>standalone</glassfish.cargo.configType>
                 <glassfish.cargo.config>${glassfish.cargo.home}/glassfish/domains</glassfish.cargo.config>
                 <glassfish.cargo.domain>domain1</glassfish.cargo.domain>
-                <glassfish.cargo.id>glassfish4x</glassfish.cargo.id>
+                <glassfish.cargo.id>glassfish5x</glassfish.cargo.id>
                 <glassfish.cargo.serverName>localhost</glassfish.cargo.serverName>
                 <glassfish.cargo.servletPort>8080</glassfish.cargo.servletPort>
             </properties>
