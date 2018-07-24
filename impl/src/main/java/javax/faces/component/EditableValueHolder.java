@@ -16,7 +16,6 @@
 
 package javax.faces.component;
 
-import javax.faces.el.MethodBinding;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.Renderer;
@@ -40,7 +39,7 @@ public interface EditableValueHolder extends ValueHolder {
      * determined based on the value of the
      * <code>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</code>context-param.</span>
      * </p>
-     * 
+     *
      * @return the submitted value.
      */
     public Object getSubmittedValue();
@@ -64,7 +63,7 @@ public interface EditableValueHolder extends ValueHolder {
      * determined based on the value of the
      * <code>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</code>context-param.</span>
      * </p>
-     * 
+     *
      * @param submittedValue The new submitted value
      */
     public void setSubmittedValue(Object submittedValue);
@@ -72,14 +71,14 @@ public interface EditableValueHolder extends ValueHolder {
     /**
      * Return the "local value set" state for this component. Calls to <code>setValue()</code>
      * automatically reset this property to <code>true</code>.
-     * 
+     *
      * @return <code>true</code> if the local value is set, <code>false</code> otherwise.
      */
     public boolean isLocalValueSet();
 
     /**
      * Sets the "local value set" state for this component.
-     * 
+     *
      * @param localValueSet the "local value set" boolean.
      */
     public void setLocalValueSet(boolean localValueSet);
@@ -89,7 +88,7 @@ public interface EditableValueHolder extends ValueHolder {
      * Return a flag indicating whether the local value of this component is valid (no conversion
      * error has occurred).
      * </p>
-     * 
+     *
      * @return <code>true</code> if valid, <code>false</code> otherwise.
      */
     public boolean isValid();
@@ -108,7 +107,7 @@ public interface EditableValueHolder extends ValueHolder {
      * <p>
      * Return the "required field" state for this component.
      * </p>
-     * 
+     *
      * @return <code>true</code> if required, <code>false</code> otherwise.
      */
     public boolean isRequired();
@@ -126,7 +125,7 @@ public interface EditableValueHolder extends ValueHolder {
      * <p>
      * Return the "immediate" state for this component.
      * </p>
-     * 
+     *
      * @return <code>true</code> if is immediate, <code>false</code> otherwise.
      */
     public boolean isImmediate();
@@ -159,7 +158,7 @@ public interface EditableValueHolder extends ValueHolder {
      * Return the set of registered {@link Validator}s for this component instance. If there are no
      * registered validators, a zero-length array is returned.
      * </p>
-     * 
+     *
      * @return the validators, or a zero-length array.
      */
     public Validator[] getValidators();
@@ -191,7 +190,7 @@ public interface EditableValueHolder extends ValueHolder {
      * Return the set of registered {@link ValueChangeListener}s for this component instance. If
      * there are no registered listeners, a zero-length array is returned.
      * </p>
-     * 
+     *
      * @return the value change listeners, or a zero-length array.
      */
     public ValueChangeListener[] getValueChangeListeners();
@@ -207,93 +206,5 @@ public interface EditableValueHolder extends ValueHolder {
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     public void removeValueChangeListener(ValueChangeListener listener);
-    
-    
-    
-    
-    
-    
-    // -------------------------------------------------------------- Deprecated methods
-    
-    
-    /**
-     * <p>
-     * If {@link #setValidator} was not previously called for this instance, this method must return
-     * <code>null</code>. If it was called, this method must return the exact
-     * <code>MethodBinding</code> instance that was passed to {@link #setValidator}.
-     * </p>
-     *
-     * <p>
-     * This method will be called during the <em>Process Validations</em> or <em>Apply Request
-     * Values</em> phases (depending on the value of the <code>immediate</code> property).
-     * </p>
-     *
-     * @return the validator as a method binding.
-     * @deprecated {@link #getValidators} should be used instead.
-     */
-    public MethodBinding getValidator();
-    
-    /**
-     * <p>
-     * Wrap the argument <code>validatorBinding</code> in an implementation of
-     * {@link javax.faces.validator.Validator} and store it in the internal data structure that
-     * backs the {@link #getValidators} method, taking care to over-write any instance that was
-     * stored by a previous call to <code>setValidator</code>.
-     * </p>
-     *
-     * <p>
-     * The argument method will be called during the <em>Process Validations</em> or <em>Apply
-     * Request Values</em> phases (depending on the value of the <code>immediate</code> property).
-     * </p>
-     *
-     * <p>
-     * Any method referenced by such an expression must be public, with a return type of
-     * <code>void</code>, and accept parameters of type {@link javax.faces.context.FacesContext},
-     * {@link UIComponent}, and <code>Object</code>.
-     * </p>
-     *
-     * @param validatorBinding The new <code>MethodBinding</code> instance
-     * 
-     * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by
-     *             creating an instance of {@link javax.faces.validator.MethodExpressionValidator}.
-     */
-    public void setValidator(MethodBinding validatorBinding);
 
-    /**
-     * <p>
-     * If {@link #setValueChangeListener} was not previously called for this instance, this method
-     * must return <code>null</code>. If it was called, this method must return the exact
-     * <code>MethodBinding</code> instance that was passed to {@link #setValueChangeListener}.
-     * </p>
-     *
-     * @return the value change listener.
-     * @deprecated Use {@link #getValueChangeListeners} instead.
-     */
-    public MethodBinding getValueChangeListener();
-
-    /**
-     * <p>
-     * Wrap the argument <code>valueChangeMethod</code> in an implementation of
-     * {@link ValueChangeListener} and store it in the internal data structure that backs the
-     * {@link #getValueChangeListeners} method, taking care to over-write any instance that was
-     * stored by a previous call to <code>setValueChangeListener</code>.
-     * </p>
-     *
-     * <p>
-     * This argument method will be called during the <em>Process Validations</em> or <em>Apply
-     * Request Values</em> phases (depending on the value of the <code>immediate</code> property).
-     * </p>
-     *
-     * <p>
-     * Any method referenced by such an expression must be public, with a return type of
-     * <code>void</code>, and accept a parameter of type {@link javax.faces.event.ValueChangeEvent}.
-     * </p>
-     *
-     * @param valueChangeMethod The new method binding instance
-     *
-     * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument
-     *             {@link ValueChangeListener} by creating an instance of
-     *             {@link javax.faces.event.MethodExpressionValueChangeListener}.
-     */
-    public void setValueChangeListener(MethodBinding valueChangeMethod);
 }

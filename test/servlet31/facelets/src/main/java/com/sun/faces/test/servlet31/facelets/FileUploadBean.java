@@ -19,18 +19,17 @@ package com.sun.faces.test.servlet31.facelets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.ProjectStage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.Part;
 
-@ManagedBean(name = "fileUploadBean")
+@Named
 @RequestScoped
 public class FileUploadBean {
 
-    public FileUploadBean() {
-    }
     private Part uploadedFile;
 
     public Part getUploadedFile() {
@@ -70,6 +69,7 @@ public class FileUploadBean {
         if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development)) {
             projectStage = "ProjectStage.Development";
         }
+
         return projectStage;
     }
 }

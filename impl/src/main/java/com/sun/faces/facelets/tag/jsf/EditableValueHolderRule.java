@@ -16,18 +16,20 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import com.sun.faces.facelets.el.LegacyMethodBinding;
-
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.MethodExpressionValidator;
-import javax.faces.view.facelets.*;
+import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.MetaRule;
+import javax.faces.view.facelets.Metadata;
+import javax.faces.view.facelets.MetadataTarget;
+import javax.faces.view.facelets.TagAttribute;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  */
 public final class EditableValueHolderRule extends MetaRule {
@@ -63,20 +65,6 @@ public final class EditableValueHolderRule extends MetaRule {
         }
     }
 
-    final static class ValueChangedBindingMetadata extends Metadata {
-        private final TagAttribute attr;
-
-        public ValueChangedBindingMetadata(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance)
-                    .setValueChangeListener(new LegacyMethodBinding(this.attr
-                            .getMethodExpression(ctx, null, VALUECHANGE_SIG)));
-        }
-    }
 
     final static class ValidatorExpressionMetadata extends Metadata {
         private final TagAttribute attr;
@@ -89,21 +77,6 @@ public final class EditableValueHolderRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((EditableValueHolder) instance)
                     .addValidator(new MethodExpressionValidator(this.attr
-                            .getMethodExpression(ctx, null, VALIDATOR_SIG)));
-        }
-    }
-
-    final static class ValidatorBindingMetadata extends Metadata {
-        private final TagAttribute attr;
-
-        public ValidatorBindingMetadata(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance)
-                    .setValidator(new LegacyMethodBinding(this.attr
                             .getMethodExpression(ctx, null, VALIDATOR_SIG)));
         }
     }

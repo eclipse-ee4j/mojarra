@@ -16,18 +16,21 @@
 
 package com.sun.faces.test.servlet30.configFile;
 
-import javax.faces.application.Application;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.el.ExpressionFactory;
-import javax.faces.el.ValueBinding;
-import javax.el.ValueExpression;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 @ManagedBean
 @SessionScoped
@@ -46,10 +49,10 @@ public class ConfigFileBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        ValueBinding valueBinding = app.createValueBinding("#{simpleList}");
-        assertNotNull(valueBinding);
+        ValueExpression valueExpression = app.getExpressionFactory().createValueExpression(fc.getELContext(), "#{simpleList}", List.class);
+        assertNotNull(valueExpression);
 
-        List list = (List) valueBinding.getValue(fc);
+        List list = (List) valueExpression.getValue(fc.getELContext());
         assertNotNull(list);
 
         assertEquals("simpleList size not as expected", 4, list.size());
@@ -61,10 +64,10 @@ public class ConfigFileBean {
                 new Integer(60), list.get(2));
         assertNull("simpleList.get(3) not as expected", list.get(3));
 
-        valueBinding = app.createValueBinding("#{objectList}");
-        assertNotNull(valueBinding);
+        valueExpression = app.getExpressionFactory().createValueExpression(fc.getELContext(), "#{objectList}", List.class);
+        assertNotNull(valueExpression);
 
-        list = (List) valueBinding.getValue(fc);
+        list = (List) valueExpression.getValue(fc.getELContext());
         assertNotNull(list);
 
         assertEquals("simpleList size not as expected", 4, list.size());
@@ -76,11 +79,11 @@ public class ConfigFileBean {
                 list.get(2) instanceof SimpleBean);
         assertNull("simpleList.get(3) not as expected", list.get(3));
 
-        valueBinding = app.createValueBinding("#{floatMap}");
-        assertNotNull(valueBinding);
+        valueExpression = app.getExpressionFactory().createValueExpression(fc.getELContext(), "#{floatMap}", Map.class);
+        assertNotNull(valueExpression);
 
         Map nestedMap = null,
-                map = (Map) valueBinding.getValue(fc);
+                map = (Map) valueExpression.getValue(fc.getELContext());
         assertNotNull(map);
 
         Iterator keys = map.keySet().iterator();
@@ -106,10 +109,10 @@ public class ConfigFileBean {
                 map.get(key3) instanceof SimpleBean);
         assertNull("map.get(key4) not null", map.get(key4));
 
-        valueBinding = app.createValueBinding("#{crazyMap}");
-        assertNotNull(valueBinding);
+        valueExpression = app.getExpressionFactory().createValueExpression(fc.getELContext(), "#{crazyMap}", Map.class);
+        assertNotNull(valueExpression);
 
-        map = (Map) valueBinding.getValue(fc);
+        map = (Map) valueExpression.getValue(fc.getELContext());
         assertNotNull(map);
 
         keys = map.keySet().iterator();

@@ -19,13 +19,15 @@ package com.sun.faces.test.servlet30.ajax;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean
+
+@Named
 @RequestScoped
 public class Issue1817Bean {
-    private List<Issue1817Item> items; 
+
+    private List<Issue1817Item> items;
 
     public Issue1817Bean() {
         items = new ArrayList<Issue1817Item>();
@@ -33,10 +35,8 @@ public class Issue1817Bean {
         items.add(new Issue1817Item("1"));
         items.add(new Issue1817Item("2"));
     }
-	
+
     public List<Issue1817Item> getItems() {
         return items;
     }
 }
-
-

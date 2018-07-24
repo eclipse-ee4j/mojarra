@@ -19,6 +19,7 @@ package com.sun.faces.config.processor;
 import static com.sun.faces.util.Util.getLocaleFromString;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 
 import java.text.MessageFormat;
@@ -36,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELResolver;
+import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationHandler;
@@ -45,8 +47,6 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.NamedEvent;
 import javax.faces.event.SystemEvent;
@@ -70,12 +70,8 @@ import com.sun.faces.application.ApplicationResourceBundle;
 import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.documents.DocumentInfo;
-import com.sun.faces.el.ChainAwareVariableResolver;
-import com.sun.faces.el.DummyPropertyResolverImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-import static java.util.logging.Level.SEVERE;
-import javax.faces.FacesException;
 
 /**
  * <p>
@@ -126,13 +122,13 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
      * <code>/faces-config/application/view-handler</code>
      */
     private static final String VIEW_HANDLER = "view-handler";
-   
+
 
     /**
      * <code>/faces-config/application/state-manager</code>
      */
     private static final String STATE_MANAGER = "state-manager";
-    
+
 
     /**
      * <code>/faces-config/application/resource-handler</code>
@@ -153,16 +149,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
      * <code>/faces-config/application/search-keyword-resolver</code>
      */
     private static final String SEARCH_KEYWORD_RESOLVER = "search-keyword-resolver";
-
-    /**
-     * <code>/faces-config/application/property-resolver</code>
-     */
-    private static final String PROPERTY_RESOLVER = "property-resolver";
-
-    /**
-     * <code>/faces-config/application/variable-resolver</code>
-     */
-    private static final String VARIABLE_RESOLVER = "variable-resolver";
 
     /**
      * <code>/faces-config/application/locale-config/default-locale</code>
@@ -218,7 +204,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
      * <code>/faces-config/application/system-event-listener/source-class</code>
      */
     private static final String SOURCE_CLASS = "source-class";
-    
+
     private List<ActionListener> actionListeners = new CopyOnWriteArrayList<>();
     private List<NavigationHandler> navigationHandlers = new CopyOnWriteArrayList<>();
     private List<ViewHandler> viewHandlers = new CopyOnWriteArrayList<>();
@@ -238,21 +224,21 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
      */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
-        
+
         Application application = getApplication();
         ApplicationAssociate associate = ApplicationAssociate.getInstance(facesContext.getExternalContext());
         LinkedHashMap<String, Node> viewHandlers = new LinkedHashMap<>();
         LinkedHashSet<String> defaultValidatorIds = null;
-        
+
         for (int i = 0; i < documentInfos.length; i++) {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing application elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList applicationElements = document.getDocumentElement().getElementsByTagNameNS(namespace, APPLICATION);
-            
+
             if (applicationElements != null && applicationElements.getLength() > 0) {
                 for (int a = 0, asize = applicationElements.getLength(); a < asize; a++) {
                     Node appElement = applicationElements.item(a);
@@ -284,12 +270,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                                 break;
                             case EL_RESOLVER:
                                 addELResolver(servletContext, facesContext, associate, n);
-                                break;
-                            case PROPERTY_RESOLVER:
-                                addPropertyResolver(servletContext, facesContext, associate, n);
-                                break;
-                            case VARIABLE_RESOLVER:
-                                addVariableResolver(servletContext, facesContext, associate, n);
                                 break;
                             case DEFAULT_LOCALE:
                                 setDefaultLocale(application, n);
@@ -355,7 +335,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         for (Object instance : instances) {
             destroyInstance(sc, facesContext, instance.getClass().getName(), instance);
         }
-        
+
         instances.clear();
     }
 
@@ -382,7 +362,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Calling Application.addDefaultValidatorId({0})", validatorId));
             }
-            
+
             application.addDefaultValidatorId(validatorId);
         }
     }
@@ -446,7 +426,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             }
             appMap.put(beansValidationAvailabilityCacheKey, result);
         }
-        
+
         return result;
     }
 
@@ -488,16 +468,16 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 boolean[] didPerformInjection = { false };
                 ActionListener instance = (ActionListener) createInstance(sc, facesContext, listener, ActionListener.class, application.getActionListener(), actionListener,
                         true, didPerformInjection);
-                
+
                 if (instance != null) {
                     if (didPerformInjection[0]) {
                         actionListeners.add(instance);
                     }
-                    
+
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, format("Calling Application.setActionListeners({0})", listener));
                     }
-                    
+
                     application.setActionListener(instance);
                 }
             }
@@ -512,16 +492,16 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             if (handler != null) {
                 Class<?> rootType = findRootType(sc, facesContext, handler, navigationHandler, new Class[] { ConfigurableNavigationHandler.class, NavigationHandler.class });
                 boolean[] didPerformInjection = { false };
-                NavigationHandler instance = (NavigationHandler) 
+                NavigationHandler instance = (NavigationHandler)
                     createInstance(
                         sc, facesContext, handler, rootType != null ? rootType : NavigationHandler.class,
                         application.getNavigationHandler(), navigationHandler, true, didPerformInjection);
-                
+
                 if (instance != null) {
                     if (didPerformInjection[0]) {
                         navigationHandlers.add(instance);
                     }
-                    
+
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, format("Calling Application.setNavigationHandlers({0})", handler));
                     }
@@ -562,16 +542,16 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 boolean[] didPerformInjection = { false };
                 ViewHandler instance = (ViewHandler) createInstance(sc, facesContext, handler, ViewHandler.class, application.getViewHandler(), viewHandler, true,
                         didPerformInjection);
-                
+
                 if (instance != null) {
                     if (didPerformInjection[0]) {
                         viewHandlers.add(instance);
                     }
-                    
+
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, format("Calling Application.setViewHandler({0})", handler));
                     }
-                    
+
                     application.setViewHandler(instance);
                 }
             }
@@ -580,7 +560,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
     }
 
     private void addELResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node elResolver) {
-        
+
         if (elResolver != null) {
             if (associate != null) {
                 List<ELResolver> resolvers = associate.getELResolversFromFacesConfig();
@@ -600,7 +580,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                         if (LOGGER.isLoggable(FINE)) {
                             LOGGER.log(FINE, format("Adding ''{0}'' to ELResolver chain", elResolverClass));
                         }
-                        
+
                         resolvers.add(elRes);
                     }
                 }
@@ -617,13 +597,13 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             if (handler != null) {
                 Class<?> rootType = findRootType(sc, facesContext, handler, searchExpressionHandler, new Class[] { SearchExpressionHandler.class });
                 boolean[] didPerformInjection = { false };
-                
-                SearchExpressionHandler instance = (SearchExpressionHandler) 
+
+                SearchExpressionHandler instance = (SearchExpressionHandler)
                         createInstance(sc, facesContext, handler,
-                        rootType != null ? rootType : SearchExpressionHandler.class, 
+                        rootType != null ? rootType : SearchExpressionHandler.class,
                         application.getSearchExpressionHandler(), searchExpressionHandler,
                         true, didPerformInjection);
-                
+
                 if (instance != null) {
                     if (didPerformInjection[0]) {
                         searchExpressionHandlers.add(instance);
@@ -631,7 +611,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, format("Calling Application.setSearchExpressionHandler({0})", handler));
                     }
-                    
+
                     application.setSearchExpressionHandler(instance);
                 }
             }
@@ -648,15 +628,15 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     resolvers = new ArrayList<>();
                     associate.setSearchKeywordResolversFromFacesConfig(resolvers);
                 }
-                
+
                 String searchKeywordResolverClass = getNodeText(searchKeywordResolver);
                 if (searchKeywordResolverClass != null) {
                     boolean[] didPerformInjection = { false };
-                    
-                    SearchKeywordResolver keywordResolver = (SearchKeywordResolver) 
+
+                    SearchKeywordResolver keywordResolver = (SearchKeywordResolver)
                             createInstance(sc, facesContext, searchKeywordResolverClass, SearchKeywordResolver.class, null,
                             searchKeywordResolver, true, didPerformInjection);
-                    
+
                     if (keywordResolver != null) {
                         if (didPerformInjection[0]) {
                             searchKeywordResolvers.add(keywordResolver);
@@ -666,61 +646,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                         }
                         resolvers.add(keywordResolver);
                     }
-                }
-            }
-        }
-
-    }
-
-    @SuppressWarnings("deprecation")
-    private void addPropertyResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node propertyResolver) {
-
-        if (propertyResolver != null) {
-            if (associate != null) {
-                Object resolverImpl = associate.getLegacyPRChainHead();
-                if (resolverImpl == null) {
-                    resolverImpl = new DummyPropertyResolverImpl();
-                }
-
-                String resolver = getNodeText(propertyResolver);
-                if (resolver != null) {
-                    boolean[] didPerformInjection = { false };
-                    resolverImpl = createInstance(sc, facesContext, resolver, PropertyResolver.class, resolverImpl, propertyResolver, false, didPerformInjection);
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, format("Adding ''{0}'' to PropertyResolver chain", resolverImpl));
-                    }
-                }
-                
-                if (resolverImpl != null) {
-                    associate.setLegacyPRChainHead((PropertyResolver) resolverImpl);
-                }
-            }
-        }
-
-    }
-
-    @SuppressWarnings("deprecation")
-    private void addVariableResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node variableResolver) {
-
-        if (variableResolver != null) {
-            if (associate != null) {
-                Object resolverImpl = associate.getLegacyVRChainHead();
-                if (resolverImpl == null) {
-                    resolverImpl = new ChainAwareVariableResolver();
-                }
-                
-                String resolver = getNodeText(variableResolver);
-                
-                if (resolver != null) {
-                    boolean[] didPerformInjection = { false };
-                    resolverImpl = createInstance(sc, facesContext, resolver, VariableResolver.class, resolverImpl, variableResolver, false, didPerformInjection);
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, format("Adding ''{0}'' to VariableResolver chain", resolverImpl));
-                    }
-                }
-                
-                if (resolverImpl != null) {
-                    associate.setLegacyVRChainHead((VariableResolver) resolverImpl);
                 }
             }
         }
@@ -819,13 +744,13 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             String handler = getNodeText(resourceHandler);
             if (handler != null) {
                 boolean[] didPerformInjection = { false };
-                
-                ResourceHandler instance = (ResourceHandler) 
+
+                ResourceHandler instance = (ResourceHandler)
                         createInstance(
-                            sc, facesContext, handler, 
+                            sc, facesContext, handler,
                             ResourceHandler.class, application.getResourceHandler(),
                             resourceHandler, true, didPerformInjection);
-                
+
                 if (instance != null) {
                     if (didPerformInjection[0]) {
                         resourceHandlers.add(instance);
@@ -833,7 +758,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, format("Calling Application.setResourceHandler({0})", handler));
                     }
-                    
+
                     application.setResourceHandler(instance);
                 }
             }

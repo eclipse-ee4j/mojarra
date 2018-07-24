@@ -16,15 +16,17 @@
 
 package com.sun.faces.test.javaee6web.injection;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.junit.After;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
 public class InjectionIT {
-    
+
     private String webUrl;
     private WebClient webClient;
 
@@ -41,8 +43,9 @@ public class InjectionIT {
 
     @Test
     public void testInjection() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/injection.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "injection.xhtml");
         String pageAsText = page.asText();
+
         assertTrue(pageAsText.contains("Injection works"));
         assertTrue(pageAsText.contains("Initializer works"));
     }

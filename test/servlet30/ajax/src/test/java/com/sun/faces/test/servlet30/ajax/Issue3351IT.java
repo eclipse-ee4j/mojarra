@@ -52,10 +52,10 @@ public class Issue3351IT {
     public void testButtonOnlySubmitsOne() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/buttonOnlySubmitsOne.xhtml");
         assertTrue(page.asXml().contains("value1,value2,"));
-        
+
         HtmlElement button = page.getHtmlElementById("form:button1");
         page = button.click();
-        
+
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("value2,"));
         assertFalse(page.asXml().contains("value1,value2,"));

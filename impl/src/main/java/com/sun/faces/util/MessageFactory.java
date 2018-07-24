@@ -28,10 +28,9 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
- * 
+ *
  * <p>
  * supported filters: <code>package</code> and <code>protection</code>.
  * </p>
@@ -270,12 +269,14 @@ public class MessageFactory {
             }
         }
 
+        @Override
         public String getSummary() {
             String pattern = super.getSummary();
             resolveBindings();
             return getFormattedString(pattern, resolvedParameters);
         }
 
+        @Override
         public String getDetail() {
             String pattern = super.getDetail();
             resolveBindings();
@@ -287,12 +288,6 @@ public class MessageFactory {
             if (parameters != null) {
                 for (int i = 0; i < parameters.length; i++) {
                     Object o = parameters[i];
-                    if (o instanceof ValueBinding) {
-                        if (context == null) {
-                            context = FacesContext.getCurrentInstance();
-                        }
-                        o = ((ValueBinding) o).getValue(context);
-                    }
                     if (o instanceof ValueExpression) {
                         if (context == null) {
                             context = FacesContext.getCurrentInstance();

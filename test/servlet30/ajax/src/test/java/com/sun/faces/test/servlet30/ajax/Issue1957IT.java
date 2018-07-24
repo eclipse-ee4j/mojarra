@@ -19,14 +19,13 @@ package com.sun.faces.test.servlet30.ajax;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Issue1957IT {
-    
+
     /**
      * Stores the web URL.
      */
@@ -60,7 +59,7 @@ public class Issue1957IT {
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.setJavaScriptTimeout(60000);
         HtmlPage page = webClient.getPage(webUrl + "/faces/issue1957.xhtml");
-        HtmlSpan span = (HtmlSpan)page.getElementById("form:group");
+        HtmlSpan span = (HtmlSpan) page.getElementById("form:group");
         page = span.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("form:group Event: begin"));

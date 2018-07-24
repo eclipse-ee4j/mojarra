@@ -17,10 +17,11 @@
 package javax.faces.webapp;
 
 import java.io.IOException;
+
+import javax.el.ValueExpression;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import javax.faces.el.ValueBinding;
 
 // Test UIComponent Class
 public class ComponentTestImpl extends UIComponentBase {
@@ -45,9 +46,9 @@ public class ComponentTestImpl extends UIComponentBase {
         if (this.label != null) {
             return (this.label);
         }
-        ValueBinding vb = getValueBinding("label");
+        ValueExpression vb = getValueExpression("label");
         if (vb != null) {
-            return ((String) vb.getValue(getFacesContext()));
+            return ((String) vb.getValue(getFacesContext().getELContext()));
         } else {
             return (null);
         }

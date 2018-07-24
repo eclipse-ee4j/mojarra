@@ -16,24 +16,24 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import java.io.IOException;
-
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-@FacesComponent( value = "com.sun.faces.test.servlet30.ajax.Issue2179Component2" )
+@FacesComponent("com.sun.faces.test.servlet30.ajax.Issue2179Component2")
 public class Issue2179Component2 extends UIInput {
 
     public Issue2179Component2() {
         setRendererType("javax.faces.Text");
     }
 
+    @Override
     public String getFamily() {
-        return ("javax.faces.Input");
+        return "javax.faces.Input";
     }
 
+    @Override
     public void decode(FacesContext context) {
-        throw new RuntimeException("decode: A RuntimeException Has Occurred!"); 
+        throw new RuntimeException("decode: A RuntimeException Has Occurred!");
     }
 }

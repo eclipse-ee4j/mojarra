@@ -16,19 +16,15 @@
 
 package javax.faces.component;
 
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.convert.Converter;
-import javax.faces.convert.LongConverter;
-import javax.faces.convert.NumberConverter;
-import javax.faces.convert.ShortConverter;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Map;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.convert.LongConverter;
+import javax.faces.convert.NumberConverter;
+import javax.faces.convert.ShortConverter;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -148,6 +144,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         descriptors.clear();
     }
 
+    @Override
     public void testAttributesTransparency() {
         super.testAttributesTransparency();
         ValueHolder vh = (ValueHolder) component;
@@ -157,20 +154,20 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
     // Test attribute-property transparency
     public boolean doTestAttributesTransparency(ValueHolder vh, UIComponent newComp) {
         assertEquals(vh.getValue(),
-                (String) newComp.getAttributes().get("value"));
+                newComp.getAttributes().get("value"));
         vh.setValue("foo");
         assertEquals("foo", (String) newComp.getAttributes().get("value"));
         vh.setValue(null);
-        assertNull((String) newComp.getAttributes().get("value"));
+        assertNull(newComp.getAttributes().get("value"));
         newComp.getAttributes().put("value", "bar");
         assertEquals("bar", vh.getValue());
         newComp.getAttributes().put("value", null);
         assertNull(vh.getValue());
 
         assertEquals(vh.getConverter(),
-                (String) newComp.getAttributes().get("converter"));
+                newComp.getAttributes().get("converter"));
         vh.setConverter(new LongConverter());
-        assertNotNull((Converter) newComp.getAttributes().get("converter"));
+        assertNotNull(newComp.getAttributes().get("converter"));
         assertTrue(newComp.getAttributes().get("converter") instanceof LongConverter);
         vh.setConverter(null);
         assertNull(newComp.getAttributes().get("converter"));
@@ -207,6 +204,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
     }
 
     // Test setting properties to valid values
+    @Override
     public void testPropertiesValid() throws Exception {
         super.testPropertiesValid();
         ValueHolder vh = (ValueHolder) component;
@@ -251,15 +249,6 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         assertEquals(vh1.getValue(), vh2.getValue());
         checkNumberConverter((NumberConverter) vh1.getConverter(),
                 (NumberConverter) vh2.getConverter());
-    }
-
-    // Populate a pristine component to be used in state holder tests
-    @Override
-    protected void populateComponent(UIComponent component) {
-        super.populateComponent(component);
-        ValueHolder vh = (ValueHolder) component;
-        vh.setValue("component value");
-        vh.setConverter(createNumberConverter());
     }
 
     // Create and configure a NumberConverter

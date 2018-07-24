@@ -16,21 +16,29 @@
 
 package javax.faces.component;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.PostAddToViewEvent;
+import javax.faces.event.PostConstructViewMapEvent;
+import javax.faces.event.PreRenderComponentEvent;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
+
 import com.sun.faces.mock.MockExternalContext;
-import com.sun.faces.mock.MockValueBinding;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.*;
-import javax.faces.validator.ValidatorException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 /**
  * <p>
@@ -369,107 +377,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertTrue(!kidItr.hasNext());
     }
 
-    public void testStateHolder() throws Exception {
-
-        // Set up the components we will need
-        UIComponent parent = new ComponentTestImpl("root");
-        UIComponent preSave = createComponent();
-        UIComponent facet1 = createComponent();
-        facet1.setId("facet1");
-        preSave.getFacets().put("facet1 key", facet1);
-        UIComponent facet2 = createComponent();
-        facet2.setId("facet2");
-        preSave.getFacets().put("facet2 key", facet2);
-        parent.getChildren().add(preSave);
-        populateComponent(preSave);
-        UIComponent postSave = createComponent();
-
-        // Save and restore state and compare the results
-        Object state = preSave.saveState(facesContext);
-        assertNotNull(state);
-        postSave.restoreState(facesContext, state);
-        checkComponents(preSave, postSave);
-        checkValueBindings(preSave, postSave);
-        checkComponentListeners(preSave, postSave);
-    }
 
     public void testStateHolder2() throws Exception {
 
         UIComponent c = new UIComponentListener();
-        c.subscribeToEvent(PostAddToViewEvent.class, (ComponentSystemEventListener) c);
+        c.subscribeToEvent(PostAddToViewEvent.class, c);
         Object state = c.saveState(facesContext);
         c = new UIComponentListener();
         c.pushComponentToEL(facesContext, c);
         c.restoreState(facesContext, state);
         c.popComponentFromEL(facesContext);
         assertTrue(c.getListenersForEventClass(PostAddToViewEvent.class).size() == 1);
-
-    }
-
-    public void testValueBindings() {
-
-        UIComponentBase test = (UIComponentBase) component;
-
-        // generic attributes
-        request.setAttribute("foo", "bar");
-        Object result = test.getAttributes().get("childCount");
-        test.getAttributes().clear();
-        assertNull(test.getAttributes().get("baz"));
-        test.setValueBinding("baz", application.createValueBinding("#{foo}"));
-        assertEquals("bar", test.getAttributes().get("baz"));
-        test.getAttributes().put("baz", "bop");
-        assertEquals("bop", test.getAttributes().get("baz"));
-        test.getAttributes().remove("baz");
-        assertEquals("bar", test.getAttributes().get("baz"));
-        test.setValueBinding("baz", null);
-        assertNull(test.getAttributes().get("baz"));
-
-        // "id" property
-        try {
-            test.setValueBinding("id",
-                    application.createValueBinding("#{foo}"));
-            fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // Expected response
-        }
-
-        // "parent" property
-        try {
-            test.setValueBinding("parent",
-                    application.createValueBinding("#{foo}"));
-            fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // Expected response
-        }
-
-        // "rendered" property
-        request.setAttribute("foo", Boolean.FALSE);
-        boolean initial = test.isRendered();
-        if (initial) {
-            request.setAttribute("foo", Boolean.FALSE);
-        } else {
-            request.setAttribute("foo", Boolean.TRUE);
-        }
-        test.setValueBinding("rendered", application.createValueBinding("#{foo}"));
-        assertEquals(!initial, test.isRendered());
-        test.setRendered(initial);
-        assertEquals(initial, test.isRendered());
-        assertNotNull(test.getValueBinding("rendered"));
-
-        // "rendererType" property
-        request.setAttribute("foo", "bar");
-        test.setRendererType(null);
-        assertNull(test.getRendererType());
-        test.setValueBinding("rendererType", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("rendererType"));
-        assertEquals("bar", test.getRendererType());
-        test.setRendererType("baz");
-        assertEquals("baz", test.getRendererType());
-        test.setRendererType(null);
-        assertEquals("bar", test.getRendererType());
-        test.setValueBinding("rendererType", null);
-        assertNull(test.getValueBinding("rendererType"));
-        assertNull(test.getRendererType());
 
     }
 
@@ -540,58 +458,9 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
-    public void testValueExpressionValueBindingIdempotency() throws Exception {
-
-        UIComponentBase test = (UIComponentBase) component;
-
-        request.setAttribute("foo", "bar");
-        test.getAttributes().clear();
-        assertNull(test.getAttributes().get("baz"));
-        ValueBinding binding = null;
-        ValueExpression expression = null;
-
-        binding = application.createValueBinding("#{foo}");
-        test.setValueBinding("baz", binding);
-        expression = test.getValueExpression("baz");
-
-        assertEquals(binding.getExpressionString(),
-                expression.getExpressionString());
-        test.setValueBinding("baz", null);
-
-        expression = application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class);
-        test.setValueExpression("baz", expression);
-        binding = test.getValueBinding("baz");
-        assertEquals(binding.getExpressionString(),
-                expression.getExpressionString());
-        test.setValueBinding("baz", null);
-
-    }
-
-    public void testMethodBindingAdapterBaseException() throws Exception {
-        IllegalThreadStateException itse = new IllegalThreadStateException("The root cause!");
-        AbortProcessingException ape = new CustomAbortProcessingException(itse);
-        InvocationTargetException ite1 = new InvocationTargetException(ape);
-        InvocationTargetException ite2 = new InvocationTargetException(ite1);
-        InvocationTargetException ite3 = new InvocationTargetException(ite2);
-        MethodBindingValueChangeListener mbvcl
-                = new MethodBindingValueChangeListener();
-        Throwable expected
-                = mbvcl.getExpectedCause(AbortProcessingException.class, ite3);
-        assertEquals(expected, ape);
-
-        ValidatorException ve = new ValidatorException(new FacesMessage(),
-                itse);
-        ite1 = new InvocationTargetException(ve);
-        ite2 = new InvocationTargetException(ite1);
-        ite3 = new InvocationTargetException(ite2);
-
-        MethodBindingValidator mbv = new MethodBindingValidator();
-        expected
-                = mbv.getExpectedCause(ValidatorException.class, ite3);
-        assertEquals(expected, ve);
-    }
 
     // --------------------------------------------------------- support Methods
+
     // Check that the attributes on the specified components are equal
     protected void checkAttributes(UIComponent comp1, UIComponent comp2) {
         assertEquals(comp1.getAttributes(), comp2.getAttributes());
@@ -884,22 +753,6 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertEquals(comp1.getRendersChildren(), comp2.getRendersChildren());
     }
 
-    // Check that the configured ValueBindings got restored
-    protected void checkValueBindings(UIComponent comp1, UIComponent comp2) {
-
-        ValueBinding vb1, vb2;
-
-        vb1 = comp1.getValueBinding("baz");
-        vb2 = comp2.getValueBinding("baz");
-        assertEquals(((MockValueBinding) vb1).ref(),
-                ((MockValueBinding) vb2).ref());
-
-        vb1 = comp1.getValueBinding("bop");
-        vb2 = comp2.getValueBinding("bop");
-        assertEquals(((MockValueBinding) vb1).ref(),
-                ((MockValueBinding) vb2).ref());
-
-    }
 
     protected void checkComponentListeners(UIComponent control, UIComponent toValidate) {
 
@@ -917,28 +770,6 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         return (new ComponentTestImpl());
     }
 
-    // Populate a pristine component to be used in state holder tests
-    protected void populateComponent(UIComponent component) {
-
-        component.getAttributes().put("foo", "foo value");
-        component.getAttributes().put("bar", "bar value");
-        component.setId("componentId");
-        component.getClientId(facesContext); // Forces evaluation
-        component.setRendered(false);
-        component.setRendererType(null); // Since we have no renderers
-
-        component.setValueBinding("baz",
-                application.createValueBinding("baz.value"));
-        component.setValueBinding("bop",
-                application.createValueBinding("bop.value"));
-        component.subscribeToEvent(PostAddToViewEvent.class,
-                new ComponentListener());
-        component.subscribeToEvent(PostAddToViewEvent.class,
-                new ComponentListener());
-        component.subscribeToEvent(PostConstructViewMapEvent.class,
-                new ComponentListener());
-
-    }
 
     /**
      * Construct and return a lifecycle method call trace for the specified
@@ -946,7 +777,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
      *
      * @param lmethod Name of the lifecycle method under test
      * @param cmethod Name of the component method that corresponds
-     * @return 
+     * @return
      */
     protected String lifecycleTrace(String lmethod, String cmethod) {
         StringBuffer sb = new StringBuffer();
@@ -970,7 +801,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
             String name = (String) names.next();
             sb.append("/").append(lmethod).append("-").append(name);
             if ((cmethod != null)
-                    && ((UIComponent) component.getFacets().get(name)).isRendered()) {
+                    && component.getFacets().get(name).isRendered()) {
                 sb.append("/").append(cmethod).append("-").append(name);
             }
         }

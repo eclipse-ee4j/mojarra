@@ -43,9 +43,8 @@ public class Issue3097IT {
     }
 
     /*
-     * This test is purposely only triggering when server side state saving 
-     * as there is no way to force a view to expire when client side state 
-     * saving.
+     * This test is purposely only triggering when server side state saving as there is no way to force
+     * a view to expire when client side state saving.
      */
     @Test
     public void testViewExpired1() throws Exception {

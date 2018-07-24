@@ -16,23 +16,21 @@
 
 package com.sun.faces.test.javaee6web.facelets;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class EventPreRenderViewBean {
 
     private int count = 0;
 
-    public EventPreRenderViewBean() {
-    }
-    
+
     public void preRenderView() {
         ++count;
     }
-    
+
     public int getCount() {
-        return this.count;
+        return count;
     }
 }

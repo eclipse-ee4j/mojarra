@@ -16,21 +16,30 @@
 
 package com.sun.faces.test.javaee6web.injection;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-@ManagedBean(name = "injection")
+@Named
 @SessionScoped
-public class Injection {
+public class Injection implements Serializable {
 
-    private boolean initCalled = false;
+    private static final long serialVersionUID = 1L;
 
-    private int postConstructCalled = 0;
+    private boolean initCalled;
+    private int postConstructCalled;
 
     @Inject
     private Foo foo;
+
+    @PostConstruct
+    public void concall() {
+        postConstructCalled++;
+        initCalled = foo != null;
+    }
 
     @Inject
     public void initialize(Foo foo) {
@@ -43,11 +52,6 @@ public class Injection {
 
     public boolean isFooInjected() {
         return foo != null;
-    }
-
-    @PostConstruct
-    public void concall() {
-        postConstructCalled++;
     }
 
     public String getPostConstructCalled() {

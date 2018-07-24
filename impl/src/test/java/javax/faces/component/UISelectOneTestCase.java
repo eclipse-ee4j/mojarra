@@ -16,23 +16,21 @@
 
 package javax.faces.component;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import javax.faces.application.FacesMessage;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.Collection;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -292,27 +290,6 @@ public class UISelectOneTestCase extends UIInputTestCase {
         selectOne.validate(facesContext);
         checkMessages(1);
         assertTrue(selectOne.isValid());
-    }
-
-    // Test that appropriate properties are value binding enabled
-    public void PENDING_FIXME_testValueBindings() {
-        super.testValueBindings();
-        UISelectOne test = (UISelectOne) component;
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.setValue(null);
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.setValue(null);
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
     }
 
     public void testSelectItemsIterator() {

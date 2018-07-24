@@ -16,14 +16,18 @@
 
 package com.sun.faces.test.servlet30.configBasic;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIColumn;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIData;
@@ -65,6 +69,7 @@ import javax.faces.component.html.HtmlSelectManyMenu;
 import javax.faces.component.html.HtmlSelectOneListbox;
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.component.html.HtmlSelectOneRadio;
+import javax.faces.context.FacesContext;
 import javax.faces.convert.BigDecimalConverter;
 import javax.faces.convert.BigIntegerConverter;
 import javax.faces.convert.BooleanConverter;
@@ -84,22 +89,11 @@ import javax.faces.validator.DoubleRangeValidator;
 import javax.faces.validator.LengthValidator;
 import javax.faces.validator.LongRangeValidator;
 
-
-import javax.faces.context.FacesContext;
-import javax.el.ExpressionFactory;
-import javax.faces.el.ValueBinding;
-import javax.el.ValueExpression;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
-
 public class ConfigFileBean {
 
     private String title = "Test Config File";
     public String getTitle() {
-        return title; 
+        return title;
     }
 
     public ConfigFileBean() {

@@ -17,12 +17,15 @@
 package com.sun.faces.test.servlet30.ajax;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
-@ManagedBean(name = "viewState1Bean")
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
+@Named
 @SessionScoped
 public class ViewState1Bean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected String firstName = "Duke";
     protected String lastName = "Java";

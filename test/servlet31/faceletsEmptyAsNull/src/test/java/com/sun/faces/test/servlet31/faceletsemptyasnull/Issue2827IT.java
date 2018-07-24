@@ -16,21 +16,22 @@
 
 package com.sun.faces.test.servlet31.faceletsemptyasnull;
 
+import static com.sun.faces.test.junit.JsfVersion.JSF_2_2_0;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import static com.sun.faces.test.junit.JsfServerExclude.GLASSFISH_4_0;
 import com.sun.faces.test.junit.JsfTest;
 import com.sun.faces.test.junit.JsfTestRunner;
-import static com.sun.faces.test.junit.JsfVersion.JSF_2_2_0;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 @RunWith(JsfTestRunner.class)
 public class Issue2827IT {
@@ -57,7 +58,7 @@ public class Issue2827IT {
      * problems with other tests. See
      * http://tomcat.apache.org/tomcat-7.0-doc/config/systemprops.html and look
      * for COERCE_TO_ZERO
-     * 
+     *
      * @throws Exception
      */
     @JsfTest(value=JSF_2_2_0)

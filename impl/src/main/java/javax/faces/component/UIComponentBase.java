@@ -65,7 +65,6 @@ import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.BehaviorEvent;
 import javax.faces.event.ComponentSystemEventListener;
@@ -80,16 +79,13 @@ import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.render.Renderer;
 
-import com.sun.faces.application.ValueBindingValueExpressionAdapter;
-import com.sun.faces.application.ValueExpressionValueBindingAdapter;
-
 /**
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a
  * changed_added_2_1">UIComponentBase</strong> is a convenience base class that implements the
  * default concrete behavior of all methods defined by {@link UIComponent}.
  * </p>
- * 
+ *
  * <p>
  * By default, this class defines <code>getRendersChildren()</code> to find the renderer for this
  * component and call its <code>getRendersChildren()</code> method. The default implementation on
@@ -107,7 +103,7 @@ public abstract class UIComponentBase extends UIComponent {
     private static Logger LOGGER = Logger.getLogger("javax.faces.component", "javax.faces.LogStrings");
 
     private static final String ADDED = UIComponentBase.class.getName() + ".ADDED";
-    
+
     private static final int MY_STATE = 0;
     private static final int CHILD_STATE = 1;
 
@@ -135,53 +131,53 @@ public abstract class UIComponentBase extends UIComponent {
      * </p>
      */
     private static final Object EMPTY_OBJECT_ARRAY[] = new Object[0];
-    
+
     /**
      * <p>
      * The <code>Map</code> containing our attributes, keyed by attribute name.
      * </p>
      */
     private AttributesMap attributes;
-    
+
     /**
      * <p>
      * The component identifier for this component.
      * </p>
      */
     private String id;
-    
+
     /**
      * <p>
      * The assigned client identifier for this component.
      * </p>
      */
     private String clientId;
-    
+
     /**
      * <p>
      * The parent component for this component.
      * </p>
      */
     private UIComponent parent;
-    
+
     /**
      * The <code>List</code> containing our child components.
      */
     private List<UIComponent> children;
-    
+
     /**
      * The <code>Map</code> containing our related facet components.
      */
     private Map<String, UIComponent> facets;
-    
+
     private AttachedObjectListHolder<FacesListener> listeners;
-    
+
     /**
      * Flag indicating a desire to now participate in state saving.
      */
     private boolean transientFlag;
-    
-    
+
+
 
     public UIComponentBase() {
         populateDescriptorsMapIfNecessary();
@@ -193,7 +189,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (attributes == null) {
             attributes = new AttributesMap(this);
         }
-        
+
         return attributes;
     }
 
@@ -201,7 +197,7 @@ public abstract class UIComponentBase extends UIComponent {
     public Map<String, Object> getPassThroughAttributes(boolean create) {
         @SuppressWarnings("unchecked")
         Map<String, Object> passThroughAttributes = (Map<String, Object>) this.getStateHelper().get(PropertyKeys.passThroughAttributes);
-        
+
         if (passThroughAttributes == null && create) {
             passThroughAttributes = new PassThroughAttributesMap<>();
             getStateHelper().put(PropertyKeys.passThroughAttributes, passThroughAttributes);
@@ -210,7 +206,7 @@ public abstract class UIComponentBase extends UIComponent {
         return passThroughAttributes;
     }
 
-  
+
 
     // -------------------------------------------------------------- Properties
 
@@ -227,7 +223,7 @@ public abstract class UIComponentBase extends UIComponent {
         // If the clientId is not yet set
         if (clientId == null) {
             UIComponent namingContainerAncestor = getNamingContainerAncestor();
-            
+
             // Give the parent the opportunity to first grab a unique clientId
             String parentId = getParentId(context, namingContainerAncestor);
 
@@ -237,7 +233,7 @@ public abstract class UIComponentBase extends UIComponent {
                 setId(generateId(context, namingContainerAncestor));
                 clientId = getId();
             }
-            
+
             if (parentId != null) {
                 clientId = addParentId(context, parentId, clientId);
             }
@@ -248,7 +244,7 @@ public abstract class UIComponentBase extends UIComponent {
                 clientId = renderer.convertClientId(context, clientId);
             }
         }
-     
+
         return clientId;
     }
 
@@ -292,15 +288,15 @@ public abstract class UIComponentBase extends UIComponent {
         } else {
             this.parent = parent;
             if (getAttributes().get(ADDED) == null) {
-                
+
                 // Add an attribute to this component here to indiciate that
                 // it's being processed. If we don't do this, and the component
                 // is re-parented, the events could fire again in certain cases
                 // and cause a stack overflow.
                 getAttributes().put(ADDED, TRUE);
-                
+
                 doPostAddProcessing(FacesContext.getCurrentInstance(), this);
-                
+
                 // Remove the attribute once we've returned from the event
                 // processing.
                 this.getAttributes().remove(ADDED);
@@ -336,11 +332,11 @@ public abstract class UIComponentBase extends UIComponent {
                 return renderer.getRendersChildren();
             }
         }
-        
+
         return false;
     }
 
-    
+
     // ------------------------------------------------- Tree Management Methods
 
     @Override
@@ -348,7 +344,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (children == null) {
             children = new ChildrenList(this);
         }
-        
+
         return children;
     }
 
@@ -357,8 +353,8 @@ public abstract class UIComponentBase extends UIComponent {
     public int getChildCount() {
         if (children != null) {
             return children.size();
-        } 
-            
+        }
+
         return 0;
     }
 
@@ -370,7 +366,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (expression == null) {
             throw new NullPointerException();
         }
-        
+
         if (expression.isEmpty()) {
             // If an empty value is provided, fail fast.
             throw new IllegalArgumentException("\"\"");
@@ -380,7 +376,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         // Identify the base component from which we will perform our search
         UIComponent base = findBaseComponent(expression, sepChar);
-        
+
         if (expression.charAt(0) == sepChar) {
             // Treat remainder of the expression as relative
             expression = expression.substring(1);
@@ -389,7 +385,7 @@ public abstract class UIComponentBase extends UIComponent {
         // Evaluate the search expression (now guaranteed to be relative)
         return evaluateSearchExpression(base, expression, String.valueOf(sepChar));
     }
-    
+
     /**
      * {@inheritDoc}
      *
@@ -402,8 +398,8 @@ public abstract class UIComponentBase extends UIComponent {
         return super.invokeOnComponent(context, clientId, callback);
     }
 
-    
-    
+
+
     // ------------------------------------------------ Facet Management Methods
 
 
@@ -412,7 +408,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (facets == null) {
             facets = new FacetsMap(this);
         }
-        
+
         return facets;
     }
 
@@ -421,8 +417,8 @@ public abstract class UIComponentBase extends UIComponent {
     public int getFacetCount() {
         if (facets != null) {
             return facets.size();
-        } 
-            
+        }
+
         return 0;
     }
 
@@ -432,7 +428,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (facets != null) {
             return facets.get(name);
         }
-            
+
         return null;
     }
 
@@ -440,26 +436,26 @@ public abstract class UIComponentBase extends UIComponent {
     public Iterator<UIComponent> getFacetsAndChildren() {
 
         int childCount = getChildCount(), facetCount = getFacetCount();
-        
+
         // If there are neither facets nor children
         if (childCount == 0 && facetCount == 0) {
             return EMPTY_ITERATOR;
         }
-        
+
         // If there are only facets and no children
         if (childCount == 0) {
             return unmodifiableCollection(getFacets().values()).iterator();
         }
-        
+
         // If there are only children and no facets
         if (facetCount == 0) {
             return unmodifiableList(getChildren()).iterator();
         }
-        
+
         // If there are both children and facets
         return new FacetsAndChildrenIterator(this);
     }
-    
+
 
     // -------------------------------------------- Lifecycle Processing Methods
 
@@ -474,7 +470,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (event == null) {
             throw new NullPointerException();
         }
-        
+
         if (event instanceof BehaviorEvent) {
             BehaviorEvent behaviorEvent = (BehaviorEvent) event;
             Behavior behavior = behaviorEvent.getBehavior();
@@ -501,7 +497,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         String rendererType = getRendererType();
         if (rendererType != null) {
             Renderer renderer = getRenderer(context);
@@ -555,11 +551,11 @@ public abstract class UIComponentBase extends UIComponent {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         if (!isRendered()) {
             return;
         }
-        
+
         if (getRendererType() != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
@@ -583,27 +579,27 @@ public abstract class UIComponentBase extends UIComponent {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         if (!isRendered()) {
             popComponentFromEL(context);
             return;
         }
-        
+
         if (getRendererType() != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
                 renderer.encodeEnd(context, this);
-            } 
-            
+            }
+
             // We've already logged for this component
         }
-        
+
         popComponentFromEL(context);
     }
-    
+
 
     // -------------------------------------------------- Event Listener Methods
-    
+
 
     /**
      * <p>
@@ -613,7 +609,7 @@ public abstract class UIComponentBase extends UIComponent {
      * the required type, and the implementation of those registration methods will delegate to this
      * method. For example:
      * </p>
-     * 
+     *
      * <pre>
      * public class FooEvent extends FacesEvent {
      *   ...
@@ -625,11 +621,11 @@ public abstract class UIComponentBase extends UIComponent {
      *   }
      *   ...
      * }
-     * 
+     *
      * public interface FooListener extends FacesListener {
      *   public void processFoo(FooEvent event);
      * }
-     * 
+     *
      * public class FooComponent extends UIComponentBase {
      *   ...
      *   public void addFooListener(FooListener listener) {
@@ -676,7 +672,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (this.listeners == null) {
             return (FacesListener[]) Array.newInstance(clazz, 0);
         }
-        
+
         FacesListener[] listeners = this.listeners.asArray(FacesListener.class);
         if (listeners.length == 0) {
             return (FacesListener[]) Array.newInstance(clazz, 0);
@@ -722,13 +718,13 @@ public abstract class UIComponentBase extends UIComponent {
         if (event == null) {
             throw new NullPointerException();
         }
-        
+
         UIComponent parent = getParent();
-        
+
         if (parent == null) {
             throw new IllegalStateException();
-        } 
-            
+        }
+
         parent.queueEvent(event);
     }
 
@@ -759,7 +755,7 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
-        
+
         if (isAnyNull(eventClass, componentListener)) {
             throw new NullPointerException();
         }
@@ -767,18 +763,18 @@ public abstract class UIComponentBase extends UIComponent {
         if (initialStateMarked()) {
             initialState = false;
         }
-        
+
         if (listenersByEventClass == null) {
             listenersByEventClass = new HashMap<>(3, 1.0f);
         }
-        
+
         SystemEventListener facesLifecycleListener = new ComponentSystemEventListenerAdapter(componentListener, this);
         List<SystemEventListener> listenersForEventClass = listenersByEventClass.get(eventClass);
         if (listenersForEventClass == null) {
             listenersForEventClass = new ArrayList<>(3);
             listenersByEventClass.put(eventClass, listenersForEventClass);
         }
-        
+
         if (!listenersForEventClass.contains(facesLifecycleListener)) {
             listenersForEventClass.add(facesLifecycleListener);
         }
@@ -806,18 +802,18 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
-        
+
         if (isAnyNull(eventClass, componentListener)) {
             throw new NullPointerException();
         }
 
         List<SystemEventListener> listeners = getListenersForEventClass(eventClass);
-        
+
         if (!isEmpty(listeners)) {
             for (Iterator<SystemEventListener> i = listeners.iterator(); i.hasNext();) {
-                
+
                 ComponentSystemEventListener existingListener = ((ComponentSystemEventListenerAdapter) i.next()).getWrapped();
-                
+
                 if (existingListener.equals(componentListener)) {
                     i.remove();
                     break;
@@ -834,7 +830,7 @@ public abstract class UIComponentBase extends UIComponent {
      * </p>
      *
      * @param eventClass the <code>Class</code> of event for which the listeners must be returned.
-     * 
+     *
      * @throws NullPointerException if argument <code>eventClass</code> is <code>null</code>.
      *
      * @since 2.1
@@ -845,14 +841,14 @@ public abstract class UIComponentBase extends UIComponent {
         if (eventClass == null) {
             throw new NullPointerException();
         }
-        
+
         if (listenersByEventClass != null) {
             return listenersByEventClass.get(eventClass);
         }
-        
+
         return null;
     }
-    
+
 
     // ------------------------------------------------ Lifecycle Phase Handlers
 
@@ -877,7 +873,7 @@ public abstract class UIComponentBase extends UIComponent {
             // Process all facets and children of this component
             Iterator<UIComponent> kids = getFacetsAndChildren();
             while (kids.hasNext()) {
-                UIComponent kid = (UIComponent) kids.next();
+                UIComponent kid = kids.next();
                 kid.processDecodes(context);
             }
 
@@ -913,14 +909,14 @@ public abstract class UIComponentBase extends UIComponent {
         try {
             Application application = context.getApplication();
             application.publishEvent(context, PreValidateEvent.class, this);
-            
+
             // Process all the facets and children of this component
             Iterator<UIComponent> kids = getFacetsAndChildren();
             while (kids.hasNext()) {
-                UIComponent kid = (UIComponent) kids.next();
+                UIComponent kid = kids.next();
                 kid.processValidators(context);
             }
-            
+
             application.publishEvent(context, PostValidateEvent.class, this);
         } finally {
             popComponentFromEL(context);
@@ -948,7 +944,7 @@ public abstract class UIComponentBase extends UIComponent {
             // Process all facets and children of this component
             Iterator<UIComponent> kids = getFacetsAndChildren();
             while (kids.hasNext()) {
-                UIComponent kid = (UIComponent) kids.next();
+                UIComponent kid = kids.next();
                 kid.processUpdates(context);
             }
         } finally {
@@ -965,11 +961,11 @@ public abstract class UIComponentBase extends UIComponent {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         if (isTransient()) {
             return null;
         }
-        
+
         Object[] stateStruct = new Object[2];
         Object[] childState = EMPTY_ARRAY;
 
@@ -985,10 +981,10 @@ public abstract class UIComponentBase extends UIComponent {
 
                 // This arraylist will store state
                 List<Object> stateList = new ArrayList<>(count);
-                
+
                 // If we have children, add them to the stateList
                 collectChildState(context, stateList);
-                
+
                 // If we have facets, add them to the stateList
                 collectFacetsState(context, stateList);
 
@@ -1027,13 +1023,13 @@ public abstract class UIComponentBase extends UIComponent {
 
             // Process all of the facets of this component
             restoreFacetsState(context, childState, i);
-            
+
         } finally {
             popComponentFromEL(context);
         }
     }
-    
-    
+
+
 
     // ------------------------------------------------------- Protected Methods
 
@@ -1055,13 +1051,13 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     protected Renderer getRenderer(FacesContext context) {
-        
+
         Renderer renderer = null;
 
         String rendererType = getRendererType();
         if (rendererType != null) {
             renderer = context.getRenderKit().getRenderer(getFamily(), rendererType);
-            
+
             if (renderer == null && LOGGER.isLoggable(FINE)) {
                 LOGGER.fine("Can't get Renderer for type " + rendererType);
             }
@@ -1071,7 +1067,7 @@ public abstract class UIComponentBase extends UIComponent {
                 LOGGER.fine("No renderer-type for component " + id != null ? id : getClass().getName());
             }
         }
-        
+
         return renderer;
     }
 
@@ -1082,7 +1078,7 @@ public abstract class UIComponentBase extends UIComponent {
      * For each of the attached objects on this instance that implement {@link PartialStateHolder},
      * call {@link PartialStateHolder#markInitialState} on the attached object.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     @Override
@@ -1115,7 +1111,7 @@ public abstract class UIComponentBase extends UIComponent {
      * For each of the attached objects on this instance that implement {@link PartialStateHolder},
      * call {@link PartialStateHolder#clearInitialState} on the attached object.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     @Override
@@ -1144,32 +1140,32 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public Object saveState(FacesContext context) {
-        
+
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         Object[] values = null;
-        
+
         if (initialStateMarked()) {
             Object savedFacesListeners = listeners != null ? listeners.saveState(context) : null;
             Object savedSysEventListeners = saveSystemEventListeners(context);
             Object savedBehaviors = saveBehaviorsState(context);
             Object savedBindings = null;
-            
+
             if (bindings != null) {
                 savedBindings = saveBindingsState(context);
             }
-            
+
             Object savedHelper = null;
             if (stateHelper != null) {
                 savedHelper = stateHelper.saveState(context);
             }
-            
+
             if (isAllNull(savedFacesListeners, savedSysEventListeners, savedBehaviors, savedBindings, savedHelper)) {
                 return null;
             }
-            
+
             if (values == null || values.length != 5) {
                 values = new Object[5];
             }
@@ -1182,9 +1178,9 @@ public abstract class UIComponentBase extends UIComponent {
             values[2] = savedBehaviors;
             values[3] = savedBindings;
             values[4] = savedHelper;
-            
+
             return values;
-            
+
         } else {
             if (values == null || values.length != 6) {
                 values = new Object[6];
@@ -1193,15 +1189,15 @@ public abstract class UIComponentBase extends UIComponent {
             values[0] = listeners != null ? listeners.saveState(context) : null;
             values[1] = saveSystemEventListeners(context);
             values[2] = saveBehaviorsState(context);
-            
+
             if (bindings != null) {
                 values[3] = saveBindingsState(context);
             }
-            
+
             if (stateHelper != null) {
                 values[4] = stateHelper.saveState(context);
             }
-            
+
             values[5] = id;
 
             return values;
@@ -1218,7 +1214,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (state == null) {
             return;
         }
-        
+
         Object[] values = (Object[]) state;
 
         if (values[0] != null) {
@@ -1227,7 +1223,7 @@ public abstract class UIComponentBase extends UIComponent {
             }
             listeners.restoreState(context, values[0]);
         }
-        
+
         if (values[1] != null) {
             Map<Class<? extends SystemEvent>, List<SystemEventListener>> restoredListeners = restoreSystemEventListeners(context, values[1]);
             if (listenersByEventClass != null) {
@@ -1236,19 +1232,19 @@ public abstract class UIComponentBase extends UIComponent {
                 listenersByEventClass = restoredListeners;
             }
         }
-        
+
         if (values[2] != null) {
             behaviors = restoreBehaviorsState(context, values[2]);
         }
-        
+
         if (values[3] != null) {
             bindings = restoreBindingsState(context, values[3]);
         }
-        
+
         if (values[4] != null) {
             getStateHelper().restoreState(context, values[4]);
         }
-        
+
         if (values.length == 6) {
             // This means we've saved full state and need to do a little more
             // work to finish the job
@@ -1269,10 +1265,10 @@ public abstract class UIComponentBase extends UIComponent {
         this.transientFlag = transientFlag;
     }
 
-    
+
     // -------------------------------------- Helper methods for state saving
 
-    
+
     // --------- methods used by UIComponents to save their attached Objects.
 
     /**
@@ -1282,7 +1278,7 @@ public abstract class UIComponentBase extends UIComponent {
      * that may or may not implement the {@link StateHolder} interface. Using this method implies
      * the use of {@link #restoreAttachedState} to restore the attached objects.
      * </p>
-     * 
+     *
      * <p>
      * This method supports saving attached objects of the following type: <code>Object</code>s,
      * <code>null</code> values, and <code
@@ -1297,7 +1293,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @param attachedObject the object, which may be a <code>List</code> instance, or an Object.
      *            The <code>attachedObject</code> (or the elements that comprise
      *            <code>attachedObject</code> may implement {@link StateHolder}.
-     * 
+     *
      * @return The state object to be saved.
      * @throws NullPointerException if the context argument is null.
      */
@@ -1306,11 +1302,11 @@ public abstract class UIComponentBase extends UIComponent {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         if (attachedObject == null) {
             return null;
         }
-        
+
         Object result;
         Class mapOrCollectionClass = attachedObject.getClass();
         boolean newWillSucceed = true;
@@ -1375,7 +1371,7 @@ public abstract class UIComponentBase extends UIComponent {
      * saved using {@link #saveAttachedState}. This method is tightly coupled with
      * {@link #saveAttachedState}.
      * </p>
-     * 
+     *
      * <p>
      * This method supports restoring all attached objects types supported by
      * {@link #saveAttachedState}.
@@ -1383,9 +1379,9 @@ public abstract class UIComponentBase extends UIComponent {
      *
      * @param context the {@link FacesContext} for this request
      * @param stateObj the opaque object returned from {@link #saveAttachedState}
-     * 
+     *
      * @return the object restored from <code>stateObj</code>.
-     * 
+     *
      * @throws NullPointerException if context is null.
      * @throws IllegalStateException if the object is not previously returned by
      *             {@link #saveAttachedState}.
@@ -1679,7 +1675,7 @@ public abstract class UIComponentBase extends UIComponent {
      * an implementation of
      * {@link javax.faces.component.behavior.ClientBehaviorHolder#getEventNames}.
      * </p>
-     * 
+     *
      * @return behaviors associated with this component.
      * @since 2.0
      */
@@ -1705,7 +1701,7 @@ public abstract class UIComponentBase extends UIComponent {
      * provide an implementation of
      * {@link javax.faces.component.behavior.ClientBehaviorHolder#getEventNames}.
      * </p>
-     * 
+     *
      * @return the default event name.
      */
     public String getDefaultEventName() {
@@ -1719,7 +1715,7 @@ public abstract class UIComponentBase extends UIComponent {
      * {@link UIComponentBase} has stub methods from the {@link ClientBehaviorHolder} interface, but
      * these method should be used only with componets that really implement holder interface. For
      * an any other classes this method throws {@link IllegalStateException}
-     * 
+     *
      * @throws IllegalStateException
      */
     private void assertClientBehaviorHolder() {
@@ -1738,7 +1734,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     /**
      * Save state of the behaviors map.
-     * 
+     *
      * @param context the {@link FacesContext} for this request.
      * @return map converted to the array of <code>Object</code> or null if no behaviors have been
      *         set.
@@ -2857,6 +2853,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         private FacetsMap map = null;
 
+        @Override
         public boolean add(String o) {
             throw new UnsupportedOperationException();
         }
@@ -3071,7 +3068,7 @@ public abstract class UIComponentBase extends UIComponent {
             return modifiableMap;
         }
     }
-    
+
     private static class PassThroughAttributesMap<K, V> extends ConcurrentHashMap<String, Object> implements Serializable {
 
         private static final long serialVersionUID = 4230540513272170861L;
@@ -3101,8 +3098,8 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     private void populateDescriptorsMapIfNecessary() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -3125,16 +3122,16 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         if (propertyDescriptorMap == null) {
-             
+
             // We did not find the property descriptor map so we are now going to load it.
-            
+
             PropertyDescriptor propertyDescriptors[] = getPropertyDescriptors();
             if (propertyDescriptors != null) {
                 propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                     propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
                 }
-                
+
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.log(FINE, "fine.component.populating_descriptor_map", new Object[] { clazz, currentThread().getName() });
                 }
@@ -3162,7 +3159,7 @@ public abstract class UIComponentBase extends UIComponent {
             throw new FacesException(e);
         }
     }
-    
+
     private String addParentId(FacesContext context, String parentId, String childId) {
         return new StringBuilder(parentId.length() + 1 + childId.length())
                         .append(parentId)
@@ -3170,23 +3167,23 @@ public abstract class UIComponentBase extends UIComponent {
                         .append(childId)
                         .toString();
     }
-    
+
     private String getParentId(FacesContext context, UIComponent parent) {
         if (parent == null) {
             return null;
         }
-        
+
         return parent.getContainerClientId(context);
     }
-    
+
     private String generateId(FacesContext context, UIComponent namingContainerAncestor) {
         if (namingContainerAncestor instanceof UniqueIdVendor) {
             return ((UniqueIdVendor) namingContainerAncestor).createUniqueId(context, null);
-        } 
-        
+        }
+
         return context.getViewRoot().createUniqueId();
     }
-    
+
     private UIComponent getNamingContainerAncestor() {
         UIComponent namingContainer = getParent();
         while (namingContainer != null) {
@@ -3195,10 +3192,10 @@ public abstract class UIComponentBase extends UIComponent {
             }
             namingContainer = namingContainer.getParent();
         }
-        
+
         return null;
     }
-    
+
     /**
      * <p>
      * If the specified {@link UIComponent} has a non-null parent, remove it as a child or facet (as
@@ -3214,7 +3211,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (parent == null) {
             return;
         }
-        
+
         if (parent.getChildCount() > 0) {
             List<UIComponent> children = parent.getChildren();
             int index = children.indexOf(component);
@@ -3223,11 +3220,11 @@ public abstract class UIComponentBase extends UIComponent {
                 return;
             }
         }
-        
+
         if (parent.getFacetCount() > 0) {
             Map<String, UIComponent> facets = parent.getFacets();
             Iterator<Entry<String, UIComponent>> entries = facets.entrySet().iterator();
-            
+
             while (entries.hasNext()) {
                 Map.Entry<String, UIComponent> entry = entries.next();
                 // noinspection ObjectEquality
@@ -3255,12 +3252,12 @@ public abstract class UIComponentBase extends UIComponent {
         if (id == null) {
             return;
         }
-        
+
         int idLength = id.length();
         if (idLength < 1) {
             throw new IllegalArgumentException("Empty id attribute is not allowed");
         }
-        
+
         for (int i = 0; i < idLength; i++) {
             char c = id.charAt(i);
             if (i == 0) {
@@ -3274,22 +3271,22 @@ public abstract class UIComponentBase extends UIComponent {
             }
         }
     }
-    
+
     private UIComponent findBaseComponent(String expression, final char sepChar) {
         // Identify the base component from which we will perform our search
         UIComponent base = this;
-        
+
         if (expression.charAt(0) == sepChar) {
-            
+
             // Absolute searches start at the root of the tree
             while (base.getParent() != null) {
                 base = base.getParent();
             }
-            
+
             // Treat remainder of the expression as relative
             expression = expression.substring(1);
         } else if (!(base instanceof NamingContainer)) {
-            
+
             // Relative expressions start at the closest NamingContainer or root
             while (base.getParent() != null) {
                 if (base instanceof NamingContainer) {
@@ -3298,37 +3295,37 @@ public abstract class UIComponentBase extends UIComponent {
                 base = base.getParent();
             }
         }
-        
+
         return base;
     }
-    
+
     private UIComponent evaluateSearchExpression(UIComponent base, String expression, final String SEPARATOR_STRING) {
         UIComponent result = null;
-        
+
         String[] segments = expression.split(SEPARATOR_STRING);
         for (int i = 0, length = (segments.length - 1); i < segments.length; i++, length--) {
             result = findComponent(base, segments[i], (i == 0));
-            
+
             // the first element of the expression may match base.id
             // (vs. a child if of base)
             if (i == 0 && result == null && segments[i].equals(base.getId())) {
                 result = base;
             }
-            
+
             if (result != null && !(result instanceof NamingContainer) && length > 0) {
                 throw new IllegalArgumentException(segments[i]);
             }
-            
+
             if (result == null) {
                 break;
             }
-            
+
             base = result;
         }
-        
+
         return result;
     }
-    
+
     /**
      * <p>
      * Return the {@link UIComponent} (if any) with the specified <code>id</code>, searching
@@ -3341,23 +3338,23 @@ public abstract class UIComponentBase extends UIComponent {
      * @param id Component identifier to be matched
      */
     private static UIComponent findComponent(UIComponent base, String id, boolean checkId) {
-        
+
         if (checkId && id.equals(base.getId())) {
             return base;
         }
-        
+
         // Search through our facets and children
         UIComponent component = null;
         for (Iterator<UIComponent> i = base.getFacetsAndChildren(); i.hasNext();) {
-            UIComponent kid = (UIComponent) i.next();
+            UIComponent kid = i.next();
             if (!(kid instanceof NamingContainer)) {
                 if (checkId && id.equals(kid.getId())) {
                     component = kid;
                     break;
                 }
-                
+
                 component = findComponent(kid, id, true);
-                
+
                 if (component != null) {
                     break;
                 }
@@ -3366,7 +3363,7 @@ public abstract class UIComponentBase extends UIComponent {
                 break;
             }
         }
-        
+
         return component;
     }
 
@@ -3374,23 +3371,23 @@ public abstract class UIComponentBase extends UIComponent {
         if (getChildCount() > 0) {
             Iterator<UIComponent> kids = getChildren().iterator();
             while (kids.hasNext()) {
-                UIComponent kid = (UIComponent) kids.next();
+                UIComponent kid = kids.next();
                 if (!kid.isTransient()) {
                     stateList.add(kid.processSaveState(context));
                 }
             }
         }
-        
+
         return stateList;
     }
-    
+
     private List<Object> collectFacetsState(FacesContext context, List<Object> stateList) {
         if (getFacetCount() > 0) {
             Iterator<Entry<String, UIComponent>> myFacets = getFacets().entrySet().iterator();
-            
+
             while (myFacets.hasNext()) {
                 Map.Entry<String, UIComponent> entry = myFacets.next();
-                UIComponent facet = (UIComponent) entry.getValue();
+                UIComponent facet = entry.getValue();
                 if (!facet.isTransient()) {
                     Object facetState = facet.processSaveState(context);
                     Object[] facetSaveState = new Object[2];
@@ -3400,10 +3397,10 @@ public abstract class UIComponentBase extends UIComponent {
                 }
             }
         }
-        
+
         return stateList;
     }
-    
+
 
     private int restoreChildState(FacesContext context, Object[] childState) {
         int i = 0;
@@ -3414,98 +3411,41 @@ public abstract class UIComponentBase extends UIComponent {
                 if (kid.isTransient()) {
                     continue;
                 }
-                
+
                 Object currentState = childState[i++];
-                
+
                 if (currentState == null) {
                     continue;
                 }
-                
+
                 kid.processRestoreState(context, currentState);
             }
         }
-        
+
         return i;
     }
-    
+
     private void restoreFacetsState(FacesContext context, Object[] childState, int i) {
         if (getFacetCount() > 0) {
-            
+
             int j = 0;
             int facetsSize = getFacets().size();
-            
+
             while (j < facetsSize) {
-                
+
                 Object[] facetSaveState = (Object[]) childState[i++];
-                
+
                 if (facetSaveState != null) {
                     String facetName = (String) facetSaveState[0];
                     Object facetState = facetSaveState[1];
                     UIComponent facet = getFacets().get(facetName);
                     facet.processRestoreState(context, facetState);
                 }
-                
+
                 ++j;
             }
         }
     }
-    
-    
-    
-    
-    
-    
-    // ------------------------------------------- Deprecated code
-    
-    
-    /**
-     * {@inheritDoc}
-     *
-     * @throws NullPointerException {@inheritDoc}
-     * @deprecated This has been replaced by {@link #getValueExpression}.
-     */
-    @Override
-    public ValueBinding getValueBinding(String name) {
 
-        if (name == null) {
-            throw new NullPointerException();
-        }
-        ValueBinding result = null;
-        ValueExpression ve;
-
-        if (null != (ve = getValueExpression(name))) {
-            // if the ValueExpression is an instance of our private
-            // wrapper class.
-            if (ve.getClass().equals(ValueExpressionValueBindingAdapter.class)) {
-                result = ((ValueExpressionValueBindingAdapter) ve).getWrapped();
-            } else {
-                // otherwise, this is a real ValueExpression. Wrap it
-                // in a ValueBinding.
-                result = new ValueBindingValueExpressionAdapter(ve);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws IllegalArgumentException {@inheritDoc}
-     * @throws NullPointerException {@inheritDoc}
-     * @deprecated This has been replaced by {@link #setValueExpression}.
-     */
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-        if (name == null) {
-            throw new NullPointerException();
-        }
-        if (binding != null) {
-            ValueExpressionValueBindingAdapter adapter = new ValueExpressionValueBindingAdapter(binding);
-            setValueExpression(name, adapter);
-        } else {
-            setValueExpression(name, null);
-        }
-
-    }
 
 }

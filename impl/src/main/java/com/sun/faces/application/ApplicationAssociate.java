@@ -20,7 +20,6 @@ import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
 import static com.sun.faces.RIConstants.FACES_PREFIX;
 import static com.sun.faces.config.ConfigManager.getAnnotatedClasses;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableFaceletsResourceResolverResolveCompositeComponents;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.FaceletsSkipComments;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletCache;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDecorators;
@@ -74,11 +73,7 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
 import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.PreDestroyCustomScopeEvent;
-import javax.faces.event.ScopeContext;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.flow.FlowHandler;
@@ -101,7 +96,6 @@ import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.DemuxCompositeELResolver;
 import com.sun.faces.el.FacesCompositeELResolver;
-import com.sun.faces.el.VariableResolverChainWrapper;
 import com.sun.faces.facelets.PrivateApiFaceletCacheAdapter;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.facelets.compiler.SAXCompiler;
@@ -166,25 +160,10 @@ public class ApplicationAssociate {
     };
 
     private List<ELResolver> elResolversFromFacesConfig;
-
     private List<SearchKeywordResolver> searchKeywordResolversFromFacesConfig;
 
-    @SuppressWarnings("deprecation")
-    private VariableResolver legacyVRChainHead;
-
-    private VariableResolverChainWrapper legacyVRChainHeadWrapperForJsp;
-
-    private VariableResolverChainWrapper legacyVRChainHeadWrapperForFaces;
-
-    @SuppressWarnings("deprecation")
-    private PropertyResolver legacyPRChainHead;
     private ExpressionFactory expressionFactory;
 
-    @SuppressWarnings("deprecation")
-    private PropertyResolver legacyPropertyResolver;
-
-    @SuppressWarnings("deprecation")
-    private VariableResolver legacyVariableResolver;
     private FacesCompositeELResolver facesELResolverForJsp;
 
     private InjectionProvider injectionProvider;
@@ -215,11 +194,11 @@ public class ApplicationAssociate {
     private Map<String, String> definingDocumentIdsToTruncatedJarUrls;
 
     private long timeOfInstantiation;
-    
+
     private Map<String, List<String>> resourceLibraryContracts;
-    
+
     Map<String, ApplicationResourceBundle> resourceBundles = new HashMap<>();
-    
+
 
     public ApplicationAssociate(ApplicationImpl appImpl) {
         applicationImpl = appImpl;
@@ -230,19 +209,19 @@ public class ApplicationAssociate {
         if (facesContext == null) {
             throw new IllegalStateException("ApplicationAssociate ctor not called in same callstack as ConfigureListener.contextInitialized()");
         }
-        
+
         ExternalContext externalContext = facesContext.getExternalContext();
         if (externalContext.getApplicationMap().get(ASSOCIATE_KEY) != null) {
             throw new IllegalStateException(getExceptionMessageString(APPLICATION_ASSOCIATE_EXISTS_ID));
         }
-        
+
         Map<String, Object> applicationMap = externalContext.getApplicationMap();
         applicationMap.put(ASSOCIATE_KEY, this);
 
         navigationMap = new ConcurrentHashMap<>();
         injectionProvider = (InjectionProvider) facesContext.getAttributes().get(ConfigManager.INJECTION_PROVIDER_KEY);
         webConfig = WebConfiguration.getInstance(externalContext);
-        
+
         annotationManager = new AnnotationManager();
 
         devModeEnabled = appImpl.getProjectStage() == Development;
@@ -261,7 +240,7 @@ public class ApplicationAssociate {
         definingDocumentIdsToTruncatedJarUrls = new ConcurrentHashMap<>();
         timeOfInstantiation = System.currentTimeMillis();
     }
-    
+
     private boolean checkForPushBuilder() {
         try {
             return HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
@@ -453,19 +432,10 @@ public class ApplicationAssociate {
         }
     }
 
-    public void installProgrammaticallyAddedResolvers() {
-        // Ensure custom resolvers are inserted at the correct place.
-        VariableResolver variableResolver = this.getLegacyVariableResolver();
-        if (variableResolver != null) {
-            getLegacyVRChainHeadWrapperForJsp().setWrapped(variableResolver);
-            getLegacyVRChainHeadWrapperForFaces().setWrapped(variableResolver);
-        }
-    }
-
     public boolean isDevModeEnabled() {
         return devModeEnabled;
     }
-    
+
     public boolean isPushBuilderSupported() {
         return hasPushBuilder;
     }
@@ -477,54 +447,6 @@ public class ApplicationAssociate {
      */
     public PropertyEditorHelper getPropertyEditorHelper() {
         return propertyEditorHelper;
-    }
-
-    /**
-     * This method is called by <code>ConfigureListener</code> and will contain any
-     * <code>VariableResolvers</code> defined within faces-config configuration files.
-     *
-     * @param resolver VariableResolver
-     */
-    @SuppressWarnings("deprecation")
-    public void setLegacyVRChainHead(VariableResolver resolver) {
-        this.legacyVRChainHead = resolver;
-    }
-
-    @SuppressWarnings("deprecation")
-    public VariableResolver getLegacyVRChainHead() {
-        return legacyVRChainHead;
-    }
-
-    public VariableResolverChainWrapper getLegacyVRChainHeadWrapperForJsp() {
-        return legacyVRChainHeadWrapperForJsp;
-    }
-
-    public void setLegacyVRChainHeadWrapperForJsp(VariableResolverChainWrapper legacyVRChainHeadWrapper) {
-        this.legacyVRChainHeadWrapperForJsp = legacyVRChainHeadWrapper;
-    }
-
-    public VariableResolverChainWrapper getLegacyVRChainHeadWrapperForFaces() {
-        return legacyVRChainHeadWrapperForFaces;
-    }
-
-    public void setLegacyVRChainHeadWrapperForFaces(VariableResolverChainWrapper legacyVRChainHeadWrapperForFaces) {
-        this.legacyVRChainHeadWrapperForFaces = legacyVRChainHeadWrapperForFaces;
-    }
-
-    /**
-     * This method is called by <code>ConfigureListener</code> and will contain any
-     * <code>PropertyResolvers</code> defined within faces-config configuration files.
-     *
-     * @param resolver PropertyResolver
-     */
-    @SuppressWarnings("deprecation")
-    public void setLegacyPRChainHead(PropertyResolver resolver) {
-        this.legacyPRChainHead = resolver;
-    }
-
-    @SuppressWarnings("deprecation")
-    public PropertyResolver getLegacyPRChainHead() {
-        return legacyPRChainHead;
     }
 
     public FacesCompositeELResolver getFacesELResolverForJsp() {
@@ -589,42 +511,6 @@ public class ApplicationAssociate {
 
     public String getContextName() {
         return contextName;
-    }
-
-    /**
-     * Maintains the PropertyResolver called through Application.setPropertyResolver()
-     * 
-     * @param resolver PropertyResolver
-     */
-    @SuppressWarnings("deprecation")
-    public void setLegacyPropertyResolver(PropertyResolver resolver) {
-        this.legacyPropertyResolver = resolver;
-    }
-
-    /**
-     * @return the PropertyResolver called through Application.getPropertyResolver()
-     */
-    @SuppressWarnings("deprecation")
-    public PropertyResolver getLegacyPropertyResolver() {
-        return legacyPropertyResolver;
-    }
-
-    /**
-     * Maintains the PropertyResolver called through Application.setVariableResolver()
-     * 
-     * @param resolver VariableResolver
-     */
-    @SuppressWarnings("deprecation")
-    public void setLegacyVariableResolver(VariableResolver resolver) {
-        this.legacyVariableResolver = resolver;
-    }
-
-    /**
-     * @return the VariableResolver called through Application.getVariableResolver()
-     */
-    @SuppressWarnings("deprecation")
-    public VariableResolver getLegacyVariableResolver() {
-        return legacyVariableResolver;
     }
 
     /**
@@ -723,7 +609,7 @@ public class ApplicationAssociate {
      * <p/>
      * values: ResourceBundleBean instances.
      */
-    
+
 
     public void addResourceBundle(String var, ApplicationResourceBundle bundle) {
         resourceBundles.put(var, bundle);

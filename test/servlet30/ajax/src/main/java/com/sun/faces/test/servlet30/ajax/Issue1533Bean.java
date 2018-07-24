@@ -17,22 +17,26 @@
 package com.sun.faces.test.servlet30.ajax;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.inject.Named;
 
 /**
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@ManagedBean(name = "issue1533Bean")
+@Named
 @SessionScoped
 public class Issue1533Bean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Stores the fire state.
      */
     private String fireState;
+
     /**
      * Stores the VIP.
      */
@@ -42,8 +46,7 @@ public class Issue1533Bean implements Serializable {
      * Fired through Ajax.
      *
      * @param event the event.
-     * @throws AbortProcessingException when further processing needs to be
-     * aborted.
+     * @throws AbortProcessingException when further processing needs to be aborted.
      */
     public void ajaxFired(AjaxBehaviorEvent event) throws AbortProcessingException {
         setFireState(event.getComponent().getClientId() + "-" + vip);

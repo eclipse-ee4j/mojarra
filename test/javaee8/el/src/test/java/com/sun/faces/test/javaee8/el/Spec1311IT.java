@@ -53,11 +53,4 @@ public class Spec1311IT {
         assertTrue(page.asXml().contains("com.sun.faces.context.FacesContextImpl"));
     }
     
-    @Test
-    @JsfTest(value = JsfVersion.JSF_2_3_0_M01,
-            excludes = {WEBLOGIC_12_1_4})
-    public void testFacesContextJsp() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/facesContext.jsp");
-        assertTrue(page.asXml().contains("com.sun.faces.context.FacesContextImpl"));
-    }
 }

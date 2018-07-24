@@ -16,15 +16,6 @@
 
 package com.sun.faces.ext.validator;
 
-import javax.el.ValueExpression;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -32,15 +23,23 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+
 /**
- * 
+ *
  * <p>supported filters: <code>package</code> and
  * <code>protection</code>.</p>
  */
 class MojarraMessageFactory {
 
     private static final Logger LOGGER = Logger.getLogger(MojarraMessageFactory.class.getPackage().getName());
-    
+
     private MojarraMessageFactory() {
     }
 
@@ -168,7 +167,7 @@ class MojarraMessageFactory {
                 }
             }
         }
-        // At this point, we have a summary and a bundle.     
+        // At this point, we have a summary and a bundle.
         FacesMessage ret = new BindingFacesMessage(locale, summary, detail, params);
         ret.setSeverity(FacesMessage.SEVERITY_ERROR);
         return (ret);
@@ -256,11 +255,11 @@ class MojarraMessageFactory {
      * This class overrides FacesMessage to provide the evaluation
      * of binding expressions in addition to Strings.
      * It is often the case, that a binding expression may reference
-     * a localized property value that would be used as a 
+     * a localized property value that would be used as a
      * substitution parameter in the message.  For example:
      *  <code>#{bundle.userLabel}</code>
      * "bundle" may not be available until the page is rendered.
-     * The "late" binding evaluation in <code>getSummary</code> and 
+     * The "late" binding evaluation in <code>getSummary</code> and
      * <code>getDetail</code> allow the expression to be evaluated
      * when that property is available.
      */
@@ -301,12 +300,6 @@ class MojarraMessageFactory {
             if (parameters != null) {
                 for (int i = 0; i < parameters.length; i++) {
                     Object o = parameters[i];
-                    if (o instanceof ValueBinding) {
-                        if (context == null) {
-                            context = FacesContext.getCurrentInstance();
-                        }
-                        o = ((ValueBinding) o).getValue(context);
-                    }
                     if (o instanceof ValueExpression) {
                         if (context == null) {
                             context = FacesContext.getCurrentInstance();

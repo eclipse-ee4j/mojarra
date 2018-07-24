@@ -16,14 +16,15 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
  * @author Manfred Riem (manfred.riem@oracle.com)
@@ -49,10 +50,12 @@ public class Issue1533IT {
     @Test
     public void testIssue1533() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue1533.xhtml");
+
         HtmlInput input = (HtmlInput) page.getHtmlElementById("form:vip:0");
         page = input.click();
         webClient.waitForBackgroundJavaScript(120000);
         assertTrue(page.asText().indexOf("form:vip-true") != -1);
+
         input = (HtmlInput) page.getHtmlElementById("form:vip:1");
         page = input.click();
         webClient.waitForBackgroundJavaScript(120000);

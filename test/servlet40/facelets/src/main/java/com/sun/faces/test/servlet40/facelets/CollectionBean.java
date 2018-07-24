@@ -22,9 +22,9 @@ import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 public class CollectionBean {
 
     public Collection<Integer> getCollection() {

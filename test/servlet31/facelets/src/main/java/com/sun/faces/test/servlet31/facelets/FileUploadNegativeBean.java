@@ -19,11 +19,12 @@ package com.sun.faces.test.servlet31.facelets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import javax.servlet.http.Part;
 
-@ManagedBean(name = "fileUploadNegativeBean")
+@Named
 @RequestScoped
 public class FileUploadNegativeBean {
 

@@ -16,13 +16,11 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class Issue3106IT {
@@ -44,20 +42,20 @@ public class Issue3106IT {
     }
 
     /*
-     * Unfortunately the recipe can only be executed manually as HtmlUnit seems
-     * to be throwing a fit on the JavaScript.
+     * Unfortunately the recipe can only be executed manually as HtmlUnit seems to be throwing a fit on
+     * the JavaScript.
      */
     public void testMultiPart1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/multiPart1.xhtml");
         HtmlElement element = page.getHtmlElementById("form:submit");
 
         element.click();
-        
+
         element.click();
-        
+
         Thread.sleep(3000);
-        
+
         page = webClient.getPage(webUrl + "faces/multiPart1b.xhtml");
-        assertTrue(page.asXml().contains("Count is 2")); 
+        assertTrue(page.asXml().contains("Count is 2"));
     }
 }

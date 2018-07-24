@@ -16,9 +16,10 @@
 
 package javax.faces.component;
 
+import javax.faces.convert.IntegerConverter;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import javax.faces.convert.IntegerConverter;
 
 public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
 
@@ -50,14 +51,6 @@ public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
 
     @Override
     public void testComponentRemoval() {
-    }
-
-    @Override
-    public void testStateHolder() throws Exception {
-    }
-
-    @Override
-    public void testValueBindings() {
     }
 
     public void testImplementsStateHolder() throws Exception {

@@ -17,6 +17,7 @@
 package com.sun.faces.test.javaee6web.facelets;
 
 import java.io.Serializable;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -25,6 +26,7 @@ import javax.inject.Named;
 public class ValidateRequiredBean implements Serializable {
 
     private static final long serialVersionUID = -8114872795707646008L;
+
     private String text1;
     private String text2;
 

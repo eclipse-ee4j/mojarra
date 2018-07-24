@@ -22,14 +22,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <parent>
         <groupId>com.sun.faces.test.javaee6</groupId>
         <artifactId>pom</artifactId>
         <version>3.0.0-m01-SNAPSHOT</version>
     </parent>
+    
     <artifactId>correctScanningWar2</artifactId>
     <packaging>war</packaging>
     <name>Mojarra ${project.version} - Test - JavaEE 6 - Correct Scanning WAR 2</name>
+    
     <build>
         <finalName>test-javaee6-correctScanningWar2-war</finalName>
         <plugins>

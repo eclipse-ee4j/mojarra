@@ -18,9 +18,6 @@ package com.sun.faces.test.servlet30.ajax;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.DomNodeList;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -45,6 +42,6 @@ public class Issue2969IT {
     public void testAjaxProjectStage() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/ajaxProjectStage.xhtml");
         String stage = page.getHtmlElementById("stage").asText();
-        assertTrue(stage.equals("Production") || stage.equals("Development")); 
+        assertTrue(stage.equals("Production") || stage.equals("Development"));
     }
 }

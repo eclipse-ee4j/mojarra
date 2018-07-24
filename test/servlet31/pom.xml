@@ -36,7 +36,6 @@
         <module>facelets</module>
         <module>faceletsEmptyAsNull</module>
         <module>resourcehandler</module>
-        <module>viewhandler</module>
     </modules>
     
 </project>

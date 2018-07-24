@@ -17,11 +17,7 @@
 package javax.faces.component;
 
 import javax.faces.model.SelectItem;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -87,7 +83,7 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
         selectItem.setItemDescription("foo");
         assertEquals("foo", (String) selectItem.getAttributes().get("itemDescription"));
         selectItem.setItemDescription(null);
-        assertNull((String) selectItem.getAttributes().get("itemDescription"));
+        assertNull(selectItem.getAttributes().get("itemDescription"));
         selectItem.getAttributes().put("itemDescription", "bar");
         assertEquals("bar", selectItem.getItemDescription());
         selectItem.getAttributes().put("itemDescription", null);
@@ -112,18 +108,18 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
         selectItem.setItemLabel("foo");
         assertEquals("foo", (String) selectItem.getAttributes().get("itemLabel"));
         selectItem.setItemLabel(null);
-        assertNull((String) selectItem.getAttributes().get("itemLabel"));
+        assertNull(selectItem.getAttributes().get("itemLabel"));
         selectItem.getAttributes().put("itemLabel", "bar");
         assertEquals("bar", selectItem.getItemLabel());
         selectItem.getAttributes().put("itemLabel", null);
         assertNull(selectItem.getItemLabel());
 
         assertEquals(selectItem.getItemValue(),
-                (String) selectItem.getAttributes().get("itemValue"));
+                selectItem.getAttributes().get("itemValue"));
         selectItem.setItemValue("foo");
         assertEquals("foo", (String) selectItem.getAttributes().get("itemValue"));
         selectItem.setItemValue(null);
-        assertNull((String) selectItem.getAttributes().get("itemValue"));
+        assertNull(selectItem.getAttributes().get("itemValue"));
         selectItem.getAttributes().put("itemValue", "bar");
         assertEquals("bar", selectItem.getItemValue());
         selectItem.getAttributes().put("itemValue", null);
@@ -185,83 +181,6 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
         assertNull(selectItem.getItemValue());
     }
 
-    public void PENDING_FIXME_testValueBindings() {
-
-        super.testValueBindings();
-        UISelectItem test = (UISelectItem) component;
-
-        // "itemDescription" property
-        request.setAttribute("foo", "bar");
-        test.setItemDescription(null);
-        assertNull(test.getItemDescription());
-        test.setValueBinding("itemDescription", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("itemDescription"));
-        assertEquals("bar", test.getItemDescription());
-        test.setItemDescription("baz");
-        assertEquals("baz", test.getItemDescription());
-        test.setItemDescription(null);
-        assertEquals("bar", test.getItemDescription());
-        test.setValueBinding("itemDescription", null);
-        assertNull(test.getValueBinding("itemDescription"));
-        assertNull(test.getItemDescription());
-
-        // "itemDisabled" property
-        assertFalse(test.isItemDisabled());
-        request.setAttribute("foo", Boolean.TRUE);
-        test.setValueBinding("itemDisabled", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("itemDisabled"));
-        assertTrue(test.isItemDisabled());
-        test.setItemDisabled(false);
-        assertFalse(test.isItemDisabled());
-        test.setValueBinding("itemDisabled", null);
-        assertNull(test.getValueBinding("itemDisabled"));
-        assertFalse(test.isItemDisabled());
-
-        // "itemLabel" property
-        request.setAttribute("foo", "bar");
-        test.setItemLabel(null);
-        assertNull(test.getItemLabel());
-        test.setValueBinding("itemLabel", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("itemLabel"));
-        assertEquals("bar", test.getItemLabel());
-        test.setItemLabel("baz");
-        assertEquals("baz", test.getItemLabel());
-        test.setItemLabel(null);
-        assertEquals("bar", test.getItemLabel());
-        test.setValueBinding("itemLabel", null);
-        assertNull(test.getValueBinding("itemLabel"));
-        assertNull(test.getItemLabel());
-
-        // "itemValue" property
-        request.setAttribute("foo", "bar");
-        test.setItemValue(null);
-        assertNull(test.getItemValue());
-        test.setValueBinding("itemValue", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("itemValue"));
-        assertEquals("bar", test.getItemValue());
-        test.setItemValue("baz");
-        assertEquals("baz", test.getItemValue());
-        test.setItemValue(null);
-        assertEquals("bar", test.getItemValue());
-        test.setValueBinding("itemValue", null);
-        assertNull(test.getValueBinding("itemValue"));
-        assertNull(test.getItemValue());
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.setValue(null);
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.setValue(null);
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
-    }
 
     // --------------------------------------------------------- Support Methods
     // Check that the properties on the specified components are equal
@@ -284,13 +203,4 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
         return (component);
     }
 
-    // Populate a pristine component to be used in state holder tests
-    @Override
-    protected void populateComponent(UIComponent component) {
-        super.populateComponent(component);
-        UISelectItem si = (UISelectItem) component;
-        si.setItemDescription("item description");
-        si.setItemLabel("item label");
-        si.setItemValue("item value");
-    }
 }

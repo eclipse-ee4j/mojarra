@@ -16,26 +16,27 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
-@ManagedBean(name="viewExpired1Bean")
+@Named
 @RequestScoped
 public class ViewExpired1Bean {
 
     public String getStateSavingMethod() {
-        return FacesContext.getCurrentInstance().getApplication().
-                getStateManager().isSavingStateInClient(FacesContext.getCurrentInstance()) ? "client" : "server";
+        return FacesContext.getCurrentInstance().getApplication().getStateManager().isSavingStateInClient(FacesContext.getCurrentInstance())
+                ? "client"
+                : "server";
     }
-    
+
     public void expireSessionSoon() {
         FacesContext.getCurrentInstance().getExternalContext().setSessionMaxInactiveInterval(1);
     }
-    
+
     public void verifySession() {
-        FacesContext.getCurrentInstance().addMessage(null, 
+        FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_FATAL, "Should not see this!", "Should not see this!"));
     }
 }

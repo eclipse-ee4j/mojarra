@@ -16,6 +16,11 @@
 
 package javax.faces.webapp;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
@@ -23,15 +28,9 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-
-import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 /**
- * 
+ *
  * <p>supported filters: <code>package</code> and
  * <code>protection</code>.</p>
  */
@@ -84,7 +83,7 @@ import java.util.ResourceBundle;
         return message;
     }
 
-   
+
     /**
      * <p>This version of getMessage() is used for localizing implementation
      * specific messages.</p>
@@ -95,7 +94,7 @@ import java.util.ResourceBundle;
      * @return a localized <code>FacesMessage</code> with the severity
      *  of FacesMessage.SEVERITY_ERROR
      */
-      static FacesMessage getMessage(String messageId, 
+      static FacesMessage getMessage(String messageId,
                                                  Object... params) {
         Locale locale = null;
         FacesContext context = FacesContext.getCurrentInstance();
@@ -108,7 +107,7 @@ import java.util.ResourceBundle;
         } else {
             locale = Locale.getDefault();
         }
-        
+
         return getMessage(locale, messageId, params);
     }
 
@@ -122,11 +121,11 @@ import java.util.ResourceBundle;
       * @return a localized <code>FacesMessage</code> with the severity
       *  of FacesMessage.SEVERITY_ERROR
       */
-      static FacesMessage getMessage(Locale locale, 
-                                                 String messageId, 
-                                                 Object... params) {       
+      static FacesMessage getMessage(Locale locale,
+                                                 String messageId,
+                                                 Object... params) {
         String summary = null;
-        String detail = null;       
+        String detail = null;
         ResourceBundle bundle;
         String bundleName;
 
@@ -134,8 +133,8 @@ import java.util.ResourceBundle;
         Application app = getApplication();
 	Class appClass = app.getClass();
         if (null != (bundleName = app.getMessageBundle())) {
-            if (null != 
-                (bundle = 
+            if (null !=
+                (bundle =
                     ResourceBundle.getBundle(bundleName, locale,
 				     getCurrentLoader(appClass)))) {
                 // see if we have a hit
@@ -148,11 +147,11 @@ import java.util.ResourceBundle;
                 }
             }
         }
-    
+
         // we couldn't find a summary in the user-provided bundle
         if (null == summary) {
             // see if we have a summary in the app provided bundle
-            bundle = ResourceBundle.getBundle(FacesMessage.FACES_MESSAGES, 
+            bundle = ResourceBundle.getBundle(FacesMessage.FACES_MESSAGES,
                                               locale,
                                               getCurrentLoader(appClass));
             if (null == bundle) {
@@ -185,7 +184,7 @@ import java.util.ResourceBundle;
             }
         }
 
-        // At this point, we have a summary and a bundle.     
+        // At this point, we have a summary and a bundle.
         FacesMessage ret = new BindingFacesMessage(locale, summary, detail, params);
         ret.setSeverity(FacesMessage.SEVERITY_ERROR);
         return (ret);
@@ -202,14 +201,14 @@ import java.util.ResourceBundle;
      * @return a localized <code>FacesMessage</code> with the severity
      *  of FacesMessage.SEVERITY_ERROR
      */
-     static FacesMessage getMessage(FacesContext context, 
+     static FacesMessage getMessage(FacesContext context,
                                                 String messageId,
                                                 Object... params) {
-                                                
+
         if (context == null || messageId == null ) {
-            throw new NullPointerException(" context " 
-                + context 
-                + " messageId " 
+            throw new NullPointerException(" context "
+                + context
+                + " messageId "
                 + messageId);
         }
         Locale locale;
@@ -219,19 +218,19 @@ import java.util.ResourceBundle;
         } else {
             locale = Locale.getDefault();
         }
-        
+
         if (null == locale) {
             throw new NullPointerException(" locale is null ");
         }
-        
+
         FacesMessage message = getMessage(locale, messageId, params);
         if (message != null) {
             return message;
         }
         locale = Locale.getDefault();
         return (getMessage(locale, messageId, params));
-    }  
-                       
+    }
+
 
     /**
      * <p>Returns the <code>label</code> property from the specified
@@ -242,9 +241,9 @@ import java.util.ResourceBundle;
      *
      * @return the label, if any, of the component
      */
-     static Object getLabel(FacesContext context, 
+     static Object getLabel(FacesContext context,
                                         UIComponent component) {
-                                        
+
         Object o = component.getAttributes().get("label");
         if (o == null || (o instanceof String && ((String) o).length() == 0)) {
             o = component.getValueExpression("label");
@@ -279,11 +278,11 @@ import java.util.ResourceBundle;
      * This class overrides FacesMessage to provide the evaluation
      * of binding expressions in addition to Strings.
      * It is often the case, that a binding expression may reference
-     * a localized property value that would be used as a 
+     * a localized property value that would be used as a
      * substitution parameter in the message.  For example:
      *  <code>#{bundle.userLabel}</code>
      * "bundle" may not be available until the page is rendered.
-     * The "late" binding evaluation in <code>getSummary</code> and 
+     * The "late" binding evaluation in <code>getSummary</code> and
      * <code>getDetail</code> allow the expression to be evaluated
      * when that property is available.
      */
@@ -303,12 +302,14 @@ import java.util.ResourceBundle;
             }
         }
 
+        @Override
         public String getSummary() {
             String pattern = super.getSummary();
             resolveBindings();
             return getFormattedString(pattern, resolvedParameters);
         }
 
+        @Override
         public String getDetail() {
             String pattern = super.getDetail();
             resolveBindings();
@@ -320,12 +321,6 @@ import java.util.ResourceBundle;
             if (parameters != null) {
                 for (int i = 0; i < parameters.length; i++) {
                     Object o = parameters[i];
-                    if (o instanceof ValueBinding) {
-                        if (context == null) {
-                            context = FacesContext.getCurrentInstance();
-                        }
-                        o = ((ValueBinding) o).getValue(context);
-                    }
                     if (o instanceof ValueExpression) {
                         if (context == null) {
                             context = FacesContext.getCurrentInstance();
@@ -343,7 +338,7 @@ import java.util.ResourceBundle;
 
         private String getFormattedString(String msgtext, Object[] params) {
             String localizedStr = null;
-                                                                                
+
             if (params == null || msgtext == null ) {
                 return msgtext;
             }
@@ -361,5 +356,5 @@ import java.util.ResourceBundle;
         private Object[] parameters;
         private Object[] resolvedParameters;
     }
-    
+
 } // end of class MessageFactory

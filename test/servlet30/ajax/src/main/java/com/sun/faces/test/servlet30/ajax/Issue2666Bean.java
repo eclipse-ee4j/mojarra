@@ -16,40 +16,31 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+import java.io.Serializable;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.inject.Named;
 
-@ManagedBean(name = "issue2666Bean")
+@Named
 @SessionScoped
-public class Issue2666Bean {
+public class Issue2666Bean implements Serializable {
 
-    
-    public Issue2666Bean() {
-    }
+    private static final long serialVersionUID = 1L;
 
-    public String msg = "";
+    private String msg;
 
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
 
     public void processAjax(AjaxBehaviorEvent event) throws AbortProcessingException {
         boolean buttonParamExists = false;
         FacesContext context = FacesContext.getCurrentInstance();
-        Iterator iter = context.getExternalContext().getRequestParameterNames();
+        Iterator<String> iter = context.getExternalContext().getRequestParameterNames();
+
         while (iter.hasNext()) {
-            String name = (String)iter.next();
+            String name = iter.next();
             if (name.equals("button")) {
                 buttonParamExists = true;
                 break;
@@ -60,6 +51,13 @@ public class Issue2666Bean {
                 msg = "Request parameter name 'button' does not exist";
             }
         }
-        
-    } 
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
 }

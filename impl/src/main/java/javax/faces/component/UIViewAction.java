@@ -23,7 +23,6 @@ import javax.faces.FacesException;
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
@@ -32,7 +31,6 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PreRenderViewEvent;
 import javax.faces.view.ViewMetadata;
 
-import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
 
 /**
 
@@ -108,7 +106,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * </p>
      */
     public static final String COMPONENT_FAMILY = "javax.faces.ViewAction";
-    
+
     private static final String UIVIEWACTION_BROADCAST = "javax.faces.ViewAction.broadcast";
 
     private static final String UIVIEWACTION_EVENT_COUNT = "javax.faces.ViewAction.eventCount";
@@ -150,7 +148,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
     public String getFamily() {
         return COMPONENT_FAMILY;
     }
-    
+
     private void incrementEventCount(FacesContext context) {
         Map<Object, Object> attrs = context.getAttributes();
         Integer count = (Integer) attrs.get(UIVIEWACTION_EVENT_COUNT);
@@ -160,7 +158,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
             attrs.put(UIVIEWACTION_EVENT_COUNT, count + 1);
         }
     }
-    
+
     private boolean decrementEventCountAndReturnTrueIfZero(FacesContext context) {
         boolean result = true;
         Map<Object, Object> attrs = context.getAttributes();
@@ -175,60 +173,8 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
                 result = false;
             }
         }
-        
+
         return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.2
-     */
-    @Deprecated
-    @Override
-    public MethodBinding getAction() {
-        MethodBinding result = null;
-        MethodExpression me;
-
-        if (null != (me = getActionExpression())) {
-            result = new MethodBindingMethodExpressionAdapter(me);
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.2
-     */
-    @Deprecated
-    @SuppressWarnings("deprecation")
-    @Override
-    public void setAction(final MethodBinding action) {
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.2
-     */
-    @Deprecated
-    @SuppressWarnings("deprecation")
-    @Override
-    public MethodBinding getActionListener() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.2
-     */
-    @Deprecated
-    @SuppressWarnings("deprecation")
-    @Override
-    public void setActionListener(final MethodBinding actionListener) {
-        throw new UnsupportedOperationException("Not supported.");
     }
 
     /**
@@ -291,24 +237,24 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * </ul>
 
      * <p>If set, this value takes precedence over the immediate flag.</p>
-     * 
+     *
      * @param phase the phase id (as string value).
      * @since 2.2
      */
 
     public void setPhase(final String phase) {
         PhaseId myPhaseId = PhaseId.phaseIdValueOf(phase);
-        if (PhaseId.ANY_PHASE.equals(myPhaseId) || 
-            PhaseId.RESTORE_VIEW.equals(myPhaseId) || 
+        if (PhaseId.ANY_PHASE.equals(myPhaseId) ||
+            PhaseId.RESTORE_VIEW.equals(myPhaseId) ||
             PhaseId.RENDER_RESPONSE.equals(myPhaseId)) {
             throw new FacesException("View actions cannot be executed in specified phase: [" + myPhaseId.toString() + "]");
         }
         getStateHelper().put(PropertyKeys.phase, myPhaseId.getName());
     }
-    
+
     private void setIsProcessingUIViewActionBroadcast(FacesContext context, boolean value) {
         Map<Object, Object> attrs = context.getAttributes();
-        
+
         if (value) {
             attrs.put(UIVIEWACTION_BROADCAST, Boolean.TRUE);
         } else {
@@ -327,9 +273,9 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * @param context {@link FacesContext} for the current request
      * @return <code>true</code> is currently processing broadcast, <code>false</code> otherwise.
      * @since 2.2
-     * 
+     *
      */
-    
+
     public static boolean isProcessingBroadcast(FacesContext context) {
         boolean result = context.getAttributes().containsKey(UIVIEWACTION_BROADCAST);
         return result;
@@ -400,7 +346,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
     /**
      * <p class="changed_added_2_2">If <code>true</code> this
      * component will operate on postback.</p>
-     * 
+     *
      * @return <code>true</code> if operating upon postback, <code>false</code> otherwise.
      * @since 2.2
      */
@@ -411,7 +357,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
     /**
      * <p class="changed_added_2_2">Controls whether or not this
      * component operates on postback.</p>
-     * 
+     *
      * @param onPostback the onPostback flag.
      * @since 2.2
      */
@@ -423,7 +369,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * <p class="changed_added_2_2">Return <code>true</code> if this
      * component should take the actions specified in the {@link
      * #decode} method.</p>
-     * 
+     *
      * @return <code>true</code> if it should be rendered, <code>false</code> otherwise.
      * @since 2.2
      */
@@ -504,7 +450,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * execute the lifecycle on the new <code>UIViewRoot</code>.</p>
 
      * </div>
-     * 
+     *
      * @param event {@link FacesEvent} to be broadcast
      *
      * @throws AbortProcessingException Signal the JavaServer Faces
@@ -514,7 +460,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      *  of this {@link FacesEvent} is not supported by this component
      * @throws NullPointerException if <code>event</code> is
      * <code>null</code>
-     * 
+     *
      * @since 2.2
      */
     @Override
@@ -565,7 +511,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
                     String viewIdAfter = viewRootAfter.getViewId();
                     assert(null != viewIdBefore && null != viewIdAfter);
                     boolean viewIdsSame = viewIdBefore.equals(viewIdAfter);
-                    
+
                     if (viewIdsSame && !hasMoreViewActionEvents) {
                         // apply the deferred call (relevant when immediate is true)
                         context.renderResponse();
@@ -620,7 +566,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * processing in {@link #broadcast}.</p>
 
      * </div>
-     * 
+     *
      * @since 2.2
 
      */
@@ -686,7 +632,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
             viewRootCleared = false;
             super.setViewRoot(viewRoot);
         }
- 
+
         @Override
         public boolean isPostback() {
             return postback == null ? super.isPostback() : postback;

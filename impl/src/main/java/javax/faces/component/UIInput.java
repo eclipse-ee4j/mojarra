@@ -31,7 +31,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.PhaseId;
@@ -494,141 +493,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     }
 
 
-    /**
-     * <p>Return a <code>MethodBinding</code> pointing at a
-     * method that will be called during <em>Process Validations</em>
-     * phase of the request processing lifecycle, to validate the current
-     * value of this component.</p>
-     *
-     * @deprecated {@link #getValidators} should be used instead.
-     */
-    @Override
-    public MethodBinding getValidator() {
-        MethodBinding result = null;
-
-        Validator[] curValidators = getValidators();
-        // go through our lisetners list and find the one and only
-        // MethodBindingValidator instance, if present.
-        if (null != curValidators) {
-            for (int i = 0; i < curValidators.length; i++) {
-                // We are guaranteed to have at most one instance of
-                // MethodBindingValidator in the curValidators list.
-                if (MethodBindingValidator.class ==
-                     curValidators[i].getClass()) {
-                    result = ((MethodBindingValidator) curValidators[i]).
-                         getWrapped();
-                    break;
-                }
-            }
-        }
-        return result;
-
-    }
-
-
-    /**
-     * <p>Set a <code>MethodBinding</code> pointing at a
-     * method that will be called during <em>Process Validations</em>
-     * phase of the request processing lifecycle, to validate the current
-     * value of this component.</p>
-     *
-     * <p>Any method referenced by such an expression must be public, with
-     * a return type of <code>void</code>, and accept parameters of type
-     * {@link FacesContext}, {@link UIComponent}, and <code>Object</code>.</p>
-     *
-     * @param validatorBinding The new <code>MethodBinding</code> instance
-     * @deprecated Use {@link #addValidator} instead, obtaining the
-     *             argument {@link Validator} by creating an instance of {@link
-     *             javax.faces.validator.MethodExpressionValidator}.
-     */
-    @Override
-    public void setValidator(MethodBinding validatorBinding) {
-        Validator[] curValidators = getValidators();
-        // see if we need to null-out, or replace an existing validator
-        if (null != curValidators) {
-            for (int i = 0; i < curValidators.length; i++) {
-                // if we want to remove the validatorBinding
-                if (null == validatorBinding) {
-                    // We are guaranteed to have at most one instance of
-                    // MethodBindingValidator in the curValidators
-                    // list.
-                    if (MethodBindingValidator.class ==
-                         curValidators[i].getClass()) {
-                        removeValidator(curValidators[i]);
-                        return;
-                    }
-                }
-                // if we want to replace the validatorBinding
-                else //noinspection ObjectEquality
-                    if (validatorBinding == curValidators[i]) {
-                    removeValidator(curValidators[i]);
-                    break;
-                }
-            }
-        }
-        addValidator(new MethodBindingValidator(validatorBinding));
-
-    }
-
-    @Override
-    public MethodBinding getValueChangeListener() {
-        MethodBinding result = null;
-
-        ValueChangeListener[] curListeners = getValueChangeListeners();
-        // go through our lisetners list and find the one and only
-        // MethodBindingValueChangeListener instance, if present.
-        if (null != curListeners) {
-            for (int i = 0; i < curListeners.length; i++) {
-                // We are guaranteed to have at most one instance of
-                // MethodBindingValueChangeListener in the curListeners list.
-                if (MethodBindingValueChangeListener.class ==
-                     curListeners[i].getClass()) {
-                    result = ((MethodBindingValueChangeListener) curListeners[i]).
-                         getWrapped();
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param valueChangeListener the value change listener.
-     * @deprecated Use {@link #addValueChangeListener} instead, obtaining the
-     *             argument {@link ValueChangeListener} by creating an instance of {@link
-     *             javax.faces.event.MethodExpressionValueChangeListener}.
-     */
-    @Override
-    public void setValueChangeListener(MethodBinding valueChangeListener) {
-
-        ValueChangeListener[] curListeners = getValueChangeListeners();
-        // see if we need to null-out, or replace an existing listener
-        if (null != curListeners) {
-            for (int i = 0; i < curListeners.length; i++) {
-                // if we want to remove the valueChangeListener
-                if (null == valueChangeListener) {
-                    // We are guaranteed to have at most one instance of
-                    // MethodBindingValueChangeListener in the curListeners
-                    // list.
-                    if (MethodBindingValueChangeListener.class ==
-                         curListeners[i].getClass()) {
-                        removeFacesListener(curListeners[i]);
-                        return;
-                    }
-                }
-                // if we want to replace the valueChangeListener
-                else //noinspection ObjectEquality
-                    if (valueChangeListener == curListeners[i]) {
-                    removeFacesListener(curListeners[i]);
-                    break;
-                }
-            }
-        }
-        addValueChangeListener(new MethodBindingValueChangeListener(valueChangeListener));
-    }
 
     // ----------------------------------------------------- UIComponent Methods
 
@@ -1289,7 +1153,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 		value instanceof Comparable) {
                 try {
                     result = !(0 == ((Comparable) previous).
-                                      compareTo((Comparable) value));
+                                      compareTo(value));
                 } catch (ClassCastException cce) {
                     // Comparable throws CCE if the types prevent a comparison
                     result = true;

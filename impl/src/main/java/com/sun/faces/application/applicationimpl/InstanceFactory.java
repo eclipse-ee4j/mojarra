@@ -68,7 +68,6 @@ import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
-import javax.faces.el.ValueBinding;
 import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
@@ -85,15 +84,15 @@ import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Util;
 
 public class InstanceFactory {
-    
+
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private static final String CONTEXT = "context";
     private static final String COMPONENT_EXPRESSION = "componentExpression";
     private static final String COMPONENT_TYPE = "componentType";
     private static final String COMPONENT_CLASS = "componentClass";
-    
+
     private static final Map<String, Class<?>[]> STANDARD_CONV_ID_TO_TYPE_MAP = new HashMap<>(8, 1.0f);
     private static final Map<Class<?>, String> STANDARD_TYPE_TO_CONV_ID_MAP = new HashMap<>(16, 1.0f);
 
@@ -114,18 +113,18 @@ public class InstanceFactory {
             }
         }
     }
-    
+
     private final String[] STANDARD_BY_TYPE_CONVERTER_CLASSES = { "java.math.BigDecimal", "java.lang.Boolean", "java.lang.Byte", "java.lang.Character",
             "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum" };
 
     private Map<Class<?>, Object> converterTypeMap;
     private boolean registerPropertyEditors;
     private boolean passDefaultTimeZone;
-    
+
     private TimeZone systemTimeZone;
-    
+
     private static final class ComponentResourceClassNotFound{}
-    
+
     //
     // These four maps store store "identifier" | "class name"
     // mappings.
@@ -134,38 +133,38 @@ public class InstanceFactory {
     private ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
     private ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
     private ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
-    
+
     private Set<String> defaultValidatorIds;
     private volatile Map<String, String> defaultValidatorInfo;
-    
+
     private final ApplicationAssociate associate;
     private Version version;
-    
+
     /**
      * Stores the bean manager.
      */
     private BeanManager beanManager;
-    
+
     public InstanceFactory(ApplicationAssociate applicationAssociate) {
         this.associate = applicationAssociate;
         version = new Version();
-        
+
         componentMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
         converterIdMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
         converterTypeMap = new ConcurrentHashMap<>();
         validatorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
         defaultValidatorIds = new LinkedHashSet<>();
         behaviorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
-        
+
         WebConfiguration webConfig = WebConfiguration.getInstance(FacesContext.getCurrentInstance().getExternalContext());
         registerPropertyEditors = webConfig.isOptionEnabled(RegisterConverterPropertyEditors);
-        
+
         passDefaultTimeZone = webConfig.isOptionEnabled(DateTimeConverterUsesSystemTimezone);
         if (passDefaultTimeZone) {
             systemTimeZone = TimeZone.getDefault();
         }
     }
-    
+
     /**
      * @see javax.faces.application.Application#addComponent(java.lang.String, java.lang.String)
      */
@@ -185,7 +184,7 @@ public class InstanceFactory {
             LOGGER.fine(MessageFormat.format("added component of type ''{0}'' and class ''{1}''", componentType, componentClass));
         }
     }
-    
+
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) throws FacesException {
 
         notNull(COMPONENT_EXPRESSION, componentExpression);
@@ -194,14 +193,14 @@ public class InstanceFactory {
 
         return createComponentApplyAnnotations(context, componentExpression, componentType, null, true);
     }
-    
+
     public UIComponent createComponent(String componentType) throws FacesException {
 
         notNull(COMPONENT_TYPE, componentType);
 
         return createComponentApplyAnnotations(FacesContext.getCurrentInstance(), componentType, null, true);
     }
-    
+
     public UIComponent createComponent(FacesContext context, Resource componentResource, ExpressionFactory expressionFactory) throws FacesException {
 
         // RELEASE_PENDING (rlubke,driscoll) this method needs review.
@@ -286,15 +285,15 @@ public class InstanceFactory {
 
         return result;
     }
-    
+
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
-        
+
         notNull(CONTEXT, context);
         notNull(COMPONENT_TYPE, componentType);
-        
+
         return createComponentApplyAnnotations(context, componentType, rendererType, true);
     }
-    
+
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType) {
 
         notNull(COMPONENT_EXPRESSION, componentExpression);
@@ -303,39 +302,14 @@ public class InstanceFactory {
 
         return createComponentApplyAnnotations(context, componentExpression, componentType, rendererType, true);
     }
-    
-    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException {
 
-        notNull("componentBinding", componentBinding);
-        notNull(CONTEXT, context);
-        notNull(COMPONENT_TYPE, componentType);
-
-        Object result;
-        boolean createOne = false;
-        try {
-            result = componentBinding.getValue(context);
-            if (result != null) {
-                createOne = !(result instanceof UIComponent);
-            }
-
-            if (result == null || createOne) {
-                result = createComponentApplyAnnotations(context, componentType, null, false);
-                componentBinding.setValue(context, result);
-            }
-        } catch (Exception ex) {
-            throw new FacesException(ex);
-        }
-
-        return (UIComponent) result;
-    }
-    
     /**
      * @see javax.faces.application.Application#getComponentTypes()
      */
     public Iterator<String> getComponentTypes() {
         return componentMap.keySet().iterator();
     }
-    
+
     /**
      * @see javax.faces.application.Application#addBehavior(String, String)
      */
@@ -355,7 +329,7 @@ public class InstanceFactory {
             LOGGER.fine(MessageFormat.format("added behavior of type ''{0}'' class ''{1}''", behaviorId, behaviorClass));
         }
     }
-    
+
     /**
      * @see javax.faces.application.Application#createBehavior(String)
      */
@@ -369,7 +343,7 @@ public class InstanceFactory {
         }
 
         behavior = newThing(behaviorId, behaviorMap);
-        
+
         notNullNamedObject(behavior, behaviorId, "jsf.cannot_instantiate_behavior_error");
 
         if (LOGGER.isLoggable(FINE)) {
@@ -380,14 +354,14 @@ public class InstanceFactory {
 
         return behavior;
     }
-    
+
     /**
      * @see javax.faces.application.Application#getBehaviorIds()
      */
     public Iterator<String> getBehaviorIds() {
         return behaviorMap.keySet().iterator();
     }
-    
+
     public void addConverter(String converterId, String converterClass) {
 
         notNull("converterId", converterId);
@@ -413,7 +387,7 @@ public class InstanceFactory {
             LOGGER.fine(format("added converter of type ''{0}'' and class ''{1}''", converterId, converterClass));
         }
     }
-    
+
     /**
      * @see javax.faces.application.Application#addConverter(Class, String)
      */
@@ -439,36 +413,36 @@ public class InstanceFactory {
             LOGGER.fine(format("added converter of class type ''{0}''", converterClass));
         }
     }
-    
+
     /**
      * @see javax.faces.application.Application#createConverter(String)
      */
     public Converter<?> createConverter(String converterId) {
 
         notNull("converterId", converterId);
-        
+
         Converter<?> converter = createCDIConverter(converterId);
         if (converter != null) {
             return converter;
         }
 
         converter = newThing(converterId, converterIdMap);
-        
+
         notNullNamedObject(converter, converterId, "jsf.cannot_instantiate_converter_error");
-        
+
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine(MessageFormat.format("created converter of type ''{0}''", converterId));
         }
-        
+
         if (passDefaultTimeZone && converter instanceof DateTimeConverter) {
             ((DateTimeConverter) converter).setTimeZone(systemTimeZone);
         }
-        
+
         associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), converter);
-        
+
         return converter;
     }
-    
+
     /**
      * @see javax.faces.application.Application#createConverter(Class)
      */
@@ -534,7 +508,7 @@ public class InstanceFactory {
 
         return returnVal;
     }
-    
+
     /**
      * @see javax.faces.application.Application#getConverterIds()
      */
@@ -549,7 +523,7 @@ public class InstanceFactory {
     public Iterator<Class<?>> getConverterTypes() {
         return converterTypeMap.keySet().iterator();
     }
-    
+
     /**
      * @see javax.faces.application.Application#addValidator(String, String)
      */
@@ -570,7 +544,7 @@ public class InstanceFactory {
         }
 
     }
-    
+
     /**
      * @see javax.faces.application.Application#createValidator(String)
      */
@@ -584,36 +558,36 @@ public class InstanceFactory {
         }
 
         validator = newThing(validatorId, validatorMap);
-        
+
         notNullNamedObject(validator, validatorId, "jsf.cannot_instantiate_validator_error");
-        
+
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine(MessageFormat.format("created validator of type ''{0}''", validatorId));
         }
-        
+
         associate.getAnnotationManager().applyValidatorAnnotations(FacesContext.getCurrentInstance(), validator);
-        
+
         return validator;
     }
-    
+
     /**
      * @see javax.faces.application.Application#getValidatorIds()
      */
     public Iterator<String> getValidatorIds() {
         return validatorMap.keySet().iterator();
     }
-    
+
     /**
      * @see javax.faces.application.Application#addDefaultValidatorId(String)
      */
     public synchronized void addDefaultValidatorId(String validatorId) {
 
         notNull("validatorId", validatorId);
-        
+
         defaultValidatorInfo = null;
         defaultValidatorIds.add(validatorId);
     }
-    
+
     /**
      * @see javax.faces.application.Application#getDefaultValidatorInfo()
      */
@@ -646,13 +620,13 @@ public class InstanceFactory {
         return defaultValidatorInfo;
 
     }
-    
-    
-    
-    
-   
+
+
+
+
+
     // --------------------------------------------------------- Private Methods
-    
+
 
     private UIComponent createComponentFromScriptResource(FacesContext context, Resource scriptComponentResource, Resource componentResource) {
 
@@ -694,7 +668,7 @@ public class InstanceFactory {
         return result;
 
     }
-    
+
     /**
      * Leveraged by
      * {@link Application#createComponent(javax.el.ValueExpression, javax.faces.context.FacesContext, String)}
@@ -723,7 +697,7 @@ public class InstanceFactory {
         return c;
 
     }
-    
+
     /**
      * Leveraged by {@link Application#createComponent(String)} and
      * {@link Application#createComponent(javax.faces.context.FacesContext, String, String)} This
@@ -740,7 +714,7 @@ public class InstanceFactory {
             }
             throw new FacesException(ex);
         }
-        
+
         notNullNamedObject(component, componentType, "jsf.cannot_instantiate_component_error");
 
         if (LOGGER.isLoggable(FINE)) {
@@ -750,11 +724,11 @@ public class InstanceFactory {
         if (applyAnnotations) {
             applyAnnotations(ctx, rendererType, component);
         }
-        
+
         return component;
     }
-    
-    
+
+
     /**
      * Process any annotations associated with this component/renderer.
      */
@@ -846,7 +820,7 @@ public class InstanceFactory {
 
         return (T) result;
     }
-    
+
     /*
      * This method makes it so that any cc:attribute elements that have a "default" attribute value
      * have those values pushed into the composite component attribute map so that programmatic
@@ -908,10 +882,10 @@ public class InstanceFactory {
             }
         }
     }
-    
+
     /**
      * Helper method to convert a value to a type as defined in PropertyDescriptor(s)
-     * 
+     *
      * @param name
      * @param value
      * @param propertyDescriptors
@@ -927,7 +901,7 @@ public class InstanceFactory {
 
         return value;
     }
-    
+
 
     /**
      * <p>
@@ -935,7 +909,7 @@ public class InstanceFactory {
      * <code>PropertyEditorManager.registerEditor()</code>, passing the
      * <code>ConverterPropertyEditor</code> class for the <code>targetClass</code> if the target
      * class is not one of the standard by-type converter target classes.
-     * 
+     *
      * @param targetClass the target class for which a PropertyEditory may or may not be created
      */
     private void addPropertyEditorIfNecessary(Class<?> targetClass) {
@@ -970,7 +944,7 @@ public class InstanceFactory {
             }
         }
     }
-    
+
     private Converter createConverterBasedOnClass(Class<?> targetClass, Class<?> baseClass) {
 
         Converter returnVal = (Converter) newConverter(targetClass, converterTypeMap, baseClass);
@@ -1009,7 +983,7 @@ public class InstanceFactory {
         }
         return returnVal;
     }
-    
+
     /**
      * <p>
      * The same as newThing except that a single argument constructor that accepts a Class is looked
@@ -1087,12 +1061,12 @@ public class InstanceFactory {
         }
         return result;
     }
-    
 
-    
+
+
     /**
      * Get the bean manager.
-     * 
+     *
      * @return the bean manager.
      */
     private BeanManager getBeanManager() {
@@ -1102,28 +1076,28 @@ public class InstanceFactory {
         }
         return beanManager;
     }
-    
+
     private Behavior createCDIBehavior(String behaviorId) {
         if (version.isJsf23()) {
             return CdiUtils.createBehavior(getBeanManager(), behaviorId);
         }
-        
+
         return null;
     }
-    
+
     private Converter<?> createCDIConverter(String converterId) {
         if (version.isJsf23()) {
             return CdiUtils.createConverter(getBeanManager(), converterId);
         }
-        
+
         return null;
     }
-    
+
     private Validator<?> createCDIValidator(String validatorId) {
         if (version.isJsf23()) {
             return CdiUtils.createValidator(getBeanManager(), validatorId);
         }
-        
+
         return null;
     }
 

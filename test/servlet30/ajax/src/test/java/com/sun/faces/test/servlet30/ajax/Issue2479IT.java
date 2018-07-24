@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax; 
+package com.sun.faces.test.servlet30.ajax;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -48,31 +48,29 @@ public class Issue2479IT {
         webClient.close();
     }
 
-
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies that an attribute nameed 'value' can be successfully updated
-     * from a partial response (over Ajax). 
+     * This test verifies that an attribute nameed 'value' can be successfully updated from a partial
+     * response (over Ajax).
      */
     @Test
     public void testSelectDataTable() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl+"faces/selectOneMenuDataTable.xhtml");
-        HtmlSpan span1 = (HtmlSpan)page.getElementById("table:0:inCity");
+        HtmlPage page = webClient.getPage(webUrl + "faces/selectOneMenuDataTable.xhtml");
+        HtmlSpan span1 = (HtmlSpan) page.getElementById("table:0:inCity");
         assertTrue((span1.asText()).equals("alpha"));
-        HtmlSpan span2 = (HtmlSpan)page.getElementById("table:1:inCity");
+        HtmlSpan span2 = (HtmlSpan) page.getElementById("table:1:inCity");
         assertTrue((span2.asText()).equals("alpha"));
-        HtmlSpan span3 = (HtmlSpan)page.getElementById("table:2:inCity");
+        HtmlSpan span3 = (HtmlSpan) page.getElementById("table:2:inCity");
         assertTrue((span3.asText()).equals("alpha"));
-        HtmlSelect select = (HtmlSelect)page.getElementById("selectMenu");
-        page = (HtmlPage) select.setSelectedAttribute("beta",true);
+        HtmlSelect select = (HtmlSelect) page.getElementById("selectMenu");
+        page = (HtmlPage) select.setSelectedAttribute("beta", true);
         webClient.waitForBackgroundJavaScript(60000);
-        span1 = (HtmlSpan)page.getElementById("table:0:inCity");
+        span1 = (HtmlSpan) page.getElementById("table:0:inCity");
         assertTrue((span1.asText()).equals("beta"));
-        span2 = (HtmlSpan)page.getElementById("table:1:inCity");
+        span2 = (HtmlSpan) page.getElementById("table:1:inCity");
         assertTrue((span2.asText()).equals("beta"));
-        span3 = (HtmlSpan)page.getElementById("table:2:inCity");
+        span3 = (HtmlSpan) page.getElementById("table:2:inCity");
         assertTrue((span3.asText()).equals("beta"));
     }
 }
-

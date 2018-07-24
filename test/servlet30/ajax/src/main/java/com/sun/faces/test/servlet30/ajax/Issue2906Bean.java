@@ -16,41 +16,38 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @SessionScoped
-public class Issue2906Bean {
-    
+public class Issue2906Bean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private int currentView = 1;
 
-    /**
-     * 
-     */
-    public Issue2906Bean() {
-    }
-    
     public String chooseView(int newView) {
         currentView = newView;
         return null;
     }
-    
+
     public List<Integer> getCurrentView() {
-       Vector<Integer> v = new Vector<Integer>();
-       
-       int counter = 10 - currentView;
-       if(counter <= 0) {
-           counter = 1;
-       }
-       
-       for(int index = 0; index <= counter; index++) {
-           v.add(currentView+1);
-       }
-       
-       return v;
+        Vector<Integer> v = new Vector<Integer>();
+
+        int counter = 10 - currentView;
+        if (counter <= 0) {
+            counter = 1;
+        }
+
+        for (int index = 0; index <= counter; index++) {
+            v.add(currentView + 1);
+        }
+
+        return v;
     }
 }

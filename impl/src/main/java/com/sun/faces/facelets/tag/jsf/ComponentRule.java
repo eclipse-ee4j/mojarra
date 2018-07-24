@@ -16,16 +16,20 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import com.sun.faces.facelets.el.LegacyValueBinding;
-import com.sun.faces.util.FacesLogger;
-
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.component.UIComponent;
+import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.MetaRule;
+import javax.faces.view.facelets.Metadata;
+import javax.faces.view.facelets.MetadataTarget;
+import javax.faces.view.facelets.TagAttribute;
+
+import com.sun.faces.util.FacesLogger;
+
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -35,7 +39,7 @@ final class ComponentRule extends MetaRule {
 
         private final String name;
         private final String value;
-        
+
         public LiteralAttributeMetadata(String name, String value) {
             this.value = value;
             this.name = name;
@@ -46,7 +50,7 @@ final class ComponentRule extends MetaRule {
             ((UIComponent) instance).getAttributes().put(this.name, this.value);
         }
     }
-    
+
     final static class ValueExpressionMetadata extends Metadata {
 
         private final String name;
@@ -66,29 +70,6 @@ final class ComponentRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((UIComponent) instance).setValueExpression(this.name, this.attr
                     .getValueExpression(ctx, this.type));
-        }
-
-    }
-
-    final static class ValueBindingMetadata extends Metadata {
-
-        private final String name;
-
-        private final TagAttribute attr;
-
-        private final Class type;
-
-        public ValueBindingMetadata(String name, Class type, TagAttribute attr) {
-            this.name = name;
-            this.attr = attr;
-            this.type = type;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueBinding(this.name,
-                    new LegacyValueBinding(this.attr.getValueExpression(ctx,
-                            this.type)));
         }
 
     }

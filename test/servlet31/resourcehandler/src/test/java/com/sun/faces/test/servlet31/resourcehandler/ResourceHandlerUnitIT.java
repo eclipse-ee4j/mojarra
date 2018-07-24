@@ -24,12 +24,12 @@ import static org.junit.Assert.assertFalse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.TextPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.sun.faces.test.junit.JsfTest;
 import com.sun.faces.test.junit.JsfTestRunner;
-import org.junit.runner.RunWith;
 
 @RunWith(JsfTestRunner.class)
 public class ResourceHandlerUnitIT {
@@ -52,9 +52,9 @@ public class ResourceHandlerUnitIT {
     @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
     public void testResourceHandlerImplAll() throws Exception {
         TextPage page = webClient.getPage(webUrl + "testHandleResourceRequest");
-        
+
         System.out.println(page.getContent());
-        
+
         assertFalse(page.getContent().contains("false"));
     }
 }

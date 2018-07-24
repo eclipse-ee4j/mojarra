@@ -18,25 +18,21 @@ package com.sun.faces.test.servlet31.facelets;
 
 import java.io.IOException;
 import java.util.Collection;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.Part;
 
 public class FileUploadNegativeHttpServletRequest extends HttpServletRequestWrapper {
-    
-    private HttpServletRequest wrapped;
 
     public FileUploadNegativeHttpServletRequest(HttpServletRequest request) {
         super(request);
-        this.wrapped = request;
     }
 
     @Override
     public Collection<Part> getParts() throws IOException, ServletException {
         throw new IOException("Negative test, intentional failure");
     }
-    
-    
-    
+
 }

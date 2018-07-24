@@ -21,18 +21,10 @@ import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.FacesBehavior;
 
 @FacesBehavior("my.customBehavior")
-public class CustomBehavior
-  extends ClientBehaviorBase
-{
-  public CustomBehavior()
-  {
-    super();
-  }
+public class CustomBehavior extends ClientBehaviorBase {
 
-  @Override
-  public String getScript(
-    ClientBehaviorContext clientBehaviorContext)
-  {
-    return "document.getElementById('textForBehavior').innerHTML='CustomBehavior called';";
-  }
+    @Override
+    public String getScript(ClientBehaviorContext clientBehaviorContext) {
+        return "document.getElementById('textForBehavior').innerHTML='CustomBehavior called';";
+    }
 }

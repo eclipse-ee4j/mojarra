@@ -30,12 +30,15 @@
     <name>Mojarra ${project.version} - Test</name>
     
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        
         <jsf.artifactId>javax.faces</jsf.artifactId>
         <jsf.groupId>org.glassfish</jsf.groupId>
         <jsf.version>${project.version}</jsf.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        
         <webapp.partialStateSaving>true</webapp.partialStateSaving>
         <webapp.projectStage>Production</webapp.projectStage>
         <webapp.stateSavingMethod>server</webapp.stateSavingMethod>
@@ -43,7 +46,9 @@
     
     <modules>
         <module>servlet30</module>
+        <!--  
         <module>servlet30-isolated</module>
+        -->
         <module>servlet31</module>
         <module>servlet40</module>
         <module>javaee6</module>
@@ -260,6 +265,7 @@
                                     <cargo.hostname>${glassfish.cargo.serverName}</cargo.hostname>
                                     <cargo.servlet.port>${glassfish.cargo.servletPort}</cargo.servlet.port>
                                     <cargo.glassfish.domain.name>${glassfish.cargo.domain}</cargo.glassfish.domain.name>
+                                    <cargo.glassfish.removeDefaultDatasource>false</cargo.glassfish.removeDefaultDatasource>
                                 </properties>
                             </configuration>
                         </configuration>

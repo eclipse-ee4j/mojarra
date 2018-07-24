@@ -16,12 +16,14 @@
 
 package com.sun.faces.test.servlet30.absoluteordering;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.junit.After;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class AbsoluteOrderingIT {
     private String webUrl;
@@ -37,10 +39,13 @@ public class AbsoluteOrderingIT {
     public void tearDown() {
         webClient.close();
     }
-    
+
     @Test
     public void testDocumentOrdering() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/test.xhtml");
+
+        System.out.println(page.asText());
+
         assertTrue(page.asText().contains("Order Correct: true"));
     }
 }

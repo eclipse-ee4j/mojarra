@@ -16,26 +16,25 @@
 
 package javax.faces.component;
 
-import com.sun.faces.mock.MockRenderKit;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
-import java.io.IOException;
-import javax.faces.FactoryFinder;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseListener;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import javax.el.ValueExpression;
+
 import javax.el.MethodExpression;
+import javax.el.ValueExpression;
+import javax.faces.FactoryFinder;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+
+import com.sun.faces.mock.MockRenderKit;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -782,15 +781,6 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         return (component);
     }
 
-    // Populate a pristine component to be used in state holder tests
-    @Override
-    protected void populateComponent(UIComponent component) {
-        super.populateComponent(component);
-        UIViewRoot vr = (UIViewRoot) component;
-        vr.setRenderKitId("foo");
-        vr.setViewId("bar");
-        vr.setLocale(new Locale("fr", "FR"));
-    }
 
     public static class PhaseListenerBean extends Object
             implements PhaseListener {
