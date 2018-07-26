@@ -6,7 +6,6 @@ before_install:
   - export PATH=$M2_HOME/bin:$PATH
 jdk:
   - oraclejdk8
-  - openjdk8
 env:
 # - TEST_FOLDER=test/glassfish
   - TEST_FOLDER=test/htmlunitaware
@@ -18,7 +17,7 @@ env:
 #  - TEST_FOLDER=test/servlet30
 #  - TEST_FOLDER=test/servlet30-isolated
 #  - TEST_FOLDER=test/servlet31
-#  - TEST_FOLDER=test/servlet40
+  - TEST_FOLDER=test/servlet40
 install:
   - echo "Overriding default install"
 before_script:
@@ -28,7 +27,7 @@ script:
   - wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip
   - unzip -q glassfish-5.0.zip
   - echo "Glassfish 5.0 is installed in " $BASE_DIR/glassfish5
-  - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=off"
+  - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=off"
   - mvn -B clean install
   - cd $BASE_DIR/test
   - echo "Patching Mojarra JAR"
