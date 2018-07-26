@@ -13,7 +13,7 @@ env:
 #  - TEST_FOLDER=test/javaee6
 #  - TEST_FOLDER=test/javaee6web
 #  - TEST_FOLDER=test/javaee7
-#  - TEST_FOLDER=test/javaee8
+  - TEST_FOLDER=test/javaee8
 #  - TEST_FOLDER=test/protocolaware
 #  - TEST_FOLDER=test/servlet30
 #  - TEST_FOLDER=test/servlet30-isolated
