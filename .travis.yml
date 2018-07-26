@@ -16,7 +16,7 @@ env:
 #  - TEST_FOLDER=test/protocolaware
 #  - TEST_FOLDER=test/servlet30
 #  - TEST_FOLDER=test/servlet30-isolated
-#  - TEST_FOLDER=test/servlet31
+  - TEST_FOLDER=test/servlet31
   - TEST_FOLDER=test/servlet40
 install:
   - echo "Overriding default install"
