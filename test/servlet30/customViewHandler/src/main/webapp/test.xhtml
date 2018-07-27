@@ -1,7 +1,11 @@
-<%--
+<?xml version="1.0" encoding="UTF-8" ?>
 
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+<!--
 
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+    Copyright (c) 2018 Payara Services Limited. 
+    All rights reserved.
+    
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
     http://www.eclipse.org/legal/epl-2.0.
@@ -14,20 +18,24 @@
 
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
---%>
+-->
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="h" uri="http://java.sun.com/jsf/html" %>
-<%@ taglib prefix="f" uri="http://java.sun.com/jsf/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	<head>
+	<title>test</title>
+	</head>
 
-
-<html>
-  <head><title>Simple jsp page</title></head>
-  <body>
-  <%
-      pageContext.setAttribute("resolved", "resolved!", PageContext.REQUEST_SCOPE);
-  %>
-  <p>${requestScope.resolved}</p>
-  </body>
+	<body>
+		<h1>test</h1>
+	
+		<h:form>
+			<h:outputText value="This text should be displayed" />
+		</h:form>
+	
+		<hr />
+	</body>
 </html>
