@@ -16,19 +16,22 @@
 
 package com.sun.faces.test.servlet30.configExtra;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class ConfigFileIT {
-    
+
     /**
      * Stores the web URL.
      */
     private String webUrl;
+
     /**
      * Stores the web client.
      */

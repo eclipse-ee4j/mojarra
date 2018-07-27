@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,18 +18,20 @@
 
 package com.sun.faces.test.servlet30.composite2;
 
-import java.io.Serializable;
+import static javax.faces.application.FacesMessage.SEVERITY_FATAL;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Named;
 
-@ManagedBean(name = "inputTextValidator1Bean")
+
+@Named
 @RequestScoped
-public class InputTextValidator1Bean implements Serializable {
-    
+public class InputTextValidator1Bean {
+
     private String value;
 
     public String getValue() {
@@ -39,6 +43,6 @@ public class InputTextValidator1Bean implements Serializable {
     }
 
     public void validate(FacesContext fc, UIComponent component, Object object) {
-        throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_FATAL, "Oops", "Oops"));
+        throw new ValidatorException(new FacesMessage(SEVERITY_FATAL, "Oops", "Oops"));
     }
 }

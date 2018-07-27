@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.configBasic;
 
-
 import javax.faces.component.UIOutput;
-
 
 // Dummy component that can be instantiated
 
 public class TestComponent extends UIOutput {
 
-
+    @Override
     public String getFamily() {
         return "Test";
     }

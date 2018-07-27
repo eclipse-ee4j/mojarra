@@ -16,13 +16,15 @@
 
 package com.sun.faces.test.servlet30.component;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class Issue2740IT {
 
@@ -42,8 +44,9 @@ public class Issue2740IT {
 
     @Test
     public void testIssue2544() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/resourceDependency.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "resourceDependency.xhtml");
         assertTrue(page.asXml().contains("resourceDependency.js"));
+
         HtmlElement button = page.getHtmlElementById("form:submit");
         page = button.click();
         assertTrue(page.asXml().contains("resourceDependency.js"));

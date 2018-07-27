@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +18,14 @@
 
 package com.sun.faces.test.servlet30.application;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+
 public class ApplicationImplConfigIT {
-    
+
     private String webUrl;
     private WebClient webClient;
 
@@ -41,46 +43,46 @@ public class ApplicationImplConfigIT {
 
     @Test
     public void testComponentPositive() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 
     @Test
     public void testComponentNegative() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 
     @Test
     public void testGetComponentTypes() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 
     @Test
     public void testConverterPositive() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 
     @Test
     public void testConverterNegative() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 
     @Test
     public void testGetConverterIds() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 
     @Test
     public void testValidatorPositive() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 
     @Test
     public void testValidatorNegative() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 
     @Test
     public void testGetValidatorIds() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/appConfig.jsp");
+        webClient.getPage(webUrl + "/appConfig.xhtml");
     }
 }

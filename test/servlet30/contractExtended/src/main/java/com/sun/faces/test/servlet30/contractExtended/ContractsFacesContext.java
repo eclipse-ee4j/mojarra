@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,22 +18,22 @@
 
 package com.sun.faces.test.servlet30.contractExtended;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+import static java.util.logging.Level.SEVERE;
+import static javax.faces.event.PhaseId.RENDER_RESPONSE;
+
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ELException;
-import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
 import javax.faces.event.PhaseId;
 
 /**
- * Wrap FacesContext to allow general contracts activation through a managed
- * bean.
+ * Wrap FacesContext to allow general contracts activation through a managed bean.
  *
  * @author dueni
  *
@@ -39,40 +41,31 @@ import javax.faces.event.PhaseId;
 public class ContractsFacesContext extends FacesContextWrapper {
 
     private static final Logger LOG = Logger.getLogger(ContractsFacesContext.class.getName());
-
     private static final String ACTIVE_CONTRACTS = "active-contracts";
 
-    private FacesContext wrapped;
-
-    private boolean activeContractsEvaluated = false;
+    private boolean activeContractsEvaluated;
 
     public ContractsFacesContext(FacesContext toWrap) {
-        wrapped = toWrap;
-    }
-
-    @Override
-    public FacesContext getWrapped() {
-        return wrapped;
+        super(toWrap);
     }
 
     @Override
     public List<String> getResourceLibraryContracts() {
         if (!activeContractsEvaluated) {
             activeContractsEvaluated = true;
+
             String value = getExternalContext().getInitParameter(ACTIVE_CONTRACTS);
             if (value != null) {
                 try {
                     ELContext el = getELContext();
-                    ExpressionFactory elFactory = getApplication().getExpressionFactory();
-                    ValueExpression ve = elFactory.createValueExpression(el, value, Object.class);
+                    ValueExpression ve = getApplication().getExpressionFactory().createValueExpression(el, value, Object.class);
+
                     Object result = ve.getValue(el);
                     if (result instanceof String && !((String) result).isEmpty()) {
-                        String[] contracts = ((String) result).split(",");
-                        getWrapped().setResourceLibraryContracts(Arrays.asList(contracts));
+                        getWrapped().setResourceLibraryContracts(asList(((String) result).split(",")));
                     }
                 } catch (ELException elx) {
-                    LOG.log(Level.SEVERE, "Exception while evaluating '" + ACTIVE_CONTRACTS
-                            + "' web.xml context-parameter!", elx);
+                    LOG.log(SEVERE, "Exception while evaluating '" + ACTIVE_CONTRACTS + "' web.xml context-parameter!", elx);
                 }
             }
         }
@@ -81,9 +74,10 @@ public class ContractsFacesContext extends FacesContextWrapper {
 
     @Override
     public void setCurrentPhaseId(PhaseId currentPhaseId) {
-        if (currentPhaseId == PhaseId.RENDER_RESPONSE) {
+        if (currentPhaseId == RENDER_RESPONSE) {
             activeContractsEvaluated = false;
         }
+
         super.setCurrentPhaseId(currentPhaseId);
     }
 }

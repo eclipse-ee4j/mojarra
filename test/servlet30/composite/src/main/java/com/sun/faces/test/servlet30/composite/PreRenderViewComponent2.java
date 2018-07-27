@@ -16,7 +16,6 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
@@ -30,41 +29,41 @@ import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.PreRenderComponentEvent;
 
 @FacesComponent("com.sun.faces.test.servlet30.composite.PreRenderViewComponent2")
-public class PreRenderViewComponent2 extends PreRenderViewComponentBase
-        implements NamingContainer, ComponentSystemEventListener {
+public class PreRenderViewComponent2 extends PreRenderViewComponentBase implements NamingContainer, ComponentSystemEventListener {
 
     public static final String COMPONENT_FAMILY = "javax.faces.NamingContainer";
 
     public PreRenderViewComponent2() {
-        super();
-        FacesContext ctx = FacesContext.getCurrentInstance();
         subscribeToEvent(PreRenderComponentEvent.class, this);
     }
 
     @Override
     public String getFamily() {
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
     }
 
     @Override
     public void processEvent(ComponentSystemEvent e) throws AbortProcessingException {
         if (e instanceof PreRenderComponentEvent) {
-            this.processPreRenderViewEvent((PreRenderComponentEvent) e);
+            processPreRenderViewEvent((PreRenderComponentEvent) e);
         }
     }
 
     private void processPreRenderViewEvent(PreRenderComponentEvent e) throws AbortProcessingException {
         FacesContext ctx = FacesContext.getCurrentInstance();
+
         if (!ctx.isPostback()) {
-            UIComponent parent = this.findComponent("controls");
-            ExpressionFactory ef = ctx.getApplication().getExpressionFactory();
             HtmlOutputText itemCheck = new HtmlOutputText();
             boolean itemIsNull = (this.getAttributes().get("item") == null);
             itemCheck.setValue("Item Attribute is null: " + itemIsNull);
+
             HtmlInputText txt = new HtmlInputText();
             txt.setId("txt");
-            ValueExpression ve = ef.createValueExpression(ctx.getELContext(), "#{cc.attrs.item.text}", java.lang.String.class);
+
+            ValueExpression ve = ctx.getApplication().getExpressionFactory().createValueExpression(ctx.getELContext(), "#{cc.attrs.item.text}", java.lang.String.class);
             txt.setValueExpression("value", ve);
+
+            UIComponent parent = findComponent("controls");
             parent.getChildren().add(txt);
             parent.getChildren().add(itemCheck);
         }

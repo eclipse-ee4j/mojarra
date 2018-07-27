@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,38 +18,45 @@
 
 package com.sun.faces.test.servlet30.composite;
 
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.inject.Named;
 
 /**
  * A session scoped bean used in some tests for composite components
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@ManagedBean(name = "converterBean")
+
+@Named
 @RequestScoped
 public class ConverterBean {
 
-    public Converter getConverter() {
+    public Converter<Object> getConverter() {
         return new TestConverter();
     }
 
-    public static class TestConverter implements Converter {
+    public static class TestConverter implements Converter<Object> {
 
+        @Override
         public Object getAsObject(FacesContext context, UIComponent component, String value) {
             return value;
         }
 
+        @Override
         public String getAsString(FacesContext context, UIComponent component, Object value) {
             String cid = component.getClientId(context);
+
             context.addMessage(cid,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    new FacesMessage(SEVERITY_INFO,
                     "Converter Invoked : " + cid,
                     "Converter Invoked : " + cid));
+
             return value.toString();
         }
     }

@@ -16,52 +16,54 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 /**
  * A session scoped bean used in some tests for composite components
- * 
+ *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@ManagedBean
+
+@Named
 @RequestScoped
 public class CompositeBean {
+
     /**
      * Stores input 1.
      */
     private String input1;
-    
+
     /**
      * Get EL value.
-     * 
+     *
      * @return "EL value"
      */
     public String getValue() {
         return "EL value";
     }
-    
+
     /**
      * Get input 1.
-     * 
+     *
      * @return input 1.
      */
     public String getInput1() {
         return input1;
     }
-    
+
     /**
      * Set input 1.
-     * 
+     *
      * @param input1 input 1.
      */
     public void setInput1(String input1) {
         this.input1 = input1;
     }
-    
+
     /**
      * Action that handles input 1.
-     * 
+     *
      * @return "input1"
      */
     public String doInput1() {

@@ -16,17 +16,20 @@
 
 package com.sun.faces.test.servlet30.converter;
 
-import com.gargoylesoftware.htmlunit.html.HtmlOption;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
-import com.gargoylesoftware.htmlunit.html.HtmlSelect;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLSelectElement;
-import org.junit.*;
-import static org.junit.Assert.*;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 public class Issue2384IT {
 
@@ -47,54 +50,51 @@ public class Issue2384IT {
     @Test
     public void testViewScopedBeansWorkAsExepected() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
-        
+
         HtmlAnchor link = (HtmlAnchor) page.getElementById("2384");
         page = link.click();
-        
+
         String pageText = page.getBody().asText();
         assertTrue(pageText.contains("Bob created with param pageWithViewScopedBean"));
-        
+
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("reload");
         page = button.click();
-        
+
         pageText = page.getBody().asText();
         assertTrue(pageText.contains("Bob created with param pageWithViewScopedBean"));
-        
+
         button = (HtmlSubmitInput) page.getElementById("reload");
         page = button.click();
-        
+
         pageText = page.getBody().asText();
         assertTrue(pageText.contains("Bob created with param pageWithViewScopedBean"));
-        
+
         button = (HtmlSubmitInput) page.getElementById("differentPage");
         page = button.click();
-        
+
         pageText = page.getBody().asText();
         assertTrue(pageText.contains("Bob created with param null"));
-        
-        
+
     }
-    
+
     @Test
     public void testConverterInstallation() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
-        
+
         HtmlAnchor link = (HtmlAnchor) page.getElementById("2384");
         page = link.click();
-        
+
         HtmlSelect menu = (HtmlSelect) page.getElementById("selectFoo");
         List<HtmlOption> options = menu.getOptions();
         HtmlOption last = options.get(options.size() - 1);
         menu.setSelectedAttribute(last, true);
-        
+
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("reload");
         page = button.click();
-        
+
         String pageText = page.getBody().asText();
         assertTrue(pageText.contains("Selected foo: Cole"));
-        
-        
+
     }
-    
-    
+
 }

@@ -18,8 +18,7 @@ package com.sun.faces.test;
 
 import javax.faces.convert.FacesConverter;
 
-
 @FacesConverter(value = "fooConverter")
 public class FooConverterById extends FooConverterBase {
-    
+
 }

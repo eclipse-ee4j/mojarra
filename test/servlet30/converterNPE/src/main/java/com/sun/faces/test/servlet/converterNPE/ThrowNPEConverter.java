@@ -21,21 +21,23 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@FacesConverter(value="throwNPE")
-public class ThrowNPEConverter implements Converter {
+@FacesConverter(value = "throwNPE")
+public class ThrowNPEConverter implements Converter<Object> {
 
+    @SuppressWarnings("null")
+    @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         String a = null;
         System.out.println(a.toString());
-        return value;        
+        return value;
     }
 
+    @SuppressWarnings("null")
+    @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         String a = null;
         System.out.println(a.toString());
-        return value.toString();        
+        return value.toString();
     }
-    
-    
-    
+
 }

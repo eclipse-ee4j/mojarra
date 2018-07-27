@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,19 +19,22 @@
 package com.sun.faces.test.servlet30.composite;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
+
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
-@ManagedBean(name = "actionListener1Bean")
+@Named
+@ApplicationScoped
 public class ActionListener1Bean implements Serializable {
 
-    public void processAction(ActionEvent event)
-        throws AbortProcessingException {
-        FacesContext context = FacesContext.getCurrentInstance();
-        UIOutput output = (UIOutput) context.getViewRoot().findComponent("form:cc_action:out");
+    private static final long serialVersionUID = 1L;
+
+    public void processAction(ActionEvent event) throws AbortProcessingException {
+        UIOutput output = (UIOutput) FacesContext.getCurrentInstance().getViewRoot().findComponent("form:cc_action:out");
         output.setValue("PROCESSACTION CALLED");
-    }  
+    }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf153261225877617" configfile="/com.sun.faces.test.servlet30.client-encrypt-by-default/src/main/webapp/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="greeting" comment="The decision rule used by the NavigationHandler to&#xA;        determine which view must be displayed after the&#xA;        current view, greeting.jsp is processed." x="338" y="178" id="pf153261226609218" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" outlinks="pf153261226609219" inlinks="pf153261226609220" path="/greeting.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="response" comment="The decision rules used by the NavigationHandler to&#xA;        determine which view must be displayed after the&#xA;        current view, response.jsp is processed." x="122" y="178" id="pf153261226609221" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf153261226609220" inlinks="pf153261226609219" path="/response.jsp"/>
+  <links id="pf153261226609219" target="pf153261226609221" source="pf153261226609218" outcome="success"/>
+  <links id="pf153261226609220" target="pf153261226609218" source="pf153261226609221" outcome="success"/>
+</pageflow:Pageflow>

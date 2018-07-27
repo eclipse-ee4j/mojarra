@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,35 +19,31 @@
 package com.sun.faces.test;
 
 import java.util.logging.Logger;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-public class FooConverterBase implements Converter {
-    
+public class FooConverterBase implements Converter<Foo> {
+
     public static final Logger LOGGER = Logger.getAnonymousLogger();
 
     public FooConverterBase() {
-        LOGGER.info("FooConverter ctor");        
-    }
-    
-    @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        Foo result = new Foo(value);
-        
-        return result;
+        LOGGER.info("FooConverter ctor");
     }
 
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
-        String result = "";
-        
-        if (null != value) {
-            result =  ((Foo)value).getName();
-        }
-        return result;
+    public Foo getAsObject(FacesContext context, UIComponent component, String value) {
+        return new Foo(value);
     }
-    
-    
-    
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Foo value) {
+        if (value != null) {
+            return value.getName();
+        }
+
+        return "";
+    }
+
 }

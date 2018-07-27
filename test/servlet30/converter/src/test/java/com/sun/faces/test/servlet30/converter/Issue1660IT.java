@@ -16,13 +16,15 @@
 
 package com.sun.faces.test.servlet30.converter;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 public class Issue1660IT {
 
@@ -44,9 +46,9 @@ public class Issue1660IT {
     public void testConverterInstallation() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue1660.xhtml");
         assertTrue(page.asXml().matches("(?s).*Simple\\s+value\\s+is\\s+VALUE1.*"));
-        
+
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
-        page = button.click();       
-        assertTrue(page.asXml().matches("(?s).*Simple\\s+value\\s+is\\s+VALUE1.*"));       
+        page = button.click();
+        assertTrue(page.asXml().matches("(?s).*Simple\\s+value\\s+is\\s+VALUE1.*"));
     }
 }

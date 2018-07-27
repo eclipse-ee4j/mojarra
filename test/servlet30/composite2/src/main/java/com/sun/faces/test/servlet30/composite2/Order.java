@@ -32,6 +32,7 @@ public class Order {
         if (obj instanceof Order) {
             return getId() == ((Order) obj).getId();
         }
+
         return false;
     }
 
@@ -42,16 +43,15 @@ public class Order {
 
     @Override
     public String toString() {
-        return String.format("Order [id=%s] [number of lines: %s]", id,
-                getNrOflines());
+        return String.format("Order [id=%s] [number of lines: %s]", id, getNrOflines());
     }
 
     public int getNrOflines() {
         if (lines != null) {
             return lines.size();
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public int getId() {

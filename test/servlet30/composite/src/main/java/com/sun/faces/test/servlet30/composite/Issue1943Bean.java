@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,28 +18,39 @@
 
 package com.sun.faces.test.servlet30.composite;
 
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+
 import java.io.Serializable;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@ManagedBean
+
+@Named
 @SessionScoped
 public class Issue1943Bean implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private String groupToAdd = "select one";
+
+    @Inject
+    private FacesContext context;
 
     public void valueChange(ValueChangeEvent vce) throws AbortProcessingException {
         System.err.println("VALUECHANGE CALLED!!!");
-        FacesMessage fMsg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "valueChange Called...", null);
-        FacesContext.getCurrentInstance().addMessage(null, fMsg);
+        context.addMessage(null, new FacesMessage(SEVERITY_INFO, "valueChange Called...", null));
+    }
 
+    public String removeGroup() {
+        System.err.println("REMOVEGROUP CALLED!!!");
+        context.addMessage(null, new FacesMessage(SEVERITY_INFO, "removeGroup Called...", null));
+        return null;
     }
 
     public String getGroupToAdd() {
@@ -46,13 +59,5 @@ public class Issue1943Bean implements Serializable {
 
     public void setGroupToAdd(String groupToAdd) {
         this.groupToAdd = groupToAdd;
-    }
-
-    public String removeGroup() {
-        System.err.println("REMOVEGROUP CALLED!!!");
-        FacesMessage fMsg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "removeGroup Called...", null);
-        FacesContext.getCurrentInstance().addMessage(null, fMsg);
-        return null;
     }
 }

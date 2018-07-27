@@ -16,13 +16,17 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import java.util.List;
-
-import org.junit.*;
-import static org.junit.Assert.*;
 
 public class Issue2636IT {
 
@@ -30,6 +34,7 @@ public class Issue2636IT {
      * Stores the web URL.
      */
     private String webUrl;
+
     /**
      * Stores the web client.
      */
@@ -52,23 +57,26 @@ public class Issue2636IT {
     public void testCommandLinksInRepeat() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue2636.xhtml");
         webClient.waitForBackgroundJavaScript(60000);
-        List anchors = page.getAnchors();
+        List<HtmlAnchor> anchors = page.getAnchors();
 
-        HtmlAnchor anchor1 = (HtmlAnchor) anchors.get(0);
+        HtmlAnchor anchor1 = anchors.get(0);
         page = anchor1.click();
         webClient.waitForBackgroundJavaScript(60000);
+
+        System.out.println(page.asXml());
+
         assertTrue(page.asXml().contains("linkAction1"));
 
         anchors = page.getAnchors();
 
-        HtmlAnchor anchor2 = (HtmlAnchor) anchors.get(1);
+        HtmlAnchor anchor2 = anchors.get(1);
         page = anchor2.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("linkAction2"));
 
         anchors = page.getAnchors();
 
-        anchor1 = (HtmlAnchor) anchors.get(0);
+        anchor1 = anchors.get(0);
         page = anchor1.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("linkAction1"));

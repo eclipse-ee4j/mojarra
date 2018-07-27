@@ -18,18 +18,26 @@ package com.sun.faces.test.servlet30.composite2;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@ManagedBean(name = "actionListener1Bean")
+
+@Named
 @SessionScoped
 public class ActionListener1Bean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     protected ActionListener a, b, c;
+
+    @Inject
+    private FacesContext context;
 
     public ActionListener1Bean() {
         a = new ActionListenerImpl("a called ");
@@ -50,23 +58,19 @@ public class ActionListener1Bean implements Serializable {
     }
 
     private void appendMessage(String message) {
-        FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
-        StringBuilder builder;
-        builder = (StringBuilder) requestMap.get("builder");
-        if (null == builder) {
+        StringBuilder builder = (StringBuilder) requestMap.get("builder");
+        if (builder == null) {
             builder = new StringBuilder();
             requestMap.put("builder", builder);
         }
+
         builder.append(message);
     }
 
     public String getMessage() {
-        FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
-        String result = (requestMap.containsKey("builder"))
-                ? ((StringBuilder) requestMap.get("builder")).toString() : "no message";
-        return result;
+        return requestMap.containsKey("builder") ? ((StringBuilder) requestMap.get("builder")).toString() : "no message";
     }
 
     private class ActionListenerImpl implements ActionListener {

@@ -16,13 +16,10 @@
 
 package com.sun.faces.test.servlet30.configBasic;
 
-
 import javax.faces.convert.IntegerConverter;
-
 
 // Dummy converter that can be instantiated
 
 public class TestConverter extends IntegerConverter {
-
 
 }

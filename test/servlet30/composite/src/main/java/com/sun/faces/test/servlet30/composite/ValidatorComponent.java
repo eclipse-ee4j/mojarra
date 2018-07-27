@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 
 @FacesComponent(value = "com.sun.faces.test.servlet30.composite.ValidatorComponent")
 public class ValidatorComponent extends UINamingContainer {
-    
+
     public void someValidator(FacesContext context, UIComponent component, Object value) {
         context.addMessage(component.getClientId(), new FacesMessage("Validator method called"));
     }

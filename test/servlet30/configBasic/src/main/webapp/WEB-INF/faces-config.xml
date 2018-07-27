@@ -23,12 +23,6 @@
               version="2.0"
               metadata-complete="true">
 
-    <managed-bean>
-        <managed-bean-name>configFileBean</managed-bean-name>
-        <managed-bean-class>com.sun.faces.test.servlet30.configBasic.ConfigFileBean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
-
     <component>
         <component-type>DefaultComponent</component-type>
         <component-class>com.sun.faces.test.servlet30.configBasic.TestComponent</component-class>

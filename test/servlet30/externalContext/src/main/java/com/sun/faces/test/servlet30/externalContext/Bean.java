@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,48 +18,40 @@
 
 package com.sun.faces.test.servlet30.externalContext;
 
-import java.io.Serializable;
+import static java.lang.Boolean.TRUE;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.context.FacesContext;
 
-@ManagedBean
+import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 public class Bean implements Serializable {
-    
-    @ManagedProperty(value="#{facesContext}")
+
+    private static final long serialVersionUID = 1L;
+
+    @Inject
     private FacesContext facesContext;
-
-    public FacesContext getFacesContext() {
-        return facesContext;
-    }
-
-    public void setFacesContext(FacesContext facesContext) {
-        this.facesContext = facesContext;
-    }
-    
 
     public String getName() {
         Map<String, Object> m = new HashMap<String, Object>();
-        m.put("httpOnly", Boolean.TRUE);
+        m.put("httpOnly", TRUE);
         facesContext.getExternalContext().addResponseCookie("csftaebName", "csftaebValue", m);
         return "TestBean";
     }
-    
+
     public String submit() {
         String stringWithSpecialChars = "日א";
-        
         return "issue2440?param=" + stringWithSpecialChars + "&faces-redirect=true";
     }
-    
+
     public String getStringWithSpecialCharacters() {
         String stringWithSpecialChars = "日א";
-        
         return stringWithSpecialChars;
-        
     }
 }

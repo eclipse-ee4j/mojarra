@@ -38,6 +38,7 @@
         <param-name>javax.faces.LIFECYCLE_ID</param-name>
         <param-value>com.sun.faces.test.servlet30.customlifecycle.NewLifecycle</param-value>
     </context-param>
+    
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -51,6 +52,7 @@
             <param-value>com.sun.faces.test.servlet30.customlifecycle.AlternateLifecycle</param-value>
         </init-param>
     </servlet>
+    
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
@@ -59,6 +61,7 @@
         <servlet-name>Alternate FacesServlet</servlet-name>
         <url-pattern>/alternate/*</url-pattern>
     </servlet-mapping>
+    
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>

@@ -16,13 +16,15 @@
 
 package com.sun.faces.test.servlet30.compositecomponentforattribute;
 
-import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean(name = "test")
-public class TestBean implements Serializable {
+@Named("test")
+@RequestScoped
+public class TestBean {
 
     private String forValue = "name";
+    private String property;
 
     public String getForValue() {
         return forValue;
@@ -31,8 +33,6 @@ public class TestBean implements Serializable {
     public void setForValue(String forValue) {
         this.forValue = forValue;
     }
-
-    private String property;
 
     public void setProperty(String property) {
         this.property = property;
