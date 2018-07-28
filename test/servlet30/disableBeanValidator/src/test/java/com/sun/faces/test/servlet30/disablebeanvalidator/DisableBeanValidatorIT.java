@@ -16,12 +16,14 @@
 
 package com.sun.faces.test.servlet30.disablebeanvalidator;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.junit.After;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class DisableBeanValidatorIT {
 
@@ -43,6 +45,7 @@ public class DisableBeanValidatorIT {
     public void testDisableBeanValidator() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml");
         assertTrue(-1 == page.asXml().indexOf("javax.faces.validator.BeanValidator"));
+
         page = webClient.getPage(webUrl + "faces/enable.xhtml");
         assertTrue(-1 != page.asXml().indexOf("javax.faces.validator.BeanValidator"));
     }

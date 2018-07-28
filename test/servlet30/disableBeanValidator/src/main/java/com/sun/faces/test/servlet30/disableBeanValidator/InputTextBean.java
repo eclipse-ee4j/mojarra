@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,20 +18,20 @@
 
 package com.sun.faces.test.servlet30.disableBeanValidator;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIInput;
+import javax.inject.Named;
 
-@ManagedBean(name = "inputText")
+@Named("inputText")
 @RequestScoped
 public class InputTextBean {
 
     private UIInput bean;
-    
+
     public UIInput getBean() {
         return bean;
     }
-    
+
     public void setBean(UIInput bean) {
         this.bean = bean;
     }
