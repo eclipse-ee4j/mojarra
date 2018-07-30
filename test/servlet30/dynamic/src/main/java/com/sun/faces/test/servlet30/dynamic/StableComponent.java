@@ -26,7 +26,7 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent( value = "com.sun.faces.test.servlet30.dynamic.StableComponent" )
+@FacesComponent(value = "com.sun.faces.test.servlet30.dynamic.StableComponent")
 public class StableComponent extends UIComponentBase implements SystemEventListener {
 
     //
@@ -34,10 +34,10 @@ public class StableComponent extends UIComponentBase implements SystemEventListe
     //
 
     public StableComponent() {
-        setRendererType( "component" );
+        setRendererType("component");
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
-        root.subscribeToViewEvent( PreRenderViewEvent.class, this );
+        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
     }
 
     //
@@ -49,8 +49,9 @@ public class StableComponent extends UIComponentBase implements SystemEventListe
         return "com.sun.faces.test.servlet30.dynamic";
     }
 
-    public boolean isListenerForSource( Object source ) {
-        return ( source instanceof UIViewRoot );
+    @Override
+    public boolean isListenerForSource(Object source) {
+        return (source instanceof UIViewRoot);
     }
 
     //
@@ -58,23 +59,22 @@ public class StableComponent extends UIComponentBase implements SystemEventListe
     //
 
     @Override
-    public void processEvent( SystemEvent event )
-        throws AbortProcessingException {
-        if ( FacesContext.getCurrentInstance().getMaximumSeverity() != null ) {
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
+        if (FacesContext.getCurrentInstance().getMaximumSeverity() != null) {
             return;
         }
 
         HtmlInputText inputText1 = new HtmlInputText();
-        inputText1.setValue( "1" );
-        getChildren().add( inputText1 );
+        inputText1.setValue("1");
+        getChildren().add(inputText1);
 
         HtmlInputText inputText2 = new HtmlInputText();
-        inputText2.setValue( "2" );
-        getChildren().add( inputText2 );
+        inputText2.setValue("2");
+        getChildren().add(inputText2);
 
         HtmlInputText inputText3 = new HtmlInputText();
-        inputText3.setId( "text3" );
-        inputText3.setRequired( true );
-        getChildren().add( inputText3 );
+        inputText3.setId("text3");
+        inputText3.setRequired(true);
+        getChildren().add(inputText3);
     }
 }

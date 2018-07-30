@@ -16,15 +16,21 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import static javax.faces.component.html.HtmlOutputText.COMPONENT_TYPE;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class TransientFirstChildBean {
+
+    @Inject
+    private FacesContext context;
 
     private transient UIComponent parentContainer;
 
@@ -37,10 +43,7 @@ public class TransientFirstChildBean {
     }
 
     public String add() {
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        HtmlOutputText dynamicComp = (HtmlOutputText) context.
-                getApplication().createComponent(HtmlOutputText.COMPONENT_TYPE);
+        HtmlOutputText dynamicComp = (HtmlOutputText) context.getApplication().createComponent(COMPONENT_TYPE);
 
         dynamicComp.setValue("dynamically added; now perform a reload");
         dynamicComp.setStyle("background-color: yellow");

@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
  * Copyright (c) 2018 Payara Services Limited.
  * All rights reserved.
  *
@@ -18,16 +17,13 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
+import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
+import javax.faces.annotation.FacesConfig;
 
-@Named
+@FacesConfig(version=JSF_2_3)
 @ApplicationScoped
-public class ToggleBean {
+public class Init {
 
-    /**
-     * Toggle.
-     */
-    public void toggle() {
-    }
 }

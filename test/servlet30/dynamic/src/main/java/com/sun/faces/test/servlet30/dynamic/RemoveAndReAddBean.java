@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,34 +18,43 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
-import java.io.Serializable;
-import java.util.List;
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.REMOVED_CHILDREN;
+
 import java.util.Set;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@ManagedBean(name = "removeAndReAddBean")
+
+@Named
 @RequestScoped
-public class RemoveAndReAddBean implements Serializable {
+public class RemoveAndReAddBean {
+
+    @Inject
+    private FacesContext context;
 
     private String childrenListEmpty = "INITIAL render";
-    
     private String markIdEqual = "INITIAL render";
 
     public void actionListener(ActionEvent event) {
         UIComponent outputText = FacesContext.getCurrentInstance().getViewRoot().findComponent("form:outputText");
         UIComponent parent = outputText.getParent();
-        String markId = (String) outputText.getAttributes().get(ComponentSupport.MARK_CREATED);
+        String markId = (String) outputText.getAttributes().get(MARK_CREATED);
         int index = parent.getChildren().indexOf(outputText);
         parent.getChildren().remove(outputText);
-        Set<UIComponent> set = (Set) parent.getAttributes().get(ComponentSupport.REMOVED_CHILDREN);
+
+        @SuppressWarnings("unchecked")
+        Set<UIComponent> set = (Set<UIComponent>) parent.getAttributes().get(REMOVED_CHILDREN);
+
         parent.getChildren().add(index, outputText);
-        String restoredId = (String) outputText.getAttributes().get(ComponentSupport.MARK_CREATED);
+        String restoredId = (String) outputText.getAttributes().get(MARK_CREATED);
         markIdEqual = markId.equals(restoredId) ? "TRUE" : "FALSE";
+
         if (set != null) {
             childrenListEmpty = set.isEmpty() ? "TRUE" : "FALSE";
         } else {
@@ -53,13 +64,13 @@ public class RemoveAndReAddBean implements Serializable {
 
     public int getIndex() {
         int result = -1;
-        UIComponent outputText = FacesContext.getCurrentInstance().getViewRoot().findComponent("form:outputText");
+        UIComponent outputText = context.getViewRoot().findComponent("form:outputText");
         if (outputText != null) {
             result = outputText.getParent().getChildren().indexOf(outputText);
         }
         return result;
     }
-    
+
     public String getChildrenListEmpty() {
         return childrenListEmpty;
     }

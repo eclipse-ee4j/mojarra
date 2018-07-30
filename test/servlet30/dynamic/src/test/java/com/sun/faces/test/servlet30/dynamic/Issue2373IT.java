@@ -16,13 +16,15 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 public class Issue2373IT {
 
@@ -134,11 +136,11 @@ public class Issue2373IT {
             assertTrue(page.asXml().indexOf("Moveable HELLO text") < page.asXml().indexOf("form1:subview2:subview2b:commandButton14"));
         }
     }
-    
+
     @Test
     public void testToggle1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/toggle.xhtml");
-        for(int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             String text = page.asXml();
             assertTrue(text.indexOf("Manually added child2") < text.indexOf("Manually added child1"));
             HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("form1:button");
