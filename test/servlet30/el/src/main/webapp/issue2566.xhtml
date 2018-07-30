@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE glassfish-web-app PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Servlet 3.0//EN" "http://glassfish.org/dtds/glassfish-web-app_3_0-1.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+
 <!--
 
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
-
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+    Copyright (c) 2018 Payara Services Limited. 
+    All rights reserved.
+    
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
     http://www.eclipse.org/legal/epl-2.0.
@@ -18,12 +20,18 @@
 
 -->
 
-<glassfish-web-app error-url="">
-  <context-root>/test-servlet30-el</context-root>
-  <class-loader delegate="true"/>
-  <jsp-config>
-    <property name="keepgenerated" value="true">
-      <description>Keep a copy of the generated servlet class' java code.</description>
-    </property>
-  </jsp-config>
-</glassfish-web-app>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>JSF Page</title>
+	</head>
+	<body>
+		<h1>
+			<h:outputText value="#{issue2566Bean.testResult}" />
+		</h1>
+	</body>
+</html>

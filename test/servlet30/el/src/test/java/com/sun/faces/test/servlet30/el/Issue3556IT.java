@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,13 +18,15 @@
 
 package com.sun.faces.test.servlet30.el;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlImage;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.junit.After;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class Issue3556IT {
 
@@ -43,7 +47,7 @@ public class Issue3556IT {
     @Test
     public void testResource1en() throws Exception {
         webClient.addRequestHeader("Accept-Language", "en");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource1.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource1.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource1.gif"));
         assertTrue(image.getSrcAttribute().contains("?loc=en"));
@@ -52,7 +56,7 @@ public class Issue3556IT {
     @Test
     public void testResource1de() throws Exception {
         webClient.addRequestHeader("Accept-Language", "de");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource1.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource1.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource1.gif"));
         assertTrue(image.getSrcAttribute().contains("?loc=de"));
@@ -61,7 +65,7 @@ public class Issue3556IT {
     @Test
     public void testResource1fr() throws Exception {
         webClient.addRequestHeader("Accept-Language", "fr");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource1.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource1.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource1.gif"));
         assertTrue(image.getSrcAttribute().contains("?loc=fr"));
@@ -70,7 +74,7 @@ public class Issue3556IT {
     @Test
     public void testResource1ja() throws Exception {
         webClient.addRequestHeader("Accept-Language", "ja");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource1.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource1.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource1.gif"));
         assertTrue(image.getSrcAttribute().contains("?loc=en"));
@@ -78,7 +82,7 @@ public class Issue3556IT {
     @Test
     public void testResource2en() throws Exception {
         webClient.addRequestHeader("Accept-Language", "en");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource2.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource2.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource2.gif"));
         assertTrue(image.getSrcAttribute().contains("?ln=resource2&loc=en"));
@@ -87,7 +91,7 @@ public class Issue3556IT {
     @Test
     public void testResource2de() throws Exception {
         webClient.addRequestHeader("Accept-Language", "de");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource2.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource2.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource2.gif"));
         assertTrue(image.getSrcAttribute().contains("?ln=resource2&loc=de"));
@@ -96,7 +100,7 @@ public class Issue3556IT {
     @Test
     public void testResource2fr() throws Exception {
         webClient.addRequestHeader("Accept-Language", "fr");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource2.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource2.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource2.gif"));
         assertTrue(image.getSrcAttribute().contains("?ln=resource2&loc=fr"));
@@ -105,75 +109,75 @@ public class Issue3556IT {
     @Test
     public void testResource2ja() throws Exception {
         webClient.addRequestHeader("Accept-Language", "ja");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource2.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource2.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource2.gif"));
         assertTrue(image.getSrcAttribute().contains("?ln=resource2&loc=en"));
     }
-    
+
     @Test
     public void testResource3en() throws Exception {
         webClient.addRequestHeader("Accept-Language", "en");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource3.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource3.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource3.gif"));
     }
-    
+
     @Test
     public void testResource3de() throws Exception {
         webClient.addRequestHeader("Accept-Language", "de");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource3.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource3.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource3.gif"));
     }
-    
+
     @Test
     public void testResource3fr() throws Exception {
         webClient.addRequestHeader("Accept-Language", "fr");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource3.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource3.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource3.gif"));
     }
-    
+
     @Test
     public void testResource3ja() throws Exception {
         webClient.addRequestHeader("Accept-Language", "ja");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource3.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource3.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource3.gif"));
     }
-    
+
     @Test
     public void testResource4en() throws Exception {
         webClient.addRequestHeader("Accept-Language", "en");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource4.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource4.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource4.gif"));
         assertTrue(image.getSrcAttribute().contains("ln=resource4"));
     }
-    
+
     @Test
     public void testResource4de() throws Exception {
         webClient.addRequestHeader("Accept-Language", "de");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource4.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource4.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource4.gif"));
         assertTrue(image.getSrcAttribute().contains("ln=resource4"));
     }
-    
+
     @Test
     public void testResource4fr() throws Exception {
         webClient.addRequestHeader("Accept-Language", "fr");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource4.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource4.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource4.gif"));
         assertTrue(image.getSrcAttribute().contains("ln=resource4"));
     }
-    
+
     @Test
     public void testResource4ja() throws Exception {
         webClient.addRequestHeader("Accept-Language", "ja");
-        HtmlPage page = webClient.getPage(webUrl + "faces/resource4.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/resource4.xhtml");
         HtmlImage image = page.getHtmlElementById("image");
         assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource4.gif"));
         assertTrue(image.getSrcAttribute().contains("ln=resource4"));

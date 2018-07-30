@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
  * Copyright (c) 2018 Payara Services Limited.
  * All rights reserved.
  *
@@ -18,30 +17,13 @@
 
 package com.sun.faces.test.servlet30.el;
 
-import java.io.Serializable;
+import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import javax.enterprise.context.ApplicationScoped;
+import javax.faces.annotation.FacesConfig;
 
-@Named
-@SessionScoped
-public class ElInQueryParamBean implements Serializable {
-
-    private static final long serialVersionUID = 7265978603668749438L;
-    private String forbidden = "Forbidden value.";
-
-    private String value;
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String getForbidden() {
-        return forbidden;
-    }
+@FacesConfig(version=JSF_2_3)
+@ApplicationScoped
+public class Init {
 
 }

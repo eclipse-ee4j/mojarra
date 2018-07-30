@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,38 +18,43 @@
 
 package com.sun.faces.test.servlet30.el;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
 /**
  * A ViewScoped bean testing navigate functionality.
  */
-@ManagedBean(name = "viewNavigateBean")
+
+@Named
 @ViewScoped
-public class ViewNavigateBean {
+public class ViewNavigateBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Stores the text.
      */
     private String text;
-    
+
     /**
      * Constructor.
      */
     public ViewNavigateBean() {
         this.text = "This is from the constructor";
     }
-    
+
     /**
      * Post-construct.
-     * 
+     *
      */
     @PostConstruct
     public void init() {
         this.text = "This is from the @PostConstruct";
     }
-    
+
     /**
      * Get the text.
      */

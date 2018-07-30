@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,18 +18,23 @@
 
 package com.sun.faces.test.servlet30.el;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
 /**
  * A ViewScoped bean testing session invalidation functionality.
  */
-@ManagedBean(name = "viewInvalidatedBean")
+
+@Named
 @ViewScoped
-public class ViewInvalidatedBean {
+public class ViewInvalidatedBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Stores the text.
@@ -48,7 +55,7 @@ public class ViewInvalidatedBean {
     @PostConstruct
     public void init() {
         FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().remove("invalidated");
-        this.text = "This is from the @PostConstruct";
+        text = "This is from the @PostConstruct";
     }
 
     /**
@@ -57,11 +64,12 @@ public class ViewInvalidatedBean {
     @PreDestroy
     public void destroy() {
         /*
-         * For the purpose of the test we can actually ask for the current 
-         * instance of the FacesContext, because we trigger invalidating of the 
-         * session through a JSF page, however in the normal case of session 
-         * invalidation this will NOT be true. So this means that normally the 
-         * @PreDestroy annotated method should not try to use 
+         * For the purpose of the test we can actually ask for the current instance of
+         * the FacesContext, because we trigger invalidating of the session through a
+         * JSF page, however in the normal case of session invalidation this will NOT be
+         * true. So this means that normally the
+         *
+         * @PreDestroy annotated method should not try to use
          * FacesContext.getCurrentInstance().
          */
         if (FacesContext.getCurrentInstance() != null) {
