@@ -21,8 +21,4 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
               version="1.2">
-    <managed-bean>
-        <managed-bean-name>unicodeBean</managed-bean-name>
-        <managed-bean-class>com.sun.faces.systest.UnicodeBean</managed-bean-class>
-        <managed-bean-scope>none</managed-bean-scope></managed-bean>
 </faces-config>

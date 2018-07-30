@@ -41,6 +41,7 @@
         <param-name>com.sun.faces.disableUnicodeEscaping</param-name>
         <param-value>true</param-value>
     </context-param>
+    
     <filter>
         <filter-name>CharsetEncodingSetter</filter-name>
         <filter-class>com.sun.faces.systest.UnicodeBeanFilter</filter-class>
@@ -49,6 +50,7 @@
         <filter-name>CharsetEncodingSetter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
+    
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
