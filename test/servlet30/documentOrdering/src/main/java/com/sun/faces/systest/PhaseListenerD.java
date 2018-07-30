@@ -16,26 +16,33 @@
 
 package com.sun.faces.systest;
 
-import javax.faces.event.PhaseListener;
+import static javax.faces.event.PhaseId.ANY_PHASE;
+
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
 
 /**
- * Created by IntelliJ IDEA. User: rlubke Date: Dec 2, 2008 Time: 2:00:51 PM To
- * change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: rlubke Date: Dec 2, 2008 Time: 2:00:51 PM To change this template
+ * use File | Settings | File Templates.
  */
 public class PhaseListenerD implements PhaseListener {
 
+    private static final long serialVersionUID = 1L;
+
+    @Override
     public void afterPhase(PhaseEvent event) {
         // no-op
     }
 
+    @Override
     public void beforePhase(PhaseEvent event) {
         // no-op
     }
 
+    @Override
     public PhaseId getPhaseId() {
-        return PhaseId.ANY_PHASE;
+        return ANY_PHASE;
     }
 
 }
