@@ -18,12 +18,15 @@ package com.sun.faces.test.servlet30.contractExtended;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
-@ManagedBean
+
+@Named
 @SessionScoped
 public class ContractsBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     String contracts;
 

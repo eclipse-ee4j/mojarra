@@ -33,20 +33,24 @@
 
         <h:body>
             <p><span id="exceptionDuringRender"/>&nbsp;</p>
+            
             <script type="text/javascript">
-                var handleError = function handleError(data) {
-                    var errorMessageString = "Error from " + data.source.id;
-                    var span = document.getElementById("exceptionDuringRender");
-                    span.innerHTML = errorMessageString;
-                };
+                var handleError = 
+                	function handleError(data) {
+                    	var errorMessageString = "Error from " + data.source.id;
+                    	var span = document.getElementById("exceptionDuringRender");
+                    	span.innerHTML = errorMessageString;
+                	};
 
                 jsf.ajax.addOnError(handleError);
             </script>
+            
             <h:form id="form">
                 <h:commandButton id="commandButton" value="throw on render in script">
                     <f:ajax listener="#{ajaxScriptErrorBean.setRenderedScript(true)}" render="script"/>
                 </h:commandButton>
             </h:form>
+            
             <h:panelGroup id="script">
                 <ui:fragment rendered="#{ajaxScriptErrorBean.renderedScript}">
                     <script>

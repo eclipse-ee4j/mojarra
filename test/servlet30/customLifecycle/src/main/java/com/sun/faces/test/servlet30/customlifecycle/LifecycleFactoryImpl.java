@@ -16,53 +16,37 @@
 
 package com.sun.faces.test.servlet30.customlifecycle;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import java.util.Iterator;
 
-import javax.faces.FactoryFinder;
 import javax.faces.FacesException;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 
-import java.util.Iterator;
-
 public class LifecycleFactoryImpl extends LifecycleFactory {
 
-    public LifecycleFactoryImpl() {
-    }
-
-    private LifecycleFactory previous = null;
-
-    private Lifecycle newLifecycle = null;
-
     public LifecycleFactoryImpl(LifecycleFactory previous) {
-	this.previous = previous;
-	try {
-	    newLifecycle = new NewLifecycle("com.sun.faces.test.servlet30.customlifecycle.NewLifecycle");
-	    this.previous.addLifecycle("com.sun.faces.test.servlet30.customlifecycle.NewLifecycle",
-				       newLifecycle);
-            newLifecycle = new NewLifecycle("com.sun.faces.test.servlet30.customlifecycle.AlternateLifecycle");
-            this.previous.addLifecycle("com.sun.faces.test.servlet30.customlifecycle.AlternateLifecycle",
-				       newLifecycle);
-	}
-	catch (Throwable e) {
-	    throw new FacesException(e);
-	}
+        super(previous);
+
+        try {
+            getWrapped().addLifecycle("com.sun.faces.test.servlet30.customlifecycle.NewLifecycle", new NewLifecycle("com.sun.faces.test.servlet30.customlifecycle.NewLifecycle"));
+            getWrapped().addLifecycle("com.sun.faces.test.servlet30.customlifecycle.AlternateLifecycle", new NewLifecycle("com.sun.faces.test.servlet30.customlifecycle.AlternateLifecycle"));
+        } catch (Throwable e) {
+            throw new FacesException(e);
+        }
     }
 
-    public void addLifecycle(String lifecycleId,
-			     Lifecycle lifecycle) {
-	previous.addLifecycle(lifecycleId, lifecycle);
+    @Override
+    public void addLifecycle(String lifecycleId, Lifecycle lifecycle) {
+        getWrapped().addLifecycle(lifecycleId, lifecycle);
     }
 
+    @Override
     public Lifecycle getLifecycle(String lifecycleId) {
-	return previous.getLifecycle(lifecycleId);
+        return getWrapped().getLifecycle(lifecycleId);
     }
 
-
-    public Iterator getLifecycleIds() {
-	return previous.getLifecycleIds();
+    @Override
+    public Iterator<String> getLifecycleIds() {
+        return getWrapped().getLifecycleIds();
     }
 }

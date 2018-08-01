@@ -29,17 +29,17 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent(value = "com.sun.faces.test.servlet30.dynamic.TableComponent" )
+@FacesComponent(value = "com.sun.faces.test.servlet30.dynamic.TableComponent")
 public class TableComponent extends UIComponentBase implements SystemEventListener {
 
     //
     // Constructor: Subscribes to PreRenderView Event(s)
     //
     public TableComponent() {
-        setRendererType( "component" );
+        setRendererType("component");
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
-        root.subscribeToViewEvent( PreRenderViewEvent.class, this );
+        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
     }
 
     @Override
@@ -47,36 +47,35 @@ public class TableComponent extends UIComponentBase implements SystemEventListen
         return "com.sun.faces.test.servlet30.dynamic";
     }
 
-    public boolean isListenerForSource( Object source ) {
-        return ( source instanceof UIViewRoot );
+    @Override
+    public boolean isListenerForSource(Object source) {
+        return (source instanceof UIViewRoot);
     }
 
     //
     // Event processing: Creates a datatable and adds a component to it.
     //
     @Override
-    public void processEvent( SystemEvent event ) throws AbortProcessingException {
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
         FacesContext context = FacesContext.getCurrentInstance();
-           if ( !context.isPostback() ) {
-              Application application = context.getApplication();
+        if (!context.isPostback()) {
+            Application application = context.getApplication();
 
-              HtmlDataTable dataTable = new HtmlDataTable();
-              dataTable.setVar( "_internal" );
-              dataTable.setValueExpression( "value", 
-                  application.getExpressionFactory().createValueExpression( 
-                     context.getELContext(), "#{addBean.list}", Object.class ));
-              getChildren().add( dataTable );
+            HtmlDataTable dataTable = new HtmlDataTable();
+            dataTable.setVar("_internal");
+            dataTable.setValueExpression("value",
+                    application.getExpressionFactory().createValueExpression(context.getELContext(), "#{addBean.list}", Object.class));
+            getChildren().add(dataTable);
 
-              UIColumn column = new UIColumn();
-              column.setId( context.getViewRoot().createUniqueId() );
-              dataTable.getChildren().add( column );
+            UIColumn column = new UIColumn();
+            column.setId(context.getViewRoot().createUniqueId());
+            dataTable.getChildren().add(column);
 
-              HtmlOutputText outputText = new HtmlOutputText();
-              outputText.setId( context.getViewRoot().createUniqueId() );
-              outputText.setValueExpression( "value", 
-                  application.getExpressionFactory().createValueExpression( 
-                     context.getELContext(), "#{_internal}", Object.class ));
-              column.getChildren().add( outputText );
+            HtmlOutputText outputText = new HtmlOutputText();
+            outputText.setId(context.getViewRoot().createUniqueId());
+            outputText.setValueExpression("value",
+                    application.getExpressionFactory().createValueExpression(context.getELContext(), "#{_internal}", Object.class));
+            column.getChildren().add(outputText);
         }
     }
 }

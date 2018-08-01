@@ -16,36 +16,33 @@
 
 package com.sun.faces.test.servlet30.customlifecycle;
 
+import static javax.faces.event.PhaseId.RENDER_RESPONSE;
+
+import java.util.Map;
+
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
-import java.util.Map;
 
 public class SimplePhaseListener implements PhaseListener {
 
-    public SimplePhaseListener() {
-    }
+    private static final long serialVersionUID = 1L;
 
-
+    @Override
     public void afterPhase(PhaseEvent event) {
-	event.getFacesContext().getExternalContext().getRequestMap().put("afterPhase",
-									 "afterPhase");
+        event.getFacesContext().getExternalContext().getRequestMap().put("afterPhase", "afterPhase");
     }
 
-
+    @Override
     public void beforePhase(PhaseEvent event) {
-        Map<String, Object> requestMap = 
-	    event.getFacesContext().getExternalContext().getRequestMap();
-	String message = requestMap.containsKey("beforePhase") ? 
-	    requestMap.get("beforePhase").toString() : "";
-	requestMap.put("beforePhase",
-		       message + " beforePhase");
-	event.getFacesContext().getExternalContext().getRequestMap().put("lifecycleImpl",
-									 event.getSource());
+        Map<String, Object> requestMap = event.getFacesContext().getExternalContext().getRequestMap();
+        String message = requestMap.containsKey("beforePhase") ? requestMap.get("beforePhase").toString() : "";
+        requestMap.put("beforePhase", message + " beforePhase");
+        event.getFacesContext().getExternalContext().getRequestMap().put("lifecycleImpl", event.getSource());
     }
 
-
+    @Override
     public PhaseId getPhaseId() {
-        return PhaseId.RENDER_RESPONSE;
+        return RENDER_RESPONSE;
     }
 }

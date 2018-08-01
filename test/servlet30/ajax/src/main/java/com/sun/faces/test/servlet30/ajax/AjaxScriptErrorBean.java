@@ -16,9 +16,11 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 @Named
+@RequestScoped
 public class AjaxScriptErrorBean {
 
     private Boolean renderedScript;

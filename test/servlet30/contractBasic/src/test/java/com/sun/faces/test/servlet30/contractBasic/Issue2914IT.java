@@ -16,16 +16,18 @@
 
 package com.sun.faces.test.servlet30.contractBasic;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.junit.After;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
 public class Issue2914IT {
-    
+
     private String webUrl;
     private WebClient webClient;
 

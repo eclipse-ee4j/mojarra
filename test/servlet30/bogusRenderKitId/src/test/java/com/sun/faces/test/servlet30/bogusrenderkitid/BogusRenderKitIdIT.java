@@ -16,14 +16,16 @@
 
 package com.sun.faces.test.servlet30.bogusrenderkitid;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class BogusRenderKitIdIT {
 
@@ -64,6 +66,7 @@ public class BogusRenderKitIdIT {
 
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
         webClient.getOptions().setPrintContentOnFailingStatusCode(false);
+
         boolean exceptionThrown = false;
         try {
             page = webClient.getPage(webUrl + "faces/use-configured-render-kit-id.xhtml");
@@ -71,6 +74,7 @@ public class BogusRenderKitIdIT {
             exceptionThrown = true;
             assertEquals(500, e.getStatusCode());
         }
+
         assertTrue(exceptionThrown);
     }
 }

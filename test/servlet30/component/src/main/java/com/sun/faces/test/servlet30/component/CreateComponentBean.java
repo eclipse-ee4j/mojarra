@@ -16,33 +16,29 @@
 
 package com.sun.faces.test.servlet30.component;
 
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.NoneScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
+import javax.inject.Named;
 
-@ManagedBean
-@NoneScoped
+@Named
+@ApplicationScoped
 public class CreateComponentBean {
-    
+
     public String getDoCreateComponent() {
-        String result = "FAILED";
+
         FacesContext context = FacesContext.getCurrentInstance();
-        Application application = context.getApplication();
-        
-        ViewHandler vh = application.getViewHandler();
-        ViewDeclarationLanguage vdl = vh.getViewDeclarationLanguage(context, context.getViewRoot().getViewId());
-        
-        HtmlInputText inputText = 
-                (HtmlInputText) vdl.createComponent(context, 
-                "http://java.sun.com/jsf/html", "inputText", null);
+
+        HtmlInputText inputText = (HtmlInputText) context.getApplication()
+                                                         .getViewHandler()
+                                                         .getViewDeclarationLanguage(context, context.getViewRoot()
+                                                         .getViewId())
+                                                         .createComponent(context, "http://java.sun.com/jsf/html", "inputText", null);
+
         if ("javax.faces.Text".equals(inputText.getRendererType())) {
-            result = "SUCCESS";
+            return "SUCCESS";
         }
-        
-        return result;
-    }    
+
+        return "FAILED";
+    }
 }

@@ -22,8 +22,7 @@ import javax.faces.component.NamingContainer;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-public class NamingContainerViewRoot extends UIViewRoot
-        implements NamingContainer, Serializable {
+public class NamingContainerViewRoot extends UIViewRoot implements NamingContainer, Serializable {
 
     private static final long serialVersionUID = 1L;
 

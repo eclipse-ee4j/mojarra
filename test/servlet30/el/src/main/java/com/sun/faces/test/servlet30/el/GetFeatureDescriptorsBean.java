@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,42 +21,66 @@ package com.sun.faces.test.servlet30.el;
 import java.beans.FeatureDescriptor;
 import java.io.Serializable;
 import java.util.Iterator;
+
 import javax.el.ELContext;
 import javax.el.ELResolver;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.NoneScoped;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@ManagedBean
-@NoneScoped
+@Named
+@ApplicationScoped
 public class GetFeatureDescriptorsBean implements Serializable {
     private static final long serialVersionUID = -8697181848858606709L;
-    
-    
-    String[] implictNames = new String[]{
-        "application", "applicationScope", "cc", "component", "cookie", "facesContext",
-        "flowScope",
-        "header", "headerValues", "initParam", "param", "paramValues",
-        "request", "requestScope", "resource", "session", "sessionScope", 
-        "view", "viewScope" };
-    
+
+    String[] implictNames = new String[] {
+            "application",
+            "applicationScope",
+            "cc",
+            "component",
+            "cookie",
+            "facesContext",
+            "flash",
+            "flowScope",
+            "header",
+            "headerValues",
+            "initParam",
+            "param", "paramValues", "request", "requestScope", "resource", "session", "sessionScope",
+            "view", "viewScope" };
+
+    @Inject
+    private BeanManager beanManager;
+
     public String getTopLevelVariables() {
         String result = "FAILED";
         FacesContext context = FacesContext.getCurrentInstance();
         ELResolver elResolver = context.getApplication().getELResolver();
         ELContext elContext = context.getELContext();
-        
+
         Iterator<FeatureDescriptor> featureDescriptors = elResolver.getFeatureDescriptors(elContext, null);
         StringBuilder builder = new StringBuilder();
         while (featureDescriptors.hasNext()) {
             FeatureDescriptor cur = featureDescriptors.next();
-            builder.append("<p>").append(cur.getName()).append("</p>");
+            builder.append("<p>")
+                   .append(cur.getName() + " - " + cur.getShortDescription())
+                   .append("</p>");
         }
-        if (0 < builder.length()) {
+
+        for (String name : implictNames) {
+            if (!beanManager.getBeans(name).isEmpty()) {
+                builder.append("<p>")
+                .append(name + " - " + " CDI named bean")
+                .append("</p>");
+            }
+        }
+
+        if (builder.length() > 0) {
             result = builder.toString();
         }
-        
+
         return result;
     }
-        
+
 }

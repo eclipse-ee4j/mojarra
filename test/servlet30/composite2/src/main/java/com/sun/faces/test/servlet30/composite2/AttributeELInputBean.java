@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,20 +18,21 @@
 
 package com.sun.faces.test.servlet30.composite2;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean
+
+@Named
 @RequestScoped
 public class AttributeELInputBean {
 
-    private Boolean _ismandatory = true;
+    private Boolean isMandatory = true;
 
     public Boolean isMandatory() {
-        return _ismandatory;
+        return isMandatory;
     }
 
     public void setMandatory(Boolean mandatory) {
-        _ismandatory = mandatory;
+        isMandatory = mandatory;
     }
 }

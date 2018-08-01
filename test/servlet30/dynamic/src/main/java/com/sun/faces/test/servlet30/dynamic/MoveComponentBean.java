@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,12 +18,15 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
-@ManagedBean(name = "moveComponentBean")
+
+@Named
+@ApplicationScoped
 public class MoveComponentBean {
 
     /**
@@ -42,11 +47,11 @@ public class MoveComponentBean {
         if (moveableChild == null) {
             moveableChild = viewRoot.findComponent("form1:subview1:outputText2");
         }
-        
+
         if (moveableChild == null) {
             moveableChild = viewRoot.findComponent("form1:subview2:outputText2");
         }
-        
+
         if (moveableChild == null) {
             moveableChild = viewRoot.findComponent("form1:subview2:subview2b:outputText2");
         }

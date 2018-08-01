@@ -23,12 +23,12 @@ import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.PostRestoreStateEvent;
+import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent( value = "com.sun.faces.test.servlet30.dynamic.AddComponent1" )
+@FacesComponent(value = "com.sun.faces.test.servlet30.dynamic.AddComponent1")
 public class AddComponent1 extends UIComponentBase implements SystemEventListener {
 
     //
@@ -37,11 +37,11 @@ public class AddComponent1 extends UIComponentBase implements SystemEventListene
     //
 
     public AddComponent1() {
-        setRendererType( "component" );
+        setRendererType("component");
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
-        root.subscribeToViewEvent( PreRenderViewEvent.class, this );
-        root.subscribeToViewEvent( PostRestoreStateEvent.class, this );
+        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
+        root.subscribeToViewEvent(PostRestoreStateEvent.class, this);
     }
 
     //
@@ -53,36 +53,36 @@ public class AddComponent1 extends UIComponentBase implements SystemEventListene
         return "com.sun.faces.test.servlet30.dynamic";
     }
 
-    public boolean isListenerForSource( Object source ) {
-        return ( source instanceof UIViewRoot );
+    @Override
+    public boolean isListenerForSource(Object source) {
+        return (source instanceof UIViewRoot);
     }
 
     // This event method will do the following:
-    //   If not a postback (as in PreRenderViewEvent), creates a PanelGrid
-    //   and adds it as a child to this component. 
-    //   On postback (as in PostRestoreStateEvent), creates an OutputText
-    //   and adds it to the PanelGrid (only creates and adds if not done
-    //   previously).
+    // If not a postback (as in PreRenderViewEvent), creates a PanelGrid
+    // and adds it as a child to this component.
+    // On postback (as in PostRestoreStateEvent), creates an OutputText
+    // and adds it to the PanelGrid (only creates and adds if not done
+    // previously).
 
     @Override
-    public void processEvent( SystemEvent event )
-        throws AbortProcessingException {
-        if ( !FacesContext.getCurrentInstance().isPostback() ) {
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
             HtmlPanelGrid component = new HtmlPanelGrid();
             component.setId("PANEL");
-            component.setStyle( "border: 1px dashed blue; padding: 5px; margin: 5px" );
-            getChildren().add( component );
+            component.setStyle("border: 1px dashed blue; padding: 5px; margin: 5px");
+            getChildren().add(component);
         } else {
             // Get PanelGrid component
-            HtmlPanelGrid component = (HtmlPanelGrid)getChildren().get(0);
+            HtmlPanelGrid component = (HtmlPanelGrid) getChildren().get(0);
             // If the child has not already been added - add it
-            String added = (String)component.getAttributes().get("CHILD_ADDED");
+            String added = (String) component.getAttributes().get("CHILD_ADDED");
             if (null == added) {
                 HtmlOutputText output = new HtmlOutputText();
                 output.setId("OUTPUT");
                 output.setValue("NEW-OUTPUT");
                 component.getChildren().add(output);
-                component.getAttributes().put("CHILD_ADDED","CHILD_ADDED");
+                component.getAttributes().put("CHILD_ADDED", "CHILD_ADDED");
             }
         }
     }

@@ -17,15 +17,18 @@
 package com.sun.faces.test.servlet30.composite;
 
 import java.util.Map;
-import javax.el.ELContext;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
 
-@ManagedBean(name = "attributeTypeBean")
+import javax.el.ELContext;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.inject.Named;
+
+
+@Named
 @RequestScoped
 public class AttributeTypeBean {
 
+    private final Wienerdoodle dog = new Wienerdoodle();
     private String test;
 
     public String from(Map<String, Object> attrs) {
@@ -51,8 +54,6 @@ public class AttributeTypeBean {
 
     public static class Wienerdoodle extends Dog {
     }
-
-    private final Wienerdoodle dog = new Wienerdoodle();
 
     public Animal getAnimal() {
         return dog;

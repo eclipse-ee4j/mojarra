@@ -39,28 +39,6 @@ import javax.servlet.jsp.JspFactory;
  */
 public class Bean {
 
-    /** Creates a new instance of Bean */
-    public Bean() {
-    }
-
-//    public String callMethodsOnVariableResolver(FacesContext context,
-//            VariableResolver vr) throws EvaluationException {
-//        Object result = null;
-//
-//        result = vr.resolveVariable(context, "noneBean");
-//
-//        if (!(result instanceof TestBean)) {
-//            throw new IllegalStateException("Bean not of correct type");
-//        }
-//
-//        result = vr.resolveVariable(context, "custom");
-//
-//        if (!result.equals("custom")) {
-//            throw new IllegalStateException("Bean not of correct type");
-//        }
-//
-//        return "success";
-//    }
 
     public void verifyELResolverChainIsCorrectlyConfigured(ActionEvent e) {
         String result = null;

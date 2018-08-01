@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +18,22 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@ManagedBean(name = "removeComponentBean")
+@Named
+@ApplicationScoped
 public class RemoveComponentBean {
+
+    @Inject
+    private FacesContext context;
 
     public void validateDeletion(FacesContext context, UIComponent comp, Object value) {
         UIComponent button = findButton(context);
@@ -35,8 +43,6 @@ public class RemoveComponentBean {
     }
 
     public void removePreRenderComponent(ComponentSystemEvent event) {
-        FacesContext context = FacesContext.getCurrentInstance();
-
         UIComponent buttonParent;
         UIComponent button = findButton(context);
 

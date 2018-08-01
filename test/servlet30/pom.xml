@@ -40,7 +40,6 @@
         <module>characterCombat</module>
         <module>clientsideStateSaving</module>
         <module>client-encrypt-by-default</module>
-        <module>client-encrypt-by-default-disabled</module>
         <module>component</module>
         <module>composite</module>
         <module>composite2</module>
@@ -49,7 +48,6 @@
         <module>configBasic</module>
         <module>configEmbed</module>
         <module>configExtra</module>
-        <module>configFile</module>
         <module>configLowercase</module>
         <module>configInJarOnly</module>
         <module>configInJarOnlyJar</module>
@@ -68,7 +66,6 @@
         <module>converterNPE</module>
         <module>customFaceletsResolver</module>
         <module>customLifecycle</module>
-        <module>customPropertyResolverJsp</module>
         <module>customResolvers</module>
         <module>customResourcesDirectory</module>
         <module>customStateManager</module>

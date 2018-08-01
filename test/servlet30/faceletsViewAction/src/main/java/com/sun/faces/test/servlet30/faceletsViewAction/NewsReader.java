@@ -18,19 +18,23 @@ package com.sun.faces.test.servlet30.faceletsViewAction;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.annotation.ManagedProperty;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 
-@RequestScoped @ManagedBean
+@Named
+@RequestScoped
 public class NewsReader {
 
     private FacesContext facesContext;
 
+    @Inject
     @ManagedProperty("#{newsIndex}")
     private NewsIndex newsIndex;
 
@@ -58,7 +62,7 @@ public class NewsReader {
         }
 
     }
-    
+
     public String goToPage01IfValidationFailed() {
         if (facesContext.isValidationFailed()) {
             return "/page01";
@@ -81,15 +85,9 @@ public class NewsReader {
     public void setSelectedStoryId(Long storyId) {
         this.selectedStoryId = storyId;
     }
-    
+
     public boolean isMissingStoryId() {
         return null == selectedStoryId;
-    }
-
-    // Injected Properties
-
-    public void setNewsIndex(NewsIndex newsIndex) {
-        this.newsIndex = newsIndex;
     }
 
 }

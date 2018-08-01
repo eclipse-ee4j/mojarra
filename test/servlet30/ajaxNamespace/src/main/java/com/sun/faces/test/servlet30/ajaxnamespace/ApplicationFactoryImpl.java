@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,22 +23,16 @@ import javax.faces.application.ApplicationFactory;
 
 public class ApplicationFactoryImpl extends ApplicationFactory {
 
-    private final ApplicationFactory parent;
     private Application myApplication;
 
     public ApplicationFactoryImpl(ApplicationFactory parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public ApplicationFactory getWrapped() {
-        return parent;
+        super(parent);
     }
 
     @Override
     public Application getApplication() {
         if (null == myApplication) {
-            Application fromParent = parent.getApplication();
+            Application fromParent = getWrapped().getApplication();
             myApplication = new ApplicationImpl(fromParent);
         }
 

@@ -16,17 +16,19 @@
 
 package com.sun.faces.test.servlet30.component;
 
+import static com.sun.faces.test.junit.JsfVersion.JSF_2_2_0;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.sun.faces.test.junit.JsfTest;
 import com.sun.faces.test.junit.JsfTestRunner;
-import static com.sun.faces.test.junit.JsfVersion.JSF_2_2_0;
-import org.junit.After;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 @RunWith(JsfTestRunner.class)
 public class Issue3319IT {
@@ -48,7 +50,7 @@ public class Issue3319IT {
     @JsfTest(value = JSF_2_2_0)
     @Test
     public void testEventListener() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/eventListener.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "eventListener.xhtml");
         assertTrue(page.asText().contains("preRenderComponentEvent"));
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");

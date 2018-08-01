@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,22 +18,26 @@
 
 package com.sun.faces.test.servlet30.application;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.Serializable;
+import java.util.Iterator;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.validator.LengthValidator;
 import javax.faces.validator.Validator;
-import java.util.Iterator;
+import javax.inject.Named;
 
-import static org.junit.Assert.*;
-
-@ManagedBean
+@Named
 @SessionScoped
-public class ApplicationConfigBean {
+public class ApplicationConfigBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static String standardComponentTypes[] = {
         "javax.faces.Column",
@@ -78,7 +84,7 @@ public class ApplicationConfigBean {
         "javax.faces.HtmlSelectOneRadio"
     };
 
-    public static Class standardComponentClasses[] = {
+    public static Class<?> standardComponentClasses[] = {
         javax.faces.component.UIColumn.class,
         javax.faces.component.UICommand.class,
         javax.faces.component.UIData.class,
@@ -138,7 +144,7 @@ public class ApplicationConfigBean {
         "javax.faces.Short"
     };
 
-    public static Class standardConverterClasses[] = {
+    public static Class<?> standardConverterClasses[] = {
         javax.faces.convert.BigDecimalConverter.class,
         javax.faces.convert.BigIntegerConverter.class,
         javax.faces.convert.BooleanConverter.class,
@@ -153,7 +159,7 @@ public class ApplicationConfigBean {
         javax.faces.convert.ShortConverter.class
     };
 
-    public static Class standardConverterByIdClasses[] = {
+    public static Class<?> standardConverterByIdClasses[] = {
         java.math.BigDecimal.class,
         java.math.BigInteger.class,
         java.lang.Boolean.class,
@@ -168,7 +174,7 @@ public class ApplicationConfigBean {
         java.lang.Short.class
     };
 
-    public static Class standardConverterPrimitiveClasses[] = {
+    public static Class<?> standardConverterPrimitiveClasses[] = {
         null,
         null,
         java.lang.Boolean.TYPE,
@@ -185,11 +191,10 @@ public class ApplicationConfigBean {
 
     private String title = "Test Application Config";
     public String getTitle() {
-        return title; 
+        return title;
     }
 
     public ApplicationConfigBean() {
-
         componentPositive();
         componentNegative();
         getComponentTypes();
@@ -209,10 +214,9 @@ public class ApplicationConfigBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        app.addComponent(testComponent.getComponentType(), 
-            "com.sun.faces.test.servlet30.application.TestComponent");
+        app.addComponent(testComponent.getComponentType(), "com.sun.faces.test.servlet30.application.TestComponent");
 
-        newTestComponent = (TestComponent)app.createComponent(testComponent.getComponentType());
+        newTestComponent = (TestComponent) app.createComponent(testComponent.getComponentType());
         assertTrue(null != newTestComponent && newTestComponent != testComponent);
 
         // built-in components
@@ -249,7 +253,7 @@ public class ApplicationConfigBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        Iterator iter = app.getComponentTypes();
+        Iterator<String> iter = app.getComponentTypes();
         assertTrue(null != iter);
         assertTrue(isSubset(standardComponentTypes, iter));
     }
@@ -260,13 +264,12 @@ public class ApplicationConfigBean {
 
         TestConverter newTestConverter = null;
         TestConverter testConverter = new TestConverter();
-        Converter conv = null;
+        Converter<?> conv = null;
 
         // runtime addition
 
-        app.addConverter(testConverter.getConverterId(),
-            "com.sun.faces.test.servlet30.application.TestConverter");
-        newTestConverter = (TestConverter)app.createConverter(testConverter.getConverterId());
+        app.addConverter(testConverter.getConverterId(), "com.sun.faces.test.servlet30.application.TestConverter");
+        newTestConverter = (TestConverter) app.createConverter(testConverter.getConverterId());
         assertTrue(null != newTestConverter && newTestConverter != testConverter);
 
         // built-in converters
@@ -285,14 +288,12 @@ public class ApplicationConfigBean {
                 continue;
             }
             conv = app.createConverter(standardConverterByIdClasses[i]);
-            assertTrue("null != " + standardConverterByIdClasses[i].toString(),
-                       null != conv);
+            assertTrue("null != " + standardConverterByIdClasses[i].toString(), null != conv);
             assertTrue(standardConverterClasses[i].isAssignableFrom(conv.getClass()));
         }
 
         // primitive classes
-        for (int i = 0, len = standardConverterPrimitiveClasses.length; i <
-            len; i++) {
+        for (int i = 0, len = standardConverterPrimitiveClasses.length; i < len; i++) {
             if (null == standardConverterPrimitiveClasses[i]) {
                 continue;
             }
@@ -328,7 +329,7 @@ public class ApplicationConfigBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        Iterator iter = app.getConverterIds();
+        Iterator<String> iter = app.getConverterIds();
         assertTrue(null != iter);
 
         assertTrue(isSubset(standardConverterIds, iter));
@@ -338,9 +339,9 @@ public class ApplicationConfigBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        Validator newTestValidator = null;
-        Validator testValidator = new LengthValidator();
-        Validator val = null;
+        Validator<?> newTestValidator = null;
+        Validator<?> testValidator = new LengthValidator();
+        Validator<?> val = null;
 
         // runtime addition
 
@@ -382,24 +383,20 @@ public class ApplicationConfigBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        Iterator iter = app.getValidatorIds();
+        Iterator<String> iter = app.getValidatorIds();
         assertTrue(null != iter);
 
-        String standardValidatorIds[] = {
-            "javax.faces.DoubleRange",
-            "javax.faces.Length",
-            "javax.faces.LongRange"
-        };
+        String standardValidatorIds[] = { "javax.faces.DoubleRange", "javax.faces.Length", "javax.faces.LongRange" };
         assertTrue(isSubset(standardValidatorIds, iter));
     }
 
-    private String status="";
+    private String status = "";
 
     public String getStatus() {
         return status;
     }
 
-    public boolean isSubset(String[] subset, Iterator superset) {
+    public boolean isSubset(String[] subset, Iterator<String> superset) {
         int i, len = subset.length;
         boolean[] hits = new boolean[len];
         String cur = null;
@@ -407,11 +404,10 @@ public class ApplicationConfigBean {
             hits[i] = false;
         }
 
-
         // for each element in the superset, go through the entire subset,
         // marking our "hits" array if there is a match.
         while (superset.hasNext()) {
-            cur = (String) superset.next();
+            cur = superset.next();
             for (i = 0; i < len; i++) {
                 if (cur.equals(subset[i])) {
                     hits[i] = true;
@@ -427,7 +423,6 @@ public class ApplicationConfigBean {
         }
         return true;
     }
-
 
 }
 

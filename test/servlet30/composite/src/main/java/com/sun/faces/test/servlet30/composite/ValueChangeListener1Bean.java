@@ -21,19 +21,23 @@
  */
 package com.sun.faces.test.servlet30.composite;
 
-import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@ManagedBean(name = "valueChangeListener1Bean")
-public class ValueChangeListener1Bean implements Serializable {
 
-    public void valueChange(ValueChangeEvent event)
-            throws AbortProcessingException {
-        FacesContext context = FacesContext.getCurrentInstance();
+@Named
+@ApplicationScoped
+public class ValueChangeListener1Bean {
+
+    @Inject
+    private FacesContext context;
+
+    public void valueChange(ValueChangeEvent event) throws AbortProcessingException {
         UIOutput output = (UIOutput) context.getViewRoot().findComponent("form:cc_value:out");
         output.setValue("VALUECHANGE CALLED");
     }

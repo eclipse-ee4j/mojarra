@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,7 +25,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
+@Named
+@ViewScoped
 public class UserBean implements Serializable {
 
     private static final long serialVersionUID = 8969834712163408855L;
@@ -34,9 +40,6 @@ public class UserBean implements Serializable {
     protected String sex = "Unknown";
     protected String email;
     protected String serviceLevel = "medium";
-
-    public UserBean() {
-    }
 
     public String getFirstName() {
         return firstName;
@@ -86,22 +89,18 @@ public class UserBean implements Serializable {
         this.serviceLevel = serviceLevel;
     }
 
-    public void validateEmail(FacesContext context, UIComponent toValidate,
-            Object value) throws ValidatorException {
+    public void validateEmail(FacesContext context, UIComponent toValidate, Object value) throws ValidatorException {
         String emailStr = (String) value;
         if (-1 == emailStr.indexOf("@")) {
-            FacesMessage message = new FacesMessage("Invalid email address");
-            throw new ValidatorException(message);
+            throw new ValidatorException(new FacesMessage("Invalid email address"));
         }
     }
 
     public String addConfirmedUser() {
-        // This method would call a database or other service and add the 
+        // This method would call a database or other service and add the
         // confirmed user information.
         // For now, we just place an informative message in request scope
-        FacesMessage doneMessage
-                = new FacesMessage("Successfully added new user");
-        FacesContext.getCurrentInstance().addMessage(null, doneMessage);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Successfully added new user"));
         return "done";
     }
 }

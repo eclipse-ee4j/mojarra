@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,18 +18,20 @@
 
 package com.sun.faces.test.servlet30.disableunicodeescaping;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_1_4;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_2_1;
-import com.sun.faces.test.junit.JsfTest;
-import com.sun.faces.test.junit.JsfTestRunner;
 import static com.sun.faces.test.junit.JsfVersion.JSF_2_3_0_M03;
-import org.junit.After;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.sun.faces.test.junit.JsfTest;
+import com.sun.faces.test.junit.JsfTestRunner;
 
 @RunWith(JsfTestRunner.class)
 public class UnicodeIT {
@@ -51,7 +55,7 @@ public class UnicodeIT {
     public void testUnicodeEscapingTrue() throws Exception {
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "UTF-8");
-        HtmlPage page = webClient.getPage(webUrl + "faces/indexUTF.jsp?escape=true");
+        HtmlPage page = webClient.getPage(webUrl + "faces/indexUTF.xhtml?escape=true");
         assertTrue(
                 "Title should contain the unicode characters '\u1234' and '\u00c4'.",
                 page.getWebResponse().getContentAsString().contains("a\u1234a")
@@ -61,7 +65,7 @@ public class UnicodeIT {
 
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "US-ASCII");
-        page = webClient.getPage(webUrl + "faces/indexUSASCII.jsp?escape=true");
+        page = webClient.getPage(webUrl + "faces/indexUSASCII.xhtml?escape=true");
         assertTrue(
                 "Title should contain the unicode characters replaced by ?.",
                 !page.getWebResponse().getContentAsString().contains("a\u1234a")
@@ -71,7 +75,7 @@ public class UnicodeIT {
 
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "ISO-8859-1");
-        page = webClient.getPage(webUrl + "faces/indexISO8859_1.jsp?escape=true");
+        page = webClient.getPage(webUrl + "faces/indexISO8859_1.xhtml?escape=true");
         assertTrue(
                 "Title should contain the unicode character replaced by ? but the correct iso character.",
                 !page.getWebResponse().getContentAsString().contains("a\u1234a")
@@ -84,7 +88,7 @@ public class UnicodeIT {
     public void testUnicodeEscapingFalse() throws Exception {
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "UTF-8");
-        HtmlPage page = webClient.getPage(webUrl + "faces/indexUTF.jsp?escape=false");
+        HtmlPage page = webClient.getPage(webUrl + "faces/indexUTF.xhtml?escape=false");
         assertTrue(
                 "Title should contain the escaped unicode characters only.",
                 !page.getWebResponse().getContentAsString().contains("a\u1234a")
@@ -94,7 +98,7 @@ public class UnicodeIT {
 
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "US-ASCII");
-        page = webClient.getPage(webUrl + "faces/indexUSASCII.jsp?escape=false");
+        page = webClient.getPage(webUrl + "faces/indexUSASCII.xhtml?escape=false");
         assertTrue(
                 "Title should contain the escaped unicode characters only.",
                 !page.getWebResponse().getContentAsString().contains("a\u1234a")
@@ -104,7 +108,7 @@ public class UnicodeIT {
 
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "ISO-8859-1");
-        page = webClient.getPage(webUrl + "faces/indexISO8859_1.jsp?escape=false");
+        page = webClient.getPage(webUrl + "faces/indexISO8859_1.xhtml?escape=false");
         assertTrue(
                 "Title should contain the escaped unicode characters only.",
                 !page.getWebResponse().getContentAsString().contains("a\u1234a")
@@ -118,7 +122,7 @@ public class UnicodeIT {
     public void testUnicodeEscapingAuto() throws Exception {
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "UTF-8");
-        HtmlPage page = webClient.getPage(webUrl + "faces/indexUTF.jsp?escape=auto");
+        HtmlPage page = webClient.getPage(webUrl + "faces/indexUTF.xhtml?escape=auto");
         assertTrue(
                 "Title should contain the unicode characters '\u1234' and '\u00c4'.",
                 page.getWebResponse().getContentAsString().contains("a\u1234a")
@@ -128,7 +132,7 @@ public class UnicodeIT {
 
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "US-ASCII");
-        page = webClient.getPage(webUrl + "faces/indexUSASCII.jsp?escape=auto");
+        page = webClient.getPage(webUrl + "faces/indexUSASCII.xhtml?escape=auto");
         assertTrue(
                 "Title should contain the escaped entity '&#4660;' and the escaped umlaut a.",
                 !page.getWebResponse().getContentAsString().contains("a\u1234a")
@@ -138,7 +142,7 @@ public class UnicodeIT {
 
         webClient = new WebClient();
         webClient.addRequestHeader("Accept-Encoding", "ISO-8859-1");
-        page = webClient.getPage(webUrl + "faces/indexISO8859_1.jsp?escape=auto");
+        page = webClient.getPage(webUrl + "faces/indexISO8859_1.xhtml?escape=auto");
         assertTrue(
                 "Title should contain the escaped entity '&#4660;' and the correct iso character.",
                 !page.getWebResponse().getContentAsString().contains("a\u1234a")

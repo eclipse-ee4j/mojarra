@@ -20,5 +20,5 @@ import javax.faces.convert.FacesConverter;
 
 @FacesConverter(forClass = com.sun.faces.test.Foo.class)
 public class FooConverterByClass extends FooConverterBase {
-    
+
 }

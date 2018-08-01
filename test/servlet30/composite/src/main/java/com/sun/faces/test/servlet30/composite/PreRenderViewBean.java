@@ -18,19 +18,19 @@ package com.sun.faces.test.servlet30.composite;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
-@ManagedBean(name = "preRenderViewBean")
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 public class PreRenderViewBean {
 
     private List<PreRenderViewDataItem> data;
 
     public List<PreRenderViewDataItem> getData() {
-
         if (data == null) {
-            data = new ArrayList<PreRenderViewDataItem>();
+            data = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 data.add(this.createTestDataItem("Item" + i));
             }

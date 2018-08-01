@@ -16,186 +16,131 @@
 
 package guessNumber;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.LongRangeValidator;
-import javax.faces.validator.ValidatorException;
+import static javax.faces.validator.LongRangeValidator.MAXIMUM_MESSAGE_ID;
+import static javax.faces.validator.LongRangeValidator.MINIMUM_MESSAGE_ID;
+import static javax.faces.validator.LongRangeValidator.NOT_IN_RANGE_MESSAGE_ID;
+import static javax.faces.validator.LongRangeValidator.TYPE_MESSAGE_ID;
 
+import java.io.Serializable;
 import java.util.Random;
 
+import javax.enterprise.context.SessionScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
+import javax.inject.Named;
 
-public class UserNumberBean {
+@Named
+@SessionScoped
+public class UserNumberBean implements Serializable {
 
-    Integer userNumber = null;
-    Integer randomInt = null;
-    String response = null;
+    private static final long serialVersionUID = 1L;
 
+    private Integer userNumber;
+    private Integer randomInt;
+    private int maximum = 10;
+    private boolean maximumSet = true;
+
+    private int minimum = 1;
+    private boolean minimumSet = true;
 
     public UserNumberBean() {
         Random randomGR = new Random();
         do {
             randomInt = new Integer(randomGR.nextInt(10));
         } while (randomInt.intValue() == 0);
+
         System.out.println("Duke's number: " + randomInt);
     }
-     
 
     public void setUserNumber(Integer user_number) {
         userNumber = user_number;
         System.out.println("Set userNumber " + userNumber);
     }
 
-
     public Integer getUserNumber() {
         System.out.println("get userNumber " + userNumber);
         return userNumber;
     }
 
-
     public String getResponse() {
-
         if (userNumber != null && userNumber.compareTo(randomInt) == 0) {
             return "Yay! You got it!";
-        } else if (userNumber == null) {
-            return "Sorry, " + userNumber +
-                   " is incorrect. Try a larger number.";
-        } else {
-            int num = userNumber.intValue();
-            if (num > randomInt.intValue()) {
-                return "Sorry, " + userNumber +
-                       " is incorrect. Try a smaller number.";
-            } else {
-                return "Sorry, " + userNumber +
-                       " is incorrect. Try a larger number.";
-            }
         }
+
+        if (userNumber == null) {
+            return "Sorry, " + userNumber + " is incorrect. Try a larger number.";
+        }
+
+        int num = userNumber.intValue();
+        if (num > randomInt.intValue()) {
+            return "Sorry, " + userNumber + " is incorrect. Try a smaller number.";
+        }
+
+        return "Sorry, " + userNumber + " is incorrect. Try a larger number.";
     }
 
-
     protected String[] status = null;
-
 
     public String[] getStatus() {
         return status;
     }
 
-
     public void setStatus(String[] newStatus) {
         status = newStatus;
     }
 
-
-    private int maximum = 0;
-    private boolean maximumSet = false;
-
-
     public int getMaximum() {
-        return (this.maximum);
+        return maximum;
     }
-
-
-    public void setMaximum(int maximum) {
-        this.maximum = maximum;
-        this.maximumSet = true;
-    }
-
-
-    private int minimum = 0;
-    private boolean minimumSet = false;
-
 
     public int getMinimum() {
-        return (this.minimum);
+        return minimum;
     }
 
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
-    public void setMinimum(int minimum) {
-        this.minimum = minimum;
-        this.minimumSet = true;
-    }
-
-
-    public void validate(FacesContext context,
-                         UIComponent component,
-                         Object value) throws ValidatorException {
-
-        if ((context == null) || (component == null)) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
+
         if (value != null) {
             try {
                 int converted = intValue(value);
-                if (maximumSet &&
-                    (converted > maximum)) {
+                if (maximumSet && (converted > maximum)) {
                     if (minimumSet) {
-                        throw new ValidatorException(
-                              MessageFactory.getMessage
-                                    (context,
-                                     LongRangeValidator.NOT_IN_RANGE_MESSAGE_ID,
-                                     new Object[]{
-                                           new Integer(minimum),
-                                           new Integer(maximum),
-                                           MessageFactory.getLabel(context,
-                                                                   component)
-                                     }));
+                        throw new ValidatorException(MessageFactory.getMessage(context, NOT_IN_RANGE_MESSAGE_ID,
+                                new Object[] { new Integer(minimum), new Integer(maximum), MessageFactory.getLabel(context, component) }));
 
                     } else {
-                        throw new ValidatorException(
-                              MessageFactory.getMessage
-                                    (context,
-                                     LongRangeValidator.MAXIMUM_MESSAGE_ID,
-                                     new Object[]{
-                                           new Integer(maximum),
-                                           MessageFactory.getLabel(context,
-                                                                   component)
-                                     }));
+                        throw new ValidatorException(MessageFactory.getMessage(context, MAXIMUM_MESSAGE_ID,
+                                new Object[] { new Integer(maximum), MessageFactory.getLabel(context, component) }));
                     }
                 }
-                if (minimumSet &&
-                    (converted < minimum)) {
+                if (minimumSet && (converted < minimum)) {
                     if (maximumSet) {
-                        throw new ValidatorException(MessageFactory.getMessage
-                              (context,
-                               LongRangeValidator.NOT_IN_RANGE_MESSAGE_ID,
-                               new Object[]{
-                                     new Double(minimum),
-                                     new Double(maximum),
-                                     MessageFactory.getLabel(context, component)
-                               }));
+                        throw new ValidatorException(MessageFactory.getMessage(context, NOT_IN_RANGE_MESSAGE_ID,
+                                new Object[] { new Double(minimum), new Double(maximum), MessageFactory.getLabel(context, component) }));
 
                     } else {
-                        throw new ValidatorException(
-                              MessageFactory.getMessage
-                                    (context,
-                                     LongRangeValidator.MINIMUM_MESSAGE_ID,
-                                     new Object[]{
-                                           new Integer(minimum),
-                                           MessageFactory.getLabel(context,
-                                                                   component)
-                                     }));
+                        throw new ValidatorException(MessageFactory.getMessage(context, MINIMUM_MESSAGE_ID,
+                                new Object[] { new Integer(minimum), MessageFactory.getLabel(context, component) }));
                     }
                 }
             } catch (NumberFormatException e) {
                 throw new ValidatorException(
-                      MessageFactory.getMessage
-                            (context, LongRangeValidator.TYPE_MESSAGE_ID,
-                             new Object[]{MessageFactory.getLabel(context,
-                                                                  component)}));
+                        MessageFactory.getMessage(context, TYPE_MESSAGE_ID,
+                        new Object[] { MessageFactory.getLabel(context, component) }));
             }
         }
-
     }
 
-
-    private int intValue(Object attributeValue)
-          throws NumberFormatException {
-
+    private int intValue(Object attributeValue) throws NumberFormatException {
         if (attributeValue instanceof Number) {
             return (((Number) attributeValue).intValue());
-        } else {
-            return (Integer.parseInt(attributeValue.toString()));
         }
 
+        return Integer.parseInt(attributeValue.toString());
     }
 
 }

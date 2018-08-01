@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +18,19 @@
 
 package com.sun.faces.test.servlet30.clientsidestatesaving;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Named;
 
-@ManagedBean(name="ajaxrequest")
+@Named("ajaxrequest")
 @SessionScoped
-public class AjaxRequestBean {
+public class AjaxRequestBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Integer count = 0;
 
     private String echo = "echo";
@@ -73,7 +80,7 @@ public class AjaxRequestBean {
     }
 
     public void echoValue(ValueChangeEvent event) {
-        String str = (String)event.getNewValue();
+        String str = (String) event.getNewValue();
         echo = str;
     }
 

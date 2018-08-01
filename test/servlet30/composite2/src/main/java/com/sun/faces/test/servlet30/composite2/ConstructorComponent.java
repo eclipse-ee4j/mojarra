@@ -17,6 +17,7 @@
 package com.sun.faces.test.servlet30.composite2;
 
 import java.util.Map;
+
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
@@ -31,6 +32,7 @@ public class ConstructorComponent extends UINamingContainer {
             message = new StringBuilder();
             requestMap.put("message", message);
         }
+
         message.append("ConstructorComponent constructor called");
     }
 }

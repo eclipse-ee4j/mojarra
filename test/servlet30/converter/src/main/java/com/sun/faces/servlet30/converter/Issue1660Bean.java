@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +18,16 @@
 
 package com.sun.faces.servlet30.converter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.model.SelectItem;
 
-@ManagedBean
+import javax.enterprise.context.RequestScoped;
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
-public class Issue1660Bean implements Serializable {
+public class Issue1660Bean {
 
     private Issue1660SimpleEnum simpleValue = Issue1660SimpleEnum.VALUE1;
     private Issue1660ComplexEnum complexValue = Issue1660ComplexEnum.VALUE2;
@@ -47,18 +49,20 @@ public class Issue1660Bean implements Serializable {
     }
 
     public List<SelectItem> getSimpleValues() {
-        List<SelectItem> ret = new ArrayList<SelectItem>();
+        List<SelectItem> simpleValues = new ArrayList<SelectItem>();
         for (Issue1660SimpleEnum val : Issue1660SimpleEnum.values()) {
-            ret.add(new SelectItem(val, val.toString()));
+            simpleValues.add(new SelectItem(val, val.toString()));
         }
-        return ret;
+
+        return simpleValues;
     }
 
     public List<SelectItem> getComplexValues() {
-        List<SelectItem> ret = new ArrayList<SelectItem>();
+        List<SelectItem> complexValues = new ArrayList<SelectItem>();
         for (Issue1660ComplexEnum val : Issue1660ComplexEnum.values()) {
-            ret.add(new SelectItem(val, val.toString()));
+            complexValues.add(new SelectItem(val, val.toString()));
         }
-        return ret;
+
+        return complexValues;
     }
 }

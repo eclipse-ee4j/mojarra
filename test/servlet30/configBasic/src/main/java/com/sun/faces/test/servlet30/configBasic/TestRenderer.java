@@ -16,13 +16,10 @@
 
 package com.sun.faces.test.servlet30.configBasic;
 
-
 import javax.faces.render.Renderer;
-
 
 // Dummy renderer that can be instantiated
 
 public class TestRenderer extends Renderer {
-
 
 }

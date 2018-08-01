@@ -20,18 +20,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"      
       xmlns:h="http://java.sun.com/jsf/html">
-    <f:view contentType="text/html"/>
-    <h:body bgcolor="white">
-        <h:form id="helloForm" >       
-            <h:outputText value="Put a breakpoint in StateManagementStrategyImpl.handleAddEvent. Press the 'add subtree with transient root' button. This adds a subtree with a non-transient outputText as the child of a transient panelGroup. In handleAddEvent note that although the outputText is the child of a transient component, there is still an attempt to state save the outputText."/>
-            <br></br>
-            <h:commandButton id="button" actionListener="#{stateBean.transientRoot}"
-                              value="add subtree with transient root"/>
-            <br></br>
-            <h:panelGroup id="addto"  style="border:green 1px solid"></h:panelGroup>
-                        
-        </h:form>
-        <br/>
-        <h:messages/>
-    </h:body>
+	<f:view contentType="text/html"/>
+	
+	<h:body bgcolor="white">
+		<h:form id="helloForm">
+			<h:outputText value="Put a breakpoint in StateManagementStrategyImpl.handleAddEvent. Press the 'add subtree with transient root' button. This adds a subtree with a non-transient outputText as the child of a transient panelGroup. In handleAddEvent note that although the outputText is the child of a transient component, there is still an attempt to state save the outputText." />
+			<br/>
+			<h:commandButton id="button" actionListener="#{stateBean.transientRoot}"
+				value="add subtree with transient root" />
+			<br/>
+			<h:panelGroup id="addto" style="border:green 1px solid"/>
+		</h:form>
+		
+		<br />
+		
+		<h:messages />
+	</h:body>
 </html>

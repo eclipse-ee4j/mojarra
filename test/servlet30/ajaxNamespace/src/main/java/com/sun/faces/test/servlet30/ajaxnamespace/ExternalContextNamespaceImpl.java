@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,35 +18,30 @@
 
 package com.sun.faces.test.servlet30.ajaxnamespace;
 
-import java.util.Collections;
+import static java.util.Collections.unmodifiableMap;
+
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.ExternalContextWrapper;
 import javax.servlet.ServletRequest;
 
-import com.sun.faces.context.RequestParameterMap;
-
 public class ExternalContextNamespaceImpl extends ExternalContextWrapper {
 
-	private final ExternalContext parent;
-	private Map<String, String> requestParameterMap = null;
+    private Map<String, String> requestParameterMap;
 
-	public ExternalContextNamespaceImpl(ExternalContext externalContext) {
-		parent = externalContext;
-	}
+    public ExternalContextNamespaceImpl(ExternalContext externalContext) {
+        super(externalContext);
+    }
 
-	public ExternalContext getWrapped() {
-		return parent;
-	}
+    @Override
+    public Map<String, String> getRequestParameterMap() {
+        if (requestParameterMap == null) {
+            requestParameterMap = unmodifiableMap(
+                    new NamespacedRequestParameterMap(((ServletRequest) getWrapped().getRequest())));
+        }
 
-	public Map<String, String> getRequestParameterMap() {
-		if (null == requestParameterMap) {
-			requestParameterMap = Collections
-					.unmodifiableMap(new NamespacedRequestParameterMap(
-							((ServletRequest) getWrapped().getRequest())));
-		}
-		return requestParameterMap;
-	}
+        return requestParameterMap;
+    }
 
 }

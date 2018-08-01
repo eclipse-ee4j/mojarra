@@ -16,20 +16,23 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
 /**
  * @author Kari
  */
-@ManagedBean(name="includeBean")
+@Named("includeBean")
 @ViewScoped
 public class Issue4204Bean implements Serializable {
-    private Set<Integer> visibleComponentIndexes = new HashSet<Integer>();
+
+    private static final long serialVersionUID = 1L;
+
+    private Set<Integer> visibleComponentIndexes = new HashSet<>();
 
     public void show(int index) {
         visibleComponentIndexes.add(index);

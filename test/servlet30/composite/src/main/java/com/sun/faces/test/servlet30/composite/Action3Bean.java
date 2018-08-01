@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,25 +17,29 @@
 
 package com.sun.faces.test.servlet30.composite;
 
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
-@ManagedBean(name = "action3Bean")
+@Named
 @RequestScoped
 public class Action3Bean {
 
     public String action() {
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent c = UIComponent.getCurrentComponent(ctx);
-        ctx.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Action invoked: " + c.getClientId(ctx),
-                "Action invoked: " + c.getClientId(ctx)));
-        return "";
 
+        ctx.addMessage(null,
+            new FacesMessage(
+                    SEVERITY_ERROR,
+                    "Action invoked: " + c.getClientId(ctx),
+                    "Action invoked: " + c.getClientId(ctx)));
+
+        return "";
     }
 
     public String submit() {

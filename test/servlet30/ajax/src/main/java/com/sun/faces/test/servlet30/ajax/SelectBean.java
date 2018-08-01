@@ -21,7 +21,7 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
-@Named
+@Named("ajaxselect")
 @SessionScoped
 public class SelectBean implements Serializable {
 

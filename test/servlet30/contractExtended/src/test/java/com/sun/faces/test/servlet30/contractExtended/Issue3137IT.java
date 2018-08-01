@@ -16,8 +16,8 @@
 
 package com.sun.faces.test.servlet30.contractExtended;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
@@ -219,8 +219,7 @@ public class Issue3137IT {
 
     }
 
-    private void assertContractForCss(HtmlPage page, String resourceName,
-            String expectedContract) {
+    private void assertContractForCss(HtmlPage page, String resourceName, String expectedContract) {
         DomNodeList<DomElement> links = page.getElementsByTagName("link");
         for (DomElement cur : links) {
             HtmlLink link = (HtmlLink) cur;
@@ -231,8 +230,7 @@ public class Issue3137IT {
                 for (String part : parts) {
                     String[] kv = part.split("=");
                     if ("con".equals(kv[0])) {
-                        assertEquals("examined link href=" + href,
-                                expectedContract, kv[1]);
+                        assertEquals("examined link href=" + href, expectedContract, kv[1]);
                         return;
                     }
                 }

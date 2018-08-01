@@ -31,6 +31,7 @@ public class Line {
         if (obj instanceof Line) {
             return getId() == ((Line) obj).getId();
         }
+
         return false;
     }
 

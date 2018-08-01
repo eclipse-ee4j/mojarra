@@ -16,17 +16,16 @@
 
 package com.sun.faces.test.servlet30.externalContext;
 
-import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-
-import static org.junit.Assert.assertTrue;
 
 public class Issue2440IT {
 
@@ -34,28 +33,12 @@ public class Issue2440IT {
      * Stores the web URL.
      */
     private String webUrl;
+
     /**
      * Stores the web client.
      */
     private WebClient webClient;
 
-    /**
-     * Setup before testing.
-     *
-     * @throws Exception when a serious error occurs.
-     */
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    /**
-     * Cleanup after testing.
-     *
-     * @throws Exception when a serious error occurs.
-     */
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
 
     /**
      * Setup before testing.
@@ -78,23 +61,22 @@ public class Issue2440IT {
     public void testQueryParamEncodingOnCommandButton() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue2440.xhtml");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("reload");
-        
+
         page = button.click();
         String query = page.getUrl().getQuery();
-        
+
         assertTrue(query.contains("%E6%97%A5%D7%90"));
-        
+
     }
 
     @Test
     public void testQueryParamEncodingOnOutcomeTargetButton() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue2440.xhtml");
         HtmlButtonInput button = (HtmlButtonInput) page.getHtmlElementById("bookmarkable01");
-        
+
         String xml = button.asXml();
-        
+
         assertTrue(xml.contains("%E6%97%A5%D7%90"));
-        
     }
 
 }

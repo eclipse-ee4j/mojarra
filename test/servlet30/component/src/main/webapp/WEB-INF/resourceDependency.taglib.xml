@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+    Copyright (c) 2018 Payara Services Limited. 
+    All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,13 +19,14 @@
 
 -->
 
-<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee" version="2.0">
+<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+              version="2.0">
     <namespace>http://javaserverfaces.java.net/resourceDependency</namespace>
     <tag>
+        <description>Writes a hello world.</description>
         <tag-name>hello</tag-name>
-        <description>
-            Writes a hello world.
-        </description>
         <component>
             <component-type>javax.faces.Output</component-type>
             <renderer-type>com.sun.faces.test.servlet30.component.ResourceDependencyRenderer</renderer-type>

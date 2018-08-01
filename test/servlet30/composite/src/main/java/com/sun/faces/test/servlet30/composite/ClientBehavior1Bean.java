@@ -16,13 +16,13 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean(name = "clientBehavior1Bean")
+
+@Named
 @RequestScoped
-public class ClientBehavior1Bean implements Serializable {
+public class ClientBehavior1Bean {
 
     private String text = "initial";
 

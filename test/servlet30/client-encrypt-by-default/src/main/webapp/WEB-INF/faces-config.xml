@@ -1,113 +1,61 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!--
-
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
-
-    This program and the accompanying materials are made available under the
-    terms of the Eclipse Public License v. 2.0, which is available at
-    http://www.eclipse.org/legal/epl-2.0.
-
-    This Source Code may also be made available under the following Secondary
-    Licenses when the conditions for such availability set forth in the
-    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
-    version 2 with the GNU Classpath Exception, which is available at
-    https://www.gnu.org/software/classpath/license.html.
-
-    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
-
--->
+<!-- Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved. This program and the accompanying materials 
+    are made available under the terms of the Eclipse Public License v. 2.0, which is available at http://www.eclipse.org/legal/epl-2.0. 
+    This Source Code may also be made available under the following Secondary Licenses when the conditions for such availability 
+    set forth in the Eclipse Public License v. 2.0 are satisfied: GNU General Public License, version 2 with the GNU Classpath 
+    Exception, which is available at https://www.gnu.org/software/classpath/license.html. SPDX-License-Identifier: EPL-2.0 OR 
+    GPL-2.0 WITH Classpath-exception-2.0 -->
 
 <faces-config xmlns="http://java.sun.com/xml/ns/javaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
     version="1.2">
 
-  <application>
-    <locale-config>
-      <default-locale>en</default-locale>
-      <supported-locale>de</supported-locale>
-      <supported-locale>fr</supported-locale>
-      <supported-locale>es</supported-locale>
-    </locale-config>
-  </application>
-  
-  <navigation-rule>
-    <description>
+    <application>
+        <locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>de</supported-locale>
+            <supported-locale>fr</supported-locale>
+            <supported-locale>es</supported-locale>
+        </locale-config>
+    </application>
+
+    <navigation-rule>
+        <description>
         The decision rule used by the NavigationHandler to
         determine which view must be displayed after the
         current view, greeting.jsp is processed.
-    </description>
-    <from-view-id>/greeting.jsp</from-view-id>
-    <navigation-case>
-        <description>
+        </description>
+        <from-view-id>/greeting.jsp</from-view-id>
+        <navigation-case>
+            <description>
             Indicates to the NavigationHandler that the response.jsp
             view must be displayed if the Action referenced by a 
             UICommand component on the greeting.jsp view returns 
             the outcome "success".
         </description>
-      <from-outcome>success</from-outcome>
-      <to-view-id>/response.jsp</to-view-id>
-    </navigation-case>
-  </navigation-rule>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/response.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 
-  <navigation-rule>
-   <description>
+    <navigation-rule>
+        <description>
         The decision rules used by the NavigationHandler to
         determine which view must be displayed after the
         current view, response.jsp is processed.
     </description>
-    <from-view-id>/response.jsp</from-view-id>
-    <navigation-case>
-        <description>
+        <from-view-id>/response.jsp</from-view-id>
+        <navigation-case>
+            <description>
             Indicates to the NavigationHandler that the greeting.jsp
             view must be displayed if the Action referenced by a 
             UICommand component on the response.jsp view returns 
             the outcome "success".
         </description>
-        <from-outcome>success</from-outcome>
-      <to-view-id>/greeting.jsp</to-view-id>
-    </navigation-case>
-  </navigation-rule>
-
-  <managed-bean>
-    <description>
-      The "backing file" bean that backs up the guessNumber webapp
-    </description>
-    <managed-bean-name>UserNumberBean</managed-bean-name>
-    <managed-bean-class>guessNumber.UserNumberBean</managed-bean-class>
-    <managed-bean-scope>session</managed-bean-scope>
-    <managed-property>
-      <property-name>minimum</property-name>
-      <property-class>int</property-class>
-      <value>1</value>
-    </managed-property>
-    <managed-property>
-      <property-name>maximum</property-name>
-      <property-class>int</property-class>
-      <value>10</value>
-    </managed-property>
-
-  </managed-bean>
-  
-  <managed-bean>
-    <description>
-      The "backing file" bean that backs up the guessNumber webapp
-    </description>
-    <managed-bean-name>requestBean</managed-bean-name>
-    <managed-bean-class>guessNumber.UserNumberBean</managed-bean-class>
-    <managed-bean-scope>request</managed-bean-scope>
-    <managed-property>
-      <property-name>minimum</property-name>
-      <property-class>int</property-class>
-      <value>12</value>
-    </managed-property>
-    <managed-property>
-      <property-name>maximum</property-name>
-      <property-class>int</property-class>
-      <value>22</value>
-    </managed-property>    
-
-  </managed-bean>
-
+            <from-outcome>success</from-outcome>
+            <to-view-id>/greeting.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 
 </faces-config>

@@ -38,13 +38,5 @@
         <param-name>javax.faces.SERIALIZE_SERVER_STATE</param-name>
         <param-value>${webapp.serializeServerState}</param-value>
     </context-param>
-    <servlet>
-        <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>*.faces</url-pattern>
-    </servlet-mapping>
+    
 </web-app>

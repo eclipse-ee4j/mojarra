@@ -19,10 +19,14 @@ package com.sun.faces.test.servlet30.ajax;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 @Named
+@RequestScoped
 public class Issue2636Bean {
+
+    private String actionText;
 
     public List<String> getValues() {
         List<String> values = new ArrayList<String>();
@@ -38,7 +42,7 @@ public class Issue2636Bean {
         actionText = "linkAction2";
     }
 
-    private String actionText = null;
+
 
     public String getActionText() {
         return actionText;

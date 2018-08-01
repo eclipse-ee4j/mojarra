@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +18,17 @@
 
 package com.sun.faces.test.servlet30.el;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlImage;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import org.junit.After;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class Issue3832IT {
 
@@ -50,7 +53,7 @@ public class Issue3832IT {
         text.setValueAttribute("#{elInQueryParamBean.forbidden}");
         HtmlSubmitInput button = page.getHtmlElementById("submit");
         page = button.click();
-        
+
         HtmlAnchor link = page.getHtmlElementById("link");
         assertTrue(-1 == link.getHrefAttribute().indexOf("Forbidden value."));
     }

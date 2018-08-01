@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
+ * Copyright (c) 2018 Payara Services Limited.
+ * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,21 +18,23 @@
 
 package com.sun.faces.test.servlet30.composite2;
 
+import static com.sun.faces.test.servlet30.composite2.LineStore.findLine;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
 @FacesConverter(forClass = LineConverter.class, value = "lineConverter")
-public class LineConverter implements Converter {
+public class LineConverter implements Converter<Line> {
 
     @Override
-    public Object getAsObject(FacesContext fc, UIComponent comp, String str) {
-        return LineStore.findLine(Integer.valueOf(str));
+    public Line getAsObject(FacesContext fc, UIComponent comp, String str) {
+        return findLine(Integer.valueOf(str));
     }
 
     @Override
-    public String getAsString(FacesContext fc, UIComponent comp, Object obj) {
-        return Integer.toString(((Line) obj).getId());
+    public String getAsString(FacesContext fc, UIComponent comp, Line line) {
+        return Integer.toString(line.getId());
     }
 }
