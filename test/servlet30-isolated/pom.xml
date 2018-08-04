@@ -36,7 +36,6 @@
     <modules>
         <module>cactus</module>
         <module>converterPropertyEditor</module>
-        <module>coreTags</module>
     </modules>
 </project>
 
