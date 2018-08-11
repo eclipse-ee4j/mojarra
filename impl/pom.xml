@@ -210,38 +210,17 @@
                                 <delete dir="build"/>
                                 <delete dir="${jsf-tools-dir}/build"/>
                                 
-                                <echo message="${line.separator}${line.separator}${line.separator}${line.separator}Generate API components${line.separator}${line.separator}${line.separator}${line.separator}" />
                                 <!--
                                 
-                                    Generate API components
+                                    Copy LogStrings and DTD/XSD
                                     
                                 -->
+                                <echo message="${line.separator}${line.separator}${line.separator}${line.separator}Copy LogStrings and DTD/XSD${line.separator}${line.separator}${line.separator}${line.separator}" />
                                 <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" verbose="true">
                                     <fileset dir="src/main/resources/com/sun/faces" includes="LogStrings.properties"/>
                                 </copy>
                                 <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" flatten="true">
                                     <fileset dir="src/main/resources/com/sun/faces" includes="*.dtd,*.xsd"/>
-                                </copy>
-                                
-                                <taskdef name="generateComponents"
-                                    classname="com.sun.faces.ant.ComponentGenTask">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${project.version}.jar"/>
-                                    </classpath>
-                                </taskdef>
-                                <generateComponents
-                                    generatorConfig="${jsf-tools-dir}/conf/HtmlBasicTaglib21.properties"
-                                    facesConfig="src/main/resources/com/sun/faces/standard-html-renderkit.xml"
-                                    fork="true">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${project.version}.jar"/>
-                                        <pathelement location="${jsf-tools-dir}/build/classes"/>
-                                        <path refid="maven.plugin.classpath"/>
-                                    </classpath>
-                                </generateComponents>
-                                
-                                <copy todir="${project.build.directory}/generated-sources/antrun/javax">
-                                    <fileset dir="build/generate/javax"/>
                                 </copy>
                                 <delete dir="build"/>
                                 <delete dir="${jsf-tools-dir}/build"/>
