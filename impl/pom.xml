@@ -164,51 +164,6 @@
                                             tofile="src/main/resources/com/sun/faces/standard-html-renderkit.xml"/>
                                     </then>
                                 </if>
-                          
-                                    
-                               
-                               
-                                <!--
-                                
-                                    Generate AttributeManager
-                                    
-                                    AttributeManager is a class that contains mappings between the standard components
-                                    and the passthrough attributes associated with them.
-                                    
-                                    This is used in the generating of several UI components based on their taglib descriptions
-                                
-                                    -->
-                                <echo message="Copying LogStrings.properties" />
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" verbose="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="LogStrings.properties"/>
-                                </copy>
-                                
-                                <echo message="Copying *.dtd,*.xsd" />
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" flatten="true" verbose="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="*.dtd,*.xsd"/>
-                                </copy>
-                                
-                                <taskdef name="generateAttrManager" classname="com.sun.faces.ant.AttributeManagerGenTask">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${project.version}.jar"/>
-                                    </classpath>
-                                </taskdef>
-                                <generateAttrManager
-                                    generatorConfig="${jsf-tools-dir}/conf/HtmlBasicTaglib21.properties"
-                                    facesConfig="src/main/resources/com/sun/faces/standard-html-renderkit.xml"
-                                    fork="true">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${project.version}.jar"/>
-                                        <pathelement location="${jsf-tools-dir}/build/classes"/>
-                                        <path refid="maven.plugin.classpath"/>
-                                    </classpath>
-                                </generateAttrManager>
-                                
-                                <copy todir="${project.build.directory}/generated-sources/antrun">
-                                    <fileset dir="build/generate"/>
-                                </copy>
-                                <delete dir="build"/>
-                                <delete dir="${jsf-tools-dir}/build"/>
                                 
                                 <!--
                                 
