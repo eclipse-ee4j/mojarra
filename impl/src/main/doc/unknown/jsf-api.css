@@ -19,8 +19,6 @@
 Overall document style
 */
 
-@import url('resources/fonts/dejavu.css');
-
 body {
     background-color:#ffffff;
     background: url(expert-draft-bg.png); 
@@ -590,8 +588,6 @@ div.contentContainer ul.blockList li.blockList h2{
     padding-bottom:0px;
 }
 
-
-/* Change bars from http://www.geocities.com/hentaihelper/2atimlin.htm */
 
 /* put a red "change" bar in the left margin			*/
 /*
