@@ -15,24 +15,25 @@
  */
 
 package com.sun.faces.systest.model;
+
 public class SpecialBean {
 
-        private final String special;
+    private final String special;
 
-        public SpecialBean(String specialValue) {
-            special = specialValue;
-        }
-
-        public String getString() {
-            return special;
-        }
-
-        public boolean equals(Object target) {
-           if (!(target instanceof SpecialBean)) {
-              return false;
-           } else {
-           return (special.equals(((SpecialBean) target).getString()));
-           }
-        }
+    public SpecialBean(String specialValue) {
+        special = specialValue;
     }
 
+    public String getString() {
+        return special;
+    }
+
+    @Override
+    public boolean equals(Object target) {
+        if (!(target instanceof SpecialBean)) {
+            return false;
+        } else {
+            return (special.equals(((SpecialBean) target).getString()));
+        }
+    }
+}

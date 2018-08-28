@@ -19,19 +19,14 @@ package com.sun.faces.test.servlet30.systest;
 import java.util.List;
 import java.util.ArrayList;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
-
 
 public class AnnotatedComponentsITCase extends HtmlUnitFacesITCase {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public AnnotatedComponentsITCase(String name) {
         super(name);
@@ -48,20 +43,17 @@ public class AnnotatedComponentsITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AnnotatedComponentsITCase.class));
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testAnnotations() throws Exception {
         HtmlPage page = getPage("/faces/annotationtest.xhtml");
-        if (!page.asXml().toUpperCase().contains("TOMCAT") &&
-                !page.asXml().toUpperCase().contains("WEBLOGIC")) {
+        if (!page.asXml().toUpperCase().contains("TOMCAT") && !page.asXml().toUpperCase().contains("WEBLOGIC")) {
             List<HtmlSpan> output = new ArrayList<HtmlSpan>(1);
             getAllElementsOfGivenClass(page, output, HtmlSpan.class);
             assertTrue(output.size() == 1);
             HtmlSpan span = output.get(0);
             assertTrue(span.asText().contains("true"));
-            assertTrue(page.asText().contains("AnnotatedPhaseListener: Hello World from env-entry!"));        
+            assertTrue(page.asText().contains("AnnotatedPhaseListener: Hello World from env-entry!"));
         }
     }
 }

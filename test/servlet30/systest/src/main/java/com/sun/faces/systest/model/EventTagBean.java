@@ -31,21 +31,18 @@ import javax.faces.event.ComponentSystemEvent;
  *
  */
 public class EventTagBean {
-    
-    
+
     public void beforeViewRender(ComponentSystemEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
-        
-        context.getExternalContext().getRequestMap().put("preRenderComponentMessage", 
-                event.getComponent().getClass() + " pre-render");
-    }
 
+        context.getExternalContext().getRequestMap().put("preRenderComponentMessage", event.getComponent().getClass() + " pre-render");
+    }
 
     public void beforeEncode(ComponentSystemEvent event) {
-        UIOutput output = (UIOutput)event.getComponent();
+        UIOutput output = (UIOutput) event.getComponent();
         output.setValue("The '" + event.getClass().getName() + "' event fired!");
     }
-    
+
     public void beforeEncodeNoArg() {
         FacesContext context = FacesContext.getCurrentInstance();
         UIOutput output = (UIOutput) context.getViewRoot().findComponent("form:noArgTest");
@@ -56,16 +53,17 @@ public class EventTagBean {
     public void postValidate(ComponentSystemEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
         final UIForm form = (UIForm) event.getComponent();
-        final String [] clientIds = { "lesser", "greater" };
-        final int [] values = new int[2];
-        final boolean [] hasValues = new boolean[2];
+        final String[] clientIds = { "lesser", "greater" };
+        final int[] values = new int[2];
+        final boolean[] hasValues = new boolean[2];
         final List<FacesMessage> toAdd = new ArrayList<FacesMessage>();
-        
+
         // Traverse the form and suck out the individual values
         for (int i = 0; i < clientIds.length; i++) {
             final int finalI = i;
             form.invokeOnComponent(context, clientIds[i], new ContextCallback() {
 
+                @Override
                 public void invokeContextCallback(FacesContext context, UIComponent target) {
                     Object value = ((ValueHolder) target).getValue();
                     try {
@@ -74,13 +72,11 @@ public class EventTagBean {
                             hasValues[finalI] = true;
                         } else {
                             hasValues[finalI] = false;
-                            FacesMessage msg = new FacesMessage(clientIds[finalI] +
-                                    " must have a value");
+                            FacesMessage msg = new FacesMessage(clientIds[finalI] + " must have a value");
                             toAdd.add(msg);
                         }
                     } catch (NumberFormatException nfe) {
-                        FacesMessage msg = new FacesMessage("unable to parse the number for field " + 
-                                clientIds[finalI]);
+                        FacesMessage msg = new FacesMessage("unable to parse the number for field " + clientIds[finalI]);
                         toAdd.add(msg);
                     }
 
@@ -99,7 +95,7 @@ public class EventTagBean {
                 toAdd.add(msg);
             }
         }
-        
+
         // If we have any messages
         if (!toAdd.isEmpty()) {
             // add them so the user sees the message
@@ -111,5 +107,5 @@ public class EventTagBean {
             context.renderResponse();
         }
     }
-    
+
 }

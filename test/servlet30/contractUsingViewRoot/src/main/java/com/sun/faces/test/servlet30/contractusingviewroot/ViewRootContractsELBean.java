@@ -16,14 +16,14 @@
 
 package com.sun.faces.test.servlet30.contractusingviewroot;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
+@Named
 @RequestScoped
-@ManagedBean(name = "viewRootConstractsELBean")
 public class ViewRootContractsELBean {
 
-    private String contracts = null;
+    private String contracts;
 
     public String getContracts() {
         return contracts;

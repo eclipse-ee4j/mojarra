@@ -19,8 +19,8 @@ package com.sun.faces.test.servlet30.flash;
 import java.util.Map;
 import javax.annotation.PreDestroy;
 import javax.faces.application.Application;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.PostKeepFlashValueEvent;
@@ -31,10 +31,14 @@ import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import java.io.Serializable;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class SessionScopedBean implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private FlashListener listener;
 
     public SessionScopedBean() {
@@ -71,13 +75,14 @@ public class SessionScopedBean implements Serializable {
 
     public static class FlashListener implements SystemEventListener {
 
+        @Override
         public boolean isListenerForSource(Object source) {
             return ((source instanceof String) || (source instanceof Map));
         }
 
+        @Override
         public void processEvent(SystemEvent event) throws AbortProcessingException {
-            appendMessage("[received " + event.getClass().getName() + " source:"
-                    + event.getSource() + "]");
+            appendMessage("[received " + event.getClass().getName() + " source:" + event.getSource() + "]");
 
         }
 

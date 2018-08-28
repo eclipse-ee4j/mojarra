@@ -16,24 +16,22 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import java.util.List;
-import static junit.framework.TestCase.assertTrue;
-
 
 /**
- * <p>Make sure that only unique view ids are saved in the session</p>
+ * <p>
+ * Make sure that only unique view ids are saved in the session
+ * </p>
  */
 
 public class ViewRootPhaseListenerITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -48,14 +46,13 @@ public class ViewRootPhaseListenerITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -64,10 +61,10 @@ public class ViewRootPhaseListenerITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(ViewRootPhaseListenerITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -99,16 +96,15 @@ public class ViewRootPhaseListenerITCase extends HtmlUnitFacesITCase {
         List list;
 
         HtmlSubmitInput button = null;
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
 
-        assertTrue(-1 != page.asText().indexOf("beforePhaseEvent: beforePhase: APPLY_REQUEST_VALUES 2 beforePhase: PROCESS_VALIDATIONS 3 beforePhase: UPDATE_MODEL_VALUES 4 beforePhase: INVOKE_APPLICATION 5 beforePhase: RENDER_RESPONSE 6."));
-        assertTrue(-1 != page.asText().indexOf("afterPhaseEvent: afterPhase: APPLY_REQUEST_VALUES 2 afterPhase: PROCESS_VALIDATIONS 3 afterPhase: UPDATE_MODEL_VALUES 4 afterPhase: INVOKE_APPLICATION 5."));
-
+        assertTrue(-1 != page.asText().indexOf(
+                "beforePhaseEvent: beforePhase: APPLY_REQUEST_VALUES 2 beforePhase: PROCESS_VALIDATIONS 3 beforePhase: UPDATE_MODEL_VALUES 4 beforePhase: INVOKE_APPLICATION 5 beforePhase: RENDER_RESPONSE 6."));
+        assertTrue(-1 != page.asText().indexOf(
+                "afterPhaseEvent: afterPhase: APPLY_REQUEST_VALUES 2 afterPhase: PROCESS_VALIDATIONS 3 afterPhase: UPDATE_MODEL_VALUES 4 afterPhase: INVOKE_APPLICATION 5."));
 
     }
 
 }
-

@@ -20,42 +20,40 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.context.FacesContext;
 
-
 public class ValueChangeListenerBean extends Object {
 
     public ValueChangeListenerBean() {
     }
 
     protected String textAResult;
+
     public String getTextAResult() {
-	return textAResult;
+        return textAResult;
     }
 
     public void setTextAResult(String newTextAResult) {
-	textAResult = newTextAResult;
+        textAResult = newTextAResult;
     }
 
     protected String textBResult;
+
     public String getTextBResult() {
-	return textBResult;
+        return textBResult;
     }
 
     public void setTextBResult(String newTextBResult) {
-	textBResult = newTextBResult;
+        textBResult = newTextBResult;
     }
-    
+
     public void textAChanged(ValueChangeEvent event) throws AbortProcessingException {
-	setTextAResult("Received valueChangeEvent for textA: " + 
-		       event.hashCode());
+        setTextAResult("Received valueChangeEvent for textA: " + event.hashCode());
     }
 
     public void textBChanged(ValueChangeEvent event) throws AbortProcessingException {
-	setTextBResult("Received valueChangeEvent for textB: " + 
-		       event.hashCode());
+        setTextBResult("Received valueChangeEvent for textB: " + event.hashCode());
     }
 
-    public void valueChange(ValueChangeEvent event)
-    throws AbortProcessingException {
+    public void valueChange(ValueChangeEvent event) throws AbortProcessingException {
         FacesContext ctx = FacesContext.getCurrentInstance();
         ctx.renderResponse();
     }

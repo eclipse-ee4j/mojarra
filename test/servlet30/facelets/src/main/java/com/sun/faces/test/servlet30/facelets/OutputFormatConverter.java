@@ -21,13 +21,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
-public class OutputFormatConverter implements Converter {
+public class OutputFormatConverter implements Converter<Object> {
 
-    public OutputFormatConverter() {
-    }
-
-    public Object getAsObject(FacesContext context,
-            UIComponent component, String param) {
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String param) {
         try {
             return " ";
         } catch (Exception e) {
@@ -35,16 +32,14 @@ public class OutputFormatConverter implements Converter {
         }
     }
 
-    public String getAsString(FacesContext context,
-            UIComponent component, Object obj) {
-        String returnVal;
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object obj) {
+        if (obj == null) {
+            return " ";
+        }
+
         try {
-            if (null != obj) {
-                returnVal = "MyConverter.getAsString Called: " + obj.toString();
-            } else {
-                returnVal = " ";
-            }
-            return returnVal;
+            return "MyConverter.getAsString Called: " + obj.toString();
         } catch (Exception e) {
             throw new ConverterException(e);
         }

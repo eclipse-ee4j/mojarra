@@ -18,7 +18,5 @@ package com.sun.faces.test.servlet30.facelets;
 
 public enum EnumConverterEnum {
 
-    CHOICE_ONE,
-    CHOICE_TWO,
-    ETC
+    CHOICE_ONE, CHOICE_TWO, ETC
 }

@@ -16,19 +16,18 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.html.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * <p>Test Case for Multiple RenderKits.</p>
+ * <p>
+ * Test Case for Multiple RenderKits.
+ * </p>
  */
 
 public class CommandLinkOnClickITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -43,14 +42,13 @@ public class CommandLinkOnClickITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -59,10 +57,10 @@ public class CommandLinkOnClickITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(CommandLinkOnClickITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -113,7 +111,7 @@ public class CommandLinkOnClickITCase extends HtmlUnitFacesITCase {
     }
 
     // This method tests that a user provided commandLink "onclick" javascript
-    // method will get executed.  The user provided function returns "false",
+    // method will get executed. The user provided function returns "false",
     // so, the internal Faces function should not execute.
     public void testOnClickReturnFalse() throws Exception {
 //        HtmlPage page = getPage("/faces/jsp/commandLinkOnClickFalse.jsp");
@@ -142,7 +140,7 @@ public class CommandLinkOnClickITCase extends HtmlUnitFacesITCase {
 //        HtmlTextInput input = (HtmlTextInput) form.getInputByName("form:init");
 //        assertTrue(input.getValueAttribute().equals("Hello"));
 //
-//        // The value of this field remains unchanged from the initial value. 
+//        // The value of this field remains unchanged from the initial value.
 //        try {
 //            hidden = (HtmlHiddenInput) form.getInputByName("form:j_idcl");
 //        } catch (ElementNotFoundException e) {

@@ -25,6 +25,11 @@ import javax.faces.event.NamedEvent;
  */
 @NamedEvent
 public class AnnotatedComponentSystemEvent extends ComponentSystemEvent {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     public AnnotatedComponentSystemEvent(UIComponent component) {
         super(component);
     }

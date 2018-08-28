@@ -16,14 +16,14 @@
 
 package com.sun.faces.systest.model.ajax;
 
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
 import javax.faces.FacesException;
 import java.io.IOException;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class RedirectBean {
 

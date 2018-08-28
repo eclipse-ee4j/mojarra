@@ -21,32 +21,28 @@ import java.net.URL;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
 import javax.faces.context.FacesContext;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class ImplicitNavigationBean {
-    
+
     public String getCurrentActionUrl() throws MalformedURLException {
         FacesContext context = FacesContext.getCurrentInstance();
-        ConfigurableNavigationHandler navHandler = (ConfigurableNavigationHandler)
-                context.getApplication().getNavigationHandler();
-        NavigationCase navCase = navHandler.getNavigationCase(context, 
-                null, context.getViewRoot().getViewId());
+        ConfigurableNavigationHandler navHandler = (ConfigurableNavigationHandler) context.getApplication().getNavigationHandler();
+        NavigationCase navCase = navHandler.getNavigationCase(context, null, context.getViewRoot().getViewId());
         URL myUrl = navCase.getActionURL(context);
-        
+
         return myUrl.toExternalForm();
     }
 
     public String getCurrentResourceUrl() throws MalformedURLException {
         FacesContext context = FacesContext.getCurrentInstance();
-        ConfigurableNavigationHandler navHandler = (ConfigurableNavigationHandler)
-                context.getApplication().getNavigationHandler();
-        NavigationCase navCase = navHandler.getNavigationCase(context, 
-                null, context.getViewRoot().getViewId());
+        ConfigurableNavigationHandler navHandler = (ConfigurableNavigationHandler) context.getApplication().getNavigationHandler();
+        NavigationCase navCase = navHandler.getNavigationCase(context, null, context.getViewRoot().getViewId());
         URL myUrl = navCase.getResourceURL(context);
-        
+
         return myUrl.toExternalForm();
     }
 

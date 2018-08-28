@@ -16,11 +16,10 @@
 
 package com.sun.faces.systest.composite.behavior;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 
-
-@ManagedBean
+@Named
 @RequestScoped
 public class CompositeBehaviorTestBean {
 

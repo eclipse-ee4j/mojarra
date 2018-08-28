@@ -45,7 +45,7 @@ public class ComponentIT {
         HtmlPage page = webClient.getPage(webUrl + "faces/component.jsp");
         assertTrue(Pattern.matches("(?s).*/component.jsp PASSED.*", page.asXml()));
     }
-    
+
     @Test
     public void testProcessSaveRestoreState() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
@@ -53,7 +53,7 @@ public class ComponentIT {
         assertEquals(200, page.getWebResponse().getStatusCode());
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
     }
-    
+
     @Test
     public void testComponent01() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/component01.jsp");

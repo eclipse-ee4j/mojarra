@@ -17,9 +17,6 @@
 package com.sun.faces.test.servlet30.nesteddatatables;
 
 import javax.faces.model.ListDataModel;
-import javax.faces.component.UIData;
-import javax.faces.context.FacesContext;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -49,7 +46,6 @@ public class BeanList extends Object {
     public void setInnerDataName(String newInnerDataName) {
         innerDataName = newInnerDataName;
     }
-
 
     protected String name = "name";
 
@@ -104,6 +100,5 @@ public class BeanList extends Object {
     public void setInputValues(List newInputValues) {
         inputValues = newInputValues;
     }
-
 
 }

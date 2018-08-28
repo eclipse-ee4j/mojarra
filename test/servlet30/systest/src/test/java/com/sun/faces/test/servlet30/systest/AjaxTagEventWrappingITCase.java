@@ -29,10 +29,10 @@ public class AjaxTagEventWrappingITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -41,56 +41,55 @@ public class AjaxTagEventWrappingITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxTagEventWrappingITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxTagEventWrapping() throws Exception {
         getPage("/faces/ajax/ajaxTagEventWrapping.xhtml");
         System.out.println("Start ajax tag event wrapping test");
 
         // Check initial values
-        checkTrue("out1","0");
-        checkTrue("say","init");
-        checkTrue("paramOut","");
-        checkTrue("out2","1");
+        checkTrue("out1", "0");
+        checkTrue("say", "init");
+        checkTrue("paramOut", "");
+        checkTrue("out2", "1");
 
         // Press Count
         HtmlSubmitInput button = (HtmlSubmitInput) lastpage.getHtmlElementById("button1");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("out1","2");
-        checkTrue("out2","1");
+        checkTrue("out1", "2");
+        checkTrue("out2", "1");
 
         // Press Say
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("button2");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("say","1");
-        checkTrue("out1","2");
-        checkTrue("out2","1");
+        checkTrue("say", "1");
+        checkTrue("out1", "2");
+        checkTrue("out2", "1");
 
         // Press Count and Say
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("button3");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("say","2");
-        checkTrue("out1","3");
-        checkTrue("out2","1");
+        checkTrue("say", "2");
+        checkTrue("out1", "3");
+        checkTrue("out2", "1");
 
         // Press Param
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("button4");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("say","init");
-        checkTrue("out1","4");
-        checkTrue("out2","5");
-        checkTrue("paramOut","testval");
+        checkTrue("say", "init");
+        checkTrue("out1", "4");
+        checkTrue("out2", "5");
+        checkTrue("paramOut", "testval");
 
         // Reset Page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("reset");
@@ -99,19 +98,19 @@ public class AjaxTagEventWrappingITCase extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button.click();
 
         // Check initial values
-        checkTrue("out1","0");
-        checkTrue("say","init");
-        checkTrue("paramOut","");
-        checkTrue("out2","1");
+        checkTrue("out1", "0");
+        checkTrue("say", "init");
+        checkTrue("paramOut", "");
+        checkTrue("out2", "1");
 
         // Press Count and Param
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("button5");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("out1","2");
-        checkTrue("say","init");
-        checkTrue("paramOut","testval");
-        checkTrue("out2","1");
+        checkTrue("out1", "2");
+        checkTrue("say", "init");
+        checkTrue("paramOut", "testval");
+        checkTrue("out2", "1");
 
         // Reset Page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("reset");
@@ -120,22 +119,21 @@ public class AjaxTagEventWrappingITCase extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button.click();
 
         // Check initial values
-        checkTrue("out1","0");
-        checkTrue("say","init");
-        checkTrue("paramOut","");
-        checkTrue("out2","1");
+        checkTrue("out1", "0");
+        checkTrue("say", "init");
+        checkTrue("paramOut", "");
+        checkTrue("out2", "1");
 
         // Press Count and Say and Param
-        /*  Test is faulty - commenting out - race to see if say is actually set
-
-        button = (HtmlSubmitInput) lastpage.getHtmlElementById("button6");
-        lastpage = (HtmlPage) button.click();
-
-        checkTrue("out1","2");
-        checkTrue("say","1");
-        checkTrue("paramOut","testval");
-        checkTrue("out2","1");
-        */
+        /*
+         * Test is faulty - commenting out - race to see if say is actually set
+         * 
+         * button = (HtmlSubmitInput) lastpage.getHtmlElementById("button6"); lastpage = (HtmlPage)
+         * button.click();
+         * 
+         * checkTrue("out1","2"); checkTrue("say","1"); checkTrue("paramOut","testval");
+         * checkTrue("out2","1");
+         */
         // leaving out button 7
 
         // Reset Page
@@ -145,35 +143,34 @@ public class AjaxTagEventWrappingITCase extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button.click();
 
         // Check initial values
-        checkTrue("out1","0");
-        checkTrue("say","init");
-        checkTrue("paramOut","");
-        checkTrue("out2","1");
-
+        checkTrue("out1", "0");
+        checkTrue("say", "init");
+        checkTrue("paramOut", "");
+        checkTrue("out2", "1");
 
         // Check ajax checkbox
-        HtmlCheckBoxInput checked = ((HtmlCheckBoxInput)lastpage.getHtmlElementById("checkbox1"));
-        lastpage = (HtmlPage)checked.click();
+        HtmlCheckBoxInput checked = ((HtmlCheckBoxInput) lastpage.getHtmlElementById("checkbox1"));
+        lastpage = (HtmlPage) checked.click();
 
         System.out.println(getText("checkedvalue1"));
-        checkTrue("checkedvalue1","true");
-        checkTrue("out2","1");
+        checkTrue("checkedvalue1", "true");
+        checkTrue("out2", "1");
 
         // Check ajax + userwrap checkbox
-        checked = ((HtmlCheckBoxInput)lastpage.getHtmlElementById("checkbox2"));
-        lastpage = (HtmlPage)checked.click();
+        checked = ((HtmlCheckBoxInput) lastpage.getHtmlElementById("checkbox2"));
+        lastpage = (HtmlPage) checked.click();
 
-        checkTrue("checkedvalue2","true");
-        checkTrue("say","1");
-        checkTrue("out2","1");
+        checkTrue("checkedvalue2", "true");
+        checkTrue("say", "1");
+        checkTrue("out2", "1");
 
         // Check user onchange checkbox
-        checked = ((HtmlCheckBoxInput)lastpage.getHtmlElementById("checkbox3"));
-        lastpage = (HtmlPage)checked.click();
+        checked = ((HtmlCheckBoxInput) lastpage.getHtmlElementById("checkbox3"));
+        lastpage = (HtmlPage) checked.click();
 
-        checkTrue("checkedvalue3","false");
-        checkTrue("say","2");
-        checkTrue("out2","1");
+        checkTrue("checkedvalue3", "false");
+        checkTrue("say", "2");
+        checkTrue("out2", "1");
 
     }
 

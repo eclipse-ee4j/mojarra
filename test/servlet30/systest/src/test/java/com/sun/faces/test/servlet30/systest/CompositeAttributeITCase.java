@@ -30,8 +30,7 @@ import junit.framework.TestSuite;
  */
 public class CompositeAttributeITCase extends HtmlUnitFacesITCase {
 
-
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     public CompositeAttributeITCase() {
         this("CompositeAttributeTestCase");
     }
@@ -39,7 +38,6 @@ public class CompositeAttributeITCase extends HtmlUnitFacesITCase {
     public CompositeAttributeITCase(String name) {
         super(name);
     }
-
 
     /**
      * Set up instance variables required by this test case.
@@ -49,14 +47,12 @@ public class CompositeAttributeITCase extends HtmlUnitFacesITCase {
         super.setUp();
     }
 
-
     /**
      * Return the tests included in this test suite.
      */
     public static Test suite() {
         return (new TestSuite(CompositeAttributeITCase.class));
     }
-
 
     /**
      * Tear down instance variables required by this test case.
@@ -65,7 +61,6 @@ public class CompositeAttributeITCase extends HtmlUnitFacesITCase {
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
@@ -80,6 +75,7 @@ public class CompositeAttributeITCase extends HtmlUnitFacesITCase {
 
     /**
      * Test for Issue #1966
+     * 
      * @throws Exception
      */
     public void testCompositeAttributeDefaults() throws Exception {
@@ -131,12 +127,11 @@ public class CompositeAttributeITCase extends HtmlUnitFacesITCase {
     }
 
     /**
-     * Helper to test for the Content of an HTML-Element.
-     * This method will assert, that the Element with the provided id exists
-     * and that its content is equal to the provided expected content.
+     * Helper to test for the Content of an HTML-Element. This method will assert, that the Element with
+     * the provided id exists and that its content is equal to the provided expected content.
+     * 
      * @param page the page to test
-     * @param elementId the id of the element that contains the content to be
-     *  tested.
+     * @param elementId the id of the element that contains the content to be tested.
      * @param expected the expected content
      */
     private void assertElementContentEquals(final HtmlPage page, final String elementId, final String expected) {
@@ -145,18 +140,18 @@ public class CompositeAttributeITCase extends HtmlUnitFacesITCase {
         assertEquals("Testing element content of #" + elementId, expected, element.getTextContent());
     }
 
-
     /**
-     * Helper to test for the value of an attribute of a HTML-Element.
-     * This method will assert, that the Element with the provided id exists
-     * and that the value of the attribute with the provided attributeName is
-     * equal to the provided expected content.
+     * Helper to test for the value of an attribute of a HTML-Element. This method will assert, that the
+     * Element with the provided id exists and that the value of the attribute with the provided
+     * attributeName is equal to the provided expected content.
+     * 
      * @param page the page to test
      * @param elementId the id of the element with the attribute to be tested
      * @param attributeName the name of the attribute to be tested
      * @param expected the expected content
      */
-    private void assertElementAttributeEquals(final HtmlPage page, final String elementId, final String attributeName, final String expected) {
+    private void assertElementAttributeEquals(final HtmlPage page, final String elementId, final String attributeName,
+            final String expected) {
         HtmlElement element = (HtmlElement) page.getElementById(elementId);
         assertNotNull(element);
         assertEquals("Testing attribute '" + attributeName + "' of #" + elementId, expected, element.getAttribute(attributeName));

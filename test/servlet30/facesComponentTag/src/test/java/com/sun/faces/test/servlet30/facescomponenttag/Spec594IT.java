@@ -43,7 +43,8 @@ public class Spec594IT {
     public void testFacesComponentTag() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml");
         String pageXml = page.asXml();
-        assertTrue(pageXml.matches("(?s).*<input\\s+id=\"tagNameExplicitlyDeclared\"\\s+type=\"text\"\\s+name=\"tagNameExplicitlyDeclared\"/>.*<input\\s+id=\"myTag\"\\s+type=\"text\"\\s+name=\"myTag\"/>.*"));
+        assertTrue(pageXml.matches(
+                "(?s).*<input\\s+id=\"tagNameExplicitlyDeclared\"\\s+type=\"text\"\\s+name=\"tagNameExplicitlyDeclared\"/>.*<input\\s+id=\"myTag\"\\s+type=\"text\"\\s+name=\"myTag\"/>.*"));
         assertTrue(pageXml.contains("javax.faces.ViewState"));
     }
 }

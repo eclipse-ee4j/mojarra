@@ -19,11 +19,14 @@ package com.sun.faces.test.servlet30.facelets;
 import java.io.Serializable;
 
 public class DataTableCollectionItem implements Serializable {
-    
+
+    private static final long serialVersionUID = 1L;
+
     protected String firstName = "Duke";
     protected String lastName = "Java";
-    
-    public DataTableCollectionItem() {}
+
+    public DataTableCollectionItem() {
+    }
 
     public String getFirstName() {
         return firstName;
@@ -41,4 +44,3 @@ public class DataTableCollectionItem implements Serializable {
         this.lastName = lastName;
     }
 }
-

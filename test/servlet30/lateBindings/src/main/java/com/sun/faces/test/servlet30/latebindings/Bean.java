@@ -24,16 +24,15 @@ import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
 import javax.faces.application.FacesMessage;
 
-
 public class Bean {
 
     private boolean switchit;
-
 
     private Validator v1 = new CustomValidator1();
     private Validator v2 = new CustomValidator2();
     private Validator vret = v1;
     private Validator vnext = v2;
+
     public Validator getValidator() {
         if (switchit) {
             Validator tmp = vret;
@@ -48,6 +47,7 @@ public class Bean {
     private Converter c2 = new CustomConverter2();
     private Converter cret = c1;
     private Converter cnext = c2;
+
     public Converter getConverter() {
         if (switchit) {
             Converter tmp = cret;
@@ -61,6 +61,7 @@ public class Bean {
     // ----------------------------------------------------------- Inner Classes
 
     private Validator val;
+
     public void setValidator2(Validator val) {
         System.out.println("setValidator2() -> " + val.getClass().getName());
         if (!(val instanceof LBValidator)) {
@@ -74,6 +75,7 @@ public class Bean {
     }
 
     private Converter con;
+
     public void setConverter2(Converter con) {
         System.out.println("setConverter2() -> " + con.getClass().getName());
         if (!(con instanceof LBConverter)) {
@@ -85,37 +87,39 @@ public class Bean {
     public Converter getConverter2() {
         return con;
     }
+
     private class CustomValidator1 implements Validator {
 
+        @Override
         public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
             switchit = true;
-            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                                          "CustomValidator1 invoked",
-                                                          "CustomValidator1 invoked"));
+            throw new ValidatorException(
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "CustomValidator1 invoked", "CustomValidator1 invoked"));
         }
     }
 
     private class CustomValidator2 implements Validator {
 
+        @Override
         public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
             switchit = true;
-            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                                          "CustomValidator2 invoked",
-                                                          "CustomValidator2 invoked"));
+            throw new ValidatorException(
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "CustomValidator2 invoked", "CustomValidator2 invoked"));
         }
     }
 
     private class CustomConverter1 implements Converter {
 
+        @Override
         public Object getAsObject(FacesContext context, UIComponent component, String value) {
             switchit = true;
-            throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                                          "CustomConverter1 invoked",
-                                                          "customConverter1 invoked"));
+            throw new ConverterException(
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "CustomConverter1 invoked", "customConverter1 invoked"));
         }
 
+        @Override
         public String getAsString(FacesContext context, UIComponent component, Object value) {
-            switchit = true; 
+            switchit = true;
             return value.toString();
         }
 
@@ -123,13 +127,14 @@ public class Bean {
 
     private class CustomConverter2 implements Converter {
 
+        @Override
         public Object getAsObject(FacesContext context, UIComponent component, String value) {
             switchit = true;
-            throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                                          "CustomConverter2 invoked",
-                                                          "customConverter2 invoked"));
+            throw new ConverterException(
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "CustomConverter2 invoked", "customConverter2 invoked"));
         }
 
+        @Override
         public String getAsString(FacesContext context, UIComponent component, Object value) {
             switchit = true;
             return value.toString();

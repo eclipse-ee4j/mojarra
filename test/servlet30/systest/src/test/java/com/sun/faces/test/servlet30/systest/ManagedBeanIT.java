@@ -50,7 +50,7 @@ public class ManagedBeanIT {
     }
 
     /*
-     * Managed Bean Create #1 (No Property Setters) 
+     * Managed Bean Create #1 (No Property Setters)
      */
     @Test
     public void testManagerBean1() throws Exception {
@@ -68,13 +68,13 @@ public class ManagedBeanIT {
     }
 
     /*
-     * Because of differences in the JSP engine between Glassfish and Weblogic
-     * and this issue not being raised as a bug by any user we exclude this 
-     * test on the following servers: WLS 12.1.3 and WLS 12.1.4
-     * 
+     * Because of differences in the JSP engine between Glassfish and Weblogic and this issue not being
+     * raised as a bug by any user we exclude this test on the following servers: WLS 12.1.3 and WLS
+     * 12.1.4
+     *
      * 20140903 - edburns, mriem
      */
-    @JsfTest(value=JSF_2_2_0, excludes = {WEBLOGIC_12_1_3, WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_2_0, excludes = { WEBLOGIC_12_1_3, WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
     @Test
     public void testManagedBean3() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
@@ -84,13 +84,13 @@ public class ManagedBeanIT {
     }
 
     /*
-     * Because of differences in the JSP engine between Glassfish and Weblogic
-     * and this issue not being raised as a bug by any user we exclude this 
-     * test on the following servers: WLS 12.1.3 and WLS 12.1.4
-     * 
+     * Because of differences in the JSP engine between Glassfish and Weblogic and this issue not being
+     * raised as a bug by any user we exclude this test on the following servers: WLS 12.1.3 and WLS
+     * 12.1.4
+     *
      * 20140903 - edburns, mriem
      */
-    @JsfTest(value=JSF_2_2_0, excludes = {WEBLOGIC_12_1_3, WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_2_0, excludes = { WEBLOGIC_12_1_3, WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
     @Test
     public void testManagedBean7() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);

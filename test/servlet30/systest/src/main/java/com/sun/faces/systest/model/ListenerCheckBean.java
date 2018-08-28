@@ -16,7 +16,7 @@
 
 package com.sun.faces.systest.model;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseListener;
@@ -25,7 +25,7 @@ import javax.faces.event.PhaseId;
 import javax.faces.application.FacesMessage;
 import java.util.List;
 
-@ManagedBean
+@Named
 public class ListenerCheckBean {
 
     public void checkListeners() {
@@ -34,16 +34,13 @@ public class ListenerCheckBean {
         UIViewRoot root = ctx.getViewRoot();
         List<PhaseListener> listeners = root.getPhaseListeners();
         if (listeners == null || listeners.isEmpty()) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                                "ERROR: No listeners registered",
-                                                "ERROR: No listeners registered");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR: No listeners registered",
+                    "ERROR: No listeners registered");
             ctx.addMessage(null, msg);
         }
         if (listeners.size() > 1) {
             String message = "ERROR: Expected one registered listener but found: " + listeners.size();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                                message,
-                                                message);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, message);
             ctx.addMessage(null, msg);
         }
     }
@@ -51,14 +48,22 @@ public class ListenerCheckBean {
     public PhaseListener getListener() {
 
         return new PhaseListener() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public void afterPhase(PhaseEvent event) {
 
             }
 
+            @Override
             public void beforePhase(PhaseEvent event) {
 
             }
 
+            @Override
             public PhaseId getPhaseId() {
                 return PhaseId.ANY_PHASE;
             }

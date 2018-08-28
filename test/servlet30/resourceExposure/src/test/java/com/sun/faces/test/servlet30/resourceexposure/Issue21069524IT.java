@@ -48,6 +48,6 @@ public class Issue21069524IT {
         assertTrue(!pageXml.contains("<h:form"));
         assertTrue(!pageXml.contains("<h:body"));
         int status = page.getWebResponse().getStatusCode();
-        assertNotEquals(200L, (long) status);
+        assertNotEquals(200L, status);
     }
 }

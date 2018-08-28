@@ -25,9 +25,6 @@ import junit.framework.TestSuite;
 
 import java.util.ArrayList;
 import java.util.List;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
 
 public class AjaxErrorITCase extends HtmlUnitFacesITCase {
 
@@ -38,10 +35,10 @@ public class AjaxErrorITCase extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -50,10 +47,10 @@ public class AjaxErrorITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxErrorITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }

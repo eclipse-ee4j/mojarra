@@ -19,14 +19,11 @@ package com.sun.faces.test.servlet30.systest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.*;
-import static junit.framework.TestCase.assertTrue;
-
 
 /**
  * Unit tests for Composite Components.
  */
 public class VerifyBuildBeforeRestoreITCase extends HtmlUnitFacesITCase {
-
 
     public VerifyBuildBeforeRestoreITCase() {
         this("VerifyBuildBeforeRestoreTestCase");
@@ -36,14 +33,13 @@ public class VerifyBuildBeforeRestoreITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -52,14 +48,13 @@ public class VerifyBuildBeforeRestoreITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(VerifyBuildBeforeRestoreITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
@@ -77,5 +72,4 @@ public class VerifyBuildBeforeRestoreITCase extends HtmlUnitFacesITCase {
 
     }
 
-    
 }

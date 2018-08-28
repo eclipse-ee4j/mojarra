@@ -24,7 +24,6 @@ import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
-import javax.faces.component.NamingContainer;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
@@ -38,19 +37,16 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * <B>ButtonRenderer</B> is a class that renders the current value of
- * <code>UICommand<code> as a Button.
+ * <B>ButtonRenderer</B> is a class that renders the current value of <code>UICommand<code> as a
+ * Button.
  */
 
 public class ButtonRenderer extends Renderer {
 
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
-    public static final String CLEAR_HIDDEN_FIELD_FN_NAME = 
-         "clearFormHiddenParams";
-    public static final String FORM_CLIENT_ID_ATTR = 
-         "com.sun.faces.FORM_CLIENT_ID_ATTR";
+    public static final String CLEAR_HIDDEN_FIELD_FN_NAME = "clearFormHiddenParams";
+    public static final String FORM_CLIENT_ID_ATTR = "com.sun.faces.FORM_CLIENT_ID_ATTR";
 
     //
     // Protected Constants
@@ -67,11 +63,10 @@ public class ButtonRenderer extends Renderer {
 
     // Attribute Instance Variables
 
-
     // Relationship Instance Variables
 
     //
-    // Constructors and Initializers    
+    // Constructors and Initializers
     //
 
     //
@@ -81,40 +76,38 @@ public class ButtonRenderer extends Renderer {
     //
     // General Methods
     //
-    
+
     //
     // Methods From Renderer
     //
 
+    @Override
     public void decode(FacesContext context, UIComponent component) {
         if (context == null) {
             throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
         if (component == null) {
             throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
         }
 
         // If the component is disabled, do not change the value of the
         // component, since its state cannot be changed.
         if (Util.componentIsDisabledOrReadonly(component)) {
             return;
-        } 
-
+        }
 
         // Was our command the one that caused this submission?
         // we don' have to worry about getting the value from request parameter
         // because we just need to know if this command caused the submission. We
-        // can get the command name by calling currentValue. This way we can 
+        // can get the command name by calling currentValue. This way we can
         // get around the IE bug.
         String clientId = component.getClientId(context);
-        Map requestParameterMap = context.getExternalContext()
-            .getRequestParameterMap();
+        Map requestParameterMap = context.getExternalContext().getRequestParameterMap();
         String value = (String) requestParameterMap.get(clientId);
         if (value == null) {
-            if (requestParameterMap.get(clientId + ".x") == null &&
-                requestParameterMap.get(clientId + ".y") == null) {
+            if (requestParameterMap.get(clientId + ".x") == null && requestParameterMap.get(clientId + ".y") == null) {
                 return;
             }
         }
@@ -126,27 +119,25 @@ public class ButtonRenderer extends Renderer {
         ActionEvent actionEvent = new ActionEvent(component);
         component.queueEvent(actionEvent);
 
-
         return;
     }
 
-
-    public void encodeBegin(FacesContext context, UIComponent component)
-        throws IOException {
+    @Override
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
         if (context == null) {
             throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
         if (component == null) {
             throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
         }
         // suppress rendering if "rendered" property on the component is
         // false.
         if (!component.isRendered()) {
             return;
         }
-        
+
         // Which button type (SUBMIT, RESET, or BUTTON) should we generate?
         String type = (String) component.getAttributes().get("type");
         String styleClass = null;
@@ -167,7 +158,7 @@ public class ButtonRenderer extends Renderer {
         String imageSrc = (String) component.getAttributes().get("image");
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
-	String clientId = component.getClientId(context);
+        String clientId = component.getClientId(context);
         if (imageSrc != null) {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", src(context, imageSrc), "image");
@@ -177,14 +168,14 @@ public class ButtonRenderer extends Renderer {
             writer.writeAttribute("name", clientId, "clientId");
             writer.writeAttribute("value", label, "value");
         }
-        
+
         // look up the clientId of the form in request scope to arrive the name of
         // the javascript function to invoke from the onclick event handler.
         // PENDING (visvan) we need to fix this dependency between the renderers.
         // This solution is only temporary.
         Map requestMap = context.getExternalContext().getRequestMap();
-        String formClientId = (String)requestMap.get(FORM_CLIENT_ID_ATTR);
-        
+        String formClientId = (String) requestMap.get(FORM_CLIENT_ID_ATTR);
+
         StringBuffer sb = new StringBuffer();
         // call the javascript function that clears the all the hidden field
         // parameters in the form.
@@ -194,69 +185,59 @@ public class ButtonRenderer extends Renderer {
         }
         sb.append("(this.form.id);");
         // append user specified script for onclick if any.
-        String onclickAttr = (String)component.getAttributes().get("onclick");
+        String onclickAttr = (String) component.getAttributes().get("onclick");
         if (onclickAttr != null && onclickAttr.length() != 0) {
             sb.append(onclickAttr);
-            
+
         }
         writer.writeAttribute("onclick", sb.toString(), null);
 
-        RenderKitUtils.renderPassThruAttributes(context,
-              writer,
-                                                component,
-                                                ATTRIBUTES);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        if (null != (styleClass = (String)
-            component.getAttributes().get("styleClass"))) {
+        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
         writer.endElement("input");
     }
 
-    public void encodeEnd(FacesContext context, UIComponent component)
-        throws IOException {
+    @Override
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         if (context == null) {
             throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
         if (component == null) {
             throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
         }
     }
 
     //
     // General Methods
     //
-       
+
     private String src(FacesContext context, String value) {
         if (value == null) {
             return "";
         }
-        value = context.getApplication().getViewHandler().
-            getResourceURL(context, value);
+        value = context.getApplication().getViewHandler().getResourceURL(context, value);
         return (context.getExternalContext().encodeResourceURL(value));
     }
-                                                                                                          
+
     private boolean shouldWriteIdAttribute(UIComponent component) {
         String id;
-        return (null != (id = component.getId()) &&
-            !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX));
+        return (null != (id = component.getId()) && !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX));
     }
 
-    private void writeIdAttributeIfNecessary(FacesContext context,
-                                               ResponseWriter writer,
-                                               UIComponent component) {
+    private void writeIdAttributeIfNecessary(FacesContext context, ResponseWriter writer, UIComponent component) {
         String id;
         if (shouldWriteIdAttribute(component)) {
             try {
-                writer.writeAttribute("id", component.getClientId(context),
-                                      "id");
+                writer.writeAttribute("id", component.getClientId(context), "id");
             } catch (IOException e) {
             }
         }
     }
-
 
 } // end of class ButtonRenderer

@@ -16,14 +16,6 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSpan;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -32,27 +24,23 @@ import junit.framework.TestSuite;
  */
 public class csetITCase extends HtmlUnitFacesITCase {
 
-
     // --------------------------------------------------------------- Test Init
-
 
     public csetITCase() {
         this("csetTestCase");
     }
 
-
     public csetITCase(String name) {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -61,24 +49,22 @@ public class csetITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(csetITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     /*
      * Added for issue 917.
      */
     public void testSetPropertyActionListener1() throws Exception {
 
-        lastpage = getPage("/faces/facelets/csetTagBody.xhtml") ;
+        lastpage = getPage("/faces/facelets/csetTagBody.xhtml");
 
         checkTrue("output", "y bop alice bop yes");
     }

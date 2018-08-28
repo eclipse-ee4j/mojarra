@@ -16,17 +16,15 @@
 
 package com.sun.faces.systest.dynamic1757;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 
-@ManagedBean
-public class Issue1757DynamicManagedBean
-{
-	//
-	// Public methods
-	//
+@Named
+public class Issue1757DynamicManagedBean {
+    //
+    // Public methods
+    //
 
-	public void save()
-	{
-		// Do nothing
-	}
+    public void save() {
+        // Do nothing
+    }
 }

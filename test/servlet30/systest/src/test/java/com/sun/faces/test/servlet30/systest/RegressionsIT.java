@@ -44,13 +44,17 @@ public class RegressionsIT {
     public void testAreaTextRowsAttrTest() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page = webClient.getPage(webUrl + "faces/regression/AreaTextRowsAttrTest.jsp");
-        assertTrue(Pattern.matches("(?s).*<html>\\s*<head>\\s*<title>\\s*Text\\s*Area\\s*Row\\s*Attribute\\s*Regression\\s*Test\\s*</title>\\s*</head>\\s*<body>\\s*<textarea\\s*name=\".*\"\\s*rows=\"30\">\\s*</textarea>\\s*</body>\\s*</html>.*", page.asXml()));
+        assertTrue(Pattern.matches(
+                "(?s).*<html>\\s*<head>\\s*<title>\\s*Text\\s*Area\\s*Row\\s*Attribute\\s*Regression\\s*Test\\s*</title>\\s*</head>\\s*<body>\\s*<textarea\\s*name=\".*\"\\s*rows=\"30\">\\s*</textarea>\\s*</body>\\s*</html>.*",
+                page.asXml()));
     }
 
     @Test
     public void testSelectOneManySizeAttrTest() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page = webClient.getPage(webUrl + "faces/regression/SelectOneManySizeAttrTest.jsp");
-        assertTrue(Pattern.matches("(?s).*<html>\\s*<head>\\s*<title>\\s*Select.One,Many.ListBox\\s*Size\\s*Attribute\\s*Test\\s*</title>\\s*</head>\\s*<body>\\s*<select\\s*name=\".*\"\\s*size=\"5\">\\s*<option\\s*value=\"val1\">\\s*val1\\s*</option>\\s*</select>\\s*<select\\s*name=\".*\"\\s*multiple=\"multiple\"\\s*size=\"5\">\\s*<option\\s*value=\"val1\">\\s*val1\\s*</option>\\s*</select>\\s*</body>\\s*</html>.*", page.asXml()));
+        assertTrue(Pattern.matches(
+                "(?s).*<html>\\s*<head>\\s*<title>\\s*Select.One,Many.ListBox\\s*Size\\s*Attribute\\s*Test\\s*</title>\\s*</head>\\s*<body>\\s*<select\\s*name=\".*\"\\s*size=\"5\">\\s*<option\\s*value=\"val1\">\\s*val1\\s*</option>\\s*</select>\\s*<select\\s*name=\".*\"\\s*multiple=\"multiple\"\\s*size=\"5\">\\s*<option\\s*value=\"val1\">\\s*val1\\s*</option>\\s*</select>\\s*</body>\\s*</html>.*",
+                page.asXml()));
     }
 }

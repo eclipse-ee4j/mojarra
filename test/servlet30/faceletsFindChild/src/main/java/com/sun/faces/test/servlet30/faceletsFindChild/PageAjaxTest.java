@@ -19,13 +19,16 @@ package com.sun.faces.test.servlet30.faceletsFindChild;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import javax.faces.bean.*;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 @SessionScoped
-@ManagedBean(name = "pageAjaxTest2")
+@Named
 public class PageAjaxTest implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private final NumberFormat format;
 
     public PageAjaxTest() {

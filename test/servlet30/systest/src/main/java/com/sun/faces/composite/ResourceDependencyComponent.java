@@ -21,8 +21,7 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.UINamingContainer;
 
 @FacesComponent(value = "resourceDependencyComponent")
-@ResourceDependency(name="simple.css")
+@ResourceDependency(name = "simple.css")
 public class ResourceDependencyComponent extends UINamingContainer {
-
 
 }

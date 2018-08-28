@@ -29,10 +29,10 @@ public class AjaxJsfJsITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -41,14 +41,13 @@ public class AjaxJsfJsITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxJsfJsITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxJsfJs() throws Exception {
         getPage("/faces/ajax/jsfJS.xhtml");

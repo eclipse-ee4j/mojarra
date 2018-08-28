@@ -16,10 +16,10 @@
 
 package com.sun.faces.test.servlet30.viewscopefailover;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.bean.ViewScoped;
 
-@ManagedBean(name = "viewScopeBean")
+@Named
 @ViewScoped
 public class ViewScopeBean {
 

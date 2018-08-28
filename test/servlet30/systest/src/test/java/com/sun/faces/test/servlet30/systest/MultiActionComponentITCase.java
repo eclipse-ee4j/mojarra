@@ -21,10 +21,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
-
 public class MultiActionComponentITCase extends HtmlUnitFacesITCase {
-
 
     public MultiActionComponentITCase(String name) {
         super(name);
@@ -38,7 +35,7 @@ public class MultiActionComponentITCase extends HtmlUnitFacesITCase {
         doTest("/faces/composite/compositeComponentWithMultipleActions.xhtml");
 
     }
-    
+
     public void test02() throws Exception {
         doTest("/faces/composite/compositeComponentWithMultipleActionsMethodSignatures.xhtml");
 
@@ -48,14 +45,12 @@ public class MultiActionComponentITCase extends HtmlUnitFacesITCase {
         HtmlPage page = getPage(path);
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("cc:submitAction");
         page = button.click();
-        assertTrue("Expected submit pressed, received: " + page.asText(),
-                page.asText().matches("(?s).*submit pressed.*"));
+        assertTrue("Expected submit pressed, received: " + page.asText(), page.asText().matches("(?s).*submit pressed.*"));
 
         page = getPage(path);
         button = (HtmlSubmitInput) page.getElementById("cc:cancelAction");
         page = button.click();
-        assertTrue("Expected cancel pressed, received: " + page.asText(),
-                page.asText().matches("(?s).*cancel pressed.*"));
+        assertTrue("Expected cancel pressed, received: " + page.asText(), page.asText().matches("(?s).*cancel pressed.*"));
 
     }
 }

@@ -16,10 +16,10 @@
 
 package com.sun.faces.systest.model.ajax.browser;
 
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean(name="selectChange")
+@Named("selectChange")
 @RequestScoped
 @SuppressWarnings("unused")
 public class SelectChangeBean {

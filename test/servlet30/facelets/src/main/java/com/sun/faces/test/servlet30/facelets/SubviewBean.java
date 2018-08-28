@@ -17,16 +17,17 @@
 package com.sun.faces.test.servlet30.facelets;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
-@ManagedBean
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
+@Named
 @SessionScoped
 public class SubviewBean implements Serializable {
-    
+
     private static final long serialVersionUID = -8036913177462873553L;
-    
-    private boolean rendered = false;
+
+    private boolean rendered;
 
     public boolean isRendered() {
         return rendered;
@@ -35,7 +36,5 @@ public class SubviewBean implements Serializable {
     public void setRendered(boolean rendered) {
         this.rendered = rendered;
     }
-    
-    
-    
+
 }

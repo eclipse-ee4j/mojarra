@@ -33,80 +33,62 @@ import javax.faces.view.AttachedObjectTarget;
 public class CompositeComponentMetadataUtils {
 
     /**
-     * <p>Use the composite component metadata specification
-     * in section JSF.3.6.2.1 to print out the metadata to
-     * the argument writer.</p>
+     * <p>
+     * Use the composite component metadata specification in section JSF.3.6.2.1 to print out the
+     * metadata to the argument writer.
+     * </p>
+     * 
      * @throws IOException
      */
 
-    public static void writeMetadata(BeanInfo metadata, 
-            ResponseWriter writer) throws IOException{
+    public static void writeMetadata(BeanInfo metadata, ResponseWriter writer) throws IOException {
 
         // Print out the top level BeanDescriptor stuff.
         BeanDescriptor descriptor = metadata.getBeanDescriptor();
-        writeFeatureDescriptor("composite-component-BeanDescriptor", descriptor,
-                writer);
-        writeFeatureDescriptorValues(
-                "composite-component-BeanDescriptor", descriptor,
-                writer);
+        writeFeatureDescriptor("composite-component-BeanDescriptor", descriptor, writer);
+        writeFeatureDescriptorValues("composite-component-BeanDescriptor", descriptor, writer);
         PropertyDescriptor attributes[] = metadata.getPropertyDescriptors();
         for (PropertyDescriptor cur : attributes) {
-            writeFeatureDescriptor("composite-component-attribute", cur,
-                    writer);
-            writeFeatureDescriptorValues("composite-component-attribute", cur,
-                    writer);
+            writeFeatureDescriptor("composite-component-attribute", cur, writer);
+            writeFeatureDescriptorValues("composite-component-attribute", cur, writer);
         }
     }
 
-    public static void writeFeatureDescriptor(String prefix,
-            FeatureDescriptor fd, ResponseWriter writer) throws IOException {
+    public static void writeFeatureDescriptor(String prefix, FeatureDescriptor fd, ResponseWriter writer) throws IOException {
 
-        writer.write(prefix + "-name:" +
-                fd.getName() + "\n");
-        writer.write(prefix + "-displayName:" +
-                fd.getDisplayName() + "\n");
-        writer.write(prefix + "-shortDescription:" +
-                fd.getShortDescription() + "\n");
-        writer.write(prefix + "-expert:" +
-                fd.isExpert() + "\n");
-        writer.write(prefix + "-hidden:" +
-                fd.isHidden() + "\n");
-        writer.write(prefix + "-preferred:" +
-                fd.isPreferred() + "\n");
+        writer.write(prefix + "-name:" + fd.getName() + "\n");
+        writer.write(prefix + "-displayName:" + fd.getDisplayName() + "\n");
+        writer.write(prefix + "-shortDescription:" + fd.getShortDescription() + "\n");
+        writer.write(prefix + "-expert:" + fd.isExpert() + "\n");
+        writer.write(prefix + "-hidden:" + fd.isHidden() + "\n");
+        writer.write(prefix + "-preferred:" + fd.isPreferred() + "\n");
 
     }
 
-    public static void writeFeatureDescriptorValues(String prefix,
-            FeatureDescriptor fd, ResponseWriter writer) throws IOException {
+    public static void writeFeatureDescriptorValues(String prefix, FeatureDescriptor fd, ResponseWriter writer) throws IOException {
 
         Enumeration<String> extraValues = fd.attributeNames();
         String curName;
         while (extraValues.hasMoreElements()) {
             curName = extraValues.nextElement();
             if (curName.equals(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY)) {
-                List<AttachedObjectTarget> attachedObjects =
-                        (List<AttachedObjectTarget>) fd.getValue(curName);
+                List<AttachedObjectTarget> attachedObjects = (List<AttachedObjectTarget>) fd.getValue(curName);
                 for (AttachedObjectTarget curTarget : attachedObjects) {
                     writer.write(prefix + "-attached-object-" + curTarget.getName() + "\n");
                 }
             } else if (curName.equals(UIComponent.FACETS_KEY)) {
-                Map<String, PropertyDescriptor> facets =
-                        (Map<String, PropertyDescriptor>) fd.getValue(curName);
+                Map<String, PropertyDescriptor> facets = (Map<String, PropertyDescriptor>) fd.getValue(curName);
                 for (String cur : facets.keySet()) {
                     String facetPrefix = prefix + "-facet-" + cur;
-                    writeFeatureDescriptor(facetPrefix, facets.get(cur),
-                            writer);
-                    writeFeatureDescriptorValues(facetPrefix,
-                            facets.get(cur), writer);
+                    writeFeatureDescriptor(facetPrefix, facets.get(cur), writer);
+                    writeFeatureDescriptorValues(facetPrefix, facets.get(cur), writer);
                 }
             } else {
                 ValueExpression ve = (ValueExpression) fd.getValue(curName);
-                writer.write(prefix + "-extra-attribute-" + curName + ": " +
-                        ve.getValue(FacesContext.getCurrentInstance().getELContext())
+                writer.write(prefix + "-extra-attribute-" + curName + ": " + ve.getValue(FacesContext.getCurrentInstance().getELContext())
                         + "\n");
             }
         }
     }
-
 
 }

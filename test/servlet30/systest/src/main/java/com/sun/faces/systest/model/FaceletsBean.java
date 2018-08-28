@@ -16,18 +16,21 @@
 
 package com.sun.faces.systest.model;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
 
-@ManagedBean
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
+@Named
 @SessionScoped
-public class FaceletsBean {
+public class FaceletsBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     boolean toggleState;
 
-
     public String getFragment() {
-        return (toggleState ? "frag2" : "frag1");
+        return toggleState ? "frag2" : "frag1";
     }
 
     public boolean getToggleState() {

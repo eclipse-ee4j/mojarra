@@ -16,35 +16,38 @@
 
 package com.sun.faces.test.servlet30.facesContext;
 
-import com.sun.faces.context.ExternalContextImpl;
-import com.sun.faces.context.FacesContextImpl;
-import com.sun.faces.lifecycle.LifecycleImpl;
+import static org.junit.Assert.assertTrue;
+
 import java.io.Serializable;
+
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.Application;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import static org.junit.Assert.*;
+
+import com.sun.faces.context.ExternalContextImpl;
+import com.sun.faces.context.FacesContextImpl;
+import com.sun.faces.lifecycle.LifecycleImpl;
 
 /**
  * The managed bean for the EL tests.
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@ManagedBean(name = "elBean")
+@Named
 @RequestScoped
 public class ElBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     public String getElResult1() {
         FacesContext currentContext = FacesContext.getCurrentInstance();
-        ExternalContextImpl externalContext =
-                new ExternalContextImpl(
-                (ServletContext) currentContext.getExternalContext().getContext(),
+        ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                 (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                 (HttpServletResponse) currentContext.getExternalContext().getResponse());
         LifecycleImpl lifecycle = new LifecycleImpl();
@@ -66,6 +69,7 @@ public class ElBean implements Serializable {
 
         private boolean invoked;
 
+        @Override
         public void contextCreated(ELContextEvent elContextEvent) {
             invoked = true;
         }

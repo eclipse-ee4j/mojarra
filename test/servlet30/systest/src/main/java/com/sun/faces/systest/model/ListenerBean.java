@@ -16,12 +16,8 @@
 
 package com.sun.faces.systest.model;
 
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
-
 
 public class ListenerBean extends Object {
 
@@ -29,17 +25,21 @@ public class ListenerBean extends Object {
     }
 
     private ActionListener actionListener = null;
+
     public ActionListener getActionListener() {
         return actionListener;
     }
+
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
     }
 
     private ValueChangeListener valueChangeListener = null;
+
     public ValueChangeListener getValueChangeListener() {
         return valueChangeListener;
     }
+
     public void setValueChangeListener(ValueChangeListener valueChangeListener) {
         this.valueChangeListener = valueChangeListener;
     }

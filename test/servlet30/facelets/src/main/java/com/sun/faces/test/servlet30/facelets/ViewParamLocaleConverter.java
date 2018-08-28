@@ -16,22 +16,23 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+
 import java.util.ResourceBundle;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
-public class ViewParamLocaleConverter implements Converter {
+public class ViewParamLocaleConverter implements Converter<Object> {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        ResourceBundle bundle = context.getApplication()
-                .evaluateExpressionGet(context, "#{messages}", ResourceBundle.class);
-        String message = bundle.getString("viewParamLocaleMessage");
-        throw new ConverterException(
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
+        ResourceBundle bundle = context.getApplication().evaluateExpressionGet(context, "#{messages}", ResourceBundle.class);
+
+        throw new ConverterException(new FacesMessage(SEVERITY_ERROR, bundle.getString("viewParamLocaleMessage"), null));
     }
 
     @Override

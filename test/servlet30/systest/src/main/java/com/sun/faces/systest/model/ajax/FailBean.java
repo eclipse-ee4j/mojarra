@@ -20,10 +20,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.FacesException;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class FailBean {
 
@@ -35,8 +35,7 @@ public class FailBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.startUpdate("doesntExist");
                 writer.endUpdate();

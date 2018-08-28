@@ -18,18 +18,18 @@ package com.sun.faces.facelets;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.application.FacesMessage;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class RepeatBean {
-    
+
     List<String> flavors;
     List<String> singleFlavor;
-    
+
     public List<String> getFlavorsList() {
         if (null == flavors) {
             flavors = new ArrayList<String>();
@@ -49,21 +49,17 @@ public class RepeatBean {
         return singleFlavor;
     }
 
-
     public void setIndex(int index) {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                                            "Index: " + index,
-                                            "Index: " + index);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Index: " + index, "Index: " + index);
         ctx.addMessage(null, msg);
-        
+
     }
 
-    
-    public String [] getFlavorsArray() {
-        String [] result = new String[getFlavorsList().size()];
-        getFlavorsList().toArray(result);    
+    public String[] getFlavorsArray() {
+        String[] result = new String[getFlavorsList().size()];
+        getFlavorsList().toArray(result);
         return result;
     }
 

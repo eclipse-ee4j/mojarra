@@ -16,22 +16,21 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import javax.faces.component.NamingContainer;
 
-
 /**
- * <p>Test Case for JSP Interoperability.</p>
+ * <p>
+ * Test Case for JSP Interoperability.
+ * </p>
  */
 
 public class ViewTagITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -46,14 +45,13 @@ public class ViewTagITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -62,16 +60,15 @@ public class ViewTagITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(ViewTagITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
     // ------------------------------------------------- Individual Test Methods
-
 
     public void testLocaleOnViewTag() throws Exception {
         HtmlForm form;
@@ -82,9 +79,7 @@ public class ViewTagITCase extends HtmlUnitFacesITCase {
 
         page = getPage("/faces/viewLocale.jsp");
         form = getFormById(page, "form");
-        submit = (HtmlSubmitInput)
-                form.getInputByName("form" + NamingContainer.SEPARATOR_CHAR +
-                        "button");
+        submit = (HtmlSubmitInput) form.getInputByName("form" + NamingContainer.SEPARATOR_CHAR + "button");
 
         // press the button
         page = (HtmlPage) submit.click();

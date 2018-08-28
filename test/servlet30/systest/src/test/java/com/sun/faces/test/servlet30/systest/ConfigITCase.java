@@ -37,6 +37,7 @@ public class ConfigITCase extends HtmlUnitFacesITCase {
 
     public void test02() throws Exception {
         HtmlPage page = getPage("/faces/factoryFinder.jsp");
-        assertTrue(page.asXml().matches("(?s).*InjectionApplicationFactory InjectionFacesContextFactory LifecycleFactoryWrapper RenderKitFactoryWrapper.*"));
+        assertTrue(page.asXml().matches(
+                "(?s).*InjectionApplicationFactory InjectionFacesContextFactory LifecycleFactoryWrapper RenderKitFactoryWrapper.*"));
     }
 }

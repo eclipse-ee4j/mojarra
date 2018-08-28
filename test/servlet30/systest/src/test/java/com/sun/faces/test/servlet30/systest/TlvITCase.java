@@ -16,24 +16,22 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import java.util.List;
-import static junit.framework.TestCase.assertEquals;
-
 
 /**
- * <p>Verify that required validation occurrs for Select* components.</p>
+ * <p>
+ * Verify that required validation occurrs for Select* components.
+ * </p>
  */
 
 public class TlvITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -48,14 +46,13 @@ public class TlvITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -64,10 +61,10 @@ public class TlvITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(TlvITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -77,16 +74,16 @@ public class TlvITCase extends HtmlUnitFacesITCase {
     // ------------------------------------------------- Individual Test Methods
 
     /**
-     * <p>Verify that the required validator works for SelectOne</p>
+     * <p>
+     * Verify that the required validator works for SelectOne
+     * </p>
      */
 
     public void testButtonWithBinding() throws Exception {
         HtmlPage page = getPage("/faces/jsp/tlvTest01.jsp");
-        List list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        List list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         assertEquals("button label", button.asText());
     }
-
 
 }

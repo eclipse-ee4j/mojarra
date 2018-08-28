@@ -23,7 +23,7 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-@FacesComponent(value="JavaBackedComponentDefaultAttrValues")
+@FacesComponent(value = "JavaBackedComponentDefaultAttrValues")
 public class JavaBackedComponentDefaultAttrValues extends UINamingContainer {
 
     @Override
@@ -45,10 +45,9 @@ public class JavaBackedComponentDefaultAttrValues extends UINamingContainer {
         responseWriter.writeText("action value is " + attrs.get("action").toString() + ". ", "action");
         responseWriter.writeText("actionListener value is " + attrs.get("action").toString() + ". ", "action");
         responseWriter.writeText("validator value is " + attrs.get("validator").toString() + ". ", "validator");
-        responseWriter.writeText("valueChangeListener value is " + attrs.get("valueChangeListener").toString() + ". ", "valueChangeListener");
+        responseWriter.writeText("valueChangeListener value is " + attrs.get("valueChangeListener").toString() + ". ",
+                "valueChangeListener");
         responseWriter.endElement("p");
     }
-
-
 
 }

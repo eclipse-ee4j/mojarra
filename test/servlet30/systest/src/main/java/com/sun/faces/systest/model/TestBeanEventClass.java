@@ -24,6 +24,11 @@ import javax.faces.event.SystemEvent;
  */
 public class TestBeanEventClass extends SystemEvent {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     public TestBeanEventClass(TestBean source) {
         super(source);
     }

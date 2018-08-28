@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.event.ActionListener;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AbortProcessingException;
@@ -38,7 +38,7 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.faces.convert.Converter;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class CompositeBean {
 
@@ -51,27 +51,25 @@ public class CompositeBean {
     public ActionListener getActionListener() {
         return new ActionListener() {
 
-            public void processAction(ActionEvent event)
-                  throws AbortProcessingException {
+            @Override
+            public void processAction(ActionEvent event) throws AbortProcessingException {
                 FacesContext ctx = FacesContext.getCurrentInstance();
                 UIComponent source = (UIComponent) event.getSource();
                 String cid = source.getClientId(ctx);
-                ctx.addMessage(cid,
-                               new FacesMessage(FacesMessage.SEVERITY_INFO,
-                                                "Action Invoked : " + cid,
-                                                "Action Invoked : " + cid));
+                ctx.addMessage(cid, new FacesMessage(FacesMessage.SEVERITY_INFO, "Action Invoked : " + cid, "Action Invoked : " + cid));
             }
         };
 
     }
 
     private String text = "DEFAULT VALUE";
+
     public String getText() {
         return text;
     }
 
     // for #1966
-    private List<String> defaultValueList = Arrays.asList("Item 1","Item 2");
+    private List<String> defaultValueList = Arrays.asList("Item 1", "Item 2");
 
     public List<String> getDefaultValueList() {
         return this.defaultValueList;
@@ -100,13 +98,11 @@ public class CompositeBean {
         this.bigDecimalValue = bigDecimalValue;
     }
 
-
     public Validator getValidator() {
 
         return new TestValidator();
 
     }
-
 
     public Converter getConverter() {
 
@@ -114,40 +110,29 @@ public class CompositeBean {
 
     }
 
-
     public String doNav() {
 
         return "nestingNav";
 
     }
 
-
     public String action() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent c = UIComponent.getCurrentComponent(ctx);
-        ctx.addMessage(null,
-                       new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        "Action invoked: " + c.getClientId(ctx),
-                                        "Action invoked: " + c.getClientId(ctx)));
+        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Action invoked: " + c.getClientId(ctx),
+                "Action invoked: " + c.getClientId(ctx)));
         return "";
 
     }
-
 
     public String action(Object arg1, Object arg2) {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent c = UIComponent.getCurrentComponent(ctx);
-        String message = "Action invoked: "
-                             + c.getClientId(ctx)
-                             + ", arg1: " + arg1.toString()
-                             + ", arg2: " + arg2.toString();
+        String message = "Action invoked: " + c.getClientId(ctx) + ", arg1: " + arg1.toString() + ", arg2: " + arg2.toString();
 
-        ctx.addMessage(null,
-                       new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        message,
-                                        message));
+        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, message));
         return "";
 
     }
@@ -156,31 +141,22 @@ public class CompositeBean {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent c = UIComponent.getCurrentComponent(ctx);
-        ctx.addMessage(null,
-                       new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        "Custom action invoked: " + c.getClientId(ctx),
-                                        "Custom action invoked: " + c.getClientId(ctx)));
+        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Custom action invoked: " + c.getClientId(ctx),
+                "Custom action invoked: " + c.getClientId(ctx)));
         return "";
 
     }
 
-     public String custom(Object arg1, Object arg2) {
+    public String custom(Object arg1, Object arg2) {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent c = UIComponent.getCurrentComponent(ctx);
-        String message = "Custom action invoked: "
-                             + c.getClientId(ctx)
-                             + ", arg1: " + arg1.toString()
-                             + ", arg2: " + arg2.toString();
+        String message = "Custom action invoked: " + c.getClientId(ctx) + ", arg1: " + arg1.toString() + ", arg2: " + arg2.toString();
 
-        ctx.addMessage(null,
-                       new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        message,
-                                        message));
+        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, message));
         return "";
 
     }
-
 
     public String display(String arg) {
 
@@ -188,36 +164,27 @@ public class CompositeBean {
 
     }
 
-
     public void actionListener(ActionEvent ae) {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent c = UIComponent.getCurrentComponent(ctx);
-        ctx.addMessage(null,
-                       new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        "ActionListener invoked: " + c.getClientId(ctx),
-                                        "ActionListener invoked: " + c.getClientId(ctx)));
+        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ActionListener invoked: " + c.getClientId(ctx),
+                "ActionListener invoked: " + c.getClientId(ctx)));
     }
-
 
     public void validate(FacesContext ctx, UIComponent c, Object o) {
 
-        ctx.addMessage(null,
-                       new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        "validator invoked: " + c.getClientId(ctx),
-                                        "validator invoked: " + c.getClientId(ctx)));
+        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "validator invoked: " + c.getClientId(ctx),
+                "validator invoked: " + c.getClientId(ctx)));
 
     }
-
 
     public void valueChange(ValueChangeEvent event) {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent c = event.getComponent();
-        ctx.addMessage(null,
-                       new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        "ValueChange invoked: " + c.getClientId(ctx),
-                                        "ValueChange invoked: " + c.getClientId(ctx)));
+        ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ValueChange invoked: " + c.getClientId(ctx),
+                "ValueChange invoked: " + c.getClientId(ctx)));
 
     }
 
@@ -225,7 +192,6 @@ public class CompositeBean {
         Format result = new DecimalFormat();
         return result;
     }
-
 
     public String getStringValue() {
 
@@ -247,36 +213,31 @@ public class CompositeBean {
         return values;
     }
 
-
     // ---------------------------------------------------------- Nested Classes
-
 
     public static class TestValidator implements Validator {
 
-        public void validate(FacesContext context, UIComponent component, Object value)
-              throws ValidatorException {
+        @Override
+        public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
             String cid = component.getClientId(context);
             context.addMessage(cid,
-                               new FacesMessage(FacesMessage.SEVERITY_INFO,
-                                                "Validator Invoked : " + cid,
-                                                "Validator Invoked : " + cid));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Validator Invoked : " + cid, "Validator Invoked : " + cid));
         }
     }
 
-
     public static class TestConverter implements Converter {
 
+        @Override
         public Object getAsObject(FacesContext context, UIComponent component, String value) {
             return value;
         }
 
+        @Override
         public String getAsString(FacesContext context, UIComponent component, Object value) {
             String cid = component.getClientId(context);
             context.addMessage(cid,
-                               new FacesMessage(FacesMessage.SEVERITY_INFO,
-                                                "Converter Invoked : " + cid,
-                                                "Converter Invoked : " + cid));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Converter Invoked : " + cid, "Converter Invoked : " + cid));
             return value.toString();
         }
     }

@@ -16,12 +16,15 @@
 
 package com.sun.faces.systest.model;
 
-
 public class TestBeanPreDestroyEvent extends TestBeanEventClass {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     public TestBeanPreDestroyEvent(TestBean source) {
         super(source);
     }
-    
 
 }

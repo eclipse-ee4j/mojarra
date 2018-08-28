@@ -16,20 +16,19 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 /**
- * <p>Test Case for JSP Interoperability.</p>
+ * <p>
+ * Test Case for JSP Interoperability.
+ * </p>
  */
 
 public class LocaleITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -44,14 +43,13 @@ public class LocaleITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -60,10 +58,10 @@ public class LocaleITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(LocaleITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -73,16 +71,12 @@ public class LocaleITCase extends HtmlUnitFacesITCase {
     // Test dynamically adding and removing components
 
     public void testLocaleAndEncoding() throws Exception {
-        client.addRequestHeader("Content-Type",
-                "text/html; charset=ISO-8859-4");
+        client.addRequestHeader("Content-Type", "text/html; charset=ISO-8859-4");
         HtmlPage page = getPage("/faces/renderkit02A.jsp");
         // PENDING(edburns): when you figure out why the encoding
         // doesn't get passed through, fix this.
-        boolean correct =
-                page.getPageEncoding().equals("ISO-8859-1") ||
-                        page.getPageEncoding().equals("ISO-8859-4");
+        boolean correct = page.getPageEncoding().equals("ISO-8859-1") || page.getPageEncoding().equals("ISO-8859-4");
         assertTrue("Encoding not as expected", correct);
     }
-
 
 }

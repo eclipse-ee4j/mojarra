@@ -46,9 +46,9 @@ public class Issue21069579IT {
         TextPage page = webClient.getPage(webUrl + "javax.faces.resource/WEB-INF/web.xml.faces?con=..");
         String pageXml = page.getContent();
         assertTrue(!pageXml.contains("javax.faces.webapp.FacesServlet"));
-        assertTrue(!pageXml.contains("<servlet-class>"));   
+        assertTrue(!pageXml.contains("<servlet-class>"));
         int status = page.getWebResponse().getStatusCode();
-        assertNotEquals(200L, (long) status);
-        
+        assertNotEquals(200L, status);
+
     }
 }

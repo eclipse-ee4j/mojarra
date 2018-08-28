@@ -40,14 +40,13 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -56,17 +55,15 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         return new TestSuite(OutputTargetsITCase.class);
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testOutputTargetButton() throws Exception {
         HtmlPage page = getPage("/faces/standard/outcometarget01.xhtml");
@@ -86,7 +83,6 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         page = button.click();
         assertEquals("outcometarget01", page.getTitleText());
 
-        
         // ---------------------------------------------------------------------
 
         page = getPage("/faces/standard/outcometarget01.xhtml");
@@ -95,13 +91,12 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         assertEquals("button", button.getTypeAttribute());
         assertEquals("button2", button.getAttribute("id"));
         assertEquals("window.location.href='/jsf-systest/faces/standard/nav1.xhtml'; return false;", onclick);
-        
+
         page = button.click();
         assertEquals("nav1", page.getTitleText());
-        
+
         page = getPage("/faces/standard/outcometarget01.xhtml");
 
-        
         // ---------------------------------------------------------------------
 
         page = getPage("/faces/standard/outcometarget01.xhtml");
@@ -109,12 +104,12 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         onclick = button.getOnClickAttribute();
         assertEquals("button", button.getTypeAttribute());
         assertEquals("button3", button.getAttribute("id"));
-        assertEquals("window.location.href='/jsf-systest/faces/standard/outcometarget01.xhtml?id=page&id2=view#about'; return false;", onclick);
-        
+        assertEquals("window.location.href='/jsf-systest/faces/standard/outcometarget01.xhtml?id=page&id2=view#about'; return false;",
+                onclick);
+
         page = button.click();
         assertEquals("outcometarget01", page.getTitleText());
 
-        
         // ---------------------------------------------------------------------
 
         page = getPage("/faces/standard/outcometarget01.xhtml");
@@ -123,40 +118,37 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         assertEquals("button", button.getTypeAttribute());
         assertEquals("button4", button.getAttribute("id"));
         assertEquals("alert('foo'); window.location.href='/jsf-systest/faces/standard/nav2.xhtml'; return false;", onclick);
-        
+
         page = button.click();
         assertEquals("nav2", page.getTitleText());
 
-        
         // ---------------------------------------------------------------------
 
         page = getPage("/faces/standard/outcometarget01.xhtml");
         System.out.println("**************************************" + page.asXml());
         button = getAllElementsOfGivenClass(page, HtmlInput.class).get(4);
         onclick = button.getOnClickAttribute();
-        
+
         assertEquals("button", button.getTypeAttribute());
         assertEquals("button5", button.getAttribute("id"));
         assertEquals("window.location.href='/jsf-systest/faces/standard/outcometarget01.xhtml?id=page'; return false;", onclick);
-        
+
         page = button.click();
         assertEquals("outcometarget01", page.getTitleText());
 
-        
         // ---------------------------------------------------------------------
 
         page = getPage("/faces/standard/outcometarget01.xhtml");
         button = getAllElementsOfGivenClass(page, HtmlInput.class).get(5);
         onclick = button.getOnClickAttribute();
-        
+
         assertEquals("button", button.getTypeAttribute());
         assertEquals("button6", button.getAttribute("id"));
         assertEquals("window.location.href='/jsf-systest/faces/standard/outcometarget01.xhtml?id=page&id2=view'; return false;", onclick);
-        
+
         page = button.click();
         assertEquals("outcometarget01", page.getTitleText());
 
-       
         // ---------------------------------------------------------------------
 
         page = getPage("/faces/standard/outcometarget01.xhtml");
@@ -165,7 +157,7 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         assertEquals("button", button.getTypeAttribute());
         assertEquals("button7", button.getAttribute("id"));
         assertEquals("window.location.href='/jsf-systest/faces/standard/outcometarget01.xhtml?id=config&id2=view'; return false;", onclick);
-        
+
         page = button.click();
         assertEquals("outcometarget01", page.getTitleText());
     }
@@ -189,7 +181,6 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         page = link.click();
         assertEquals("outcometarget01", page.getTitleText());
 
-        
         // ---------------------------------------------------------------------
 
         page = getPage("/faces/standard/outcometarget01.xhtml");
@@ -201,7 +192,6 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         page = link.click();
         assertEquals("nav1", page.getTitleText());
 
-        
         // ---------------------------------------------------------------------
 
         page = getPage("/faces/standard/outcometarget01.xhtml");
@@ -209,8 +199,7 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         onclick = link.getOnClickAttribute();
         assertEquals("link3", link.getAttribute("id"));
         assertEquals("", onclick);
-        assertEquals("/jsf-systest/faces/standard/outcometarget01.xhtml?id=page&id2=view#about",
-                     link.getHrefAttribute());
+        assertEquals("/jsf-systest/faces/standard/outcometarget01.xhtml?id=page&id2=view#about", link.getHrefAttribute());
         page = link.click();
         assertEquals("outcometarget01", page.getTitleText());
 
@@ -224,7 +213,6 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         assertEquals("/jsf-systest/faces/standard/nav2.xhtml", link.getHrefAttribute());
         page = link.click();
         assertEquals("nav2", page.getTitleText());
-        
 
         // ---------------------------------------------------------------------
 
@@ -235,7 +223,6 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         assertEquals("/jsf-systest/faces/standard/outcometarget01.xhtml?id=page", link.getHrefAttribute());
         page = link.click();
         assertEquals("outcometarget01", page.getTitleText());
-        
 
         // ---------------------------------------------------------------------
 
@@ -246,7 +233,6 @@ public class OutputTargetsITCase extends HtmlUnitFacesITCase {
         assertEquals("/jsf-systest/faces/standard/outcometarget01.xhtml?id=page&id2=view", link.getHrefAttribute());
         page = link.click();
         assertEquals("outcometarget01", page.getTitleText());
-        
 
         // ---------------------------------------------------------------------
 

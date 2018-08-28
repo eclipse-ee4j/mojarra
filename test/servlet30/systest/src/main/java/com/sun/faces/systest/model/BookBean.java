@@ -21,7 +21,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 
-
 public class BookBean {
 
     private String title;
@@ -69,14 +68,10 @@ public class BookBean {
         this.quantity = quantity;
     }
 
-    public void validateQuantity(FacesContext context,
-                                 UIComponent component,
-                                 Object value) {        
+    public void validateQuantity(FacesContext context, UIComponent component, Object value) {
         int q = (Integer) value;
         if (q < 0) {
-            throw new ValidatorException(
-                new FacesMessage("Quantity must be zero or greater."));                   
+            throw new ValidatorException(new FacesMessage("Quantity must be zero or greater."));
         }
     }
 }
-

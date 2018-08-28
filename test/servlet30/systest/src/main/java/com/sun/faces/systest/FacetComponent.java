@@ -16,32 +16,30 @@
 
 package com.sun.faces.systest;
 
-
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import java.io.IOException;
 
-
 /**
- * <p>Test <code>UIComponent</code> for sys tests.</p>
+ * <p>
+ * Test <code>UIComponent</code> for sys tests.
+ * </p>
  */
 
 public class FacetComponent extends UIOutput {
 
-
     public FacetComponent() {
         super();
     }
-
 
     public FacetComponent(String id) {
         super();
         setId(id);
     }
 
-
+    @Override
     public void encodeEnd(FacesContext context) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         UIOutput facet = (UIOutput) getFacet("header");
@@ -60,6 +58,5 @@ public class FacetComponent extends UIOutput {
             writer.write("[] ");
         }
     }
-
 
 }

@@ -16,7 +16,6 @@
 
 package com.sun.faces.systest.viewparameters;
 
-
 public class NewsStory {
 
     private Long id;
@@ -36,7 +35,7 @@ public class NewsStory {
     public String getContent() {
         return content;
     }
-    
+
     public String getHeadline() {
         return headline;
     }

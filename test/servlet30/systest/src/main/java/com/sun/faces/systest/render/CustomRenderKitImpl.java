@@ -35,7 +35,8 @@ import java.util.HashMap;
 /**
  * <B>CustomRenderKitImpl</B> is a class ...
  * <p/>
- * <B>Lifetime And Scope</B> <P>
+ * <B>Lifetime And Scope</B>
+ * <P>
  *
  */
 
@@ -62,23 +63,21 @@ public class CustomRenderKitImpl extends RenderKit {
 // Relationship Instance Variables
 
     /**
-     * Keys are String renderer family.  Values are HashMaps.  Nested
-     * HashMap keys are Strings for the rendererType, and values are the
-     * Renderer instances themselves.
+     * Keys are String renderer family. Values are HashMaps. Nested HashMap keys are Strings for the
+     * rendererType, and values are the Renderer instances themselves.
      */
 
     private HashMap rendererFamilies;
 
     private ResponseStateManager responseStateManager = null;
 //
-// Constructors and Initializers    
+// Constructors and Initializers
 //
 
     public CustomRenderKitImpl() {
         super();
-	rendererFamilies = new HashMap();
+        rendererFamilies = new HashMap();
     }
-
 
     //
     // Class methods
@@ -92,48 +91,43 @@ public class CustomRenderKitImpl extends RenderKit {
     // Methods From RenderKit
     //
 
-    public void addRenderer(String family, String rendererType,
-                            Renderer renderer) {
+    @Override
+    public void addRenderer(String family, String rendererType, Renderer renderer) {
         if (family == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "family");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "family");
             throw new NullPointerException(message);
-                
+
         }
         if (rendererType == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "rendererType");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "rendererType");
             throw new NullPointerException(message);
-                
+
         }
         if (renderer == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "renderer");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "renderer");
             throw new NullPointerException(message);
-                
+
         }
         HashMap renderers = null;
 
         synchronized (rendererFamilies) {
-	    // PENDING(edburns): generics would be nice here.
-	    if (null == (renderers = (HashMap) rendererFamilies.get(family))) {
-		rendererFamilies.put(family, renderers = new HashMap());
-	    }
+            // PENDING(edburns): generics would be nice here.
+            if (null == (renderers = (HashMap) rendererFamilies.get(family))) {
+                rendererFamilies.put(family, renderers = new HashMap());
+            }
             renderers.put(rendererType, renderer);
         }
     }
 
-
+    @Override
     public Renderer getRenderer(String family, String rendererType) {
 
         if (rendererType == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "rendererType");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "rendererType");
             throw new NullPointerException(message);
         }
         if (family == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "family");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "family");
             throw new NullPointerException(message);
         }
 
@@ -142,14 +136,14 @@ public class CustomRenderKitImpl extends RenderKit {
         HashMap renderers = null;
         Renderer renderer = null;
 
-	if (null != (renderers = (HashMap) rendererFamilies.get(family))) {
-	    renderer = (Renderer) renderers.get(rendererType);
-	}
-	
+        if (null != (renderers = (HashMap) rendererFamilies.get(family))) {
+            renderer = (Renderer) renderers.get(rendererType);
+        }
+
         return renderer;
     }
 
-
+    @Override
     public synchronized ResponseStateManager getResponseStateManager() {
         if (responseStateManager == null) {
             responseStateManager = new ResponseStateManagerImpl();
@@ -157,13 +151,12 @@ public class CustomRenderKitImpl extends RenderKit {
         return responseStateManager;
     }
 
-
-    public ResponseWriter createResponseWriter(Writer writer, String contentTypeList,
-                                               String characterEncoding) {
+    @Override
+    public ResponseWriter createResponseWriter(Writer writer, String contentTypeList, String characterEncoding) {
         if (writer == null) {
             return null;
         }
-        // Set the default content type to html;  However, if a content type list
+        // Set the default content type to html; However, if a content type list
         // argument was specified, make sure it contains an html content type;
         // PENDING(rogerk) ideally, we want to analyze the content type string
         // in more detail, to determine the preferred content type - as outlined in
@@ -173,8 +166,7 @@ public class CustomRenderKitImpl extends RenderKit {
         String contentType = HTML_CONTENT_TYPE;
         if (contentTypeList != null) {
             if (contentTypeList.indexOf(contentType) < 0) {
-                throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.CONTENT_TYPE_ERROR_MESSAGE_ID));
+                throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(MessageUtils.CONTENT_TYPE_ERROR_MESSAGE_ID));
             }
         }
         if (characterEncoding == null) {
@@ -184,36 +176,36 @@ public class CustomRenderKitImpl extends RenderKit {
         return new CustomResponseWriter(writer, contentType, characterEncoding);
     }
 
-
+    @Override
     public ResponseStream createResponseStream(OutputStream out) {
         final OutputStream output = out;
         return new ResponseStream() {
+            @Override
             public void write(int b) throws IOException {
                 output.write(b);
             }
 
-
+            @Override
             public void write(byte b[]) throws IOException {
                 output.write(b);
             }
 
-
+            @Override
             public void write(byte b[], int off, int len) throws IOException {
                 output.write(b, off, len);
             }
 
-
+            @Override
             public void flush() throws IOException {
                 output.flush();
             }
 
-
+            @Override
             public void close() throws IOException {
                 output.close();
             }
         };
-    }       
+    }
     // The test for this class is in TestRenderKit.java
 
 } // end of class CustomRenderKitImpl
-

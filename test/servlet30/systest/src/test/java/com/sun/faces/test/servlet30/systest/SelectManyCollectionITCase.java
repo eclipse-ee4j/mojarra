@@ -41,6 +41,7 @@ public class SelectManyCollectionITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -55,6 +56,7 @@ public class SelectManyCollectionITCase extends HtmlUnitFacesITCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -93,10 +95,11 @@ public class SelectManyCollectionITCase extends HtmlUnitFacesITCase {
                 // Can't check for <trouble maker since it's duplicate
                 new String[] { "<ring finder", "Merry" }, new String[0], };
 
-        String[][] postBackSelections = { new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" },
-                new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" },
-                new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "2" },
-                new String[] { "3" }, new String[] { "Bilbo - &lt;Ring Finder&gt;" }, new String[] {}, new String[] {}, };
+        String[][] postBackSelections = { new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" },
+                new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" },
+                new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "Bilbo" },
+                new String[] { "Bilbo" }, new String[] { "Bilbo" }, new String[] { "2" }, new String[] { "3" },
+                new String[] { "Bilbo - &lt;Ring Finder&gt;" }, new String[] {}, new String[] {}, };
 
         // =====================================================================
         // Validate initial page state

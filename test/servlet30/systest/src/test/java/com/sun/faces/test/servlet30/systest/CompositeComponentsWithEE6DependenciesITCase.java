@@ -20,18 +20,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.*;
 
-import java.util.List;
-import java.util.ArrayList;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-
 /**
  * Unit tests for Composite Components.
  */
 public class CompositeComponentsWithEE6DependenciesITCase extends HtmlUnitFacesITCase {
 
-
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     public CompositeComponentsWithEE6DependenciesITCase() {
         this("CompositeComponentsTestCaseWithEE6Dependencies");
     }
@@ -40,14 +34,13 @@ public class CompositeComponentsWithEE6DependenciesITCase extends HtmlUnitFacesI
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -56,14 +49,13 @@ public class CompositeComponentsWithEE6DependenciesITCase extends HtmlUnitFacesI
         return (new TestSuite(CompositeComponentsWithEE6DependenciesITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
@@ -78,7 +70,7 @@ public class CompositeComponentsWithEE6DependenciesITCase extends HtmlUnitFacesI
         page = button.click();
         String message = "Action invoked: form:arg:n1:n2:command, arg1: Hello, arg2: World!";
         assertTrue(page.asText().contains(message));
-        
+
     }
 
     public void testCompositeComponentActionWithArgs() throws Exception {
@@ -91,7 +83,6 @@ public class CompositeComponentsWithEE6DependenciesITCase extends HtmlUnitFacesI
         assertTrue(page.asText().contains(message));
 
     }
-
 
     public void testCompositeComponentAttributeWithArgs() throws Exception {
 
@@ -120,13 +111,12 @@ public class CompositeComponentsWithEE6DependenciesITCase extends HtmlUnitFacesI
 
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page = getPage("/faces/composite/invalidMeArgs.xhtml");
-        assertTrue(page.asText().contains("value=\"#{cc.attrs.custom(cc.attrs.arg1)}\" Illegal attempt to pass arguments to a composite component lookup expression"));
+        assertTrue(page.asText().contains(
+                "value=\"#{cc.attrs.custom(cc.attrs.arg1)}\" Illegal attempt to pass arguments to a composite component lookup expression"));
 
         page = getPage("/faces/composite/invalidVeArgs.xhtml");
-        assertTrue(page.asText().contains("value=\"#{cc.attrs.bean(cc.attrs.arg1)}\" Illegal attempt to pass arguments to a composite component lookup expression"));
+        assertTrue(page.asText().contains(
+                "value=\"#{cc.attrs.bean(cc.attrs.arg1)}\" Illegal attempt to pass arguments to a composite component lookup expression"));
     }
-
-
-
 
 }

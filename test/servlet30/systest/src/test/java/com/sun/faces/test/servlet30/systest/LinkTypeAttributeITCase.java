@@ -21,7 +21,6 @@ import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 
-
 /**
  * Test case for issue 1098.
  */
@@ -29,51 +28,47 @@ public class LinkTypeAttributeITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
 
-
-       /**
-        * Construct a new instance of this test case.
-        *
-        * @param name Name of the test case
-        */
-       public LinkTypeAttributeITCase(String name) {
-           super(name);
-       }
+    /**
+     * Construct a new instance of this test case.
+     *
+     * @param name Name of the test case
+     */
+    public LinkTypeAttributeITCase(String name) {
+        super(name);
+    }
 
     // ------------------------------------------------------ Instance Variables
 
-       // ---------------------------------------------------- Overall Test Methods
+    // ---------------------------------------------------- Overall Test Methods
 
+    /**
+     * Set up instance variables required by this test case.
+     */
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
-       /**
-        * Set up instance variables required by this test case.
-        */
-       public void setUp() throws Exception {
-           super.setUp();
-       }
+    /**
+     * Return the tests included in this test suite.
+     */
+    public static Test suite() {
+        return (new TestSuite(LinkTypeAttributeITCase.class));
+    }
 
-
-       /**
-        * Return the tests included in this test suite.
-        */
-       public static Test suite() {
-           return (new TestSuite(LinkTypeAttributeITCase.class));
-       }
-
-
-       /**
-        * Tear down instance variables required by this test case.
-        */
-       public void tearDown() {
-           super.tearDown();
-       }
-
+    /**
+     * Tear down instance variables required by this test case.
+     */
+    @Override
+    public void tearDown() {
+        super.tearDown();
+    }
 
     // ------------------------------------------------------------ Test Methods
 
-
     public void testLinkAttributeNotDuplicated() throws Exception {
 
-        String type ="type=\"type\"";
+        String type = "type=\"type\"";
         HtmlPage page = getPage("/faces/standard/linkTypeAttribute.xhtml");
 
         HtmlElement link = (HtmlElement) page.getElementById("form:clink");

@@ -16,8 +16,6 @@
 
 package com.sun.faces.systest;
 
-
-
 public class UseBeanBean {
 
     public UseBeanBean() {

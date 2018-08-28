@@ -21,20 +21,17 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
 
-
 @FacesConverter(value = "AnnotatedConverter")
 public class AnnotatedConverter implements Converter {
 
-    public Object getAsObject(FacesContext context,
-                              UIComponent component,
-                              String value) {
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
         return value;
     }
 
-    public String getAsString(FacesContext context,
-                              UIComponent component,
-                              Object value) {
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) {
         return value.toString();
     }
-    
+
 }

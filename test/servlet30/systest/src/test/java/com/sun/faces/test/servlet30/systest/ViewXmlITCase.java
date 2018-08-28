@@ -19,12 +19,12 @@ package com.sun.faces.test.servlet30.systest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
 /**
  * <p>
- * Test Case for JSP Interoperability.</p>
+ * Test Case for JSP Interoperability.
+ * </p>
  */
 public class ViewXmlITCase extends HtmlUnitFacesITCase {
 
@@ -43,6 +43,7 @@ public class ViewXmlITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -57,6 +58,7 @@ public class ViewXmlITCase extends HtmlUnitFacesITCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -77,13 +79,15 @@ public class ViewXmlITCase extends HtmlUnitFacesITCase {
     private void doTest(String path, String param1, String param2) throws Exception {
         HtmlPage page = getPage(path + "?param1=" + param1 + "&param2=" + param2);
         String text = page.asText();
-        assertTrue(text.matches("(?s).*Templating and XML views\\s*column1\\s*column2\\s*column3\\s*This is the header text declared in xhtmlTemplate.xhtml. The preceding columns are declared in header.view.xml.\\s*hello\\s*reload\\s*HTML table column 1\\s*HTML table column 2\\s*"
-                + param1 + "\\s*" + param2 + ".*"));
+        assertTrue(text.matches(
+                "(?s).*Templating and XML views\\s*column1\\s*column2\\s*column3\\s*This is the header text declared in xhtmlTemplate.xhtml. The preceding columns are declared in header.view.xml.\\s*hello\\s*reload\\s*HTML table column 1\\s*HTML table column 2\\s*"
+                        + param1 + "\\s*" + param2 + ".*"));
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
         text = page.asText();
-        assertTrue(text.matches("(?s).*Templating and XML views\\s*column1\\s*column2\\s*column3\\s*This is the header text declared in xhtmlTemplate.xhtml. The preceding columns are declared in header.view.xml.\\s*hello\\s*reload\\s*HTML table column 1\\s*HTML table column 2\\s*"
-                + param1 + "\\s*" + param2 + ".*"));
+        assertTrue(text.matches(
+                "(?s).*Templating and XML views\\s*column1\\s*column2\\s*column3\\s*This is the header text declared in xhtmlTemplate.xhtml. The preceding columns are declared in header.view.xml.\\s*hello\\s*reload\\s*HTML table column 1\\s*HTML table column 2\\s*"
+                        + param1 + "\\s*" + param2 + ".*"));
 
     }
 }

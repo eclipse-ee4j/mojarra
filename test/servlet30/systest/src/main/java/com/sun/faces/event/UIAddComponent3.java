@@ -17,22 +17,12 @@
 package com.sun.faces.event;
 
 import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.event.PostRestoreStateEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
 
-@FacesComponent( value = "com.sun.faces.event.UIAddComponent3" )
-public class UIAddComponent3
-    extends UIComponentBase {
+@FacesComponent(value = "com.sun.faces.event.UIAddComponent3")
+public class UIAddComponent3 extends UIComponentBase {
 
     //
     // Constructor
@@ -40,10 +30,10 @@ public class UIAddComponent3
 
     public UIAddComponent3() {
 
-        setRendererType( "testcomponent" );
+        setRendererType("testcomponent");
 
         FacesContext context = FacesContext.getCurrentInstance();
-            UIViewRoot root = context.getViewRoot();
+        UIViewRoot root = context.getViewRoot();
     }
 
     //

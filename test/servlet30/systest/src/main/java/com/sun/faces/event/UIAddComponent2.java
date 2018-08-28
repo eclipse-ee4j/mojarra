@@ -18,11 +18,8 @@ package com.sun.faces.event;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.PostAddToViewEvent;
@@ -30,10 +27,8 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent( value = "com.sun.faces.event.UIAddComponent2" )
-public class UIAddComponent2
-    extends UIComponentBase
-    implements SystemEventListener {
+@FacesComponent(value = "com.sun.faces.event.UIAddComponent2")
+public class UIAddComponent2 extends UIComponentBase implements SystemEventListener {
 
     //
     // Constructor
@@ -41,13 +36,13 @@ public class UIAddComponent2
 
     public UIAddComponent2() {
 
-        setRendererType( "testcomponent" );
+        setRendererType("testcomponent");
 
         FacesContext context = FacesContext.getCurrentInstance();
-            UIViewRoot root = context.getViewRoot();
+        UIViewRoot root = context.getViewRoot();
 
-            root.subscribeToViewEvent( PreRenderViewEvent.class, this );
-            root.subscribeToViewEvent( PostAddToViewEvent.class, this );
+        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
+        root.subscribeToViewEvent(PostAddToViewEvent.class, this);
     }
 
     //
@@ -59,16 +54,14 @@ public class UIAddComponent2
         return "com.sun.faces.event";
     }
 
-    public boolean isListenerForSource( Object source ) {
-        return ( source instanceof UIViewRoot );
+    @Override
+    public boolean isListenerForSource(Object source) {
+        return (source instanceof UIViewRoot);
     }
 
     @Override
-    public void processEvent( SystemEvent event )
-        throws AbortProcessingException {
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
         FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(getId(),
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                getId() + " : Event: " + event, null));
+        context.addMessage(getId(), new FacesMessage(FacesMessage.SEVERITY_ERROR, getId() + " : Event: " + event, null));
     }
 }

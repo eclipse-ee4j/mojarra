@@ -19,9 +19,9 @@ package com.sun.faces.test.servlet30.facelets;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.el.ValueExpression;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
@@ -30,9 +30,11 @@ import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
+
+@Named
 @SessionScoped
-@ManagedBean(name = "dataTableDynamicBean")
 public class DataTableDynamicBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,8 +56,8 @@ public class DataTableDynamicBean implements Serializable {
 
     public HtmlDataTable creatTable(FacesContext fc) {
         HtmlDataTable table = new HtmlDataTable();
-        ValueExpression ve = fc.getApplication().getExpressionFactory()
-                .createValueExpression(fc.getELContext(), "#{dataTableDynamicBean.testStrings}", Object.class);
+        ValueExpression ve = fc.getApplication().getExpressionFactory().createValueExpression(fc.getELContext(),
+                "#{dataTableDynamicBean.testStrings}", Object.class);
         table.setId("table");
         table.setValueExpression("value", ve);
         table.setVar("str");
@@ -68,8 +70,8 @@ public class DataTableDynamicBean implements Serializable {
 
         HtmlOutputText text = new HtmlOutputText();
         text.setId("strv");
-        ValueExpression textve = fc.getApplication().getExpressionFactory()
-                .createValueExpression(fc.getELContext(), "#{str}", Object.class);
+        ValueExpression textve = fc.getApplication().getExpressionFactory().createValueExpression(fc.getELContext(), "#{str}",
+                Object.class);
         text.setValueExpression("value", textve);
         ncPanel.getChildren().add(text);
 
@@ -85,7 +87,7 @@ public class DataTableDynamicBean implements Serializable {
     }
 
     public List<String> getTestStrings() {
-        String vs[] = {"one", "two", "three", "four"};
+        String vs[] = { "one", "two", "three", "four" };
         return Arrays.asList(vs);
     }
 }

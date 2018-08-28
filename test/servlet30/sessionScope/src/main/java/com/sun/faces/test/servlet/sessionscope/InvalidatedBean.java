@@ -16,53 +16,43 @@
 
 package com.sun.faces.test.servlet.sessionscope;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
- * A ViewScoped bean testing session invalidation functionality.
+ * A SessionScoped bean testing session invalidation functionality.
  */
-@ManagedBean(name = "invalidatedBean")
+@Named
 @SessionScoped
-public class InvalidatedBean {
+public class InvalidatedBean implements Serializable {
 
-    /**
-     * Stores the text.
-     */
+    private static final long serialVersionUID = 1L;
+
     private String text;
 
-    /**
-     * Constructor.
-     */
     public InvalidatedBean() {
         this.text = "This is from the constructor";
     }
 
-    /**
-     * Post-construct.
-     *
-     */
     @PostConstruct
     public void init() {
         FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().remove("count");
         this.text = "This is from the @PostConstruct";
     }
 
-    /**
-     * Pre-destroy
-     */
     @PreDestroy
     public void destroy() {
         /*
-         * For the purpose of the test we can actually ask for the current 
-         * instance of the FacesContext, because we trigger invalidating of the 
-         * session through a JSF page, however in the normal case of session 
-         * invalidation this will NOT be true. So this means that normally the 
-         * @PreDestroy annotated method should not try to use 
-         * FacesContext.getCurrentInstance().
+         * For the purpose of the test we can actually ask for the current instance of the FacesContext,
+         * because we trigger invalidating of the session through a JSF page, however in the normal case of
+         * session invalidation this will NOT be true. So this means that normally the
+         *
+         * @PreDestroy annotated method should not try to use FacesContext.getCurrentInstance().
          */
         if (FacesContext.getCurrentInstance() != null) {
             Integer count = 0;
@@ -74,9 +64,6 @@ public class InvalidatedBean {
         }
     }
 
-    /**
-     * Get the text.
-     */
     public String getText() {
         return this.text;
     }

@@ -21,13 +21,13 @@ package com.sun.faces.test.servlet30.wcagdatatable;
  * @author edburns
  */
 public class WindowsCodePageDataBean {
-    
+
     /** Creates a new instance of WcagTableData */
     public WindowsCodePageDataBean() {
     }
-    
-    public WindowsCodePageDataBean(String codePageId, String name, boolean acp,
-            boolean oemcp, boolean winNT31, boolean winNT351, boolean win95) {
+
+    public WindowsCodePageDataBean(String codePageId, String name, boolean acp, boolean oemcp, boolean winNT31, boolean winNT351,
+            boolean win95) {
         this.codePageId = codePageId;
         this.name = name;
         this.ACP = acp;
@@ -44,6 +44,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Getter for property codePageId.
+     * 
      * @return Value of property codePageId.
      */
     public String getCodePageId() {
@@ -52,6 +53,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Setter for property codePageId.
+     * 
      * @param codePageId New value of property codePageId.
      */
     public void setCodePageId(String codePageId) {
@@ -65,6 +67,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Getter for property name.
+     * 
      * @return Value of property name.
      */
     public String getName() {
@@ -73,6 +76,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Setter for property name.
+     * 
      * @param name New value of property name.
      */
     public void setName(String name) {
@@ -91,6 +95,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Getter for property ACP.
+     * 
      * @return Value of property ACP.
      */
     public boolean isACP() {
@@ -99,6 +104,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Setter for property ACP.
+     * 
      * @param ACP New value of property ACP.
      */
     public void setACP(boolean ACP) {
@@ -112,6 +118,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Getter for property OEMCP.
+     * 
      * @return Value of property OEMCP.
      */
     public boolean isOEMCP() {
@@ -120,6 +127,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Setter for property OEMCP.
+     * 
      * @param OEMCP New value of property OEMCP.
      */
     public void setOEMCP(boolean OEMCP) {
@@ -133,6 +141,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Getter for property winNT31.
+     * 
      * @return Value of property winNT31.
      */
     public boolean isWinNT31() {
@@ -141,6 +150,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Setter for property winNT31.
+     * 
      * @param winNT31 New value of property winNT31.
      */
     public void setWinNT31(boolean winNT31) {
@@ -154,6 +164,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Getter for property winNT351.
+     * 
      * @return Value of property winNT351.
      */
     public boolean isWinNT351() {
@@ -162,6 +173,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Setter for property winNT351.
+     * 
      * @param winNT351 New value of property winNT351.
      */
     public void setWinNT351(boolean winNT351) {
@@ -175,6 +187,7 @@ public class WindowsCodePageDataBean {
 
     /**
      * Getter for property win95.
+     * 
      * @return Value of property win95.
      */
     public boolean isWin95() {
@@ -183,11 +196,11 @@ public class WindowsCodePageDataBean {
 
     /**
      * Setter for property win95.
+     * 
      * @param win95 New value of property win95.
      */
     public void setWin95(boolean win95) {
         this.win95 = win95;
     }
 
-    
 }

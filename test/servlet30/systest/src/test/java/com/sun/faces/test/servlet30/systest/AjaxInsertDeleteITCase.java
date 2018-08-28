@@ -21,9 +21,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlHorizontalRule;
 import com.gargoylesoftware.htmlunit.html.HtmlHeading2;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
 public class AjaxInsertDeleteITCase extends HtmlUnitFacesITCase {
@@ -35,10 +32,10 @@ public class AjaxInsertDeleteITCase extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -47,17 +44,15 @@ public class AjaxInsertDeleteITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxInsertDeleteITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testInsertDelete() throws Exception {
 
@@ -104,9 +99,7 @@ public class AjaxInsertDeleteITCase extends HtmlUnitFacesITCase {
 
     }
 
-
-    // --------------------------------------------------------  Private Methods
-
+    // -------------------------------------------------------- Private Methods
 
     private HtmlSubmitInput getBeforeButton(HtmlPage page) {
 
@@ -114,13 +107,11 @@ public class AjaxInsertDeleteITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     private HtmlSubmitInput getAfterButton(HtmlPage page) {
 
         return (HtmlSubmitInput) getInputContainingGivenId(page, "form1:after");
 
     }
-
 
     private HtmlSubmitInput getRemoveBeforeButton(HtmlPage page) {
 
@@ -128,20 +119,17 @@ public class AjaxInsertDeleteITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     private HtmlSubmitInput getRemoveAfterButton(HtmlPage page) {
 
         return (HtmlSubmitInput) getInputContainingGivenId(page, "form1:removeAfter");
 
     }
 
-
     private HtmlHeading2 getBeforeHeading(HtmlPage page) {
 
         return (HtmlHeading2) page.getElementById("h2before");
 
     }
-
 
     private HtmlHeading2 getAfterHeading(HtmlPage page) {
 

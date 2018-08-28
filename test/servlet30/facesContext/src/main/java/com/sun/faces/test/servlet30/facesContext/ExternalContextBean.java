@@ -16,43 +16,44 @@
 
 package com.sun.faces.test.servlet30.facesContext;
 
-import com.sun.faces.context.ExternalContextImpl;
-import com.sun.faces.context.FacesContextImpl;
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import static org.junit.Assert.*;
 
-@ManagedBean(name = "extContextBean")
+import com.sun.faces.context.ExternalContextImpl;
+
+@Named("extContextBean")
 @RequestScoped
 public class ExternalContextBean implements Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     public String getEncodeResourceURLNPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
-            externalContext.encodeResourceURL(null); 
+            externalContext.encodeResourceURL(null);
         } catch (NullPointerException exception) {
             return "PASSED";
         }
 
         return "FAILED";
     }
+
     public String getEncodePartialActionURLNPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
@@ -63,12 +64,11 @@ public class ExternalContextBean implements Serializable {
 
         return "FAILED";
     }
+
     public String getIsUserInRoleNPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
@@ -79,12 +79,11 @@ public class ExternalContextBean implements Serializable {
 
         return "FAILED";
     }
+
     public String getLog1NPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
@@ -95,12 +94,11 @@ public class ExternalContextBean implements Serializable {
 
         return "FAILED";
     }
+
     public String getLog2NPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
@@ -111,12 +109,11 @@ public class ExternalContextBean implements Serializable {
 
         return "FAILED";
     }
+
     public String getLog3NPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
@@ -128,12 +125,11 @@ public class ExternalContextBean implements Serializable {
 
         return "FAILED";
     }
+
     public String getResourceNPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
@@ -144,12 +140,11 @@ public class ExternalContextBean implements Serializable {
 
         return "FAILED";
     }
+
     public String getResourceAsStreamNPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
@@ -160,12 +155,11 @@ public class ExternalContextBean implements Serializable {
 
         return "FAILED";
     }
+
     public String getResourcePathsNPE() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 

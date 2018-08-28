@@ -20,13 +20,14 @@ import java.util.Vector;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
-
-import javax.servlet.http.HttpSession;
 
 public class TestBean implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     Vector _services = new Vector();
 
     public TestBean() {
@@ -34,12 +35,12 @@ public class TestBean implements Serializable {
         System.err.println("Constructing a TestBean");
 
         Service service1 = new Service("Service 1");
-        //        service1.addPort(new Port("80"));
+        // service1.addPort(new Port("80"));
 
         _services.addElement(service1);
 
         Service service2 = new Service("Service 2");
-        //service1.addPort(new Port("90"));
+        // service1.addPort(new Port("90"));
 
         _services.addElement(service2);
     }
@@ -127,13 +128,11 @@ public class TestBean implements Serializable {
         Port curPort;
         while (outer.hasNext()) {
             curService = (Service) outer.next();
-            System.out.println("service: " + curService + " " +
-                    curService.getName());
+            System.out.println("service: " + curService + " " + curService.getName());
             inner = curService.getPorts().iterator();
             while (inner.hasNext()) {
                 curPort = (Port) inner.next();
-                System.out.println("\tport: " + curPort + " " +
-                        curPort.getPortNumber());
+                System.out.println("\tport: " + curPort + " " + curPort.getPortNumber());
             }
         }
         return null;

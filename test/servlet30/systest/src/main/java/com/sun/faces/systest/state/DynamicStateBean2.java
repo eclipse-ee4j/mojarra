@@ -16,14 +16,14 @@
 
 package com.sun.faces.systest.state;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.FacesContext;
 
-@ManagedBean
+@Named
 public class DynamicStateBean2 {
 
     private String value;
@@ -43,13 +43,10 @@ public class DynamicStateBean2 {
     public void render() {
 
         // <h:form id="form">
-        //   <h:panelGroup id="viewPanel"/>
+        // <h:panelGroup id="viewPanel"/>
         // </h:form>
 
-        UIComponent viewPanel = FacesContext
-              .getCurrentInstance()
-              .getViewRoot()
-              .findComponent("form:viewPanel");
+        UIComponent viewPanel = FacesContext.getCurrentInstance().getViewRoot().findComponent("form:viewPanel");
 
         viewPanel.getChildren().clear();
 
@@ -59,20 +56,18 @@ public class DynamicStateBean2 {
 
         // Add a textinput to the inner most panel with a
         // binding to the the value property of this bean.
-        //  ...
-        //  <h:panelGroup id="viewPanel">
-        //      <h:panelGroup id="childPanel"/>
-        //        <h:textInput value="#{render.value}"/>
-        //      </h:panelGroup>
-        //  </h:panelGroup>
-        //  ...
+        // ...
+        // <h:panelGroup id="viewPanel">
+        // <h:panelGroup id="childPanel"/>
+        // <h:textInput value="#{render.value}"/>
+        // </h:panelGroup>
+        // </h:panelGroup>
+        // ...
 
         UIComponent textInput = new HtmlInputText();
         textInput.setId("textInput");
-        textInput.setValueExpression("value", FacesContext.getCurrentInstance()
-              .getApplication().getExpressionFactory().createValueExpression(
-              FacesContext.getCurrentInstance().getELContext(),
-              "#{dynamicStateBean2.value}", Object.class));
+        textInput.setValueExpression("value", FacesContext.getCurrentInstance().getApplication().getExpressionFactory()
+                .createValueExpression(FacesContext.getCurrentInstance().getELContext(), "#{dynamicStateBean2.value}", Object.class));
 
         childPanel.getChildren().add(textInput);
     }
@@ -84,17 +79,16 @@ public class DynamicStateBean2 {
 
         viewPanel.getChildren().clear();
 
-        HtmlCommandButton btn = (HtmlCommandButton)
-              ctx.getApplication().createComponent(HtmlCommandButton.COMPONENT_TYPE);
+        HtmlCommandButton btn = (HtmlCommandButton) ctx.getApplication().createComponent(HtmlCommandButton.COMPONENT_TYPE);
         btn.setValue("dynamically added button");
 
         // Using a non-generated identifier will not cause
         // the exception to be thrown.
 
-        //btn.setId("btn");
+        // btn.setId("btn");
 
         viewPanel.getChildren().add(btn);
 
     }
-    
+
 }

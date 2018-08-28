@@ -49,8 +49,7 @@ public class InputBean extends Object {
         }
 
         FacesContext context = FacesContext.getCurrentInstance();
-        int
-                index = getFlatIndex();
+        int index = getFlatIndex();
         List inputValues = null;
 
         if (null == (inputValues = list.getInputValues())) {
@@ -64,9 +63,7 @@ public class InputBean extends Object {
 
     public void setStringProperty(String newStringProperty) {
         FacesContext context = FacesContext.getCurrentInstance();
-        int
-                size = getFlatSize(),
-                index = getFlatIndex();
+        int size = getFlatSize(), index = getFlatIndex();
         List inputValues = null;
 
         if (null == (inputValues = list.getInputValues())) {
@@ -84,14 +81,10 @@ public class InputBean extends Object {
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
 
-        UIData
-                outerData = (UIData) root.findComponent(list.getOuterDataName()),
+        UIData outerData = (UIData) root.findComponent(list.getOuterDataName()),
                 innerData = (UIData) root.findComponent(list.getInnerDataName());
 
-        int
-                outerIndex = outerData.getRowIndex(),
-                innerIndex = innerData.getRowIndex(),
-                innerRowCount = innerData.getRowCount(),
+        int outerIndex = outerData.getRowIndex(), innerIndex = innerData.getRowIndex(), innerRowCount = innerData.getRowCount(),
                 index = innerRowCount * outerIndex + innerIndex;
 
         return index;
@@ -101,13 +94,11 @@ public class InputBean extends Object {
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
 
-        UIData
-                outerData = (UIData) root.findComponent(list.getOuterDataName()),
+        UIData outerData = (UIData) root.findComponent(list.getOuterDataName()),
                 innerData = (UIData) root.findComponent(list.getInnerDataName());
 
         int size = outerData.getRowCount() * innerData.getRowCount();
         return size;
     }
-
 
 }

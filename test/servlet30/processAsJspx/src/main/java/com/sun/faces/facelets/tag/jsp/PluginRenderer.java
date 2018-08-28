@@ -28,26 +28,12 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.FacesRenderer;
 import javax.faces.render.Renderer;
 
-
-@FacesRenderer(componentFamily="javax.faces.Output", rendererType="jsp.Plugin")
+@FacesRenderer(componentFamily = "javax.faces.Output", rendererType = "jsp.Plugin")
 public class PluginRenderer extends Renderer {
 
-    final String [] passthruAttrs = {
-        "name",
-        "width",
-        "height",
-        "hspace",
-        "vspace",
-        "align"
-    };
-    final String [] pluginSkipAttrs = {
-        "code",
-        "codebase",
-        "com.sun.faces.facelets.MARK_ID",
-        "com.sun.faces.facelets.APPLIED",
-        "jreversion",
-        "type"
-    };
+    final String[] passthruAttrs = { "name", "width", "height", "hspace", "vspace", "align" };
+    final String[] pluginSkipAttrs = { "code", "codebase", "com.sun.faces.facelets.MARK_ID", "com.sun.faces.facelets.APPLIED", "jreversion",
+            "type" };
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
@@ -63,9 +49,7 @@ public class PluginRenderer extends Renderer {
             }
         }
         // write out the codebase
-        out.writeAttribute("codebase",
-                "http://java.sun.com/products/plugin/1.2.2/jinstall-1_2_2-win.cab#Version=1,2,2,0",
-                "codebase");
+        out.writeAttribute("codebase", "http://java.sun.com/products/plugin/1.2.2/jinstall-1_2_2-win.cab#Version=1,2,2,0", "codebase");
         // write out <PARAM> elements for the attrs that need to be prefixed by
         // the string "java_"
         writeRequiredParamFromAttrs(context, component, attrs, out, "code", "java_");
@@ -115,9 +99,7 @@ public class PluginRenderer extends Renderer {
                 out.writeAttribute(attrName, attrs.get(attrName), attrName);
             }
         }
-        out.writeAttribute("pluginspage",
-                "http://java.sun.com/products/plugin/",
-                "pluginspage");
+        out.writeAttribute("pluginspage", "http://java.sun.com/products/plugin/", "pluginspage");
         out.writeAttribute("java_code", attrs.get("code"), "java_code");
         out.writeAttribute("java_codebase", attrs.get("codebase"), "java_codebase");
         // write out the remaining attributes to the plugin element as attributes on emebed
@@ -149,11 +131,11 @@ public class PluginRenderer extends Renderer {
         out.endElement("EMBED");
         out.startElement("NOEMBED", component);
         if (component.getChildCount() > 0) {
-        	Iterator<UIComponent> kids = component.getChildren().iterator();
-        	while (kids.hasNext()) {
-        	    UIComponent kid = kids.next();
-        	    kid.encodeAll(context);
-        	}
+            Iterator<UIComponent> kids = component.getChildren().iterator();
+            while (kids.hasNext()) {
+                UIComponent kid = kids.next();
+                kid.encodeAll(context);
+            }
         }
         out.endElement("NOEMBED");
         out.endElement("COMMENT");
@@ -175,34 +157,28 @@ public class PluginRenderer extends Renderer {
 
     }
 
-    private void writeRequiredParamFromAttrs(FacesContext context, UIComponent component,
-            Map<String, Object> attrs, ResponseWriter out, String attrName,
-            String prefix) throws IOException {
+    private void writeRequiredParamFromAttrs(FacesContext context, UIComponent component, Map<String, Object> attrs, ResponseWriter out,
+            String attrName, String prefix) throws IOException {
         if (!attrs.containsKey(attrName)) {
             throw new IOException("plugin must have a " + attrName + " attribute");
         }
         this.writeParamFromAttrs(context, component, attrs, out, attrName, prefix);
     }
 
-    private void writeParamFromAttrs(FacesContext context, UIComponent component,
-            Map<String, Object> attrs, ResponseWriter out, String attrName,
-            String prefix) throws IOException {
+    private void writeParamFromAttrs(FacesContext context, UIComponent component, Map<String, Object> attrs, ResponseWriter out,
+            String attrName, String prefix) throws IOException {
         out.startElement("PARAM", component);
-        out.writeAttribute("name", prefix + attrName,
-                "name");
-        out.writeAttribute("value", attrs.get(attrName).toString(),
-                "value");
+        out.writeAttribute("name", prefix + attrName, "name");
+        out.writeAttribute("value", attrs.get(attrName).toString(), "value");
         out.endElement("PARAM");
     }
 
-    private void writeParam(FacesContext context, UIComponent component,
-            ResponseWriter out, String attrName,
-            String attrValue) throws IOException {
+    private void writeParam(FacesContext context, UIComponent component, ResponseWriter out, String attrName, String attrValue)
+            throws IOException {
         out.startElement("PARAM", component);
         out.writeAttribute("name", attrName, "name");
         out.writeAttribute("value", attrValue, "value");
         out.endElement("PARAM");
     }
-
 
 }

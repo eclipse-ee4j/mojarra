@@ -24,64 +24,55 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 public class ConditionalNavigationITCase extends HtmlUnitFacesITCase {
 
-
     public ConditionalNavigationITCase(String name) {
-           super(name);
-       }
+        super(name);
+    }
 
-       /**
-        * Set up instance variables required by this test case.
-        */
-       public void setUp() throws Exception {
-           super.setUp();
-       }
+    /**
+     * Set up instance variables required by this test case.
+     */
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
+    /**
+     * Return the tests included in this test suite.
+     */
+    public static Test suite() {
+        return (new TestSuite(ConditionalNavigationITCase.class));
+    }
 
-       /**
-        * Return the tests included in this test suite.
-        */
-       public static Test suite() {
-           return (new TestSuite(ConditionalNavigationITCase.class));
-       }
+    /**
+     * Tear down instance variables required by this test case.
+     */
+    @Override
+    public void tearDown() {
+        super.tearDown();
+    }
 
+    // ------------------------------------------------------------ Test Methods
 
-       /**
-        * Tear down instance variables required by this test case.
-        */
-       public void tearDown() {
-           super.tearDown();
-       }
+    public void testConditionalNavigation() throws Exception {
 
+        HtmlPage page = getPage("/faces/conditionalNav.xhtml");
 
-       // ------------------------------------------------------------ Test Methods
+        HtmlCheckBoxInput checkbox = (HtmlCheckBoxInput) page.getElementById("checkbox");
+        checkbox.setChecked(true);
+        HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("submit");
+        page = button.click();
+        String text = page.asText();
+        assertTrue(text.contains("Success!"));
 
-       public void testConditionalNavigation() throws Exception {
+        page = getPage("/faces/conditionalNav.xhtml");
 
-           HtmlPage page = getPage("/faces/conditionalNav.xhtml");
+        checkbox = (HtmlCheckBoxInput) page.getElementById("checkbox");
+        checkbox.setChecked(false);
+        button = (HtmlSubmitInput) page.getElementById("submit");
+        page = button.click();
+        text = page.asText();
+        assertTrue(text.contains("Failure!"));
 
-           HtmlCheckBoxInput checkbox = (HtmlCheckBoxInput)
-                   page.getElementById("checkbox");
-           checkbox.setChecked(true);
-           HtmlSubmitInput button = (HtmlSubmitInput)
-                   page.getElementById("submit");
-           page = button.click();
-           String text = page.asText();
-           assertTrue(text.contains("Success!"));
-
-           page = getPage("/faces/conditionalNav.xhtml");
-
-           checkbox = (HtmlCheckBoxInput)
-                   page.getElementById("checkbox");
-           checkbox.setChecked(false);
-           button = (HtmlSubmitInput)
-                   page.getElementById("submit");
-           page = button.click();
-           text = page.asText();
-           assertTrue(text.contains("Failure!"));
-
-
-
-       }
-
+    }
 
 }

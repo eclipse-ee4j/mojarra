@@ -24,10 +24,9 @@ import javax.faces.component.UIComponent;
 
 @FacesValidator(value = "AnnotatedValidator")
 public class AnnotatedValidator implements Validator {
-    public void validate(FacesContext context,
-                         UIComponent component,
-                         Object value) throws ValidatorException {
+    @Override
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         return;
     }
-    
+
 }

@@ -44,53 +44,53 @@ public class NestedDatatablesIT {
 
     @Test
     public void testInputFieldUpdate() throws Exception {
-	HtmlPage page = webClient.getPage(webUrl + "faces/test.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/test.jsp");
 
-	for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:0:innerData:" + i + ":inputText");
             input.setValueAttribute("" + i);
-	}
-	for (int i = 3; i < 6; i++) {
-            HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:1:innerData:" + (i-3) + ":inputText");
+        }
+        for (int i = 3; i < 6; i++) {
+            HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:1:innerData:" + (i - 3) + ":inputText");
             input.setValueAttribute("" + i);
-	}
+        }
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = button.click();
-        
-	for (int i = 0; i < 3; i++) {
+
+        for (int i = 0; i < 3; i++) {
             HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:0:innerData:" + i + ":inputText");
             assertEquals("" + i, input.getValueAttribute());
-	}
-	for (int i = 3; i < 6; i++) {
-            HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:1:innerData:" + (i-3) + ":inputText");
+        }
+        for (int i = 3; i < 6; i++) {
+            HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:1:innerData:" + (i - 3) + ":inputText");
             assertEquals("" + i, input.getValueAttribute());
-	}
+        }
 
         for (int i = 0; i < 3; i++) {
             HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:0:innerData:" + i + ":inputText");
             input.setValueAttribute(Character.toString((char) ('a' + i)));
-	}
-	for (int i = 3; i < 6; i++) {
-            HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:1:innerData:" + (i-3) + ":inputText");
+        }
+        for (int i = 3; i < 6; i++) {
+            HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:1:innerData:" + (i - 3) + ":inputText");
             input.setValueAttribute(Character.toString((char) ('a' + i)));
-	}
+        }
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = button.click();
-        
-	for (int i = 0; i < 3; i++) {
+
+        for (int i = 0; i < 3; i++) {
             HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:0:innerData:" + i + ":inputText");
             assertEquals(Character.toString((char) ('a' + i)), input.getValueAttribute());
-	}
-	for (int i = 3; i < 6; i++) {
-            HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:1:innerData:" + (i-3) + ":inputText");
+        }
+        for (int i = 3; i < 6; i++) {
+            HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:outerData:1:innerData:" + (i - 3) + ":inputText");
             assertEquals(Character.toString((char) ('a' + i)), input.getValueAttribute());
-	}
+        }
     }
 
     public void testInputFieldUpdate2() throws Exception {
-	HtmlPage page = webClient.getPage(webUrl + "faces/nested.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/nested.jsp");
 
         HtmlTextInput input1 = page.getHtmlElementById("form:outer:0:inputText");
         input1.setValueAttribute("" + 0);
@@ -109,7 +109,7 @@ public class NestedDatatablesIT {
         input1.setValueAttribute(Character.toString((char) ('a' + 0)));
         input2 = page.getHtmlElementById("form:outer:1:inputText");
         input2.setValueAttribute(Character.toString((char) ('a' + 1)));
-        
+
         button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = button.click();
 
@@ -128,12 +128,12 @@ public class NestedDatatablesIT {
         page = button.click();
 
         portNumberInput = (HtmlTextInput) page.getHtmlElementById("form:outer:0:inner:0:portNumber");
-	assertEquals("12", portNumberInput.getValueAttribute());
+        assertEquals("12", portNumberInput.getValueAttribute());
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form:outer:1:inner:add-port");
         page = button.click();
 
         portNumberInput = (HtmlTextInput) page.getHtmlElementById("form:outer:1:inner:0:portNumber");
-	assertTrue(-1 == portNumberInput.getValueAttribute().indexOf("12"));
+        assertTrue(-1 == portNumberInput.getValueAttribute().indexOf("12"));
     }
 }

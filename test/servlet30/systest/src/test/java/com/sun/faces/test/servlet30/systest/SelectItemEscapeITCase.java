@@ -16,21 +16,19 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
-
 /**
- * <p>Verify that required validation occurrs for Select* components.</p>
+ * <p>
+ * Verify that required validation occurrs for Select* components.
+ * </p>
  */
 
 public class SelectItemEscapeITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -45,14 +43,13 @@ public class SelectItemEscapeITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -61,10 +58,10 @@ public class SelectItemEscapeITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(SelectComponentValueITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -74,7 +71,9 @@ public class SelectItemEscapeITCase extends HtmlUnitFacesITCase {
     // ------------------------------------------------- Individual Test Methods
 
     /**
-     * <p>Verify that the required validator works for SelectOne</p>
+     * <p>
+     * Verify that the required validator works for SelectOne
+     * </p>
      */
 
     public void testSelectOneNoValue() throws Exception {
@@ -98,4 +97,3 @@ public class SelectItemEscapeITCase extends HtmlUnitFacesITCase {
     }
 
 }
-

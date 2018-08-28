@@ -18,37 +18,37 @@ package com.sun.faces.systest.lifecycle;
 
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.FacesException;
 import java.util.Iterator;
 
 public class LifecycleFactoryWrapper extends LifecycleFactory {
 
     public LifecycleFactoryWrapper() {
     }
-    
+
     private LifecycleFactory oldFactory = null;
-    
+
     public LifecycleFactoryWrapper(LifecycleFactory yourOldFactory) {
-	oldFactory = yourOldFactory;
-    }
-    
-    public void addLifecycle(String lifecycleId,
-			     Lifecycle lifecycle) {
-	oldFactory.addLifecycle(lifecycleId, lifecycle);
+        oldFactory = yourOldFactory;
     }
 
+    @Override
+    public void addLifecycle(String lifecycleId, Lifecycle lifecycle) {
+        oldFactory.addLifecycle(lifecycleId, lifecycle);
+    }
+
+    @Override
     public Lifecycle getLifecycle(String lifecycleId) {
-	return oldFactory.getLifecycle(lifecycleId);
+        return oldFactory.getLifecycle(lifecycleId);
     }
 
+    @Override
     public Iterator<String> getLifecycleIds() {
-	return oldFactory.getLifecycleIds();
+        return oldFactory.getLifecycleIds();
     }
 
+    @Override
     public String toString() {
-	return "LifecycleFactoryWrapper";
+        return "LifecycleFactoryWrapper";
     }
 
-
-    
 }

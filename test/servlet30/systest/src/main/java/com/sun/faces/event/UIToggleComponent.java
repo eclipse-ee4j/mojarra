@@ -26,45 +26,43 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent( value = "com.sun.faces.event.UIToggleComponent" )
-public class UIToggleComponent
-	extends UIComponentBase
-	implements SystemEventListener {
+@FacesComponent(value = "com.sun.faces.event.UIToggleComponent")
+public class UIToggleComponent extends UIComponentBase implements SystemEventListener {
 
-	//
-	// Constructor
-	//
+    //
+    // Constructor
+    //
 
-	public UIToggleComponent() {
+    public UIToggleComponent() {
 
-		setRendererType( "testcomponent" );
+        setRendererType("testcomponent");
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		UIViewRoot root = context.getViewRoot();
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot root = context.getViewRoot();
 
-		root.subscribeToViewEvent( PreRenderViewEvent.class, this );
-	}
+        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
+    }
 
-	//
-	// Public methods
-	//
+    //
+    // Public methods
+    //
 
-	@Override
-	public String getFamily() {
+    @Override
+    public String getFamily() {
 
-		return "com.sun.faces.event";
-	}
+        return "com.sun.faces.event";
+    }
 
-	public boolean isListenerForSource( Object source ) {
+    @Override
+    public boolean isListenerForSource(Object source) {
 
-		return ( source instanceof UIViewRoot );
-	}
+        return (source instanceof UIViewRoot);
+    }
 
-	@Override
-	public void processEvent( SystemEvent event )
-		throws AbortProcessingException {
+    @Override
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
 
-		UIComponent component = getChildren().remove( 0 );
-		getChildren().add( component );
-	}
+        UIComponent component = getChildren().remove(0);
+        getChildren().add(component);
+    }
 }

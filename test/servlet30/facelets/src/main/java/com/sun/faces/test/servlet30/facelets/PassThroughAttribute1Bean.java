@@ -16,15 +16,15 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
 import java.util.Date;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
-@ManagedBean
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
-public class PassThroughAttribute1Bean implements Serializable {
-    
+public class PassThroughAttribute1Bean {
+
     public Date getDate() {
         return new Date();
     }

@@ -22,12 +22,10 @@ import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-
 /**
  * Unit tests for Composite Components.
  */
 public class JavaTopLevelActionListenerComponentITCase extends HtmlUnitFacesITCase {
-
 
     public JavaTopLevelActionListenerComponentITCase() {
         this("JavaTopLevelActionListenerComponentTestCase");
@@ -37,14 +35,13 @@ public class JavaTopLevelActionListenerComponentITCase extends HtmlUnitFacesITCa
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -53,14 +50,13 @@ public class JavaTopLevelActionListenerComponentITCase extends HtmlUnitFacesITCa
         return (new TestSuite(JavaTopLevelActionListenerComponentITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
@@ -72,8 +68,5 @@ public class JavaTopLevelActionListenerComponentITCase extends HtmlUnitFacesITCa
         assertTrue(-1 != text.indexOf("javax.faces.Command"));
         assertTrue(-1 != text.indexOf("Action was processed successfully"));
     }
-
-
-
 
 }

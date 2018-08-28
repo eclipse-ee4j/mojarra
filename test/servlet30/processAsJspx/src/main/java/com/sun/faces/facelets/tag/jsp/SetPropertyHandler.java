@@ -31,9 +31,6 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
-
-
-
 public class SetPropertyHandler extends TagHandler {
 
     private final TagAttribute name;
@@ -53,6 +50,7 @@ public class SetPropertyHandler extends TagHandler {
 
     }
 
+    @Override
     public void apply(FaceletContext fc, UIComponent uic) throws IOException {
         FacesContext facesContext = fc.getFacesContext();
         ELContext elContext = facesContext.getELContext();
@@ -60,8 +58,7 @@ public class SetPropertyHandler extends TagHandler {
 
         // Get the bean
         String nameVal = this.name.getValue(fc);
-        ValueExpression valExpression = ef.createValueExpression(elContext,
-                "#{" + nameVal + "}", Object.class);
+        ValueExpression valExpression = ef.createValueExpression(elContext, "#{" + nameVal + "}", Object.class);
         Object bean = valExpression.getValue(elContext);
         if (null == bean) {
             throw new FaceletException("Bean " + nameVal + " not found.");
@@ -103,13 +100,12 @@ public class SetPropertyHandler extends TagHandler {
 
     }
 
-    private void pushAllRequestParamatersToBeanProperties(FacesContext facesContext,
-            ELContext elContext, ExpressionFactory ef, Object bean) {
+    private void pushAllRequestParamatersToBeanProperties(FacesContext facesContext, ELContext elContext, ExpressionFactory ef,
+            Object bean) {
         ExternalContext extContext = facesContext.getExternalContext();
         ELResolver resolver = elContext.getELResolver();
-        Map<String, String []> requestParamValues =
-                extContext.getRequestParameterValuesMap();
-        String [] values;
+        Map<String, String[]> requestParamValues = extContext.getRequestParameterValuesMap();
+        String[] values;
         for (String cur : requestParamValues.keySet()) {
             values = requestParamValues.get(cur);
             for (String curVal : values) {
@@ -117,6 +113,5 @@ public class SetPropertyHandler extends TagHandler {
             }
         }
     }
-
 
 }

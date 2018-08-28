@@ -16,12 +16,10 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
 /**
@@ -29,27 +27,23 @@ import junit.framework.TestSuite;
  */
 public class ImplicitFacetITCase extends HtmlUnitFacesITCase {
 
-
     // --------------------------------------------------------------- Test Init
-
 
     public ImplicitFacetITCase() {
         this("FaceletsTestCase");
     }
 
-
     public ImplicitFacetITCase(String name) {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -58,38 +52,39 @@ public class ImplicitFacetITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(ImplicitFacetITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     /*
      * Added for issue 917.
      */
     public void testUIRepeat() throws Exception {
 
-        HtmlPage page = getPage("/faces/facelets/implicitFacet01.xhtml") ;
-        
+        HtmlPage page = getPage("/faces/facelets/implicitFacet01.xhtml");
+
         String text = page.asText();
-        
-        assertTrue(text.matches("(?s).*Implicit\\s*facet\\s*01\\s*id:.*Child\\s*01\\s*of\\s*facet\\s*01\\s*id:\\s*output01.\\s*Child\\s*02\\s*of\\s*facet\\s*01\\s*id:\\s*output02.\\s*Child\\s*03\\s*of\\s*facet\\s*01\\s*id:\\s*output03.*"));
-        assertTrue(-1 != text.indexOf("Implicit facet 01 id: panelGroup01. Child 01 of facet 01 id: output07. Child 02 of facet 01 id: output08. Child 03 of facet 01 id: output09."));
+
+        assertTrue(text.matches(
+                "(?s).*Implicit\\s*facet\\s*01\\s*id:.*Child\\s*01\\s*of\\s*facet\\s*01\\s*id:\\s*output01.\\s*Child\\s*02\\s*of\\s*facet\\s*01\\s*id:\\s*output02.\\s*Child\\s*03\\s*of\\s*facet\\s*01\\s*id:\\s*output03.*"));
+        assertTrue(-1 != text.indexOf(
+                "Implicit facet 01 id: panelGroup01. Child 01 of facet 01 id: output07. Child 02 of facet 01 id: output08. Child 03 of facet 01 id: output09."));
 
         HtmlSubmitInput input = (HtmlSubmitInput) getInputContainingGivenId(page, "command");
         page = input.click();
 
         text = page.asText();
 
-        assertTrue(text.matches("(?s).*Implicit\\s*facet\\s*01\\s*id:.*Child\\s*01\\s*of\\s*facet\\s*01\\s*id:\\s*output01.\\s*Child\\s*02\\s*of\\s*facet\\s*01\\s*id:\\s*output02.\\s*Child\\s*03\\s*of\\s*facet\\s*01\\s*id:\\s*output03.*"));
-        assertTrue(-1 != text.indexOf("Implicit facet 01 id: panelGroup01. Child 01 of facet 01 id: output07. Child 02 of facet 01 id: output08. Child 03 of facet 01 id: output09."));
-
+        assertTrue(text.matches(
+                "(?s).*Implicit\\s*facet\\s*01\\s*id:.*Child\\s*01\\s*of\\s*facet\\s*01\\s*id:\\s*output01.\\s*Child\\s*02\\s*of\\s*facet\\s*01\\s*id:\\s*output02.\\s*Child\\s*03\\s*of\\s*facet\\s*01\\s*id:\\s*output03.*"));
+        assertTrue(-1 != text.indexOf(
+                "Implicit facet 01 id: panelGroup01. Child 01 of facet 01 id: output07. Child 02 of facet 01 id: output08. Child 03 of facet 01 id: output09."));
 
     }
 
@@ -102,7 +97,7 @@ public class ImplicitFacetITCase extends HtmlUnitFacesITCase {
             HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
             page = button.click();
             String text = page.asText();
-            assert(!text.contains("javax.faces.component.UIPanel"));
+            assert (!text.contains("javax.faces.component.UIPanel"));
         }
     }
 
@@ -132,14 +127,13 @@ public class ImplicitFacetITCase extends HtmlUnitFacesITCase {
     }
 
     /*
-     * Added for Issue 2066
-     * Tests h:column "rowHeader" tag attribute.
+     * Added for Issue 2066 Tests h:column "rowHeader" tag attribute.
      */
     public void testColumnRowHeader() throws Exception {
-         HtmlPage page = getPage("/faces/facelets/issue1726.xhtml");
-         if (!page.asXml().toUpperCase().contains("TOMCAT")) {
+        HtmlPage page = getPage("/faces/facelets/issue1726.xhtml");
+        if (!page.asXml().toUpperCase().contains("TOMCAT")) {
             String xml = page.asXml();
             assertTrue(xml.contains("<th scope=\"row\">"));
-         }
+        }
     }
 }

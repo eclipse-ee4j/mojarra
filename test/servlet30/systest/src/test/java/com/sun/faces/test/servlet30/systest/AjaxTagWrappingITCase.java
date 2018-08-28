@@ -35,29 +35,28 @@ public class AjaxTagWrappingITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
      */
     public static Test suite() {
-        return (new TestSuite(AjaxTagWrappingITCase.class));
+        return new TestSuite(AjaxTagWrappingITCase.class);
     }
-
 
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     /*
-       Test each component to see that it behaves correctly when used with an Ajax tag
+     * Test each component to see that it behaves correctly when used with an Ajax tag
      */
     public void testAjaxTagWrapping() throws Exception {
         getPage("/faces/ajax/ajaxTagWrapping.xhtml");
@@ -73,54 +72,54 @@ public class AjaxTagWrappingITCase extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("out1","1");
+        checkTrue("out1", "1");
 
         HtmlAnchor link1 = (HtmlAnchor) lastpage.getHtmlElementById("link1");
         lastpage = (HtmlPage) link1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("out1","2");
+        checkTrue("out1", "2");
 
         // Submit the ajax request
         HtmlSubmitInput button2 = (HtmlSubmitInput) lastpage.getHtmlElementById("button2");
         lastpage = (HtmlPage) button2.click();
 
         // Check that the ajax request succeeds
-        checkTrue("out1","3");
+        checkTrue("out1", "3");
 
         // Check on the text field
-        HtmlTextInput intext = ((HtmlTextInput)lastpage.getHtmlElementById("intext"));
+        HtmlTextInput intext = ((HtmlTextInput) lastpage.getHtmlElementById("intext"));
         intext.focus();
         intext.type("test");
         intext.blur();
 
-        checkTrue("outtext","test");
+        checkTrue("outtext", "test");
 
         // Check on the text field
-        HtmlTextInput intext2 = ((HtmlTextInput)lastpage.getHtmlElementById("intext2"));
+        HtmlTextInput intext2 = ((HtmlTextInput) lastpage.getHtmlElementById("intext2"));
         intext2.focus();
         intext2.type("test2");
         intext2.blur();
 
-        checkTrue("outtext","test2");
+        checkTrue("outtext", "test2");
 
         // Check on the checkbox
-        HtmlCheckBoxInput checked = ((HtmlCheckBoxInput)lastpage.getHtmlElementById("checkbox"));
-        lastpage = (HtmlPage)checked.click();
+        HtmlCheckBoxInput checked = ((HtmlCheckBoxInput) lastpage.getHtmlElementById("checkbox"));
+        lastpage = (HtmlPage) checked.click();
 
-        checkTrue("checkedvalue","true");
+        checkTrue("checkedvalue", "true");
 
         // Check on the select many checkbox
-        checked = ((HtmlCheckBoxInput)lastpage.getHtmlElementById("manyCheckbox:0"));
-        lastpage = (HtmlPage)checked.click();
+        checked = ((HtmlCheckBoxInput) lastpage.getHtmlElementById("manyCheckbox:0"));
+        lastpage = (HtmlPage) checked.click();
 
-        checkTrue("manyCheckedValue","Value: 1");
+        checkTrue("manyCheckedValue", "Value: 1");
 
     }
 
     public void testReturnFalseOnlyGeneratedOnAjaxInsideActionSourceComponents() throws Exception {
         HtmlPage page = getPage("/faces/ajax/issue1760NestedAjaxCheckboxRender.xhtml");
-        
+
         sampleClickSample(page, "form1CurrentTime:", "checkbox1");
         sampleClickSample(page, "form2CurrentTime:", "checkbox2");
         sampleClickSample(page, "form3CurrentTime:", "button1");
@@ -135,6 +134,7 @@ public class AjaxTagWrappingITCase extends HtmlUnitFacesITCase {
         String timestampBefore = sampleTimestamp(timestampPrefix, xml);
         DomElement clickable = page.getElementById(clickableElementId);
         page = clickable.click();
+        client.waitForBackgroundJavaScript(1000);
 
         xml = page.asXml();
         verifyContent(xml);
@@ -148,7 +148,7 @@ public class AjaxTagWrappingITCase extends HtmlUnitFacesITCase {
         int prefixLen = timestampPrefix.length();
         int i = xml.indexOf(timestampPrefix);
         int j = xml.indexOf(".", i);
-        result = xml.substring(i+prefixLen, j);
+        result = xml.substring(i + prefixLen, j);
 
         return result;
     }

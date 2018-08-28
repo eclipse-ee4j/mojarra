@@ -22,7 +22,6 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 import static javax.faces.application.StateManager.IS_SAVING_STATE;
 
-
 @FacesComponent("captureIsSavingStateValueComponent")
 public class CaptureIsSavingStateValueComponent extends UINamingContainer {
 
@@ -33,10 +32,8 @@ public class CaptureIsSavingStateValueComponent extends UINamingContainer {
         Map<Object, Object> contextAttrs = context.getAttributes();
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         sessionMap.put(IS_SAVING_STATE, contextAttrs.get(IS_SAVING_STATE));
-        
+
         return result;
     }
-
-    
 
 }

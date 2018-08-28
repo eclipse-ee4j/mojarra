@@ -17,14 +17,12 @@
 package com.sun.faces.test.servlet30.systest;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import static junit.framework.TestCase.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 
 public class ViewRootPhaseListenerIT {
 
@@ -52,7 +50,9 @@ public class ViewRootPhaseListenerIT {
         HtmlSubmitInput button = page.getHtmlElementById("form:redisplay");
         page = (HtmlPage) button.click();
 
-        assertTrue(-1 != page.asText().indexOf("beforePhaseEvent: beforePhase: APPLY_REQUEST_VALUES 2 beforePhase: PROCESS_VALIDATIONS 3 beforePhase: UPDATE_MODEL_VALUES 4 beforePhase: INVOKE_APPLICATION 5 beforePhase: RENDER_RESPONSE 6."));
-        assertTrue(-1 != page.asText().indexOf("afterPhaseEvent: afterPhase: RESTORE_VIEW 1 afterPhase: APPLY_REQUEST_VALUES 2 afterPhase: PROCESS_VALIDATIONS 3 afterPhase: UPDATE_MODEL_VALUES 4 afterPhase: INVOKE_APPLICATION 5."));
+        assertTrue(-1 != page.asText().indexOf(
+                "beforePhaseEvent: beforePhase: APPLY_REQUEST_VALUES 2 beforePhase: PROCESS_VALIDATIONS 3 beforePhase: UPDATE_MODEL_VALUES 4 beforePhase: INVOKE_APPLICATION 5 beforePhase: RENDER_RESPONSE 6."));
+        assertTrue(-1 != page.asText().indexOf(
+                "afterPhaseEvent: afterPhase: RESTORE_VIEW 1 afterPhase: APPLY_REQUEST_VALUES 2 afterPhase: PROCESS_VALIDATIONS 3 afterPhase: UPDATE_MODEL_VALUES 4 afterPhase: INVOKE_APPLICATION 5."));
     }
 }

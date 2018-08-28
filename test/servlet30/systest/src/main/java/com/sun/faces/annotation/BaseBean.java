@@ -18,15 +18,13 @@ package com.sun.faces.annotation;
 
 import javax.faces.bean.ManagedProperty;
 
-
 public abstract class BaseBean {
 
-    @ManagedProperty(name="name", value="FAIL")
+    @ManagedProperty(name = "name", value = "FAIL")
     private String name;
 
-    @ManagedProperty(name="age", value="20")
+    @ManagedProperty(name = "age", value = "20")
     private int age;
-
 
     public int getAge() {
         return age;

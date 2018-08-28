@@ -33,10 +33,10 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -45,94 +45,91 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         return new TestSuite(AjaxTagITCase.class);
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxTagCount() throws Exception {
         getPage("/faces/ajax/ajaxTagCount.xhtml");
         System.out.println("Start ajax count test");
         // First we'll check the first page was output correctly
-        checkTrue("countForm:out1","0");
-        checkTrue("out2","1");
+        checkTrue("countForm:out1", "0");
+        checkTrue("out2", "1");
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:button1");
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("countForm:out1","2");
+        checkTrue("countForm:out1", "2");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("out2","1");
+        checkTrue("out2", "1");
     }
 
     public void testAjaxTagMulti() throws Exception {
         getPage("/faces/ajax/ajaxTagMulti.xhtml");
         System.out.println("Start ajax tag multi test");
         // First we'll check the first page was output correctly
-        checkTrue("countForm:out1","0");
-        checkTrue("countForm:out2","1");
-        checkTrue("countForm:out3","2");
-        checkTrue("outside","3");
+        checkTrue("countForm:out1", "0");
+        checkTrue("countForm:out2", "1");
+        checkTrue("countForm:out3", "2");
+        checkTrue("outside", "3");
 
         // Press Count 1
         HtmlSubmitInput button = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:button1");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("countForm:out1","4");
+        checkTrue("countForm:out1", "4");
 
         // Press Count 2
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:button2");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("countForm:out1","5");
-        checkTrue("countForm:out2","6");
+        checkTrue("countForm:out1", "5");
+        checkTrue("countForm:out2", "6");
 
         // Press Count all 3
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:button3");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("countForm:out1","7");
-        checkTrue("countForm:out2","8");
-        checkTrue("countForm:out3","9");
+        checkTrue("countForm:out1", "7");
+        checkTrue("countForm:out2", "8");
+        checkTrue("countForm:out3", "9");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("outside","3");
+        checkTrue("outside", "3");
 
         // Press Count form
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:button4");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("countForm:out1","10");
-        checkTrue("countForm:out2","11");
-        checkTrue("countForm:out3","12");
+        checkTrue("countForm:out1", "10");
+        checkTrue("countForm:out2", "11");
+        checkTrue("countForm:out3", "12");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("outside","3");
+        checkTrue("outside", "3");
 
         // Press Refresh form
         button = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:reset");
         lastpage = (HtmlPage) button.click();
 
-        checkTrue("countForm:out1","0");
-        checkTrue("countForm:out2","1");
-        checkTrue("countForm:out3","2");
-
+        checkTrue("countForm:out1", "0");
+        checkTrue("countForm:out2", "1");
+        checkTrue("countForm:out3", "2");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("outside","3");
+        checkTrue("outside", "3");
     }
 
     public void testAjaxTagDefaultsButton() throws Exception {
         System.out.println("Starting Ajax Tag Defaults Button Test");
         getPage("/faces/ajax/ajaxTagDefaultsButton.xhtml");
-
 
         String out1 = "form1:out1";
         String out2 = "form1:out2";
@@ -144,101 +141,100 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         String reset4 = "form1:reset4";
 
         // First, we'll test to make sure the initial values come out right
-        checkTrue(out1,"0");
-        checkTrue(out2,"1");
-        checkTrue(out3,"2");
+        checkTrue(out1, "0");
+        checkTrue(out2, "1");
+        checkTrue(out3, "2");
 
         // Reload the page
         HtmlSubmitInput button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"3");
-        checkTrue(out2,"4");
-        checkTrue(out3,"5");
+        checkTrue(out1, "3");
+        checkTrue(out2, "4");
+        checkTrue(out3, "5");
 
         // Now, make the Ajax call to first reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset1);
         lastpage = (HtmlPage) button.click();
 
         // Check that the ajax request succeeds
-        checkTrue(out1,"0");
-        checkTrue(out2,"4");
-        checkTrue(out3,"5");
+        checkTrue(out1, "0");
+        checkTrue(out2, "4");
+        checkTrue(out3, "5");
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"1");
-        checkTrue(out2,"2");
-        checkTrue(out3,"3");
+        checkTrue(out1, "1");
+        checkTrue(out2, "2");
+        checkTrue(out3, "3");
 
         // Now, make the Ajax call to second reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset2);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"0");
-        checkTrue(out2,"2");
-        checkTrue(out3,"3");
+        checkTrue(out1, "0");
+        checkTrue(out2, "2");
+        checkTrue(out3, "3");
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"1");
-        checkTrue(out2,"2");
-        checkTrue(out3,"3");
+        checkTrue(out1, "1");
+        checkTrue(out2, "2");
+        checkTrue(out3, "3");
 
         // Now, make the Ajax call to third reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset3);
         lastpage = (HtmlPage) button.click();
 
         // Check the page did *not* update
-        checkTrue(out1,"1");
-        checkTrue(out2,"2");
-        checkTrue(out3,"3");
+        checkTrue(out1, "1");
+        checkTrue(out2, "2");
+        checkTrue(out3, "3");
 
         // Now, Reload the page, to check that reset3 actually executed
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
-        checkTrue(out1,"0");
-        checkTrue(out2,"1");
-        checkTrue(out3,"2");
+        checkTrue(out1, "0");
+        checkTrue(out2, "1");
+        checkTrue(out3, "2");
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"3");
-        checkTrue(out2,"4");
-        checkTrue(out3,"5");
+        checkTrue(out1, "3");
+        checkTrue(out2, "4");
+        checkTrue(out3, "5");
 
         // Now, make the Ajax call to fourth reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset4);
         lastpage = (HtmlPage) button.click();
 
         // Check the page did *not* update
-        checkTrue(out1,"3");
-        checkTrue(out2,"4");
-        checkTrue(out3,"5");
+        checkTrue(out1, "3");
+        checkTrue(out2, "4");
+        checkTrue(out3, "5");
 
         // Now, Reload the page, to check that reset4 actually executed
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
-        checkTrue(out1,"0");
-        checkTrue(out2,"1");
-        checkTrue(out3,"2");
+        checkTrue(out1, "0");
+        checkTrue(out2, "1");
+        checkTrue(out3, "2");
     }
 
     public void testAjaxTagDefaultsButtonNoPrepend() throws Exception {
         System.out.println("Starting Tag Defaults Button No Prepend Test");
         getPage("/faces/ajax/ajaxTagDefaultsButtonNoPrepend.xhtml");
-
 
         String out1 = "out1";
         String out2 = "out2";
@@ -249,103 +245,101 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         String reset3 = "reset3";
         String reset4 = "reset4";
 
-
         // First, we'll test to make sure the initial values come out right
-        checkTrue(out1,"0");
-        checkTrue(out2,"1");
-        checkTrue(out3,"2");
+        checkTrue(out1, "0");
+        checkTrue(out2, "1");
+        checkTrue(out3, "2");
 
         // Reload the page
         HtmlSubmitInput button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"3");
-        checkTrue(out2,"4");
-        checkTrue(out3,"5");
+        checkTrue(out1, "3");
+        checkTrue(out2, "4");
+        checkTrue(out3, "5");
 
         // Now, make the Ajax call to first reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset1);
         lastpage = (HtmlPage) button.click();
 
         // Check that the ajax request succeeds
-        checkTrue(out1,"0");
-        checkTrue(out2,"4");
-        checkTrue(out3,"5");
+        checkTrue(out1, "0");
+        checkTrue(out2, "4");
+        checkTrue(out3, "5");
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"1");
-        checkTrue(out2,"2");
-        checkTrue(out3,"3");
+        checkTrue(out1, "1");
+        checkTrue(out2, "2");
+        checkTrue(out3, "3");
 
         // Now, make the Ajax call to second reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset2);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"0");
-        checkTrue(out2,"2");
-        checkTrue(out3,"3");
+        checkTrue(out1, "0");
+        checkTrue(out2, "2");
+        checkTrue(out3, "3");
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"1");
-        checkTrue(out2,"2");
-        checkTrue(out3,"3");
+        checkTrue(out1, "1");
+        checkTrue(out2, "2");
+        checkTrue(out3, "3");
 
         // Now, make the Ajax call to third reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset3);
         lastpage = (HtmlPage) button.click();
 
         // Check the page did *not* update
-        checkTrue(out1,"1");
-        checkTrue(out2,"2");
-        checkTrue(out3,"3");
+        checkTrue(out1, "1");
+        checkTrue(out2, "2");
+        checkTrue(out3, "3");
 
         // Now, Reload the page, to check that reset3 actually executed
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
-        checkTrue(out1,"0");
-        checkTrue(out2,"1");
-        checkTrue(out3,"2");
+        checkTrue(out1, "0");
+        checkTrue(out2, "1");
+        checkTrue(out3, "2");
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        checkTrue(out1,"3");
-        checkTrue(out2,"4");
-        checkTrue(out3,"5");
+        checkTrue(out1, "3");
+        checkTrue(out2, "4");
+        checkTrue(out3, "5");
 
         // Now, make the Ajax call to fourth reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset4);
         lastpage = (HtmlPage) button.click();
 
         // Check the page did *not* update
-        checkTrue(out1,"3");
-        checkTrue(out2,"4");
-        checkTrue(out3,"5");
+        checkTrue(out1, "3");
+        checkTrue(out2, "4");
+        checkTrue(out3, "5");
 
         // Now, Reload the page, to check that reset4 actually executed
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
-        checkTrue(out1,"0");
-        checkTrue(out2,"1");
-        checkTrue(out3,"2");
+        checkTrue(out1, "0");
+        checkTrue(out2, "1");
+        checkTrue(out3, "2");
     }
 
     public void testAjaxTagDefaultsEdit() throws Exception {
         System.out.println("Starting Tag Defaults Edit Test");
         getPage("/faces/ajax/ajaxTagDefaultsEdit.xhtml");
-
 
         String out1 = "form1:out1";
         String out2 = "form1:out2";
@@ -361,16 +355,16 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         String refresh = "form1:refresh";
 
         // First, we'll test to make sure the initial values come out right
-        checkTrue(out1,"echo");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
-        checkTrue(echo1Out,"");
-        checkTrue(echo2Out,"");
-        checkTrue(echo3Out,"");
-        checkTrue(echo4Out,"");
+        checkTrue(out1, "echo");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
+        checkTrue(echo1Out, "");
+        checkTrue(echo2Out, "");
+        checkTrue(echo3Out, "");
+        checkTrue(echo4Out, "");
 
         // Next, enter data into first field
-        HtmlTextInput echo1 = ((HtmlTextInput)lastpage.getHtmlElementById(edit1));
+        HtmlTextInput echo1 = ((HtmlTextInput) lastpage.getHtmlElementById(edit1));
         echo1.focus();
         echo1.type("test1");
         echo1.blur();
@@ -378,13 +372,13 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         HtmlSubmitInput button = lastpage.getHtmlElementById(refresh);
         button.click();
-        checkTrue(echo1Out,"test1");
-        checkTrue(out1,"test1");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
+        checkTrue(echo1Out, "test1");
+        checkTrue(out1, "test1");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
 
         // Next, enter data into second field
-        HtmlTextInput echo2 = ((HtmlTextInput)lastpage.getHtmlElementById(edit2));
+        HtmlTextInput echo2 = ((HtmlTextInput) lastpage.getHtmlElementById(edit2));
         echo2.focus();
         echo2.type("test2");
         echo2.blur();
@@ -392,13 +386,13 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        checkTrue(echo2Out,"test2");
-        checkTrue(out1,"test2");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
+        checkTrue(echo2Out, "test2");
+        checkTrue(out1, "test2");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
 
         // Next, enter data into third field
-        HtmlTextInput echo3 = ((HtmlTextInput)lastpage.getHtmlElementById(edit3));
+        HtmlTextInput echo3 = ((HtmlTextInput) lastpage.getHtmlElementById(edit3));
         echo3.focus();
         echo3.type("test3");
         echo3.blur();
@@ -406,13 +400,13 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        checkTrue(echo3Out,"test3");
-        checkTrue(out1,"test3");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
+        checkTrue(echo3Out, "test3");
+        checkTrue(out1, "test3");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
 
         // Next, enter data into the fourth field
-        HtmlTextInput echo4 = ((HtmlTextInput)lastpage.getHtmlElementById(edit4));
+        HtmlTextInput echo4 = ((HtmlTextInput) lastpage.getHtmlElementById(edit4));
         echo4.focus();
         echo4.type("test4");
         echo4.blur();
@@ -420,11 +414,10 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        checkTrue(echo4Out,"test4");
-        checkTrue(out1,"test4");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
-
+        checkTrue(echo4Out, "test4");
+        checkTrue(out1, "test4");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
 
     }
 
@@ -446,16 +439,16 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         String refresh = "refresh";
 
         // First, we'll test to make sure the initial values come out right
-        checkTrue(out1,"echo");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
-        checkTrue(echo1Out,"");
-        checkTrue(echo2Out,"");
-        checkTrue(echo3Out,"");
-        checkTrue(echo4Out,"");
+        checkTrue(out1, "echo");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
+        checkTrue(echo1Out, "");
+        checkTrue(echo2Out, "");
+        checkTrue(echo3Out, "");
+        checkTrue(echo4Out, "");
 
         // Next, enter data into first field
-        HtmlTextInput echo1 = ((HtmlTextInput)lastpage.getHtmlElementById(edit1));
+        HtmlTextInput echo1 = ((HtmlTextInput) lastpage.getHtmlElementById(edit1));
         echo1.focus();
         echo1.type("test1");
         echo1.blur();
@@ -463,13 +456,13 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         HtmlSubmitInput button = lastpage.getHtmlElementById(refresh);
         button.click();
-        checkTrue(echo1Out,"test1");
-        checkTrue(out1,"test1");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
+        checkTrue(echo1Out, "test1");
+        checkTrue(out1, "test1");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
 
         // Next, enter data into second field
-        HtmlTextInput echo2 = ((HtmlTextInput)lastpage.getHtmlElementById(edit2));
+        HtmlTextInput echo2 = ((HtmlTextInput) lastpage.getHtmlElementById(edit2));
         echo2.focus();
         echo2.type("test2");
         echo2.blur();
@@ -477,13 +470,13 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        checkTrue(echo2Out,"test2");
-        checkTrue(out1,"test2");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
+        checkTrue(echo2Out, "test2");
+        checkTrue(out1, "test2");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
 
         // Next, enter data into third field
-        HtmlTextInput echo3 = ((HtmlTextInput)lastpage.getHtmlElementById(edit3));
+        HtmlTextInput echo3 = ((HtmlTextInput) lastpage.getHtmlElementById(edit3));
         echo3.focus();
         echo3.type("test3");
         echo3.blur();
@@ -491,13 +484,13 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        checkTrue(echo3Out,"test3");
-        checkTrue(out1,"test3");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
+        checkTrue(echo3Out, "test3");
+        checkTrue(out1, "test3");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
 
         // Next, enter data into the fourth field
-        HtmlTextInput echo4 = ((HtmlTextInput)lastpage.getHtmlElementById(edit4));
+        HtmlTextInput echo4 = ((HtmlTextInput) lastpage.getHtmlElementById(edit4));
         echo4.focus();
         echo4.type("test4");
         echo4.blur();
@@ -505,10 +498,10 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        checkTrue(echo4Out,"test4");
-        checkTrue(out1,"test4");
-        checkTrue(out2,"echo");
-        checkTrue(out3,"echo");
+        checkTrue(echo4Out, "test4");
+        checkTrue(out1, "test4");
+        checkTrue(out2, "echo");
+        checkTrue(out3, "echo");
 
     }
 
@@ -517,35 +510,35 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         System.out.println("Start ajax tag event test");
 
         // First we'll check the first page was output correctly
-        checkTrue("countForm:out1","0");
-        checkTrue("out2","1");
+        checkTrue("countForm:out1", "0");
+        checkTrue("out2", "1");
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:button1");
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("countForm:out1","2");
+        checkTrue("countForm:out1", "2");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("out2","1");
+        checkTrue("out2", "1");
 
         HtmlSubmitInput error = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:error");
         lastpage = (HtmlPage) error.click();
 
         // Check that events were written to the page.
         String expectedStatusArea = "Name: countForm:button1 Event: begin ";
-        expectedStatusArea = expectedStatusArea + "Name: countForm:button1 Event: complete " ;
-        expectedStatusArea = expectedStatusArea + "Name: countForm:button1 Event: success " ;
-        expectedStatusArea = expectedStatusArea + "Name: countForm:error Event: begin " ;
-        expectedStatusArea = expectedStatusArea + "Name: countForm:error Event: complete " ;
-        expectedStatusArea = expectedStatusArea + "Name: countForm:error Event: success" ;
-        
+        expectedStatusArea = expectedStatusArea + "Name: countForm:button1 Event: complete ";
+        expectedStatusArea = expectedStatusArea + "Name: countForm:button1 Event: success ";
+        expectedStatusArea = expectedStatusArea + "Name: countForm:error Event: begin ";
+        expectedStatusArea = expectedStatusArea + "Name: countForm:error Event: complete ";
+        expectedStatusArea = expectedStatusArea + "Name: countForm:error Event: success";
+
         String actualTextArea = getText("statusArea");
         if (actualTextArea != null) {
             actualTextArea = actualTextArea.trim();
         }
-        
+
         assertEquals(expectedStatusArea, actualTextArea);
     }
 
@@ -554,28 +547,28 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         System.out.println("Start ajax tag Disabled test");
 
         // First we'll check the first page was output correctly
-        checkTrue("countForm:out1","0");
-        checkTrue("out2","1");
+        checkTrue("countForm:out1", "0");
+        checkTrue("out2", "1");
 
         // Submit the ajax request
         HtmlButtonInput button1 = (HtmlButtonInput) lastpage.getHtmlElementById("countForm:button1");
         lastpage = (HtmlPage) button1.click();
 
         // Check that the button does nothing
-        checkTrue("countForm:out1","0");
+        checkTrue("countForm:out1", "0");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("out2","1");
+        checkTrue("out2", "1");
 
         // Submit the ajax request
         HtmlButtonInput button2 = (HtmlButtonInput) lastpage.getHtmlElementById("countForm:button2");
         lastpage = (HtmlPage) button2.click();
 
         // Check that the request succeeds
-        checkTrue("countForm:out1","2");
+        checkTrue("countForm:out1", "2");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("out2","1");
+        checkTrue("out2", "1");
 
     }
 
@@ -583,57 +576,56 @@ public class AjaxTagITCase extends HtmlUnitFacesITCase {
         getPage("/faces/ajax/ajaxTagKeywords.xhtml");
         System.out.println("Start ajax tag Keyword test");
 
-        checkTrue("out1","0");
-        checkTrue("out2","1");
-        checkTrue("button3","2");
-        checkTrue("out3","3");
+        checkTrue("out1", "0");
+        checkTrue("out2", "1");
+        checkTrue("button3", "2");
+        checkTrue("out3", "3");
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("button1");
         lastpage = (HtmlPage) button1.click();
 
-
-        checkTrue("out1","4");
-        checkTrue("out2","5");
-        checkTrue("button3","6");
-        checkTrue("out3","7");
+        checkTrue("out1", "4");
+        checkTrue("out2", "5");
+        checkTrue("button3", "6");
+        checkTrue("out3", "7");
 
         // Submit the ajax request
         HtmlSubmitInput button2 = (HtmlSubmitInput) lastpage.getHtmlElementById("button2");
         lastpage = (HtmlPage) button2.click();
 
-        checkTrue("out1","8");
-        checkTrue("out2","9");
-        checkTrue("button3","10");
-        checkTrue("out3","7");
+        checkTrue("out1", "8");
+        checkTrue("out2", "9");
+        checkTrue("button3", "10");
+        checkTrue("out3", "7");
 
         // Submit the ajax request
         HtmlSubmitInput button3 = (HtmlSubmitInput) lastpage.getHtmlElementById("button3");
         lastpage = (HtmlPage) button3.click();
 
-        checkTrue("out1","8");
-        checkTrue("out2","9");
-        checkTrue("button3","11");
-        checkTrue("out3","7");
+        checkTrue("out1", "8");
+        checkTrue("out2", "9");
+        checkTrue("button3", "11");
+        checkTrue("out3", "7");
 
         // Submit the ajax request
         HtmlSubmitInput button4 = (HtmlSubmitInput) lastpage.getHtmlElementById("button4");
         lastpage = (HtmlPage) button4.click();
 
-        checkTrue("out1","8");
-        checkTrue("out2","9");
-        checkTrue("button3","11");
-        checkTrue("out3","7");
+        checkTrue("out1", "8");
+        checkTrue("out2", "9");
+        checkTrue("button3", "11");
+        checkTrue("out3", "7");
 
         // Submit the ajax request
         HtmlSubmitInput button5 = (HtmlSubmitInput) lastpage.getHtmlElementById("button5");
         lastpage = (HtmlPage) button5.click();
 
-        checkTrue("out1","8");
-        checkTrue("out2","12");
-        checkTrue("button3","11");
-        checkTrue("out3","7");
-        
+        checkTrue("out1", "8");
+        checkTrue("out2", "12");
+        checkTrue("button3", "11");
+        checkTrue("out3", "7");
+
     }
 
 }

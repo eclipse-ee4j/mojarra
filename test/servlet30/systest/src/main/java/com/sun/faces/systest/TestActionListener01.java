@@ -17,25 +17,21 @@
 package com.sun.faces.systest;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionListener;
 import javax.faces.event.ActionEvent;
-import javax.faces.component.StateHolder;
 import javax.faces.event.AbortProcessingException;
 
 public class TestActionListener01 implements ActionListener {
-    
-    public TestActionListener01() {}
 
-    public void processAction(ActionEvent ae)
-        throws AbortProcessingException {
+    public TestActionListener01() {
+    }
+
+    @Override
+    public void processAction(ActionEvent ae) throws AbortProcessingException {
         FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(ae.getComponent().getClientId(context),
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-            	ae.getComponent().getId() + " was pressed", null));
-    } 
-    
-    
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, ae.getComponent().getId() + " was pressed", null));
+    }
+
 }

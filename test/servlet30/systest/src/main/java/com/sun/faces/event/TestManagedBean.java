@@ -19,27 +19,26 @@ package com.sun.faces.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 
-
-@ManagedBean
+@Named
 public class TestManagedBean {
 
-    private static final List<String>	LIST;
+    private static final List<String> LIST;
 
     static {
         LIST = new ArrayList<String>();
-        LIST.add( "Foo" );
-        LIST.add( "Bar" );
-        LIST.add( "Baz" );
+        LIST.add("Foo");
+        LIST.add("Bar");
+        LIST.add("Baz");
     }
 
     public List<String> getList() {
-		return LIST;
+        return LIST;
     }
 
     public void save() {
@@ -48,8 +47,7 @@ public class TestManagedBean {
 
     public void addComponent() {
         FacesContext ctx = FacesContext.getCurrentInstance();
-        UIComponent group = ctx.getViewRoot().findComponent("dynamicForm" +
-            UINamingContainer.getSeparatorChar(ctx) +  "group");
+        UIComponent group = ctx.getViewRoot().findComponent("dynamicForm" + UINamingContainer.getSeparatorChar(ctx) + "group");
         HtmlOutputText output = new HtmlOutputText();
         output.setValue("OUTPUT");
         group.getChildren().add(output);

@@ -16,15 +16,15 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
 
+import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
-@ManagedBean(name = "metadataShortCircuitBean")
-public class MetadataShortCircuitBean implements Serializable {
+public class MetadataShortCircuitBean {
 
     void appendMessage(String message) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -35,6 +35,7 @@ public class MetadataShortCircuitBean implements Serializable {
             builder = new StringBuilder();
             requestMap.put("builder", builder);
         }
+
         builder.append(message);
     }
 

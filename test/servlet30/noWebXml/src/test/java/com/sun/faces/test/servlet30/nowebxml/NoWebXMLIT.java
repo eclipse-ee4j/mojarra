@@ -39,7 +39,7 @@ public class NoWebXMLIT {
     public void tearDown() {
         webClient.close();
     }
-    
+
     @Test
     public void testNoWebXML() throws Exception {
 
@@ -66,7 +66,7 @@ public class NoWebXMLIT {
         button = page.getHtmlElementById("form:command");
         page = (HtmlPage) button.click();
         pageAsText = page.asText();
-        assertTrue(pageAsText.contains("Good Morning"));        
+        assertTrue(pageAsText.contains("Good Morning"));
         pageText = page.asXml();
         assertTrue(pageText.contains("<input type=\"hidden\" name=\"javax.faces.ViewState\" id="));
     }

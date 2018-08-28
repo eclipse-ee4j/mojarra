@@ -28,8 +28,7 @@ import java.util.ArrayList;
  */
 public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
-
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     public CompositeComponentsITCase() {
         this("CompositeComponentsTestCase");
     }
@@ -44,14 +43,13 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         addExclusion(Container.WLS_10_3_4_NO_CLUSTER, "testMetadataCache");
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -60,14 +58,13 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(CompositeComponentsITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
@@ -78,13 +75,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     public void testActions() throws Exception {
 
-        final String[] commandIds = {
-              "form:c0:command",
-              "form:c1:nesting:aw1:command",
-              "form:c2:nesting:aw2:command",
-              "form:c3:nesting:aw3:nesting:aw1:command",
-              "form:c4:nesting:aw4:nesting:aw1:command"
-        };
+        final String[] commandIds = { "form:c0:command", "form:c1:nesting:aw1:command", "form:c2:nesting:aw2:command",
+                "form:c3:nesting:aw3:nesting:aw1:command", "form:c4:nesting:aw4:nesting:aw1:command" };
 
         HtmlPage page = getPage("/faces/composite/action.xhtml");
         for (String commandId : commandIds) {
@@ -94,19 +86,13 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
             String message = "Action invoked: " + commandId;
             assertTrue(page.asText().contains(message));
         }
-        
-    }
 
+    }
 
     public void testCustomActions() throws Exception {
 
-        final String[] commandIds = {
-              "form:c0:command",
-              "form:c1:nesting:aw1:command",
-              "form:c2:nesting:aw2:command",
-              "form:c3:nesting:aw3:nesting:aw1:command",
-              "form:c4:nesting:aw4:nesting:aw1:command"
-        };
+        final String[] commandIds = { "form:c0:command", "form:c1:nesting:aw1:command", "form:c2:nesting:aw2:command",
+                "form:c3:nesting:aw3:nesting:aw1:command", "form:c4:nesting:aw4:nesting:aw1:command" };
 
         HtmlPage page = getPage("/faces/composite/customAction.xhtml");
         for (String commandId : commandIds) {
@@ -119,16 +105,10 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testActionListeners() throws Exception {
 
-        final String[] commandIds = {
-              "form:c0:command",
-              "form:c1:nesting:aw1:command",
-              "form:c2:nesting:aw2:command",
-              "form:c3:nesting:aw3:nesting:aw1:command",
-              "form:c4:nesting:aw4:nesting:aw1:command"
-        };
+        final String[] commandIds = { "form:c0:command", "form:c1:nesting:aw1:command", "form:c2:nesting:aw2:command",
+                "form:c3:nesting:aw3:nesting:aw1:command", "form:c4:nesting:aw4:nesting:aw1:command" };
 
         HtmlPage page = getPage("/faces/composite/actionListener.xhtml");
         for (String commandId : commandIds) {
@@ -141,7 +121,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testValidators() throws Exception {
         try {
             getPage("/faces/setApplicationMapProperty.xhtml?name=javax.faces.VALIDATE_EMPTY_FIELDS&value=true");
@@ -151,27 +130,20 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
             assertNotNull(submit);
             page = submit.click();
 
-            final String[] inputIds = {
-                "form:c0:input",
-                "form:c1:nesting:aw1:input",
-                "form:c2:nesting:aw2:input",
-                "form:c3:nesting:aw3:nesting:aw1:input",
-                "form:c4:nesting:aw4:nesting:aw1:input"
-            };
+            final String[] inputIds = { "form:c0:input", "form:c1:nesting:aw1:input", "form:c2:nesting:aw2:input",
+                    "form:c3:nesting:aw3:nesting:aw1:input", "form:c4:nesting:aw4:nesting:aw1:input" };
 
             String pageText = page.asText();
             for (String inputId : inputIds) {
                 String message = "validator invoked: " + inputId;
                 assertTrue(pageText.contains(message));
             }
-        }
-        finally {
+        } finally {
             getPage("/faces/clearApplicationMapProperty.xhtml?name=javax.faces.VALIDATE_EMPTY_FIELDS");
 
         }
 
     }
-
 
     public void testValueChangeListeners() throws Exception {
 
@@ -180,13 +152,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertNotNull(submit);
         page = submit.click();
 
-        final String[] inputIds = {
-              "form:c0:input",
-              "form:c1:nesting:aw1:input",
-              "form:c2:nesting:aw2:input",
-              "form:c3:nesting:aw3:nesting:aw1:input",
-              "form:c4:nesting:aw4:nesting:aw1:input"
-        };
+        final String[] inputIds = { "form:c0:input", "form:c1:nesting:aw1:input", "form:c2:nesting:aw2:input",
+                "form:c3:nesting:aw3:nesting:aw1:input", "form:c4:nesting:aw4:nesting:aw1:input" };
 
         String pageText = page.asText();
         for (String inputId : inputIds) {
@@ -195,7 +162,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         }
 
     }
-
 
     public void testNesting01() throws Exception {
 
@@ -210,7 +176,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testNesting02() throws Exception {
 
         HtmlPage page = getPage("/faces/composite/nesting02.xhtml");
@@ -221,7 +186,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testNesting03() throws Exception {
 
         HtmlPage page = getPage("/faces/composite/nesting03.xhtml");
@@ -231,7 +195,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertEquals("Navigation Result", page.getTitleText());
 
     }
-
 
     public void testNesting04() throws Exception {
 
@@ -246,19 +209,18 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         HtmlSubmitInput input = (HtmlSubmitInput) getInputContainingGivenId(page, "form:sub");
         page = input.click();
         spans.clear();
-         getAllElementsOfGivenClass(page, spans, HtmlSpan.class);
+        getAllElementsOfGivenClass(page, spans, HtmlSpan.class);
         assertEquals(3, spans.size());
         assertEquals("static", spans.get(0).asText());
         assertEquals("com.sun.faces.context.FacesContextImpl", spans.get(1).asText());
         assertEquals("form:nesting4", spans.get(2).asText());
-        
+
     }
 
     public void testNesting06() throws Exception {
         HtmlPage page = getPage("/faces/composite/addPhaseListener.xhtml");
         assertTrue(page.asText().contains("/composite/addPhaseListener.xhtml PASSED"));
     }
-
 
     /**
      * Added for issue 1238.
@@ -269,9 +231,7 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         List<HtmlSpan> spans = new ArrayList<HtmlSpan>(5);
         getAllElementsOfGivenClass(page, spans, HtmlSpan.class);
         assertEquals(5, spans.size());
-        final String[] expectedSpanValues = {
-              "PASSED", "PASSED", "PASSED", "PASSED", "FAILED"
-        };
+        final String[] expectedSpanValues = { "PASSED", "PASSED", "PASSED", "PASSED", "FAILED" };
         for (int i = 0; i < expectedSpanValues.length; i++) {
             assertEquals(expectedSpanValues[i], expectedSpanValues[i], spans.get(i).asText());
         }
@@ -286,7 +246,7 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         for (int i = 0; i < expectedSpanValues.length; i++) {
             assertEquals(expectedSpanValues[i], expectedSpanValues[i], spans.get(i).asText());
         }
-        
+
     }
 
     public void testChildrenAndFacets() throws Exception {
@@ -299,27 +259,19 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         spans.clear();
         getAllElementsOfGivenClass(page, spans, HtmlSpan.class);
         validateChildrenAndFacets(spans);
-        
-    }
 
+    }
 
     public void testCompositeInsertChildrenNested() throws Exception {
 
         HtmlPage page = getPage("/faces/composite/compositeInsertChildrenNesting.xhtml");
         List<HtmlSpan> spans = new ArrayList<HtmlSpan>();
         getAllElementsOfGivenClass(page, spans, HtmlSpan.class);
-        String[] expectedItems = {
-            "Before Insert A(1)",
-            "Before Nested compcomp (3)",
-            "Before Insert B(1)",
-            "Inside nested Component (4)",
-            "After Insert B(2)",
-            "After Nested compcomp(5)",
-            "After Insert A(2)"
-        };
+        String[] expectedItems = { "Before Insert A(1)", "Before Nested compcomp (3)", "Before Insert B(1)", "Inside nested Component (4)",
+                "After Insert B(2)", "After Nested compcomp(5)", "After Insert A(2)" };
         assertTrue(spans.size() == expectedItems.length);
         for (int i = 0, len = expectedItems.length; i < len; i++) {
-            assertTrue(expectedItems[i].equals(spans.get(i).asText()));    
+            assertTrue(expectedItems[i].equals(spans.get(i).asText()));
         }
 
         HtmlSubmitInput input = (HtmlSubmitInput) getInputContainingGivenId(page, "form:submit");
@@ -332,9 +284,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         for (int i = 0, len = expectedItems.length; i < len; i++) {
             assertTrue(expectedItems[i].equals(spans.get(i).asText()));
         }
-        
-    }
 
+    }
 
     public void testCompositeInsertChildrenNested02() throws Exception {
 
@@ -344,10 +295,7 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertTrue(Integer.toString(divs.size()), divs.size() == 1);
         HtmlDivision div = divs.get(0);
         int count = 0;
-        Class[] expectedElements = {
-              HtmlAnchor.class,
-              HtmlBreak.class
-        };
+        Class[] expectedElements = { HtmlAnchor.class, HtmlBreak.class };
         for (DomElement element : div.getChildElements()) {
             if (count > 2) {
                 fail("Expected two children of the div");
@@ -355,9 +303,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
             assertTrue(element.getClass().equals(expectedElements[count]));
             count++;
         }
-        
-    }
 
+    }
 
     public void testCompositeInsertFacetNested() throws Exception {
 
@@ -375,7 +322,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testCompositeInsertFacetNested02() throws Exception {
 
         HtmlPage page = getPage("/faces/composite/compositeInsertFacetNesting02.xhtml");
@@ -392,7 +338,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testInsertFacetRequired01() throws Exception {
 
         // facet required but not present
@@ -401,7 +346,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertTrue(page.asText().contains("Unable to find facet named 'header'"));
 
     }
-
 
     public void testInsertFacetRequired02() throws Exception {
 
@@ -412,7 +356,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testInsertFacetRequired03() throws Exception {
 
         // facet not required and not present
@@ -421,8 +364,7 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertTrue(!page.asText().contains("Unable to find facet named 'header'"));
 
     }
-    
-    
+
     public void testRenderFacetRequired01() throws Exception {
 
         // facet required but not present
@@ -431,7 +373,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertTrue(page.asText().contains("Unable to find facet named 'header'"));
 
     }
-
 
     public void testRenderFacetRequired02() throws Exception {
 
@@ -442,7 +383,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testRenderFacetRequired03() throws Exception {
 
         // facet not required and not present
@@ -451,8 +391,7 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertTrue(!page.asText().contains("Unable to find facet named 'header'"));
 
     }
-    
-    
+
     public void testInsertChildrenRequired01() throws Exception {
 
         // facet required but not present
@@ -462,7 +401,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testInsertChildrenRequired02() throws Exception {
 
         // facet required but not present
@@ -471,7 +409,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertTrue(page.asText().contains("Unable to find any children components nested within parent composite component"));
 
     }
-
 
     public void testInsertChildrenRequired03() throws Exception {
 
@@ -516,11 +453,10 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
             getPage("/faces/composite/methodExprRequired.xhtml");
             fail("No exception thrown when composite component was missing a required MethodExpression enabled attribute");
         } catch (Exception e) {
-            
+
         }
 
     }
-
 
     public void testCompositionWithinComposite() throws Exception {
         try {
@@ -531,7 +467,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         }
 
     }
-
 
     /**
      * Added for issue 1265.
@@ -545,17 +480,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         getAllElementsOfGivenClass(page, scripts, HtmlScript.class);
         assertEquals(5, styles.size());
         assertEquals(2, scripts.size());
-        String[] styleValues = {
-              "color:red",
-              "color:blue",
-              "color:red",
-              "color:red",
-              "color:red"
-        };
-        String[] scriptValues = {
-              "var a = \"ss\";",
-              "var a = \"ss\";"
-        };
+        String[] styleValues = { "color:red", "color:blue", "color:red", "color:red", "color:red" };
+        String[] scriptValues = { "var a = \"ss\";", "var a = \"ss\";" };
 
         for (int i = 0, len = styles.size(); i < len; i++) {
             assertTrue(styles.get(i).asXml().contains(styleValues[i]));
@@ -582,7 +508,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         }
     }
 
-
     /**
      * Added for issue 1290.
      */
@@ -594,23 +519,16 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
         assertEquals(4, 4, spans.size());
 
-        final String[] expectedSpanValues = {
-              "A",  // runtime eval value
-              "A",  // tree creation eval value
-              "B",  // tree creation eval value
-              "C"   // tree creation eval value
+        final String[] expectedSpanValues = { "A", // runtime eval value
+                "A", // tree creation eval value
+                "B", // tree creation eval value
+                "C" // tree creation eval value
         };
 
         for (int i = 0, len = spans.size(); i < len; i++) {
             String spanText = spans.get(i).asText();
-            assertEquals("Index: "
-                         + i
-                         + ", expected: "
-                         + expectedSpanValues[i]
-                         + ", received: "
-                         + spanText,
-                         expectedSpanValues[i],
-                         spanText);
+            assertEquals("Index: " + i + ", expected: " + expectedSpanValues[i] + ", received: " + spanText, expectedSpanValues[i],
+                    spanText);
         }
 
         HtmlSubmitInput button = (HtmlSubmitInput) getInputContainingGivenId(page, "form:submit");
@@ -623,14 +541,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         assertEquals(4, 4, spans.size());
         for (int i = 0, len = spans.size(); i < len; i++) {
             String spanText = spans.get(i).asText();
-            assertEquals("Index: "
-                         + i
-                         + ", expected: "
-                         + expectedSpanValues[i]
-                         + ", received: "
-                         + spanText,
-                         expectedSpanValues[i],
-                         spanText);
+            assertEquals("Index: " + i + ", expected: " + expectedSpanValues[i] + ", received: " + spanText, expectedSpanValues[i],
+                    spanText);
         }
 
     }
@@ -666,7 +578,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testProgrammaticDefaultAttributeValueAccess() throws Exception {
         HtmlPage page = getPage("/faces/composite/programmaticDefaultAttributeValueAccess.xhtml");
         String pageText = page.asText();
@@ -679,9 +590,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
     }
 
     /*
-     * Because this test relies on a message added by the runtime that only happens
-     * during ProjectStage.Development this test should only be executed on 
-     * ProjectStage.Development.
+     * Because this test relies on a message added by the runtime that only happens during
+     * ProjectStage.Development this test should only be executed on ProjectStage.Development.
      */
     public void testMissingRequiredAttribute() throws Exception {
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
@@ -694,9 +604,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
     }
 
     /*
-     * Because this test relies on a message added by the runtime that only happens
-     * during ProjectStage.Development this test should only be executed on 
-     * ProjectStage.Development.
+     * Because this test relies on a message added by the runtime that only happens during
+     * ProjectStage.Development this test should only be executed on ProjectStage.Development.
      */
     public void testMissingRequiredFacet() throws Exception {
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
@@ -718,7 +627,8 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         HtmlPage page = getPage("/faces/composite/1462-using.xhtml");
         String text = page.asText();
         System.out.println(text);
-        assertTrue(text.matches("(?s).*Message:.*Received.*event:.*javax.faces.event.PreRenderViewEvent.*for.*component:.*javax.faces.component.UIViewRoot.*"));
+        assertTrue(text.matches(
+                "(?s).*Message:.*Received.*event:.*javax.faces.event.PreRenderViewEvent.*for.*component:.*javax.faces.component.UIViewRoot.*"));
 
     }
 
@@ -731,28 +641,13 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     // --------------------------------------------------------- Private Methods
 
-
     private void validateChildrenAndFacets(List<HtmlSpan> spans) throws Exception {
 
-        String[] ids = new String[] {
-            "form:cf:outheader2",
-                  "form:cf:outheader",
-                  "form:cf:out1",
-                  "form:cf:out2",
-                  "ccCount",
-                  "header2Facet",
-                  "header1Facet"
+        String[] ids = new String[] { "form:cf:outheader2", "form:cf:outheader", "form:cf:out1", "form:cf:out2", "ccCount", "header2Facet",
+                "header1Facet"
 
         };
-        String[] values = new String[] {
-              "Rendered",
-              "Inserted",
-              "v1",
-              "v2",
-              "0",
-              "true",
-              "true"
-        };
+        String[] values = new String[] { "Rendered", "Inserted", "v1", "v2", "0", "true", "true" };
 
         assertEquals(ids.length, spans.size());
         for (int i = 0, len = ids.length; i < len; i++) {
@@ -760,27 +655,22 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
             assertEquals(ids[i], span.getId());
             assertEquals(values[i], span.asText());
         }
-       
+
     }
 
-
-    private void validateActionMessagePresent(HtmlPage page, String commandId)
-    throws Exception {
+    private void validateActionMessagePresent(HtmlPage page, String commandId) throws Exception {
 
         page = pushButton(page, commandId);
         validateMessage(page, "Action Invoked", commandId);
 
     }
 
-
-    private void validateValidatorMessagePresent(HtmlPage page, String commandId, String inputId)
-    throws Exception {
+    private void validateValidatorMessagePresent(HtmlPage page, String commandId, String inputId) throws Exception {
 
         page = pushButton(page, commandId);
         validateMessage(page, "Validator Invoked", inputId);
 
     }
-
 
     private void validateConverterMessages(HtmlPage page, String[] messageSuffixes) {
 
@@ -809,21 +699,15 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     }
 
+    private HtmlPage pushButton(HtmlPage page, String commandId) throws Exception {
 
-    private HtmlPage pushButton(HtmlPage page, String commandId)
-    throws Exception {
-
-        HtmlSubmitInput input = (HtmlSubmitInput)
-              getInputContainingGivenId(page, commandId);
+        HtmlSubmitInput input = (HtmlSubmitInput) getInputContainingGivenId(page, commandId);
         assertNotNull(input);
         return (HtmlPage) input.click();
 
     }
 
-
-    private void validateMessage(HtmlPage page,
-                                 String messagePrefix,
-                                 String messageSuffix) {
+    private void validateMessage(HtmlPage page, String messagePrefix, String messageSuffix) {
 
         List<HtmlUnorderedList> list = new ArrayList<HtmlUnorderedList>();
         getAllElementsOfGivenClass(page, list, HtmlUnorderedList.class);
@@ -846,7 +730,6 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
                 fail("Messages have been redisplayed");
             }
         }
-
 
     }
 }

@@ -16,23 +16,24 @@
 
 package com.sun.faces.systest.model;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
 
-
-@ManagedBean(name = "listholder")
+@Named("listholder")
 @SessionScoped
 public class ListHolder implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     private List<String[]> list = new ArrayList<String[]>(6);
 
     {
-        list.add(new String[]{"c1"});
-        list.add(new String[]{"c1_1"});
-        list.add(new String[]{"c1_2"});
+        list.add(new String[] { "c1" });
+        list.add(new String[] { "c1_1" });
+        list.add(new String[] { "c1_2" });
     }
 
     public List getList() {

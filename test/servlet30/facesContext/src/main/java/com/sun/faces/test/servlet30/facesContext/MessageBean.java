@@ -16,27 +16,33 @@
 
 package com.sun.faces.test.servlet30.facesContext;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.component.UICommand;
 import javax.faces.context.FacesContext;
-import static org.junit.Assert.*;
+import javax.inject.Named;
 
 /**
  * The managed bean for the message tests.
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@ManagedBean(name = "messageBean")
+@Named
 @RequestScoped
 public class MessageBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public String getMessageResult1() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -55,36 +61,33 @@ public class MessageBean implements Serializable {
         }
         return "PASSED";
     }
-    
+
     public String getMessageResult2() {
         FacesContext context = FacesContext.getCurrentInstance();
         assertTrue(context != null);
 
-        FacesMessage msg1 = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                             "summary1", "detail1");
+        FacesMessage msg1 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "summary1", "detail1");
         context.addMessage(null, msg1);
 
-        FacesMessage msg2 = new FacesMessage(FacesMessage.SEVERITY_FATAL,
-                                             "summary2", "detail2");
+        FacesMessage msg2 = new FacesMessage(FacesMessage.SEVERITY_FATAL, "summary2", "detail2");
         context.addMessage(null, msg2);
 
         UICommand command = new UICommand();
-        FacesMessage msg3 = new FacesMessage(FacesMessage.SEVERITY_FATAL,
-                                             "summary3", "detail3");
+        FacesMessage msg3 = new FacesMessage(FacesMessage.SEVERITY_FATAL, "summary3", "detail3");
         context.addMessage(command.getClientId(context), msg3);
 
-        FacesMessage msg4 = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                                             "summary4", "detail4");
+        FacesMessage msg4 = new FacesMessage(FacesMessage.SEVERITY_WARN, "summary4", "detail4");
         context.addMessage(command.getClientId(context), msg4);
 
         assertTrue(context.getMaximumSeverity() == FacesMessage.SEVERITY_FATAL);
 
-        List controlList = new ArrayList();
+        List<FacesMessage> controlList = new ArrayList<>();
         controlList.add(msg1);
         controlList.add(msg2);
         controlList.add(msg3);
         controlList.add(msg4);
-        Iterator it = context.getMessages();
+
+        Iterator<FacesMessage> it = context.getMessages();
         for (int i = 0, size = controlList.size(); i < size; i++) {
             assertTrue(controlList.get(i).equals(it.next()));
         }
@@ -201,7 +204,7 @@ public class MessageBean implements Serializable {
         context.addMessage(null, msg4);
         assertTrue(context.getMaximumSeverity() == FacesMessage.SEVERITY_FATAL);
 
-        for (Iterator<FacesMessage> i = context.getMessages(); i.hasNext(); ) {
+        for (Iterator<FacesMessage> i = context.getMessages(); i.hasNext();) {
             FacesMessage m = i.next();
             if (m.getSeverity() == FacesMessage.SEVERITY_FATAL) {
                 i.remove();
@@ -209,7 +212,7 @@ public class MessageBean implements Serializable {
         }
         assertTrue(context.getMaximumSeverity() == FacesMessage.SEVERITY_ERROR);
 
-        for (Iterator<FacesMessage> i = context.getMessages(); i.hasNext(); ) {
+        for (Iterator<FacesMessage> i = context.getMessages(); i.hasNext();) {
             FacesMessage m = i.next();
             if (m.getSeverity() == FacesMessage.SEVERITY_ERROR) {
                 i.remove();
@@ -217,7 +220,7 @@ public class MessageBean implements Serializable {
         }
         assertTrue(context.getMaximumSeverity() == FacesMessage.SEVERITY_INFO);
 
-        for (Iterator<FacesMessage> i = context.getMessages(); i.hasNext(); ) {
+        for (Iterator<FacesMessage> i = context.getMessages(); i.hasNext();) {
             FacesMessage m = i.next();
             if (m.getSeverity() == FacesMessage.SEVERITY_INFO) {
                 i.remove();
@@ -242,8 +245,7 @@ public class MessageBean implements Serializable {
         context.addMessage("id3", msg4);
         context.addMessage("id2", msg1);
 
-        for (Iterator<String> i = context.getClientIdsWithMessages();
-              i.hasNext();) {
+        for (Iterator<String> i = context.getClientIdsWithMessages(); i.hasNext();) {
             String id = i.next();
             if ("id3".equals(id)) {
                 i.remove();
@@ -253,8 +255,7 @@ public class MessageBean implements Serializable {
         assertTrue(!context.getMessages("id3").hasNext());
         assertTrue(context.getMaximumSeverity() == FacesMessage.SEVERITY_INFO);
 
-        for (Iterator<String> i = context.getClientIdsWithMessages();
-              i.hasNext();) {
+        for (Iterator<String> i = context.getClientIdsWithMessages(); i.hasNext();) {
             i.next();
             i.remove();
         }
@@ -276,7 +277,8 @@ public class MessageBean implements Serializable {
         try {
             i.next();
             assertTrue(false);
-        } catch (NoSuchElementException nsee) { }
+        } catch (NoSuchElementException nsee) {
+        }
 
         // remove should throw an IllegalStateException if called without having
         // called next()
@@ -284,7 +286,8 @@ public class MessageBean implements Serializable {
         try {
             i.remove();
             assertTrue(false);
-        } catch (IllegalStateException ise) { }               
+        } catch (IllegalStateException ise) {
+        }
 
         return "PASSED";
     }

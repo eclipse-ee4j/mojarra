@@ -23,8 +23,6 @@
 package com.sun.faces.test.servlet30.neverunwrapexceptions;
 
 import java.io.IOException;
-import java.util.Map;
-import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -33,22 +31,21 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  *
  * @author edburns
  * @version
  */
 public class CatchExceptionServlet implements Servlet {
-    
+
     private FacesServlet wrapped = null;
-    
+
+    @Override
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
             wrapped.service(servletRequest, servletResponse);
-            
-        }
-        catch (ServletException e) {
+
+        } catch (ServletException e) {
             HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
             httpRequest.setAttribute("exceptionClass", e.getClass().getName());
             httpRequest.setAttribute("rootCause", e.getCause().getClass().getName());
@@ -57,6 +54,7 @@ public class CatchExceptionServlet implements Servlet {
         }
     }
 
+    @Override
     public void init(ServletConfig servletConfig) throws ServletException {
         if (null == wrapped) {
             wrapped = new FacesServlet();
@@ -64,17 +62,19 @@ public class CatchExceptionServlet implements Servlet {
         wrapped.init(servletConfig);
     }
 
+    @Override
     public void destroy() {
         wrapped.destroy();
     }
 
+    @Override
     public String getServletInfo() {
         return ((wrapped != null) ? wrapped.getServletInfo() : null);
     }
 
+    @Override
     public ServletConfig getServletConfig() {
         return ((wrapped != null) ? wrapped.getServletConfig() : null);
     }
-    
 
 }

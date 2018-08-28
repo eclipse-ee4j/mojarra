@@ -20,18 +20,17 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import static junit.framework.TestCase.assertTrue;
 
 /**
- * <p>Test Case for checking if metadata is omitted when there is a UIViewAction or UIViewParameter
- *  in the page.</p>
+ * <p>
+ * Test Case for checking if metadata is omitted when there is a UIViewAction or UIViewParameter in
+ * the page.
+ * </p>
  */
 
 public class MetadataOmittedITCase extends HtmlUnitFacesITCase {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -42,20 +41,17 @@ public class MetadataOmittedITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     // ------------------------------------------------------ Instance Variables
 
-
     // ---------------------------------------------------- Overall Test Methods
-
 
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -64,32 +60,30 @@ public class MetadataOmittedITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(MetadataOmittedITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------- Individual Test Methods
-
 
     public void testMetadataOmitted() throws Exception {
         HtmlPage page = getPage("/faces/standard/metadataomitted.xhtml");
         String pageAsText = page.asXml();
         if (pageAsText.contains("Project Stage: Development")) {
-            assertTrue (pageAsText.contains("The metadata component needs to be nested within a f:metadata tag."));
+            assertTrue(pageAsText.contains("The metadata component needs to be nested within a f:metadata tag."));
         }
     }
 
     public void testMetadataAndFormOmitted() throws Exception {
         HtmlPage page = getPage("/faces/standard/metadataandformomitted.xhtml");
-        String pageAsText = page.asXml();       
+        String pageAsText = page.asXml();
         if (pageAsText.contains("Project Stage: Development")) {
-            assertTrue (pageAsText.contains("The metadata component needs to be nested within a f:metadata tag."));
-            assertTrue (pageAsText.contains("The form component needs to have a UIForm in its ancestry."));
+            assertTrue(pageAsText.contains("The metadata component needs to be nested within a f:metadata tag."));
+            assertTrue(pageAsText.contains("The form component needs to have a UIForm in its ancestry."));
         }
     }
 }

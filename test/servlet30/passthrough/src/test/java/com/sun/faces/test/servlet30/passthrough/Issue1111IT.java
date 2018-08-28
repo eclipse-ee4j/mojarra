@@ -71,12 +71,12 @@ public class Issue1111IT {
     }
 
     private void assertInputDefaults(HtmlPage page) {
-        assertInput(page, "inputText", "type" ,"text", "value", "text1");
-        assertInput(page, "inputText2", "type" ,"text", "value", "text2");
-        assertInput(page, "textField", "type" ,"text", "value", "text1");
-        assertInput(page, "emailField", "type" ,"email", "value", "anybody@example.com");
-        assertInput(page, "numberField", "type" ,"number", "value", "10", "pattern", "[0-9]*");
-        assertInput(page, "checkBox", "type" ,"checkbox");
+        assertInput(page, "inputText", "type", "text", "value", "text1");
+        assertInput(page, "inputText2", "type", "text", "value", "text2");
+        assertInput(page, "textField", "type", "text", "value", "text1");
+        assertInput(page, "emailField", "type", "email", "value", "anybody@example.com");
+        assertInput(page, "numberField", "type", "number", "value", "10", "pattern", "[0-9]*");
+        assertInput(page, "checkBox", "type", "checkbox");
         HtmlCheckBoxInput checkBoxInput = (HtmlCheckBoxInput) page.getElementById("checkBox");
         assertFalse(checkBoxInput.isChecked());
     }
@@ -107,10 +107,10 @@ public class Issue1111IT {
         HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("submitButton");
         page = submitButton.click();
 
-        assertInput(page, "inputText", "type" ,"text", "value", "new text1");
-        assertInput(page, "inputText2", "type" ,"text", "value", "new text2");
-        assertInput(page, "textField", "type" ,"text", "value", "new text1");
-        assertInput(page, "emailField", "type" ,"email", "value", "nobody@example.com");
+        assertInput(page, "inputText", "type", "text", "value", "new text1");
+        assertInput(page, "inputText2", "type", "text", "value", "new text2");
+        assertInput(page, "textField", "type", "text", "value", "new text1");
+        assertInput(page, "emailField", "type", "email", "value", "nobody@example.com");
         assertInput(page, "numberField", "type", "number", "value", "12", "pattern", "[0-9]*");
 
         checkBoxInput = (HtmlCheckBoxInput) page.getElementById("checkBox");
@@ -138,16 +138,16 @@ public class Issue1111IT {
         assertTrue(xml.contains("id=\"" + id + "\""));
         assertTrue(xml.contains("name=\"" + id + "\""));
 
-        if(attrs == null) {
+        if (attrs == null) {
             return;
         }
-        for(int i = 0; i < attrs.length; i++) {
+        for (int i = 0; i < attrs.length; i++) {
             String name = attrs[i];
             String value = attrs[++i];
             assertTrue(xml.contains(name + "=\"" + value + "\""));
         }
     }
-    
+
     @Test
     public void testCauseError() throws Exception {
         webClient.setIncorrectnessListener(new IgnoringIncorrectnessListener());
@@ -156,8 +156,8 @@ public class Issue1111IT {
         String xml = page.getBody().asXml();
         assertTrue(xml.contains("FaceletException"));
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
-    }        
-    
+    }
+
     @Test
     public void testSelectMarkup() throws Exception {
         webClient.setIncorrectnessListener(new IgnoringIncorrectnessListener());
@@ -178,7 +178,7 @@ public class Issue1111IT {
         for (HtmlOption option : select.getOptions()) {
             boolean shouldBeSelected = valuesAsList.contains(option.getValueAttribute());
 
-            if(option.isSelected()) {
+            if (option.isSelected()) {
                 assertTrue(shouldBeSelected);
             } else {
                 assertFalse(shouldBeSelected);
@@ -187,8 +187,8 @@ public class Issue1111IT {
     }
 
     private void assertSelectAttributes(HtmlPage page) {
-        assertSelect(page, "selectOne", "size" ,"1");
-        assertSelect(page, "selectOneSize2", "size" ,"2");
+        assertSelect(page, "selectOne", "size", "1");
+        assertSelect(page, "selectOneSize2", "size", "2");
         assertSelect(page, "selectMany", "size", "7", "multiple", "multiple");
     }
 
@@ -273,48 +273,47 @@ public class Issue1111IT {
 
         lastAction = page.getElementById("lastAction").getTextContent();
         assertEquals("action2", lastAction);
-        
+
         page = webClient.getPage(webUrl + "faces/button.xhtml");
         HtmlButton button = (HtmlButton) page.getElementById("outcomeButton");
         page = button.click();
         String outcome = page.getElementById("lastOutcome").getTextContent();
         assertEquals("outcome1", outcome);
     }
-    
+
     @Test
     public void testLinks() throws Exception {
         webClient.setIncorrectnessListener(new IgnoringIncorrectnessListener());
         HtmlPage page = webClient.getPage(webUrl + "faces/links.xhtml");
-        
+
         HtmlAnchor link = (HtmlAnchor) page.getElementById("action1");
         page = link.click();
-        
+
         String lastStr = page.getElementById("lastAction").getTextContent();
         assertEquals("action1", lastStr);
 
         link = (HtmlAnchor) page.getElementById("action2");
         page = link.click();
-        
+
         lastStr = page.getElementById("lastAction").getTextContent();
         assertEquals("action2", lastStr);
-        
+
         link = (HtmlAnchor) page.getElementById("outcome1");
         page = link.click();
         lastStr = page.getElementById("lastOutcome").getTextContent();
         assertEquals("outcome1", lastStr);
-        
-        
+
     }
 
     @Test
     public void testComplex() throws Exception {
         webClient.setIncorrectnessListener(new IgnoringIncorrectnessListener());
         HtmlPage page = webClient.getPage(webUrl + "faces/complex.xhtml");
-        
+
         AjaxWaiter waiter = new AjaxWaiter();
         webClient.setStatusHandler(waiter);
 
-        HtmlTextInput name = (HtmlTextInput)page.getElementById("name");
+        HtmlTextInput name = (HtmlTextInput) page.getElementById("name");
         name.focus();
         name.setText("Horst");
 
@@ -327,13 +326,13 @@ public class Issue1111IT {
         assertEquals("1", page.getElementById("progress").getAttribute("value"));
 
         tel.setText("4711");
-        
+
         HtmlEmailInput email = (HtmlEmailInput) page.getElementById("email");
         email.focus();
 
         waiter.waitForSuccess();
         waiter.clear();
-        
+
         System.out.println(page.asXml());
 
         assertEquals("2", page.getElementById("progress").getAttribute("value"));
@@ -342,7 +341,7 @@ public class Issue1111IT {
         email.blur();
 
         waiter.waitForSuccess();
-        
+
         assertEquals("3", page.getElementById("progress").getAttribute("value"));
     }
 
@@ -362,7 +361,7 @@ public class Issue1111IT {
         private void waitForSuccess() {
             int diff = 0;
             while (!"success".equals(lastMessage)) {
-                if(diff >= maxWaitTime) {
+                if (diff >= maxWaitTime) {
                     fail("waited " + diff + "ms for ajax success");
                 }
                 try {

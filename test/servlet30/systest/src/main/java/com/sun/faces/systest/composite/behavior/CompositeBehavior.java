@@ -20,7 +20,6 @@ import javax.faces.component.behavior.ClientBehaviorBase;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.FacesBehavior;
 
-
 @FacesBehavior("compositeBehavior")
 public class CompositeBehavior extends ClientBehaviorBase {
 
@@ -34,7 +33,5 @@ public class CompositeBehavior extends ClientBehaviorBase {
 
         return result;
     }
-
-
 
 }

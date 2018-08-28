@@ -16,8 +16,8 @@
 
 package com.sun.faces.systest.model.ajax.browser;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.PartialResponseWriter;
@@ -25,14 +25,14 @@ import javax.faces.FacesException;
 import java.util.Map;
 import java.util.TreeMap;
 
-@ManagedBean(name="browserAttributes")
+@Named("browserAttributes")
 @RequestScoped
 @SuppressWarnings("unused")
 public class BrowserAttributesBean {
 
     public String updateValue() {
-        Map<String,String> map = new TreeMap<String,String>();
-        map.put("value","PASSED");
+        Map<String, String> map = new TreeMap<String, String>();
+        map.put("value", "PASSED");
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         ExternalContext extContext = ctx.getExternalContext();
@@ -40,10 +40,9 @@ public class BrowserAttributesBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.updateAttributes("checkvalue",map);
+                writer.updateAttributes("checkvalue", map);
                 writer.endDocument();
                 writer.flush();
                 ctx.responseComplete();
@@ -55,9 +54,9 @@ public class BrowserAttributesBean {
     }
 
     public String updateStyle() {
-        Map<String,String> map = new TreeMap<String,String>();
-        map.put("value","green means PASSED");
-        map.put("style","background-color: green;");
+        Map<String, String> map = new TreeMap<String, String>();
+        map.put("value", "green means PASSED");
+        map.put("style", "background-color: green;");
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         ExternalContext extContext = ctx.getExternalContext();
@@ -65,10 +64,9 @@ public class BrowserAttributesBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.updateAttributes("checkvalue",map);
+                writer.updateAttributes("checkvalue", map);
                 writer.endDocument();
                 writer.flush();
                 ctx.responseComplete();
@@ -80,9 +78,9 @@ public class BrowserAttributesBean {
     }
 
     public String updateClass() {
-        Map<String,String> map = new TreeMap<String,String>();
-        map.put("value","green means PASSED");
-        map.put("class","green");
+        Map<String, String> map = new TreeMap<String, String>();
+        map.put("value", "green means PASSED");
+        map.put("class", "green");
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         ExternalContext extContext = ctx.getExternalContext();
@@ -90,10 +88,9 @@ public class BrowserAttributesBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.updateAttributes("checkvalue",map);
+                writer.updateAttributes("checkvalue", map);
                 writer.endDocument();
                 writer.flush();
                 ctx.responseComplete();
@@ -105,10 +102,10 @@ public class BrowserAttributesBean {
     }
 
     public String updateEvent() {
-        Map<String,String> map = new TreeMap<String,String>();
-        map.put("style","display: inline;");
-        map.put("value","Click Me");
-        map.put("onclick","checkPass();");
+        Map<String, String> map = new TreeMap<String, String>();
+        map.put("style", "display: inline;");
+        map.put("value", "Click Me");
+        map.put("onclick", "checkPass();");
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         ExternalContext extContext = ctx.getExternalContext();
@@ -116,10 +113,9 @@ public class BrowserAttributesBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.updateAttributes("checkbutton",map);
+                writer.updateAttributes("checkbutton", map);
                 writer.endDocument();
                 writer.flush();
                 ctx.responseComplete();

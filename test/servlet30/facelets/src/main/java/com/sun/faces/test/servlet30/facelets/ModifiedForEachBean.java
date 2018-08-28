@@ -16,15 +16,19 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
-@ManagedBean(name = "modifiedForEachBean")
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
+@Named
 @SessionScoped
-public class ModifiedForEachBean {
+public class ModifiedForEachBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private boolean toggle;
     private Set<String> set = new HashSet<String>();

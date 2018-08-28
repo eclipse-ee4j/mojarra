@@ -24,9 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 public class Issue3735IT {
     /**
@@ -40,7 +38,7 @@ public class Issue3735IT {
 
     /**
      * Setup before testing.
-     * 
+     *
      * @throws Exception when a serious error occurs.
      */
     @BeforeClass
@@ -49,7 +47,7 @@ public class Issue3735IT {
 
     /**
      * Cleanup after testing.
-     * 
+     *
      * @throws Exception when a serious error occurs.
      */
     @AfterClass
@@ -78,20 +76,20 @@ public class Issue3735IT {
         doTest();
         doTest();
     }
-    
+
     public void doTest() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/first.xhtml");
-        
+
         HtmlSubmitInput button = page.getHtmlElementById("submit");
         page = button.click();
         String pageText = page.asText();
         assertTrue(pageText.matches("(?s).*Flash value:\\s+x.*"));
-        
+
         button = page.getHtmlElementById("submit");
         page = button.click();
         pageText = page.asText();
         assertTrue(pageText.matches("(?s).*Flash value a:\\s+.*"));
         assertTrue(pageText.matches("(?s).*Flash value b:\\s+y.*"));
-        
+
     }
 }

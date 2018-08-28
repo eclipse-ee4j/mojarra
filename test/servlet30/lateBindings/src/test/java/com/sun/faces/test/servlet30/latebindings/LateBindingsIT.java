@@ -44,21 +44,16 @@ public class LateBindingsIT {
     public void testLateBindings() throws Exception {
 
         HtmlPage page = webClient.getPage(webUrl + "faces/Test.jsp");
-        assertTrue(!(page.asText().contains("Custom Converter")
-                && (page.asText().contains("Custom Validator"))));
+        assertTrue(!(page.asText().contains("Custom Converter") && (page.asText().contains("Custom Validator"))));
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = (HtmlPage) button.click();
-        assertTrue((page.asText().contains("CustomConverter1 invoked"))
-                && (page.asText().contains("CustomValidator2 invoked"))
-                && !(page.asText().contains("CustomConverter2 invoked"))
-                && !(page.asText().contains("CustomValidator1 invoked")));
+        assertTrue((page.asText().contains("CustomConverter1 invoked")) && (page.asText().contains("CustomValidator2 invoked"))
+                && !(page.asText().contains("CustomConverter2 invoked")) && !(page.asText().contains("CustomValidator1 invoked")));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = (HtmlPage) button.click();
-        assertTrue((page.asText().contains("CustomConverter2 invoked"))
-                && (page.asText().contains("CustomValidator1 invoked"))
-                && !(page.asText().contains("CustomConverter1 invoked"))
-                && !(page.asText().contains("CustomValidator2 invoked")));
+        assertTrue((page.asText().contains("CustomConverter2 invoked")) && (page.asText().contains("CustomValidator1 invoked"))
+                && !(page.asText().contains("CustomConverter1 invoked")) && !(page.asText().contains("CustomValidator2 invoked")));
     }
 }

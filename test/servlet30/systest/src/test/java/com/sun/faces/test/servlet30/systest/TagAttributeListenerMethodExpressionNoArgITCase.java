@@ -16,14 +16,12 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import java.io.IOException;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
 /**
@@ -31,11 +29,9 @@ import junit.framework.TestSuite;
  */
 public class TagAttributeListenerMethodExpressionNoArgITCase extends HtmlUnitFacesITCase {
 
-
     public TagAttributeListenerMethodExpressionNoArgITCase() {
         this("TagAttributeListenerMethodExpressionNoArgTestCase");
     }
-
 
     public TagAttributeListenerMethodExpressionNoArgITCase(String name) {
         super(name);
@@ -45,9 +41,7 @@ public class TagAttributeListenerMethodExpressionNoArgITCase extends HtmlUnitFac
         return (new TestSuite(TagAttributeListenerMethodExpressionNoArgITCase.class));
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testResourceRelocation() throws Exception {
 
@@ -56,7 +50,6 @@ public class TagAttributeListenerMethodExpressionNoArgITCase extends HtmlUnitFac
         page = getPage("/faces/TestValueChangeAndActionListenerNoArg.xhtml");
         executeTest(page);
     }
-
 
     // --------------------------------------------------------- Private Methods
 
@@ -67,13 +60,9 @@ public class TagAttributeListenerMethodExpressionNoArgITCase extends HtmlUnitFac
         HtmlSubmitInput button = (HtmlSubmitInput) form.getInputByName("loginEvent");
         page = (HtmlPage) button.click();
         String text = page.asText();
-        boolean hasExpectedValue = 
-                (-1 != text.indexOf("valueChange0Called:true")) ||
-                (-1 != text.indexOf("valueChange0Called: true"));
+        boolean hasExpectedValue = (-1 != text.indexOf("valueChange0Called:true")) || (-1 != text.indexOf("valueChange0Called: true"));
         assertTrue(hasExpectedValue);
-        hasExpectedValue =
-                (-1 != text.indexOf("actionListener0Called:true")) ||
-                (-1 != text.indexOf("actionListener0Called: true"));
+        hasExpectedValue = (-1 != text.indexOf("actionListener0Called:true")) || (-1 != text.indexOf("actionListener0Called: true"));
         assertTrue(hasExpectedValue);
     }
 }

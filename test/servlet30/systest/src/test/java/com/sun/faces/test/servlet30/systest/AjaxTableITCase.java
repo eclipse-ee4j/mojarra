@@ -19,7 +19,6 @@ package com.sun.faces.test.servlet30.systest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.*;
-import static junit.framework.TestCase.assertTrue;
 
 public class AjaxTableITCase extends HtmlUnitFacesITCase {
 
@@ -30,10 +29,10 @@ public class AjaxTableITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -42,42 +41,41 @@ public class AjaxTableITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxTableITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     /*
-       Test each component to see that it behaves correctly when used with an Ajax tag
+     * Test each component to see that it behaves correctly when used with an Ajax tag
      */
     public void testAjaxTable() throws Exception {
         getPage("/faces/ajax/ajaxTable.xhtml");
         System.out.println("Start ajax table test");
 
-        assertTrue(check("table:2:inCity","Boston"));
+        assertTrue(check("table:2:inCity", "Boston"));
 
         // Check on the text field
-        HtmlTextInput intext = ((HtmlTextInput)lastpage.getHtmlElementById("table:2:inCity"));
+        HtmlTextInput intext = ((HtmlTextInput) lastpage.getHtmlElementById("table:2:inCity"));
         intext.setValueAttribute("");
         intext.focus();
         intext.type("test");
         intext.blur();
 
-        checkTrue("table:2:inCity","test");
+        checkTrue("table:2:inCity", "test");
         System.out.println("Text Checked");
 
         // Check on the checkbox
 
-        checkTrue("table:3:cheesepref","Eww");
+        checkTrue("table:3:cheesepref", "Eww");
 
-        HtmlCheckBoxInput checked = ((HtmlCheckBoxInput)lastpage.getHtmlElementById("table:3:cheesecheck"));
-        lastpage = (HtmlPage)checked.click();
+        HtmlCheckBoxInput checked = ((HtmlCheckBoxInput) lastpage.getHtmlElementById("table:3:cheesecheck"));
+        lastpage = (HtmlPage) checked.click();
 
-        checkTrue("table:3:cheesepref","Cheese Please");
+        checkTrue("table:3:cheesepref", "Cheese Please");
         System.out.println("Boolean Checkbox Checked");
 
         checkTrue("table:4:count", "4");
@@ -85,14 +83,13 @@ public class AjaxTableITCase extends HtmlUnitFacesITCase {
         lastpage = countlink.click();
 
         checkTrue("table:4:count", "5");
-        checkTrue("count","1");
+        checkTrue("count", "1");
 
-
-        HtmlSubmitInput button = (HtmlSubmitInput)lastpage.getHtmlElementById("submitButton");
+        HtmlSubmitInput button = (HtmlSubmitInput) lastpage.getHtmlElementById("submitButton");
         lastpage = button.click();
         checkTrue("table:0:count", "6");
-        checkTrue("count","1");
-        
+        checkTrue("count", "1");
+
     }
 
 }

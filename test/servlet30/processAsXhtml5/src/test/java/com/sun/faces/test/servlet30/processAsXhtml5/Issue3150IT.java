@@ -44,23 +44,23 @@ public class Issue3150IT {
 
     @Test
     public void testEscaping() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml?id4=%3Cscript%3Ealert%28%27hi%27%29;%3C/script%3E&id=myId&id2=\"myId2\"&id3=myId3");
+        HtmlPage page = webClient
+                .getPage(webUrl + "faces/index.xhtml?id4=%3Cscript%3Ealert%28%27hi%27%29;%3C/script%3E&id=myId&id2=\"myId2\"&id3=myId3");
         String pageMarkup = page.getWebResponse().getContentAsString();
-        
+
         assertTrue(pageMarkup.contains("<span id=\"id\">myId</span>"));
 
         assertTrue(pageMarkup.contains("<input id=\"id\" type=\"hidden\" name=\"id\" value=\"myId\" />"));
-        
-        assertTrue(pageMarkup.contains("<input type=\"hidden\" name=\"id\" id=\"id\" value=\"myId\" />"));
-        
-        assertTrue(pageMarkup.contains("beforeScriptBlock: myId"));
-        
-        assertTrue(pageMarkup.contains("var paramId = \"myId2\";"));
-        
-        assertTrue(pageMarkup.contains("var paramIdd = \"myId3\";"));
-        
-        assertTrue(pageMarkup.contains("&lt;script&gt;alert('hi');&lt;/script&gt;"));
 
+        assertTrue(pageMarkup.contains("<input type=\"hidden\" name=\"id\" id=\"id\" value=\"myId\" />"));
+
+        assertTrue(pageMarkup.contains("beforeScriptBlock: myId"));
+
+        assertTrue(pageMarkup.contains("var paramId = \"myId2\";"));
+
+        assertTrue(pageMarkup.contains("var paramIdd = \"myId3\";"));
+
+        assertTrue(pageMarkup.contains("&lt;script&gt;alert('hi');&lt;/script&gt;"));
 
     }
 }

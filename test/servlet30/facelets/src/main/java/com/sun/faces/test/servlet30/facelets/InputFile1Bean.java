@@ -20,14 +20,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Scanner;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import javax.servlet.http.Part;
 
-@ManagedBean(name="inputFile1Bean")
+@Named
 @SessionScoped
 public class InputFile1Bean implements Serializable {
-    
+
+    private static final long serialVersionUID = 1L;
     private Part uploadedFile;
 
     public Part getUploadedFile() {
@@ -37,20 +39,19 @@ public class InputFile1Bean implements Serializable {
     public void setUploadedFile(Part uploadedFile) {
         this.uploadedFile = uploadedFile;
     }
-    
+
     public String getFileText() {
         String text = "";
 
         if (null != uploadedFile) {
             try {
                 InputStream is = uploadedFile.getInputStream();
-                text = new Scanner( is ).useDelimiter("\\A").next();
+                text = new Scanner(is).useDelimiter("\\A").next();
             } catch (IOException ex) {
-                
+
             }
         }
         return text;
     }
-    
-}
 
+}

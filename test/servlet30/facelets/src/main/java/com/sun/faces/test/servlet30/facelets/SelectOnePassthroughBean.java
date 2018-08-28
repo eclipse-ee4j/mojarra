@@ -16,18 +16,18 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.model.SelectItem;
 
-@ManagedBean(name="selectOnePassthroughBean")
+import javax.enterprise.context.RequestScoped;
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
-public class SelectOnePassthroughBean implements Serializable {
+public class SelectOnePassthroughBean {
 
     private String name;
     private Map<String, String> map;
@@ -45,6 +45,7 @@ public class SelectOnePassthroughBean implements Serializable {
         list.add(selectItem);
         selectItem = new SelectItem("ddddddd", "dddddddd");
         list.add(selectItem);
+
         return list;
     }
 

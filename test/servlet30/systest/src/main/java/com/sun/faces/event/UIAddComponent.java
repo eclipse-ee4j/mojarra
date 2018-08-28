@@ -26,49 +26,47 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent( value = "com.sun.faces.event.UIAddComponent" )
-public class UIAddComponent
-	extends UIComponentBase
-	implements SystemEventListener {
+@FacesComponent(value = "com.sun.faces.event.UIAddComponent")
+public class UIAddComponent extends UIComponentBase implements SystemEventListener {
 
-	//
-	// Constructor
-	//
+    //
+    // Constructor
+    //
 
-	public UIAddComponent() {
+    public UIAddComponent() {
 
-		setRendererType( "testcomponent" );
+        setRendererType("testcomponent");
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		UIViewRoot root = context.getViewRoot();
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot root = context.getViewRoot();
 
-		root.subscribeToViewEvent( PreRenderViewEvent.class, this );
-	}
+        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
+    }
 
-	//
-	// Public methods
-	//
+    //
+    // Public methods
+    //
 
-	@Override
-	public String getFamily() {
+    @Override
+    public String getFamily() {
 
-		return "com.sun.faces.event";
-	}
+        return "com.sun.faces.event";
+    }
 
-	public boolean isListenerForSource( Object source ) {
+    @Override
+    public boolean isListenerForSource(Object source) {
 
-		return ( source instanceof UIViewRoot );
-	}
+        return (source instanceof UIViewRoot);
+    }
 
-	@Override
-	public void processEvent( SystemEvent event )
-		throws AbortProcessingException {
+    @Override
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
 
-		if ( !FacesContext.getCurrentInstance().isPostback() ) {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
 
-			HtmlOutputText component = new HtmlOutputText();
-			component.setValue( "Dynamically added child" );
-			getChildren().add( component );
-		}
-	}
+            HtmlOutputText component = new HtmlOutputText();
+            component.setValue("Dynamically added child");
+            getChildren().add(component);
+        }
+    }
 }

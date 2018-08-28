@@ -23,33 +23,38 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
-
 public class AnnotatedPhaseListener implements PhaseListener {
-    
-    public AnnotatedPhaseListener() { }
-    
 
-    public void afterPhase(PhaseEvent pe) {
-        
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    public AnnotatedPhaseListener() {
     }
 
+    @Override
+    public void afterPhase(PhaseEvent pe) {
+
+    }
+
+    @Override
     public void beforePhase(PhaseEvent pe) {
 
         Map<String, Object> requestMap = FacesContext.getCurrentInstance().getExternalContext().getRequestMap();
         requestMap.put("AnnotatedPhaseListenerMessage", getWelcomeMessage());
     }
 
+    @Override
     public PhaseId getPhaseId() {
         return PhaseId.ANY_PHASE;
     }
-    
-    @Resource(name="welcomeMessage")
+
+    @Resource(name = "welcomeMessage")
     private String welcomeMessage;
 
     public String getWelcomeMessage() {
         return welcomeMessage;
     }
 
-    
-    
 }

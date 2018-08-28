@@ -16,16 +16,12 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
-public class AjaxRerenderOtherFormITCase  extends HtmlUnitFacesITCase {
+public class AjaxRerenderOtherFormITCase extends HtmlUnitFacesITCase {
 
     public AjaxRerenderOtherFormITCase(String name) {
         super(name);
@@ -34,10 +30,10 @@ public class AjaxRerenderOtherFormITCase  extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -46,25 +42,23 @@ public class AjaxRerenderOtherFormITCase  extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxRerenderOtherFormITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     public void testRerenderingOtherForm() throws Exception {
         HtmlPage htmlPage = getPage("/faces/ajax/ajaxRerenderOtherForm.xhtml");
-        
+
         HtmlInput ajaxButton = getInputContainingGivenId(htmlPage, "button2");
         HtmlPage rerenderedPage = ajaxButton.click();
-        
+
         HtmlInput nonAjaxButton = getInputContainingGivenId(rerenderedPage, "button1");
         HtmlPage finalPage = nonAjaxButton.click();
         assertTrue(-1 != finalPage.asText().indexOf("It was a postback!!!"));
-        
+
     }
 }
-

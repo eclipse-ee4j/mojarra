@@ -18,18 +18,20 @@ package com.sun.faces.test.servlet30.facelets;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
-@ManagedBean(name = "selectOneMenuXSSBean")
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 public class SelectOneMenuXSSBean {
-    
+
     private SelectOneMenuXSSItem value;
 
     public List<SelectOneMenuXSSItem> getList() {
         List<SelectOneMenuXSSItem> list = new ArrayList<SelectOneMenuXSSItem>();
         list.add(new SelectOneMenuXSSItem("<script>alert('mytest');</script>"));
+
         return list;
     }
 

@@ -16,14 +16,13 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
-public class DecorateWithNullTemplateBean implements Serializable {
-    
+public class DecorateWithNullTemplateBean {
+
     public String getNullValue() {
         return null;
     }

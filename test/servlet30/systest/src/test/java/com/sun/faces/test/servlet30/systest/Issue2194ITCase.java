@@ -35,10 +35,10 @@ public class Issue2194ITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -50,10 +50,10 @@ public class Issue2194ITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(Issue2194ITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -62,30 +62,21 @@ public class Issue2194ITCase extends HtmlUnitFacesITCase {
         HtmlPage page = getPage("/faces/listeners.xhtml");
         assertTrue(page.asText().contains("RENDER_RESPONSE 6"));
         HtmlForm form = getFormById(page, "form");
-        HtmlSubmitInput submit = (HtmlSubmitInput)
-            form.getInputByName("button1");
+        HtmlSubmitInput submit = (HtmlSubmitInput) form.getInputByName("button1");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("button1 was pressed"));
-        submit = (HtmlSubmitInput)
-            form.getInputByName("button2");
+        submit = (HtmlSubmitInput) form.getInputByName("button2");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("button2 was pressed"));
-        HtmlInput input = (HtmlInput)
-            form.getInputByName("input1");
+        HtmlInput input = form.getInputByName("input1");
         input.setValueAttribute("Foo");
-        submit = (HtmlSubmitInput)
-            form.getInputByName("submit");
+        submit = (HtmlSubmitInput) form.getInputByName("submit");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("input1 value was changed"));
-        input = (HtmlInput)
-            form.getInputByName("input2");
+        input = form.getInputByName("input2");
         input.setValueAttribute("Bar");
-        submit = (HtmlSubmitInput)
-            form.getInputByName("submit");
+        submit = (HtmlSubmitInput) form.getInputByName("submit");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("input2 value was changed"));
     }
 }
-        
-
-
