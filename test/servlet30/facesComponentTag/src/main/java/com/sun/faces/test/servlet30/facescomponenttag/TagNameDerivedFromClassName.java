@@ -19,7 +19,7 @@ package com.sun.faces.test.servlet30.facescomponenttag;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.html.HtmlInputText;
 
-@FacesComponent(createTag=true)
+@FacesComponent(createTag = true)
 public class TagNameDerivedFromClassName extends HtmlInputText {
-    
+
 }

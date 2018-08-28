@@ -16,14 +16,14 @@
 
 package com.sun.faces.systest.model.ajax;
 
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ExternalContext;
 import javax.faces.FacesException;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class InsertDeleteBean {
 
@@ -35,17 +35,16 @@ public class InsertDeleteBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                
+
                 writer.startInsertBefore("hr");
                 writer.writeAttribute("id", "h2before", "id");
                 writer.startElement("h2", null);
                 writer.writeText("BEFORE", null, null);
                 writer.endElement("h2");
                 writer.endInsert();
-                
+
                 writer.startInsertBefore("tablecenter");
                 writer.writeAttribute("id", "trbefore", "id");
                 writer.startElement("tr", null);
@@ -55,7 +54,7 @@ public class InsertDeleteBean {
                 writer.endElement("td");
                 writer.endElement("tr");
                 writer.endInsert();
-                
+
                 writer.endDocument();
                 writer.flush();
                 ctx.responseComplete();
@@ -73,8 +72,7 @@ public class InsertDeleteBean {
         ExternalContext extContext = ctx.getExternalContext();
         if (ctx.getPartialViewContext().isAjaxRequest()) {
             try {
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
                 writer.startDocument();
@@ -107,15 +105,13 @@ public class InsertDeleteBean {
 
     }
 
-
     public String removeBefore() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         ExternalContext extContext = ctx.getExternalContext();
         if (ctx.getPartialViewContext().isAjaxRequest()) {
             try {
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
                 writer.startDocument();
@@ -137,8 +133,7 @@ public class InsertDeleteBean {
         ExternalContext extContext = ctx.getExternalContext();
         if (ctx.getPartialViewContext().isAjaxRequest()) {
             try {
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
                 writer.startDocument();
@@ -151,7 +146,7 @@ public class InsertDeleteBean {
                 throw new FacesException(e);
             }
         }
-        return null;    
+        return null;
     }
 
 }

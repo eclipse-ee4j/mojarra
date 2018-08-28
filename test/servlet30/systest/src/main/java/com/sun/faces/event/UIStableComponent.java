@@ -26,59 +26,57 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent( value = "com.sun.faces.event.UIStableComponent" )
-public class UIStableComponent
-	extends UIComponentBase
-	implements SystemEventListener {
+@FacesComponent(value = "com.sun.faces.event.UIStableComponent")
+public class UIStableComponent extends UIComponentBase implements SystemEventListener {
 
-	//
-	// Constructor
-	//
+    //
+    // Constructor
+    //
 
-	public UIStableComponent() {
+    public UIStableComponent() {
 
-		setRendererType( "testcomponent" );
+        setRendererType("testcomponent");
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		UIViewRoot root = context.getViewRoot();
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot root = context.getViewRoot();
 
-		root.subscribeToViewEvent( PreRenderViewEvent.class, this );
-	}
+        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
+    }
 
-	//
-	// Public methods
-	//
+    //
+    // Public methods
+    //
 
-	@Override
-	public String getFamily() {
+    @Override
+    public String getFamily() {
 
-		return "com.sun.faces.event";
-	}
+        return "com.sun.faces.event";
+    }
 
-	public boolean isListenerForSource( Object source ) {
+    @Override
+    public boolean isListenerForSource(Object source) {
 
-		return ( source instanceof UIViewRoot );
-	}
+        return (source instanceof UIViewRoot);
+    }
 
-	@Override
-	public void processEvent( SystemEvent event )
-		throws AbortProcessingException {
+    @Override
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
 
-		if ( FacesContext.getCurrentInstance().getMaximumSeverity() != null ) {
-			return;
-		}
+        if (FacesContext.getCurrentInstance().getMaximumSeverity() != null) {
+            return;
+        }
 
-		HtmlInputText inputText1 = new HtmlInputText();
-		inputText1.setValue( "1" );
-		getChildren().add( inputText1 );
+        HtmlInputText inputText1 = new HtmlInputText();
+        inputText1.setValue("1");
+        getChildren().add(inputText1);
 
-		HtmlInputText inputText2 = new HtmlInputText();
-		inputText2.setValue( "2" );
-		getChildren().add( inputText2 );
+        HtmlInputText inputText2 = new HtmlInputText();
+        inputText2.setValue("2");
+        getChildren().add(inputText2);
 
-		HtmlInputText inputText3 = new HtmlInputText();
-		inputText3.setId( "text3" );
-		inputText3.setRequired( true );
-		getChildren().add( inputText3 );
-	}
+        HtmlInputText inputText3 = new HtmlInputText();
+        inputText3.setId("text3");
+        inputText3.setRequired(true);
+        getChildren().add(inputText3);
+    }
 }

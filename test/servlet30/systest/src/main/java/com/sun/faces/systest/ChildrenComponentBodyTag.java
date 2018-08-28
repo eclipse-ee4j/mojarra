@@ -16,14 +16,14 @@
 
 package com.sun.faces.systest;
 
-
 import javax.faces.webapp.UIComponentBodyTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
 
-
 /**
- * <p><code>UIComponentBodyTag</code> for <code>ChildrenComponent</code>.</p>
+ * <p>
+ * <code>UIComponentBodyTag</code> for <code>ChildrenComponent</code>.
+ * </p>
  */
 
 public class ChildrenComponentBodyTag extends UIComponentBodyTag {
@@ -32,27 +32,27 @@ public class ChildrenComponentBodyTag extends UIComponentBodyTag {
 
     // -------------------------------------------------------------- Attributes
 
-
     // ---------------------------------------------------------- Public Methods
 
-
+    @Override
     public String getComponentType() {
         return ("ChildrenComponent");
     }
 
-
+    @Override
     public String getRendererType() {
         return (null);
     }
 
-
     /**
-     * <p>Handle the ending of the nested body content for this tag.  The
-     * default implementation simply calls <code>getDoAfterBodyValue()</code> to
-     * retrieve the flag value to be returned.</p>
+     * <p>
+     * Handle the ending of the nested body content for this tag. The default implementation simply
+     * calls <code>getDoAfterBodyValue()</code> to retrieve the flag value to be returned.
+     * </p>
      *
      * @throws javax.servlet.jsp.JspException if an error is encountered
      */
+    @Override
     public int doAfterBody() throws JspException {
         if (firstPass) {
             System.out.println("Evaluating body again...");
@@ -60,14 +60,11 @@ public class ChildrenComponentBodyTag extends UIComponentBodyTag {
             cont.clearBody();
             firstPass = false;
             return EVAL_BODY_AGAIN;
-        }
-        else {
+        } else {
             return super.doAfterBody();
         }
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
 }

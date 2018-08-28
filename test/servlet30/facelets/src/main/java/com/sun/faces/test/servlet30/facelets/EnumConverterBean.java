@@ -16,12 +16,18 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
+import static com.sun.faces.test.servlet30.facelets.EnumConverterEnum.CHOICE_ONE;
+import static com.sun.faces.test.servlet30.facelets.EnumConverterEnum.CHOICE_TWO;
+
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.convert.EnumConverter;
 
-@ManagedBean
+import javax.enterprise.context.RequestScoped;
+import javax.faces.convert.EnumConverter;
+import javax.inject.Named;
+
+@Named
+@RequestScoped
 public class EnumConverterBean {
 
     private Map<String, EnumConverterEnum> choices;
@@ -31,8 +37,8 @@ public class EnumConverterBean {
     public EnumConverterBean() {
         choices = new HashMap<String, EnumConverterEnum>(2);
 
-        choices.put("First choice", EnumConverterEnum.CHOICE_ONE);
-        choices.put("Second choice", EnumConverterEnum.CHOICE_TWO);
+        choices.put("First choice", CHOICE_ONE);
+        choices.put("Second choice", CHOICE_TWO);
     }
 
     public EnumConverter getConverter() {

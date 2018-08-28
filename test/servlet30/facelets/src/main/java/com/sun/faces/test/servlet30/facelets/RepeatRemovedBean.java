@@ -20,11 +20,12 @@ import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
-@ManagedBean(name = "repeatRemovedBean")
 public class RepeatRemovedBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -67,6 +68,7 @@ public class RepeatRemovedBean implements Serializable {
             super();
         }
 
+        @Override
         public ValueHolder get(int index) {
             return new ValueHolder(index);
         }

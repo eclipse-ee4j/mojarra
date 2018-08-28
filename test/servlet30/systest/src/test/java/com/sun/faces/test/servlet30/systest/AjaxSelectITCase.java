@@ -23,7 +23,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 public class AjaxSelectITCase extends HtmlUnitFacesITCase {
 
     public AjaxSelectITCase(String name) {
@@ -33,10 +32,10 @@ public class AjaxSelectITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -45,17 +44,16 @@ public class AjaxSelectITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxTagWrappingITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     /*
-       Test each component to see that it behaves correctly when used with an Ajax tag
+     * Test each component to see that it behaves correctly when used with an Ajax tag
      */
     public void testAjaxSelect() throws Exception {
         getPage("/faces/ajax/ajaxSelect.xhtml");
@@ -70,19 +68,19 @@ public class AjaxSelectITCase extends HtmlUnitFacesITCase {
 
         HtmlSelect select = lastpage.getHtmlElementById("form:s1menu");
 
-        lastpage = (HtmlPage) select.setSelectedAttribute("2",true);
+        lastpage = (HtmlPage) select.setSelectedAttribute("2", true);
 
         checkTrue("out", "menu-2");
 
         select = lastpage.getHtmlElementById("form:s1list");
 
-        lastpage = (HtmlPage) select.setSelectedAttribute("2",true);
+        lastpage = (HtmlPage) select.setSelectedAttribute("2", true);
 
         checkTrue("out", "list-2");
 
         select = lastpage.getHtmlElementById("form:smlist");
 
-        lastpage = (HtmlPage) select.setSelectedAttribute("2",true);
+        lastpage = (HtmlPage) select.setSelectedAttribute("2", true);
 
         checkTrue("out", "mlist-2");
 
@@ -97,7 +95,6 @@ public class AjaxSelectITCase extends HtmlUnitFacesITCase {
         lastpage = click.click();
 
         checkTrue("out", "PASSED");
-
 
         // Now, reload everything and do it again.
         // This tests for bug 1339
@@ -115,19 +112,19 @@ public class AjaxSelectITCase extends HtmlUnitFacesITCase {
 
         select = lastpage.getHtmlElementById("form:s1menu");
 
-        lastpage = (HtmlPage) select.setSelectedAttribute("2",true);
+        lastpage = (HtmlPage) select.setSelectedAttribute("2", true);
 
         checkTrue("out", "menu-2");
 
         select = lastpage.getHtmlElementById("form:s1list");
 
-        lastpage = (HtmlPage) select.setSelectedAttribute("2",true);
+        lastpage = (HtmlPage) select.setSelectedAttribute("2", true);
 
         checkTrue("out", "list-2");
 
         select = lastpage.getHtmlElementById("form:smlist");
 
-        lastpage = (HtmlPage) select.setSelectedAttribute("2",true);
+        lastpage = (HtmlPage) select.setSelectedAttribute("2", true);
 
         checkTrue("out", "mlist-2");
 

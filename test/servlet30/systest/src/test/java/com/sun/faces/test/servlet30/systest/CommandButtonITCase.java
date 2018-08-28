@@ -19,7 +19,6 @@ package com.sun.faces.test.servlet30.systest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.*;
-import static junit.framework.TestCase.assertTrue;
 
 public class CommandButtonITCase extends HtmlUnitFacesITCase {
 
@@ -30,10 +29,10 @@ public class CommandButtonITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -42,41 +41,40 @@ public class CommandButtonITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(CommandButtonITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testCommandButtonButton() throws Exception {
         getPage("/faces/render/commandButtonButton.xhtml");
         System.out.println("Start command Button type=button test");
         // First we'll check the first page was output correctly
-        assertTrue(check("out1","0"));
-        assertTrue(check("outside","1"));
+        assertTrue(check("out1", "0"));
+        assertTrue(check("outside", "1"));
 
         // Submit the ajax tagged request
         HtmlButtonInput button = (HtmlButtonInput) lastpage.getHtmlElementById("button1");
         lastpage = (HtmlPage) button.click();
 
         // Check that the ajax request succeeds
-        assertTrue(check("out1","2"));
+        assertTrue(check("out1", "2"));
 
         // Check that the request did NOT update the rest of the page.
-        assertTrue(check("outside","1"));
+        assertTrue(check("outside", "1"));
 
         // Submit the onclick enhanced request - with no return false
         button = (HtmlButtonInput) lastpage.getHtmlElementById("button2");
         lastpage = (HtmlPage) button.click();
 
         // Check that the ajax request succeeds
-        assertTrue(check("out1","3"));
+        assertTrue(check("out1", "3"));
 
         // Check that the request did NOT update the rest of the page.
-        assertTrue(check("outside","1"));
+        assertTrue(check("outside", "1"));
 
     }
 }

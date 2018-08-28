@@ -26,16 +26,22 @@ import javax.faces.context.FacesContext;
 
 public class PrintTreePhaseListener extends Object implements PhaseListener {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
     public void afterPhase(PhaseEvent event) {
-        DebugUtil.printTree(FacesContext.getCurrentInstance().getViewRoot(),
-                System.out);
+        DebugUtil.printTree(FacesContext.getCurrentInstance().getViewRoot(), System.out);
     }
 
-
+    @Override
     public void beforePhase(PhaseEvent event) {
 
     }
 
+    @Override
     public PhaseId getPhaseId() {
         return PhaseId.ANY_PHASE;
     }

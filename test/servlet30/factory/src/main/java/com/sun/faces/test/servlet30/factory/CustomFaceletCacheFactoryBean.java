@@ -17,18 +17,17 @@
 package com.sun.faces.test.servlet30.factory;
 
 import javax.faces.FactoryFinder;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.view.facelets.FaceletCacheFactory;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class CustomFaceletCacheFactoryBean {
 
     public String getTestMessage() {
         String result = "FAILURE";
-        FaceletCacheFactory factory = (FaceletCacheFactory) FactoryFinder.getFactory(
-                "javax.faces.view.facelets.FaceletCacheFactory");
+        FaceletCacheFactory factory = (FaceletCacheFactory) FactoryFinder.getFactory("javax.faces.view.facelets.FaceletCacheFactory");
         if (factory instanceof CustomFaceletCacheFactory) {
             result = ((CustomFaceletCacheFactory) factory).isOneArgCtorCalled() ? "SUCCESS" : "FAILURE";
         }

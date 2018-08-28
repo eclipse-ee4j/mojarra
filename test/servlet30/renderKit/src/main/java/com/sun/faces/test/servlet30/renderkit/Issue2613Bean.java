@@ -20,22 +20,25 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
-@ManagedBean(name = "issue2613Bean")
+@Named
 @SessionScoped
 public class Issue2613Bean implements Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     private List<String> parameterNames = null;
     private int parameterCount = 0;
 
     public List<String> getParameterNames() {
         FacesContext context = FacesContext.getCurrentInstance();
-        parameterNames = Collections.list((Enumeration<String>)((
-            HttpServletRequest)context.getExternalContext().getRequest()).getParameterNames());
+        parameterNames = Collections.list(((HttpServletRequest) context.getExternalContext().getRequest()).getParameterNames());
         Collections.sort(parameterNames);
         return parameterNames;
     }
@@ -47,7 +50,7 @@ public class Issue2613Bean implements Serializable {
     public int getParameterCount() {
         parameterCount = parameterNames.size();
         return parameterCount;
-    } 
+    }
 
     public void setParameterCount(int parameterCount) {
         this.parameterCount = parameterCount;

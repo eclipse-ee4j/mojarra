@@ -16,14 +16,14 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean(name = "repeatSizeBean")
-public class RepeatSizeBean implements Serializable {
+@Named
+@RequestScoped
+public class RepeatSizeBean {
 
-    public int size = 5;
-
+    private int size = 5;
     private String[] strList;
 
     public String[] getStrList() {

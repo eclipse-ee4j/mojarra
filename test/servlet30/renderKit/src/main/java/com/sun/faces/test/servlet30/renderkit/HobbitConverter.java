@@ -23,12 +23,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@FacesConverter(value="hobbit-converter")
+@FacesConverter(value = "hobbit-converter")
 public class HobbitConverter implements Converter {
-    
+
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component,
-                String value) {
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
         SelectMany05Bean bean = new SelectMany05Bean();
         HobbitBean result = null;
         Collection<HobbitBean> hobbits = bean.getHobbitCollection();
@@ -38,16 +37,13 @@ public class HobbitConverter implements Converter {
                 break;
             }
         }
-        
-        
+
         return result;
     }
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        return ((HobbitBean)value).getName();
+        return ((HobbitBean) value).getName();
     }
 
-    
-    
 }

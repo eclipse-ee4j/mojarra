@@ -17,10 +17,8 @@
 package com.sun.faces.test.servlet30.nestedloadbundles;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import static java.util.Collections.list;
 import org.junit.After;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +27,8 @@ import org.junit.Test;
 
 /**
  * <p>
- * Make sure loadBundle works as expected in JSF 1.2</p>
+ * Make sure loadBundle works as expected in JSF 1.2
+ * </p>
  */
 public class NestedLoadBundlesIT {
 

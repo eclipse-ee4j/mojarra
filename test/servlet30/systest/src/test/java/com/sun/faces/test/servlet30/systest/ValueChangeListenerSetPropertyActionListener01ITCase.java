@@ -20,12 +20,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.*;
 
-
 /**
  * Unit tests for Composite Components.
  */
 public class ValueChangeListenerSetPropertyActionListener01ITCase extends HtmlUnitFacesITCase {
-
 
     public ValueChangeListenerSetPropertyActionListener01ITCase() {
         this("ValueChangeListenerSetPropertyActionListener01TestCase");
@@ -35,7 +33,6 @@ public class ValueChangeListenerSetPropertyActionListener01ITCase extends HtmlUn
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
@@ -44,14 +41,12 @@ public class ValueChangeListenerSetPropertyActionListener01ITCase extends HtmlUn
         super.setUp();
     }
 
-
     /**
      * Return the tests included in this test suite.
      */
     public static Test suite() {
         return (new TestSuite(ValueChangeListenerSetPropertyActionListener01ITCase.class));
     }
-
 
     /**
      * Tear down instance variables required by this test case.
@@ -60,14 +55,13 @@ public class ValueChangeListenerSetPropertyActionListener01ITCase extends HtmlUn
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
     /**
      * <p>
-     *  Maps ActionListener to commandButton within composite/actionSource1.xhtml using
-     *   only the name attribute.
+     * Maps ActionListener to commandButton within composite/actionSource1.xhtml using only the name
+     * attribute.
      * </p>
      */
     public void testValueChangeActionListener() throws Exception {
@@ -75,8 +69,7 @@ public class ValueChangeListenerSetPropertyActionListener01ITCase extends HtmlUn
         HtmlPage page = getPage("/faces/composite/valueChangeListenerSetPropertyActionListener01.xhtml");
         HtmlInput input = getInputContainingGivenId(page, "form:composite:value");
         input.setValueAttribute("Cause A ValueChangeEvent");
-        HtmlSubmitInput button = (HtmlSubmitInput)
-                getInputContainingGivenId(page, "form:composite:submit");
+        HtmlSubmitInput button = (HtmlSubmitInput) getInputContainingGivenId(page, "form:composite:submit");
         page = button.click();
         String pageText = page.asText();
 
@@ -102,10 +95,6 @@ public class ValueChangeListenerSetPropertyActionListener01ITCase extends HtmlUn
 
         assertTrue(lesser < greater);
 
-        
-
-
     }
-
 
 }

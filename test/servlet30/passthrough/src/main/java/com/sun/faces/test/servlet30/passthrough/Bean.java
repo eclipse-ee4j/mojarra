@@ -19,18 +19,22 @@ package com.sun.faces.test.servlet30.passthrough;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class Bean implements Serializable {
-    
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     private String text1 = "text1";
     private String text2 = "text2";
-    
+
     private String publicKey;
-    
+
     private String publicKey2;
 
     public String getPublicKey2() {
@@ -151,7 +155,7 @@ public class Bean implements Serializable {
         lastAction = "action2";
         return null;
     }
-    
+
     public String getOutcome1() {
         return "outcome1";
     }

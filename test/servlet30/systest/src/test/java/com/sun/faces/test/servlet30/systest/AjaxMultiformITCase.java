@@ -29,10 +29,10 @@ public class AjaxMultiformITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -41,42 +41,41 @@ public class AjaxMultiformITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxMultiformITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxMultiform() throws Exception {
         getPage("/faces/ajax/ajaxMultiform.xhtml");
         System.out.println("Start ajax multiform test");
         // First we'll check the first page was output correctly
-        checkTrue("countForm1:out1","0");
-        checkTrue("countForm2:out1","1");
-        checkTrue("countForm3:out1","2");
-        checkTrue("out2","3");
+        checkTrue("countForm1:out1", "0");
+        checkTrue("countForm2:out1", "1");
+        checkTrue("countForm3:out1", "2");
+        checkTrue("out2", "3");
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm1:button1");
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("countForm1:out1","4");
+        checkTrue("countForm1:out1", "4");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("out2","3");
+        checkTrue("out2", "3");
 
         // Submit the ajax request
         button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm2:button1");
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("countForm2:out1","5");
+        checkTrue("countForm2:out1", "5");
 
         // Check that the request did NOT update the rest of the page.
-        checkTrue("out2","3");
+        checkTrue("out2", "3");
     }
 }

@@ -16,7 +16,6 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
@@ -25,19 +24,17 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
-import static junit.framework.TestCase.assertTrue;
-
 
 /**
- * <p>Verify that required validation occurrs for Select* components.</p>
+ * <p>
+ * Verify that required validation occurrs for Select* components.
+ * </p>
  */
 
 public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -52,14 +49,13 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -68,10 +64,10 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(SelectComponentValueITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -81,13 +77,14 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
     // ------------------------------------------------- Individual Test Methods
 
     /**
-     * <p>Verify that the required validator works for SelectOne</p>
+     * <p>
+     * Verify that the required validator works for SelectOne
+     * </p>
      */
 
     public void testSelectOneNoValue() throws Exception {
         HtmlPage page = getPage("/faces/jsp/selectOneNoValue.jsp");
-        List list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        List list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
         assertTrue(-1 != page.asText().indexOf("equired"));
@@ -95,13 +92,14 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
     }
 
     /**
-     * <p>Verify that the required validator works for SelectMany</p>
+     * <p>
+     * Verify that the required validator works for SelectMany
+     * </p>
      */
 
     public void testSelectManyNoValue() throws Exception {
         HtmlPage page = getPage("/faces/jsp/selectManyNoValue.jsp");
-        List list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        List list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
         assertTrue(-1 != page.asText().indexOf("equired"));
@@ -109,7 +107,9 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
     }
 
     /**
-     * <p>Verify that the conversion error works for SelectMany</p>
+     * <p>
+     * Verify that the conversion error works for SelectMany
+     * </p>
      */
 
     public void testSelectManyMismatchValue() throws Exception {
@@ -129,10 +129,9 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
 //
     }
 
-
     /**
-     * On SelectMany, test that the membership test works and doesn't
-     * produce spurious ValueChangeEvent instances.
+     * On SelectMany, test that the membership test works and doesn't produce spurious ValueChangeEvent
+     * instances.
      */
     public void testSelectManyInvalidValue() throws Exception {
 //        HtmlPage page = getPage("/faces/jsp/selectManyInvalidValue.jsp");
@@ -161,7 +160,6 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
 //        assertTrue(-1 == page.asText().indexOf("value changed"));
     }
 
-
     /**
      * run doInvalidTest on UISelectOne
      */
@@ -169,11 +167,9 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
     public void testSelectOneInvalidValue() throws Exception {
         HtmlPage page = getPage("/faces/jsp/selectOneInvalidValue.jsp");
 
-        List list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        List list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlRadioButtonInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlRadioButtonInput.class);
         HtmlRadioButtonInput radio = (HtmlRadioButtonInput) list.get(0);
         radio.setChecked(true);
         page = (HtmlPage) button.click();
@@ -185,18 +181,16 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
 
     public void testSelectOneTypeInt() throws Exception {
         HtmlPage page = getPage("/faces/jsp/selectOneTypeInt.jsp");
-        List list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        List list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         list = getAllElementsOfGivenClass(page, null, HtmlSelect.class);
         HtmlSelect options = (HtmlSelect) list.get(0);
 
         String chosen = "2";
-        options.setSelectedAttribute(chosen,true);
-        //options.fakeSelectedAttribute(chosen);
+        options.setSelectedAttribute(chosen, true);
+        // options.fakeSelectedAttribute(chosen);
         page = (HtmlPage) button.click();
-        ResourceBundle messages = ResourceBundle.getBundle(
-                "javax.faces.Messages");
+        ResourceBundle messages = ResourceBundle.getBundle("javax.faces.Messages");
         String message = messages.getString("javax.faces.component.UISelectMany.INVALID");
         // it does not have a validation message
         assertTrue(-1 == page.asText().indexOf("Validation Error"));
@@ -285,23 +279,20 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
 
     public void testSelectManyTypeInts() throws Exception {
         HtmlPage page = getPage("/faces/jsp/selectManyTypeInts.jsp");
-        List list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        List list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         list = getAllElementsOfGivenClass(page, null, HtmlSelect.class);
         HtmlSelect options = (HtmlSelect) list.get(0);
 
-        String chosen[] = {"2", "3"};
+        String chosen[] = { "2", "3" };
         options.setSelectedAttribute("2", true);
         options.setSelectedAttribute("3", true);
-        //options.fakeSelectedAttribute(chosen);
+        // options.fakeSelectedAttribute(chosen);
         page = (HtmlPage) button.click();
-        ResourceBundle messages = ResourceBundle.getBundle(
-                "javax.faces.Messages");
+        ResourceBundle messages = ResourceBundle.getBundle("javax.faces.Messages");
         String message = messages.getString("javax.faces.component.UISelectMany.INVALID");
         // it does not have a validation message
         assertTrue(-1 == page.asText().indexOf("Validation Error"));
     }
-
 
 }

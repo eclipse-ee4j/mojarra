@@ -20,10 +20,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 import junit.framework.TestSuite;
 
 public class DynamicStateITCase extends HtmlUnitFacesITCase {
@@ -32,14 +28,13 @@ public class DynamicStateITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -48,27 +43,26 @@ public class DynamicStateITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(DynamicStateITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     public void testDynamicDeletionPrefix() throws Exception {
         doTestDynamicDeletion("/faces/state/dynamicDeletion.xhtml");
     }
-    
+
     public void testDynamicDeletionExtension() throws Exception {
         doTestDynamicDeletion("/state/dynamicDeletion.faces");
     }
-    
+
     public void testDynamicAdditionPrefix() throws Exception {
         doTestDynamicAddition("/faces/state/dynamicAddition.xhtml");
     }
-    
+
     public void testDynamicAdditionExtension() throws Exception {
         doTestDynamicAddition("/state/dynamicAddition.faces");
     }
@@ -79,41 +73,32 @@ public class DynamicStateITCase extends HtmlUnitFacesITCase {
     public void testNestedComponentAddition() throws Exception {
 
         HtmlPage page = getPage("/faces/state/dynamicAddition2.xhtml");
-        HtmlSubmitInput submit = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:render");
+        HtmlSubmitInput submit = (HtmlSubmitInput) getInputContainingGivenId(page, "form:render");
         page = submit.click();
-        HtmlTextInput input = (HtmlTextInput)
-              getInputContainingGivenId(page, "form:textInput");
+        HtmlTextInput input = (HtmlTextInput) getInputContainingGivenId(page, "form:textInput");
         assertNotNull(input);
         assertEquals("default value", input.getValueAttribute());
         input.setValueAttribute("new value");
-        submit = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:render");
+        submit = (HtmlSubmitInput) getInputContainingGivenId(page, "form:render");
         page = submit.click();
-        input = (HtmlTextInput)
-              getInputContainingGivenId(page, "form:textInput");
+        input = (HtmlTextInput) getInputContainingGivenId(page, "form:textInput");
         assertNotNull(input);
         assertEquals("new value", input.getValueAttribute());
 
         // ensure events are fired properly when adding tree deltas
         // to the view
-        submit = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:submit");
+        submit = (HtmlSubmitInput) getInputContainingGivenId(page, "form:submit");
         page = submit.click();
-        input = (HtmlTextInput)
-              getInputContainingGivenId(page, "form:textInput");
+        input = (HtmlTextInput) getInputContainingGivenId(page, "form:textInput");
         assertNotNull(input);
 
         // once more for good measure
-        submit = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:submit");
+        submit = (HtmlSubmitInput) getInputContainingGivenId(page, "form:submit");
         page = submit.click();
-        input = (HtmlTextInput)
-              getInputContainingGivenId(page, "form:textInput");
+        input = (HtmlTextInput) getInputContainingGivenId(page, "form:textInput");
         assertNotNull(input);
 
     }
-
 
     /**
      * Added for issue 1185.
@@ -121,8 +106,7 @@ public class DynamicStateITCase extends HtmlUnitFacesITCase {
     public void testDeleteAddSameAction() throws Exception {
 
         HtmlPage page = getPage("/faces/state/dynamicAdditionDeletion.xhtml");
-        HtmlSubmitInput submit = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:render");
+        HtmlSubmitInput submit = (HtmlSubmitInput) getInputContainingGivenId(page, "form:render");
         page = submit.click();
 
         // first click removes children from the panel (should be empty)
@@ -132,15 +116,13 @@ public class DynamicStateITCase extends HtmlUnitFacesITCase {
         for (int i = 0; i < 5; i++) {
             // repeated clicks will remove the single child and add a new button
             // back.
-            submit = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:render");
+            submit = (HtmlSubmitInput) getInputContainingGivenId(page, "form:render");
             page = submit.click();
 
             assertTrue(page.asText().contains("dynamically added button"));
         }
 
     }
-
 
     /**
      * Added for issue 1553.
@@ -153,17 +135,13 @@ public class DynamicStateITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private void doTestDynamicDeletion(String viewId) throws Exception {
         HtmlPage page = getPage(viewId);
-        HtmlTextInput textField = (HtmlTextInput)
-                getInputContainingGivenId(page, "textField");
+        HtmlTextInput textField = (HtmlTextInput) getInputContainingGivenId(page, "textField");
         textField.setValueAttribute("some text");
-        HtmlSubmitInput button = (HtmlSubmitInput)
-                getInputContainingGivenId(page, "reload");
+        HtmlSubmitInput button = (HtmlSubmitInput) getInputContainingGivenId(page, "reload");
         try {
             page = (HtmlPage) button.click();
         } catch (Exception e) {
@@ -172,14 +150,11 @@ public class DynamicStateITCase extends HtmlUnitFacesITCase {
         assertTrue(-1 == page.asText().indexOf("cbutton should not be found"));
     }
 
-
     private void doTestDynamicAddition(String viewId) throws Exception {
         HtmlPage page = getPage(viewId);
-        HtmlTextInput textField = (HtmlTextInput)
-                getInputContainingGivenId(page, "textField");
+        HtmlTextInput textField = (HtmlTextInput) getInputContainingGivenId(page, "textField");
         textField.setValueAttribute("some text");
-        HtmlSubmitInput button = (HtmlSubmitInput)
-                getInputContainingGivenId(page, "reload");
+        HtmlSubmitInput button = (HtmlSubmitInput) getInputContainingGivenId(page, "reload");
         try {
             page = (HtmlPage) button.click();
         } catch (Exception e) {

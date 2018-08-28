@@ -19,14 +19,9 @@ package com.sun.faces.test.servlet30.systest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
-
-
 public class IsSavingStateITCase extends HtmlUnitFacesITCase {
-
 
     public IsSavingStateITCase(String name) {
         super(name);

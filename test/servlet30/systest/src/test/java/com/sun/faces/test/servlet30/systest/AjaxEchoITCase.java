@@ -20,7 +20,7 @@ import com.gargoylesoftware.htmlunit.html.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
+public class AjaxEchoITCase extends HtmlUnitFacesITCase {
 
     public AjaxEchoITCase(String name) {
         super(name);
@@ -29,10 +29,10 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -41,22 +41,21 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxEchoITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     // Test basic ajax functionality
     public void testAjaxEcho() throws Exception {
         getPage("/faces/ajax/ajaxEcho.xhtml");
 
         // First we'll check the first page was output correctly
-        checkTrue("form1:out1","");
-        checkTrue("form1:in1","");
+        checkTrue("form1:out1", "");
+        checkTrue("form1:in1", "");
 
         HtmlTextInput in1 = (HtmlTextInput) lastpage.getHtmlElementById("form1:in1");
 
@@ -67,7 +66,7 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("form1:out1","hello");
+        checkTrue("form1:out1", "hello");
     }
 
     // Test using a valid string as the request identifier, instead of an element
@@ -75,8 +74,8 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
         getPage("/faces/ajax/ajaxEcho.xhtml");
 
         // First we'll check the first page was output correctly
-        checkTrue("form1:out1","");
-        checkTrue("form1:in1","");
+        checkTrue("form1:out1", "");
+        checkTrue("form1:in1", "");
 
         HtmlTextInput in1 = (HtmlTextInput) lastpage.getHtmlElementById("form1:in1");
 
@@ -87,7 +86,7 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button2.click();
 
         // Check that the ajax request succeeds
-        checkTrue("form1:out1","hello");
+        checkTrue("form1:out1", "hello");
     }
 
     // Test basic ajax functionality
@@ -95,8 +94,8 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
         getPage("/faces/ajax/ajaxEcho.xhtml");
 
         // First we'll check the first page was output correctly
-        checkTrue("form1:out1","");
-        checkTrue("form1:in1","");
+        checkTrue("form1:out1", "");
+        checkTrue("form1:in1", "");
 
         HtmlTextInput in1 = (HtmlTextInput) lastpage.getHtmlElementById("form1:in1");
 
@@ -107,9 +106,8 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("form1:out1","<");
+        checkTrue("form1:out1", "<");
     }
-
 
     /*
      * Regression test for bug #939
@@ -255,8 +253,8 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
         getPage("/faces/ajax/ajaxEchoArea.xhtml");
 
         // First we'll check the first page was output correctly
-        checkTrue("form1:out1","");
-        checkTrue("form1:in1","");
+        checkTrue("form1:out1", "");
+        checkTrue("form1:in1", "");
 
         HtmlTextArea in1 = (HtmlTextArea) lastpage.getHtmlElementById("form1:in1");
 
@@ -267,8 +265,7 @@ public class AjaxEchoITCase  extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("form1:out1","test value");
+        checkTrue("form1:out1", "test value");
     }
-
 
 }

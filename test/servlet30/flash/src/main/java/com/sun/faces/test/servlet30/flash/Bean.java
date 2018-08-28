@@ -18,12 +18,12 @@ package com.sun.faces.test.servlet30.flash;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.event.ComponentSystemEvent;
 
 @RequestScoped
-@ManagedBean(name = "bean")
+@Named
 public class Bean {
 
     protected String stringVal;
@@ -34,11 +34,9 @@ public class Bean {
         Long eventId = getSelectedEventId();
         FacesContext context = FacesContext.getCurrentInstance();
         if (null == eventId) {
-            context.addMessage(null,
-                    new FacesMessage("The training event you requested is invalid"));
+            context.addMessage(null, new FacesMessage("The training event you requested is invalid"));
             context.getExternalContext().getFlash().setKeepMessages(true);
-            context.getApplication().getNavigationHandler().
-                    handleNavigation(context, null, "/index?faces-redirect=true");
+            context.getApplication().getNavigationHandler().handleNavigation(context, null, "/index?faces-redirect=true");
         }
     }
 
@@ -51,8 +49,7 @@ public class Bean {
 
         if (null != stringVal && stringVal.equals("addMessage")) {
             FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "test that this persists across the redirect",
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "test that this persists across the redirect",
                     "This message must persist across the redirect");
             context.addMessage(null, message);
             context.getExternalContext().getFlash().setKeepMessages(true);
@@ -73,7 +70,8 @@ public class Bean {
     }
 
     public String test2087() {
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("foo", "read strobist");;
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("foo", "read strobist");
+        ;
         return "flash13?faces-redirect=true";
     }
 }

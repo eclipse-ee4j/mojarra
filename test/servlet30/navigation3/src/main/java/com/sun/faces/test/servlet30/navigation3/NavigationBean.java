@@ -16,50 +16,42 @@
 
 package com.sun.faces.test.servlet30.navigation3;
 
-import com.sun.faces.application.ApplicationImpl;
+import static org.junit.Assert.assertTrue;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.Application;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.PreDestroyViewMapEvent;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
+import javax.inject.Named;
+import javax.servlet.ServletContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.sun.faces.application.NavigationHandlerImpl;
 import com.sun.faces.config.manager.DbfFactory;
 import com.sun.faces.util.Util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.faces.application.Application;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.NavigationHandler;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PreDestroyViewMapEvent;
-import javax.servlet.ServletContext;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import static org.junit.Assert.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
-
-
-@ManagedBean
+@Named
 @SessionScoped
+public class NavigationBean implements Serializable {
 
-public class NavigationBean {
+    private static final long serialVersionUID = 1L;
 
-    private List testResultList = null;
+    private List testResultList;
 
     public NavigationBean() {
     }
@@ -68,9 +60,7 @@ public class NavigationBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
         ViewMapDestroyedListener listener = new ViewMapDestroyedListener();
-        app.subscribeToEvent(PreDestroyViewMapEvent.class,
-                                     UIViewRoot.class,
-                                     listener);
+        app.subscribeToEvent(PreDestroyViewMapEvent.class, UIViewRoot.class, listener);
         try {
             loadTestResultList();
         } catch (Exception e) {
@@ -85,14 +75,11 @@ public class NavigationBean {
             TestResult testResult = (TestResult) testResultList.get(i);
             Boolean conditionResult = null;
             if (testResult.condition != null) {
-                conditionResult = (Boolean) app.getExpressionFactory().
-                    createValueExpression(fc.getELContext(), testResult.condition, Boolean.class).
-                        getValue(fc.getELContext());
+                conditionResult = (Boolean) app.getExpressionFactory()
+                        .createValueExpression(fc.getELContext(), testResult.condition, Boolean.class).getValue(fc.getELContext());
             }
-            System.out.println("Testing from-view-id=" + testResult.fromViewId +
-                               " from-action=" + testResult.fromAction +
-                               " from-outcome=" + testResult.fromOutcome +
-                               " if=" + testResult.condition);
+            System.out.println("Testing from-view-id=" + testResult.fromViewId + " from-action=" + testResult.fromAction + " from-outcome="
+                    + testResult.fromOutcome + " if=" + testResult.condition);
             page = Util.getViewHandler(fc).createView(fc, null);
             page.setViewId(testResult.fromViewId);
             page.setLocale(Locale.US);
@@ -100,17 +87,15 @@ public class NavigationBean {
             fc.setViewRoot(page);
             listener.reset();
             try {
-                navHandler.handleNavigation(fc, testResult.fromAction,
-                                            testResult.fromOutcome);
+                navHandler.handleNavigation(fc, testResult.fromAction, testResult.fromOutcome);
             } catch (Exception e) {
                 // exception is valid only if context or fromoutcome is null.
                 assertTrue(testResult.fromOutcome == null);
                 gotException = true;
             }
             if (!gotException) {
-                if (!testResult.fromViewId.equals(testResult.toViewId)
-                    && (testResult.fromOutcome != null || testResult.condition != null)
-                    && (testResult.condition == null || conditionResult != null)) {
+                if (!testResult.fromViewId.equals(testResult.toViewId) && (testResult.fromOutcome != null || testResult.condition != null)
+                        && (testResult.condition == null || conditionResult != null)) {
                     assertTrue(listener.getPassedEvent() instanceof PreDestroyViewMapEvent);
                 } else {
                     assertTrue(!listener.wasProcessEventInvoked());
@@ -120,33 +105,22 @@ public class NavigationBean {
                 newViewId = fc.getViewRoot().getViewId();
                 if (testResult.fromOutcome == null && testResult.condition == null) {
                     listener.reset();
-                    System.out.println(
-                        "assertTrue(" + newViewId + ".equals(" +
-                        testResult.fromViewId +
-                        "))");
+                    System.out.println("assertTrue(" + newViewId + ".equals(" + testResult.fromViewId + "))");
                     assertTrue(newViewId.equals(testResult.fromViewId));
                 }
                 // test assumption: if condition is false, we advance to some other view
                 else if (testResult.condition != null && conditionResult == false) {
                     listener.reset();
-                    System.out.println(
-                        "assertTrue(!" + newViewId + ".equals(" +
-                        testResult.toViewId +
-                        "))");
+                    System.out.println("assertTrue(!" + newViewId + ".equals(" + testResult.toViewId + "))");
                     assertTrue(!newViewId.equals(testResult.toViewId));
                 } else {
                     listener.reset();
-                    System.out.println(
-                        "assertTrue(" + newViewId + ".equals(" +
-                        testResult.toViewId +
-                        "))");
+                    System.out.println("assertTrue(" + newViewId + ".equals(" + testResult.toViewId + "))");
                     assertTrue(newViewId.equals(testResult.toViewId));
                 }
             }
         }
-        app.unsubscribeFromEvent(PreDestroyViewMapEvent.class,
-                                         UIViewRoot.class,
-                                         listener);
+        app.unsubscribeFromEvent(PreDestroyViewMapEvent.class, UIViewRoot.class, listener);
         return "SUCCESS";
     }
 
@@ -156,10 +130,9 @@ public class NavigationBean {
         f.setValidating(false);
         DocumentBuilder builder = f.newDocumentBuilder();
 
-        Document d = builder.parse(((ServletContext)FacesContext.getCurrentInstance().getExternalContext().
-            getContext()).getResourceAsStream("/WEB-INF/navigation-cases-2.xml"));
-        NodeList navigationRules = d.getDocumentElement()
-              .getElementsByTagName("test");
+        Document d = builder.parse(((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext())
+                .getResourceAsStream("/WEB-INF/navigation-cases-2.xml"));
+        NodeList navigationRules = d.getDocumentElement().getElementsByTagName("test");
         for (int i = 0; i < navigationRules.getLength(); i++) {
             Node test = navigationRules.item(i);
             NamedNodeMap attributes = test.getAttributes();
@@ -169,15 +142,14 @@ public class NavigationBean {
             Node condition = attributes.getNamedItem("if");
             Node toViewId = attributes.getNamedItem("toViewId");
             createAndAccrueTestResult(((fromViewId != null) ? fromViewId.getTextContent().trim() : null),
-                                      ((fromAction != null) ? fromAction.getTextContent().trim() : null),
-                                      ((fromOutput != null) ? fromOutput.getTextContent().trim() : null),
-                                      ((condition != null) ? condition.getTextContent().trim() : null),
-                                      ((toViewId != null) ? toViewId.getTextContent().trim() : null));
+                    ((fromAction != null) ? fromAction.getTextContent().trim() : null),
+                    ((fromOutput != null) ? fromOutput.getTextContent().trim() : null),
+                    ((condition != null) ? condition.getTextContent().trim() : null),
+                    ((toViewId != null) ? toViewId.getTextContent().trim() : null));
         }
     }
 
-    private void createAndAccrueTestResult(String fromViewId, String fromAction,
-                                          String fromOutcome, String condition, String toViewId) {
+    private void createAndAccrueTestResult(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId) {
         if (testResultList == null) {
             testResultList = new ArrayList();
         }
@@ -198,19 +170,18 @@ public class NavigationBean {
         public String toViewId = null;
     }
 
-
-    private static final class ViewMapDestroyedListener
-          implements SystemEventListener {
+    private static final class ViewMapDestroyedListener implements SystemEventListener {
 
         private SystemEvent event;
         private boolean processEventInvoked;
 
-        public void processEvent(SystemEvent event)
-        throws AbortProcessingException {
+        @Override
+        public void processEvent(SystemEvent event) throws AbortProcessingException {
             this.processEventInvoked = true;
             this.event = event;
         }
 
+        @Override
         public boolean isListenerForSource(Object source) {
             return (source instanceof UIViewRoot);
         }
@@ -230,15 +201,15 @@ public class NavigationBean {
     }
 
     private String title = "Test JSF2 Navigation Handler";
+
     public String getTitle() {
         return title;
     }
 
-    private String status="";
+    private String status = "";
 
     public String getStatus() {
         return status;
     }
 
 }
-

@@ -17,24 +17,19 @@
 package com.sun.faces.test.servlet30.systest;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import java.util.ArrayList;
-import java.util.List;
-import static junit.framework.TestCase.assertTrue;
-
 /**
- * <p>Test that invalid values don't cause valueChangeEvents to occur.</p>
+ * <p>
+ * Test that invalid values don't cause valueChangeEvents to occur.
+ * </p>
  */
 
 public class ForEachFaceletsITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -49,7 +44,6 @@ public class ForEachFaceletsITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Return the tests included in this test suite.
      */
@@ -62,15 +56,15 @@ public class ForEachFaceletsITCase extends HtmlUnitFacesITCase {
         HtmlPage page = getPage("/faces/forEach.xhtml");
 
         HtmlSubmitInput submitButton1 = (HtmlSubmitInput) page.getElementById("form:end");
-        page = (HtmlPage)submitButton1.click();
+        page = (HtmlPage) submitButton1.click();
         assertTrue(-1 != page.asText().indexOf("ID0"));
-        page = (HtmlPage)submitButton1.click();
+        page = (HtmlPage) submitButton1.click();
         assertTrue(-1 != page.asText().indexOf("ID0ID1"));
 
         HtmlSubmitInput submitButton2 = (HtmlSubmitInput) page.getElementById("form:beginning");
-        page = (HtmlPage)submitButton2.click();
+        page = (HtmlPage) submitButton2.click();
         assertTrue(-1 != page.asText().indexOf("ID2ID0ID1"));
-        page = (HtmlPage)submitButton2.click();
+        page = (HtmlPage) submitButton2.click();
         assertTrue(-1 != page.asText().indexOf("ID3ID2ID0ID1"));
     }
 }

@@ -22,14 +22,11 @@ import javax.faces.validator.ValidatorException;
 import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
 
-
 @FacesValidator(value = "AnnotatedValidatorDefault", isDefault = true)
 public class AnnotatedValidatorDefault implements Validator {
 
-    public void validate(FacesContext context,
-                         UIComponent component,
-                         Object value)
-    throws ValidatorException {
+    @Override
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
     }
 

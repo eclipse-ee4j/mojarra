@@ -16,20 +16,16 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import static junit.framework.TestCase.assertTrue;
-
 
 /**
  * Unit tests for Composite Components.
  */
 public class DefaultActionITCase extends HtmlUnitFacesITCase {
-
 
     public DefaultActionITCase() {
         this("ResourceDependencyComponentTestCase");
@@ -39,14 +35,13 @@ public class DefaultActionITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -55,14 +50,13 @@ public class DefaultActionITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(DefaultActionITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 

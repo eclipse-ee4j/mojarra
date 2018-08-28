@@ -43,18 +43,22 @@ public class ResourceBundleELResolverIT {
     @Test
     public void testResourceBundle01() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/resourceBundle01.jsp");
-        assertTrue(Pattern.matches("(?s).*Expression\\s*in\\s*raw\\s*JSP\\s*page\\s*is\\s*Value\\s*From\\s*ResourceBundle\\..*", page.asXml()));
+        assertTrue(Pattern.matches("(?s).*Expression\\s*in\\s*raw\\s*JSP\\s*page\\s*is\\s*Value\\s*From\\s*ResourceBundle\\..*",
+                page.asXml()));
     }
 
     @Test
     public void testResourceBundle02() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/resourceBundle02.jsp");
-        assertTrue(Pattern.matches("(?s).*Value\\s*from\\s*Faces\\s*component\\s*is\\s*Value\\s*From\\s*ResourceBundle\\..*", page.asXml()));
+        assertTrue(
+                Pattern.matches("(?s).*Value\\s*from\\s*Faces\\s*component\\s*is\\s*Value\\s*From\\s*ResourceBundle\\..*", page.asXml()));
     }
 
     @Test
     public void testResourceBundle03() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/resourceBundle03.jsp");
-        assertTrue(Pattern.matches("(?s).*Values\\s*from\\s*Components:.*resourceBundle01:.*Value\\s*From\\s*ResourceBundle.*non\\s*existing\\s*resourceBundle:\\s*.br/.\\s*resourceBundle03:\\s*Value\\s*from\\s*ResourceBundle03.*", page.asXml()));
+        assertTrue(Pattern.matches(
+                "(?s).*Values\\s*from\\s*Components:.*resourceBundle01:.*Value\\s*From\\s*ResourceBundle.*non\\s*existing\\s*resourceBundle:\\s*.br/.\\s*resourceBundle03:\\s*Value\\s*from\\s*ResourceBundle03.*",
+                page.asXml()));
     }
 }

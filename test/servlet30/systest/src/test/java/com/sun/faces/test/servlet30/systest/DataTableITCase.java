@@ -41,9 +41,7 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(DataTableITCase.class));
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     /*
      * Test for https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=774
@@ -70,7 +68,6 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     /*
      * Test regression https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=902.
      */
@@ -83,13 +80,13 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
         assertTrue(tableList.size() == 1);
         HtmlTable table = tableList.get(0);
         List<HtmlTableRow> rows = table.getRows();
-        assertEquals(6,rows.size());
+        assertEquals(6, rows.size());
         for (int i = 0, len = rows.size(); i < len; i++) {
             HtmlTableRow row = rows.get(i);
             if (i % 2 == 0) {
-            	assertEquals("b1",row.getAttribute("class"));
+                assertEquals("b1", row.getAttribute("class"));
             } else {
-            	assertEquals("b2",row.getAttribute("class"));
+                assertEquals("b2", row.getAttribute("class"));
             }
         }
 
@@ -137,34 +134,25 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
     }
 
     /**
-     * tests that a table with the given id exists, and that it is rendered as
-     * &lt;table>
+     * tests that a table with the given id exists, and that it is rendered as &lt;table>
      * <tr>
      * <td></td>
      * </tr>
      * </table>
      *
-     * @param tableId
-     *            the id of the table
-     * @param page
-     *            the page to lookup the table in
+     * @param tableId the id of the table
+     * @param page the page to lookup the table in
      */
-    private static void assertEmptyTable(final String tableId,
-            final HtmlPage page, final boolean hasHeader) {
+    private static void assertEmptyTable(final String tableId, final HtmlPage page, final boolean hasHeader) {
         HtmlTable table = (HtmlTable) page.getElementById(tableId);
         assertNotNull("Should find Table with ID: " + tableId, table);
         // Test that we have only one row at all
         List<HtmlTableRow> allRows = table.getRows();
         int expectedRowCount = hasHeader ? 2 : 1;
-        assertEquals("Table " + tableId
-                + " should have " + expectedRowCount
-                + " row(s)", expectedRowCount,
-                allRows.size());
+        assertEquals("Table " + tableId + " should have " + expectedRowCount + " row(s)", expectedRowCount, allRows.size());
         // test that we have <tbody><tr>...</tr></tbody>
-        HtmlTableBody body = assertSingle(tableId + "should have one tbody",
-                table.getBodies());
-        HtmlTableRow row = assertSingle(tableId + ":tbody should have one tr",
-                body.getRows());
+        HtmlTableBody body = assertSingle(tableId + "should have one tbody", table.getBodies());
+        HtmlTableRow row = assertSingle(tableId + ":tbody should have one tr", body.getRows());
         assertTrue(row.getCells().size() == 2);
     }
 
@@ -180,7 +168,7 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
 
     public void testTableForms() throws Exception {
         getPage("/faces/standard/dtablemultiforms.jsp");
-        checkTrue("out","");
+        checkTrue("out", "");
 
         HtmlTextInput in0 = (HtmlTextInput) lastpage.getHtmlElementById("table:0:columnform:columninput");
         in0.setValueAttribute("test0");
@@ -188,7 +176,7 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
         HtmlSubmitInput button0 = (HtmlSubmitInput) lastpage.getHtmlElementById("table:0:columnform:columnbutton");
         lastpage = (HtmlPage) button0.click();
 
-        checkTrue("out","test0");
+        checkTrue("out", "test0");
 
         HtmlTextInput in1 = (HtmlTextInput) lastpage.getHtmlElementById("table:1:columnform:columninput");
         in1.setValueAttribute("test1");
@@ -196,7 +184,7 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("table:1:columnform:columnbutton");
         lastpage = (HtmlPage) button1.click();
 
-        checkTrue("out","test1");
+        checkTrue("out", "test1");
 
         HtmlTextInput in2 = (HtmlTextInput) lastpage.getHtmlElementById("table:2:columnform:columninput");
         in2.setValueAttribute("test2");
@@ -204,7 +192,7 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
         HtmlSubmitInput button2 = (HtmlSubmitInput) lastpage.getHtmlElementById("table:2:columnform:columnbutton");
         lastpage = (HtmlPage) button2.click();
 
-        checkTrue("out","test2");
+        checkTrue("out", "test2");
 
         HtmlTextInput finalin = (HtmlTextInput) lastpage.getHtmlElementById("finalform:finalinput");
         finalin.setValueAttribute("testfinal");
@@ -212,7 +200,7 @@ public class DataTableITCase extends HtmlUnitFacesITCase {
         HtmlSubmitInput finalbutton = (HtmlSubmitInput) lastpage.getHtmlElementById("finalform:finalbutton");
         lastpage = (HtmlPage) finalbutton.click();
 
-        checkTrue("out","testfinal");
+        checkTrue("out", "testfinal");
 
     }
 }

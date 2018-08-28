@@ -22,9 +22,13 @@ package com.sun.faces.systest.model;
  */
 public class TestBeanPostConstructEvent extends TestBeanEventClass {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     public TestBeanPostConstructEvent(TestBean source) {
         super(source);
     }
-    
 
 }

@@ -17,17 +17,15 @@
 package com.sun.faces.test.servlet30.passthrough;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlFieldSet;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Issue2606IT {
-    
+
     /**
      * Stores the web URL.
      */
@@ -71,12 +69,12 @@ public class Issue2606IT {
 
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.setJavaScriptTimeout(60000);
-        page = (HtmlPage)article2.mouseOver();
+        page = (HtmlPage) article2.mouseOver();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("article2 Event: begin"));
         assertTrue(page.asXml().contains("article2 Event: complete"));
         assertTrue(page.asXml().contains("article2 Event: success"));
-    } 
+    }
 
     @Test
     public void testAside() throws Exception {
@@ -93,7 +91,7 @@ public class Issue2606IT {
 
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.setJavaScriptTimeout(60000);
-        page = (HtmlPage)aside2.click();
+        page = (HtmlPage) aside2.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("aside2 Event: begin"));
         assertTrue(page.asXml().contains("aside2 Event: complete"));
@@ -115,7 +113,7 @@ public class Issue2606IT {
 
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.setJavaScriptTimeout(60000);
-        page = (HtmlPage)nav2.click();
+        page = (HtmlPage) nav2.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("nav2 Event: begin"));
         assertTrue(page.asXml().contains("nav2 Event: complete"));
@@ -137,7 +135,7 @@ public class Issue2606IT {
 
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.setJavaScriptTimeout(60000);
-        page = (HtmlPage)section2.mouseOver();
+        page = (HtmlPage) section2.mouseOver();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("section2 Event: begin"));
         assertTrue(page.asXml().contains("section2 Event: complete"));
@@ -159,7 +157,7 @@ public class Issue2606IT {
 
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.setJavaScriptTimeout(60000);
-        page = (HtmlPage)h2.mouseOver();
+        page = (HtmlPage) h2.mouseOver();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("header2 Event: begin"));
         assertTrue(page.asXml().contains("header2 Event: complete"));

@@ -23,15 +23,11 @@ import junit.framework.TestSuite;
 
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-
 
 /**
  * Unit tests for Composite Components.
  */
 public class ResourceDependencyComponentITCase extends HtmlUnitFacesITCase {
-
 
     public ResourceDependencyComponentITCase() {
         this("ResourceDependencyComponentTestCase");
@@ -41,14 +37,13 @@ public class ResourceDependencyComponentITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -57,14 +52,13 @@ public class ResourceDependencyComponentITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(ResourceDependencyComponentITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
@@ -76,7 +70,7 @@ public class ResourceDependencyComponentITCase extends HtmlUnitFacesITCase {
         assertTrue(-1 != page.asText().indexOf("Next page"));
         assertNrOfLinksPresent(page, 1);
     }
-    
+
     public void testStayingOnSamePageProcessesResourceDependencies() throws Exception {
         HtmlPage page = getPage("/faces/composite/resourceDependencyComponentUsingPage.xhtml");
         assertNrOfLinksPresent(page, 1);

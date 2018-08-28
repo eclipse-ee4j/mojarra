@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.renderkit; 
+package com.sun.faces.test.servlet30.renderkit;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -45,7 +45,6 @@ public class Issue2502IT {
         webClient.close();
     }
 
-
     // ------------------------------------------------------------ Test Methods
 
     @Test
@@ -56,11 +55,10 @@ public class Issue2502IT {
         String expected3 = "&lt;i&gt;test3&lt;/i&gt;";
 
         /*
-         * We don't want this to be simulated as an IE browser since IE
-         * does some automatic replacing.
+         * We don't want this to be simulated as an IE browser since IE does some automatic replacing.
          */
         webClient = new WebClient(BrowserVersion.FIREFOX_45);
-        HtmlPage page = webClient.getPage(webUrl+"faces/outputEscape.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/outputEscape.xhtml");
         assertTrue(page.asXml().contains(expected1));
         assertTrue(page.asXml().contains(expected2));
         assertTrue(page.asXml().contains(expected3));

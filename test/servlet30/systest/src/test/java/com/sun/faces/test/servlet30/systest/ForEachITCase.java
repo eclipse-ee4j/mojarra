@@ -27,13 +27,14 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * <p>Test that invalid values don't cause valueChangeEvents to occur.</p>
+ * <p>
+ * Test that invalid values don't cause valueChangeEvents to occur.
+ * </p>
  */
 
 public class ForEachITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -53,7 +54,6 @@ public class ForEachITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Return the tests included in this test suite.
      */
@@ -65,7 +65,7 @@ public class ForEachITCase extends HtmlUnitFacesITCase {
     public void testForEach() throws Exception {
 //        HtmlPage page = getPage("/faces/forEach01.jsp");
 //
-//        // Make sure values are displayed properly for the initial request 
+//        // Make sure values are displayed properly for the initial request
 //        //assert outputText values are as expected
 //        assertTrue(-1 != page.asText().indexOf("output1"));
 //        assertTrue(-1 != page.asText().indexOf("output2"));

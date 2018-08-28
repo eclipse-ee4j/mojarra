@@ -24,24 +24,20 @@ import junit.framework.TestSuite;
 
 import java.util.ArrayList;
 import java.util.List;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-
 
 public class AjaxEvalITCase extends HtmlUnitFacesITCase {
 
-
-     public AjaxEvalITCase(String name) {
+    public AjaxEvalITCase(String name) {
         super(name);
     }
 
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -50,17 +46,15 @@ public class AjaxEvalITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxEvalITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testAjaxEval() throws Exception {
 
@@ -69,8 +63,7 @@ public class AjaxEvalITCase extends HtmlUnitFacesITCase {
 
         HtmlPage page = getPage("/faces/ajax/ajaxEval.xhtml");
 
-        HtmlSubmitInput button = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:eval");
+        HtmlSubmitInput button = (HtmlSubmitInput) getInputContainingGivenId(page, "form:eval");
         assertNotNull(button);
 
         button.click();

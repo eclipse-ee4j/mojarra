@@ -14,12 +14,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.renderkit; 
+package com.sun.faces.test.servlet30.renderkit;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -45,13 +43,12 @@ public class Issue2386IT {
         webClient.close();
     }
 
-
     // ------------------------------------------------------------ Test Methods
 
     @Test
     public void testDisabledLink() throws Exception {
 
-        HtmlPage page = webClient.getPage(webUrl+"faces/hlink.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/hlink.xhtml");
         assertTrue(!(page.asXml().contains("disabled")));
     }
 

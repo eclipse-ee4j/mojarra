@@ -23,26 +23,20 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.FacesRenderer;
 import javax.faces.render.Renderer;
 
-@FacesRenderer( componentFamily = "com.sun.faces.systest.dynamic1757.UITestComponent", rendererType = "testcomponent" )
-public class TestComponentRenderer
-	extends Renderer
-{
-	@Override
-	public void encodeBegin( FacesContext context, UIComponent component )
-		throws IOException
-	{
-		context.getResponseWriter().write( "<div style=\"border: 1px solid red\">TestComponent::encodeBegin<br/>" );
+@FacesRenderer(componentFamily = "com.sun.faces.systest.dynamic1757.UITestComponent", rendererType = "testcomponent")
+public class TestComponentRenderer extends Renderer {
+    @Override
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+        context.getResponseWriter().write("<div style=\"border: 1px solid red\">TestComponent::encodeBegin<br/>");
 
-		super.encodeBegin( context, component );
-	}
+        super.encodeBegin(context, component);
+    }
 
-	@Override
-	public void encodeEnd( FacesContext context, UIComponent component )
-		throws IOException
-	{
-		context.getResponseWriter().write( "TestComponent::encodeEnd</div>" );
+    @Override
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+        context.getResponseWriter().write("TestComponent::encodeEnd</div>");
 
-		super.encodeEnd( context, component );
-	}
+        super.encodeEnd(context, component);
+    }
 
 }

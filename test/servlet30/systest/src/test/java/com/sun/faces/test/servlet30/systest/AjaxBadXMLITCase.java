@@ -29,10 +29,10 @@ public class AjaxBadXMLITCase extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -41,26 +41,24 @@ public class AjaxBadXMLITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxBadXMLITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // Test basic ajax functionality
     public void testAjaxBadXML() throws Exception {
         getPage("/faces/ajax/ajaxInvalidXML.xhtml");
-
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("form1:bad");
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("h2","Bread & Butter");
+        checkTrue("h2", "Bread & Butter");
     }
 
 }

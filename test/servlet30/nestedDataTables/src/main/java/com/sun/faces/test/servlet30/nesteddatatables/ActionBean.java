@@ -18,7 +18,6 @@ package com.sun.faces.test.servlet30.nesteddatatables;
 
 public class ActionBean extends Object {
 
-
     public ActionBean() {
     }
 
@@ -51,6 +50,5 @@ public class ActionBean extends Object {
     public void setInnerActionCallCount(int newInnerActionCallCount) {
         innerActionCallCount = newInnerActionCallCount;
     }
-
 
 }

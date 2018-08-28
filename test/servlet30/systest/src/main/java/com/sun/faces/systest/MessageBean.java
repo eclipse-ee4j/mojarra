@@ -16,25 +16,28 @@
 
 package com.sun.faces.systest;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 
-@ManagedBean (eager=true)
+import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 public class MessageBean {
 
+    @Inject
+    private FacesContext context;
+
+    protected String value;
+
     public MessageBean() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "This is the summary", "This is the detail");
+        FacesMessage message = new FacesMessage(SEVERITY_INFO, "This is the summary", "This is the detail");
         context.addMessage("output1", message);
         context.addMessage("output2", message);
     }
-
-    protected String value;
 
     public String getValue() {
         return "";
@@ -43,6 +46,5 @@ public class MessageBean {
     public void setValue(String value) {
         this.value = value;
     }
-
 
 }

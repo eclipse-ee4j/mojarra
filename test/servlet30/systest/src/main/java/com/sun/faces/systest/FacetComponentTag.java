@@ -16,57 +16,51 @@
 
 package com.sun.faces.systest;
 
-
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
 
-
 /**
- * <p><code>UIComponentTag</code> for <code>FacetComponent</code>.</p>
+ * <p>
+ * <code>UIComponentTag</code> for <code>FacetComponent</code>.
+ * </p>
  */
 
 public class FacetComponentTag extends UIComponentTag {
 
-
     // -------------------------------------------------------------- Attributes
 
-
     private String value = null;
-
 
     public void setValue(String value) {
         this.value = value;
     }
 
-
     // ---------------------------------------------------------- Public Methods
 
-
+    @Override
     public String getComponentType() {
         return ("FacetComponent");
     }
 
-
+    @Override
     public String getRendererType() {
         return (null);
     }
 
-
+    @Override
     public void release() {
         super.release();
         value = null;
     }
 
-
     // ------------------------------------------------------- Protected Methods
 
-
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         if (value != null) {
             ((FacetComponent) component).setValue(value);
         }
     }
-
 
 }

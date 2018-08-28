@@ -39,7 +39,7 @@ public class ValueBindingIT {
     public void tearDown() {
         webClient.close();
     }
-    
+
     /*
      * ValueBinding Test #1 (Simple Bean Getter)
      */
@@ -57,16 +57,16 @@ public class ValueBindingIT {
         HtmlPage page = webClient.getPage(webUrl + "faces/valueBinding02.jsp");
         assertTrue(Pattern.matches("(?s).*/valueBinding02.jsp PASSED.*", page.asXml()));
     }
-    
+
     /*
-     * ValueBinding Test #3 (Simple Integer Property Getter) 
+     * ValueBinding Test #3 (Simple Integer Property Getter)
      */
     @Test
     public void testValueBinding3() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/valueBinding03.jsp");
         assertTrue(Pattern.matches("(?s).*/valueBinding03.jsp PASSED.*", page.asXml()));
     }
-    
+
     /*
      * ValueBinding Test #4 (Simple Boolean Property Getter)
      */
@@ -75,7 +75,7 @@ public class ValueBindingIT {
         HtmlPage page = webClient.getPage(webUrl + "faces/valueBinding04.jsp");
         assertTrue(Pattern.matches("(?s).*/valueBinding04.jsp PASSED.*", page.asXml()));
     }
-    
+
     /*
      * ValueBinding Test #5 (Simple Integer Expression Getter)
      */
@@ -84,7 +84,7 @@ public class ValueBindingIT {
         HtmlPage page = webClient.getPage(webUrl + "faces/valueBinding05.jsp");
         assertTrue(Pattern.matches("(?s).*/valueBinding05.jsp PASSED.*", page.asXml()));
     }
-    
+
     /*
      * ValueBinding Test #6 (Simple Boolean Expression Getter)
      */
@@ -93,7 +93,7 @@ public class ValueBindingIT {
         HtmlPage page = webClient.getPage(webUrl + "faces/valueBinding06.jsp");
         assertTrue(Pattern.matches("(?s).*/valueBinding06.jsp PASSED.*", page.asXml()));
     }
-    
+
     /*
      * ValueBinding Test #7 (Mixed Literal and Expression Getter)
      */

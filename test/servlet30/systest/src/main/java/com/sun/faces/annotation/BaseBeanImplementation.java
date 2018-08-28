@@ -16,18 +16,16 @@
 
 package com.sun.faces.annotation;
 
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 
-@ManagedBean(name="baseBean")
+@Named("baseBean")
 public class BaseBeanImplementation extends BaseBean {
 
-    @ManagedProperty(name="name", value="Bill")
-    private String name;
+    private String name = "Bill";
 
     @Override
     public void setName(String name) {
-        super.setName(name);
+        setName(name);
     }
 
 }

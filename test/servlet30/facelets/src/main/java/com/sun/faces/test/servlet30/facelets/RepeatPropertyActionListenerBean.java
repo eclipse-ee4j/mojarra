@@ -16,15 +16,15 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
-@ManagedBean(name = "repeatPropertyActionListenerBean")
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
-public class RepeatPropertyActionListenerBean implements Serializable {
+public class RepeatPropertyActionListenerBean {
 
     private List<RepeatPropertyActionListenerItem> items;
 

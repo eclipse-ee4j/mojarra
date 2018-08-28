@@ -16,33 +16,34 @@
 
 package com.sun.faces.systest.model;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 
-
-@ManagedBean
+@Named
 @RequestScoped
 public class ValueChangeSetPropertyActionListenerBean implements Serializable, ValueChangeListener {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     public ValueChangeSetPropertyActionListenerBean() {
         System.out.println(this.getClass().getName() + "ctor called");
     }
 
-    
-    
-    
+    @Override
     public void processValueChange(ValueChangeEvent event) {
-        FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("message", "ValueChangeSetPropertyActionListenerBean.processValueChange called");
+        FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("message",
+                "ValueChangeSetPropertyActionListenerBean.processValueChange called");
     }
-    
+
     public String getNanoTime() {
         return "" + System.nanoTime();
     }
-
-    
 
 }

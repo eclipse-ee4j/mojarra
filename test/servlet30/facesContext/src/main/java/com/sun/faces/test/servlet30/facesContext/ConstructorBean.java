@@ -20,8 +20,8 @@ import com.sun.faces.context.ExternalContextImpl;
 import com.sun.faces.context.FacesContextImpl;
 import com.sun.faces.lifecycle.LifecycleImpl;
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -33,9 +33,14 @@ import static org.junit.Assert.*;
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@ManagedBean(name = "constructorBean")
+@Named
 @RequestScoped
 public class ConstructorBean implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     public String getConstructorResult1() {
         try {
@@ -50,9 +55,7 @@ public class ConstructorBean implements Serializable {
     public String getConstructorResult2() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
 
@@ -78,9 +81,7 @@ public class ConstructorBean implements Serializable {
     public String getConstructorResult4() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
             LifecycleImpl lifecycle = new LifecycleImpl();

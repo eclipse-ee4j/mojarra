@@ -19,27 +19,23 @@ package com.sun.faces.systest.model;
 import javax.faces.context.*;
 import javax.faces.component.*;
 import javax.faces.convert.*;
-public class SpecialConverter implements Converter {
-        public Object getAsObject(FacesContext context,
-                                  UIComponent component,
-                                  String value)
-        throws ConverterException {            
-            if (value == null) {
-               throw new ConverterException();
-            } else {
-                return new SpecialBean(value);
-            }
-        }
 
-        public String getAsString(FacesContext context,
-                                  UIComponent component,
-                                  Object value)
-        throws ConverterException {           
-            if (!(value instanceof SpecialBean)) {
-                throw new ConverterException();
-            } else {
-                return ((SpecialBean) value).getString();
-            }
+public class SpecialConverter implements Converter {
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (value == null) {
+            throw new ConverterException();
+        } else {
+            return new SpecialBean(value);
         }
     }
 
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (!(value instanceof SpecialBean)) {
+            throw new ConverterException();
+        } else {
+            return ((SpecialBean) value).getString();
+        }
+    }
+}

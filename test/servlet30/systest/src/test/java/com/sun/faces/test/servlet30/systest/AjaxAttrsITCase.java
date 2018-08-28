@@ -25,21 +25,19 @@ import junit.framework.TestSuite;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class AjaxAttrsITCase extends HtmlUnitFacesITCase {
 
-
-     public AjaxAttrsITCase(String name) {
+    public AjaxAttrsITCase(String name) {
         super(name);
     }
 
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -48,17 +46,15 @@ public class AjaxAttrsITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxAttrsITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testAjaxAttrs() throws Exception {
 
@@ -67,43 +63,39 @@ public class AjaxAttrsITCase extends HtmlUnitFacesITCase {
 
         HtmlPage page = getPage("/faces/ajax/ajaxAttrs.xhtml");
 
-        HtmlSubmitInput button = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:attr");
+        HtmlSubmitInput button = (HtmlSubmitInput) getInputContainingGivenId(page, "form:attr");
         assertNotNull(button);
 
         String value = button.getValueAttribute();
 
-        assertTrue("expected Dummy but got "+value, "Dummy".equals(value));
+        assertTrue("expected Dummy but got " + value, "Dummy".equals(value));
 
         page = button.click();
 
-        button = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:attr");
+        button = (HtmlSubmitInput) getInputContainingGivenId(page, "form:attr");
 
         value = button.getValueAttribute();
 
-        assertTrue("expected New Value but got "+value, "New Value".equals(value));
+        assertTrue("expected New Value but got " + value, "New Value".equals(value));
 
         String onclick = button.getOnClickAttribute();
         assertTrue(onclick.matches("(?s).*'delay':'none'.*"));
-        
-        button = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:attrImplicitDelay");
+
+        button = (HtmlSubmitInput) getInputContainingGivenId(page, "form:attrImplicitDelay");
 
         value = button.getValueAttribute();
-        
-        assertTrue("expected Dummy Implicit Delay but got "+value, "Dummy Implicit Delay".equals(value));
+
+        assertTrue("expected Dummy Implicit Delay but got " + value, "Dummy Implicit Delay".equals(value));
         onclick = button.getOnClickAttribute();
         assertTrue(!onclick.matches("(?s).*'delay':'none'.*"));
-        
-        button = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:attrDelay");
+
+        button = (HtmlSubmitInput) getInputContainingGivenId(page, "form:attrDelay");
 
         value = button.getValueAttribute();
-        
-        assertTrue("expected Dummy Delay but got "+value, "Dummy Delay".equals(value));
+
+        assertTrue("expected Dummy Delay but got " + value, "Dummy Delay".equals(value));
         onclick = button.getOnClickAttribute();
         assertTrue(onclick.matches("(?s).*'delay':'200'.*"));
-        
+
     }
 }

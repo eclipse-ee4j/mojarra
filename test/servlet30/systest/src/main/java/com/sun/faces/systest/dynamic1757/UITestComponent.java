@@ -26,41 +26,36 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent( value = "com.sun.faces.systest.dynamic1757.UITestComponent" )
-public class UITestComponent
-	extends UIComponentBase
-	implements SystemEventListener
-{
-	public UITestComponent()
-	{
-		setRendererType( "testcomponent" );
+@FacesComponent(value = "com.sun.faces.systest.dynamic1757.UITestComponent")
+public class UITestComponent extends UIComponentBase implements SystemEventListener {
+    public UITestComponent() {
+        setRendererType("testcomponent");
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		UIViewRoot root = context.getViewRoot();
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot root = context.getViewRoot();
 
-		if ( !context.isPostback() ) {
-			root.subscribeToViewEvent( PreRenderViewEvent.class, this );
-		}
-	}
+        if (!context.isPostback()) {
+            root.subscribeToViewEvent(PreRenderViewEvent.class, this);
+        }
+    }
 
-	public String getFamily()
-	{
-		return "com.sun.faces.systest.dynamic1757.UITestComponent";
-	}
+    @Override
+    public String getFamily() {
+        return "com.sun.faces.systest.dynamic1757.UITestComponent";
+    }
 
-	public boolean isListenerForSource( Object source )
-	{
-		return ( source instanceof UIViewRoot );
-	}
+    @Override
+    public boolean isListenerForSource(Object source) {
+        return (source instanceof UIViewRoot);
+    }
 
-	public void processEvent( SystemEvent event )
-		throws AbortProcessingException
-	{
-		FacesContext context = FacesContext.getCurrentInstance();
-		HtmlOutputText outputText = (HtmlOutputText) context.getApplication().createComponent( "javax.faces.HtmlOutputText" );
-		outputText.setValue( "Dynamically added child<br/>" );
-		outputText.setEscape( false );
+    @Override
+    public void processEvent(SystemEvent event) throws AbortProcessingException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HtmlOutputText outputText = (HtmlOutputText) context.getApplication().createComponent("javax.faces.HtmlOutputText");
+        outputText.setValue("Dynamically added child<br/>");
+        outputText.setEscape(false);
 
-		getChildren().add( outputText );
-	}
+        getChildren().add(outputText);
+    }
 }

@@ -16,15 +16,15 @@
 
 package com.sun.faces.annotation;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class AnnotatedBean {
 
-    @ManagedProperty(name="silly",value="#{requestScope.name}")
+    @ManagedProperty(name = "silly", value = "#{requestScope.name}")
     private String name;
 
     public void setSilly(String name) {
@@ -35,7 +35,7 @@ public class AnnotatedBean {
         return name;
     }
 
-    @ManagedProperty(name="age",value="#{requestScope.age}")
+    @ManagedProperty(name = "age", value = "#{requestScope.age}")
     private int age;
 
     public int getAge() {
@@ -45,5 +45,5 @@ public class AnnotatedBean {
     public void setAge(int age) {
         this.age = age;
     }
-    
+
 }

@@ -22,18 +22,23 @@ import javax.faces.event.PhaseListener;
 
 public class PhaseListenerInCompositeComponent implements PhaseListener {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
     public void beforePhase(PhaseEvent event) {
-        event.getFacesContext().getExternalContext().getRequestMap().put("beforeMessage",
-                "PASSED");
+        event.getFacesContext().getExternalContext().getRequestMap().put("beforeMessage", "PASSED");
     }
 
+    @Override
     public void afterPhase(PhaseEvent event) {
     }
 
+    @Override
     public PhaseId getPhaseId() {
         return PhaseId.RENDER_RESPONSE;
     }
-
-
 
 }

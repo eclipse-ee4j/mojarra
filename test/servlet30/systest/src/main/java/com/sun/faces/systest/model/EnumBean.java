@@ -22,12 +22,9 @@ import java.util.ArrayList;
 public class EnumBean {
 
     public enum Simple {
-        Value1,
-        Value2,
-        Value3,
-        Value4
+        Value1, Value2, Value3, Value4
     }
-    
+
     public enum Simple2 {
         Value
     }
@@ -46,7 +43,7 @@ public class EnumBean {
         lSelected = new ArrayList<Simple>(4);
         lSelected.add(Simple.Value2);
         lSelected.add(Simple.Value4);
-    }   
+    }
 
     public Simple getSelected() {
         return selected;
@@ -55,15 +52,14 @@ public class EnumBean {
     public void setSelected(Simple selected) {
         this.selected = selected;
     }
-    
-     public Simple getSelected2() {
+
+    public Simple getSelected2() {
         return selected2;
     }
 
     public void setSelected2(Simple selected2) {
         this.selected2 = selected2;
     }
-
 
     public Simple getSelected3() {
         return selected3;
@@ -76,18 +72,17 @@ public class EnumBean {
     public Simple[] getSelectedArray() {
         return mSelected;
     }
-    
+
     public void setSelectedArray(Simple[] mSelected) {
         this.mSelected = mSelected;
     }
-    
+
     public List getSelectedList() {
         return lSelected;
     }
-    
+
     public void setSelectedList(List<Simple> lSelected) {
         this.lSelected = lSelected;
     }
-
 
 } // END EnumBean

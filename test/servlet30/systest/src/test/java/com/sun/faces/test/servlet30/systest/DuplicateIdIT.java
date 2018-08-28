@@ -48,13 +48,13 @@ public class DuplicateIdIT {
     }
 
     /*
-     * Because of differences in the JSP engine between Glassfish and Weblogic
-     * and this issue not being raised as a bug by any user we exclude this 
-     * test on the following servers: WLS 12.1.3 and WLS 12.1.4
-     * 
+     * Because of differences in the JSP engine between Glassfish and Weblogic and this issue not being
+     * raised as a bug by any user we exclude this test on the following servers: WLS 12.1.3 and WLS
+     * 12.1.4
+     *
      * 20140829 - edburns, mriem
      */
-    @JsfTest(value = JSF_2_2_0, excludes = {WEBLOGIC_12_1_3, WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_2_0, excludes = { WEBLOGIC_12_1_3, WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
     @Test
     public void testDuplicateIds01() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
@@ -72,13 +72,13 @@ public class DuplicateIdIT {
     }
 
     /*
-     * Because of differences in the JSP engine between Glassfish and Weblogic
-     * and this issue not being raised as a bug by any user we exclude this 
-     * test on the following servers: WLS 12.1.3 and WLS 12.1.4
-     * 
+     * Because of differences in the JSP engine between Glassfish and Weblogic and this issue not being
+     * raised as a bug by any user we exclude this test on the following servers: WLS 12.1.3 and WLS
+     * 12.1.4
+     *
      * 20140829 - edburns, mriem
      */
-    @JsfTest(value = JSF_2_2_0, excludes = {WEBLOGIC_12_1_3, WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_2_0, excludes = { WEBLOGIC_12_1_3, WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
     @Test
     public void testDuplicateIds03() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);

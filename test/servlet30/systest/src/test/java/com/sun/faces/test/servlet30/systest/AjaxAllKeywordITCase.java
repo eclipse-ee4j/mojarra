@@ -30,10 +30,10 @@ public class AjaxAllKeywordITCase extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -42,14 +42,13 @@ public class AjaxAllKeywordITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxAllKeywordITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxAllKeyword1() throws Exception {
 
@@ -57,46 +56,48 @@ public class AjaxAllKeywordITCase extends HtmlUnitFacesITCase {
         System.out.println("Start ajax All Keyword test");
 
         // First we'll check the first page was output correctly
-        checkTrue("form1:out1","testtext");
+        checkTrue("form1:out1", "testtext");
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("form1:allKeyword");
         HtmlPage lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds - if the page is rewritten, this will be the same
-        checkTrue("form1:out1","testtext");
+        checkTrue("form1:out1", "testtext");
 
     }
+
     public void testAjaxAllKeyword2() throws Exception {
 
         getPage("/faces/ajax/ajaxAllKeyword2.xhtml");
         System.out.println("Start ajax All Keyword test");
 
         // First we'll check the first page was output correctly
-        checkTrue("form1:out1","testtext");
+        checkTrue("form1:out1", "testtext");
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("form1:allKeyword");
         HtmlPage lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds - if the page is rewritten, this will be the same
-        checkTrue("form1:out1","testtext");
+        checkTrue("form1:out1", "testtext");
 
     }
+
     public void testAjaxAllKeyword3() throws Exception {
 
         getPage("/faces/ajax/ajaxAllKeyword3.xhtml");
         System.out.println("Start ajax All Keyword test");
 
         // First we'll check the first page was output correctly
-        checkTrue("form1:out1","testtext");
+        checkTrue("form1:out1", "testtext");
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("form1:allKeyword");
         HtmlPage lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds - if the page is rewritten, this will be the same
-        checkTrue("form1:out1","testtext");
+        checkTrue("form1:out1", "testtext");
 
     }
 }

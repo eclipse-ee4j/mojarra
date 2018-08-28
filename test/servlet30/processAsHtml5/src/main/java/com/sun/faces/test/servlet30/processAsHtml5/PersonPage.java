@@ -16,12 +16,12 @@
 
 package com.sun.faces.test.servlet30.processAsHtml5;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.util.List;
 
-@ManagedBean
+@Named
 @ViewScoped
 public class PersonPage {
 

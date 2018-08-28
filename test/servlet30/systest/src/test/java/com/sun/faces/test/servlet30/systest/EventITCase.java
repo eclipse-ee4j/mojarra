@@ -26,8 +26,6 @@ import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
 
 /**
  * Validate new EL features such as the component implicit object
@@ -41,6 +39,7 @@ public class EventITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -55,6 +54,7 @@ public class EventITCase extends HtmlUnitFacesITCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }

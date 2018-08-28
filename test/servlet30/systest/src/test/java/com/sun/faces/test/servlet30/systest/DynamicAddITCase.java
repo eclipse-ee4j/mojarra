@@ -22,12 +22,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 /**
  * Unit tests for Composite Components.
  */
 public class DynamicAddITCase extends HtmlUnitFacesITCase {
-
 
     public DynamicAddITCase() {
         this("VerifyBuildBeforeRestoreTestCase");
@@ -37,14 +35,13 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -53,14 +50,13 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(DynamicAddITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
@@ -68,18 +64,18 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
 
         HtmlPage page = getPage("/faces/dynamicComponents.xhtml");
         String text = page.asXml();
-        
+
         int indexOf1 = text.indexOf("Dynamic Component dynamic1");
         int indexOf2 = text.indexOf("Dynamic Component dynamic2");
         int indexOf3 = text.indexOf("Dynamic Component dynamic3");
         int indexOf4 = text.indexOf("Dynamic Component dynamic4");
         int indexOf5 = text.indexOf("Dynamic Component dynamic5");
-        
+
         assertTrue(indexOf1 != -1);
-        
+
         assertTrue(indexOf1 < indexOf2);
         assertTrue(indexOf2 < indexOf3);
-        assertTrue(indexOf3 < indexOf4); 
+        assertTrue(indexOf3 < indexOf4);
         assertTrue(indexOf4 < indexOf5);
     }
 
@@ -87,35 +83,29 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
 
         HtmlPage page = getPage("/faces/dynamicComponents00.xhtml");
         String text;
-        HtmlSubmitInput button = (HtmlSubmitInput)
-                this.getInputContainingGivenId(page, "next");
+        HtmlSubmitInput button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "next");
         page = button.click();
-        button = (HtmlSubmitInput)
-                this.getInputContainingGivenId(page, "thisAgain");
+        button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "thisAgain");
         page = button.click();
-        button = (HtmlSubmitInput)
-                this.getInputContainingGivenId(page, "thisAgain");
+        button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "thisAgain");
         page = button.click();
         text = page.asXml();
         assertTrue(text.contains("Dynamic Component dynamic1"));
-        button = (HtmlSubmitInput)
-                this.getInputContainingGivenId(page, "next");
+        button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "next");
         page = button.click();
         text = page.asXml();
         assertTrue(page.asXml().contains("no dynamic component"));
     }
 
-
     public void testToggle() throws Exception {
         HtmlPage page = getPage("/faces/dynamicComponents_toggle.xhtml");
         String text = page.asText();
         assertTrue(text.indexOf("Manually added child 2") < text.indexOf("Manually added child 1"));
-        HtmlSubmitInput button = (HtmlSubmitInput)
-                this.getInputContainingGivenId(page, "button");
+        HtmlSubmitInput button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "button");
         page = button.click();
         text = page.asText();
-        //toggling is not happening consistently. hence commenting out the assertion
-        //assertTrue(text.indexOf("Manually added child 1") < text.indexOf("Manually added child 2"));
+        // toggling is not happening consistently. hence commenting out the assertion
+        // assertTrue(text.indexOf("Manually added child 1") < text.indexOf("Manually added child 2"));
     }
 
     public void testRecursive() throws Exception {
@@ -132,12 +122,11 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
         assertTrue(first < next);
     }
 
-     public void testStable() throws Exception {
+    public void testStable() throws Exception {
         HtmlPage page = getPage("/faces/dynamicComponents_stable.xhtml");
-         String text;
-         
-        HtmlSubmitInput button = (HtmlSubmitInput)
-                this.getInputContainingGivenId(page, "button");
+        String text;
+
+        HtmlSubmitInput button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "button");
         page = button.click();
         text = page.asText();
         assertTrue(text.contains("text3: Validation Error: Value is required."));
@@ -147,8 +136,7 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
         HtmlPage page = getPage("/faces/dynamicComponents_table.xhtml");
         String text = page.asText();
         assertTrue(text.matches("(?s).*TestComponent::encodeBegin\\s*Foo\\s*Bar\\s*Baz\\s*TestComponent::encodeEnd.*"));
-        HtmlSubmitInput button = (HtmlSubmitInput)
-                this.getInputContainingGivenId(page, "button");
+        HtmlSubmitInput button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "button");
         page = button.click();
         text = page.asText();
         assertTrue(text.matches("(?s).*TestComponent::encodeBegin\\s*Foo\\s*Bar\\s*Baz\\s*TestComponent::encodeEnd.*"));
@@ -156,13 +144,11 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
 
     public void testChildren() throws Exception {
         HtmlPage page = getPage("/faces/dynamicComponents_2119.xhtml");
-        HtmlSubmitInput button = (HtmlSubmitInput)
-            this.getInputContainingGivenId(page, "postback");
+        HtmlSubmitInput button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "postback");
         page = button.click();
         String text = page.asText();
         assertTrue(text.matches("(?s).*TestComponent::encodeBegin\\s*NEW-OUTPUT\\s*TestComponent::encodeEnd.*"));
-        button = (HtmlSubmitInput)
-            this.getInputContainingGivenId(page, "postback");
+        button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "postback");
         page = button.click();
         text = page.asText();
         assertTrue(text.matches("(?s).*TestComponent::encodeBegin\\s*NEW-OUTPUT\\s*TestComponent::encodeEnd.*"));
@@ -171,13 +157,11 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
 
     public void testMultipleAdds() throws Exception {
         HtmlPage page = getPage("/faces/dynamicComponents_2121.xhtml");
-        HtmlSubmitInput button = (HtmlSubmitInput)
-            this.getInputContainingGivenId(page, "add");
+        HtmlSubmitInput button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "add");
         page = button.click();
         String text = page.asText();
         assertTrue(text.endsWith("AddComponentOUTPUT"));
-        button = (HtmlSubmitInput)
-            this.getInputContainingGivenId(page, "add");
+        button = (HtmlSubmitInput) this.getInputContainingGivenId(page, "add");
         page = button.click();
         text = page.asText();
         assertTrue(text.endsWith("AddComponentOUTPUTOUTPUT"));
@@ -191,6 +175,5 @@ public class DynamicAddITCase extends HtmlUnitFacesITCase {
         assertTrue(text.contains("componentWithListener : Event: javax.faces.event.PreRenderViewEvent"));
         assertTrue(!text.contains("componentWithNoListener"));
     }
-
 
 }

@@ -16,17 +16,15 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
-
 public class SelectOneHideNoSelectionInSelectItemGroupITCase extends SelectOneHideNoSelectionITCase {
 
     public SelectOneHideNoSelectionInSelectItemGroupITCase(String name) {
-		super(name);
-	}
+        super(name);
+    }
 
-	@Override
+    @Override
     protected String getPath() {
-		return "/faces/standard/selectOneLiteralHideNoSelectionOptionInSelectItemGroup.xhtml";
+        return "/faces/standard/selectOneLiteralHideNoSelectionOptionInSelectItemGroup.xhtml";
     }
 
 }

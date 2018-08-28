@@ -45,14 +45,14 @@ public class WriteAttributeScriptEnabledIT {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         // HACK: The first request to the page will result in the value
-        // having jsessionid encoded in the link value.  Making a second
+        // having jsessionid encoded in the link value. Making a second
         // request to the page means we've joined the session and the value
         // will no longer include the jsessionid (at least when cookies are enabled)
         // and clicking the link will not produce JS errors.
         HtmlPage page = webClient.getPage(webUrl + "faces/test.jsp");
         page = webClient.getPage(webUrl + "faces/test.jsp");
 
-        HtmlAnchor link = (HtmlAnchor) page.getAnchors().get(0);
+        HtmlAnchor link = page.getAnchors().get(0);
 
         HtmlPage errorPage = (HtmlPage) link.click();
         assertTrue(errorPage.asText().indexOf("new value!") >= 0);

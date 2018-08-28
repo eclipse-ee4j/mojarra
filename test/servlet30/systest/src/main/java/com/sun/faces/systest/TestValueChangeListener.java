@@ -16,22 +16,18 @@
 
 package com.sun.faces.systest;
 
-
-import javax.faces.component.UIComponent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.component.StateHolder;
 import javax.faces.event.AbortProcessingException;
 
 public class TestValueChangeListener implements ValueChangeListener {
-    
-    public TestValueChangeListener() {}
 
-    public void processValueChange(ValueChangeEvent vce)
-    throws AbortProcessingException {
-       vce.getComponent().getAttributes().put("onblur",
-                                               vce.getNewValue().toString());
-    } 
-    
-    
+    public TestValueChangeListener() {
+    }
+
+    @Override
+    public void processValueChange(ValueChangeEvent vce) throws AbortProcessingException {
+        vce.getComponent().getAttributes().put("onblur", vce.getNewValue().toString());
+    }
+
 }

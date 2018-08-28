@@ -19,32 +19,36 @@ package com.sun.faces.test.servlet30.nesteddatatables;
 import java.io.Serializable;
 
 public class Port implements Serializable {
-    
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     String _portNumber = "0";
-    
+
     public Port() {
     }
-    
+
     public Port(String portNumber) {
         _portNumber = portNumber;
     }
-    
+
     public void setPortNumber(String portNumber) {
         _portNumber = portNumber;
     }
-    
+
     public String getPortNumber() {
         return _portNumber;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof Port)) {
             return false;
         }
-        
-        String otherPortNumber = ((Port)o).getPortNumber();
-        
+
+        String otherPortNumber = ((Port) o).getPortNumber();
+
         return _portNumber == null ? (otherPortNumber == null) : _portNumber.equals(otherPortNumber);
     }
 }
-

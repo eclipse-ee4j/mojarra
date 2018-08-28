@@ -22,29 +22,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestListBox {
-        private List<TestBean2> listResults;
-        private TestBean2[] arrayResults;
+    private List<TestBean2> listResults;
+    private TestBean2[] arrayResults;
 
-        public List<TestBean2> getListResults() {
-                return listResults;
-        }
-        public void setListResults(List<TestBean2> listResults) {
-                this.listResults = listResults;
-        }
-        public TestBean2[] getArrayResults() {
-                return arrayResults;
-        }
-        public void setArrayResults(TestBean2[] arrayResults) {
-                this.arrayResults = arrayResults;
-        }
+    public List<TestBean2> getListResults() {
+        return listResults;
+    }
 
+    public void setListResults(List<TestBean2> listResults) {
+        this.listResults = listResults;
+    }
 
-        public List getSelectItems() {
-                List selectItems = new ArrayList();
-                selectItems.add(new SelectItem(new TestBean2(10, "joe"), "joe"));
-                selectItems.add(new SelectItem(new TestBean2(20, "bob"), "bob"));
-                selectItems.add(new SelectItem(new TestBean2(30, "fred"), "fred"));
+    public TestBean2[] getArrayResults() {
+        return arrayResults;
+    }
 
-                return selectItems;
-        }
+    public void setArrayResults(TestBean2[] arrayResults) {
+        this.arrayResults = arrayResults;
+    }
+
+    public List getSelectItems() {
+        List selectItems = new ArrayList();
+        selectItems.add(new SelectItem(new TestBean2(10, "joe"), "joe"));
+        selectItems.add(new SelectItem(new TestBean2(20, "bob"), "bob"));
+        selectItems.add(new SelectItem(new TestBean2(30, "fred"), "fred"));
+
+        return selectItems;
+    }
 }

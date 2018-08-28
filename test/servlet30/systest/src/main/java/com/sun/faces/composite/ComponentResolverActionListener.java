@@ -24,17 +24,12 @@ import javax.faces.event.ActionListener;
 
 public class ComponentResolverActionListener implements ActionListener {
 
-    public void processAction(ActionEvent event)
-          throws AbortProcessingException {
+    @Override
+    public void processAction(ActionEvent event) throws AbortProcessingException {
         FacesContext context = FacesContext.getCurrentInstance();
-        ValueExpression expression = context.getApplication()
-              .getExpressionFactory()
-              .createValueExpression(context.getELContext(),
-                                     "#{component.family}",
-                                     String.class);
-        context.getExternalContext().getRequestMap().put(
-              "resolvedComponentFamily",
-              expression.getValue(context.getELContext()));
+        ValueExpression expression = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(),
+                "#{component.family}", String.class);
+        context.getExternalContext().getRequestMap().put("resolvedComponentFamily", expression.getValue(context.getELContext()));
     }
 
 }

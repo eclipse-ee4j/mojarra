@@ -23,8 +23,13 @@ import javax.faces.event.NamedEvent;
 /**
  *
  */
-@NamedEvent(shortName="explicitEventName")
-public class AnotherAnnotatedComponentSystemEvent  extends ComponentSystemEvent {
+@NamedEvent(shortName = "explicitEventName")
+public class AnotherAnnotatedComponentSystemEvent extends ComponentSystemEvent {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     public AnotherAnnotatedComponentSystemEvent(UIComponent component) {
         super(component);
     }

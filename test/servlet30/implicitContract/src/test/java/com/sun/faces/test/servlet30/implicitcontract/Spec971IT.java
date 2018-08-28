@@ -16,20 +16,12 @@
 
 package com.sun.faces.test.servlet30.implicitcontract;
 
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.html.HtmlLink;
-import com.gargoylesoftware.htmlunit.html.DomNodeList;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 public class Spec971IT {
     /**
@@ -43,7 +35,7 @@ public class Spec971IT {
 
     /**
      * Setup before testing.
-     * 
+     *
      * @throws Exception when a serious error occurs.
      */
     @BeforeClass
@@ -52,7 +44,7 @@ public class Spec971IT {
 
     /**
      * Cleanup after testing.
-     * 
+     *
      * @throws Exception when a serious error occurs.
      */
     @AfterClass
@@ -81,7 +73,7 @@ public class Spec971IT {
 //        HtmlPage page = webClient.getPage(webUrl);
 //
 //        assertTrue(page.getBody().asText().indexOf("Site design by Xoxiety.com") != -1);
-//        
+//
 //        DomNodeList<DomElement> links = page.getElementsByTagName("link");
 //        assertEquals(1, links.size());
 //        HtmlLink styleLink = (HtmlLink) links.get(0);
@@ -100,26 +92,24 @@ public class Spec971IT {
 //        resourceRef = synthesizeResourceRef(contextName, "banner.png", "basic");
 //        assertTrue(css.contains(resourceRef));
 
-
     }
-    
+
     private String extractContextNameFromWebUrl(String webUrl) {
         String str = webUrl;
-        
+
         if (str.endsWith("/")) {
             str = str.substring(0, str.length() - 1);
         }
         int i = str.lastIndexOf("/");
         if (-1 != 1) {
-            str = str.substring(i+1);
+            str = str.substring(i + 1);
         }
-        
+
         return str;
     }
-    
+
     private String synthesizeResourceRef(String contextName, String resourceName, String contractName) {
-        String result = "url(/" + contextName + "/faces/javax.faces.resource/" + 
-                resourceName + "?con=" + contractName + ")";
+        String result = "url(/" + contextName + "/faces/javax.faces.resource/" + resourceName + "?con=" + contractName + ")";
         return result;
     }
 }

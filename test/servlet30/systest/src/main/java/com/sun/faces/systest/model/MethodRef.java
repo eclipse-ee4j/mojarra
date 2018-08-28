@@ -34,97 +34,77 @@ public class MethodRef extends Object {
     public MethodRef() {
     }
 
-
     protected String buttonPressedOutcome = null;
-
 
     public String getButtonPressedOutcome() {
         return buttonPressedOutcome;
     }
 
-
     public void setButtonPressedOutcome(String newButtonPressedOutcome) {
         buttonPressedOutcome = newButtonPressedOutcome;
     }
-
 
     public String button1Pressed() {
         setButtonPressedOutcome("button1 was pressed");
         return null;
     }
 
-
     public String invalidateSession() {
         FacesContext fContext = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession)
-            fContext.getExternalContext().getSession(true);
+        HttpSession session = (HttpSession) fContext.getExternalContext().getSession(true);
         session.invalidate();
         return null;
     }
-
 
     public String button2Pressed() {
         setButtonPressedOutcome("button2 was pressed");
         return null;
     }
 
-
     public void button3Pressed(ActionEvent event) {
-        setButtonPressedOutcome(event.getComponent().getId() +
-                                " was pressed");
+        setButtonPressedOutcome(event.getComponent().getId() + " was pressed");
     }
 
-
     protected String validateOutcome;
-
 
     public String getValidateOutcome() {
         return validateOutcome;
     }
 
-
     public void setValidateOutcome(String newValidateOutcome) {
         validateOutcome = newValidateOutcome;
     }
 
-
     public void validateInput(FacesContext context, UIComponent toValidate, Object valueObj) {
         String value = (String) valueObj;
         if (!value.equals("batman")) {
-            throw new ValidatorException(new FacesMessage(
-                "You didn't enter batman",
-                "You must enter batman"));
+            throw new ValidatorException(new FacesMessage("You didn't enter batman", "You must enter batman"));
         }
 
     }
 
-
     protected String changeOutcome;
-
 
     public String getChangeOutcome() {
         return changeOutcome;
     }
 
-
     public void setChangeOutcome(String newChangeOutcome) {
         changeOutcome = newChangeOutcome;
     }
 
-
     public void valueChange(ValueChangeEvent vce) {
-        vce.getComponent().getAttributes().put("onblur",
-                                               vce.getNewValue().toString());
+        vce.getComponent().getAttributes().put("onblur", vce.getNewValue().toString());
         setChangeOutcome(vce.getNewValue().toString());
     }
 
     public void inputFieldValueChange(ValueChangeEvent vce) {
-        vce.getComponent().getAttributes().put("onblur",
-                                               vce.getNewValue().toString());
+        vce.getComponent().getAttributes().put("onblur", vce.getNewValue().toString());
     }
 
     protected UIInput inputField = null;
-    public void setInputField(UIInput input){
+
+    public void setInputField(UIInput input) {
         this.inputField = input;
     }
 
@@ -135,12 +115,8 @@ public class MethodRef extends Object {
 
             Class<?> args[] = { ValueChangeEvent.class };
 
-            MethodExpression mb =
-            FacesContext.getCurrentInstance().getApplication().getExpressionFactory().createMethodExpression(
-                    FacesContext.getCurrentInstance().getELContext(),
-                    "#{methodRef.inputFieldValueChange}",
-                    Object.class,
-                    args);
+            MethodExpression mb = FacesContext.getCurrentInstance().getApplication().getExpressionFactory().createMethodExpression(
+                    FacesContext.getCurrentInstance().getELContext(), "#{methodRef.inputFieldValueChange}", Object.class, args);
 
             inputField.addValueChangeListener(new MethodExpressionValueChangeListener(mb));
         }
@@ -148,7 +124,4 @@ public class MethodRef extends Object {
         return inputField;
     }
 
-
 }
-
-

@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class ResourceBean {
 
@@ -50,7 +50,7 @@ public class ResourceBean {
     }
 
     public void setResourceWithLibrary(String resourceWithLibrary) {
-        //noop
+        // noop
     }
 
     public String getResourceWithoutLibrary() {
@@ -67,10 +67,9 @@ public class ResourceBean {
     }
 
     public void setResourceWithoutLibrary(String resourceWithoutLibrary) {
-        //noop
+        // noop
     }
-    
-    
+
     public String getResourceWithTrailingUnderscore() {
         FacesContext fc = FacesContext.getCurrentInstance();
         ResourceHandler handler = fc.getApplication().getResourceHandler();
@@ -80,16 +79,16 @@ public class ResourceBean {
             try {
                 InputStream is = resource.getInputStream();
                 while (-1 != is.read()) {
-                    
+
                 }
             } catch (IOException ex) {
                 return "FAILURE";
             }
         }
         return "SUCCESS";
-        
+
     }
-    
+
     public String getResourceWithLeadingUnderscore() {
         FacesContext fc = FacesContext.getCurrentInstance();
         ResourceHandler handler = fc.getApplication().getResourceHandler();
@@ -99,14 +98,14 @@ public class ResourceBean {
             try {
                 InputStream is = resource.getInputStream();
                 while (-1 != is.read()) {
-                    
+
                 }
             } catch (IOException ex) {
                 return "FAILURE";
             }
         }
         return "SUCCESS";
-        
+
     }
 
     public String getResourceWithInvalidVersion() {
@@ -118,16 +117,16 @@ public class ResourceBean {
             try {
                 InputStream is = resource.getInputStream();
                 while (-1 != is.read()) {
-                    
+
                 }
             } catch (IOException ex) {
                 return "FAILURE";
             }
         }
         return "SUCCESS";
-        
+
     }
-    
+
     public String getResourceWithValidVersion() {
         FacesContext fc = FacesContext.getCurrentInstance();
         ResourceHandler handler = fc.getApplication().getResourceHandler();
@@ -145,8 +144,7 @@ public class ResourceBean {
             }
         }
         return "SUCCESS";
-        
+
     }
-    
-    
+
 }

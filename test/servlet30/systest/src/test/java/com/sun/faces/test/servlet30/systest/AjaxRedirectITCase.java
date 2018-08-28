@@ -24,8 +24,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 
 import java.util.ArrayList;
 import java.util.List;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
 
 public class AjaxRedirectITCase extends HtmlUnitFacesITCase {
 
@@ -36,10 +34,10 @@ public class AjaxRedirectITCase extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -48,23 +46,20 @@ public class AjaxRedirectITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxRedirectITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testAjaxRedirect() throws Exception {
 
         HtmlPage page = getPage("/faces/ajax/ajaxRedirect.xhtml");
-        HtmlSubmitInput button = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:redirect");
+        HtmlSubmitInput button = (HtmlSubmitInput) getInputContainingGivenId(page, "form:redirect");
         assertNotNull(button);
 
         page = button.click();
@@ -74,6 +69,6 @@ public class AjaxRedirectITCase extends HtmlUnitFacesITCase {
         assertEquals(1, spans.size());
         HtmlSpan span = spans.get(0);
         assertEquals("Redirect Target", span.asText());
-        
+
     }
 }

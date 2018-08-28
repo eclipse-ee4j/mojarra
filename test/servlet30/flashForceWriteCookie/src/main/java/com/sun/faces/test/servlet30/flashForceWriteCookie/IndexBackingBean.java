@@ -17,23 +17,23 @@
 package com.sun.faces.test.servlet30.flashForceWriteCookie;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class IndexBackingBean implements Serializable {
     private static final long serialVersionUID = 1708645737237991975L;
-    
+
     public String gotoSecond() {
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("a", "x");
         return "second?faces-redirect=true";
     }
-    
+
     public String gotoThird() {
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("b", "y");
         return "third?faces-redirect=true";
     }
-        
+
 }

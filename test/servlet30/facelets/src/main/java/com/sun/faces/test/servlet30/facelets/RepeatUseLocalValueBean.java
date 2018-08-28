@@ -16,17 +16,21 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
 import static java.util.Arrays.asList;
-import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 
-@ManagedBean(name = "repeatUseLocalValueBean")
+import java.io.Serializable;
+import java.util.List;
+
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
+@Named
 @ViewScoped
 public class RepeatUseLocalValueBean implements Serializable {
 
-    List<Object> objects = asList(new RepeatUseLocalValueTypeA(), new RepeatUseLocalValueTypeB());
+    private static final long serialVersionUID = 1L;
+
+    private List<Object> objects = asList(new RepeatUseLocalValueTypeA(), new RepeatUseLocalValueTypeB());
 
     public List<Object> getObjects() {
         return objects;

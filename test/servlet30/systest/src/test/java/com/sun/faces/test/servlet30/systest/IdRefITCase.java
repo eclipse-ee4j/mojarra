@@ -24,8 +24,8 @@ import java.util.*;
 
 /**
  * <p>
- * Test id-ref values in <code>h:message</code> and <code>h:outputLabel</code>
- * tags, and their interaction with <code>c:forEach</code>.
+ * Test id-ref values in <code>h:message</code> and <code>h:outputLabel</code> tags, and their
+ * interaction with <code>c:forEach</code>.
  * </p>
  */
 
@@ -59,21 +59,18 @@ public class IdRefITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(IdRefITCase.class));
     }
 
-    private Map mapElementsByAttribute(HtmlElement docElem, String tagName,
-                                       String attName, String filterAtt, String filterValue) {
+    private Map mapElementsByAttribute(HtmlElement docElem, String tagName, String attName, String filterAtt, String filterValue) {
         Map elems = new TreeMap();
         List tags = docElem.getElementsByTagName(tagName);
         for (Iterator tagIt = tags.iterator(); tagIt.hasNext();) {
             HtmlElement tag = (HtmlElement) tagIt.next();
-            if (filterAtt != null && filterValue != null &&
-                    !filterValue.equals(tag.getAttribute(filterAtt))) {
+            if (filterAtt != null && filterValue != null && !filterValue.equals(tag.getAttribute(filterAtt))) {
                 continue;
             }
             String attValue = tag.getAttribute(attName);
             assertNotNull(attName + " attribute of " + tagName, attValue);
             assertNotSame(attName + " attribute of " + tagName, 0, attValue.length());
-            assertFalse("More than one " + tagName + " contains " + attName
-                    + "=" + attValue, elems.containsKey(attValue));
+            assertFalse("More than one " + tagName + " contains " + attName + "=" + attValue, elems.containsKey(attValue));
             elems.put(attValue, tag);
         }
         return elems;
@@ -86,12 +83,9 @@ public class IdRefITCase extends HtmlUnitFacesITCase {
             HtmlSpan tag = (HtmlSpan) tagIt.next();
             if ("message".equals(tag.getAttribute("class"))) {
                 String text = tag.asText();
-                assertNotSame(
-                        "expect validation message to start with component id",
-                        -1, text.indexOf(": "));
+                assertNotSame("expect validation message to start with component id", -1, text.indexOf(": "));
                 String id = text.substring(0, text.indexOf(": ")).trim();
-                assertFalse("Duplicate message for input " + id, elems
-                        .containsKey(id));
+                assertFalse("Duplicate message for input " + id, elems.containsKey(id));
                 elems.put(id, tag);
             }
         }

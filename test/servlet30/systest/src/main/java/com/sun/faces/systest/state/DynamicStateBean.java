@@ -19,7 +19,6 @@ package com.sun.faces.systest.state;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlOutputText;
@@ -27,37 +26,36 @@ import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.validator.ValidatorException;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class DynamicStateBean {
-    
+
     public void validateDeletion(FacesContext context, UIComponent comp, Object val) {
         // The button should not be here on postback
         UIComponent button = findButton(context);
         if (null != button) {
             throw new ValidatorException(new FacesMessage("cbutton should not be found"));
         }
-        
+
     }
-    
+
     public void validateAddition(FacesContext context, UIComponent comp, Object val) {
         // The button should not be here on postback
         UIComponent button = findButton(context);
         if (null == button) {
             throw new ValidatorException(new FacesMessage("cbutton should be found"));
         }
-        
+
     }
+
     public void beforeRenderDeletion(ComponentSystemEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
-        
-        UIComponent 
-                buttonParent = null, 
-                button = findButton(context);
+
+        UIComponent buttonParent = null, button = findButton(context);
         if (null != button) {
             buttonParent = button.getParent();
             buttonParent.getChildren().remove(button);
@@ -66,9 +64,8 @@ public class DynamicStateBean {
 
     public void beforeRenderAddition(ComponentSystemEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
-        
-        UIComponent
-                form = findForm(context);
+
+        UIComponent form = findForm(context);
         HtmlCommandButton button;
         if (null == (button = (HtmlCommandButton) findButton(context))) {
             button = new HtmlCommandButton();
@@ -78,9 +75,8 @@ public class DynamicStateBean {
         }
     }
 
-
     public void transientRoot(ActionEvent ae) {
-       
+
         UIComponent button = ae.getComponent();
         UIComponent addto = button.findComponent("addto");
 
@@ -102,34 +98,29 @@ public class DynamicStateBean {
 
     }
 
-
-    
-    
     private UIComponent findButton(FacesContext context) {
         char sep = UINamingContainer.getSeparatorChar(context);
         UIComponent result = null;
-                result = context.getViewRoot().findComponent(sep + "form" + 
-                sep + "cbutton");
+        result = context.getViewRoot().findComponent(sep + "form" + sep + "cbutton");
         return result;
     }
 
     private UIComponent findForm(FacesContext context) {
         char sep = UINamingContainer.getSeparatorChar(context);
         UIComponent result = null;
-                result = context.getViewRoot().findComponent(sep + "form");
+        result = context.getViewRoot().findComponent(sep + "form");
         return result;
     }
 
-
     public static class StateComponent extends HtmlOutputText {
 
+        @Override
+        public Object saveState(FacesContext context) {
 
-        @Override public Object saveState(FacesContext context) {
-
-            throw new FacesException("saveState(FacesContext) was incorrectly called for component with client ID: "
-                                     + this.getClientId(context));
+            throw new FacesException(
+                    "saveState(FacesContext) was incorrectly called for component with client ID: " + this.getClientId(context));
         }
 
     }
-    
+
 }

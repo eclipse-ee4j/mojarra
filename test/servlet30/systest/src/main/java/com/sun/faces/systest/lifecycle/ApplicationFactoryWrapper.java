@@ -23,23 +23,26 @@ public class ApplicationFactoryWrapper extends ApplicationFactory {
 
     public ApplicationFactoryWrapper() {
     }
-    
+
     private ApplicationFactory oldFactory = null;
-    
+
     public ApplicationFactoryWrapper(ApplicationFactory yourOldFactory) {
-	oldFactory = yourOldFactory;
-    }
-    
-    public Application getApplication() {
-	return oldFactory.getApplication();
-    }
-    
-    public void setApplication(Application application) {
-	oldFactory.setApplication(application);
+        oldFactory = yourOldFactory;
     }
 
+    @Override
+    public Application getApplication() {
+        return oldFactory.getApplication();
+    }
+
+    @Override
+    public void setApplication(Application application) {
+        oldFactory.setApplication(application);
+    }
+
+    @Override
     public String toString() {
-	return "ApplicationFactoryWrapper";
+        return "ApplicationFactoryWrapper";
     }
 
 }

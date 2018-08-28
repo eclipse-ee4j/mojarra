@@ -16,23 +16,21 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import javax.faces.component.NamingContainer;
-import static junit.framework.TestCase.assertTrue;
-
 
 /**
- * <p>Test Case for JSP Interoperability.</p>
+ * <p>
+ * Test Case for JSP Interoperability.
+ * </p>
  */
 
 public class SelectManyMultiFormITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -47,14 +45,13 @@ public class SelectManyMultiFormITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -63,16 +60,15 @@ public class SelectManyMultiFormITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(SelectManyMultiFormITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
     // ------------------------------------------------- Individual Test Methods
-
 
     public void testMultiForm() throws Exception {
         HtmlForm form;
@@ -83,18 +79,14 @@ public class SelectManyMultiFormITCase extends HtmlUnitFacesITCase {
 
         page = getPage("/faces/standard/selectmany01.jsp");
         // verify that the model tier is as expected
-        assertTrue(-1 !=
-                page.asText().indexOf("Current model value: 1, 2, ,"));
+        assertTrue(-1 != page.asText().indexOf("Current model value: 1, 2, ,"));
         form = getFormById(page, "form2");
-        submit = (HtmlSubmitInput)
-                form.getInputByName("form2" + NamingContainer.SEPARATOR_CHAR +
-                        "doNotModify");
+        submit = (HtmlSubmitInput) form.getInputByName("form2" + NamingContainer.SEPARATOR_CHAR + "doNotModify");
 
         // press button1
         page = (HtmlPage) submit.click();
         // verify that submitting the form does not change the model tier
-        assertTrue(-1 !=
-                page.asText().indexOf("Current model value: 1, 2, ,"));
+        assertTrue(-1 != page.asText().indexOf("Current model value: 1, 2, ,"));
 
     }
 }

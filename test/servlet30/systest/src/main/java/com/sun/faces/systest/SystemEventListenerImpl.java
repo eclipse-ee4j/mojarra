@@ -28,14 +28,15 @@ import javax.faces.event.SystemEventListener;
  */
 public class SystemEventListenerImpl implements SystemEventListener {
 
+    @Override
     public boolean isListenerForSource(Object component) {
         return component instanceof TestBean;
     }
 
+    @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
-	FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("eventFromBean",
-									 "eventFromBean: source: " + 
-                                                                         event.getSource().getClass().getName());
+        FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("eventFromBean",
+                "eventFromBean: source: " + event.getSource().getClass().getName());
     }
 
 }

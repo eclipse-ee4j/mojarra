@@ -32,8 +32,7 @@ public class ResetUniqueRequestIdBean {
         FacesContext context = FacesContext.getCurrentInstance();
         LRUMap lruMap = new LRUMap(15);
         context.getExternalContext().getSessionMap().put(RequestStateManager.LOGICAL_VIEW_MAP, lruMap);
-        StateManagerImpl stateManagerImpl =
-            (StateManagerImpl) context.getApplication().getStateManager();
+        StateManagerImpl stateManagerImpl = (StateManagerImpl) context.getApplication().getStateManager();
 //        TestingUtil.setPrivateField("requestIdSerial",
 //                                    StateManagerImpl.class,
 //                                    stateManagerImpl,

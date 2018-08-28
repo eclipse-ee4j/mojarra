@@ -30,7 +30,8 @@ import org.junit.Test;
 
 public class SuppressXmlDeclIT {
 
-    private final static Pattern XmlDeclaration = Pattern.compile("^<\\?xml.+?version=['\"](.+?)['\"](.+?encoding=['\"]((.+?))['\"])?.*?\\?>");
+    private final static Pattern XmlDeclaration = Pattern
+            .compile("^<\\?xml.+?version=['\"](.+?)['\"](.+?encoding=['\"]((.+?))['\"])?.*?\\?>");
 
     private String webUrl;
     private WebClient webClient;

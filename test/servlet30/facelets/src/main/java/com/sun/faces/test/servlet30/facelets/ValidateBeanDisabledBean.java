@@ -16,22 +16,22 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean(name = "validateBeanDisabledBean")
+@Named
 @RequestScoped
 public class ValidateBeanDisabledBean {
 
     private ValidateBeanDisabledFoo foo = new ValidateBeanDisabledFoo();
 
     public ValidateBeanDisabledFoo getFoo() {
-        return this.foo;
+        return foo;
     }
 
     public void submit() {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("SUCCESS! Name set to '" + this.foo.getName() + "'"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("SUCCESS! Name set to '" + foo.getName() + "'"));
     }
 }

@@ -58,7 +58,9 @@ public class ConverterIT {
     @Test
     public void testConverter02() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/converter02.jsp");
-        assertTrue(Pattern.matches("(?s).*<html>\\s*<head/>\\s*<body>\\s*<span\\s*id=\"id1\">\\s*\\$123\\.45\\s*</span>\\s*</body>\\s*</html>.*", page.asXml()));
+        assertTrue(Pattern.matches(
+                "(?s).*<html>\\s*<head/>\\s*<body>\\s*<span\\s*id=\"id1\">\\s*\\$123\\.45\\s*</span>\\s*</body>\\s*</html>.*",
+                page.asXml()));
     }
 
     @Test

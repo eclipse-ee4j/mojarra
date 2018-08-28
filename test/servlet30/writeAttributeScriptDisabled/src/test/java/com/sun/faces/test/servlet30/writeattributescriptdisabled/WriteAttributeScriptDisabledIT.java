@@ -44,7 +44,7 @@ public class WriteAttributeScriptDisabledIT {
     public void testWriteAttributeDisabled() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page = webClient.getPage(webUrl + "faces/test.jsp");
-        HtmlAnchor link = (HtmlAnchor) page.getAnchors().get(0);
+        HtmlAnchor link = page.getAnchors().get(0);
         HtmlPage errorPage = (HtmlPage) link.click();
         assertTrue(errorPage.asText().indexOf("new value!") == -1);
     }

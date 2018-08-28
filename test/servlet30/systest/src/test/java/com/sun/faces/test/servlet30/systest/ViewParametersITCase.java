@@ -23,7 +23,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import java.net.URL;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
 /**
@@ -43,6 +42,7 @@ public class ViewParametersITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -57,6 +57,7 @@ public class ViewParametersITCase extends HtmlUnitFacesITCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }

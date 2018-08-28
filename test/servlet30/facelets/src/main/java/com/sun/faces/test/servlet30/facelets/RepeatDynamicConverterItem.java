@@ -18,7 +18,7 @@ package com.sun.faces.test.servlet30.facelets;
 
 import java.io.Serializable;
 
-public class RepeatDynamicConverterItem implements Serializable {
+public class RepeatDynamicConverterItem {
 
     private Number value = null;
     private int number;

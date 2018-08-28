@@ -25,13 +25,14 @@ import junit.framework.TestSuite;
 import java.util.List;
 
 /**
- * <p>Test that invalid values don't cause valueChangeEvents to occur.</p>
+ * <p>
+ * Test that invalid values don't cause valueChangeEvents to occur.
+ * </p>
  */
 
 public class Converter2ITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -46,7 +47,6 @@ public class Converter2ITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Return the tests included in this test suite.
      */
@@ -58,8 +58,7 @@ public class Converter2ITCase extends HtmlUnitFacesITCase {
     public void testConverter() throws Exception {
         HtmlPage page = getPage("/faces/converter03.jsp");
         List list;
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlTextInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlTextInput.class);
 
         // set the initial value to be 1 for all input fields
         ((HtmlTextInput) list.get(0)).setValueAttribute("1111111111");
@@ -72,8 +71,7 @@ public class Converter2ITCase extends HtmlUnitFacesITCase {
         ((HtmlTextInput) list.get(7)).setValueAttribute("7");
         ((HtmlTextInput) list.get(8)).setValueAttribute("10");
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
         assertTrue(-1 != page.asText().indexOf("text1 was converted to Object"));
@@ -94,23 +92,23 @@ public class Converter2ITCase extends HtmlUnitFacesITCase {
     public void testConverterMessages() throws Exception {
         HtmlPage page = getPage("/faces/converter04.jsp");
         List list;
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlTextInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlTextInput.class);
 
         // set the initial value to be "aaa" for all input fields
         for (int i = 0; i < list.size(); i++) {
             ((HtmlTextInput) list.get(i)).setValueAttribute("aaa");
         }
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
 
         assertTrue(-1 != page.asText().indexOf("form:bd1: 'aaa' must be a signed decimal number."));
-        assertTrue(-1 != page.asText().indexOf("form:bd1: 'aaa' must be a signed decimal number consisting of zero or more digits, that may be followed by a decimal point and fraction. Example: 198.23"));
+        assertTrue(-1 != page.asText().indexOf(
+                "form:bd1: 'aaa' must be a signed decimal number consisting of zero or more digits, that may be followed by a decimal point and fraction. Example: 198.23"));
         assertTrue(-1 != page.asText().indexOf("BigDecimal2: 'aaa' must be a signed decimal number."));
-        assertTrue(-1 != page.asText().indexOf("BigDecimal2: 'aaa' must be a signed decimal number consisting of zero or more digits, that may be followed by a decimal point and fraction. Example: 198.23"));
+        assertTrue(-1 != page.asText().indexOf(
+                "BigDecimal2: 'aaa' must be a signed decimal number consisting of zero or more digits, that may be followed by a decimal point and fraction. Example: 198.23"));
         assertTrue(-1 != page.asText().indexOf("form:bi1: 'aaa' must be a number consisting of one or more digits."));
         assertTrue(-1 != page.asText().indexOf("form:bi1: 'aaa' must be a number consisting of one or more digits. Example: 9876"));
         assertTrue(-1 != page.asText().indexOf("BigInteger2: 'aaa' must be a number consisting of one or more digits."));
@@ -132,18 +130,22 @@ public class Converter2ITCase extends HtmlUnitFacesITCase {
         assertTrue(-1 != page.asText().indexOf("DateTime2: 'aaa' could not be understood as a date and time."));
         assertTrue(-1 != page.asText().indexOf("DateTime2: 'aaa' could not be understood as a date and time. Example:"));
         assertTrue(-1 != page.asText().indexOf("form:double1: 'aaa' must be a number consisting of one or more digits."));
-        assertTrue(-1 != page.asText().indexOf("form:double1: 'aaa' must be a number between 4.9E-324 and 1.7976931348623157E308 Example: 1999999"));
+        assertTrue(-1 != page.asText()
+                .indexOf("form:double1: 'aaa' must be a number between 4.9E-324 and 1.7976931348623157E308 Example: 1999999"));
         assertTrue(-1 != page.asText().indexOf("Double2: 'aaa' must be a number consisting of one or more digits."));
-        assertTrue(-1 != page.asText().indexOf("Double2: 'aaa' must be a number between 4.9E-324 and 1.7976931348623157E308 Example: 1999999"));
+        assertTrue(-1 != page.asText()
+                .indexOf("Double2: 'aaa' must be a number between 4.9E-324 and 1.7976931348623157E308 Example: 1999999"));
         assertTrue(-1 != page.asText().indexOf("form:float1: 'aaa' must be a number between 1.4E-45 and 3.4028235E38 Example: 2000000000"));
         assertTrue(-1 != page.asText().indexOf("Float2: 'aaa' must be a number consisting of one or more digits."));
         assertTrue(-1 != page.asText().indexOf("Float2: 'aaa' must be a number between 1.4E-45 and 3.4028235E38 Example: 2000000000"));
         assertTrue(-1 != page.asText().indexOf("form:integer1: 'aaa' must be a number between -2147483648 and 2147483647 Example: 9346"));
         assertTrue(-1 != page.asText().indexOf("Integer2: 'aaa' must be a number consisting of one or more digits. "));
         assertTrue(-1 != page.asText().indexOf("Integer2: 'aaa' must be a number between -2147483648 and 2147483647 Example: 9346"));
-        assertTrue(-1 != page.asText().indexOf("form:long1: 'aaa' must be a number between -9223372036854775808 to 9223372036854775807 Example: 98765432"));
+        assertTrue(-1 != page.asText()
+                .indexOf("form:long1: 'aaa' must be a number between -9223372036854775808 to 9223372036854775807 Example: 98765432"));
         assertTrue(-1 != page.asText().indexOf("Long2: 'aaa' must be a number consisting of one or more digits. "));
-        assertTrue(-1 != page.asText().indexOf("Long2: 'aaa' must be a number between -9223372036854775808 to 9223372036854775807 Example: 98765432"));
+        assertTrue(-1 != page.asText()
+                .indexOf("Long2: 'aaa' must be a number between -9223372036854775808 to 9223372036854775807 Example: 98765432"));
         assertTrue(-1 != page.asText().indexOf("form:number1: 'aaa' could not be understood as a currency value."));
         assertTrue(-1 != page.asText().indexOf("form:number1: 'aaa' could not be understood as a currency value. Example: $99.99"));
         assertTrue(-1 != page.asText().indexOf("Number2: 'aaa' could not be understood as a currency value."));
@@ -170,64 +172,58 @@ public class Converter2ITCase extends HtmlUnitFacesITCase {
         List list;
 
         // Case 0, invalid data in both text fields
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlTextInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlTextInput.class);
         for (int i = 0; i < list.size(); i++) {
             ((HtmlTextInput) list.get(i)).setValueAttribute("aoeuoeuoe");
         }
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
 
-        assertTrue(-1 != page.asText().indexOf("suit: 'aoeuoeuoe' must be convertible to an enum. suit: 'aoeuoeuoe' must be convertible to an enum from the enum that contains the constant 'aoeuoeuoe'."));
-        assertTrue(-1 != page.asText().indexOf("color: 'aoeuoeuoe' must be convertible to an enum. color: 'aoeuoeuoe' must be convertible to an enum from the enum that contains the constant 'aoeuoeuoe'."));
+        assertTrue(-1 != page.asText().indexOf(
+                "suit: 'aoeuoeuoe' must be convertible to an enum. suit: 'aoeuoeuoe' must be convertible to an enum from the enum that contains the constant 'aoeuoeuoe'."));
+        assertTrue(-1 != page.asText().indexOf(
+                "color: 'aoeuoeuoe' must be convertible to an enum. color: 'aoeuoeuoe' must be convertible to an enum from the enum that contains the constant 'aoeuoeuoe'."));
 
         // Case 1, valid Suit, invalid color
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlTextInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlTextInput.class);
         ((HtmlTextInput) list.get(0)).setValueAttribute("Hearts");
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
 
         assertTrue(-1 == page.asText().indexOf("suit:"));
-        assertTrue(-1 != page.asText().indexOf("color: 'aoeuoeuoe' must be convertible to an enum. color: 'aoeuoeuoe' must be convertible to an enum from the enum that contains the constant 'aoeuoeuoe'."));
+        assertTrue(-1 != page.asText().indexOf(
+                "color: 'aoeuoeuoe' must be convertible to an enum. color: 'aoeuoeuoe' must be convertible to an enum from the enum that contains the constant 'aoeuoeuoe'."));
 
         // Case 2, valid Suit, valid color
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlTextInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlTextInput.class);
         ((HtmlTextInput) list.get(1)).setValueAttribute("Blue");
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
 
         assertTrue(-1 == page.asText().indexOf("suit:"));
         assertTrue(-1 == page.asText().indexOf("color:"));
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
 
         // Case 3, invalid suit, valid color
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlTextInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlTextInput.class);
         ((HtmlTextInput) list.get(0)).setValueAttribute("aoeuoeuoe");
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
 
-        assertTrue(-1 != page.asText().indexOf("suit: 'aoeuoeuoe' must be convertible to an enum. suit: 'aoeuoeuoe' must be convertible to an enum from the enum that contains the constant 'aoeuoeuoe'."));
+        assertTrue(-1 != page.asText().indexOf(
+                "suit: 'aoeuoeuoe' must be convertible to an enum. suit: 'aoeuoeuoe' must be convertible to an enum from the enum that contains the constant 'aoeuoeuoe'."));
         assertTrue(-1 == page.asText().indexOf("color:"));
-
 
     }
 }

@@ -17,25 +17,21 @@
 package com.sun.faces.systest;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.component.StateHolder;
 import javax.faces.event.AbortProcessingException;
 
 public class TestValueChangeListener01 implements ValueChangeListener {
-    
-    public TestValueChangeListener01() {}
 
-    public void processValueChange(ValueChangeEvent vce)
-        throws AbortProcessingException {
+    public TestValueChangeListener01() {
+    }
+
+    @Override
+    public void processValueChange(ValueChangeEvent vce) throws AbortProcessingException {
         FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(vce.getComponent().getClientId(context),
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                vce.getComponent().getId() + " value was changed", null));
-    } 
-    
-    
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, vce.getComponent().getId() + " value was changed", null));
+    }
+
 }

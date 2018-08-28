@@ -46,7 +46,7 @@ public class ViewExpiredExceptionIT {
         webClient.getOptions().setTimeout(0);
 
         HtmlPage page = (HtmlPage) webClient.getPage(webUrl + "faces/test.jsp");
-        
+
         if (!page.asXml().contains("Client-size State Saving: true")) {
             HtmlSubmitInput submit = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
             Thread.sleep(65000);

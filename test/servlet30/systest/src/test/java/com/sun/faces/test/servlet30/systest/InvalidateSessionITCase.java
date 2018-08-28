@@ -16,22 +16,21 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import javax.faces.component.NamingContainer;
 
-
 /**
- * <p>Test Case for JSP Interoperability.</p>
+ * <p>
+ * Test Case for JSP Interoperability.
+ * </p>
  */
 
 public class InvalidateSessionITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -46,14 +45,13 @@ public class InvalidateSessionITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -62,16 +60,15 @@ public class InvalidateSessionITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(InvalidateSessionITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
     // ------------------------------------------------- Individual Test Methods
-
 
     public void testInvalidateSession() throws Exception {
         HtmlForm form;
@@ -82,15 +79,11 @@ public class InvalidateSessionITCase extends HtmlUnitFacesITCase {
 
         page = getPage("/faces/session-invalidator.jsp");
         form = getFormById(page, "form");
-        submit = (HtmlSubmitInput)
-                form.getInputByName("form" + NamingContainer.SEPARATOR_CHAR +
-                        "button1");
+        submit = (HtmlSubmitInput) form.getInputByName("form" + NamingContainer.SEPARATOR_CHAR + "button1");
 
         // press button1
         page = (HtmlPage) submit.click();
-        assertEquals("Test with action that invalidates a session.",
-                page.getTitleText());
+        assertEquals("Test with action that invalidates a session.", page.getTitleText());
     }
-
 
 }

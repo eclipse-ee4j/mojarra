@@ -22,14 +22,13 @@ import javax.faces.convert.Converter;
 
 public class TestBeanConverter implements Converter {
 
-        public Object getAsObject(FacesContext context, UIComponent component, String
-value) {
-                return new TestBean2(Integer.valueOf(value.substring(0, value.indexOf(","))),
-value.substring(value.indexOf(",")+1));
-        }
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+        return new TestBean2(Integer.valueOf(value.substring(0, value.indexOf(","))), value.substring(value.indexOf(",") + 1));
+    }
 
-        public String getAsString(FacesContext context, UIComponent component, Object
-value) {
-                return ((TestBean2)value).id+","+((TestBean2)value).name;
-        }
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) {
+        return ((TestBean2) value).id + "," + ((TestBean2) value).name;
+    }
 }

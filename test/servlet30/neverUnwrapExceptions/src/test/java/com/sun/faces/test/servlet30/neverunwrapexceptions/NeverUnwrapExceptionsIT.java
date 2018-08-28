@@ -46,8 +46,7 @@ public class NeverUnwrapExceptionsIT {
         webClient.close();
     }
 
-    @JsfTest(value = JsfVersion.JSF_2_2_0_M02,
-            excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JsfVersion.JSF_2_2_0_M02, excludes = { WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
     @Test
     public void testNeverUnwrapExceptions() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);

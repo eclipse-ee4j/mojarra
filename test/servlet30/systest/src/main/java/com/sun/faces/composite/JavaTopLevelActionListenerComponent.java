@@ -23,8 +23,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 
 @FacesComponent(value = "javaTopLevelActionListenerComponent")
-public class JavaTopLevelActionListenerComponent extends UINamingContainer
-      implements ActionListener {
+public class JavaTopLevelActionListenerComponent extends UINamingContainer implements ActionListener {
 
     private String item = "Value hard coded in Java source file";
 
@@ -32,8 +31,8 @@ public class JavaTopLevelActionListenerComponent extends UINamingContainer
         return item;
     }
 
-    public void processAction(ActionEvent event)
-          throws AbortProcessingException {
+    @Override
+    public void processAction(ActionEvent event) throws AbortProcessingException {
         item = "Action was processed successfully";
     }
 

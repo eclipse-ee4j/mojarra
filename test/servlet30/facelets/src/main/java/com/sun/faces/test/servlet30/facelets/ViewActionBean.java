@@ -17,19 +17,22 @@
 package com.sun.faces.test.servlet30.facelets;
 
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+
+import javax.enterprise.context.RequestScoped;
+import javax.faces.annotation.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
+import javax.inject.Inject;
+import javax.inject.Named;
 
+@Named
 @RequestScoped
-@ManagedBean
 public class ViewActionBean {
 
-    @ManagedProperty(value = "#{facesContext}")
+    @Inject
+    @ManagedProperty("#{facesContext}")
     private FacesContext context;
 
     public String action() {

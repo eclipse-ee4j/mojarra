@@ -25,7 +25,7 @@ public class CustomFlashFactory extends FlashFactory {
 
     public CustomFlashFactory() {
     }
-    
+
     public CustomFlashFactory(FlashFactory parent) {
         this.parent = parent;
     }
@@ -34,7 +34,7 @@ public class CustomFlashFactory extends FlashFactory {
     public Flash getFlash(boolean create) {
         return new CustomFlash(getWrapped().getFlash(create));
     }
-    
+
     @Override
     public FlashFactory getWrapped() {
         return parent;

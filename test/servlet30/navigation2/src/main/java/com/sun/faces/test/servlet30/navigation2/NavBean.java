@@ -24,7 +24,7 @@ public class NavBean {
 
     public NavBean() {
         integer.set(0);
-System.out.println("NAVBEAN SET 0");
+        System.out.println("NAVBEAN SET 0");
     }
 
     public int getIncrement() {

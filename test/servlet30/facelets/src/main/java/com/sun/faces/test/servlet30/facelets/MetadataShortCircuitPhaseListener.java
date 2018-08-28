@@ -16,13 +16,18 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
+import static javax.faces.event.PhaseId.ANY_PHASE;
+
 import java.util.Map;
+
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
 public class MetadataShortCircuitPhaseListener implements PhaseListener {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public void afterPhase(PhaseEvent event) {
@@ -47,6 +52,6 @@ public class MetadataShortCircuitPhaseListener implements PhaseListener {
 
     @Override
     public PhaseId getPhaseId() {
-        return PhaseId.ANY_PHASE;
+        return ANY_PHASE;
     }
 }

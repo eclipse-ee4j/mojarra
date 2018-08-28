@@ -16,24 +16,21 @@
 
 package com.sun.faces.systest.model;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.context.FacesContext;
-import javax.faces.application.FacesMessage;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 
-@ManagedBean
+@Named
 public class FunctionBean {
 
     public String getValidationResult() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         ExpressionFactory factory = ctx.getApplication().getExpressionFactory();
-        ValueExpression expr = factory.createValueExpression(ctx.getELContext(),
-                                                             "#{fn:contains('somestrvalue', 'str')}",
-                                                             Boolean.class);
+        ValueExpression expr = factory.createValueExpression(ctx.getELContext(), "#{fn:contains('somestrvalue', 'str')}", Boolean.class);
         Boolean result = (Boolean) expr.getValue(ctx.getELContext());
         return (result != null && result) ? "PASSED" : "FAILED";
-        
+
     }
 }

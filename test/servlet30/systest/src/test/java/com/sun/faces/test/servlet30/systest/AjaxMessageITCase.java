@@ -25,7 +25,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlUnorderedList;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 public class AjaxMessageITCase extends HtmlUnitFacesITCase {
 
     public AjaxMessageITCase(String name) {
@@ -35,10 +34,10 @@ public class AjaxMessageITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -47,18 +46,16 @@ public class AjaxMessageITCase extends HtmlUnitFacesITCase {
         return new TestSuite(AjaxMessageITCase.class);
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     public void testCommandButtonButton() throws Exception {
         getPage("/faces/ajax/ajaxMessage.xhtml");
-
 
         // Check that ids were rendered
         try {
@@ -83,29 +80,28 @@ public class AjaxMessageITCase extends HtmlUnitFacesITCase {
             lastpage.getHtmlElementById("testform3:msgs");
             fail("testform3:msgs rendered - not correct");
         } catch (Exception e) {
-            //  Success
+            // Success
         }
         try {
             lastpage.getHtmlElementById("testform3a:msgs");
             fail("testform3:msgs rendered - not correct");
         } catch (Exception e) {
-            //  Success
+            // Success
         }
         try {
             lastpage.getHtmlElementById("testform4:msg");
             fail("testform4:msg rendered - not correct");
         } catch (Exception e) {
-            //  Success
+            // Success
         }
 
         // Check initial state
-        checkTrue("testform1:in1","0");
-        checkTrue("testform1a:in1","0");
-        checkTrue("testform2:in1","0");
-        checkTrue("testform3:in1","0");
-        checkTrue("testform3a:in1","0");
-        checkTrue("testform4:in1","0");
-
+        checkTrue("testform1:in1", "0");
+        checkTrue("testform1a:in1", "0");
+        checkTrue("testform2:in1", "0");
+        checkTrue("testform3:in1", "0");
+        checkTrue("testform3a:in1", "0");
+        checkTrue("testform4:in1", "0");
 
         HtmlTextInput in1 = (HtmlTextInput) lastpage.getHtmlElementById("testform1:in1");
         in1.setText("1");
@@ -116,15 +112,14 @@ public class AjaxMessageITCase extends HtmlUnitFacesITCase {
         getClient().waitForBackgroundJavaScript(60000);
 
         // Check that the ajax request succeeds
-        checkTrue("testform1:in1","1");
+        checkTrue("testform1:in1", "1");
 
         // And that others weren't effected
-        checkTrue("testform1a:in1","0");
-        checkTrue("testform2:in1","0");
-        checkTrue("testform3:in1","0");
-        checkTrue("testform3a:in1","0");
-        checkTrue("testform4:in1","0");
-
+        checkTrue("testform1a:in1", "0");
+        checkTrue("testform2:in1", "0");
+        checkTrue("testform3:in1", "0");
+        checkTrue("testform3a:in1", "0");
+        checkTrue("testform4:in1", "0");
 
         in1 = (HtmlTextInput) lastpage.getHtmlElementById("testform1:in1");
         in1.setText("1a");
@@ -140,12 +135,11 @@ public class AjaxMessageITCase extends HtmlUnitFacesITCase {
         assertTrue("not equal to: testform1:in1: '1a' must be a number consisting of one or more digits. ",
                 node.asText().trim().equals("testform1:in1: '1a' must be a number consisting of one or more digits."));
 
+        checkTrue("testform1a:in1", "0");
+        checkTrue("testform2:in1", "0");
+        checkTrue("testform3:in1", "0");
+        checkTrue("testform3a:in1", "0");
+        checkTrue("testform4:in1", "0");
 
-        checkTrue("testform1a:in1","0");
-        checkTrue("testform2:in1","0");
-        checkTrue("testform3:in1","0");
-        checkTrue("testform3a:in1","0");
-        checkTrue("testform4:in1","0");
-        
     }
 }

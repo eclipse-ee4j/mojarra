@@ -26,7 +26,7 @@ import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.ListenerFor;
 import javax.faces.event.PostAddToViewEvent;
 
-@ListenerFor(systemEventClass=PostAddToViewEvent.class)
+@ListenerFor(systemEventClass = PostAddToViewEvent.class)
 @FacesComponent("PostAddTester")
 public class PostAddTester extends UIComponentBase implements ComponentSystemEventListener {
 
@@ -35,16 +35,12 @@ public class PostAddTester extends UIComponentBase implements ComponentSystemEve
         return "PostAddTester";
     }
 
-
-
+    @Override
     public void processEvent(ComponentSystemEvent cse) throws AbortProcessingException {
         UIComponent source = cse.getComponent();
         FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getRequestMap().put("1682message",
-                "source id: " + source.getId());
+        context.getExternalContext().getRequestMap().put("1682message", "source id: " + source.getId());
 
     }
-
-    
 
 }

@@ -27,8 +27,8 @@ import javax.faces.application.FacesMessage;
  */
 public class TestValueChangeListener implements ValueChangeListener {
 
-    public void processValueChange(ValueChangeEvent event)
-    throws AbortProcessingException {
+    @Override
+    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         String value = event.getOldValue() + "";

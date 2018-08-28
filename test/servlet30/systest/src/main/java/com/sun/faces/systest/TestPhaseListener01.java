@@ -25,21 +25,24 @@ import javax.faces.context.FacesContext;
 
 public class TestPhaseListener01 extends Object implements PhaseListener {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
     public void afterPhase(PhaseEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage("submit",
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                " after " + event.getPhaseId(), null));
-    }
-    
-    
-    public void beforePhase(PhaseEvent event) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage("submit",
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                " before " + event.getPhaseId(), null));
+        context.addMessage("submit", new FacesMessage(FacesMessage.SEVERITY_ERROR, " after " + event.getPhaseId(), null));
     }
 
+    @Override
+    public void beforePhase(PhaseEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage("submit", new FacesMessage(FacesMessage.SEVERITY_ERROR, " before " + event.getPhaseId(), null));
+    }
+
+    @Override
     public PhaseId getPhaseId() {
 
         return PhaseId.ANY_PHASE;

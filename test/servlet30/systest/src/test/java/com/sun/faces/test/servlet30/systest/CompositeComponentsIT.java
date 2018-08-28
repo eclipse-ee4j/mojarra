@@ -124,8 +124,7 @@ public class CompositeComponentsIT {
 
     /**
      * <p>
-     * Maps Validator to inputText within composite/validator1.xhtml using only
-     * the name attribute.
+     * Maps Validator to inputText within composite/validator1.xhtml using only the name attribute.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -134,27 +133,21 @@ public class CompositeComponentsIT {
     public void testValidator1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/attachedvalidator.xhtml");
-            validateValidatorMessagePresent(page,
-                "form:s1",
-                "form:validator1:input");
+            validateValidatorMessagePresent(page, "form:s1", "form:validator1:input");
         }
     }
 
-    private void validateValidatorMessagePresent(HtmlPage page, String commandId, String inputId)
-            throws Exception {
+    private void validateValidatorMessagePresent(HtmlPage page, String commandId, String inputId) throws Exception {
         page = pushButton(page, commandId);
         validateMessage(page, "Validator Invoked", inputId);
     }
 
-    private void validateMessage(HtmlPage page,
-            String messagePrefix,
-            String messageSuffix) {
+    private void validateMessage(HtmlPage page, String messagePrefix, String messageSuffix) {
 
         DomNodeList<HtmlElement> list = page.getBody().getElementsByTagName("ul");
         HtmlUnorderedList ulist = (HtmlUnorderedList) list.get(0);
@@ -194,8 +187,8 @@ public class CompositeComponentsIT {
     public void testMethodExpressionNesting() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
         if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/nesting08.xhtml");
@@ -207,7 +200,7 @@ public class CompositeComponentsIT {
         }
     }
 
-    //issue 1696
+    // issue 1696
     @Test
     public void testForNoNPE() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/composite/simpleCompositeComponentUsingPage.xhtml");
@@ -215,16 +208,16 @@ public class CompositeComponentsIT {
             HtmlSubmitInput element = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
             page = element.click();
             String pageAsText = page.asText();
-            assertTrue(pageAsText.contains("Unable to find matching navigation case with from-view-id " +
-                    "'/composite/simpleCompositeComponentUsingPage.xhtml' for action '#{hello.getNextAction}' " +
-                    "with outcome '/submit.xhtml'"));
+            assertTrue(pageAsText.contains("Unable to find matching navigation case with from-view-id "
+                    + "'/composite/simpleCompositeComponentUsingPage.xhtml' for action '#{hello.getNextAction}' "
+                    + "with outcome '/submit.xhtml'"));
         }
     }
 
     /**
      * <p>
-     *  Maps ActionListener to commandButton within composite/actionSource1.xhtml using
-     *   only the name attribute.
+     * Maps ActionListener to commandButton within composite/actionSource1.xhtml using only the name
+     * attribute.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -233,21 +226,19 @@ public class CompositeComponentsIT {
     public void testActionSource1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/actionsource.xhtml");
-            validateActionMessagePresent(page,
-                                     "form:actionsource1:command");
+            validateActionMessagePresent(page, "form:actionsource1:command");
         }
     }
 
     /**
      * <p>
-     *   Maps ActionListener to commandButton within composite/actionSource2.xhtml using
-     *   name and target attributes.
+     * Maps ActionListener to commandButton within composite/actionSource2.xhtml using name and target
+     * attributes.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -256,23 +247,19 @@ public class CompositeComponentsIT {
     public void testActionSource2() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/actionsource.xhtml");
-            validateActionMessagePresent(page,
-                                     "form:actionsource2:ac2");
+            validateActionMessagePresent(page, "form:actionsource2:ac2");
         }
     }
 
-
     /**
      * <p>
-     *  Maps ActionListener to a commandButton within a composite/actionSource1.xhtml
-     *   which is nested within composite/actionSource3.xhtml. Using the same ID
-     *   in the nesting.
+     * Maps ActionListener to a commandButton within a composite/actionSource1.xhtml which is nested
+     * within composite/actionSource3.xhtml. Using the same ID in the nesting.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -281,25 +268,21 @@ public class CompositeComponentsIT {
     public void testActionSource3() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/actionsource.xhtml");
-            validateActionMessagePresent(page,
-                                     "form:actionsource3:command:command");
+            validateActionMessagePresent(page, "form:actionsource3:command:command");
         }
     }
 
     /**
      * <p>
-     *  Ensure actionListeners are properly re-targeted when the
-     *  target of the actionListener is nested within another naming
-     *  container.  Note that the value of the 'for' attribute doesn't
-     *  mimic the NamingContainer hierarchy, that's handled by the
-     *  'targets' attribute within the composite:implementation section
-     *  of actionSource4.xhtml.
+     * Ensure actionListeners are properly re-targeted when the target of the actionListener is nested
+     * within another naming container. Note that the value of the 'for' attribute doesn't mimic the
+     * NamingContainer hierarchy, that's handled by the 'targets' attribute within the
+     * composite:implementation section of actionSource4.xhtml.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -308,14 +291,12 @@ public class CompositeComponentsIT {
     public void testActionSource4() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/actionsource.xhtml");
-            validateActionMessagePresent(page,
-                                     "form:actionsource4:naming:command");
+            validateActionMessagePresent(page, "form:actionsource4:naming:command");
         }
     }
 
@@ -326,8 +307,7 @@ public class CompositeComponentsIT {
 
     /**
      * <p>
-     *   Maps Validator to inputText within composite/validator2.xhtml using
-     *   name and target attributes.
+     * Maps Validator to inputText within composite/validator2.xhtml using name and target attributes.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -336,23 +316,18 @@ public class CompositeComponentsIT {
     public void testValidator2() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/attachedvalidator.xhtml");
-            validateValidatorMessagePresent(page,
-                                        "form2:s2",
-                                        "form2:validator2:it2");
+            validateValidatorMessagePresent(page, "form2:s2", "form2:validator2:it2");
         }
     }
 
-
     /**
      * <p>
-     *   Maps Validator to inputText within composite/validator2.xhtml using
-     *   name and target attributes.
+     * Maps Validator to inputText within composite/validator2.xhtml using name and target attributes.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -361,26 +336,21 @@ public class CompositeComponentsIT {
     public void testValidator3() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/attachedvalidator.xhtml");
-            validateValidatorMessagePresent(page,
-                                        "form3:s3",
-                                        "form3:validator3:input:input");
+            validateValidatorMessagePresent(page, "form3:s3", "form3:validator3:input:input");
         }
     }
 
     /**
      * <p>
-     *  Ensure validators are properly re-targeted when the
-     *  target of the validator is nested within another naming
-     *  container.  Note that the value of the 'for' attribute doesn't
-     *  mimic the NamingContainer hierarchy, that's handled by the
-     *  'targets' attribute within the composite:implementation section
-     *  of validator4.xhtml.
+     * Ensure validators are properly re-targeted when the target of the validator is nested within
+     * another naming container. Note that the value of the 'for' attribute doesn't mimic the
+     * NamingContainer hierarchy, that's handled by the 'targets' attribute within the
+     * composite:implementation section of validator4.xhtml.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -389,41 +359,33 @@ public class CompositeComponentsIT {
     public void testValidator4() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
             page = webClient.getPage(webUrl + "faces/composite/attachedvalidator.xhtml");
-            validateValidatorMessagePresent(page,
-                                        "form4:s4",
-                                        "form4:validator4:naming:input");
+            validateValidatorMessagePresent(page, "form4:s4", "form4:validator4:naming:input");
         }
     }
 
     /**
      * <p>
-     *  Maps Converter to inputText within composite/validator1.xhtml using
-     *   only the name attribute.
+     * Maps Converter to inputText within composite/validator1.xhtml using only the name attribute.
      * </p>
      *
      * <p>
-     *   Maps Converter to inputText within composite/validator2.xhtml using
-     *   name and target attributes.
+     * Maps Converter to inputText within composite/validator2.xhtml using name and target attributes.
      * </p>
      *
      * <p>
-     *   Maps Converter to inputText within composite/validator2.xhtml using
-     *   name and target attributes.
+     * Maps Converter to inputText within composite/validator2.xhtml using name and target attributes.
      * </p>
      *
      * <p>
-     *  Ensure validators are properly re-targeted when the
-     *  target of the validator is nested within another naming
-     *  container.  Note that the value of the 'for' attribute doesn't
-     *  mimic the NamingContainer hierarchy, that's handled by the
-     *  'targets' attribute within the composite:implementation section
-     *  of validator4.xhtml.
+     * Ensure validators are properly re-targeted when the target of the validator is nested within
+     * another naming container. Note that the value of the 'for' attribute doesn't mimic the
+     * NamingContainer hierarchy, that's handled by the 'targets' attribute within the
+     * composite:implementation section of validator4.xhtml.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -432,18 +394,13 @@ public class CompositeComponentsIT {
     public void testConverters() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/preflight.xhtml");
         /*
-         * When systest migrated this test was found not to be working on client side state saving
-         * and when serializing the server state.
+         * When systest migrated this test was found not to be working on client side state saving and when
+         * serializing the server state.
          */
-        if (!page.asXml().contains("State Saving Method: client") &&
-                !page.asXml().contains("Serializing Server State: true")) {
+        if (!page.asXml().contains("State Saving Method: client") && !page.asXml().contains("Serializing Server State: true")) {
 
-            String[] messageSuffixes = new String[] {
-                  "form:converter1:input",
-                  "form2:converter2:it2",
-                  "form3:converter3:input:input",
-                  "form4:converter4:naming:input"
-            };
+            String[] messageSuffixes = new String[] { "form:converter1:input", "form2:converter2:it2", "form3:converter3:input:input",
+                    "form4:converter4:naming:input" };
 
             page = webClient.getPage(webUrl + "faces/composite/attachedconverter.xhtml");
             validateConverterMessages(page, messageSuffixes);

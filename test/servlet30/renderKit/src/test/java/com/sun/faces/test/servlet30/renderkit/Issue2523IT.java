@@ -17,7 +17,6 @@
 package com.sun.faces.test.servlet30.renderkit;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.*;
 import static org.junit.Assert.*;

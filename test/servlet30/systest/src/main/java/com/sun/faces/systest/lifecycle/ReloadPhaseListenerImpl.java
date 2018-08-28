@@ -20,51 +20,51 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
-
 /**
- * <B>ReloadPhaseListener</B> is a class that looks for a Restore or Render
- * phase. If it finds that a phase has been entered other than a Restore or
- * Render, it sets a system property to false.
+ * <B>ReloadPhaseListener</B> is a class that looks for a Restore or Render phase. If it finds that
+ * a phase has been entered other than a Restore or Render, it sets a system property to false.
  *
- * This listener is used to determine whether a client refresh with no
- * request parameters or save state has occurred.
+ * This listener is used to determine whether a client refresh with no request parameters or save
+ * state has occurred.
  *
  */
 public class ReloadPhaseListenerImpl implements PhaseListener {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     PhaseId phaseId = null;
     String pageRefresh;
-
 
     public ReloadPhaseListenerImpl(PhaseId newPhaseId) {
         phaseId = newPhaseId;
         pageRefresh = "true";
     }
 
-
+    @Override
     public void afterPhase(PhaseEvent event) {
         System.setProperty("PageRefreshPhases", pageRefresh);
     }
 
-
+    @Override
     public void beforePhase(PhaseEvent event) {
         if (event.getPhaseId() == PhaseId.RESTORE_VIEW) {
-            //reset System property to true when starting phase processing
+            // reset System property to true when starting phase processing
             pageRefresh = "true";
             return;
         } else if (event.getPhaseId() == PhaseId.RENDER_RESPONSE) {
-            //no other phases should be called
+            // no other phases should be called
             return;
         }
 
-        //phase other than Restore or Render is called
+        // phase other than Restore or Render is called
         pageRefresh = "false";
     }
 
-
+    @Override
     public PhaseId getPhaseId() {
         return phaseId;
     }
 
 } // end of class ReloadPhaseListenerImpl
-

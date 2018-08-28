@@ -16,21 +16,19 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 /**
- * <p>Test Case for JSP Interoperability.</p>
+ * <p>
+ * Test Case for JSP Interoperability.
+ * </p>
  */
 
 public class JspIntegration2ITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -45,7 +43,6 @@ public class JspIntegration2ITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Return the tests included in this test suite.
      */
@@ -59,7 +56,5 @@ public class JspIntegration2ITCase extends HtmlUnitFacesITCase {
         HtmlPage page = getPage("/faces/jsp/6992760.jsp");
         assertTrue(page.asText().matches("(?s).*Message:\\s*class\\s*java.lang.String.*"));
     }
-
-
 
 }

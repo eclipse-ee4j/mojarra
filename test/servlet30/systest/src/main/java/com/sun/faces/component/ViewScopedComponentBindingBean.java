@@ -18,18 +18,17 @@ package com.sun.faces.component;
 
 import java.util.Map;
 import javax.faces.application.Application;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UICommand;
 import javax.faces.context.FacesContext;
 
-@ManagedBean(name="viewScopedBean")
+@Named("viewScopedBean")
 @ViewScoped
 public class ViewScopedComponentBindingBean {
-    
+
     private static final String REQUEST_KEY = "com.sun.faces.component.ViewScopedComponentBindingBeanKey";
-    
-    
+
     public ViewScopedComponentBindingBean() {
         Map<String, Object> requestMap = FacesContext.getCurrentInstance().getExternalContext().getRequestMap();
         StringBuilder sb = (StringBuilder) requestMap.get(REQUEST_KEY);
@@ -38,18 +37,18 @@ public class ViewScopedComponentBindingBean {
             requestMap.put(REQUEST_KEY, sb);
         }
         sb.append(" ctor called ");
-        
+
     }
-    
+
     public String getCtorMessage() {
         String result = "";
-        
+
         Map<String, Object> requestMap = FacesContext.getCurrentInstance().getExternalContext().getRequestMap();
         StringBuilder sb = (StringBuilder) requestMap.get(REQUEST_KEY);
         if (null != sb) {
             result = sb.toString();
         }
-        
+
         return result;
 
     }
@@ -60,7 +59,7 @@ public class ViewScopedComponentBindingBean {
         this.button = button;
     }
 
-    public UICommand getCommandButton () {
+    public UICommand getCommandButton() {
         if (null == button) {
             FacesContext context = FacesContext.getCurrentInstance();
             Application app = context.getApplication();

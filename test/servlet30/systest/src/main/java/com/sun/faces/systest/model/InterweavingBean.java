@@ -31,7 +31,6 @@ public class InterweavingBean {
         list.add("Value");
     }
 
-
     public UIData getTable() {
         return table;
     }
@@ -43,5 +42,5 @@ public class InterweavingBean {
     public List getItems() {
         return list;
     }
-    
+
 } // END InterweavingBean
