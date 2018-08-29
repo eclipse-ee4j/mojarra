@@ -30,45 +30,41 @@ import javax.el.ValueExpression;
 import javax.el.MethodExpression;
 import javax.el.ELContext;
 
-
 public class CustomDatatableBean {
 
     private HtmlDataTable table;
 
-        public List<String> getList() {
-            List<String> result = new ArrayList<String>();
-            result.add("abc");
-            result.add("def");
-            result.add("ghi");
-            return result;
-        }
+    public List<String> getList() {
+        List<String> result = new ArrayList<String>();
+        result.add("abc");
+        result.add("def");
+        result.add("ghi");
+        return result;
+    }
 
-        public UIComponent getTable() {
-            if (table == null) {
-                FacesContext context = FacesContext.getCurrentInstance();
-                Application app = context.getApplication();
-                ExpressionFactory factory = app.getExpressionFactory();
-                table = new HtmlDataTable();
-                table.setVar("p");
-                ELContext elContext = context.getELContext();
-                table.setValueExpression("value", factory.createValueExpression(
-                        elContext, "#{customDataTable.list}", Object.class));
-                HtmlColumn c1 = new HtmlColumn();
-                HtmlCommandLink l = new HtmlCommandLink();
-                MethodExpression expr = factory.createMethodExpression(elContext,
-                        "ok", String.class, new Class<?>[] {});
-                l.setActionExpression(expr);
-                ValueExpression source = factory.createValueExpression(elContext,
-                        "#{p}", String.class);
-                l.setValueExpression("value", source);
-                c1.getChildren().add(l);
-                table.getChildren().add(c1);
-            }
-            return table;
+    public UIComponent getTable() {
+        if (table == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Application app = context.getApplication();
+            ExpressionFactory factory = app.getExpressionFactory();
+            table = new HtmlDataTable();
+            table.setVar("p");
+            ELContext elContext = context.getELContext();
+            table.setValueExpression("value", factory.createValueExpression(elContext, "#{customDataTable.list}", Object.class));
+            HtmlColumn c1 = new HtmlColumn();
+            HtmlCommandLink l = new HtmlCommandLink();
+            MethodExpression expr = factory.createMethodExpression(elContext, "ok", String.class, new Class<?>[] {});
+            l.setActionExpression(expr);
+            ValueExpression source = factory.createValueExpression(elContext, "#{p}", String.class);
+            l.setValueExpression("value", source);
+            c1.getChildren().add(l);
+            table.getChildren().add(c1);
         }
+        return table;
+    }
 
-        public void setTable(UIComponent table) {
-            this.table = (HtmlDataTable) table;
-        }
-    
+    public void setTable(UIComponent table) {
+        this.table = (HtmlDataTable) table;
+    }
+
 }

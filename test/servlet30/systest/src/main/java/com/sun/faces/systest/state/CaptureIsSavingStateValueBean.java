@@ -18,14 +18,14 @@ package com.sun.faces.systest.state;
 
 import java.util.Map;
 import javax.faces.application.StateManager;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import static javax.faces.application.StateManager.IS_SAVING_STATE;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class CaptureIsSavingStateValueBean {
 
@@ -43,9 +43,7 @@ public class CaptureIsSavingStateValueBean {
             FacesContext context = FacesContext.getCurrentInstance();
             Map<Object, Object> contextAttrs = context.getAttributes();
             Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
-            sessionMap.put("afterMessage",
-                    null == contextAttrs.get(IS_SAVING_STATE) ? "no value" :
-                        contextAttrs.get(IS_SAVING_STATE));
+            sessionMap.put("afterMessage", null == contextAttrs.get(IS_SAVING_STATE) ? "no value" : contextAttrs.get(IS_SAVING_STATE));
         }
     }
 
@@ -54,9 +52,7 @@ public class CaptureIsSavingStateValueBean {
             FacesContext context = FacesContext.getCurrentInstance();
             Map<Object, Object> contextAttrs = context.getAttributes();
             Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
-            sessionMap.put("beforeMessage",
-                    null == contextAttrs.get(IS_SAVING_STATE) ? "no value" :
-                        contextAttrs.get(IS_SAVING_STATE));
+            sessionMap.put("beforeMessage", null == contextAttrs.get(IS_SAVING_STATE) ? "no value" : contextAttrs.get(IS_SAVING_STATE));
         }
     }
 

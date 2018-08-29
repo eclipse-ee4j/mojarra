@@ -16,54 +16,53 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.math.BigDecimal;
+import static java.lang.Boolean.TRUE;
+
 import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class DynamicValidatorBean {
 
-	private transient UIComponent parentContainer;
+    private transient UIComponent parentContainer;
 
-	private String value;
-        
-        private UIInput validatedInput;
+    private String value;
 
-	public UIComponent getParent() {
-		return this.parentContainer;
-	}
+    private UIInput validatedInput;
 
-	public void setParent(UIComponent container) {
-		this.parentContainer = container;
-	}
+    public UIComponent getParent() {
+        return this.parentContainer;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public void setParent(UIComponent container) {
+        this.parentContainer = container;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void add() {
-		FacesContext context = FacesContext.getCurrentInstance();
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-                Map<String,Object> appMap = context.getExternalContext().getApplicationMap();
-                appMap.put("javax.faces.private.BEANS_VALIDATION_AVAILABLE", Boolean.TRUE);
-                
-		Validator dynamicValidator = context.getApplication().createValidator(
-				"javax.faces.Required");
-		validatedInput = (UIInput) parentContainer
-				.findComponent("validatedInput");
-		validatedInput.addValidator(dynamicValidator);
+    public void add() {
+        FacesContext context = FacesContext.getCurrentInstance();
 
-	}
-        
+        Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
+        appMap.put("javax.faces.private.BEANS_VALIDATION_AVAILABLE", TRUE);
+
+        Validator<?> dynamicValidator = context.getApplication().createValidator("javax.faces.Required");
+        validatedInput = (UIInput) parentContainer.findComponent("validatedInput");
+        validatedInput.addValidator(dynamicValidator);
+
+    }
+
 }

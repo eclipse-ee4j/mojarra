@@ -16,20 +16,19 @@
 
 package com.sun.faces.systest.model;
 
-
 /**
- * <p>Test JavaBean for managed object creation facility.</p>
+ * <p>
+ * Test JavaBean for managed object creation facility.
+ * </p>
  */
 
 public class TestBeanSubclass extends AbstractTestBean {
 
     private String extraProperty = "Extra Property";
 
-
     public String getExtraProperty() {
         return this.extraProperty;
     }
-
 
     public void setExtraProperty(String extraProperty) {
         this.extraProperty = extraProperty;

@@ -19,37 +19,37 @@ package com.sun.faces.systest.lifecycle;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.context.FacesContext;
-import javax.faces.FacesException;
 import java.util.Iterator;
 
 public class RenderKitFactoryWrapper extends RenderKitFactory {
 
     public RenderKitFactoryWrapper() {
     }
-    
+
     private RenderKitFactory oldFactory = null;
-    
+
     public RenderKitFactoryWrapper(RenderKitFactory yourOldFactory) {
-	oldFactory = yourOldFactory;
-    }
-    
-    public void addRenderKit(String renderKitId,
-			     RenderKit renderKit) {
-	oldFactory.addRenderKit(renderKitId, renderKit);
+        oldFactory = yourOldFactory;
     }
 
+    @Override
+    public void addRenderKit(String renderKitId, RenderKit renderKit) {
+        oldFactory.addRenderKit(renderKitId, renderKit);
+    }
+
+    @Override
     public RenderKit getRenderKit(FacesContext context, String renderKitId) {
-	return oldFactory.getRenderKit(context, renderKitId);
+        return oldFactory.getRenderKit(context, renderKitId);
     }
 
+    @Override
     public Iterator getRenderKitIds() {
-	return oldFactory.getRenderKitIds();
+        return oldFactory.getRenderKitIds();
     }
 
+    @Override
     public String toString() {
-	return "RenderKitFactoryWrapper";
+        return "RenderKitFactoryWrapper";
     }
 
-
-    
 }

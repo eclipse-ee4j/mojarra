@@ -16,17 +16,19 @@
 
 package com.sun.faces.test.servlet30.listener;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
 
-@ManagedBean
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
+@Named
 @SessionScoped
+public class UserBean implements Serializable {
 
-public class UserBean {
+    private static final long serialVersionUID = 1L;
 
     public String login() {
-        return ("success");
+        return "success";
     }
 
 }
-

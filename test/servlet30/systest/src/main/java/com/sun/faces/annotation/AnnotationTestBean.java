@@ -16,7 +16,6 @@
 
 package com.sun.faces.annotation;
 
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,8 +36,6 @@ import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 
 import com.sun.faces.application.ApplicationAssociate;
-import javax.faces.FacesException;
-
 
 public class AnnotationTestBean {
 
@@ -49,15 +46,13 @@ public class AnnotationTestBean {
             testAnnotatedComponentsWebInfLib();
             return Boolean.TRUE.toString();
         } catch (Exception e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE,
-                                            "AnnotationTestBean validation failure!",
-                                            e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, "AnnotationTestBean validation failure!", e);
             return Boolean.FALSE.toString();
         }
     }
 
     private void testAnnotatedComponentsWebInfClasses() throws Exception {
-        
+
         String injectedString;
 
         FacesContext ctx = FacesContext.getCurrentInstance();
@@ -81,40 +76,29 @@ public class AnnotationTestBean {
         Set<String> defaultValidatorIds = app.getDefaultValidatorInfo().keySet();
         assertFalse(defaultValidatorIds.contains("AnnotatedValidator"));
 
-        /*****  JAVASERVERFACES-3266
-        v = app.createValidator("annotatedValidatorNoValue");
-        assertNotNull(v);
-        assertTrue(v instanceof AnnotatedValidatorNoValue);
-        defaultValidatorIds = app.getDefaultValidatorInfo().keySet();
-        assertFalse(defaultValidatorIds.contains("AnnotatedValidatorNoValue"));
-        String welcomeMessage = ((AnnotatedValidatorNoValue)v).getWelcomeMessage();
-        assertTrue(welcomeMessage.equals("AnnotatedValidatorNoValue"));
-        
-        boolean exceptionThrown = false;
-        v = null;
-        try {
-            v = app.createValidator("AnnotatedValidatorNoValue");
-        }
-        catch (FacesException fe) {
-            assertTrue(null == v);
-            exceptionThrown = true;
-        }
-        assertTrue(exceptionThrown);
+        /*****
+         * JAVASERVERFACES-3266 v = app.createValidator("annotatedValidatorNoValue"); assertNotNull(v);
+         * assertTrue(v instanceof AnnotatedValidatorNoValue); defaultValidatorIds =
+         * app.getDefaultValidatorInfo().keySet();
+         * assertFalse(defaultValidatorIds.contains("AnnotatedValidatorNoValue")); String welcomeMessage =
+         * ((AnnotatedValidatorNoValue)v).getWelcomeMessage();
+         * assertTrue(welcomeMessage.equals("AnnotatedValidatorNoValue"));
+         * 
+         * boolean exceptionThrown = false; v = null; try { v =
+         * app.createValidator("AnnotatedValidatorNoValue"); } catch (FacesException fe) { assertTrue(null
+         * == v); exceptionThrown = true; } assertTrue(exceptionThrown);
          ***/
-        
 
-        // AnnotatedValidatorDefault has isDefault set to true.  Make sure
+        // AnnotatedValidatorDefault has isDefault set to true. Make sure
         // it's present in the default validator info obtained above.
         assertTrue(defaultValidatorIds.contains("AnnotatedValidatorDefault"));
-        
+
         Behavior b = app.createBehavior("AnnotatedBehavior");
         assertNotNull(b);
         assertTrue(b instanceof AnnotatedBehavior);
 
-        RenderKitFactory rkf = (RenderKitFactory) FactoryFinder
-              .getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        RenderKit rk =
-              rkf.getRenderKit(ctx, RenderKitFactory.HTML_BASIC_RENDER_KIT);
+        RenderKitFactory rkf = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        RenderKit rk = rkf.getRenderKit(ctx, RenderKitFactory.HTML_BASIC_RENDER_KIT);
         assertNotNull(rk);
 
         Renderer r = rk.getRenderer("AnnotatedRenderer", "AnnotatedRenderer");
@@ -132,17 +116,13 @@ public class AnnotationTestBean {
 
         // custom scope
         ExpressionFactory factory = ctx.getApplication().getExpressionFactory();
-        ValueExpression ve = factory.createValueExpression(ctx.getELContext(),
-                                                           "#{customScopeAnnotatedBean.greeting}",
-                                                           String.class);
+        ValueExpression ve = factory.createValueExpression(ctx.getELContext(), "#{customScopeAnnotatedBean.greeting}", String.class);
         String greeting = (String) ve.getValue(ctx.getELContext());
         assertEquals("Hello", greeting);
         assertTrue(ctx.getExternalContext().getRequestMap().get("customScopeAnnotatedBean") instanceof CustomScopeAnnotatedBean);
 
         // validate inheritance
-        ve = factory.createValueExpression(ctx.getELContext(),
-                                           "#{baseBean}",
-                                           Object.class);
+        ve = factory.createValueExpression(ctx.getELContext(), "#{baseBean}", Object.class);
         BaseBeanImplementation impl = (BaseBeanImplementation) ve.getValue(ctx.getELContext());
         assertEquals(20, impl.getAge());
         assertEquals("Bill", impl.getName());
@@ -162,17 +142,14 @@ public class AnnotationTestBean {
         assertNotNull(cv);
         assertTrue(cv.getClass().getName().endsWith("AnnotatedConverter2"));
 
-
         Validator v = app.createValidator("AnnotatedValidator2");
         assertNotNull(v);
         assertTrue(v.getClass().getName().endsWith("AnnotatedValidator2"));
         Set<String> defaultValidatorIds = app.getDefaultValidatorInfo().keySet();
         assertFalse(defaultValidatorIds.contains("AnnotatedValidator2"));
 
-        RenderKitFactory rkf = (RenderKitFactory) FactoryFinder
-              .getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        RenderKit rk =
-              rkf.getRenderKit(ctx, RenderKitFactory.HTML_BASIC_RENDER_KIT);
+        RenderKitFactory rkf = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        RenderKit rk = rkf.getRenderKit(ctx, RenderKitFactory.HTML_BASIC_RENDER_KIT);
         assertNotNull(rk);
 
         Renderer r = rk.getRenderer("AnnotatedRenderer2", "AnnotatedRenderer2");
@@ -180,20 +157,17 @@ public class AnnotationTestBean {
         assertTrue(r.getClass().getName().endsWith("AnnotatedRenderer2"));
 
         // Test default naming logic
-        assertNotNull(ApplicationAssociate.getInstance(ctx.getExternalContext())
-              .getNamedEventManager().getNamedEvent("com.sun.faces.annotation.annotatedComponentSystem"));
+        assertNotNull(ApplicationAssociate.getInstance(ctx.getExternalContext()).getNamedEventManager()
+                .getNamedEvent("com.sun.faces.annotation.annotatedComponentSystem"));
         // Test short name
-        assertNotNull(ApplicationAssociate.getInstance(ctx.getExternalContext())
-              .getNamedEventManager().getNamedEvent("com.sun.faces.annotation.anotherAnnotatedComponentSystem"));
+        assertNotNull(ApplicationAssociate.getInstance(ctx.getExternalContext()).getNamedEventManager()
+                .getNamedEvent("com.sun.faces.annotation.anotherAnnotatedComponentSystem"));
         // Test FQCN
-        assertNotNull(ApplicationAssociate.getInstance(ctx.getExternalContext())
-              .getNamedEventManager().getNamedEvent(AnnotatedComponentSystemEvent.class.getName()));
-        assertNotNull(ApplicationAssociate.getInstance(ctx.getExternalContext())
-              .getNamedEventManager().getNamedEvent("explicitEventName"));
+        assertNotNull(ApplicationAssociate.getInstance(ctx.getExternalContext()).getNamedEventManager()
+                .getNamedEvent(AnnotatedComponentSystemEvent.class.getName()));
+        assertNotNull(ApplicationAssociate.getInstance(ctx.getExternalContext()).getNamedEventManager().getNamedEvent("explicitEventName"));
 
-        Object bean = ctx.getApplication().evaluateExpressionGet(ctx,
-                                                                 "#{annotatedBean4}",
-                                                                 Object.class);
+        Object bean = ctx.getApplication().evaluateExpressionGet(ctx, "#{annotatedBean4}", Object.class);
         assertNotNull(bean);
         assertEquals("com.sun.faces.annotation.AnnotatedBean4", bean.getClass().getName());
 
@@ -201,15 +175,11 @@ public class AnnotationTestBean {
         // annotated classes shouldn't be scanned/registered
 
         // faces-config is versioned at 2.0 and is marked metadata-complete
-        bean = ctx.getApplication().evaluateExpressionGet(ctx,
-                                                          "#{notFoundBean1}",
-                                                          Object.class);
+        bean = ctx.getApplication().evaluateExpressionGet(ctx, "#{notFoundBean1}", Object.class);
         assertTrue(bean == null);
 
         // faces-config is versioned at 1.2 which assumes metadata-complete
-        bean = ctx.getApplication().evaluateExpressionGet(ctx,
-                                                          "#{notFoundBean2}",
-                                                          Object.class);
+        bean = ctx.getApplication().evaluateExpressionGet(ctx, "#{notFoundBean2}", Object.class);
         assertTrue(bean == null);
 
     }

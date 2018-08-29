@@ -16,22 +16,18 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
-import com.gargoylesoftware.htmlunit.html.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import java.util.List;
-
-
 /**
- * <p>Test Case for JSP Interoperability.</p>
+ * <p>
+ * Test Case for JSP Interoperability.
+ * </p>
  */
 
 public class CommandLinkMultiFormITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -49,33 +45,32 @@ public class CommandLinkMultiFormITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
 
-
     /**
      * Return the tests included in this test suite.
+     * 
      * @return Tests included in suite
      */
     public static Test suite() {
         return (new TestSuite(CommandLinkMultiFormITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
     // ------------------------------------------------- Individual Test Methods
-
 
     public void testMultiForm() throws Exception {
 //        HtmlForm form1, form2;

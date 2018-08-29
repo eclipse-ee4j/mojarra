@@ -17,7 +17,9 @@
 package com.sun.faces.systest.model;
 
 /**
- * <p>Test JavaBean for CSRF application.</p>
+ * <p>
+ * Test JavaBean for CSRF application.
+ * </p>
  */
 public class CSRFBean {
 
@@ -28,11 +30,11 @@ public class CSRFBean {
 
     public String getAmount() {
         return amount;
-    } 
+    }
 
     public String getAccount() {
         return account;
-    } 
+    }
 
     public String getTransferAmount() {
         return transferAmount;
@@ -45,7 +47,7 @@ public class CSRFBean {
     public void setTransferAmount(String transferAmount) {
         this.transferAmount = transferAmount;
     }
-        
+
     public void setDestAccount(String destAccount) {
         this.destAccount = destAccount;
     }

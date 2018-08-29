@@ -18,36 +18,38 @@ package com.sun.faces.test.servlet30.flashBasic;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
 
-@ManagedBean(name="bean")
+import javax.faces.context.FacesContext;
+import javax.inject.Named;
+
+@Named
 public class Bean {
     private String text;
-    
+
     public String getText() {
         return text;
     }
-    
+
     public void setText(String text) {
         this.text = text;
     }
-    
-    public String nextpage (){
+
+    public String nextpage() {
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("bean", this);
         return "page2?faces-redirect=true";
     }
-    
+
     public String simulateServerRestart() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getApplicationMap().remove("csfcff");
         try {
-            Thread.currentThread().sleep(3000);
+            Thread.currentThread();
+            Thread.sleep(3000);
         } catch (InterruptedException ex) {
             Logger.getLogger(Bean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return null;
     }
-    
+
 }

@@ -30,8 +30,7 @@ public class CustomFacesContextFactory extends FacesContextFactory {
     }
 
     @Override
-    public FacesContext getFacesContext(Object context, Object request, Object response,
-                                        Lifecycle lifecycle) throws FacesException {
+    public FacesContext getFacesContext(Object context, Object request, Object response, Lifecycle lifecycle) throws FacesException {
         FacesContext parent = delegate.getFacesContext(context, request, response, lifecycle);
         CustomFacesContext customFacesContext = new CustomFacesContext(delegate.getFacesContext(context, request, response, lifecycle));
         return customFacesContext;

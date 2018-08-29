@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.resource; 
+package com.sun.faces.test.servlet30.resource;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -45,26 +45,27 @@ public class Issue2401IT {
         webClient.close();
     }
 
-
     // ------------------------------------------------------------ Test Methods
 
     @Test
     public void testResourceWithAndWithoutLibrary() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl+"faces/start.xhtml");
-        assertTrue(page.asText().contains("Resource created with library: /test-servlet30-resource/faces/javax.faces.resource/images/background.png?ln=css"));
-        assertTrue(page.asText().contains("Resource created without library: /test-servlet30-resource/faces/javax.faces.resource/css/images/background.png"));
+        HtmlPage page = webClient.getPage(webUrl + "faces/start.xhtml");
+        assertTrue(page.asText().contains(
+                "Resource created with library: /test-servlet30-resource/faces/javax.faces.resource/images/background.png?ln=css"));
+        assertTrue(page.asText().contains(
+                "Resource created without library: /test-servlet30-resource/faces/javax.faces.resource/css/images/background.png"));
     }
-    
-    @Test 
+
+    @Test
     public void testResourceVersions() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue2565.xhtml");
-                
+
         HtmlElement element = page.getHtmlElementById("trailingUnderscore");
         assertEquals("SUCCESS", element.getTextContent());
 
         element = page.getHtmlElementById("noUnderscore");
         assertEquals("SUCCESS", element.getTextContent());
-    
+
         element = page.getHtmlElementById("leadingUnderscore");
         assertEquals("SUCCESS", element.getTextContent());
 

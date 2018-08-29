@@ -16,18 +16,18 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean(name="setForEachBean")
+@Named
 @RequestScoped
 public class SetForEachBean {
-
     public Set<String> getSet() {
-        return new LinkedHashSet<String>(Arrays.asList("foo", "bar", "baz"));
+        return new LinkedHashSet<String>(asList("foo", "bar", "baz"));
     }
 }

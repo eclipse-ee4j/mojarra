@@ -17,13 +17,13 @@
 package com.sun.faces.systest.model.ajax;
 
 import javax.faces.FacesException;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialResponseWriter;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class InvalidXMLBean {
 
@@ -35,11 +35,10 @@ public class InvalidXMLBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.startUpdate("javax.faces.ViewBody");
-                writer.startElement("body",null);
+                writer.startElement("body", null);
                 writer.startElement("h2", null);
                 writer.writeAttribute("id", "h2", "id");
                 writer.write("Bread & Butter");

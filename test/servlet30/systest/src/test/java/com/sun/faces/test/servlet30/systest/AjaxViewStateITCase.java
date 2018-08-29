@@ -19,7 +19,6 @@ package com.sun.faces.test.servlet30.systest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.*;
-import static junit.framework.TestCase.assertTrue;
 
 public class AjaxViewStateITCase extends HtmlUnitFacesITCase {
 
@@ -30,10 +29,10 @@ public class AjaxViewStateITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -42,25 +41,24 @@ public class AjaxViewStateITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxViewStateITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxViewState() throws Exception {
         getPage("/faces/ajax/ajaxViewState.xhtml");
         System.out.println("Start ajax view state test");
 
         // Check ajax checkbox
-        HtmlCheckBoxInput checked = ((HtmlCheckBoxInput)lastpage.getHtmlElementById("checkbox1"));
-        lastpage = (HtmlPage)checked.click();
+        HtmlCheckBoxInput checked = ((HtmlCheckBoxInput) lastpage.getHtmlElementById("checkbox1"));
+        lastpage = (HtmlPage) checked.click();
 
         System.out.println(getText("checkedvalue1"));
-        checkTrue("checkedvalue1","true");
+        checkTrue("checkedvalue1", "true");
 
         HtmlSubmitInput button = (HtmlSubmitInput) lastpage.getHtmlElementById("viewState");
         button.click();

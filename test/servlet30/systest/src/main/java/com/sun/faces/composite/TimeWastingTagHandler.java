@@ -22,13 +22,13 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
-
 public class TimeWastingTagHandler extends TagHandler {
 
     public TimeWastingTagHandler(TagConfig config) {
         super(config);
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
         try {

@@ -126,14 +126,6 @@
     <managed-bean-scope>request</managed-bean-scope>
   </managed-bean>
 
-  <!-- Managed Bean #1, No Property Overrides -->
-  <managed-bean>
-    <managed-bean-name>test1</managed-bean-name>
-    <managed-bean-class>
-      com.sun.faces.systest.model.TestBean
-    </managed-bean-class>
-    <managed-bean-scope>request</managed-bean-scope>
-  </managed-bean>
     
     <managed-bean>
         <managed-bean-name>interweaving08</managed-bean-name>

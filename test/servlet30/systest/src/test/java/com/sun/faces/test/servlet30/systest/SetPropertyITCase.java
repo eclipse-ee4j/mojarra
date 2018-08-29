@@ -23,17 +23,16 @@ import junit.framework.TestSuite;
 
 import java.util.ArrayList;
 import java.util.List;
-import static junit.framework.TestCase.assertTrue;
-
 
 /**
- * <p>Test Case for f:setProperty.</p>
+ * <p>
+ * Test Case for f:setProperty.
+ * </p>
  */
 
 public class SetPropertyITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -48,14 +47,13 @@ public class SetPropertyITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -64,10 +62,10 @@ public class SetPropertyITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(SetPropertyITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -79,35 +77,27 @@ public class SetPropertyITCase extends HtmlUnitFacesITCase {
 
         // press the button to increment the property
         assertTrue(page.asText().contains("Integer Property is: 123."));
-        assertTrue(page
-                .asText().contains("String Property is: This is a String property."));
-        List buttons = getAllElementsOfGivenClass(page, new ArrayList(),
-                HtmlSubmitInput.class);
+        assertTrue(page.asText().contains("String Property is: This is a String property."));
+        List buttons = getAllElementsOfGivenClass(page, new ArrayList(), HtmlSubmitInput.class);
         page = (HtmlPage) ((HtmlSubmitInput) buttons.get(0)).click();
         assertTrue(page.asText().contains("Integer Property is: 100."));
-        assertTrue(page
-                .asText().contains("String Property is: This is a String property."));
+        assertTrue(page.asText().contains("String Property is: This is a String property."));
 
-        buttons = getAllElementsOfGivenClass(page, new ArrayList(),
-                HtmlSubmitInput.class);
+        buttons = getAllElementsOfGivenClass(page, new ArrayList(), HtmlSubmitInput.class);
         page = (HtmlPage) ((HtmlSubmitInput) buttons.get(1)).click();
         assertTrue(page.asText().contains("Integer Property is: 100."));
         assertTrue(page.asText().contains("String Property is: 100."));
 
-        buttons = getAllElementsOfGivenClass(page, new ArrayList(),
-                HtmlSubmitInput.class);
+        buttons = getAllElementsOfGivenClass(page, new ArrayList(), HtmlSubmitInput.class);
         page = (HtmlPage) ((HtmlSubmitInput) buttons.get(2)).click();
         assertTrue(page.asText().contains("Integer Property is: 100."));
         assertTrue(page.asText().contains("String Property is: String."));
 
-        buttons = getAllElementsOfGivenClass(page, new ArrayList(),
-                HtmlSubmitInput.class);
+        buttons = getAllElementsOfGivenClass(page, new ArrayList(), HtmlSubmitInput.class);
         page = (HtmlPage) ((HtmlSubmitInput) buttons.get(3)).click();
         assertTrue(page.asText().contains("Integer Property is: 100."));
-        assertTrue(page
-                .asText().contains("String Property is: com.sun.faces.context.FacesContextImpl"));
+        assertTrue(page.asText().contains("String Property is: com.sun.faces.context.FacesContextImpl"));
 
     }
-
 
 }

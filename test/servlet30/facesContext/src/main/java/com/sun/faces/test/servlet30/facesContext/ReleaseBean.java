@@ -20,8 +20,8 @@ import com.sun.faces.context.ExternalContextImpl;
 import com.sun.faces.context.FacesContextImpl;
 import com.sun.faces.lifecycle.LifecycleImpl;
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -33,16 +33,19 @@ import static org.junit.Assert.*;
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@ManagedBean(name = "releaseBean")
+@Named
 @RequestScoped
 public class ReleaseBean implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     public String getReleaseResult1() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
             LifecycleImpl lifecycle = new LifecycleImpl();
@@ -51,7 +54,6 @@ public class ReleaseBean implements Serializable {
             assertTrue(!context.isReleased());
             context.release();
             assertTrue(context.isReleased());
-
 
         } catch (NullPointerException exception) {
             exception.printStackTrace();
@@ -64,9 +66,7 @@ public class ReleaseBean implements Serializable {
     public String getReleaseResult2() {
         try {
             FacesContext currentContext = FacesContext.getCurrentInstance();
-            ExternalContextImpl externalContext =
-                    new ExternalContextImpl(
-                    (ServletContext) currentContext.getExternalContext().getContext(),
+            ExternalContextImpl externalContext = new ExternalContextImpl((ServletContext) currentContext.getExternalContext().getContext(),
                     (HttpServletRequest) currentContext.getExternalContext().getRequest(),
                     (HttpServletResponse) currentContext.getExternalContext().getResponse());
             LifecycleImpl lifecycle = new LifecycleImpl();

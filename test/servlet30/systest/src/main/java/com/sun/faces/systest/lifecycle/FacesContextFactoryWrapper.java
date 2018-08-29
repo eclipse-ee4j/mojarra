@@ -25,22 +25,21 @@ public class FacesContextFactoryWrapper extends FacesContextFactory {
 
     public FacesContextFactoryWrapper() {
     }
-    
+
     private FacesContextFactory oldFactory = null;
-    
+
     public FacesContextFactoryWrapper(FacesContextFactory yourOldFactory) {
-	oldFactory = yourOldFactory;
-    }
-    
-    public FacesContext getFacesContext(Object context, Object request,
-					Object response, 
-					Lifecycle lifecycle) throws FacesException {
-	return oldFactory.getFacesContext(context, request, response, 
-					  lifecycle);
+        oldFactory = yourOldFactory;
     }
 
+    @Override
+    public FacesContext getFacesContext(Object context, Object request, Object response, Lifecycle lifecycle) throws FacesException {
+        return oldFactory.getFacesContext(context, request, response, lifecycle);
+    }
+
+    @Override
     public String toString() {
-	return "FacesContextFactoryWrapper";
+        return "FacesContextFactoryWrapper";
     }
 
 }

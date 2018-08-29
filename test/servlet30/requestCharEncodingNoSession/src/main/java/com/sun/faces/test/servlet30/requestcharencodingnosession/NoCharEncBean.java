@@ -17,12 +17,12 @@
 package com.sun.faces.test.servlet30.requestcharencodingnosession;
 
 import javax.faces.application.ViewHandler;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-@ManagedBean
+@Named
 @ViewScoped
 public class NoCharEncBean {
 
@@ -46,8 +46,8 @@ public class NoCharEncBean {
         if (extContext.getRequestParameterMap().containsKey("invalidateSession")) {
             extContext.invalidateSession();
         }
-        
+
         return result;
     }
-    
+
 }

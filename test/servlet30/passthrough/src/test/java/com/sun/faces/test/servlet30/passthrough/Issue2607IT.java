@@ -17,17 +17,15 @@
 package com.sun.faces.test.servlet30.passthrough;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlFieldSet;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Issue2607IT {
-    
+
     /**
      * Stores the web URL.
      */
@@ -68,7 +66,7 @@ public class Issue2607IT {
         assertTrue(xml.contains("id=\"" + "base1" + "\""));
         assertTrue(xml.contains("href=\"" + "http://foobar.com" + "\""));
         assertTrue(xml.contains("target=\"" + "_blank" + "\""));
-    } 
+    }
 
     // This tests the following markup:
     // <command jsf:id="command1" onclick="doThat()"/>
@@ -81,7 +79,7 @@ public class Issue2607IT {
         assertTrue(xml.contains("<command"));
         assertTrue(xml.contains("id=\"" + "command1" + "\""));
         assertTrue(xml.contains("onclick=\"" + "doThat()" + "\""));
-    } 
+    }
 
     // This tests the following markup:
     // <meta jsf:id="meta1" charset="UTF-8"/>
@@ -94,6 +92,6 @@ public class Issue2607IT {
         assertTrue(xml.contains("<meta"));
         assertTrue(xml.contains("id=\"" + "meta1" + "\""));
         assertTrue(xml.contains("charset=\"" + "UTF-8" + "\""));
-    } 
+    }
 
 }

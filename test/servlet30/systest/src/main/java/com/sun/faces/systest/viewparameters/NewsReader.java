@@ -21,12 +21,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 
-
-@RequestScoped @ManagedBean
+@RequestScoped
+@Named
 public class NewsReader {
 
     private FacesContext facesContext;
@@ -57,7 +57,7 @@ public class NewsReader {
             facesContext.addMessage(null, new FacesMessage("The headline you requested does not exist."));
         }
 
-        //facesContext.getFlash().setKeepMessages(true); // only needed if navigation case is a redirect
+        // facesContext.getFlash().setKeepMessages(true); // only needed if navigation case is a redirect
         facesContext.getApplication().getNavigationHandler().handleNavigation(facesContext, null, "/viewParameters/page01");
         // we would like the following instead
         // facesContext.fireNavigation("home");

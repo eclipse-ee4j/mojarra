@@ -16,23 +16,19 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
-
 /**
- * <p>Test Case for JSP Interoperability.</p>
+ * <p>
+ * Test Case for JSP Interoperability.
+ * </p>
  */
 
 public class JspIntegrationITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -47,14 +43,13 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -63,10 +58,10 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(JspIntegrationITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
@@ -113,7 +108,7 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
 //                "[A]{ } [Z]");
     }
 
-    // NOTE:  testJspIncludeXX tests are analogous to testJstlImportXX
+    // NOTE: testJspIncludeXX tests are analogous to testJstlImportXX
     // tests, but exercise <jsp:include> instead of <c:import>.
 
     // Test importing JSPs with literal text
@@ -130,7 +125,6 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     // Test importing JSPs with simple components
     public void testJspInclude02() throws Exception {
 
@@ -143,7 +137,6 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
         checkJspInclude02();
 
     }
-
 
     // Test selectively importing JSPs with simple components (explicit ids)
     public void testJspInclude03() throws Exception {
@@ -187,7 +180,6 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
 //        checkJspInclude03c();
 
     }
-
 
     // Test selectively importing JSPs with simple components (naming container)
     public void testJspInclude04() throws Exception {
@@ -239,150 +231,114 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
     private void checkJspDynamic00() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-dynamic-00.jsp");
-        assertEquals("Correct page title",
-                "jsp-dynamic-00", page.getTitleText());
+        assertEquals("Correct page title", "jsp-dynamic-00", page.getTitleText());
 
     }
-
 
     // Check the result of requesting the specified page
-    private void checkJspDynamic01(String query, String result)
-            throws Exception {
+    private void checkJspDynamic01(String query, String result) throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-dynamic-01.jsp" + query);
-        assertEquals("Correct page title",
-                "jsp-dynamic-01", page.getTitleText());
+        assertEquals("Correct page title", "jsp-dynamic-01", page.getTitleText());
         String bodyText = getBodyText(page);
-        assertTrue("Correct body element",
-                -1 != bodyText.indexOf(result));
+        assertTrue("Correct body element", -1 != bodyText.indexOf(result));
 
     }
-
 
     // Check the reset page to force a new component tree
     private void checkJspInclude00() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-00.jsp");
-        assertEquals("Correct page title",
-                "jsp-include-00", page.getTitleText());
+        assertEquals("Correct page title", "jsp-include-00", page.getTitleText());
 
     }
-
 
     // Check imports with literal text
     private void checkJspInclude01() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-01.jsp");
-        assertEquals("Correct page title",
-                "jsp-include-01", page.getTitleText());
-        assertEquals("Correct body element",
-                "[A] [B] [C] [D] [E]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-01", page.getTitleText());
+        assertEquals("Correct body element", "[A] [B] [C] [D] [E]", getBodyText(page));
 
     }
-
 
     // Check imports with simple components
     private void checkJspInclude02() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-02.jsp");
-        assertEquals("Correct page title",
-                "jsp-include-02", page.getTitleText());
-        assertEquals("Correct body element",
-                "[A][B][C][D][E]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-02", page.getTitleText());
+        assertEquals("Correct body element", "[A][B][C][D][E]", getBodyText(page));
 
     }
 
     private void checkJspInclude03() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp");
-        assertEquals("Correct page title",
-                "jsp-include-03", page.getTitleText());
-        assertEquals("Correct body element",
-                "[1][2c][2x][3]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-03", page.getTitleText());
+        assertEquals("Correct body element", "[1][2c][2x][3]", getBodyText(page));
 
     }
-
 
     // Check selective imports with simple components (explicit ids)
     private void checkJspInclude03a() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=a&javax.faces.ViewState=j_id2:j_id3");
-        assertEquals("Correct page title",
-                "jsp-include-03", page.getTitleText());
-        assertEquals("Correct body element",
-                "[1][2a][2z][3]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-03", page.getTitleText());
+        assertEquals("Correct body element", "[1][2a][2z][3]", getBodyText(page));
 
     }
-
 
     // Check selective imports with simple components (explicit ids)
     private void checkJspInclude03b() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=b&javax.faces.ViewState=j_id2:j_id3");
-        assertEquals("Correct page title",
-                "jsp-include-03", page.getTitleText());
-        assertEquals("Correct body element",
-                "[1][2b][2y][3]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-03", page.getTitleText());
+        assertEquals("Correct body element", "[1][2b][2y][3]", getBodyText(page));
 
     }
-
 
     // Check selective imports with simple components (explicit ids)
     private void checkJspInclude03c() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=c&javax.faces.ViewState=j_id2:j_id3");
-        assertEquals("Correct page title",
-                "jsp-include-03", page.getTitleText());
-        assertEquals("Correct body element",
-                "[1][2c][2x][3]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-03", page.getTitleText());
+        assertEquals("Correct body element", "[1][2c][2x][3]", getBodyText(page));
 
     }
 
     private void checkJspInclude04() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp");
-        assertEquals("Correct page title",
-                "jsp-include-04", page.getTitleText());
-        assertEquals("Correct body element",
-                "[1][2c][2x][3]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-04", page.getTitleText());
+        assertEquals("Correct body element", "[1][2c][2x][3]", getBodyText(page));
 
     }
-
 
     // Check selective imports with simple components (naming container)
     private void checkJspInclude04a() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=a&javax.faces.ViewState=j_id2:j_id3");
-        assertEquals("Correct page title",
-                "jsp-include-04", page.getTitleText());
-        assertEquals("Correct body element",
-                "[1][2a][2z][3]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-04", page.getTitleText());
+        assertEquals("Correct body element", "[1][2a][2z][3]", getBodyText(page));
 
     }
-
 
     // Check selective imports with simple components (naming container)
     private void checkJspInclude04b() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=b&javax.faces.ViewState=j_id2:j_id3");
-        assertEquals("Correct page title",
-                "jsp-include-04", page.getTitleText());
-        assertEquals("Correct body element",
-                "[1][2b][2y][3]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-04", page.getTitleText());
+        assertEquals("Correct body element", "[1][2b][2y][3]", getBodyText(page));
 
     }
-
 
     // Check selective imports with simple components (naming container)
     private void checkJspInclude04c() throws Exception {
 
         HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=c&javax.faces.ViewState=j_id2:j_id3");
-        assertEquals("Correct page title",
-                "jsp-include-04", page.getTitleText());
-        assertEquals("Correct body element",
-                "[1][2c][2x][3]", getBodyText(page));
+        assertEquals("Correct page title", "jsp-include-04", page.getTitleText());
+        assertEquals("Correct body element", "[1][2c][2x][3]", getBodyText(page));
 
     }
-
 
 }

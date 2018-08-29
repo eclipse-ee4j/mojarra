@@ -16,35 +16,30 @@
 
 package com.sun.faces.systest;
 
-
 import javax.faces.webapp.UIComponentTag;
 
-
 /**
- * <p><code>UIComponentTag</code> for a <code>UINamingContainer</code>
- * component.</p>
+ * <p>
+ * <code>UIComponentTag</code> for a <code>UINamingContainer</code> component.
+ * </p>
  */
 
 public class NamingTag extends UIComponentTag {
 
-
     // -------------------------------------------------------------- Attributes
-
 
     // ---------------------------------------------------------- Public Methods
 
-
+    @Override
     public String getComponentType() {
         return ("NamingContainer");
     }
 
-
+    @Override
     public String getRendererType() {
         return (null);
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
 }

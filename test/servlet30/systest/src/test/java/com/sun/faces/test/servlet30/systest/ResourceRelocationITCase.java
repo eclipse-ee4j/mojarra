@@ -37,11 +37,9 @@ import junit.framework.TestSuite;
  */
 public class ResourceRelocationITCase extends HtmlUnitFacesITCase {
 
-
     public ResourceRelocationITCase() {
         this("ResourceRelocationTestCase");
     }
-
 
     public ResourceRelocationITCase(String name) {
         super(name);
@@ -51,21 +49,18 @@ public class ResourceRelocationITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(ResourceRelocationITCase.class));
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testResourceRelocation() throws Exception {
 
-        resourceRelocationTest("/faces/resourcerelocation.xhtml",true);
-        resourceRelocationTest("/faces/resourcerelocation2.xhtml",false);
-        resourceRelocationTest("/faces/resourcerelocation3.xhtml",false);
-        resourceRelocationTest("/faces/resourcerelocation4.xhtml",true);
+        resourceRelocationTest("/faces/resourcerelocation.xhtml", true);
+        resourceRelocationTest("/faces/resourcerelocation2.xhtml", false);
+        resourceRelocationTest("/faces/resourcerelocation3.xhtml", false);
+        resourceRelocationTest("/faces/resourcerelocation4.xhtml", true);
 
     }
 
     // --------------------------------------------------------- Private Methods
-
 
     private void resourceRelocationTest(String urlfrag, boolean scriptfirst) throws Exception {
 
@@ -81,7 +76,7 @@ public class ResourceRelocationITCase extends HtmlUnitFacesITCase {
         }
 
         // for this request, the script and stylesheet will be in the head
-        HtmlPage page = getPage(urlfrag+"?location=head");
+        HtmlPage page = getPage(urlfrag + "?location=head");
         List<HtmlHead> headList = new ArrayList<HtmlHead>(1);
         getAllElementsOfGivenClass(page, headList, HtmlHead.class);
         assertTrue(headList.size() == 1);
@@ -109,7 +104,7 @@ public class ResourceRelocationITCase extends HtmlUnitFacesITCase {
 
         // for this request, the stylesheet will be in the head, and the script
         // will be the last child of body
-        page = getPage(urlfrag+"?location=body");
+        page = getPage(urlfrag + "?location=body");
         headList.clear();
         getAllElementsOfGivenClass(page, headList, HtmlHead.class);
         assertTrue(headList.size() == 1);
@@ -137,7 +132,7 @@ public class ResourceRelocationITCase extends HtmlUnitFacesITCase {
 
         // for this request, the stylesheet will be in the head, and the
         // script will be the last child of the form
-        page = getPage(urlfrag+"?location=form");
+        page = getPage(urlfrag + "?location=form");
         headList.clear();
         getAllElementsOfGivenClass(page, headList, HtmlHead.class);
         assertTrue(headList.size() == 1);

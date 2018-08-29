@@ -19,18 +19,23 @@ package com.sun.faces.systest.model;
 import java.io.Serializable;
 
 public class TestBean2 implements Serializable {
-        public int id;
-        public String name;
-        public TestBean2(int id, String name) {
-                this.id = id;
-                this.name = name;
-        }
+    /**
+    * 
+    */
+    private static final long serialVersionUID = 1L;
+    public int id;
+    public String name;
 
-        @Override
-        public boolean equals(Object obj) {
-                if(obj instanceof TestBean2) {
-                        return ((TestBean2)obj).id == this.id;
-                }
-                return false;
+    public TestBean2(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TestBean2) {
+            return ((TestBean2) obj).id == this.id;
         }
+        return false;
+    }
 }

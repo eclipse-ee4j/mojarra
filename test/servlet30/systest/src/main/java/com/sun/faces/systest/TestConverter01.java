@@ -23,25 +23,24 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
 /**
- * <p>Test implementation of {@link Converter}.</p>
+ * <p>
+ * Test implementation of {@link Converter}.
+ * </p>
  */
 public class TestConverter01 implements Converter {
 
-    public Object getAsObject(FacesContext context, UIComponent component,
-                              String newValue) throws ConverterException {
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String newValue) throws ConverterException {
         context.addMessage(component.getClientId(context),
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                component.getId() + " was converted to Object", null));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, component.getId() + " was converted to Object", null));
 
         return newValue;
     }
 
-
-    public String getAsString(FacesContext context, UIComponent component,
-                              Object value) throws ConverterException {
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
         context.addMessage(component.getClientId(context),
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                component.getId() + " was converted to String", null));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, component.getId() + " was converted to String", null));
 
         return (value.toString());
     }

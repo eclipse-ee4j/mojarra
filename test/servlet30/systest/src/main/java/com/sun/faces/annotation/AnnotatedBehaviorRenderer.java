@@ -20,11 +20,13 @@ import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.FacesBehaviorRenderer;
 
 /**
- * <p class="changed_added_2_0"></p>
+ * <p class="changed_added_2_0">
+ * </p>
+ * 
  * @author asmirnov@exadel.com
  *
  */
-@FacesBehaviorRenderer(rendererType="AnnotatedBehaviorRenderer")
+@FacesBehaviorRenderer(rendererType = "AnnotatedBehaviorRenderer")
 public class AnnotatedBehaviorRenderer extends ClientBehaviorRenderer {
 
 }

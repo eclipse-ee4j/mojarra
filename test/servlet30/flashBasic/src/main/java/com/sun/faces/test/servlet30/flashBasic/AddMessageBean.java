@@ -17,15 +17,14 @@
 package com.sun.faces.test.servlet30.flashBasic;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.context.FacesContext;
 
-@ManagedBean
+@Named
 public class AddMessageBean {
 
     public String addMessage() {
-        FacesContext.getCurrentInstance()
-              .addMessage(null, new FacesMessage("This is a global message"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("This is a global message"));
         return "messagePage?faces-redirect=true";
     }
 

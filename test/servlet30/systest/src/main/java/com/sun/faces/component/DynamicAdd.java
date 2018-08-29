@@ -30,10 +30,10 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent(value="dynamicAdd")
+@FacesComponent(value = "dynamicAdd")
 public class DynamicAdd extends UINamingContainer implements SystemEventListener {
-  
-  private boolean facetRequired = true;
+
+    private boolean facetRequired = true;
 
     public boolean isFacetRequired() {
         return facetRequired;
@@ -47,13 +47,13 @@ public class DynamicAdd extends UINamingContainer implements SystemEventListener
         FacesContext ctx = FacesContext.getCurrentInstance();
         Map<String, Object> viewMap = ctx.getViewRoot().getViewMap();
         // increment the counter
-        viewMap.put("dynamicAdd", null == viewMap.get("dynamicAdd") ?
-            (Integer) 1 : ((Integer)viewMap.get("dynamicAdd")) + 1);
+        viewMap.put("dynamicAdd", null == viewMap.get("dynamicAdd") ? (Integer) 1 : ((Integer) viewMap.get("dynamicAdd")) + 1);
         this.setId("dynamic" + viewMap.get("dynamicAdd").toString());
 
-        ctx.getViewRoot().subscribeToViewEvent(PreRenderViewEvent.class, (SystemEventListener) this);
+        ctx.getViewRoot().subscribeToViewEvent(PreRenderViewEvent.class, this);
     }
 
+    @Override
     public void processEvent(SystemEvent se) throws AbortProcessingException {
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent source = (UIComponent) se.getSource();
@@ -69,22 +69,23 @@ public class DynamicAdd extends UINamingContainer implements SystemEventListener
         }
     }
 
+    @Override
     public boolean isListenerForSource(Object o) {
         return o instanceof UIViewRoot;
     }
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-      // conditionally create dynamic component facets
-      if (facetRequired && null == getFacet("dynamicAddFacet")) {
-        getFacets().put("dynamicAddFacet", new HtmlPanelGroup());
-      }
+        // conditionally create dynamic component facets
+        if (facetRequired && null == getFacet("dynamicAddFacet")) {
+            getFacets().put("dynamicAddFacet", new HtmlPanelGroup());
+        }
         Map<Object, Object> contextMap = context.getAttributes();
         ResponseWriter writer = context.getResponseWriter();
         writer.startElement("ul", this);
         writer.startElement("p", this);
         writer.write("Dynamic Component " + this.getId());
-        
+
     }
 
     @Override
@@ -98,15 +99,13 @@ public class DynamicAdd extends UINamingContainer implements SystemEventListener
 
     @Override
     public void processDecodes(FacesContext context) {
-      // conditionally recreate the dynamic component facet before process decode
-      if (facetRequired && null == getFacet("dynamicAddFacet")) {
-        getFacets().put("dynamicAddFacet", new HtmlPanelGroup());
-      }
-      
-      // TODO Auto-generated method stub
-      super.processDecodes(context);
+        // conditionally recreate the dynamic component facet before process decode
+        if (facetRequired && null == getFacet("dynamicAddFacet")) {
+            getFacets().put("dynamicAddFacet", new HtmlPanelGroup());
+        }
+
+        // TODO Auto-generated method stub
+        super.processDecodes(context);
     }
-
-
 
 }

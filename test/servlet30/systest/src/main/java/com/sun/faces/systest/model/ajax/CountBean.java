@@ -16,14 +16,19 @@
 
 package com.sun.faces.systest.model.ajax;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.event.ActionEvent;
 
-
-@ManagedBean(name="ajaxcount")
+@Named("ajaxcount")
 @SessionScoped
-public class CountBean {
+public class CountBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Integer count1 = 0;
     private Integer count2 = 0;
     private Integer count3 = 0;
@@ -58,4 +63,3 @@ public class CountBean {
         return count5++;
     }
 }
-

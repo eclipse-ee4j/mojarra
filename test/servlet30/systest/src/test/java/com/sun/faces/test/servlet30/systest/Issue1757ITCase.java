@@ -16,40 +16,33 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
-
 
 /**
  * Test cases for Facelets functionality
  */
 public class Issue1757ITCase extends HtmlUnitFacesITCase {
 
-
     // --------------------------------------------------------------- Test Init
-
 
     public Issue1757ITCase() {
         this("Issue1757TestCase");
     }
 
-
     public Issue1757ITCase(String name) {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -58,27 +51,27 @@ public class Issue1757ITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(Issue1757ITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testDynamicComponents() throws Exception {
         HtmlPage page = getPage("/faces/facelets/issue1757-dynamic-components.xhtml");
         String text = page.asText();
-        assertTrue(text.matches("(?s).*TestComponent::encodeBegin\\s*Manually added child\\s*Dynamically added child\\s*TestComponent::encodeEnd.*"));
+        assertTrue(text.matches(
+                "(?s).*TestComponent::encodeBegin\\s*Manually added child\\s*Dynamically added child\\s*TestComponent::encodeEnd.*"));
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
         text = page.asText();
-        assertTrue(text.matches("(?s).*TestComponent::encodeBegin\\s*Manually added child\\s*Dynamically added child\\s*TestComponent::encodeEnd.*"));
-        
+        assertTrue(text.matches(
+                "(?s).*TestComponent::encodeBegin\\s*Manually added child\\s*Dynamically added child\\s*TestComponent::encodeEnd.*"));
+
     }
 
 }

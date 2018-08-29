@@ -18,17 +18,21 @@ package com.sun.faces.test.servlet30.renderkit;
 
 import java.io.Serializable;
 import java.util.Iterator;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.FactoryFinder;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
-@ManagedBean(name = "issue2065Bean")
+@Named
 @RequestScoped
 public class Issue2065Bean implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private RenderKit renderkit;
 
     public Issue2065Bean() {
@@ -36,7 +40,8 @@ public class Issue2065Bean implements Serializable {
         RenderKitFactory renderFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         renderkit = renderFactory.getRenderKit(facesContext, facesContext.getViewRoot().getRenderKitId());
         Issue2065ClientBehaviorRenderer clientBehaviorRenderer = new Issue2065ClientBehaviorRenderer();
-        renderkit.addClientBehaviorRenderer("com.sun.faces.test.agnostic.renderKit.basic.Issue2065ClientBehaviorRenderer", clientBehaviorRenderer);
+        renderkit.addClientBehaviorRenderer("com.sun.faces.test.agnostic.renderKit.basic.Issue2065ClientBehaviorRenderer",
+                clientBehaviorRenderer);
     }
 
     public String getClientBehaviorRendererTypes() {

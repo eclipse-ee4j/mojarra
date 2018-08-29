@@ -23,15 +23,11 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
-
-
-
 public class PageDirectiveHandler extends TagHandler {
 
     private final TagAttribute contentType;
 
     private final TagAttribute encoding;
-
 
     public PageDirectiveHandler(TagConfig config) {
         super(config);
@@ -39,6 +35,7 @@ public class PageDirectiveHandler extends TagHandler {
         this.encoding = this.getAttribute("pageEncoding");
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent uic) throws IOException {
         if (this.contentType != null) {
             String v = this.contentType.getValue(ctx);
@@ -50,7 +47,5 @@ public class PageDirectiveHandler extends TagHandler {
         }
         nextHandler.apply(ctx, uic);
     }
-
-
 
 }

@@ -23,16 +23,16 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import java.util.List;
-import static junit.framework.TestCase.assertTrue;
 
 /**
- * <p>Test that invalid values don't cause valueChangeEvents to occur.</p>
+ * <p>
+ * Test that invalid values don't cause valueChangeEvents to occur.
+ * </p>
  */
 
 public class ValidatorITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -47,7 +47,6 @@ public class ValidatorITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Return the tests included in this test suite.
      */
@@ -59,8 +58,7 @@ public class ValidatorITCase extends HtmlUnitFacesITCase {
     public void testValidator() throws Exception {
         HtmlPage page = getPage("/faces/validator02.jsp");
         List list;
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlTextInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlTextInput.class);
 
         // set the initial value to be 1 for all input fields
         ((HtmlTextInput) list.get(0)).setValueAttribute("1111111111");
@@ -71,11 +69,10 @@ public class ValidatorITCase extends HtmlUnitFacesITCase {
         ((HtmlTextInput) list.get(5)).setValueAttribute("1111111111");
         ((HtmlTextInput) list.get(6)).setValueAttribute("1111111111");
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
-	String text = page.asText();
+        String text = page.asText();
         assertTrue(text.contains("text1 was validated"));
         assertTrue(text.contains("text2 was validated"));
         assertTrue(text.contains("text3 was validated"));
@@ -89,16 +86,14 @@ public class ValidatorITCase extends HtmlUnitFacesITCase {
     public void testValidatorMessages() throws Exception {
         HtmlPage page = getPage("/faces/validator03.jsp");
         List list;
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlTextInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlTextInput.class);
 
         // set the initial value to be "1" for all input fields
         for (int i = 0; i < list.size(); i++) {
             ((HtmlTextInput) list.get(i)).setValueAttribute("1");
         }
 
-        list = getAllElementsOfGivenClass(page, null,
-                HtmlSubmitInput.class);
+        list = getAllElementsOfGivenClass(page, null, HtmlSubmitInput.class);
         HtmlSubmitInput button = (HtmlSubmitInput) list.get(0);
         page = (HtmlPage) button.click();
         String text = page.asXml();

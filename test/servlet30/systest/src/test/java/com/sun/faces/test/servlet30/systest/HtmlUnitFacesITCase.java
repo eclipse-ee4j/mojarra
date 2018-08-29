@@ -18,8 +18,6 @@
  * $Id: HtmlUnitFacesTestCase.java,v 1.16 2006/07/31 23:05:00 rlubke Exp $
  */
 
-
-
 package com.sun.faces.test.servlet30.systest;
 
 import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_45;
@@ -55,15 +53,15 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-
 /**
- * <p>Abstract base class for test cases utilizing HtmlUnit.</p>
+ * <p>
+ * Abstract base class for test cases utilizing HtmlUnit.
+ * </p>
  */
 
 public abstract class HtmlUnitFacesITCase extends TestCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -74,7 +72,6 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         super(name);
         this.testName = name;
     }
-
 
     // ------------------------------------------------------ Instance Variables
 
@@ -94,7 +91,6 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
     // The current session identifier
     protected String sessionId = null;
 
-
     // The WebClient instance for this test case
     protected WebClient client = null;
 
@@ -107,8 +103,12 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
     // The last requested page
     protected HtmlPage lastpage = null;
 
-    // Possible containers - these should be the uppercase values of the possible container values in build.properties
-    protected enum Container { GLASSFISH, GLASSFISHV3PRELUDE, GLASSFISHV3, GLASSFISHV3_1, GLASSFISHV3_1_NO_CLUSTER, TOMCAT6, TOMCAT7, WLS_10_3_4_NO_CLUSTER, WLS_12_1_1_NO_CLUSTER }
+    // Possible containers - these should be the uppercase values of the possible container values in
+    // build.properties
+    protected enum Container {
+        GLASSFISH, GLASSFISHV3PRELUDE, GLASSFISHV3, GLASSFISHV3_1, GLASSFISHV3_1_NO_CLUSTER, TOMCAT6, TOMCAT7, WLS_10_3_4_NO_CLUSTER,
+        WLS_12_1_1_NO_CLUSTER
+    }
 
     // Per-container exclusions
     protected Map<Container, Vector<String>> exclusions = null;
@@ -122,9 +122,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
 
     protected boolean isVirtualServer = false;
 
-
     // ---------------------------------------------------- Overall Test Methods
-
 
     /**
      * Set up instance variables required by this test case.
@@ -137,9 +135,8 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         isVirtualServer = Boolean.parseBoolean(System.getProperty("virtual-server"));
 
         String instanceNumbersStr = System.getProperty("instance.numbers");
-        if (null != instanceNumbersStr && 0 < instanceNumbersStr.length() &&
-	    !("${instance.numbers}".equals(instanceNumbersStr))) {
-            String [] strs = instanceNumbersStr.split(",");
+        if (null != instanceNumbersStr && 0 < instanceNumbersStr.length() && !("${instance.numbers}".equals(instanceNumbersStr))) {
+            String[] strs = instanceNumbersStr.split(",");
             List<Integer> instNums = getInstanceNumbers();
             for (String cur : strs) {
                 try {
@@ -166,13 +163,13 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         } else {
             browserVersion = INTERNET_EXPLORER;
         }
-        
+
         String proxyHost = System.getProperty("proxyHost");
         String proxyPort = System.getProperty("proxyPort");
 
         client = new WebClient(browserVersion);
         cmanager = client.getCookieManager();
-        
+
         // Add an ajax controller to synchronize all ajax calls
         client.setAjaxController(new NicelyResynchronizingAjaxController());
         domainURL = getURL("/");
@@ -197,10 +194,9 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         if (instanceNumbers == null) {
             instanceNumbers = new ArrayList<Integer>();
         }
-        
+
         return instanceNumbers;
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -209,10 +205,10 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         return new TestSuite(HtmlUnitFacesITCase.class);
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
 
         client = null;
@@ -221,16 +217,15 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
 
     }
 
-
     // ------------------------------------------------- Individual Test Methods
-
 
     // --------------------------------------------------------- Private Methods
 
-
     /**
-     * <p>Extract and return the result of calling <code>asText()</code>
-     * on the <code>&lt;body&gt;</code> element of this page.</p>
+     * <p>
+     * Extract and return the result of calling <code>asText()</code> on the <code>&lt;body&gt;</code>
+     * element of this page.
+     * </p>
      *
      * @param page The <code>HtmlPage</code> to process
      */
@@ -249,29 +244,29 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
 
     }
 
-
     /**
-     * <p>Return the page for the specified context-relative path,
-     * maintaining session affinity if <code>sessionId</code> is not null.</p>
+     * <p>
+     * Return the page for the specified context-relative path, maintaining session affinity if
+     * <code>sessionId</code> is not null.
+     * </p>
      *
      * @param path Context-relative part of the path
      */
     protected HtmlPage getPage(String path) throws Exception {
 
-        /* Cookies seem to be maintained automatically now
-        if (sessionId != null) {
-            //            System.err.println("Joining   session " + sessionId);
-            client.addRequestHeader("Cookie", "JSESSIONID=" + sessionId);
-        }
-        */
-        lastpage  = (HtmlPage) client.getPage(getURL(path));
+        /*
+         * Cookies seem to be maintained automatically now if (sessionId != null) { //
+         * System.err.println("Joining   session " + sessionId); client.addRequestHeader("Cookie",
+         * "JSESSIONID=" + sessionId); }
+         */
+        lastpage = (HtmlPage) client.getPage(getURL(path));
         if (sessionId == null) {
             parseSession(lastpage);
         }
         return lastpage;
 
     }
-    
+
     protected HtmlPage getPageWithRetry(String path, int retries) throws Exception {
         int i = 0;
         boolean success = false;
@@ -281,22 +276,20 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
                 success = true;
             } catch (FailingHttpStatusCodeException fhse) {
                 Thread.sleep(3000);
-            }                
+            }
         } while (!success && ++i < retries);
-        
-        
+
         return lastpage;
     }
 
     protected HtmlPage getPageSticky(String path) throws Exception {
 
-        /* Cookies seem to be maintained automatically now
-        if (sessionId != null) {
-            //            System.err.println("Joining   session " + sessionId);
-            client.addRequestHeader("Cookie", "JSESSIONID=" + sessionId);
-        }
-        */
-        lastpage  = (HtmlPage) client.getPage(getURLSticky(path));
+        /*
+         * Cookies seem to be maintained automatically now if (sessionId != null) { //
+         * System.err.println("Joining   session " + sessionId); client.addRequestHeader("Cookie",
+         * "JSESSIONID=" + sessionId); }
+         */
+        lastpage = (HtmlPage) client.getPage(getURLSticky(path));
         if (sessionId == null) {
             parseSession(lastpage);
         }
@@ -306,13 +299,12 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
 
     protected HtmlPage getPageFromInstanceN(String path, int instanceNumber) throws Exception {
 
-        /* Cookies seem to be maintained automatically now
-        if (sessionId != null) {
-            //            System.err.println("Joining   session " + sessionId);
-            client.addRequestHeader("Cookie", "JSESSIONID=" + sessionId);
-        }
-        */
-        lastpage  = (HtmlPage) client.getPage(getURLFromInstanceN(path, instanceNumber));
+        /*
+         * Cookies seem to be maintained automatically now if (sessionId != null) { //
+         * System.err.println("Joining   session " + sessionId); client.addRequestHeader("Cookie",
+         * "JSESSIONID=" + sessionId); }
+         */
+        lastpage = (HtmlPage) client.getPage(getURLFromInstanceN(path, instanceNumber));
         if (sessionId == null) {
             parseSession(lastpage);
         }
@@ -328,8 +320,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
 
         int result = port;
         List<Integer> instNums = getInstanceNumbers();
-        if (!instNums.isEmpty() && 
-            (!forceNoCluster || isVirtualServer)) {
+        if (!instNums.isEmpty() && (!forceNoCluster || isVirtualServer)) {
             int instanceNumberIndex = rand.nextInt(instNums.size());
             try {
                 String num = instNums.get(instanceNumberIndex).toString() + port;
@@ -342,7 +333,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         }
 
         if (isVirtualServer) {
-            virtualServerPort = (Integer) result;
+            virtualServerPort = result;
         }
 
         return result;
@@ -379,11 +370,11 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         }
         return result;
     }
+
     /**
-     * The same as {@link #getPage(String)} except this uses the specified
-     * WebClient.
+     * The same as {@link #getPage(String)} except this uses the specified WebClient.
      *
-     * @param path   context-relative path
+     * @param path context-relative path
      * @param client WebClient
      * @return an HtmlPage instance
      * @throws Exception if an error occurs
@@ -396,10 +387,10 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         return lastpage;
     }
 
-
     /**
-     * <p>Return a <code>URL</code> for the specified context-relative
-     * path.</p>
+     * <p>
+     * Return a <code>URL</code> for the specified context-relative path.
+     * </p>
      *
      * @param path Context relative path
      */
@@ -433,7 +424,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         sb.append(contextPath);
         sb.append(path);
         if (log.isLoggable(Level.INFO)) {
-           log.info(sb.toString());
+            log.info(sb.toString());
         }
         return (new URL(sb.toString()));
 
@@ -451,22 +442,22 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         sb.append(contextPath);
         sb.append(path);
         if (log.isLoggable(Level.INFO)) {
-           log.info(sb.toString());
+            log.info(sb.toString());
         }
         return (new URL(sb.toString()));
 
     }
 
-
     /**
-     * <p>Parse and save any session identifier from the specified page.</p>
+     * <p>
+     * Parse and save any session identifier from the specified page.
+     * </p>
      *
      * @param page The current page
      */
     protected void parseSession(HtmlPage page) {
 
-        String value =
-                page.getWebResponse().getResponseHeaderValue("Set-Cookie");
+        String value = page.getWebResponse().getResponseHeaderValue("Set-Cookie");
         if (value == null) {
             return;
         }
@@ -480,10 +471,9 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
             value = value.substring(0, semi);
         }
         sessionId = value;
-        //        System.err.println("Beginning session " + sessionId);
+        // System.err.println("Beginning session " + sessionId);
 
     }
-
 
     protected boolean clearAllCookies() {
         cmanager.clearCookies();
@@ -504,24 +494,26 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         return (null);
 
     }
-    
+
     protected <T> List<T> getAllElementsOfGivenClass(HtmlPage root, Class<T> matchClass) {
         return getAllElementsOfGivenClass(root.getDocumentElement(), null, matchClass);
     }
 
-
     /**
-     * <p>Added to compensate for changes in the HtmlUnit 1.4 API.</p>
+     * <p>
+     * Added to compensate for changes in the HtmlUnit 1.4 API.
+     * </p>
      *
-     * @see #getAllElementsOfGivenClass(com.gargoylesoftware.htmlunit.html.HtmlElement, java.util.List, Class)
+     * @see #getAllElementsOfGivenClass(com.gargoylesoftware.htmlunit.html.HtmlElement, java.util.List,
+     * Class)
      */
     protected List getAllElementsOfGivenClass(HtmlPage root, List list, Class matchClass) {
         return getAllElementsOfGivenClass(root.getDocumentElement(), list, matchClass);
     }
 
     /**
-     * Depth first search from root to find all children that are
-     * instances of HtmlInput.  Add them to the list.
+     * Depth first search from root to find all children that are instances of HtmlInput. Add them to
+     * the list.
      */
     protected List getAllElementsOfGivenClass(HtmlElement root, List list, Class matchClass) {
         if (null == root) {
@@ -543,8 +535,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         return list;
     }
 
-    protected HtmlInput getInputContainingGivenId(HtmlPage root,
-                                                  String id) {
+    protected HtmlInput getInputContainingGivenId(HtmlPage root, String id) {
         List list;
         int i;
         HtmlInput result = null;
@@ -561,9 +552,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
 
     }
 
-    protected HtmlInput getNthInputContainingGivenId(HtmlPage root,
-                                                     String id,
-                                                     int whichInput) {
+    protected HtmlInput getNthInputContainingGivenId(HtmlPage root, String id, int whichInput) {
         List list;
         int i, hitCount = 0;
         HtmlInput result = null;
@@ -571,8 +560,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         list = getAllElementsOfGivenClass(root, null, HtmlInput.class);
         for (i = 0; i < list.size(); i++) {
             result = (HtmlInput) list.get(i);
-            if (-1 != result.getAttribute("id").indexOf(id) &&
-                    hitCount++ == whichInput) {
+            if (-1 != result.getAttribute("id").indexOf(id) && hitCount++ == whichInput) {
                 break;
             }
             result = null;
@@ -581,9 +569,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
 
     }
 
-    protected HtmlInput getNthFromLastInputContainingGivenId(HtmlPage root,
-                                                             String id,
-                                                             int whichInput) {
+    protected HtmlInput getNthFromLastInputContainingGivenId(HtmlPage root, String id, int whichInput) {
         List list;
         int i, hitCount = 0;
         HtmlInput result = null;
@@ -591,8 +577,7 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
         list = getAllElementsOfGivenClass(root, null, HtmlInput.class);
         for (i = list.size() - 1; i >= 0; i--) {
             result = (HtmlInput) list.get(i);
-            if (-1 != result.getAttribute("id").indexOf(id) &&
-                    hitCount++ == whichInput) {
+            if (-1 != result.getAttribute("id").indexOf(id) && hitCount++ == whichInput) {
                 break;
             }
             result = null;
@@ -602,32 +587,32 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
     }
 
     protected String getText(String element) {
-        return ((HtmlElement)lastpage.getHtmlElementById(element)).asText();
+        return lastpage.getHtmlElementById(element).asText();
     }
 
     /*
-      Check that the text of the element is equal to the supplied string
+     * Check that the text of the element is equal to the supplied string
      */
     protected boolean check(String element, String expected) {
         return expected.equals(getText(element));
     }
 
     protected void checkTrue(String element, String expected) {
-        assertTrue(element+":- Expected '"+expected+"', but received '"+getText(element)+"'", check(element,expected));
+        assertTrue(element + ":- Expected '" + expected + "', but received '" + getText(element) + "'", check(element, expected));
     }
 
     @Override
     protected void runTest() throws Throwable {
         String currentContainer = System.getProperty("container");
         boolean doRunTest = true;
-        if(currentContainer == null) {
+        if (currentContainer == null) {
 //            log.warning("Test exclusions not taken into account since no container property could be found");
-        } else if(exclusions != null) {
+        } else if (exclusions != null) {
             Vector<String> excludedTests = this.exclusions.get(Container.valueOf(currentContainer.toUpperCase().replaceAll("\\.", "_")));
-            if(null != excludedTests && !excludedTests.isEmpty() && excludedTests.contains(testName)) {
-                log.log(Level.INFO, "Skipping execution of test ''{0}'' for container {1}", new Object[]{testName, currentContainer});
+            if (null != excludedTests && !excludedTests.isEmpty() && excludedTests.contains(testName)) {
+                log.log(Level.INFO, "Skipping execution of test ''{0}'' for container {1}", new Object[] { testName, currentContainer });
                 doRunTest = false;
-            } 
+            }
         }
         if (doRunTest) {
             super.runTest();
@@ -636,17 +621,18 @@ public abstract class HtmlUnitFacesITCase extends TestCase {
 
     /**
      * Adds an exclusion for a particular test method in the TestCase
+     *
      * @param container the container for which the exclusion should be applied
      * @param testName the name of the test method to exclude
      */
     protected void addExclusion(Container container, String testName) {
 
-        if(exclusions == null) {
+        if (exclusions == null) {
             exclusions = new HashMap<Container, Vector<String>>();
         }
-        
+
         Vector<String> excluded = this.exclusions.get(container);
-        if(excluded == null) {
+        if (excluded == null) {
             excluded = new Vector<String>();
             exclusions.put(container, excluded);
         }

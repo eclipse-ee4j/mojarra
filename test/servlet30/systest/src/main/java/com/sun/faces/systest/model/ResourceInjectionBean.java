@@ -16,21 +16,13 @@
 
 package com.sun.faces.systest.model;
 
-import java.io.IOException;
-import java.sql.Connection;
-
-import javax.naming.InitialContext;
 import javax.annotation.Resource;
-import javax.annotation.Resources;
-import javax.sql.DataSource;
 
-
-  
 public class ResourceInjectionBean {
 
-    @Resource(name="welcomeMessage")
+    @Resource(name = "welcomeMessage")
     private String welcomeMessage;
-    
+
     public String getWelcomeMessage() {
         return welcomeMessage;
     }

@@ -16,7 +16,6 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -40,14 +39,13 @@ public class CompositeMetaDataITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -56,14 +54,13 @@ public class CompositeMetaDataITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(CompositeMetaDataITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     /**
      * Added for issue 10
@@ -87,7 +84,7 @@ public class CompositeMetaDataITCase extends HtmlUnitFacesITCase {
 //        assertTrue(-1 != text.indexOf("composite component with incorrectly specified jsr276 metadata"));
     }
 
-   public void testDirectlyAccessedCompositeComponent() throws Exception {
+    public void testDirectlyAccessedCompositeComponent() throws Exception {
 
 //       HtmlPage page = null;
 //       client.getOptions().setThrowExceptionOnFailingStatusCode(false);
@@ -95,7 +92,5 @@ public class CompositeMetaDataITCase extends HtmlUnitFacesITCase {
 //       String text = page.asText();
 //       assertTrue(text.contains("Component Not Found for identifier"));
     }
-
-    
 
 } // end of class PathTestCase

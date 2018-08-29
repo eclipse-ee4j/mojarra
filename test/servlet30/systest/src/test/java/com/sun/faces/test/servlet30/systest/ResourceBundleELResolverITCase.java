@@ -16,19 +16,13 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 import junit.framework.TestSuite;
-
 
 public class ResourceBundleELResolverITCase extends HtmlUnitFacesITCase {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -39,20 +33,17 @@ public class ResourceBundleELResolverITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     // ------------------------------------------------------ Instance Variables
 
-
     // ---------------------------------------------------- Overall Test Methods
-
 
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -61,17 +52,15 @@ public class ResourceBundleELResolverITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(ResourceBundleELResolverITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------- Individual Test Methods
-
 
     public void testResourceBundleELResolverGetType() throws Exception {
         HtmlPage page = getPage("/faces/resourceBundle05.jsp");
@@ -83,31 +72,20 @@ public class ResourceBundleELResolverITCase extends HtmlUnitFacesITCase {
         HtmlPage page = getPage("/faces/resourceBundle05.jsp");
         String text = page.asXml();
 
-        String [] unorderedListOfStringsToFindInPage = {
-            "Name: application displayName: application",
-            "Name: applicationScope displayName: applicationScope",
-            "Name: cookie displayName: cookie",
-            "Name: facesContext displayName: facesContext",
-            "Name: view displayName: view",
-            "Name: header displayName: header",
-            "Name: headerValues displayName: headerValues",
-            "Name: initParam displayName: initParam",
-            "Name: param displayName: param",
-            "Name: paramValues displayName: paramValues",
-            "Name: request displayName: request",
-            "Name: requestScope displayName: requestScope",
-            "Name: session displayName: session",
-            "Name: sessionScope displayName: sessionScope",
-            "Name: resourceBundle01 displayName: resourceBundle01 displayName",
-            "Name: resourceBundle03 displayName: resourceBundle03 displayName",
-            "Name: test1 displayName: test1"
-        };
-        boolean [] foundFlags = new boolean[unorderedListOfStringsToFindInPage.length];
-        int i,j;
+        String[] unorderedListOfStringsToFindInPage = { "Name: application displayName: application",
+                "Name: applicationScope displayName: applicationScope", "Name: cookie displayName: cookie",
+                "Name: facesContext displayName: facesContext", "Name: view displayName: view", "Name: header displayName: header",
+                "Name: headerValues displayName: headerValues", "Name: initParam displayName: initParam", "Name: param displayName: param",
+                "Name: paramValues displayName: paramValues", "Name: request displayName: request",
+                "Name: requestScope displayName: requestScope", "Name: session displayName: session",
+                "Name: sessionScope displayName: sessionScope", "Name: resourceBundle01 displayName: resourceBundle01 displayName",
+                "Name: resourceBundle03 displayName: resourceBundle03 displayName", "Name: test1 displayName: test1" };
+        boolean[] foundFlags = new boolean[unorderedListOfStringsToFindInPage.length];
+        int i, j;
         for (i = 0; i < foundFlags.length; i++) {
             foundFlags[i] = false;
         }
-        String [] textSplitOnSpace = text.split("[[\\n][\\n\\r][\\u0085][\\u2028]]");
+        String[] textSplitOnSpace = text.split("[[\\n][\\n\\r][\\u0085][\\u2028]]");
         j = 0;
         for (i = 0; i < textSplitOnSpace.length; i++) {
             for (j = 0; j < unorderedListOfStringsToFindInPage.length; j++) {
@@ -119,8 +97,7 @@ public class ResourceBundleELResolverITCase extends HtmlUnitFacesITCase {
         }
         for (i = 0; i < foundFlags.length; i++) {
             if (!foundFlags[i]) {
-                fail("Unable to find " + unorderedListOfStringsToFindInPage[i] +
-                     ".");
+                fail("Unable to find " + unorderedListOfStringsToFindInPage[i] + ".");
             }
         }
 

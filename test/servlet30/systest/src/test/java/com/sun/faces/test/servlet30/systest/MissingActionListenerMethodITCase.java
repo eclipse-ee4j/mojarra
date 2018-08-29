@@ -16,13 +16,11 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 
 /**
  * @author Jason Lee

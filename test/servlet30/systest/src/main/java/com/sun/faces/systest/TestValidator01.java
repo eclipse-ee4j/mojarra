@@ -16,25 +16,23 @@
 
 package com.sun.faces.systest;
 
-
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
 
-
 /**
- * <p>Test implementation of {@link Validator}.</p>
+ * <p>
+ * Test implementation of {@link Validator}.
+ * </p>
  */
 
 public class TestValidator01 implements Validator {
 
-
+    @Override
     public void validate(FacesContext context, UIComponent component, Object value) {
         context.addMessage(component.getClientId(context),
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                component.getId() + " was validated", null));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, component.getId() + " was validated", null));
     }
-
 
 }

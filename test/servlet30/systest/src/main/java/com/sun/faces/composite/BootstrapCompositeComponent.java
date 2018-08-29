@@ -16,12 +16,8 @@
 
 package com.sun.faces.composite;
 
-import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.util.Enumeration;
-import javax.el.ValueExpression;
 import javax.faces.application.Resource;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIOutput;
@@ -29,22 +25,20 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.view.ViewDeclarationLanguage;
 
-@FacesComponent(value="systest.BootstrapComponent")
+@FacesComponent(value = "systest.BootstrapComponent")
 public class BootstrapCompositeComponent extends UIOutput {
 
     @Override
     public void encodeAll(FacesContext context) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
 
-        ViewDeclarationLanguage vdl = context.getApplication().
-                getViewHandler().getViewDeclarationLanguage(context,
+        ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context,
                 "/composite/boostrapCompositeComponentMetadata.xhtml");
-        Resource compositeComponentResource = context.getApplication().getResourceHandler().createResource("componentWithMetadata.xhtml", "composite");
+        Resource compositeComponentResource = context.getApplication().getResourceHandler().createResource("componentWithMetadata.xhtml",
+                "composite");
 
-        long
-                beforeFirstCall = System.currentTimeMillis(),
-                afterFirstCall, beforeSecondCall, afterSecondCall,
-                firstCallDuration, secondCallDuration;
+        long beforeFirstCall = System.currentTimeMillis(), afterFirstCall, beforeSecondCall, afterSecondCall, firstCallDuration,
+                secondCallDuration;
         BeanInfo metadata = vdl.getComponentMetadata(context, compositeComponentResource);
         afterFirstCall = System.currentTimeMillis();
         firstCallDuration = afterFirstCall - beforeFirstCall;
@@ -54,20 +48,17 @@ public class BootstrapCompositeComponent extends UIOutput {
         beforeSecondCall = System.currentTimeMillis();
         metadata = vdl.getComponentMetadata(context, compositeComponentResource);
         afterSecondCall = System.currentTimeMillis();
-        
+
         secondCallDuration = afterSecondCall - beforeSecondCall;
 
         CompositeComponentMetadataUtils.writeMetadata(metadata, writer);
 
-        writer.write("firstCallDuration: " + firstCallDuration +
-                " secondCallDuration: " + secondCallDuration + "\n");
+        writer.write("firstCallDuration: " + firstCallDuration + " secondCallDuration: " + secondCallDuration + "\n");
         if (firstCallDuration > secondCallDuration) {
-            writer.write("First call longer than second call by " +
-                    (firstCallDuration - secondCallDuration));
+            writer.write("First call longer than second call by " + (firstCallDuration - secondCallDuration));
         } else {
             writer.write("Cache did not work!");
         }
-
 
     }
 }

@@ -21,61 +21,63 @@ import java.util.ArrayList;
 public class PropertyOrderBean extends Object {
 
     protected String one;
+
     public String getOne() {
-	return one;
+        return one;
     }
 
     public void setOne(String newOne) {
-	one = newOne;
-	order = order + " " + one;
+        one = newOne;
+        order = order + " " + one;
     }
 
     protected String two;
+
     public String getTwo() {
-	return two;
+        return two;
     }
 
     public void setTwo(String newTwo) {
-	two = newTwo;
-	order = order + " " + two;
+        two = newTwo;
+        order = order + " " + two;
     }
 
     protected String three;
+
     public String getThree() {
-	return three;
+        return three;
     }
 
     public void setThree(String newThree) {
-	three = newThree;
-	order = order + " " + three;
+        three = newThree;
+        order = order + " " + three;
     }
 
     protected String four;
+
     public String getFour() {
-	return four;
+        return four;
     }
 
     public void setFour(String newFour) {
-	four = newFour;
-	order = order + " " + four;
+        four = newFour;
+        order = order + " " + four;
     }
 
-    
     protected String order = "";
+
     public String getOrder() {
-	return order;
+        return order;
     }
 
     protected ArrayList listProperty = new ArrayList();
 
     public ArrayList getListProperty() {
-	return listProperty;
+        return listProperty;
     }
 
     public void setListProperty(ArrayList newListProperty) {
-	listProperty = newListProperty;
+        listProperty = newListProperty;
     }
-
-
 
 }

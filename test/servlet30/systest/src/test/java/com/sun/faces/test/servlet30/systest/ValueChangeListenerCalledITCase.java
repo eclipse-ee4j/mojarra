@@ -23,14 +23,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 //import com.gargoylesoftware.htmlunit.javascript.host.HTMLAnchorElement;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import static junit.framework.TestCase.assertTrue;
-
 
 /**
  * Unit tests for Composite Components.
  */
 public class ValueChangeListenerCalledITCase extends HtmlUnitFacesITCase {
-
 
     public ValueChangeListenerCalledITCase() {
         this("ValueChangeListenerCalledTestCase");
@@ -40,14 +37,13 @@ public class ValueChangeListenerCalledITCase extends HtmlUnitFacesITCase {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -56,14 +52,13 @@ public class ValueChangeListenerCalledITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(ValueChangeListenerCalledITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-    
 
     // -------------------------------------------------------------- Test Cases
 
@@ -77,8 +72,8 @@ public class ValueChangeListenerCalledITCase extends HtmlUnitFacesITCase {
         String text = page.asText();
         String currentTime = "" + System.currentTimeMillis();
         currentTime = currentTime.substring(0, 7);
-System.out.println("TEXT:"+text);
-System.out.println("CURRENTTIME:"+currentTime);
+        System.out.println("TEXT:" + text);
+        System.out.println("CURRENTTIME:" + currentTime);
         assertTrue(text.contains("Aufgerufen: " + currentTime));
         assertTrue(text.contains("Hello from processValueChange: " + currentTime));
 
@@ -89,15 +84,11 @@ System.out.println("CURRENTTIME:"+currentTime);
         text = page.asText();
         currentTime = "" + System.currentTimeMillis();
         currentTime = currentTime.substring(0, 7);
-System.out.println("TEXT:"+text);
-System.out.println("CURRENTTIME:"+currentTime);
+        System.out.println("TEXT:" + text);
+        System.out.println("CURRENTTIME:" + currentTime);
         assertTrue(text.contains("Aufgerufen: " + currentTime));
         assertTrue(text.contains("Hello from processValueChange: " + currentTime));
-
 
     }
 
 }
-
-    
-

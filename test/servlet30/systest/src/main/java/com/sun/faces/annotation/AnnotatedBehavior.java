@@ -20,16 +20,18 @@ import javax.faces.component.behavior.ClientBehaviorBase;
 import javax.faces.component.behavior.FacesBehavior;
 
 /**
- * <p class="changed_added_2_0"></p>
+ * <p class="changed_added_2_0">
+ * </p>
+ * 
  * @author asmirnov@exadel.com
  *
  */
 @FacesBehavior("AnnotatedBehavior")
 public class AnnotatedBehavior extends ClientBehaviorBase {
 
-	@Override
-	public String getRendererType() {
-		return "AnnotatedBehaviorRenderer";
-	}
+    @Override
+    public String getRendererType() {
+        return "AnnotatedBehaviorRenderer";
+    }
 
 }

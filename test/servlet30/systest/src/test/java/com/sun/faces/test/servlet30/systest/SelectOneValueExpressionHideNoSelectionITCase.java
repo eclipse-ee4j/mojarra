@@ -22,14 +22,12 @@ import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
-import static junit.framework.TestCase.assertEquals;
-
 
 public class SelectOneValueExpressionHideNoSelectionITCase extends HtmlUnitFacesITCase {
 
     private HtmlPage page;
 
-	/**
+    /**
      * Construct a new instance of this test case.
      *
      * @param name Name of the test case
@@ -38,20 +36,18 @@ public class SelectOneValueExpressionHideNoSelectionITCase extends HtmlUnitFaces
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         this.page = getPage(getPath());
     }
 
-
-	protected String getPath() {
-		return "/faces/standard/selectOneValueExpressionHideNoSelectionOption.xhtml";
-	}
-
+    protected String getPath() {
+        return "/faces/standard/selectOneValueExpressionHideNoSelectionOption.xhtml";
+    }
 
     /**
      * Return the tests included in this test suite.
@@ -60,30 +56,27 @@ public class SelectOneValueExpressionHideNoSelectionITCase extends HtmlUnitFaces
         return (new TestSuite(SelectOneValueExpressionHideNoSelectionITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testHideNoSelectionOptionIsAValueExpression() throws Exception {
         HtmlSelect select = (HtmlSelect) this.page.getElementById("f:selectItemNoSelectedValue");
-        //validate initial page
+        // validate initial page
         assertEquals(4, select.getOptionSize());
-        
+
         HtmlInput button = (HtmlInput) this.page.getElementById("f:command");
         select.getOptionByValue("Pippin").click();
         this.page = button.click();
-        
+
         select = (HtmlSelect) this.page.getElementById("f:selectItemNoSelectedValue");
         assertEquals(5, select.getOptionSize());
     }
-    
 
 }

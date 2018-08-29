@@ -23,13 +23,11 @@ import javax.faces.component.UIViewRoot;
  * @author edburns
  */
 public class ViewRootExtension extends UIViewRoot {
-    
+
     /**
-     * Creates a new instance of ViewRootExtension 
+     * Creates a new instance of ViewRootExtension
      */
     public ViewRootExtension() {
     }
-    
- 
-    
+
 }

@@ -16,13 +16,12 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean(name = "viewParamRedirectBean")
+@Named
 @RequestScoped
-public class ViewParamRedirectBean implements Serializable {
+public class ViewParamRedirectBean {
 
     public String submit() {
         return "success";

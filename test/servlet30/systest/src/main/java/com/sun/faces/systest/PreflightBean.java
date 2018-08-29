@@ -17,20 +17,19 @@
 package com.sun.faces.systest;
 
 import com.sun.faces.config.WebConfiguration;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class PreflightBean {
 
     public String getStateSavingMethod() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        return facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext)
-                ? "client" : "server";
+        return facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext) ? "client" : "server";
     }
-    
+
     public String getSerializingServerState() {
         WebConfiguration webConfig = WebConfiguration.getInstance(FacesContext.getCurrentInstance().getExternalContext());
         return Boolean.toString(webConfig.isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.SerializeServerState));

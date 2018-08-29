@@ -16,14 +16,18 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
-@ManagedBean(name = "requestEncodingBean")
+@Named
+@RequestScoped
 public class RequestEncodingBean {
 
     public String getEncoding() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        return context.getExternalContext().getRequestCharacterEncoding();
+        return FacesContext
+                .getCurrentInstance()
+                .getExternalContext()
+                .getRequestCharacterEncoding();
     }
 }

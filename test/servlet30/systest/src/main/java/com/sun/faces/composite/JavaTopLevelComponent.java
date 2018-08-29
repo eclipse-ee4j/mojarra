@@ -29,9 +29,11 @@ public class JavaTopLevelComponent extends UINamingContainer {
 
     }
 
+    @Override
     public String getFamily() {
         return "javax.faces.NamingContainer";
     }
+
     private String item = "Value hard coded in Java source file";
 
     public String getItem() {
@@ -55,8 +57,7 @@ public class JavaTopLevelComponent extends UINamingContainer {
     public void forwardIfNotInRole(ComponentSystemEvent cse) {
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
-        String message = "Received event: " + cse.getClass().getName() + " for component: " +
-                cse.getComponent().getClass().getName();
+        String message = "Received event: " + cse.getClass().getName() + " for component: " + cse.getComponent().getClass().getName();
         requestMap.put("message", message);
     }
 

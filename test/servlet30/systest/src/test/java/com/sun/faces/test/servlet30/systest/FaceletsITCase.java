@@ -35,40 +35,30 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.URL;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 import junit.framework.TestSuite;
-
 
 /**
  * Test cases for Facelets functionality
  */
 public class FaceletsITCase extends HtmlUnitFacesITCase {
 
-
     // --------------------------------------------------------------- Test Init
-
 
     public FaceletsITCase() {
         this("FaceletsTestCase");
     }
 
-
     public FaceletsITCase(String name) {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -77,31 +67,29 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(FaceletsITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     /*
      * Added for issue 917.
      */
     public void testSetPropertyActionListener1() throws Exception {
 
-        HtmlPage page = getPage("/faces/facelets/setpropertyactionlistener1.xhtml") ;
+        HtmlPage page = getPage("/faces/facelets/setpropertyactionlistener1.xhtml");
 
         // verify the output is initially null
         List<HtmlSpan> output = new ArrayList<HtmlSpan>(1);
         getAllElementsOfGivenClass(page, output, HtmlSpan.class);
         assertTrue(!output.isEmpty());
         HtmlSpan span = output.get(0);
-        assertTrue("Expected: 'Current Name: ', Received: '"+span.asText()+"'","Current Name:".equals(span.asText()));
+        assertTrue("Expected: 'Current Name: ', Received: '" + span.asText() + "'", "Current Name:".equals(span.asText()));
 
         // click the commandLink with a nested setPropertyActionListener
         // to cause the name attribute in the session to be populated.
@@ -124,17 +112,17 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         assertTrue(!output.isEmpty());
         span = output.get(0);
         assertTrue("Current Name:".equals(span.asText()));
-        
+
     }
 
     /*
-     * Verify #{component} and #{cc} expressions evaluate
-     * at build time.
+     * Verify #{component} and #{cc} expressions evaluate at build time.
+     * 
      * @throws Exception
      */
     public void testComponentELAtBuildTime() throws Exception {
 
-        HtmlPage page = getPage("/faces/facelets/componentELAtBuildTime.xhtml") ;
+        HtmlPage page = getPage("/faces/facelets/componentELAtBuildTime.xhtml");
 
         // verify the output is initially null
         List<HtmlSpan> output = new ArrayList<HtmlSpan>(4);
@@ -146,16 +134,15 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     /**
-     * Ensure attributes that evaluate EL expressions only render the attribute
-     * name/value pair when the value is non-null.
+     * Ensure attributes that evaluate EL expressions only render the attribute name/value pair when the
+     * value is non-null.
      *
      * https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=940
-     */ 
+     */
     public void testConditionalAttributeRendering() throws Exception {
 
-        HtmlPage page = getPage("/faces/facelets/conditionalCCAttributeRendering.xhtml") ;
+        HtmlPage page = getPage("/faces/facelets/conditionalCCAttributeRendering.xhtml");
 
         // verify the output is initially null
         List<HtmlSpan> output = new ArrayList<HtmlSpan>(1);
@@ -209,7 +196,6 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         assertTrue("Inserted Text".equals(toplevelContent));
     }
 
-
     public void testValidatorWrappingNestingDisableHandling() throws Exception {
 
         HtmlPage page = getPage("/faces/facelets/validatorDisabled.xhtml");
@@ -251,14 +237,9 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         }
     }
 
-
-    
-
-
     /**
-     * Added for issue 1202.  Ensure duplicate phase listeners aren't registered
-     * when using f:phaseListener and partial state saving is enabled (which is
-     * the default for systest).
+     * Added for issue 1202. Ensure duplicate phase listeners aren't registered when using
+     * f:phaseListener and partial state saving is enabled (which is the default for systest).
      */
     public void testPhaseListenerRegistration() throws Exception {
         // moved to new harness, see issue #2848
@@ -274,7 +255,6 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     /**
      * Added for issue 1552.
      */
@@ -283,7 +263,6 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         String text = page.asText();
         assertTrue(text.contains("Inserted from client1 Default"));
     }
-
 
     /**
      * Added for issue 1313
@@ -295,29 +274,25 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
 
         getAllElementsOfGivenClass(page, divs, HtmlDivision.class);
         validateToggleState1(divs);
-        HtmlSubmitInput input = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:nonajax");
+        HtmlSubmitInput input = (HtmlSubmitInput) getInputContainingGivenId(page, "form:nonajax");
         assertNotNull(input);
         page = input.click();
         divs.clear();
         getAllElementsOfGivenClass(page, divs, HtmlDivision.class);
         validateToggleState2(divs);
-        input = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:ajax");
+        input = (HtmlSubmitInput) getInputContainingGivenId(page, "form:ajax");
         assertNotNull(input);
         page = input.click();
         divs.clear();
         getAllElementsOfGivenClass(page, divs, HtmlDivision.class);
         validateToggleState1(divs);
-        input = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:nonajax");
+        input = (HtmlSubmitInput) getInputContainingGivenId(page, "form:nonajax");
         assertNotNull(input);
         page = input.click();
         divs.clear();
         getAllElementsOfGivenClass(page, divs, HtmlDivision.class);
         validateToggleState2(divs);
-        input = (HtmlSubmitInput)
-              getInputContainingGivenId(page, "form:ajax");
+        input = (HtmlSubmitInput) getInputContainingGivenId(page, "form:ajax");
         assertNotNull(input);
         page = input.click();
         divs.clear();
@@ -325,10 +300,10 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         validateToggleState1(divs);
 
     }
-    
+
     public void testIssue1576() throws Exception {
         HtmlPage page = getPage("/faces/facelets/Issue1576UsingPage.xhtml");
-        
+
         String text = page.asText();
         char copyright = 0xa9;
         char middot = 0xb7;
@@ -338,8 +313,8 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         assertTrue(-1 != text.indexOf(middot));
         // nbsp is converted to space on the server
         assertTrue(-1 == text.indexOf(nbsp));
-        
-        int [] rc = new int[1];
+
+        int[] rc = new int[1];
 
         // We have to use Socket to do this because HtmlUnit swallows the doctype.
         String xml = this.issueHttpRequest("GET", rc, "/faces/facelets/Issue1576UsingPage.xhtml");
@@ -347,11 +322,10 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         int i = xml.indexOf("DOCTYPE");
         assertTrue(-1 != i);
         assertTrue(-1 == xml.indexOf("DOCTYPE", i + "DOCTYPE".length()));
-                
+
     }
-    
-    
-    private String issueHttpRequest(String methodName, int [] rc, String path) throws Exception {
+
+    private String issueHttpRequest(String methodName, int[] rc, String path) throws Exception {
 
         URL url = getURL(path);
         Socket s = new Socket(url.getHost(), url.getPort());
@@ -370,14 +344,13 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         rc[0] = -1;
         while (null != (cur = reader.readLine())) {
             if (-1 == rc[0]) {
-                String [] tokens = cur.split("\\s");
+                String[] tokens = cur.split("\\s");
                 rc[0] = Integer.valueOf(tokens[1]);
             }
             builder.append(cur).append("\n");
         }
         writer.close();
 
-        
         return builder.toString();
     }
 
@@ -392,12 +365,12 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         getAllElementsOfGivenClass(page, input, HtmlTextInput.class);
         String[] names = new String[input.size()];
         String[] temp = new String[input.size()];
-        int i=0;
-        int j=0;
+        int i = 0;
+        int j = 0;
         for (HtmlTextInput inputText : input) {
             names[i++] = inputText.getNameAttribute();
         }
-        for (i=0; i < names.length; i++) {
+        for (i = 0; i < names.length; i++) {
             if (isUnique(names[i], temp)) {
                 temp[j++] = names[i];
             } else {
@@ -413,11 +386,10 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         assertTrue(page.asText().contains("Inserted from client3"));
     }
 
-
     // --------------------------------------------------------- Private Methods
 
     private boolean isUnique(String s, String[] array) {
-        for (int i=0; i < array.length; i++) {
+        for (int i = 0; i < array.length; i++) {
             if (array[i] != null && s.equals(array[i])) {
                 return false;
             }
@@ -432,11 +404,8 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         assertEquals("frag1", "frag1", div1.asText().trim());
         HtmlDivision div2 = divs.get(1);
         assertEquals("otherwise", "otherwise", div2.getId());
-        assertEquals("C:OTHERWISE TOGGLE STATE FALSE C:OTHERWISE",
-                     "C:OTHERWISE TOGGLE STATE FALSE C:OTHERWISE",
-                     div2.asText().trim());
+        assertEquals("C:OTHERWISE TOGGLE STATE FALSE C:OTHERWISE", "C:OTHERWISE TOGGLE STATE FALSE C:OTHERWISE", div2.asText().trim());
     }
-
 
     private void validateToggleState2(List<HtmlDivision> divs) {
         assertTrue(divs.size() == 3);
@@ -445,15 +414,10 @@ public class FaceletsITCase extends HtmlUnitFacesITCase {
         assertEquals("frag2", "frag2", div1.asText().trim());
         HtmlDivision div2 = divs.get(1);
         assertEquals("if", "if", div2.getId());
-        assertEquals("C:IF TOGGLE STATE TRUE C:IF",
-                     "C:IF TOGGLE STATE TRUE C:IF",
-                     div2.asText().trim());
+        assertEquals("C:IF TOGGLE STATE TRUE C:IF", "C:IF TOGGLE STATE TRUE C:IF", div2.asText().trim());
         HtmlDivision div3 = divs.get(2);
         assertEquals("when", "when", div3.getId());
-        assertEquals("C:WHEN TOGGLE STATE TRUE C:WHEN",
-                     "C:WHEN TOGGLE STATE TRUE C:WHEN",
-                     div3.asText().trim());
+        assertEquals("C:WHEN TOGGLE STATE TRUE C:WHEN", "C:WHEN TOGGLE STATE TRUE C:WHEN", div3.asText().trim());
     }
-
 
 }

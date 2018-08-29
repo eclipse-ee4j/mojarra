@@ -27,7 +27,7 @@ public class RepeatUseLocalValueTypeA {
     public String getA() {
         return a;
     }
-    
+
     public String getName() {
         return getClass().getName();
     }

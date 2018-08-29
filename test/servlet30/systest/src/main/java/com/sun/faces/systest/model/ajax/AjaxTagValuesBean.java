@@ -16,25 +16,29 @@
 
 package com.sun.faces.systest.model.ajax;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Arrays;
 
-@ManagedBean(name="ajaxtag")
+import javax.enterprise.context.SessionScoped;
+import javax.faces.event.ActionEvent;
+import javax.inject.Named;
+
+@Named("ajaxtag")
 @SessionScoped
-public class AjaxTagValuesBean {
-    private Integer count = 0;
-    private Boolean checked = false;
+public class AjaxTagValuesBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Integer count;
+    private Boolean checked;
     private String text = "";
     private String[] outArray = { "out1", ":form2:out2", ":out3" };
     private Collection<String> outSet = new LinkedHashSet<String>(Arrays.asList(outArray));
     private String render = "out1";
     private String[] checkedvalues = {};
-    
+
     public String getText() {
         return text;
     }
@@ -86,9 +90,11 @@ public class AjaxTagValuesBean {
     }
 
     private String ajaxEvent = "valueChange";
+
     public void setAjaxEvent(String ajaxEvent) {
         this.ajaxEvent = ajaxEvent;
     }
+
     public String getAjaxEvent() {
         return ajaxEvent;
     }

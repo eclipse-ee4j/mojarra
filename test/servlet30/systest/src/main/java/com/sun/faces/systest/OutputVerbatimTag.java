@@ -16,39 +16,36 @@
 
 package com.sun.faces.systest;
 
-
 import javax.faces.component.UIOutput;
 import javax.faces.webapp.UIComponentBodyTag;
 import javax.servlet.jsp.JspException;
 
-
 /**
- * <p><code>UIComponentBodyTag</code> for <code>Verbatim</code> rendering.
- * In other words, the body content of this tag is captured and then
- * rendered as the value of this component.</p>
+ * <p>
+ * <code>UIComponentBodyTag</code> for <code>Verbatim</code> rendering. In other words, the body
+ * content of this tag is captured and then rendered as the value of this component.
+ * </p>
  */
 
 public class OutputVerbatimTag extends UIComponentBodyTag {
 
-
     // -------------------------------------------------------------- Attributes
-
 
     // ---------------------------------------------------------- Public Methods
 
-
+    @Override
     public String getComponentType() {
         return ("Output");
     }
 
-
+    @Override
     public String getRendererType() {
         return ("Text");
     }
 
-
     // Assign the trimmed body content of this tag as the value of the
     // current component.
+    @Override
     public int doAfterBody() throws JspException {
 
         // Save the trimmed body content of this tag (if any)
@@ -64,8 +61,6 @@ public class OutputVerbatimTag extends UIComponentBodyTag {
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
 }

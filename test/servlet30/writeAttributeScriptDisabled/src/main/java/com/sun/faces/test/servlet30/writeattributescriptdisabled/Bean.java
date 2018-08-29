@@ -18,11 +18,10 @@ package com.sun.faces.test.servlet30.writeattributescriptdisabled;
 
 public class Bean {
 
-
     public String getScriptAttribute() {
-	String result = "javascript:var element = document.getElementById(\"modifiedByScript\");element.innerHTML = \"<b>new value!</b>\";";
+        String result = "javascript:var element = document.getElementById(\"modifiedByScript\");element.innerHTML = \"<b>new value!</b>\";";
 
-	return result;
+        return result;
     }
-	  
+
 }

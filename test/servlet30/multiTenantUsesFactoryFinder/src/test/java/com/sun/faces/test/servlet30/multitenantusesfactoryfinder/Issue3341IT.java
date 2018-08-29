@@ -37,7 +37,7 @@ public class Issue3341IT {
 
     /**
      * Setup before testing.
-     * 
+     *
      * @throws Exception when a serious error occurs.
      */
     @BeforeClass
@@ -46,7 +46,7 @@ public class Issue3341IT {
 
     /**
      * Cleanup after testing.
-     * 
+     *
      * @throws Exception when a serious error occurs.
      */
     @AfterClass
@@ -78,9 +78,9 @@ public class Issue3341IT {
         assertTrue(pageText.matches("(?s).*BeforeServlet init found Lifecycle:\\s*TRUE.*"));
         assertTrue(pageText.matches("(?s).*BeforeServlet init found FacesContext:\\sTRUE.*"));
         assertTrue(pageText.matches("(?s).*BeforeServlet request found Lifecycle:\\s*TRUE.*"));
-        // Yes, the FacesContext.getCurrentInstance() should not be found 
+        // Yes, the FacesContext.getCurrentInstance() should not be found
         // because this is in a Filter before the run of the FacesServlet.service().
-        assertTrue(pageText.matches("(?s).*BeforeServlet request found FacesContext:\\s*FALSE.*"));        
-        
+        assertTrue(pageText.matches("(?s).*BeforeServlet request found FacesContext:\\s*FALSE.*"));
+
     }
 }

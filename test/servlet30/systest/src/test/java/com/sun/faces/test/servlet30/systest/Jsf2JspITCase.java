@@ -16,20 +16,16 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
 public class Jsf2JspITCase extends HtmlUnitFacesITCase {
 
-
     public Jsf2JspITCase() {
         this("Jsf2Js2TestCase");
     }
-
 
     public Jsf2JspITCase(String name) {
         super(name);
@@ -39,9 +35,7 @@ public class Jsf2JspITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(Jsf2JspITCase.class));
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     public void testUnsupportedFeaturesAreUnsupported() throws Exception {
 
@@ -86,7 +80,7 @@ public class Jsf2JspITCase extends HtmlUnitFacesITCase {
 //
 //
     }
-    
+
     private void assert500Response(String urlFragment) throws Exception {
         client.getOptions().setThrowExceptionOnFailingStatusCode(true);
         HtmlPage page = null;
@@ -95,9 +89,9 @@ public class Jsf2JspITCase extends HtmlUnitFacesITCase {
             page = getPage(urlFragment);
         } catch (FailingHttpStatusCodeException fail) {
             code = fail.getStatusCode();
-            assertTrue("GET " + urlFragment + " Expected 500, got: "+code, code==500);
+            assertTrue("GET " + urlFragment + " Expected 500, got: " + code, code == 500);
         }
-        
+
     }
 
     private void assert200Response(String urlFragment) throws Exception {
@@ -108,7 +102,7 @@ public class Jsf2JspITCase extends HtmlUnitFacesITCase {
             page = getPage(urlFragment);
         } catch (FailingHttpStatusCodeException fail) {
             code = fail.getStatusCode();
-            assertTrue("GET " + urlFragment + " Expected 200, got: "+code, code==200);
+            assertTrue("GET " + urlFragment + " Expected 200, got: " + code, code == 200);
         }
 
     }

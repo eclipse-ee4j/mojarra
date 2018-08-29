@@ -16,14 +16,10 @@
 
 package com.sun.faces.systest;
 
-
-
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
-
-
 
 /**
  *
@@ -31,10 +27,12 @@ import javax.faces.event.ValueChangeListener;
  */
 public class listener implements ValueChangeListener {
 
+    @Override
     public void processValueChange(ValueChangeEvent event) throws AbortProcessingException {
 
         FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getFlash().put("processValueChangeMessage", "Hello from processValueChange: " + System.currentTimeMillis());
+        context.getExternalContext().getFlash().put("processValueChangeMessage",
+                "Hello from processValueChange: " + System.currentTimeMillis());
     }
 
 }

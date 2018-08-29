@@ -16,10 +16,10 @@
 
 package com.sun.faces.test.servlet30.lifecycleBasic;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class Spec1129ResetInputBean {
 

@@ -55,20 +55,15 @@ public class CustomComponentHandler extends ComponentHandler {
             public String getTagId() {
                 return config.getTagId();
             }
-            
+
         });
     }
-    
-    
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        ctx.getFacesContext().getAttributes().put("tagHandlerMessage", CustomComponentHandler.class.getSimpleName() +
-                ".apply() called");
-        
+        ctx.getFacesContext().getAttributes().put("tagHandlerMessage", CustomComponentHandler.class.getSimpleName() + ".apply() called");
+
         super.apply(ctx, parent);
     }
-    
-    
-    
+
 }

@@ -21,20 +21,30 @@
  */
 package com.sun.faces.test.servlet30.facelets;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.Date;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
-@ManagedBean
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 public class DataTablePassthroughBean {
+
+    private List<Entity> entities = asList(
+            new Entity("name1", new Date()),
+            new Entity("name2", new Date(new Date().getTime() + (1000 * 60 * 60 * 24))),
+            new Entity("name0", new Date(new Date().getTime() + (1000 * 60 * 60 * 48))));
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
 
     public class Entity {
 
         private String name;
-
         private Date modifiedOn;
 
         public Entity(String name, Date modifiedOn) {
@@ -49,16 +59,5 @@ public class DataTablePassthroughBean {
         public String getName() {
             return name;
         }
-
-    }
-
-    public List<Entity> entities = Arrays.asList(
-            new Entity("name1", new Date()), new Entity("name2", new Date(
-                            new Date().getTime() + (1000 * 60 * 60 * 24))), new Entity(
-                    "name0", new Date(new Date().getTime()
-                            + (1000 * 60 * 60 * 48))));
-
-    public List<Entity> getEntities() {
-        return entities;
     }
 }

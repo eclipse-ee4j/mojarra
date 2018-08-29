@@ -32,10 +32,10 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -44,32 +44,31 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxRequestITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxCount() throws Exception {
         getPage("/faces/ajax/ajaxCount.xhtml");
         System.out.println("Start ajax count test");
 
         // First we'll check the first page was output correctly
-        assertTrue(check("countForm:out1","0"));
-        assertTrue(check("out2","1"));
+        assertTrue(check("countForm:out1", "0"));
+        assertTrue(check("out2", "1"));
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:button1");
         HtmlPage lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        assertTrue(check("countForm:out1","2"));
+        assertTrue(check("countForm:out1", "2"));
 
         // Check that the request did NOT update the rest of the page.
-        assertTrue(check("out2","1"));
+        assertTrue(check("out2", "1"));
     }
 
     public void testAjaxRequestDefaultsButton() throws Exception {
@@ -86,95 +85,95 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         String reset4 = "form1:reset4";
 
         // First, we'll test to make sure the initial values come out right
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"1"));
-        assertTrue(check(out3,"2"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "1"));
+        assertTrue(check(out3, "2"));
 
         // Reload the page
         HtmlSubmitInput button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"3"));
-        assertTrue(check(out2,"4"));
-        assertTrue(check(out3,"5"));
+        assertTrue(check(out1, "3"));
+        assertTrue(check(out2, "4"));
+        assertTrue(check(out3, "5"));
 
         // Now, make the Ajax call to first reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset1);
         lastpage = (HtmlPage) button.click();
 
         // Check that the ajax request succeeds
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"4"));
-        assertTrue(check(out3,"5"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "4"));
+        assertTrue(check(out3, "5"));
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"1"));
-        assertTrue(check(out2,"2"));
-        assertTrue(check(out3,"3"));
+        assertTrue(check(out1, "1"));
+        assertTrue(check(out2, "2"));
+        assertTrue(check(out3, "3"));
 
         // Now, make the Ajax call to second reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset2);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"2"));
-        assertTrue(check(out3,"3"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "2"));
+        assertTrue(check(out3, "3"));
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"1"));
-        assertTrue(check(out2,"2"));
-        assertTrue(check(out3,"3"));
+        assertTrue(check(out1, "1"));
+        assertTrue(check(out2, "2"));
+        assertTrue(check(out3, "3"));
 
         // Now, make the Ajax call to third reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset3);
         lastpage = (HtmlPage) button.click();
 
         // Check the page did *not* update
-        assertTrue(check(out1,"1"));
-        assertTrue(check(out2,"2"));
-        assertTrue(check(out3,"3"));
+        assertTrue(check(out1, "1"));
+        assertTrue(check(out2, "2"));
+        assertTrue(check(out3, "3"));
 
         // Now, Reload the page, to check that reset3 actually executed
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"1"));
-        assertTrue(check(out3,"2"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "1"));
+        assertTrue(check(out3, "2"));
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"3"));
-        assertTrue(check(out2,"4"));
-        assertTrue(check(out3,"5"));
+        assertTrue(check(out1, "3"));
+        assertTrue(check(out2, "4"));
+        assertTrue(check(out3, "5"));
 
         // Now, make the Ajax call to fourth reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset4);
         lastpage = (HtmlPage) button.click();
 
         // Check the page did *not* update
-        assertTrue(check(out1,"3"));
-        assertTrue(check(out2,"4"));
-        assertTrue(check(out3,"5"));
+        assertTrue(check(out1, "3"));
+        assertTrue(check(out2, "4"));
+        assertTrue(check(out3, "5"));
 
         // Now, Reload the page, to check that reset4 actually executed
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"1"));
-        assertTrue(check(out3,"2"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "1"));
+        assertTrue(check(out3, "2"));
     }
 
     public void testAjaxRequestDefaultsButtonNoPrepend() throws Exception {
@@ -190,97 +189,96 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         String reset3 = "reset3";
         String reset4 = "reset4";
 
-
         // First, we'll test to make sure the initial values come out right
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"1"));
-        assertTrue(check(out3,"2"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "1"));
+        assertTrue(check(out3, "2"));
 
         // Reload the page
         HtmlSubmitInput button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"3"));
-        assertTrue(check(out2,"4"));
-        assertTrue(check(out3,"5"));
+        assertTrue(check(out1, "3"));
+        assertTrue(check(out2, "4"));
+        assertTrue(check(out3, "5"));
 
         // Now, make the Ajax call to first reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset1);
         lastpage = (HtmlPage) button.click();
 
         // Check that the ajax request succeeds
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"4"));
-        assertTrue(check(out3,"5"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "4"));
+        assertTrue(check(out3, "5"));
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"1"));
-        assertTrue(check(out2,"2"));
-        assertTrue(check(out3,"3"));
+        assertTrue(check(out1, "1"));
+        assertTrue(check(out2, "2"));
+        assertTrue(check(out3, "3"));
 
         // Now, make the Ajax call to second reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset2);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"2"));
-        assertTrue(check(out3,"3"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "2"));
+        assertTrue(check(out3, "3"));
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"1"));
-        assertTrue(check(out2,"2"));
-        assertTrue(check(out3,"3"));
+        assertTrue(check(out1, "1"));
+        assertTrue(check(out2, "2"));
+        assertTrue(check(out3, "3"));
 
         // Now, make the Ajax call to third reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset3);
         lastpage = (HtmlPage) button.click();
 
         // Check the page did *not* update
-        assertTrue(check(out1,"1"));
-        assertTrue(check(out2,"2"));
-        assertTrue(check(out3,"3"));
+        assertTrue(check(out1, "1"));
+        assertTrue(check(out2, "2"));
+        assertTrue(check(out3, "3"));
 
         // Now, Reload the page, to check that reset3 actually executed
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"1"));
-        assertTrue(check(out3,"2"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "1"));
+        assertTrue(check(out3, "2"));
 
         // Reload the page
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
 
         // Check that the page updated correctly
-        assertTrue(check(out1,"3"));
-        assertTrue(check(out2,"4"));
-        assertTrue(check(out3,"5"));
+        assertTrue(check(out1, "3"));
+        assertTrue(check(out2, "4"));
+        assertTrue(check(out3, "5"));
 
         // Now, make the Ajax call to fourth reset button
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reset4);
         lastpage = (HtmlPage) button.click();
 
         // Check the page did *not* update
-        assertTrue(check(out1,"3"));
-        assertTrue(check(out2,"4"));
-        assertTrue(check(out3,"5"));
+        assertTrue(check(out1, "3"));
+        assertTrue(check(out2, "4"));
+        assertTrue(check(out3, "5"));
 
         // Now, Reload the page, to check that reset4 actually executed
         button = (HtmlSubmitInput) lastpage.getHtmlElementById(reload);
         lastpage = (HtmlPage) button.click();
-        assertTrue(check(out1,"0"));
-        assertTrue(check(out2,"1"));
-        assertTrue(check(out3,"2"));
+        assertTrue(check(out1, "0"));
+        assertTrue(check(out2, "1"));
+        assertTrue(check(out3, "2"));
     }
 
     public void testAjaxRequestDefaultsEdit() throws Exception {
@@ -301,16 +299,16 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         String refresh = "form1:refresh";
 
         // First, we'll test to make sure the initial values come out right
-        assertTrue(check(out1,"echo"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
-        assertTrue(check(echo1Out,""));
-        assertTrue(check(echo2Out,""));
-        assertTrue(check(echo3Out,""));
-        assertTrue(check(echo4Out,""));
+        assertTrue(check(out1, "echo"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
+        assertTrue(check(echo1Out, ""));
+        assertTrue(check(echo2Out, ""));
+        assertTrue(check(echo3Out, ""));
+        assertTrue(check(echo4Out, ""));
 
         // Next, enter data into first field
-        HtmlTextInput echo1 = ((HtmlTextInput)lastpage.getHtmlElementById(edit1));
+        HtmlTextInput echo1 = ((HtmlTextInput) lastpage.getHtmlElementById(edit1));
         echo1.focus();
         echo1.type("test1");
         echo1.blur();
@@ -318,13 +316,13 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         HtmlSubmitInput button = lastpage.getHtmlElementById(refresh);
         button.click();
-        assertTrue(check(echo1Out,"test1"));
-        assertTrue(check(out1,"test1"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
+        assertTrue(check(echo1Out, "test1"));
+        assertTrue(check(out1, "test1"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
 
         // Next, enter data into second field
-        HtmlTextInput echo2 = ((HtmlTextInput)lastpage.getHtmlElementById(edit2));
+        HtmlTextInput echo2 = ((HtmlTextInput) lastpage.getHtmlElementById(edit2));
         echo2.focus();
         echo2.type("test2");
         echo2.blur();
@@ -332,13 +330,13 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        assertTrue(check(echo2Out,"test2"));
-        assertTrue(check(out1,"test2"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
+        assertTrue(check(echo2Out, "test2"));
+        assertTrue(check(out1, "test2"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
 
         // Next, enter data into third field
-        HtmlTextInput echo3 = ((HtmlTextInput)lastpage.getHtmlElementById(edit3));
+        HtmlTextInput echo3 = ((HtmlTextInput) lastpage.getHtmlElementById(edit3));
         echo3.focus();
         echo3.type("test3");
         echo3.blur();
@@ -346,13 +344,13 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        assertTrue(check(echo3Out,"test3"));
-        assertTrue(check(out1,"test3"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
+        assertTrue(check(echo3Out, "test3"));
+        assertTrue(check(out1, "test3"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
 
         // Next, enter data into the fourth field
-        HtmlTextInput echo4 = ((HtmlTextInput)lastpage.getHtmlElementById(edit4));
+        HtmlTextInput echo4 = ((HtmlTextInput) lastpage.getHtmlElementById(edit4));
         echo4.focus();
         echo4.type("test4");
         echo4.blur();
@@ -360,10 +358,10 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        assertTrue(check(echo4Out,"test4"));
-        assertTrue(check(out1,"test4"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
+        assertTrue(check(echo4Out, "test4"));
+        assertTrue(check(out1, "test4"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
 
     }
 
@@ -385,16 +383,16 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         String refresh = "refresh";
 
         // First, we'll test to make sure the initial values come out right
-        assertTrue(check(out1,"echo"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
-        assertTrue(check(echo1Out,""));
-        assertTrue(check(echo2Out,""));
-        assertTrue(check(echo3Out,""));
-        assertTrue(check(echo4Out,""));
+        assertTrue(check(out1, "echo"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
+        assertTrue(check(echo1Out, ""));
+        assertTrue(check(echo2Out, ""));
+        assertTrue(check(echo3Out, ""));
+        assertTrue(check(echo4Out, ""));
 
         // Next, enter data into first field
-        HtmlTextInput echo1 = ((HtmlTextInput)lastpage.getHtmlElementById(edit1));
+        HtmlTextInput echo1 = ((HtmlTextInput) lastpage.getHtmlElementById(edit1));
         echo1.focus();
         echo1.type("test1");
         echo1.blur();
@@ -402,13 +400,13 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         HtmlSubmitInput button = lastpage.getHtmlElementById(refresh);
         button.click();
-        assertTrue(check(echo1Out,"test1"));
-        assertTrue(check(out1,"test1"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
+        assertTrue(check(echo1Out, "test1"));
+        assertTrue(check(out1, "test1"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
 
         // Next, enter data into second field
-        HtmlTextInput echo2 = ((HtmlTextInput)lastpage.getHtmlElementById(edit2));
+        HtmlTextInput echo2 = ((HtmlTextInput) lastpage.getHtmlElementById(edit2));
         echo2.focus();
         echo2.type("test2");
         echo2.blur();
@@ -416,13 +414,13 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        assertTrue(check(echo2Out,"test2"));
-        assertTrue(check(out1,"test2"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
+        assertTrue(check(echo2Out, "test2"));
+        assertTrue(check(out1, "test2"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
 
         // Next, enter data into third field
-        HtmlTextInput echo3 = ((HtmlTextInput)lastpage.getHtmlElementById(edit3));
+        HtmlTextInput echo3 = ((HtmlTextInput) lastpage.getHtmlElementById(edit3));
         echo3.focus();
         echo3.type("test3");
         echo3.blur();
@@ -430,13 +428,13 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        assertTrue(check(echo3Out,"test3"));
-        assertTrue(check(out1,"test3"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
+        assertTrue(check(echo3Out, "test3"));
+        assertTrue(check(out1, "test3"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
 
         // Next, enter data into the fourth field
-        HtmlTextInput echo4 = ((HtmlTextInput)lastpage.getHtmlElementById(edit4));
+        HtmlTextInput echo4 = ((HtmlTextInput) lastpage.getHtmlElementById(edit4));
         echo4.focus();
         echo4.type("test4");
         echo4.blur();
@@ -444,18 +442,18 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         // Refresh the panel to check the listener fired
         button = lastpage.getHtmlElementById(refresh);
         button.click();
-        assertTrue(check(echo4Out,"test4"));
-        assertTrue(check(out1,"test4"));
-        assertTrue(check(out2,"echo"));
-        assertTrue(check(out3,"echo"));
+        assertTrue(check(echo4Out, "test4"));
+        assertTrue(check(out1, "test4"));
+        assertTrue(check(out2, "echo"));
+        assertTrue(check(out3, "echo"));
     }
 
     public void testAjaxEvent() throws Exception {
         getPage("/faces/ajax/ajaxEvent.xhtml");
 
         // First we'll check the first page was output correctly
-        assertTrue(check("countForm:out1","0")); // counter inside form
-        assertTrue(check("out2","1")); // counter connected to same bean property, but outside form
+        assertTrue(check("countForm:out1", "0")); // counter inside form
+        assertTrue(check("out2", "1")); // counter connected to same bean property, but outside form
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("countForm:button1");
@@ -463,23 +461,23 @@ public class AjaxRequestITCase extends HtmlUnitFacesITCase {
         getClient().waitForBackgroundJavaScript(6000);
 
         // Check that the ajax request succeeds
-        assertTrue(check("countForm:out1","2"));
+        assertTrue(check("countForm:out1", "2"));
 
         // Check that the request did NOT update the rest of the page.
-        assertTrue(check("out2","1"));
+        assertTrue(check("out2", "1"));
 
         // Check that events were written to the page.
         String expectedStatusArea = "Name: countForm:button1 Event: begin ";
-        expectedStatusArea = expectedStatusArea + "Name: countForm:button1 Event: complete " ;
-        expectedStatusArea = expectedStatusArea + "Name: countForm:button1 Event: success" ;
-        
+        expectedStatusArea = expectedStatusArea + "Name: countForm:button1 Event: complete ";
+        expectedStatusArea = expectedStatusArea + "Name: countForm:button1 Event: success";
+
         String actualStatusArea = getText("statusArea");
         if (actualStatusArea != null) {
             actualStatusArea = actualStatusArea.trim();
         }
-        
+
         assertEquals(expectedStatusArea, actualStatusArea);
-        
+
     }
 
 }

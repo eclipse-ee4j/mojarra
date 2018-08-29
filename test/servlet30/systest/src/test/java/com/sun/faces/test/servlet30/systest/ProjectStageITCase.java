@@ -20,10 +20,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
-
 public class ProjectStageITCase extends HtmlUnitFacesITCase {
-
 
     public ProjectStageITCase(String name) {
         super(name);
@@ -39,6 +36,5 @@ public class ProjectStageITCase extends HtmlUnitFacesITCase {
         assertFalse("There should be no mention of missing form in this page",
                 page.asText().matches("(?s).*form.*component.*Suggestion.*"));
     }
-
 
 }

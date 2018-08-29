@@ -17,14 +17,16 @@
 package com.sun.faces.test.servlet30.facelets;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 
-@ManagedBean
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
+@Named
 @ViewScoped
 public class ViewParam7Bean implements Serializable {
 
     private static final long serialVersionUID = -8114872795707646008L;
+
     private String text1;
     private String text2;
 

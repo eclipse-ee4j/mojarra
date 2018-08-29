@@ -16,12 +16,10 @@
 
 package com.sun.faces.systest.model;
 
-import java.util.Arrays;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-
-@ManagedBean
+@Named
 @RequestScoped
 public class Bean2194 {
 
@@ -29,7 +27,7 @@ public class Bean2194 {
     private String valueChangeListenerType = null;
     private String phaseListenerType = null;
 
-    public Bean2194() { 
+    public Bean2194() {
     }
 
     private void setActionListenerType(String type) {

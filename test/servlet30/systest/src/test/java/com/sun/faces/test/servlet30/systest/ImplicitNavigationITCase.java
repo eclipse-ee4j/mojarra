@@ -23,8 +23,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 
 public class ImplicitNavigationITCase extends HtmlUnitFacesITCase {
 
@@ -35,6 +33,7 @@ public class ImplicitNavigationITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -49,11 +48,12 @@ public class ImplicitNavigationITCase extends HtmlUnitFacesITCase {
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-       // ------------------------------------------------------------ Test Methods
+    // ------------------------------------------------------------ Test Methods
     public void testImplicitNavigation() throws Exception {
 
         HtmlPage page = getPage("/faces/implicitnav/page01.xhtml");
@@ -107,7 +107,7 @@ public class ImplicitNavigationITCase extends HtmlUnitFacesITCase {
         // Make sure we're on the expected page
         assertTrue(-1 != text.indexOf("[page03]"));
 
-        // go forward to page04.  This uses a redirect
+        // go forward to page04. This uses a redirect
         button = (HtmlSubmitInput) page.getElementById("page04");
         client.getOptions().setRedirectEnabled(false);
         boolean exceptionThrown = false;
@@ -118,7 +118,7 @@ public class ImplicitNavigationITCase extends HtmlUnitFacesITCase {
             assertEquals(302, fhsce.getStatusCode());
         }
         assertTrue(exceptionThrown);
-        
+
         client.getOptions().setRedirectEnabled(true);
         page = button.click();
         text = page.asText();
@@ -138,10 +138,11 @@ public class ImplicitNavigationITCase extends HtmlUnitFacesITCase {
         HtmlButtonInput buttonButton = (HtmlButtonInput) page.getElementById("httpGet");
 
         page = buttonButton.click();
-        text = page.asText();;
+        text = page.asText();
+        ;
         assertTrue(!text.contains(SEARCH_TEXT));
 
-           // case 2 h:commandButton that does redirect.  Make sure a redirect is
+        // case 2 h:commandButton that does redirect. Make sure a redirect is
         // performed and the value is lost.
         client.getOptions().setRedirectEnabled(false);
         boolean exceptionThrown = false;
@@ -158,7 +159,8 @@ public class ImplicitNavigationITCase extends HtmlUnitFacesITCase {
         assertTrue(exceptionThrown);
         client.getOptions().setRedirectEnabled(true);
         page = submitButton.click();
-        text = page.asText();;
+        text = page.asText();
+        ;
         assertTrue(!text.contains(SEARCH_TEXT));
 
         // case 3 h:commandButton with empty query string

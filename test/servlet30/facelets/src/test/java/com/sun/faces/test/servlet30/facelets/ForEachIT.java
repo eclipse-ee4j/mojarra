@@ -16,13 +16,15 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 public class ForEachIT {
 
@@ -43,227 +45,188 @@ public class ForEachIT {
     @Test
     public void test_false_false_false_false_false_false_false_false_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
+
         page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_false_false_false.xhtml");
 
         assertTrue(page.asXml().matches("(?s).*<form.*>.*<input.+type=\"text\".+value=\"Bobby\".+disabled=\"disabled\".*>.*<input.+id=\"literalId\".+type=\"text\".+name=\"literalId\".+value=\"Bobby\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+value=\"Jerry\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+value=\"Jerry\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+value=\"Phil\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+value=\"Phil\".+disabled=\"disabled\".*/>.*</form>.*"));
-        
+
         HtmlSubmitInput button = page.getHtmlElementById("submit");
         page = button.click();
-        
+
         assertTrue(page.asXml().matches("(?s).*<form.*id=\"form01\".*name=\"form01\".*>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Bobby\".+disabled=\"disabled\".*/>.*<input.+id=\"literalId\".+type=\"text\".+name=\"literalId\".+value=\"Bobby\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Jerry\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Jerry\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Phil\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Phil\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Bobby\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Bobby\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Jerry\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Jerry\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Phil\".+disabled=\"disabled\".*/>.*<input.+type=\"text\".+name=\"j_idt[0-9]+\".+value=\"Phil\".+disabled=\"disabled\".*/>.*</form>.*"));
-        
     }
-    
+
     @Test
     public void test_false_false_false_false_false_false_false_false_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_false_false_true.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_false_false_true.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_false_false_true_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_false_true_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_false_true_false.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_false_false_true_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
+
         page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_false_true_true.xhtml");
 
-        
+
     }
 
 
     @Test
     public void test_false_false_false_false_false_false_true_false_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
+
         page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_true_false_false.xhtml");
 
-        
+
     }
 
 
     @Test
     public void test_false_false_false_false_false_false_true_false_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
+
         page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_true_false_true.xhtml");
 
-        
+
     }
 
 
     @Test
     public void test_false_false_false_false_false_false_true_true_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_true_true_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_false_true_true_false.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_false_true_true_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/true_true_true_true_true_true_true_true_true.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/true_true_true_true_true_true_true_true_true.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_true_false_false_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_false_false_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_false_false_false.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_true_false_false_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_false_false_true.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_false_false_true.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_true_false_true_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_false_true_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_false_true_false.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_true_false_true_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_false_true_true.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_false_true_true.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_true_true_false_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_true_false_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_true_false_false.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_true_true_false_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_true_false_true.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_true_false_true.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_true_true_true_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_true_true_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_true_true_false.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_false_true_true_true_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_true_true_true.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_false_true_true_true_true.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_false_true_true_true_true_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_true_true_true_true_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_false_true_true_true_true_false.xhtml");
     }
 
 
     @Test
     public void test_false_false_false_true_false_true_false_true_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_true_false_true_false_true_true.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_false_true_false_true_false_true_true.xhtml");
     }
 
 
     @Test
     public void test_false_false_true_false_false_false_true_true_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_false_true_false_false_false_true_true_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_false_true_false_false_false_true_true_false.xhtml");
     }
 
 
     @Test
     public void test_false_true_false_false_false_true_false_true_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/false_true_false_false_false_true_false_true_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/false_true_false_false_false_true_false_true_false.xhtml");
     }
 
 
     @Test
     public void test_true_false_false_false_false_false_false_false_false() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
-        page = webClient.getPage(webUrl + "faces/forEach/true_false_false_false_false_false_false_false_false.xhtml");
 
-        
+        page = webClient.getPage(webUrl + "faces/forEach/true_false_false_false_false_false_false_false_false.xhtml");
     }
 
 
     @Test
     public void test_true_true_true_true_true_true_true_true_true() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/forEach/index.xhtml");
-                
+
         page = webClient.getPage(webUrl + "faces/forEach/true_true_true_true_true_true_true_true_true.xhtml");
-
-        
     }
-
-
 
 }

@@ -20,19 +20,19 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.FacesException;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import java.util.Map;
 import java.util.HashMap;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class AttrsBean {
 
     public String eval() {
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("value","New Value");
+        map.put("value", "New Value");
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         ExternalContext extContext = ctx.getExternalContext();
@@ -40,10 +40,9 @@ public class AttrsBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer =
-                      ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.updateAttributes("form:attr",map);
+                writer.updateAttributes("form:attr", map);
                 writer.endDocument();
                 writer.flush();
                 ctx.responseComplete();

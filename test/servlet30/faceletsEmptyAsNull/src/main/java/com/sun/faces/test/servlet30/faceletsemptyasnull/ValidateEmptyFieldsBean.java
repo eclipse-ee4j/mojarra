@@ -16,13 +16,13 @@
 
 package com.sun.faces.test.servlet30.faceletsemptyasnull;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
-@ManagedBean(name = "validateEmptyFieldsBean")
+@Named
 @RequestScoped
 public class ValidateEmptyFieldsBean {
 
@@ -35,7 +35,7 @@ public class ValidateEmptyFieldsBean {
     public void setValue(String value) {
         this.value = value;
     }
-    
+
     public void validate(FacesContext facesContext, UIComponent component, Object value) {
         facesContext.addMessage(null, new FacesMessage("We got called!"));
     }

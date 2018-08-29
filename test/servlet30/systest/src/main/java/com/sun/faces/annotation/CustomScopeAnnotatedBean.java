@@ -17,12 +17,14 @@
 package com.sun.faces.annotation;
 
 import javax.faces.bean.CustomScoped;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 
-@ManagedBean
-@CustomScoped(value="#{facesContext.externalContext.requestMap}")
+@Named
+@CustomScoped(value = "#{facesContext.externalContext.requestMap}")
 public class CustomScopeAnnotatedBean {
 
-    public String getGreeting() { return "Hello"; }
-    
+    public String getGreeting() {
+        return "Hello";
+    }
+
 }

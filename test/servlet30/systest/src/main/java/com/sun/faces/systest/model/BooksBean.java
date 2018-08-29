@@ -20,40 +20,28 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class BooksBean {
 
-    private List<BookBean> books;    
-
+    private List<BookBean> books;
 
     public BooksBean() {
         books = new ArrayList<BookBean>();
-        books.add(new BookBean("Harry Potter and the Sorcerer's Stone",
-                                "J.K. Rowling",
-                                "10009001",
-                                12.99));
-        books.add(new BookBean("Dune",
-                                "Frank Herbert",
-                                "98111012",
-                                15.99));
-        books.add(new BookBean("The Hitchhiker's Guide to the Galaxy",
-                                "Douglas Adams",
-                                "11001199",
-                                13.99));
-    }    
-
+        books.add(new BookBean("Harry Potter and the Sorcerer's Stone", "J.K. Rowling", "10009001", 12.99));
+        books.add(new BookBean("Dune", "Frank Herbert", "98111012", 15.99));
+        books.add(new BookBean("The Hitchhiker's Guide to the Galaxy", "Douglas Adams", "11001199", 13.99));
+    }
 
     public List<BookBean> getBooks() {
         return books;
-    }    
-    
+    }
+
     public double getTotalCost() {
         double cost = 0.0;
-        for (Iterator<BookBean> i = books.iterator(); i.hasNext(); ) {
+        for (Iterator<BookBean> i = books.iterator(); i.hasNext();) {
             BookBean book = i.next();
-            cost += (book.getQuantity() * book.getPrice());     
+            cost += (book.getQuantity() * book.getPrice());
         }
-        
+
         return cost;
-    }      
+    }
 }

@@ -17,16 +17,17 @@
 package com.sun.faces.test.servlet30.facesContextInit;
 
 import java.io.Serializable;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.PreDestroyApplicationEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.inject.Named;
 
-@ManagedBean(eager = true)
+@Named
 @ApplicationScoped
 public class ApplicationScopedBean implements Serializable {
 
@@ -62,6 +63,5 @@ public class ApplicationScopedBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         Flash startupFlash = context.getExternalContext().getFlash();
         result = null != startupFlash ? "SUCCESS" : "FAILURE";
-
     }
 }

@@ -16,19 +16,7 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-import javax.faces.component.NamingContainer;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSelect;
-import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
 public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
@@ -41,7 +29,7 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
     public SelectOneManyEnumITCase(String name) {
         super(name);
     }
-    
+
     /**
      * Return the tests included in this test suite.
      */
@@ -51,22 +39,21 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Test Methods
 
-/*
- * When migrating the test it was noticed that the suite method was not 
- * pointing towards the actual test. So the test below was never invoked. 
- * Upon turning it on the test started failing, commenting out. This test
- * needs to be fixed.
- */    
-    
+    /*
+     * When migrating the test it was noticed that the suite method was not pointing towards the actual
+     * test. So the test below was never invoked. Upon turning it on the test started failing,
+     * commenting out. This test needs to be fixed.
+     */
+
     public void testEnums() throws Exception {
 //        HtmlPage page = getPage("/faces/standard/selectonemanyenum.jsp");
 //        HtmlForm form = getFormById(page, "test");
 //        assertNotNull(form);
-//        List<HtmlSelect> selectList = getAllElementsOfGivenClass(page, 
-//                                                     new ArrayList<HtmlSelect>(), 
+//        List<HtmlSelect> selectList = getAllElementsOfGivenClass(page,
+//                                                     new ArrayList<HtmlSelect>(),
 //                                                     HtmlSelect.class);
 //        assertTrue(selectList.size() == 5);
-//        
+//
 //        // ID selected
 //        HtmlSelect select = selectList.get(0);
 //        assertTrue(select.getId().contains("selected"));
@@ -75,7 +62,7 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
 //        assertTrue("Value2".equals(selectedOptions.get(0).getValueAttribute()));
 //        select.setSelectedAttribute(selectedOptions.get(0), false);
 //        select.setSelectedAttribute("Value1", true);
-//        
+//
 //        // ID selected2
 //        HtmlSelect select2 = selectList.get(1);
 //        assertTrue(select2.getId().contains("selected2"));
@@ -84,7 +71,7 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
 //        assertTrue("Value3".equals(selectedOptions2.get(0).getValueAttribute()));
 //        select2.setSelectedAttribute(selectedOptions2.get(0), false);
 //        select2.setSelectedAttribute("Value2", true);
-//        
+//
 //        // ID selected3
 //        HtmlSelect select3 = selectList.get(2);
 //        assertTrue(select3.getId().contains("selected3"));
@@ -93,7 +80,7 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
 //        assertTrue("Value4".equals(selectedOptions3.get(0).getValueAttribute()));
 //        select3.setSelectedAttribute(selectedOptions3.get(0), false);
 //        select3.setSelectedAttribute("Value3", true);
-//        
+//
 //        // ID array
 //        HtmlSelect selectArray = selectList.get(3);
 //        assertTrue(selectArray.getId().contains("array"));
@@ -105,8 +92,8 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
 //        selectArray.setSelectedAttribute(selectedOptionsArray.get(1), false);
 //        selectArray.setSelectedAttribute("Value1", true);
 //        selectArray.setSelectedAttribute("Value3", true);
-//        
-//              
+//
+//
 //        // ID list
 //        HtmlSelect selectListt = selectList.get(4);
 //        assertTrue(selectListt.getId().contains("list"));
@@ -118,43 +105,43 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
 //        selectListt.setSelectedAttribute(selectedOptionsList.get(1), false);
 //        selectListt.setSelectedAttribute("Value2", true);
 //        selectListt.setSelectedAttribute("Value4", true);
-//        
+//
 //        HtmlSubmitInput submit = (HtmlSubmitInput)
 //            form.getInputByName("test" +
 //                                NamingContainer.SEPARATOR_CHAR +
 //                                "submit");
 //        page = (HtmlPage) submit.click();
-//        
+//
 //        // verify the correct options were selected
-//        
-//        selectList = getAllElementsOfGivenClass(page, 
-//                                                     new ArrayList<HtmlSelect>(), 
+//
+//        selectList = getAllElementsOfGivenClass(page,
+//                                                     new ArrayList<HtmlSelect>(),
 //                                                     HtmlSelect.class);
 //        assertTrue(selectList.size() == 5);
-//        
+//
 //        assertTrue(selectList.size() == 5);
-//        
+//
 //        // ID selected
 //        select = selectList.get(0);
 //        assertTrue(select.getId().contains("selected"));
 //        selectedOptions = select.getSelectedOptions();
 //        assertTrue(selectedOptions.size() == 1);
 //        assertTrue("Value1".equals(selectedOptions.get(0).getValueAttribute()));
-//        
+//
 //        // ID selected2
 //        select2 = selectList.get(1);
 //        assertTrue(select2.getId().contains("selected2"));
 //        selectedOptions2 = select2.getSelectedOptions();
 //        assertTrue(selectedOptions2.size() == 1);
 //        assertTrue("Value2".equals(selectedOptions2.get(0).getValueAttribute()));
-//        
+//
 //        // ID selected3
 //        select3 = selectList.get(2);
 //        assertTrue(select3.getId().contains("selected3"));
 //        selectedOptions3 = select3.getSelectedOptions();
 //        assertTrue(selectedOptions3.size() == 1);
 //        assertTrue("Value3".equals(selectedOptions3.get(0).getValueAttribute()));
-//        
+//
 //        // ID array
 //        selectArray = selectList.get(3);
 //        assertTrue(selectArray.getId().contains("array"));
@@ -162,7 +149,7 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
 //        assertTrue(selectedOptionsArray.size() == 2);
 //        assertTrue("Value1".equals(selectedOptionsArray.get(0).getValueAttribute()));
 //        assertTrue("Value2".equals(selectedOptionsArray.get(1).getValueAttribute()));
-//              
+//
 //        // ID list
 //        selectListt = selectList.get(4);
 //        assertTrue(selectListt.getId().contains("list"));
@@ -170,9 +157,7 @@ public class SelectOneManyEnumITCase extends HtmlUnitFacesITCase {
 //        assertTrue(selectedOptionsList.size() == 2);
 //        assertTrue("Value2".equals(selectedOptionsList.get(0).getValueAttribute()));
 //        assertTrue("Value3".equals(selectedOptionsList.get(1).getValueAttribute()));
-//                
+//
     }
-    
-
 
 } // END SelectOneManyEnumTestCase

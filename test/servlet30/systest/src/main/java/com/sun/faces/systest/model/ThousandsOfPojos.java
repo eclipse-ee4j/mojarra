@@ -16,15 +16,18 @@
 
 package com.sun.faces.systest.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @SessionScoped
-public class ThousandsOfPojos {
+public class ThousandsOfPojos implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private List<Item> items;
 
@@ -44,10 +47,6 @@ public class ThousandsOfPojos {
         return items;
     }
 
-    
-
-    // <editor-fold defaultstate="collapsed" desc="Inner Classes">
-    
     public class Item {
         String a, b, c;
         InnerItem inner;
@@ -56,12 +55,10 @@ public class ThousandsOfPojos {
             this.a = a;
             this.b = b;
             this.c = c;
-            
-            inner = new InnerItem(a+b, a+c);
+
+            inner = new InnerItem(a + b, a + c);
         }
-        
-        
-        
+
         public String getA() {
             return a;
         }
@@ -93,11 +90,9 @@ public class ThousandsOfPojos {
         public void setInner(InnerItem inner) {
             this.inner = inner;
         }
-        
-        
-        
+
     }
-    
+
     public class InnerItem {
         String d, e;
 
@@ -105,8 +100,6 @@ public class ThousandsOfPojos {
             this.d = d;
             this.e = e;
         }
-        
-        
 
         public String getD() {
             return d;
@@ -123,7 +116,7 @@ public class ThousandsOfPojos {
         public void setE(String e) {
             this.e = e;
         }
-        
+
     }
 
     // </editor-fold>

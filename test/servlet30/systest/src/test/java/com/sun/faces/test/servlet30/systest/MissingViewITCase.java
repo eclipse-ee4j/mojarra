@@ -16,21 +16,19 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 /**
- * <p>Verify that we have an intelligent error message when the user
- * forgets the view tag.</p>
+ * <p>
+ * Verify that we have an intelligent error message when the user forgets the view tag.
+ * </p>
  */
 
 public class MissingViewITCase extends HtmlUnitFacesITCase {
 
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new instance of this test case.
@@ -45,14 +43,13 @@ public class MissingViewITCase extends HtmlUnitFacesITCase {
 
     // ---------------------------------------------------- Overall Test Methods
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -61,10 +58,10 @@ public class MissingViewITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(MissingViewITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }

@@ -16,14 +16,12 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
-public class AjaxIncludedTextITCase  extends HtmlUnitFacesITCase {
+public class AjaxIncludedTextITCase extends HtmlUnitFacesITCase {
 
     public AjaxIncludedTextITCase(String name) {
         super(name);
@@ -32,10 +30,10 @@ public class AjaxIncludedTextITCase  extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -44,22 +42,21 @@ public class AjaxIncludedTextITCase  extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxIncludedTextITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxIncludedText() throws Exception {
         getPage("/faces/ajax/ajaxIncludedText.xhtml");
         System.out.println("Start ajax included text test");
 
         // First we'll check the first page was output correctly
-        checkTrue("finalSpan1","Text should stay");
-        checkTrue("finalSpan2","Text should stay");
+        checkTrue("finalSpan1", "Text should stay");
+        checkTrue("finalSpan2", "Text should stay");
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("form1:refresh");
@@ -68,8 +65,7 @@ public class AjaxIncludedTextITCase  extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button2.click();
 
         // Check that the ajax request succeeds
-        checkTrue("finalSpan1","Text should stay");
-        checkTrue("finalSpan2","Text should stay");
+        checkTrue("finalSpan1", "Text should stay");
+        checkTrue("finalSpan2", "Text should stay");
     }
 }
-

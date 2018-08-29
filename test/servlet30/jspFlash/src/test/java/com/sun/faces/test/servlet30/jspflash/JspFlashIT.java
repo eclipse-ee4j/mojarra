@@ -48,7 +48,7 @@ public class JspFlashIT {
         webClient.close();
     }
 
-    @JsfTest(value = JsfVersion.JSF_2_3_0_M02, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JsfVersion.JSF_2_3_0_M02, excludes = { WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
     @Test
     public void testFlash() throws Exception {
         // Get the first page

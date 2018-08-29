@@ -24,9 +24,6 @@ import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
 import junit.framework.Test;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import junit.framework.TestSuite;
 
 public class HttpMethodITCase extends HtmlUnitFacesITCase {
@@ -69,7 +66,7 @@ public class HttpMethodITCase extends HtmlUnitFacesITCase {
         assertTrue(1 == tokens.length);
         assertEquals(HttpURLConnection.HTTP_OK, rc[0]);
 
-        // Ensure the OPTIONS  request works as expected
+        // Ensure the OPTIONS request works as expected
         result = issueHttpRequest("OPTIONS", rc, repeat);
         tokens = result.split("[\\r\\n][\\r\\n]");
         assertTrue(1 == tokens.length || "0".equals(tokens[1]));

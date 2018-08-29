@@ -25,6 +25,7 @@ import javax.faces.component.UIComponentBase;
 @FacesComponent(value = "AnnotatedComponent")
 public class AnnotatedComponent extends UIComponentBase {
 
+    @Override
     public String getFamily() {
         return "AnnotatedComponent";
     }

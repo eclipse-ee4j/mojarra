@@ -19,13 +19,13 @@ package com.sun.faces.systest.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
-@ManagedBean
+@Named
 public class SelectItemsBean {
-    
+
     private SelectItem selectedHobbit;
     private List<SelectItem> ctorHobbits;
 
@@ -50,41 +50,39 @@ public class SelectItemsBean {
         this.ctorHobbits.add(new SelectItem("Bilbo"));
         this.ctorHobbits.add(new SelectItem("Merry"));
     }
-    
-    
 
-	public List<SelectItem> getHobbits() {
-		List<SelectItem> result = new ArrayList<SelectItem>(4);
-		result.add(new SelectItem("Frodo"));
-		result.add(new SelectItem("Pippin"));
-		result.add(new SelectItem("Bilbo"));
-		result.add(new SelectItem("Merry"));
-		return result;
-	}
-	
-	public List<SelectItem> getHobbitsNestedInGroup() {
-		List<SelectItem> result = new ArrayList<SelectItem>();
-		SelectItemGroup group = new SelectItemGroup("Hobbits");
-		group.setSelectItems(getHobbits().toArray(new SelectItem[0]));
-		result.add(group);
-		return result;
-	}
-	
-	public List<SelectItem> getHobbitsNoSelectionNestedInGroup() {
-		List<SelectItem> result = new ArrayList<SelectItem>();
-		SelectItemGroup group = new SelectItemGroup("Hobbits");
-		group.setSelectItems(getHobbitsNoSelection().toArray(new SelectItem[0]));
-		result.add(group);
-		return result;
-	}
-	
-	public List<SelectItem> getHobbitsNoSelection() {
-		List<SelectItem> result = new ArrayList<SelectItem>(5);
-		SelectItem noSelectionOption = new SelectItem("No Selection");
-		noSelectionOption.setNoSelectionOption(true);
-		result.add(noSelectionOption);
-		result.addAll(getHobbits());
-		return result;
-	}
-    
+    public List<SelectItem> getHobbits() {
+        List<SelectItem> result = new ArrayList<SelectItem>(4);
+        result.add(new SelectItem("Frodo"));
+        result.add(new SelectItem("Pippin"));
+        result.add(new SelectItem("Bilbo"));
+        result.add(new SelectItem("Merry"));
+        return result;
+    }
+
+    public List<SelectItem> getHobbitsNestedInGroup() {
+        List<SelectItem> result = new ArrayList<SelectItem>();
+        SelectItemGroup group = new SelectItemGroup("Hobbits");
+        group.setSelectItems(getHobbits().toArray(new SelectItem[0]));
+        result.add(group);
+        return result;
+    }
+
+    public List<SelectItem> getHobbitsNoSelectionNestedInGroup() {
+        List<SelectItem> result = new ArrayList<SelectItem>();
+        SelectItemGroup group = new SelectItemGroup("Hobbits");
+        group.setSelectItems(getHobbitsNoSelection().toArray(new SelectItem[0]));
+        result.add(group);
+        return result;
+    }
+
+    public List<SelectItem> getHobbitsNoSelection() {
+        List<SelectItem> result = new ArrayList<SelectItem>(5);
+        SelectItem noSelectionOption = new SelectItem("No Selection");
+        noSelectionOption.setNoSelectionOption(true);
+        result.add(noSelectionOption);
+        result.addAll(getHobbits());
+        return result;
+    }
+
 }

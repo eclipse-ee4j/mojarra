@@ -26,7 +26,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class CustomRenderKitIT {
-    
+
     /**
      * Stores the web URL.
      */
@@ -38,7 +38,7 @@ public class CustomRenderKitIT {
 
     /**
      * Setup before testing.
-     * 
+     *
      * @throws Exception when a serious error occurs.
      */
     @BeforeClass
@@ -47,7 +47,7 @@ public class CustomRenderKitIT {
 
     /**
      * Cleanup after testing.
-     * 
+     *
      * @throws Exception when a serious error occurs.
      */
     @AfterClass
@@ -77,7 +77,6 @@ public class CustomRenderKitIT {
         String pageText = page.getBody().asText();
         assertTrue(pageText.matches("(?s).*This IS A SIMPLE LABEL FROM THE CUSTOM RENDERER.*/renderkit03.jsp PASSED.*"));
 
-        
     }
-       
+
 }

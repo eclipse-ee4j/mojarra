@@ -16,45 +16,41 @@
 
 package com.sun.faces.systest;
 
-
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
 
-
 /**
- * <p><code>UIComponentTag</code> for <code>ChildrenComponent</code>.</p>
+ * <p>
+ * <code>UIComponentTag</code> for <code>ChildrenComponent</code>.
+ * </p>
  */
 
 public class ChildrenComponentTag extends UIComponentTag {
 
-
     // -------------------------------------------------------------- Attributes
-
 
     // ---------------------------------------------------------- Public Methods
 
-
+    @Override
     public String getComponentType() {
         return ("ChildrenComponent");
     }
 
-
+    @Override
     public String getRendererType() {
         return (null);
     }
 
-
+    @Override
     public void release() {
         super.release();
     }
 
-
     // ------------------------------------------------------- Protected Methods
 
-
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
     }
-
 
 }

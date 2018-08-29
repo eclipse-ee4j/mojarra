@@ -16,26 +16,32 @@
 
 package com.sun.faces.test.servlet30.facesContext;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.Serializable;
-import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
-import static org.junit.Assert.*;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * The managed bean for the attributes tests.
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@ManagedBean(name = "attributesBean")
+@Named
 @RequestScoped
 public class AttributesBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private FacesContext context;
+
     public String getAttributesResult1() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        Map<Object,Object> m = context.getAttributes();
-        assertNotNull(m);
+        assertNotNull(context.getAttributes());
+
         return "PASSED";
     }
 }

@@ -16,10 +16,12 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
+@RequestScoped
 public class ActionListenerBean {
 
     private boolean invoked;

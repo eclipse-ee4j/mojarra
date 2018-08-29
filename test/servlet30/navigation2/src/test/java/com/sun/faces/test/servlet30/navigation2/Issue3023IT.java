@@ -23,10 +23,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 public class Issue3023IT {
-    
+
     private String webUrl;
     private WebClient webClient;
 

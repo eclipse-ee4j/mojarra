@@ -17,11 +17,11 @@
 package com.sun.faces.test.servlet30.resource;
 
 import javax.faces.application.ResourceHandler;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 
-@ManagedBean(name = "resourceNPEBean")
+@Named
 @RequestScoped
 public class ResourceNPEBean {
 

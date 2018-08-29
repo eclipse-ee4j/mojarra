@@ -33,9 +33,7 @@ import junit.framework.TestSuite;
  */
 public class UIRepeatITCase extends HtmlUnitFacesITCase {
 
-
     // --------------------------------------------------------------- Test Init
-
 
     public UIRepeatITCase() {
         this("UIRepeatTestCase");
@@ -47,19 +45,17 @@ public class UIRepeatITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public UIRepeatITCase(String name) {
         super(name);
     }
 
-
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -68,38 +64,43 @@ public class UIRepeatITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(UIRepeatITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
     // ------------------------------------------------------------ Test Methods
-
 
     /*
      * Added for issue 917.
      */
     public void testUIRepeat() throws Exception {
 
-        HtmlPage page = getPage("/faces/facelets/uirepeat.xhtml") ;
-        
-        String text = page.asText();
-        
-        assertTrue(-1 != text.indexOf("ListFlavor is chocolate. Begin is . End is . Index is 0. Step is . Index is even: true. Index is odd: false. Index is first: true. Index is last: false."));
-        assertTrue(-1 != text.indexOf("ListFlavor is vanilla. Begin is . End is . Index is 1. Step is . Index is even: false. Index is odd: true. Index is first: false. Index is last: false."));
-        assertTrue(-1 != text.indexOf("ListFlavor is strawberry. Begin is . End is . Index is 2. Step is . Index is even: true. Index is odd: false. Index is first: false. Index is last: false."));
-        assertTrue(-1 != text.indexOf("ListFlavor is chocolate peanut butter. Begin is . End is . Index is 3. Step is . Index is even: false. Index is odd: true. Index is first: false. Index is last: true."));
-        assertTrue(-1 != text.indexOf("ArrayFlavor is chocolate. Begin is . End is . Index is 0. Step is . Index is even: true. Index is odd: false. Index is first: true. Index is last: false."));
-        assertTrue(-1 != text.indexOf("ArrayFlavor is vanilla. Begin is . End is . Index is 1. Step is . Index is even: false. Index is odd: true. Index is first: false. Index is last: false."));
-        assertTrue(-1 != text.indexOf("ArrayFlavor is strawberry. Begin is . End is . Index is 2. Step is . Index is even: true. Index is odd: false. Index is first: false. Index is last: false."));
-        assertTrue(-1 != text.indexOf("ArrayFlavor is chocolate peanut butter. Begin is . End is . Index is 3. Step is . Index is even: false. Index is odd: true. Index is first: false. Index is last: true."));
-        
-    }
+        HtmlPage page = getPage("/faces/facelets/uirepeat.xhtml");
 
+        String text = page.asText();
+
+        assertTrue(-1 != text.indexOf(
+                "ListFlavor is chocolate. Begin is . End is . Index is 0. Step is . Index is even: true. Index is odd: false. Index is first: true. Index is last: false."));
+        assertTrue(-1 != text.indexOf(
+                "ListFlavor is vanilla. Begin is . End is . Index is 1. Step is . Index is even: false. Index is odd: true. Index is first: false. Index is last: false."));
+        assertTrue(-1 != text.indexOf(
+                "ListFlavor is strawberry. Begin is . End is . Index is 2. Step is . Index is even: true. Index is odd: false. Index is first: false. Index is last: false."));
+        assertTrue(-1 != text.indexOf(
+                "ListFlavor is chocolate peanut butter. Begin is . End is . Index is 3. Step is . Index is even: false. Index is odd: true. Index is first: false. Index is last: true."));
+        assertTrue(-1 != text.indexOf(
+                "ArrayFlavor is chocolate. Begin is . End is . Index is 0. Step is . Index is even: true. Index is odd: false. Index is first: true. Index is last: false."));
+        assertTrue(-1 != text.indexOf(
+                "ArrayFlavor is vanilla. Begin is . End is . Index is 1. Step is . Index is even: false. Index is odd: true. Index is first: false. Index is last: false."));
+        assertTrue(-1 != text.indexOf(
+                "ArrayFlavor is strawberry. Begin is . End is . Index is 2. Step is . Index is even: true. Index is odd: false. Index is first: false. Index is last: false."));
+        assertTrue(-1 != text.indexOf(
+                "ArrayFlavor is chocolate peanut butter. Begin is . End is . Index is 3. Step is . Index is even: false. Index is odd: true. Index is first: false. Index is last: true."));
+
+    }
 
     public void testUIRepeatVarStatusBroadcast() throws Exception {
 
@@ -107,28 +108,19 @@ public class UIRepeatITCase extends HtmlUnitFacesITCase {
         List<HtmlAnchor> anchors = new ArrayList<HtmlAnchor>(4);
         getAllElementsOfGivenClass(page, anchors, HtmlAnchor.class);
         assertEquals("Expected to find only 4 HtmlAnchors", 4, anchors.size());
-        
-        String[] expectedValues = {
-              "Index: 0",
-              "Index: 1",
-              "Index: 2",
-              "Index: 3",
-        };
+
+        String[] expectedValues = { "Index: 0", "Index: 1", "Index: 2", "Index: 3", };
 
         for (int i = 0, len = expectedValues.length; i < len; i++) {
             HtmlAnchor anchor = getAllElementsOfGivenClass(page, HtmlAnchor.class).get(i);
-            
+
             page = anchor.click();
-            
-            assertTrue(
-                "Page as text: \n\n" + page.asText()   +
-                "\nDid not contain: \n " + expectedValues[i],
-                page.asText().contains(expectedValues[i])
-            );
+
+            assertTrue("Page as text: \n\n" + page.asText() + "\nDid not contain: \n " + expectedValues[i],
+                    page.asText().contains(expectedValues[i]));
         }
 
     }
-
 
     public void testUIRepeatStateNotLostOnNonUIRepeatMessage() throws Exception {
 
@@ -155,28 +147,24 @@ public class UIRepeatITCase extends HtmlUnitFacesITCase {
 
     }
 
-
     public void testUIRepeatVarBeginEndStepProperties() throws Exception {
 
         HtmlPage page = getPage("/faces/facelets/uirepeat4.xhtml");
         List<HtmlSpan> spans = new ArrayList<HtmlSpan>(9);
         getAllElementsOfGivenClass(page, spans, HtmlSpan.class);
         assertEquals("Expected 9 spans", 9, spans.size());
-        String[] expectedValues = {
-              "vanilla : index=1 : begin=1 : end= : step= : first=true : last=false : even=true : odd=false",
-              "strawberry : index=2 : begin=1 : end= : step= : first=false : last=false : even=false : odd=true",
-              "chocolate peanut butter : index=3 : begin=1 : end= : step= : first=false : last=true : even=true : odd=false",
-              "strawberry: index=2 : begin=2 : end=3 : step= : first=true : last=false : even=true : odd=false",
-              "chocolate peanut butter: index=3 : begin=2 : end=3 : step= : first=false : last=true : even=false : odd=true",
-              "chocolate: index=0 : begin= : end= : step=2 : first=true : last=false : even=true : odd=false",
-              "strawberry: index=2 : begin= : end= : step=2 : first=false : last=true : even=false : odd=true",
-              "vanilla: index=1 : begin=1 : end=1 : step=2 : first=true : last=true : even=true : odd=false",
-              "chocolate: index=0 : begin= : end= : step= : first=true : last=true : even=true : odd=false"
-        };
+        String[] expectedValues = { "vanilla : index=1 : begin=1 : end= : step= : first=true : last=false : even=true : odd=false",
+                "strawberry : index=2 : begin=1 : end= : step= : first=false : last=false : even=false : odd=true",
+                "chocolate peanut butter : index=3 : begin=1 : end= : step= : first=false : last=true : even=true : odd=false",
+                "strawberry: index=2 : begin=2 : end=3 : step= : first=true : last=false : even=true : odd=false",
+                "chocolate peanut butter: index=3 : begin=2 : end=3 : step= : first=false : last=true : even=false : odd=true",
+                "chocolate: index=0 : begin= : end= : step=2 : first=true : last=false : even=true : odd=false",
+                "strawberry: index=2 : begin= : end= : step=2 : first=false : last=true : even=false : odd=true",
+                "vanilla: index=1 : begin=1 : end=1 : step=2 : first=true : last=true : even=true : odd=false",
+                "chocolate: index=0 : begin= : end= : step= : first=true : last=true : even=true : odd=false" };
         for (int i = 0, len = spans.size(); i < len; i++) {
-            assertEquals("Expected: " + expectedValues[i] + ", received: " + spans.get(i).asText(),
-                         expectedValues[i],
-                         spans.get(i).asText());
+            assertEquals("Expected: " + expectedValues[i] + ", received: " + spans.get(i).asText(), expectedValues[i],
+                    spans.get(i).asText());
         }
 
     }
@@ -191,21 +179,18 @@ public class UIRepeatITCase extends HtmlUnitFacesITCase {
 
     }
 
-    /******* PENDING(edburns): disable this test until JAVASERVERFACES-2356 is resolved
-    public void testDebugViewState() throws Exception {
-        tearDown();
-        setUp();
-        HtmlPage page = getPage("/faces/facelets/uirepeat5.xhtml");
-        HtmlElement form = page.getElementById("form");
-        page = (HtmlPage) form.type('D', true, true, false);
-        List<WebWindow> windows = client.getWebWindows();
-        WebWindow debugWindow = windows.get(1);
-        page = (HtmlPage) debugWindow.getEnclosedPage();
-        String xml = page.asXml();
-        assertTrue(xml.matches("(?s).*<th>\\s*Total\\s*</th>\\s*<th>\\s*[0-9]*\\s*</th>.*"));
-
-
-    }
-    ***********/
+    /*******
+     * PENDING(edburns): disable this test until JAVASERVERFACES-2356 is resolved public void
+     * testDebugViewState() throws Exception { tearDown(); setUp(); HtmlPage page =
+     * getPage("/faces/facelets/uirepeat5.xhtml"); HtmlElement form = page.getElementById("form"); page
+     * = (HtmlPage) form.type('D', true, true, false); List<WebWindow> windows = client.getWebWindows();
+     * WebWindow debugWindow = windows.get(1); page = (HtmlPage) debugWindow.getEnclosedPage(); String
+     * xml = page.asXml(); assertTrue(xml.matches("(?s).*
+     * <th>\\s*Total\\s*</th>\\s*
+     * <th>\\s*[0-9]*\\s*</th>.*"));
+     * 
+     * 
+     * }
+     ***********/
 
 }

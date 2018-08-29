@@ -16,7 +16,6 @@
 
 package com.sun.faces.test.servlet30.stringconverter;
 
-
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -30,7 +29,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 @Ignore("Update to EL Resolver")
-public class StringConverterIT  {
+public class StringConverterIT {
 
     private String webUrl;
     private WebClient webClient;
@@ -48,17 +47,17 @@ public class StringConverterIT  {
 
     @Test
     public void testStringConverter() throws Exception {
-	HtmlPage page = webClient.getPage(webUrl + "faces/index.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/index.jsp");
 
-	HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:inputText");
-	input.setValueAttribute("newString");
+        HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:inputText");
+        input.setValueAttribute("newString");
 
-	HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
-	page = (HtmlPage) button.click();
-	assertTrue(-1 != page.asText().indexOf("String_newString"));
+        HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
+        page = (HtmlPage) button.click();
+        assertTrue(-1 != page.asText().indexOf("String_newString"));
 
-	button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
-	page = (HtmlPage) button.click();
-	assertTrue(-1 != page.asText().indexOf("String_String_newString"));
+        button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
+        page = (HtmlPage) button.click();
+        assertTrue(-1 != page.asText().indexOf("String_String_newString"));
     }
 }

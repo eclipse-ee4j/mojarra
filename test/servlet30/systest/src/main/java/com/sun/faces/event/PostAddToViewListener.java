@@ -16,28 +16,28 @@
 
 package com.sun.faces.event;
 
+import java.io.Serializable;
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIComponent;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @SessionScoped
-public class PostAddToViewListener implements SystemEventListener {
+public class PostAddToViewListener implements SystemEventListener, Serializable {
 
-    private boolean installed = false;
+    private static final long serialVersionUID = 1L;
+    private boolean installed;
 
     public String getInstallEvent() {
         if (!installed) {
-            FacesContext.getCurrentInstance().
-                    getApplication().subscribeToEvent(PostAddToViewEvent.class,
-                    HtmlInputText.class, this);
+            FacesContext.getCurrentInstance().getApplication().subscribeToEvent(PostAddToViewEvent.class, HtmlInputText.class, this);
             installed = true;
         }
 
@@ -45,22 +45,21 @@ public class PostAddToViewListener implements SystemEventListener {
     }
 
     public String getUninstallEvent() {
-        FacesContext.getCurrentInstance().
-                getApplication().unsubscribeFromEvent(PostAddToViewEvent.class,
-                HtmlInputText.class, this);
+        FacesContext.getCurrentInstance().getApplication().unsubscribeFromEvent(PostAddToViewEvent.class, HtmlInputText.class, this);
         installed = false;
         return "";
     }
 
+    @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
         Map<String, Object> requestMap = FacesContext.getCurrentInstance().getExternalContext().getRequestMap();
         requestMap.put("message", event.getClass().getName());
 
     }
 
+    @Override
     public boolean isListenerForSource(Object source) {
         return source instanceof HtmlInputText;
     }
-
 
 }

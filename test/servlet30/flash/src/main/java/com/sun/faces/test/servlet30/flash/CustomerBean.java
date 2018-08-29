@@ -17,7 +17,7 @@
 package com.sun.faces.test.servlet30.flash;
 
 public class CustomerBean {
-    
+
     /**
      * Constructor.
      */

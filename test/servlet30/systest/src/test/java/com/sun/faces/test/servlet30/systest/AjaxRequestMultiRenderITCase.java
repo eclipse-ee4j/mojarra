@@ -20,9 +20,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import static junit.framework.TestCase.assertTrue;
 
 public class AjaxRequestMultiRenderITCase extends HtmlUnitFacesITCase {
 
@@ -33,10 +30,10 @@ public class AjaxRequestMultiRenderITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -45,46 +42,45 @@ public class AjaxRequestMultiRenderITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxRequestMultiRenderITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testAjaxMultiRender() throws Exception {
         getPage("/faces/ajax/ajaxRequestMultiRender.xhtml");
         System.out.println("Start ajax multi render test");
 
         // First we'll check the first page was output correctly
-        assertTrue(check("out1","0"));
-        assertTrue(check("out2","0"));
-        assertTrue(check("out3","0"));
-        assertTrue(check("out4","0"));
+        assertTrue(check("out1", "0"));
+        assertTrue(check("out2", "0"));
+        assertTrue(check("out3", "0"));
+        assertTrue(check("out4", "0"));
 
         // Submit the ajax request
         HtmlSubmitInput button1 = (HtmlSubmitInput) lastpage.getHtmlElementById("button1");
         lastpage = (HtmlPage) button1.click();
 
         // Check that the request succeeds
-        assertTrue(check("out1","1"));
-        assertTrue(check("out2","1"));
-        assertTrue(check("out3","1"));
+        assertTrue(check("out1", "1"));
+        assertTrue(check("out2", "1"));
+        assertTrue(check("out3", "1"));
 
         // Check that the request did NOT update the rest of the page.
-        assertTrue(check("out4","0"));
+        assertTrue(check("out4", "0"));
 
         // Submit the reset
         HtmlSubmitInput reset = (HtmlSubmitInput) lastpage.getHtmlElementById("reset");
         lastpage = (HtmlPage) reset.click();
 
         // Check that reset succeeds
-        assertTrue(check("out1","0"));
-        assertTrue(check("out2","0"));
-        assertTrue(check("out3","0"));
-        assertTrue(check("out4","0"));
+        assertTrue(check("out1", "0"));
+        assertTrue(check("out2", "0"));
+        assertTrue(check("out3", "0"));
+        assertTrue(check("out4", "0"));
 
     }
 

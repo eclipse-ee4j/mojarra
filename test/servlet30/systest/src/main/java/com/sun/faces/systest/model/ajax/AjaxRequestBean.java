@@ -16,18 +16,23 @@
 
 package com.sun.faces.systest.model.ajax;
 
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.FacesException;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Named;
 
-@ManagedBean(name="ajaxrequest")
+@Named("ajaxrequest")
 @SessionScoped
-public class AjaxRequestBean {
+public class AjaxRequestBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Integer count = 0;
 
     private String echo = "echo";
@@ -35,6 +40,8 @@ public class AjaxRequestBean {
     private String echo2 = "";
     private String echo3 = "";
     private String echo4 = "";
+
+    private String contentType;
 
     public String getEcho1() {
         return echo1;
@@ -77,7 +84,7 @@ public class AjaxRequestBean {
     }
 
     public void echoValue(ValueChangeEvent event) {
-        String str = (String)event.getNewValue();
+        String str = (String) event.getNewValue();
         echo = str;
     }
 
@@ -101,7 +108,6 @@ public class AjaxRequestBean {
         throw new FacesException("Ajax request error");
     }
 
-    public String contentType = null;
     public String getContentType() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext eContext = context.getExternalContext();
@@ -112,6 +118,5 @@ public class AjaxRequestBean {
     public void setcontentType(String contentType) {
         this.contentType = contentType;
     }
-        
 
 }

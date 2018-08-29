@@ -27,33 +27,31 @@ import java.util.List;
 public class SelectMany05BeanWithNoSelectionValue extends SelectMany05Bean {
 
     private List<HobbitBean> hobbitList;
-    
-    
+
     public SelectMany05BeanWithNoSelectionValue() {
         HobbitBean[] hobbits = getHobbitBeanArray();
 
         hobbitList = new ArrayList<HobbitBean>();
         hobbitList.addAll(Arrays.asList(hobbits));
-        
+
     }
 
     @Override
     protected HobbitBean[] getHobbitBeanArray() {
         // Prepend a HobbitBean with the value of "No Selection"
         // without the quotes, to the super's hobbit bean array.
-        HobbitBean [] superResult = super.getHobbitBeanArray();
-        HobbitBean [] result = new HobbitBean[superResult.length + 1];
+        HobbitBean[] superResult = super.getHobbitBeanArray();
+        HobbitBean[] result = new HobbitBean[superResult.length + 1];
         result[0] = new HobbitBean("No Selection", "<No Selection>");
         for (int i = 1; i < result.length; i++) {
-            result[i] = superResult[i-1];
+            result[i] = superResult[i - 1];
         }
-        
+
         return result;
     }
-    
+
     public List<HobbitBean> getHobbitList() {
         return hobbitList;
     }
-    
 
 }

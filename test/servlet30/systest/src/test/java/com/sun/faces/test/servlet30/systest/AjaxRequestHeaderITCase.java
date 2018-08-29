@@ -20,7 +20,7 @@ import com.gargoylesoftware.htmlunit.html.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class AjaxRequestHeaderITCase  extends HtmlUnitFacesITCase {
+public class AjaxRequestHeaderITCase extends HtmlUnitFacesITCase {
 
     public AjaxRequestHeaderITCase(String name) {
         super(name);
@@ -29,10 +29,10 @@ public class AjaxRequestHeaderITCase  extends HtmlUnitFacesITCase {
     /*
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /*
      * Return the tests included in this test suite.
@@ -41,16 +41,15 @@ public class AjaxRequestHeaderITCase  extends HtmlUnitFacesITCase {
         return (new TestSuite(AjaxRequestHeaderITCase.class));
     }
 
-
     /*
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
 
-
-    // Tests request header information sent by an Ajax request 
+    // Tests request header information sent by an Ajax request
     public void testAjaxRequestHeader() throws Exception {
         getPage("/faces/ajax/ajaxRequestHeader.xhtml");
 
@@ -59,6 +58,6 @@ public class AjaxRequestHeaderITCase  extends HtmlUnitFacesITCase {
         lastpage = (HtmlPage) button1.click();
 
         // Check that the ajax request succeeds
-        checkTrue("form:out","application/x-www-form-urlencoded;charset=UTF-8");
+        checkTrue("form:out", "application/x-www-form-urlencoded;charset=UTF-8");
     }
 }

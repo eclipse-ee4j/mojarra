@@ -18,17 +18,12 @@ package com.sun.faces.test.servlet30.navigation2;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import javax.faces.FacesException;
-import javax.faces.el.MethodNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class NavigationHandlerIT {
-    
+
     /**
      * Stores the web URL.
      */
@@ -61,7 +56,6 @@ public class NavigationHandlerIT {
         HtmlPage page = webClient.getPage(webUrl + "/faces/navHandler.xhtml");
     }
 
-
     @Test
     public void testSimilarFromViewId() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "/faces/similarFromViewId.xhtml");
@@ -83,4 +77,3 @@ public class NavigationHandlerIT {
         HtmlPage page = webClient.getPage(webUrl + "/faces/redirectParams.xhtml");
     }
 }
-

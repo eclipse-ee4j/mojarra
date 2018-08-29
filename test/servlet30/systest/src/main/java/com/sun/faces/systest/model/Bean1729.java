@@ -16,24 +16,21 @@
 
 package com.sun.faces.systest.model;
 
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
-
 
 /**
  *
  * @author Keule
  */
-@ManagedBean(name="bean1729")
+@Named
 @RequestScoped
 public class Bean1729 {
 
     /** Creates a new instance of test */
     public Bean1729() {
     }
-
 
     private int input1 = -1;
 
@@ -50,7 +47,4 @@ public class Bean1729 {
         context.getExternalContext().getFlash().put("processActionListenerMessage", "Aufgerufen: " + System.currentTimeMillis());
     }
 
-
 }
-
-

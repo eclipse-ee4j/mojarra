@@ -17,16 +17,16 @@
 package com.sun.faces.test.servlet30.flashBasic;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class FlashMessagesBean {
 
-    @ManagedProperty(value="#{facesContext}")
+    @ManagedProperty(value = "#{facesContext}")
     protected FacesContext facesContext;
 
     public FacesContext getFacesContext() {
@@ -37,7 +37,6 @@ public class FlashMessagesBean {
         this.facesContext = facesContext;
     }
 
-
     protected String value;
 
     public String getValue() {
@@ -46,15 +45,12 @@ public class FlashMessagesBean {
 
     public void setValue(String value) {
         this.value = value;
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Mesage 1", "survives redirect");
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Mesage 1", "survives redirect");
         getFacesContext().addMessage(null, message);
-        message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Mesage 2", "survives redirect");
+        message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Mesage 2", "survives redirect");
         getFacesContext().addMessage(null, message);
         getFacesContext().getExternalContext().getFlash().setKeepMessages(true);
 
     }
-
 
 }

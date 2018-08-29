@@ -22,19 +22,20 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
 /**
- * <p>Test implementation of {@link Converter}.</p>
+ * <p>
+ * Test implementation of {@link Converter}.
+ * </p>
  */
 public class TestConverter implements Converter {
 
-    public Object getAsObject(FacesContext context, UIComponent component,
-                              String newValue) throws ConverterException {
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String newValue) throws ConverterException {
         // No action taken
         return newValue;
     }
 
-
-    public String getAsString(FacesContext context, UIComponent component,
-                              Object value) throws ConverterException {
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
         // No action taken
         return (value.toString());
     }

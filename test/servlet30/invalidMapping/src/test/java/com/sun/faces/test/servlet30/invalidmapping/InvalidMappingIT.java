@@ -48,7 +48,7 @@ public class InvalidMappingIT {
         assertEquals(500, page.getWebResponse().getStatusCode());
         String pageText = page.asXml();
         assertTrue(pageText.contains("FacesServlet"));
-        assertTrue(pageText.contains("url-pattern")); 
+        assertTrue(pageText.contains("url-pattern"));
         assertTrue(pageText.contains("/*"));
     }
 }

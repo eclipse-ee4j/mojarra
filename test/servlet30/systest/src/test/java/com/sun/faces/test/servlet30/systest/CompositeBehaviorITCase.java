@@ -16,16 +16,10 @@
 
 package com.sun.faces.test.servlet30.systest;
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
-
 public class CompositeBehaviorITCase extends HtmlUnitFacesITCase {
-
 
     public CompositeBehaviorITCase(String name) {
         super(name);
@@ -58,6 +52,6 @@ public class CompositeBehaviorITCase extends HtmlUnitFacesITCase {
 //            assertTrue("Can't find the message: \"Reaching this page indicates that the method expression retargeting was successful.\"",
 //                    page.asXml().contains("Reaching this page indicates that the method expression retargeting was successful."));
 //        }
-        }
+    }
 
 }

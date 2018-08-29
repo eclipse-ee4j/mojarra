@@ -21,7 +21,6 @@ import junit.framework.TestSuite;
 import com.gargoylesoftware.htmlunit.html.*;
 
 import java.util.List;
-import static junit.framework.TestCase.assertTrue;
 
 public class SelectStarITCase extends HtmlUnitFacesITCase {
 
@@ -32,10 +31,10 @@ public class SelectStarITCase extends HtmlUnitFacesITCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
-
 
     /**
      * Return the tests included in this test suite.
@@ -44,14 +43,13 @@ public class SelectStarITCase extends HtmlUnitFacesITCase {
         return (new TestSuite(SelectStarITCase.class));
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
+    @Override
     public void tearDown() {
         super.tearDown();
     }
-
 
     public void testSelectStarXhtml() throws Exception {
         String failMsg;
@@ -62,8 +60,8 @@ public class SelectStarITCase extends HtmlUnitFacesITCase {
         // Check SelectManyListbox
         HtmlSelect selectOneList = (HtmlSelect) lastpage.getHtmlElementById("selectOneListbox");
         List<HtmlOption> selectOneListOptions = selectOneList.getOptions();
-        failMsg = "Wrong number of options for SelectManyListbox, expected 5, got "+selectOneListOptions.size();
-        assertTrue(failMsg,selectOneListOptions.size() == 5);
+        failMsg = "Wrong number of options for SelectManyListbox, expected 5, got " + selectOneListOptions.size();
+        assertTrue(failMsg, selectOneListOptions.size() == 5);
         HtmlOption selectOption = selectOneListOptions.get(0);
         assertTrue(selectOption.getValueAttribute().equals("noSelection"));
         assertTrue(selectOption.asText().equals("No selection"));
@@ -126,8 +124,8 @@ public class SelectStarITCase extends HtmlUnitFacesITCase {
         // Check SelectManyListbox
         HtmlSelect selectOneList = (HtmlSelect) lastpage.getHtmlElementById("selectOneListbox");
         List<HtmlOption> selectOneListOptions = selectOneList.getOptions();
-        failMsg = "Wrong number of options for SelectManyListbox, expected 5, got "+selectOneListOptions.size();
-        assertTrue(failMsg,selectOneListOptions.size() == 5);
+        failMsg = "Wrong number of options for SelectManyListbox, expected 5, got " + selectOneListOptions.size();
+        assertTrue(failMsg, selectOneListOptions.size() == 5);
         HtmlOption selectOption = selectOneListOptions.get(0);
         assertTrue(selectOption.getValueAttribute().equals("noSelection"));
         assertTrue(selectOption.asText().equals("No selection"));
@@ -191,8 +189,8 @@ public class SelectStarITCase extends HtmlUnitFacesITCase {
         // Check SelectManyListbox
         HtmlSelect selectOneList = (HtmlSelect) lastpage.getHtmlElementById("selectOneListbox");
         List<HtmlOption> selectOneListOptions = selectOneList.getOptions();
-        failMsg = "Wrong number of options for SelectManyListbox, expected 4, got "+selectOneListOptions.size();
-        assertTrue(failMsg,selectOneListOptions.size() == 4);
+        failMsg = "Wrong number of options for SelectManyListbox, expected 4, got " + selectOneListOptions.size();
+        assertTrue(failMsg, selectOneListOptions.size() == 4);
         HtmlOption selectOption = selectOneListOptions.get(0);
         assertTrue(selectOption.getValueAttribute().equals("Apple"));
         assertTrue(selectOption.asText().equals("Apple"));
@@ -230,7 +228,6 @@ public class SelectStarITCase extends HtmlUnitFacesITCase {
         assertTrue(selectOption.asText().equals("Apple"));
     }
 
-    
     public void testMojarra932() throws Exception {
         getPage("/faces/render/Mojarra932UsingPage.xhtml");
         HtmlSelect selectOneMenu = (HtmlSelect) lastpage.getHtmlElementById("selectOneMenu");
@@ -242,7 +239,7 @@ public class SelectStarITCase extends HtmlUnitFacesITCase {
         String text = lastpage.asText();
         assertTrue(text.matches("(?s).*REQUIRED.*"));
         assertTrue(text.matches("(?s).*Frodo.*"));
-        
+
     }
 
 }

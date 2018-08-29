@@ -16,11 +16,12 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean(name = "repeatOffsetBean")
-public class RepeatOffsetBean implements Serializable {
+@Named
+@RequestScoped
+public class RepeatOffsetBean {
 
     private String[] strList;
     private int offset = 2;

@@ -16,15 +16,16 @@
 
 package com.sun.faces.systest.model;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
-
-@ManagedBean(name = "stringholder")
+@Named("stringholder")
 @SessionScoped
 public class StringHolder implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     private String s = "";
 
     public void setString(String s) {

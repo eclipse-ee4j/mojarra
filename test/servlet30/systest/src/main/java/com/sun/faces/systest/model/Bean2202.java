@@ -16,22 +16,20 @@
 
 package com.sun.faces.systest.model;
 
-import java.util.Arrays;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-
-@ManagedBean
+@Named
 @RequestScoped
 public class Bean2202 {
 
-    private String insertArea = "INSERT AREA"; 
+    private String insertArea = "INSERT AREA";
 
-    public Bean2202() { 
+    public Bean2202() {
     }
 
     private void setInsertArea(String insertArea) {
-        this.insertArea= insertArea;
+        this.insertArea = insertArea;
     }
 
     public String getInsertArea() {

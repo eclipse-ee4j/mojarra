@@ -17,20 +17,18 @@
 package com.sun.faces.test.servlet30.neverunwrapexceptions;
 
 public class ThrowWrappedExceptionOnPropertyGet {
-    
+
     private String stringProperty = "This is a String property";
 
     public String getStringProperty() {
-	if (null != stringProperty) {
-	    throw new IllegalStateException(new IllegalArgumentException(new UnsupportedOperationException()));
-	}
+        if (null != stringProperty) {
+            throw new IllegalStateException(new IllegalArgumentException(new UnsupportedOperationException()));
+        }
         return (this.stringProperty);
     }
-
 
     public void setStringProperty(String stringProperty) {
         this.stringProperty = stringProperty;
     }
-
 
 }
