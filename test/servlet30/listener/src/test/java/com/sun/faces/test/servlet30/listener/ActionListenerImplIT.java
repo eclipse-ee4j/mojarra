@@ -16,38 +16,28 @@
 
 package com.sun.faces.test.servlet30.listener;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.TextPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class ActionListenerImplIT {
 
-    /**
-     * Stores the web URL.
-     */
     private String webUrl;
-    /**
-     * Stores the web client.
-     */
     private WebClient webClient;
 
-    /**
-     * Setup before testing.
-     */
     @Before
     public void setUp() {
         webUrl = System.getProperty("integration.url");
         webClient = new WebClient();
     }
 
-    /**
-     * Tear down after testing.
-     */
     @After
     public void tearDown() {
         webClient.close();
@@ -55,21 +45,27 @@ public class ActionListenerImplIT {
 
     @Test
     public void testProcessAction() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "/faces/login.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "/faces/login.xhtml");
+
+        System.out.println("/n" + page.asXml() + "/n");
+
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = (HtmlPage) button.click();
-        assertTrue(page.asText().contains("VIEW ID IS:/must-login-first.jsp"));
 
-        page = webClient.getPage(webUrl + "/faces/login.jsp");
+        System.out.println("/n" + page.asXml() + "/n");
+
+        assertTrue(page.asText().contains("VIEW ID IS: /must-login-first.xhtml"));
+
+        page = webClient.getPage(webUrl + "/faces/login.xhtml");
         button = (HtmlSubmitInput) page.getHtmlElementById("form:submit1");
         page = (HtmlPage) button.click();
-        assertTrue(page.asText().contains("VIEW ID IS:/home.jsp"));
+        assertTrue(page.asText().contains("VIEW ID IS: /home.xhtml"));
     }
 
     @Test
     public void testIllegalArgException() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        HtmlPage page = webClient.getPage(webUrl + "/faces/login.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "/faces/login.xhtml");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit2");
         TextPage page1 = button.click();
         assertTrue(page1.getContent().contains("MethodNotFoundException"));

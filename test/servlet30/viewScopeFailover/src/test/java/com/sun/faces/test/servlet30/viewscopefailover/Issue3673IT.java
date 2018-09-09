@@ -16,12 +16,14 @@
 
 package com.sun.faces.test.servlet30.viewscopefailover;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class Issue3673IT {
 
@@ -45,6 +47,7 @@ public class Issue3673IT {
     public void testViewScopeFailover() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml");
         assertTrue(page.asXml().contains("value"));
+
         page = webClient.getPage(webUrl + "faces/setcount.xhtml");
         assertTrue(page.asXml().contains("3"));
     }

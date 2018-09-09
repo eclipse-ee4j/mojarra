@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf15361591165241" configfile="/com.sun.faces.test.servlet30.listener/src/main/webapp/WEB-INF/faces-navigation.xml">
+  <nodes xsi:type="pageflow:PFPage" name="*" comment="APPLICATION WIDE NAVIGATION HANDLING" x="122" y="754" id="pf15361617831072" referenceLink="//@navigationRule.2/@fromViewId|" outlinks="pf15361617831073 pf15361617831074 pf15361617831075 pf15361617831076" path="*"/>
+  <nodes xsi:type="pageflow:PFPage" name="Generic Logout Button" comment="Assume there is a Logout button on every page that &#xA;                invokes the logout Action." x="338" y="178" id="pf15361617831077" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf15361617831073" path="/logout.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="Generic Error Outcome" comment="Handle a generic error outcome that might be returned &#xA;                by any application Action." x="338" y="562" id="pf15361617831078" referenceLink="//@navigationRule.0/@navigationCase.1/@toViewId|" inlinks="pf15361617831074" path="/must-login-first.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="login" comment="LOGIN PAGE NAVIGATION HANDLING" x="122" y="2482" id="pf15361617831079" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf153616178310710 pf153616178310711 pf153616178310712" path="/login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="Successful Login" comment="Handle case where login succeeded." x="338" y="2098" id="pf153616178310713" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf153616178310710" path="/home.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="Successful New User Registration" comment="User registration for a new user succeeded." x="338" y="2482" id="pf153616178310714" referenceLink="//@navigationRule.1/@navigationCase.1/@toViewId|" inlinks="pf153616178310711" path="/welcome.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="Failed New User Registration" comment="User registration for a new user failed because of a&#xA;                duplicate username." x="338" y="2866" id="pf153616178310715" referenceLink="//@navigationRule.1/@navigationCase.2/@toViewId|" inlinks="pf153616178310712" path="/try-another-name.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="Search Form Success" x="338" y="946" id="pf153616178310816" referenceLink="//@navigationRule.2/@navigationCase.0/@toViewId|" inlinks="pf15361617831075" path="/search-results.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="Search Form Failure" x="338" y="1330" id="pf153616178310817" referenceLink="//@navigationRule.3/@navigationCase.1/@toViewId|" inlinks="pf15361617831076 pf153616178310818" path="/search-problem.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="movies/*" comment="Searching works slightly differently in part of the site." x="122" y="1522" id="pf153616178310819" referenceLink="//@navigationRule.3/@fromViewId|" outlinks="pf153616178310820 pf153616178310818" path="/movies/*"/>
+  <nodes xsi:type="pageflow:PFPage" name="Search Form Success" x="338" y="1714" id="pf153616178310821" referenceLink="//@navigationRule.3/@navigationCase.0/@toViewId|" inlinks="pf153616178310820" path="/movie-search-results.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="dir3/*" x="122" y="3250" id="pf153616178310822" referenceLink="//@navigationRule.4/@fromViewId|" outlinks="pf153616178310823" path="/dir3/*"/>
+  <nodes xsi:type="pageflow:PFPage" name="dir3/home" x="338" y="3250" id="pf153616178310824" referenceLink="//@navigationRule.4/@navigationCase.0/@toViewId|" inlinks="pf153616178310823" path="/dir3/home.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="dir1/dir2/dir3/*" x="122" y="3634" id="pf153616178310825" referenceLink="//@navigationRule.5/@fromViewId|" outlinks="pf153616178310826" path="/dir1/dir2/dir3/*"/>
+  <nodes xsi:type="pageflow:PFPage" name="dir1/dir2/dir3/home" x="338" y="3634" id="pf153616178310827" referenceLink="//@navigationRule.5/@navigationCase.0/@toViewId|" inlinks="pf153616178310826" path="/dir1/dir2/dir3/home.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="page1.xhtml" x="122" y="4018" id="pf153616178310828" referenceLink="//@navigationRule.6/@fromViewId|" outlinks="pf153616178310829 pf153616178310830 pf153616178310831" path="/page1.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="page2.xhtml" x="338" y="4018" id="pf153616178310832" referenceLink="//@navigationRule.6/@navigationCase.2/@toViewId|" inlinks="pf153616178310829 pf153616178310830 pf153616178310831" path="/page2.xhtml"/>
+  <links id="pf15361617831073" target="pf15361617831077" source="pf15361617831072" fromaction="#{userBean.logout}"/>
+  <links id="pf15361617831074" target="pf15361617831078" source="pf15361617831072" fromaction="#{newCustomer.loginRequired}"/>
+  <links id="pf153616178310710" target="pf153616178310713" source="pf15361617831079" outcome="success" fromaction="#{userBean.login}"/>
+  <links id="pf153616178310711" target="pf153616178310714" source="pf15361617831079" outcome="success" fromaction="#{userBean.register}"/>
+  <links id="pf153616178310712" target="pf153616178310715" source="pf15361617831079" outcome="duplicateUserName" fromaction="#{userBean.register}"/>
+  <links id="pf15361617831075" target="pf153616178310816" source="pf15361617831072" outcome="success" fromaction="#{searchForm.go}"/>
+  <links id="pf15361617831076" target="pf153616178310817" source="pf15361617831072" fromaction="#{searchForm.go}"/>
+  <links id="pf153616178310820" target="pf153616178310821" source="pf153616178310819" outcome="success" fromaction="#{searchForm.go}"/>
+  <links id="pf153616178310818" target="pf153616178310817" source="pf153616178310819" fromaction="#{searchForm.go}"/>
+  <links id="pf153616178310823" target="pf153616178310824" source="pf153616178310822" outcome="home"/>
+  <links id="pf153616178310826" target="pf153616178310827" source="pf153616178310825" outcome="home"/>
+  <links id="pf153616178310829" target="pf153616178310832" source="pf153616178310828" outcome="redirectOutcome1" redirect="true"/>
+  <links id="pf153616178310830" target="pf153616178310832" source="pf153616178310828" outcome="redirectOutcome2" redirect="true"/>
+  <links id="pf153616178310831" target="pf153616178310832" source="pf153616178310828" outcome="redirectOutcome3" redirect="true"/>
+</pageflow:Pageflow>

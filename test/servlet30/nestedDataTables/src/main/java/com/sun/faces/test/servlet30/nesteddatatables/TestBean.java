@@ -16,60 +16,50 @@
 
 package com.sun.faces.test.servlet30.nesteddatatables;
 
-import java.util.Vector;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.faces.context.FacesContext;
 
 public class TestBean implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
-    Vector _services = new Vector();
+
+    private List<Service> services = new ArrayList<>();
 
     public TestBean() {
 
-        System.err.println("Constructing a TestBean");
+        System.out.println("Constructing a TestBean");
 
-        Service service1 = new Service("Service 1");
-        // service1.addPort(new Port("80"));
-
-        _services.addElement(service1);
-
-        Service service2 = new Service("Service 2");
-        // service1.addPort(new Port("90"));
-
-        _services.addElement(service2);
+        services.add(new Service("Service 1"));
+        services.add(new Service("Service 2"));
     }
 
-    public Vector getServices() {
-        return _services;
+    public List<Service> getServices() {
+        return services;
     }
 
-    public void setServices(Vector services) {
-        _services = services;
+    public void setServices(List<Service> services) {
+        this.services = services;
     }
 
     public String addService() {
+        System.out.println("addService");
 
-        System.err.println("addService");
-
-        _services.add(new Service("New Service"));
+        services.add(new Service("New Service"));
 
         return "OK";
     }
 
     public String deleteService() {
-
         System.err.println("deleteService");
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Service service = (Service) facesContext.getExternalContext().getRequestMap().get("service");
 
-        _services.remove(service);
+        services.remove(service);
 
         return "OK";
     }
@@ -101,7 +91,7 @@ public class TestBean implements Serializable {
 
     public String getCurrentStateTable() {
         StringBuffer out = new StringBuffer();
-        Iterator inner, outer = _services.iterator();
+        Iterator inner, outer = services.iterator();
         Service curService;
         Port curPort;
 
@@ -123,7 +113,7 @@ public class TestBean implements Serializable {
     }
 
     public String printTree() {
-        Iterator inner, outer = _services.iterator();
+        Iterator inner, outer = services.iterator();
         Service curService;
         Port curPort;
         while (outer.hasNext()) {

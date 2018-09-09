@@ -26,7 +26,7 @@
         <description>
             LOGIN PAGE NAVIGATION HANDLING
         </description>
-        <from-view-id>/login.jsp</from-view-id>
+        <from-view-id>/login.xhtml</from-view-id>
         <navigation-case>
             <description>
                 Handle case where login succeeded based on logical outcome.
@@ -34,7 +34,7 @@
             <display-name>Successful Login</display-name>
             <from-action>#{userBean.login}</from-action>
             <from-outcome>success</from-outcome>
-            <to-view-id>/home.jsp</to-view-id>
+            <to-view-id>/home.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <description>
@@ -43,7 +43,7 @@
             <display-name>Successful Login</display-name>
             <from-action>#{userBean.login}</from-action>
             <if>#{true}</if>
-            <to-view-id>/home.jsp</to-view-id>
+            <to-view-id>/home.xhtml</to-view-id>
         </navigation-case>
 
         <navigation-case>
@@ -54,7 +54,7 @@
             <from-action>#{userBean.login2}</from-action>
             <from-outcome>failure</from-outcome>
             <if>#{false}</if>
-            <to-view-id>/shouldNotGetHere.jsp</to-view-id>
+            <to-view-id>/shouldNotGetHere.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <description>
@@ -62,7 +62,7 @@
             </description>
             <display-name>Failed Login</display-name>
             <from-action>#{userBean.login2}</from-action>
-            <to-view-id>/loginFailed.jsp</to-view-id>
+            <to-view-id>/loginFailed.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 

@@ -16,12 +16,14 @@
 
 package com.sun.faces.test.servlet30.wcagdatatable;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.junit.After;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class WcagDataTableIT {
 
@@ -44,7 +46,7 @@ public class WcagDataTableIT {
      */
     @Test
     public void testReplaceStateManager() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/index.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml");
         String pageText = page.asXml();
         // System.out.println(pageText);
         // (?s) is an "embedded flag expression" for the "DOTALL" operator.

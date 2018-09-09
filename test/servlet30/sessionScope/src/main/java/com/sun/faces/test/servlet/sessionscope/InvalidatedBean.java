@@ -21,7 +21,7 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -33,38 +33,23 @@ public class InvalidatedBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String text;
+    @Inject
+    private ApplicationScopedBean applicationScopedBean;
 
-    public InvalidatedBean() {
-        this.text = "This is from the constructor";
-    }
+    private String text = "This is from the initialiser";
 
     @PostConstruct
     public void init() {
-        FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().remove("count");
-        this.text = "This is from the @PostConstruct";
+        applicationScopedBean.setCount(0);
+        text = "This is from the @PostConstruct";
     }
 
     @PreDestroy
     public void destroy() {
-        /*
-         * For the purpose of the test we can actually ask for the current instance of the FacesContext,
-         * because we trigger invalidating of the session through a JSF page, however in the normal case of
-         * session invalidation this will NOT be true. So this means that normally the
-         *
-         * @PreDestroy annotated method should not try to use FacesContext.getCurrentInstance().
-         */
-        if (FacesContext.getCurrentInstance() != null) {
-            Integer count = 0;
-            if (FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().containsKey("count")) {
-                count = (Integer) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("count");
-            }
-            count++;
-            FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put("count", count);
-        }
+        applicationScopedBean.setCount(applicationScopedBean.getCount() + 1);
     }
 
     public String getText() {
-        return this.text;
+        return text;
     }
 }

@@ -16,6 +16,8 @@
 
 package com.sun.faces.test.servlet30.navigation2;
 
+import static com.sun.faces.util.Util.getViewHandler;
+import static java.util.Locale.US;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,10 +53,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.sun.faces.application.ApplicationImpl;
 import com.sun.faces.application.NavigationHandlerImpl;
 import com.sun.faces.config.manager.DbfFactory;
-import com.sun.faces.util.Util;
 
 @Named
 @SessionScoped
@@ -63,82 +62,96 @@ public class NavigationBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List testResultList = null;
-
-    public NavigationBean() {
-    }
+    private List<TestResult> testResults;
 
     public String getNavigationHandler() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        Application app = fc.getApplication();
-        ViewMapDestroyedListener listener = new ViewMapDestroyedListener();
-        app.subscribeToEvent(PreDestroyViewMapEvent.class, UIViewRoot.class, listener);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Application application = facesContext.getApplication();
+        ViewMapDestroyedListener viewMapDestroyedListener = new ViewMapDestroyedListener();
+        application.subscribeToEvent(PreDestroyViewMapEvent.class, UIViewRoot.class, viewMapDestroyedListener);
+
         try {
             loadTestResultList();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        NavigationHandlerImpl navHandler = (NavigationHandlerImpl) app.getNavigationHandler();
+
+        NavigationHandler navigationHandler = application.getNavigationHandler();
         String newViewId;
-        UIViewRoot page;
         boolean gotException = false;
 
-        for (int i = 0; i < testResultList.size(); i++) {
-            TestResult testResult = (TestResult) testResultList.get(i);
-            System.out.println("Testing from-view-id=" + testResult.fromViewId + " from-action=" + testResult.fromAction + " from-outcome="
-                    + testResult.fromOutcome);
-            page = Util.getViewHandler(fc).createView(fc, null);
-            page.setViewId(testResult.fromViewId);
-            page.setLocale(Locale.US);
-            page.getViewMap(); // cause the map to be created
-            fc.setViewRoot(page);
-            listener.reset();
+        for (TestResult testResult : testResults) {
+
+            System.out.println(
+                    "Testing from-view-id=" + testResult.fromViewId +
+                    " from-action=" + testResult.fromAction +
+                    " from-outcome=" + testResult.fromOutcome);
+
+            UIViewRoot viewRoot = getViewHandler(facesContext).createView(facesContext, testResult.fromViewId);
+
+            System.out.println("\n\n****\n\n VIEW ID" + testResult.fromViewId);
+
+            viewRoot.setViewId(testResult.fromViewId);
+            viewRoot.setLocale(US);
+            viewRoot.getViewMap(); // cause the map to be created
+            facesContext.setViewRoot(viewRoot);
+            viewMapDestroyedListener.reset();
+
             try {
-                navHandler.handleNavigation(fc, testResult.fromAction, testResult.fromOutcome);
+                navigationHandler.handleNavigation(facesContext, testResult.fromAction, testResult.fromOutcome);
             } catch (Exception e) {
-                // exception is valid only if context or fromoutcome is null.
+                // Exception is valid only if context or fromoutcome is null.
                 assertTrue(testResult.fromOutcome == null);
                 gotException = true;
             }
+
             if (!gotException) {
                 if (!testResult.fromViewId.equals(testResult.toViewId) && testResult.fromOutcome != null) {
-                    assertTrue(listener.getPassedEvent() instanceof PreDestroyViewMapEvent);
+                    assertTrue(viewMapDestroyedListener.getPassedEvent() instanceof PreDestroyViewMapEvent);
                 } else {
-                    assertTrue(!listener.wasProcessEventInvoked());
-                    assertTrue(listener.getPassedEvent() == null);
+                    assertTrue(!viewMapDestroyedListener.wasProcessEventInvoked());
+                    assertTrue(viewMapDestroyedListener.getPassedEvent() == null);
                 }
-                listener.reset();
-                newViewId = fc.getViewRoot().getViewId();
+
+                viewMapDestroyedListener.reset();
+
+                newViewId = facesContext.getViewRoot().getViewId();
+
+                viewMapDestroyedListener.reset();
+
                 if (testResult.fromOutcome == null) {
-                    listener.reset();
                     System.out.println("assertTrue(" + newViewId + ".equals(" + testResult.fromViewId + "))");
                     assertTrue(newViewId.equals(testResult.fromViewId));
                 } else {
-                    listener.reset();
                     System.out.println("assertTrue(" + newViewId + ".equals(" + testResult.toViewId + "))");
                     assertTrue(newViewId.equals(testResult.toViewId));
                 }
             }
         }
-        app.unsubscribeFromEvent(PreDestroyViewMapEvent.class, UIViewRoot.class, listener);
+
+        application.unsubscribeFromEvent(PreDestroyViewMapEvent.class, UIViewRoot.class, viewMapDestroyedListener);
+
         return "SUCCESS";
     }
 
     public String getSimilarViewIds() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        Application app = fc.getApplication();
-        NavigationHandler navHandler = app.getNavigationHandler();
-        UIViewRoot root = app.getViewHandler().createView(fc, "/dir1/dir2/dir3/test.jsp");
-        root.setLocale(Locale.US);
-        fc.setViewRoot(root);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Application application = facesContext.getApplication();
+        NavigationHandler navigationHandler = application.getNavigationHandler();
+        UIViewRoot viewRoot = application.getViewHandler().createView(facesContext, "/dir1/dir2/dir3/test.xhtml");
+
+        viewRoot.setLocale(US);
+        facesContext.setViewRoot(viewRoot);
+
         try {
-            navHandler.handleNavigation(fc, null, "home");
+            navigationHandler.handleNavigation(facesContext, null, "home");
         } catch (Exception e) {
             e.printStackTrace();
-            assert (false);
         }
-        String newViewId = fc.getViewRoot().getViewId();
-        assertTrue("newViewId is: " + newViewId, "/dir1/dir2/dir3/home.jsp".equals(newViewId));
+
+        String newViewId = facesContext.getViewRoot().getViewId();
+        assertTrue("newViewId is: " + newViewId, "/dir1/dir2/dir3/home.xhtml".equals(newViewId));
+
         return "SUCCESS";
     }
 
@@ -146,16 +159,15 @@ public class NavigationBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
         int cnt = 0;
-        assertTrue(app instanceof ApplicationImpl);
         ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) app.getNavigationHandler();
         Map caseListMap = handler.getNavigationCases();
         Iterator iter = caseListMap.keySet().iterator();
         while (iter.hasNext()) {
             String fromViewId = (String) iter.next();
-            if (fromViewId.equals("/login.jsp")) {
+            if (fromViewId.equals("/login.xhtml")) {
                 Set<NavigationCase> caseSet = (Set<NavigationCase>) caseListMap.get(fromViewId);
                 for (NavigationCase navCase : caseSet) {
-                    if (navCase.getFromViewId().equals("/login.jsp")) {
+                    if (navCase.getFromViewId().equals("/login.xhtml")) {
                         cnt++;
                     }
                 }
@@ -177,10 +189,10 @@ public class NavigationBean implements Serializable {
         Iterator iter = caseListMap.keySet().iterator();
         while (iter.hasNext()) {
             String fromViewId = (String) iter.next();
-            if (fromViewId.equals("/login.jsp")) {
+            if (fromViewId.equals("/login.xhtml")) {
                 Set<NavigationCase> caseSet = (Set<NavigationCase>) caseListMap.get(fromViewId);
                 for (NavigationCase navCase : caseSet) {
-                    if (navCase.getFromViewId().equals("/login.jsp")) {
+                    if (navCase.getFromViewId().equals("/login.xhtml")) {
                         cnt++;
                     }
                 }
@@ -191,55 +203,70 @@ public class NavigationBean implements Serializable {
     }
 
     public String getRedirectParameters() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        Application app = fc.getApplication();
-        UIViewRoot root = Util.getViewHandler(fc).createView(fc, null);
-        root.setViewId("/page1.xhtml");
-        fc.setViewRoot(root);
-        ConfigurableNavigationHandler cnh = (ConfigurableNavigationHandler) app.getNavigationHandler();
-        NavigationCase c1 = cnh.getNavigationCase(fc, null, "redirectOutcome1");
-        Map<String, List<String>> parameters = c1.getParameters();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Application application = facesContext.getApplication();
+
+        UIViewRoot viewRoot = getViewHandler(facesContext).createView(facesContext, "/page1.xhtml");
+        viewRoot.setViewId("/page1.xhtml");
+        facesContext.setViewRoot(viewRoot);
+
+        ConfigurableNavigationHandler configurableNavigationHandler = (ConfigurableNavigationHandler) application.getNavigationHandler();
+
+
+        // 1. Case 1
+
+        NavigationCase navigationCase1 = configurableNavigationHandler.getNavigationCase(facesContext, null, "redirectOutcome1");
+        Map<String, List<String>> parameters = navigationCase1.getParameters();
         assertNotNull(parameters);
         assertEquals(2, parameters.size());
+
         List<String> fooParams = parameters.get("foo");
         assertNotNull(fooParams);
         assertEquals(2, fooParams.size());
         assertEquals("bar", fooParams.get(0));
         assertEquals("bar2", fooParams.get(1));
+
         List<String> foo2Params = parameters.get("foo2");
         assertEquals(1, foo2Params.size());
         assertEquals("bar3", foo2Params.get(0));
-        assertTrue(c1.isIncludeViewParams());
+        assertTrue(navigationCase1.isIncludeViewParams());
 
-        NavigationCase c2 = cnh.getNavigationCase(fc, null, "redirectOutcome2");
-        parameters = c2.getParameters();
+
+        // 2. Case 2
+
+        NavigationCase navigationCase2 = configurableNavigationHandler.getNavigationCase(facesContext, null, "redirectOutcome2");
+        parameters = navigationCase2.getParameters();
         assertNull(parameters);
-        assertFalse(c2.isIncludeViewParams());
+        assertFalse(navigationCase2.isIncludeViewParams());
 
-        // ensure implicit navigation outcomes that include query strings
-        // are properly parsed.
 
-        NavigationCase c3 = cnh.getNavigationCase(fc, null,
+        // 3. Ensure implicit navigation outcomes that include query strings are properly parsed.
+
+        NavigationCase navigationCase3 = configurableNavigationHandler.getNavigationCase(
+                facesContext, null,
                 "test?foo=rab&amp;foo=rab2&foo2=rab3&amp;faces-redirect=true&includeViewParams=true&");
-        assertNotNull(c3);
-        parameters = c3.getParameters();
+        assertNotNull(navigationCase3);
+
+        parameters = navigationCase3.getParameters();
         assertNotNull(parameters);
-        assertTrue(c3.isRedirect());
-        assertTrue(c3.isIncludeViewParams());
+        assertTrue(navigationCase3.isRedirect());
+        assertTrue(navigationCase3.isIncludeViewParams());
         assertEquals(2, parameters.size());
+
         fooParams = parameters.get("foo");
         assertNotNull(fooParams);
         assertEquals(2, fooParams.size());
         assertEquals("rab", fooParams.get(0));
         assertEquals("rab2", fooParams.get(1));
+
         foo2Params = parameters.get("foo2");
         assertEquals(1, foo2Params.size());
         assertEquals("rab3", foo2Params.get(0));
 
-        // ensure implicit navigation outcomes that include query strings
-        // separated with &amp; are properly parsed.
 
-        NavigationCase c4 = cnh.getNavigationCase(fc, null,
+        // 4. Ensure implicit navigation outcomes that include query strings separated with &amp; are properly parsed.
+
+        NavigationCase c4 = configurableNavigationHandler.getNavigationCase(facesContext, null,
                 "test?foo=rab&amp;foo=rab2&foo2=rab3&amp;faces-redirect=true&amp;includeViewParams=true&");
         assertNotNull(c4);
         parameters = c4.getParameters();
@@ -256,41 +283,50 @@ public class NavigationBean implements Serializable {
         assertEquals(1, foo2Params.size());
         assertEquals("rab3", foo2Params.get(0));
 
-        // ensure invalid query string correctly handled
-        NavigationCase c5 = cnh.getNavigationCase(fc, null, "test?");
+
+        // 5. Ensure invalid query string correctly handled
+
+        NavigationCase c5 = configurableNavigationHandler.getNavigationCase(facesContext, null, "test?");
 
         assertNotNull(c5);
         assertNull(c5.getParameters());
         assertFalse(c5.isRedirect());
         assertFalse(c5.isIncludeViewParams());
 
-        // ensure redirect parameter el evaluation is performed more than once
-        NavigationCase ncase = cnh.getNavigationCase(fc, null, "redirectOutcome3");
-        String url = fc.getExternalContext().encodeRedirectURL("/path.xhtml", evaluateExpressions(fc, ncase.getParameters()));
+
+        // 6. Ensure redirect parameter el evaluation is performed more than once
+
+        NavigationCase ncase = configurableNavigationHandler.getNavigationCase(facesContext, null, "redirectOutcome3");
+        String url = facesContext.getExternalContext().encodeRedirectURL("/path.xhtml", evaluateExpressions(facesContext, ncase.getParameters()));
         System.out.println("URL: " + url);
         assertTrue(url.contains("param=1"));
-        url = fc.getExternalContext().encodeRedirectURL("/path.xhtml", evaluateExpressions(fc, ncase.getParameters()));
+        url = facesContext.getExternalContext().encodeRedirectURL("/path.xhtml", evaluateExpressions(facesContext, ncase.getParameters()));
         assertTrue(url.contains("param=2"));
+
         return "SUCCESS";
     }
 
     private void loadTestResultList() throws Exception {
 
-        DocumentBuilderFactory f = DbfFactory.getFactory();
-        f.setNamespaceAware(false);
-        f.setValidating(false);
-        DocumentBuilder builder = f.newDocumentBuilder();
+        DocumentBuilderFactory documentBuilderFactory = DbfFactory.getFactory();
+        documentBuilderFactory.setNamespaceAware(false);
+        documentBuilderFactory.setValidating(false);
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
 
-        Document d = builder.parse(((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext())
-                .getResourceAsStream("/WEB-INF/navigation-cases.xml"));
-        NodeList navigationRules = d.getDocumentElement().getElementsByTagName("test");
+        Document navigationCasesDocument =
+                builder.parse(((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext())
+                       .getResourceAsStream("/WEB-INF/navigation-cases.xml"));
+
+        NodeList navigationRules = navigationCasesDocument.getDocumentElement().getElementsByTagName("test");
         for (int i = 0; i < navigationRules.getLength(); i++) {
             Node test = navigationRules.item(i);
             NamedNodeMap attributes = test.getAttributes();
+
             Node fromViewId = attributes.getNamedItem("fromViewId");
             Node fromAction = attributes.getNamedItem("fromAction");
             Node fromOutput = attributes.getNamedItem("fromOutcome");
             Node toViewId = attributes.getNamedItem("toViewId");
+
             createAndAccrueTestResult(((fromViewId != null) ? fromViewId.getTextContent().trim() : null),
                     ((fromAction != null) ? fromAction.getTextContent().trim() : null),
                     ((fromOutput != null) ? fromOutput.getTextContent().trim() : null),
@@ -299,22 +335,23 @@ public class NavigationBean implements Serializable {
     }
 
     private void createAndAccrueTestResult(String fromViewId, String fromAction, String fromOutcome, String toViewId) {
-        if (testResultList == null) {
-            testResultList = new ArrayList();
+        if (testResults == null) {
+            testResults = new ArrayList<>();
         }
+
         TestResult testResult = new TestResult();
         testResult.fromViewId = fromViewId;
         testResult.fromAction = fromAction;
         testResult.fromOutcome = fromOutcome;
         testResult.toViewId = toViewId;
-        testResultList.add(testResult);
+        testResults.add(testResult);
     }
 
     class TestResult extends Object {
-        public String fromViewId = null;
-        public String fromAction = null;
-        public String fromOutcome = null;
-        public String toViewId = null;
+        public String fromViewId;
+        public String fromAction;
+        public String fromOutcome;
+        public String toViewId;
     }
 
     private static final class ViewMapDestroyedListener implements SystemEventListener {

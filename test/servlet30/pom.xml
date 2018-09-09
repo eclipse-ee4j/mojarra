@@ -102,9 +102,8 @@
         <module>flashForceWriteCookie</module>
         <module>flashNoSession</module>
         <module>implicitContract</module>
-        <module>jarOrdering</module>
+        <module>jarOrderingMain</module>
         <module>jarWithExactlyTwoContracts</module>
-        <module>jspFlash</module>
         <module>initRequestParameterMap</module>
         <module>invalidMapping</module>
         <module>lateBindings</module>
@@ -129,7 +128,6 @@
         <module>noWebXml</module>
         <module>passthrough</module>
         <module>processAsHtml5</module>
-        <module>processAsJspx</module>
         <module>processAsXhtml5</module>
         <module>renderKit</module>
         <module>requestCharEncodingNoSession</module>
@@ -140,12 +138,17 @@
         <module>stateViewExpiredExceptionMissing</module>
         <module>stringConverter</module>
         <module>suppressXmlDeclaration</module>
+        
+        <!--  
         <module>systest</module>
+        -->
+        
         <module>viewExpiredException</module>
         <module>viewRootPhaseListener</module>
         <module>viewRootPhaseListenerNoContextParam</module>
         <module>viewScopeFailover</module>
         <module>wcagDataTable</module>
+        
         <module>writeAttributeScriptDisabled</module>
         <module>writeAttributeScriptEnabled</module>
     </modules>

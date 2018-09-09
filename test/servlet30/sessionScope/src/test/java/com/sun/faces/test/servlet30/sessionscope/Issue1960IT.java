@@ -16,16 +16,18 @@
 
 package com.sun.faces.test.servlet30.sessionscope;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.sun.faces.test.junit.JsfTest;
 import com.sun.faces.test.junit.JsfTestRunner;
 import com.sun.faces.test.junit.JsfVersion;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
 
 @RunWith(JsfTestRunner.class)
 public class Issue1960IT {
@@ -50,9 +52,15 @@ public class Issue1960IT {
     @Test
     public void testInvalidatedSession() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/invalidatedSession.xhtml");
+        System.out.println("\n page: \n" + page.asXml() + "\n");
+
         assertTrue(page.asText().indexOf("This is from the @PostConstruct") != -1);
+
         webClient.getPage(webUrl + "faces/invalidatedPerform.xhtml");
         page = webClient.getPage(webUrl + "faces/invalidatedVerify.xhtml");
+
+        System.out.println("\n page: \n" + page.asXml() + "\n");
+
         assertTrue(page.asText().indexOf("1") != -1);
     }
 }

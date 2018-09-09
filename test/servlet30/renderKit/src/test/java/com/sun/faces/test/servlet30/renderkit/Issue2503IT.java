@@ -29,14 +29,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class Issue2503IT {
 
-    /**
-     * Stores the web URL.
-     */
     private String webUrl;
-
-    /**
-     * Stores the web client.
-     */
     private WebClient webClient;
 
     @Before
@@ -55,7 +48,7 @@ public class Issue2503IT {
     @Test
     public void testEscape() throws Exception {
 
-        String expected1 = "@import url(\"resources/import1.css\");";
+        String expected1 = "@import url(\"../resources/import1.css\");";
         String expected2 = "Tom &amp; Jerry";
 
         /*

@@ -16,18 +16,19 @@
 
 package com.sun.faces.test.servlet30.nesteddatatables;
 
-import javax.faces.model.ListDataModel;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.model.ListDataModel;
 
 public class BeanList extends Object {
 
-    private ListDataModel listDataModel = null;
-
-    public BeanList() {
-    }
-
+    private ListDataModel listDataModel;
     protected String outerDataName;
+    protected String innerDataName;
+    protected String name = "name";
+    protected int size = 10;
+    protected List inputValues = null;
 
     public String getOuterDataName() {
         return outerDataName;
@@ -37,8 +38,6 @@ public class BeanList extends Object {
         outerDataName = newOuterDataName;
     }
 
-    protected String innerDataName;
-
     public String getInnerDataName() {
         return innerDataName;
     }
@@ -46,8 +45,6 @@ public class BeanList extends Object {
     public void setInnerDataName(String newInnerDataName) {
         innerDataName = newInnerDataName;
     }
-
-    protected String name = "name";
 
     public String getName() {
         return name;
@@ -59,8 +56,6 @@ public class BeanList extends Object {
         }
         name = newName;
     }
-
-    protected int size = 10;
 
     public int getSize() {
         return size;
@@ -90,8 +85,6 @@ public class BeanList extends Object {
     public void setListDataModel(ListDataModel newListDataModel) {
         listDataModel = newListDataModel;
     }
-
-    protected List inputValues = null;
 
     public List getInputValues() {
         return inputValues;

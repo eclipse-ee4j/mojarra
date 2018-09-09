@@ -18,6 +18,11 @@ package com.sun.faces.test.servlet30.navigation2;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named("navbean")
+@RequestScoped
 public class NavBean {
 
     private static AtomicInteger integer = new AtomicInteger(0);

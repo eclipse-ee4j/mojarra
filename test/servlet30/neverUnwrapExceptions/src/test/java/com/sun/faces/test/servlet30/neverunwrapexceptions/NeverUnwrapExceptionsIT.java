@@ -16,18 +16,20 @@
 
 package com.sun.faces.test.servlet30.neverunwrapexceptions;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_1_4;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_2_1;
-import com.sun.faces.test.junit.JsfTest;
-import com.sun.faces.test.junit.JsfTestRunner;
-import com.sun.faces.test.junit.JsfVersion;
-import org.junit.After;
+import static com.sun.faces.test.junit.JsfVersion.JSF_2_2_0_M02;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.sun.faces.test.junit.JsfTest;
+import com.sun.faces.test.junit.JsfTestRunner;
 
 @RunWith(JsfTestRunner.class)
 public class NeverUnwrapExceptionsIT {
@@ -39,6 +41,8 @@ public class NeverUnwrapExceptionsIT {
     public void setUp() {
         webUrl = System.getProperty("integration.url");
         webClient = new WebClient();
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        //webClient.getOptions().setPrintContentOnFailingStatusCode(false);
     }
 
     @After
@@ -46,13 +50,12 @@ public class NeverUnwrapExceptionsIT {
         webClient.close();
     }
 
-    @JsfTest(value = JsfVersion.JSF_2_2_0_M02, excludes = { WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
+    @JsfTest(value = JSF_2_2_0_M02, excludes = { WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
     @Test
     public void testNeverUnwrapExceptions() throws Exception {
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        webClient.getOptions().setPrintContentOnFailingStatusCode(false);
-        HtmlPage page = webClient.getPage(webUrl + "faces/test.jsp");
+        HtmlPage page = webClient.getPage(webUrl + "faces/test.xhtml");
         String text = page.asText();
+
         assertTrue(text.contains("Exception class: javax.servlet.ServletException"));
         assertTrue(text.contains("Root cause: java.lang.IllegalStateException"));
         assertTrue(text.contains("Exception message: java.lang.IllegalArgumentException: java.lang.UnsupportedOperationException"));

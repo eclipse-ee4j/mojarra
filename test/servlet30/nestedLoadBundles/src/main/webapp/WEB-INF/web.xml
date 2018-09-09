@@ -22,11 +22,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_2_5.xsd"
          version="2.5"> 
 
-    <description>
-       JSF Systests
-    </description>
-    <display-name>JSF Systests</display-name>
-
     <context-param>
         <param-name>com.sun.faces.enabledLoadBundle11Compatibility</param-name>
         <param-value>true</param-value>
@@ -40,14 +35,11 @@
         <param-value>client</param-value>
     </context-param>
 
-    <!-- Faces Servlet -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup> 1 </load-on-startup>
     </servlet>
-
-    <!-- Faces Servlet Mapping -->
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
