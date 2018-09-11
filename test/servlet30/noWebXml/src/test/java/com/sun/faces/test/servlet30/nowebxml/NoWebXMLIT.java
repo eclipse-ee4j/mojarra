@@ -16,13 +16,15 @@
 
 package com.sun.faces.test.servlet30.nowebxml;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import org.junit.After;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class NoWebXMLIT {
 
@@ -43,7 +45,7 @@ public class NoWebXMLIT {
     @Test
     public void testNoWebXML() throws Exception {
 
-        HtmlPage page = webClient.getPage(webUrl + "faces/hello.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "hello.xhtml");
 
         HtmlSubmitInput button = page.getHtmlElementById("form:command");
         page = (HtmlPage) button.click();

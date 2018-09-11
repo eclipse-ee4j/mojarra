@@ -16,19 +16,28 @@
 
 package com.sun.faces.test.servlet30.listener;
 
+import static java.util.Arrays.asList;
+
 import java.util.HashMap;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named("newCustomer")
+@RequestScoped
 public class NewCustomerFormHandler {
 
-    public NewCustomerFormHandler() {
-    }
+    private String minimumAge;
+    private String maximumAge = "65";
+    private String nationality;
+    private List<Integer> allowableValues = asList(10, 20, 60, null);
+    private String[] firstNames = { "bob", "jerry" };
+    private HashMap<String, Double> claimAmounts;
 
     public String loginRequired() {
         return "loginRequired";
     }
-
-    private String minimumAge;
 
     public String getMinimumAge() {
         return minimumAge;
@@ -38,8 +47,6 @@ public class NewCustomerFormHandler {
         this.minimumAge = minimumAge;
     }
 
-    private String maximumAge;
-
     public String getMaximumAge() {
         return maximumAge;
     }
@@ -47,8 +54,6 @@ public class NewCustomerFormHandler {
     public void setMaximumAge(String maximumAge) {
         this.maximumAge = maximumAge;
     }
-
-    private String nationality;
 
     public String getNationality() {
         return nationality;
@@ -58,8 +63,6 @@ public class NewCustomerFormHandler {
         this.nationality = nationality;
     }
 
-    private List allowableValues;
-
     public List getAllowableValues() {
         return allowableValues;
     }
@@ -68,8 +71,6 @@ public class NewCustomerFormHandler {
         this.allowableValues = allowableValues;
     }
 
-    private String[] firstNames = { "bob", "jerry" };
-
     public String[] getFirstNames() {
         return firstNames;
     }
@@ -77,8 +78,6 @@ public class NewCustomerFormHandler {
     public void setFirstNames(String[] newNames) {
         firstNames = newNames;
     }
-
-    private HashMap claimAmounts;
 
     public HashMap getClaimAmounts() {
         return claimAmounts;

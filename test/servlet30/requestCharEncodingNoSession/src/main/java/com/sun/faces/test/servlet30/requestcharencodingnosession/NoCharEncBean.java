@@ -16,33 +16,37 @@
 
 package com.sun.faces.test.servlet30.requestcharencodingnosession;
 
-import javax.faces.application.ViewHandler;
-import javax.inject.Named;
-import javax.faces.bean.ViewScoped;
+import static javax.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
+
+import java.io.Serializable;
+
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
 @Named
 @ViewScoped
-public class NoCharEncBean {
+public class NoCharEncBean implements Serializable {
 
-    public NoCharEncBean() {
-    }
+    private static final long serialVersionUID = 1L;
 
     public String getMessage() {
         String result = "";
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext extContext = context.getExternalContext();
+        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         String extContextCharEnc = extContext.getResponseCharacterEncoding();
-        boolean hasSession = null != extContext.getSession(false);
+
+        boolean hasSession = extContext.getSession(false) != null;
+
         result = "extContextCharEnc: " + extContextCharEnc + " hasSession: " + hasSession;
         if (hasSession) {
-            result = result + " sessionCharEnc: " + extContext.getSessionMap().get(ViewHandler.CHARACTER_ENCODING_KEY);
+            result = result + " sessionCharEnc: " + extContext.getSessionMap().get(CHARACTER_ENCODING_KEY);
         }
 
         if (extContext.getRequestParameterMap().containsKey("makeSession")) {
             extContext.getSession(true);
         }
+
         if (extContext.getRequestParameterMap().containsKey("invalidateSession")) {
             extContext.invalidateSession();
         }

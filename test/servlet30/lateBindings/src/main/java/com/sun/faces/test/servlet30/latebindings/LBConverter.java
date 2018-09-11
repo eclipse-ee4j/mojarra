@@ -16,11 +16,11 @@
 
 package com.sun.faces.test.servlet30.latebindings;
 
-import javax.faces.convert.Converter;
-import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
-public class LBConverter implements Converter {
+public class LBConverter implements Converter<Object> {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -29,6 +29,6 @@ public class LBConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        return ((value != null) ? value.toString() : "");
+        return value != null ? value.toString() : "";
     }
 }

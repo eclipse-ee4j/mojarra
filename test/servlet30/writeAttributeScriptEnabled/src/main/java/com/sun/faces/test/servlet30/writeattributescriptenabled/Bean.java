@@ -16,12 +16,13 @@
 
 package com.sun.faces.test.servlet30.writeattributescriptenabled;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+@Named
+@RequestScoped
 public class Bean {
-
     public String getScriptAttribute() {
-        String result = "javascript:var element = document.getElementById(\"modifiedByScript\");element.innerHTML = \"<b>new value!</b>\";";
-
-        return result;
+        return "javascript:var element = document.getElementById(\"modifiedByScript\");element.innerHTML = \"<b>new value!</b>\";";
     }
-
 }

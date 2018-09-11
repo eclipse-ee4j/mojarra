@@ -16,12 +16,12 @@
 
 package com.sun.faces.test.servlet30.latebindings;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIComponent;
 
-public class LBValidator implements Validator {
+public class LBValidator implements Validator<Object> {
 
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {

@@ -21,19 +21,8 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
               version="1.2">
-    <managed-bean>
-        <managed-bean-name>outer62</managed-bean-name>
-        <managed-bean-class>com.sun.faces.test.servlet30.nesteddatatables.Bean62</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-        <managed-property>
-            <property-name>root</property-name>
-            <value>true</value>
-        </managed-property>    
-        <managed-property>
-            <property-name>label</property-name>
-            <value>root</value>
-        </managed-property>    
-    </managed-bean>
+    
+    
     <managed-bean>
         <managed-bean-name>outer</managed-bean-name>
         <managed-bean-class>java.util.ArrayList</managed-bean-class>
@@ -44,11 +33,13 @@
             <value>outer 1</value>
         </list-entries>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>bean</managed-bean-name>
         <managed-bean-class>com.sun.faces.test.servlet30.nesteddatatables.ActionBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>inner</managed-bean-name>
         <managed-bean-class>
@@ -72,11 +63,13 @@
             <value>3</value>
         </managed-property>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>testbean</managed-bean-name>
         <managed-bean-class>com.sun.faces.test.servlet30.nesteddatatables.TestBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>  
+    
     <managed-bean>
         <managed-bean-name>nestedBean1</managed-bean-name>
         <managed-bean-class>com.sun.faces.test.servlet30.nesteddatatables.NestedBean</managed-bean-class>
@@ -86,6 +79,7 @@
             <value>1</value>
         </managed-property>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>nestedBean2</managed-bean-name>
         <managed-bean-class>com.sun.faces.test.servlet30.nesteddatatables.NestedBean</managed-bean-class>
@@ -95,6 +89,7 @@
             <value>2</value>
         </managed-property>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>nestedBean3</managed-bean-name>
         <managed-bean-class>com.sun.faces.test.servlet30.nesteddatatables.NestedBean</managed-bean-class>
@@ -104,6 +99,7 @@
             <value>3</value>
         </managed-property>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>nestedBean4</managed-bean-name>
         <managed-bean-class>com.sun.faces.test.servlet30.nesteddatatables.NestedBean</managed-bean-class>
@@ -113,6 +109,7 @@
             <value>4</value>
         </managed-property>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>nestedTestList1</managed-bean-name>
         <managed-bean-class>java.util.ArrayList</managed-bean-class>
@@ -122,6 +119,7 @@
             <value>#{nestedBean2}</value>
         </list-entries>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>nestedTestList2</managed-bean-name>
         <managed-bean-class>java.util.ArrayList</managed-bean-class>
@@ -131,6 +129,7 @@
             <value>#{nestedBean4}</value>
         </list-entries>
     </managed-bean>
+    
     <managed-bean>
         <managed-bean-name>nestedTestList</managed-bean-name>
         <managed-bean-class>java.util.ArrayList</managed-bean-class>
@@ -140,6 +139,7 @@
             <value>#{nestedTestList2}</value>
         </list-entries>
     </managed-bean>
+    
     <navigation-rule>
         <from-view-id>/nested.jsp</from-view-id>
         <navigation-case>

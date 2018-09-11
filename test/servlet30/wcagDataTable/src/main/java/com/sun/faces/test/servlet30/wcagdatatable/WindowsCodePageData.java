@@ -19,10 +19,15 @@ package com.sun.faces.test.servlet30.wcagdatatable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
 /**
  *
  * @author edburns
  */
+@Named("dataSource")
+@RequestScoped
 public class WindowsCodePageData {
 
     /** Creates a new instance of WindowsCodePageData */

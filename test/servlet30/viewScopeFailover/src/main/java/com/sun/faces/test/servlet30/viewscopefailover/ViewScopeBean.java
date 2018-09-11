@@ -16,12 +16,16 @@
 
 package com.sun.faces.test.servlet30.viewscopefailover;
 
+import java.io.Serializable;
+
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import javax.faces.bean.ViewScoped;
 
 @Named
 @ViewScoped
-public class ViewScopeBean {
+public class ViewScopeBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public String getValue() {
         return "value";

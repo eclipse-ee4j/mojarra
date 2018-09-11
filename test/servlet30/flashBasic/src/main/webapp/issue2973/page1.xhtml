@@ -20,11 +20,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html">
 
-
-
     <h:head>
         <title>Facelet Title</title>
     </h:head>
+    
     <h:body>
         <h:form prependId="false">
             <h:panelGrid>
@@ -32,7 +31,6 @@
                 <h:inputText id="input" value="#{bean.text}" />
                 <h:commandButton id="button" action="#{bean.nextpage}" value="Click" />
                 <h:commandButton id="restart" action="#{bean.simulateServerRestart}" value="Simulate server restart" />
-                                
             </h:panelGrid>
         </h:form>
     </h:body>

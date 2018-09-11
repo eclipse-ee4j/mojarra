@@ -16,10 +16,10 @@
 
 package com.sun.faces.test.servlet30.nowebxml;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
-import javax.faces.bean.ApplicationScoped;
 
-@Named
+@Named("hello")
 @ApplicationScoped
 public class HelloBean {
 

@@ -19,13 +19,8 @@
 
 <faces-config xmlns="http://java.sun.com/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
-              version="1.2">
-    <managed-bean>
-        <managed-bean-name>bean</managed-bean-name>
-        <managed-bean-class>com.sun.faces.test.servlet30.latebindings.Bean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+              version="2.0">
     <converter>
         <converter-id>lbc</converter-id>
         <converter-class>com.sun.faces.test.servlet30.latebindings.LBConverter</converter-class>

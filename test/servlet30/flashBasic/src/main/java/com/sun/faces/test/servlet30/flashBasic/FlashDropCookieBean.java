@@ -16,28 +16,22 @@
 
 package com.sun.faces.test.servlet30.flashBasic;
 
-import javax.faces.application.FacesMessage;
-import javax.inject.Named;
-import javax.faces.bean.ManagedProperty;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Named
 @RequestScoped
 public class FlashDropCookieBean {
 
-    @ManagedProperty(value = "#{facesContext}")
-    protected FacesContext facesContext;
+    @Inject
+    private FacesContext facesContext;
 
-    public FacesContext getFacesContext() {
-        return facesContext;
-    }
-
-    public void setFacesContext(FacesContext facesContext) {
-        this.facesContext = facesContext;
-    }
-
-    protected String value;
+    private String value;
 
     public String getValue() {
         return value;
@@ -45,8 +39,10 @@ public class FlashDropCookieBean {
 
     public void setValue(String value) {
         this.value = value;
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message 1",
-                "we are showing the message, but the we are not accessing the flash");
-        getFacesContext().addMessage(null, message);
+
+        facesContext.addMessage(null,
+            new FacesMessage(SEVERITY_INFO,
+                "Message 1",
+                "we are showing the message, but the we are not accessing the flash"));
     }
 }

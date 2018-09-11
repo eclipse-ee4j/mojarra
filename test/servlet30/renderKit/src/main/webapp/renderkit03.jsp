@@ -51,9 +51,9 @@
     }
 
     // Acquire a view
-    UIViewRoot view = facesContext.getApplication().getViewHandler().restoreView(facesContext, "/renderkit03A.jsp");
+    UIViewRoot view = facesContext.getApplication().getViewHandler().restoreView(facesContext, "/renderkit03A.xhtml");
     if ( view == null)  {
-        view = facesContext.getApplication().getViewHandler().createView(facesContext, "/renderkit03A.jsp");
+        view = facesContext.getApplication().getViewHandler().createView(facesContext, "/renderkit03A.xhtml");
     }
     // Set the RenderKitFactory.HTML_BASIC_RENDER_KIT renderkit Id
     view.setRenderKitId("CUSTOM");

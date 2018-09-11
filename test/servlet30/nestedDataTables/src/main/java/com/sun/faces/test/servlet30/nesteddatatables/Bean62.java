@@ -16,17 +16,45 @@
 
 package com.sun.faces.test.servlet30.nesteddatatables;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.model.ListDataModel;
+import javax.inject.Named;
+
 
 /**
  * @author edburns
  */
-public class Bean62 {
+@Named("outer62")
+@SessionScoped
+public class Bean62 implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new instance of Bean62
+     * Holds value of property root.
      */
+    private boolean root = true;
+
+    /**
+     * Holds value of property model.
+     */
+    private ListDataModel<Object> model;
+
+    /**
+     * Holds value of property label.
+     */
+    private String label = "root";
+
+    /**
+     * Holds value of property curStatus.
+     */
+    private Object curStatus;
+
+
     public Bean62() {
     }
 
@@ -35,18 +63,13 @@ public class Bean62 {
     }
 
     /**
-     * Holds value of property model.
-     */
-    private ListDataModel model;
-
-    /**
      * Getter for property model.
      *
      * @return Value of property model.
      */
-    public ListDataModel getModel() {
-        if (null == this.model) {
-            ArrayList list = new ArrayList();
+    public ListDataModel<Object> getModel() {
+        if (model == null) {
+            List<Object> list = new ArrayList<>();
             if (isRoot()) {
                 list.add(new Bean62(label + ".one"));
                 list.add(new Bean62(label + ".two"));
@@ -56,9 +79,9 @@ public class Bean62 {
                 list.add("leaf2");
                 list.add("leaf3");
             }
-            model = new ListDataModel(list);
+            model = new ListDataModel<>(list);
         }
-        return this.model;
+        return model;
     }
 
     /**
@@ -66,15 +89,9 @@ public class Bean62 {
      *
      * @param model New value of property model.
      */
-    public void setModel(ListDataModel model) {
-
+    public void setModel(ListDataModel<Object> model) {
         this.model = model;
     }
-
-    /**
-     * Holds value of property root.
-     */
-    private boolean root = false;
 
     /**
      * Getter for property root.
@@ -82,8 +99,7 @@ public class Bean62 {
      * @return Value of property root.
      */
     public boolean isRoot() {
-
-        return this.root;
+        return root;
     }
 
     /**
@@ -92,14 +108,8 @@ public class Bean62 {
      * @param root New value of property root.
      */
     public void setRoot(boolean root) {
-
         this.root = root;
     }
-
-    /**
-     * Holds value of property label.
-     */
-    private String label;
 
     /**
      * Getter for property label.
@@ -107,8 +117,7 @@ public class Bean62 {
      * @return Value of property label.
      */
     public String getLabel() {
-
-        return this.label;
+        return label;
     }
 
     /**
@@ -117,12 +126,11 @@ public class Bean62 {
      * @param label New value of property label.
      */
     public void setLabel(String label) {
-
         this.label = label;
     }
 
     public String action() {
-        Bean62 yyyInstance = (Bean62) this.model.getRowData();
+        Bean62 yyyInstance = (Bean62) model.getRowData();
         Object wwwInstance = yyyInstance.getModel().getRowData();
 
         setCurStatus(wwwInstance);
@@ -131,18 +139,12 @@ public class Bean62 {
     }
 
     /**
-     * Holds value of property curStatus.
-     */
-    private Object curStatus;
-
-    /**
      * Getter for property curStatus.
      *
      * @return Value of property curStatus.
      */
     public Object getCurStatus() {
-
-        return this.curStatus;
+        return curStatus;
     }
 
     /**
@@ -151,7 +153,6 @@ public class Bean62 {
      * @param curStatus New value of property curStatus.
      */
     public void setCurStatus(Object curStatus) {
-
         this.curStatus = curStatus;
     }
 }

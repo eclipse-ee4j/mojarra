@@ -19,10 +19,11 @@ package com.sun.faces.test.servlet30.navigation2;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import javax.inject.Named;
-import javax.faces.bean.ViewScoped;
+
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 
 /**
@@ -35,10 +36,8 @@ import javax.servlet.ServletContext;
 @ViewScoped
 public class OutcomeParameterBean implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
+
     private String searchTermA = "Laurel & Hardy";
     private String searchTermB = "Laurel & Hardy";
     private String searchTermC = "Laurel & Hardy";

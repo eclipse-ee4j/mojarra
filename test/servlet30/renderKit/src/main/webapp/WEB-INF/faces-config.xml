@@ -22,25 +22,27 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
-  <render-kit>
-    <render-kit-id>CUSTOM</render-kit-id>
-    <render-kit-class>com.sun.faces.test.servlet30.renderkit.CustomRenderKitImpl</render-kit-class>
-    <renderer>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Text</renderer-type>
-      <renderer-class>com.sun.faces.test.servlet30.renderkit.TextRenderer</renderer-class>
-    </renderer>
-    <renderer>
-      <component-family>javax.faces.Form</component-family>
-      <renderer-type>javax.faces.Form</renderer-type>
-      <renderer-class>com.sun.faces.test.servlet30.renderkit.FormRenderer</renderer-class>
-    </renderer>
-    <renderer>
-      <component-family>javax.faces.Command</component-family>
-      <renderer-type>javax.faces.Button</renderer-type>
-      <renderer-class>com.sun.faces.test.servlet30.renderkit.ButtonRenderer</renderer-class>
-    </renderer>
-
-  </render-kit>
+    <render-kit>
+        <render-kit-id>CUSTOM</render-kit-id>
+        <render-kit-class>com.sun.faces.test.servlet30.renderkit.CustomRenderKitImpl</render-kit-class>
+        
+        <renderer>
+            <component-family>javax.faces.Output</component-family>
+            <renderer-type>javax.faces.Text</renderer-type>
+            <renderer-class>com.sun.faces.test.servlet30.renderkit.TextRenderer</renderer-class>
+        </renderer>
+        
+        <renderer>
+            <component-family>javax.faces.Form</component-family>
+            <renderer-type>javax.faces.Form</renderer-type>
+            <renderer-class>com.sun.faces.test.servlet30.renderkit.FormRenderer</renderer-class>
+        </renderer>
+        
+        <renderer>
+            <component-family>javax.faces.Command</component-family>
+            <renderer-type>javax.faces.Button</renderer-type>
+            <renderer-class>com.sun.faces.test.servlet30.renderkit.ButtonRenderer</renderer-class>
+        </renderer>
+    </render-kit>
 
 </faces-config>

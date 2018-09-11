@@ -16,13 +16,16 @@
 
 package com.sun.faces.test.servlet30.flashBasic;
 
-import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
+
 import java.util.logging.Logger;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 @Named
+@RequestScoped
 public class Bean {
     private String text;
 
@@ -42,11 +45,12 @@ public class Bean {
     public String simulateServerRestart() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getApplicationMap().remove("csfcff");
+        Logger.getLogger(Bean.class.getName()).log(SEVERE, "REMOVING csfcff");
         try {
             Thread.currentThread();
             Thread.sleep(3000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Bean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Bean.class.getName()).log(SEVERE, null, ex);
         }
 
         return null;

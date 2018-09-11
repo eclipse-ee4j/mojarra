@@ -23,6 +23,7 @@
 package com.sun.faces.test.servlet30.neverunwrapexceptions;
 
 import java.io.IOException;
+
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -34,11 +35,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  *
  * @author edburns
- * @version
  */
 public class CatchExceptionServlet implements Servlet {
 
-    private FacesServlet wrapped = null;
+    private FacesServlet wrapped;
 
     @Override
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
