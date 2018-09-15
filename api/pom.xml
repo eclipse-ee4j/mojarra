@@ -378,19 +378,6 @@
                         
                     </execution>
                     
-                    <execution>
-                        <id>attach-managedbeandocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>managed-bean-javadoc</classifier>
-                            <outputDirectory>${project.build.directory}/managed-bean-javadocs</outputDirectory>
-                            <reportOutputDirectory>${project.build.directory}/site/managed-bean-javadocs</reportOutputDirectory>
-                            <subpackages>javax.faces.bean</subpackages>
-                        </configuration>
-                        
-                    </execution>
                 </executions>
             </plugin>
            
