@@ -24,10 +24,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
-import java.util.Arrays;
 
 import com.sun.faces.config.beans.FacesConfigBean;
 import com.sun.faces.config.beans.RendererBean;
@@ -54,7 +52,7 @@ public abstract class JspTLDGenerator implements Generator {
     public JspTLDGenerator(PropertyManager propManager) {
 
         this.propManager = propManager;
-        
+
         File outputDir =
             new File(System.getProperty("user.dir") + File.separatorChar +
             propManager.getProperty(PropertyManager.BASE_OUTPUT_DIR) +
@@ -73,6 +71,7 @@ public abstract class JspTLDGenerator implements Generator {
     // -------------------------------------------------- Methods from Generator
 
 
+    @Override
     public void generate(FacesConfigBean configBean) {
 
         this.configBean = configBean;
@@ -147,6 +146,7 @@ public abstract class JspTLDGenerator implements Generator {
      *
      * @param componentFamily the component family
      * @param rendererType the renderer type
+     * @return tldTagName
      */
     protected String makeTldTagName(String componentFamily,
                                     String rendererType) {
@@ -171,6 +171,8 @@ public abstract class JspTLDGenerator implements Generator {
 
 
     /**
+     * @param renderer renderer
+     * @param  attribute attribute
      * @return true if this attribute is in the set of attributes to be excluded
      *         by this renderer.
      */
@@ -189,14 +191,14 @@ public abstract class JspTLDGenerator implements Generator {
     } // END attributeShouldBeExcluded
 
 
-    /**
+    /*
      * Return the tag body content information (if any) for a given tag.
      */
     protected String getBodyContent(String tagName) {
         return DEFAULT_BODY_CONTENT;
     }
 
-    /**
+    /*
      * Return the "rtexprvalue" element value for the tag attribute.
      */
     protected String getRtexprvalue(String tagName, String attributeName) {
@@ -204,7 +206,7 @@ public abstract class JspTLDGenerator implements Generator {
     }
 
 
-    /**
+    /*
      * <p>Load any additional tag definitions from the specified file.  This
      * file might include tags such as "column" which have no renderer, but need
      * to be generated into the TLD file.</p>
@@ -256,7 +258,7 @@ public abstract class JspTLDGenerator implements Generator {
 
 
     /**
-     * </p>A simple class to handle the writing of XML documents.</p>
+     * A simple class to handle the writing of XML documents.
      */
     protected static class XMLWriter extends OutputStreamWriter {
 

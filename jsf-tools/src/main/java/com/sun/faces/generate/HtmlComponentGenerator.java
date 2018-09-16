@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import com.sun.faces.config.beans.ComponentBean;
 import com.sun.faces.config.beans.DescriptionBean;
 import com.sun.faces.config.beans.FacesConfigBean;
@@ -35,8 +34,9 @@ import com.sun.faces.util.ToolsUtil;
 /**
  * <p>Generate concrete HTML component classes.  Classes will be generated for
  * each <code>&lt;component&gt;</code> element in the specified configuration
- * file whose absolute class name is in package <code>javax.faces.component.html</code>.</p>
- * <p/>
+ * file whose absolute class name is in package <code>javax.faces.component.html</code>.
+ * </p>
+
  * <p>This application requires the following command line options:</p> <ul>
  * <li><strong>--config</strong> Absolute pathname to an input configuration
  * file that will be parsed by the <code>parse()</code> method.</li>
@@ -46,8 +46,8 @@ import com.sun.faces.util.ToolsUtil;
  * generated Java source code will be created.</li> <li><strong>--dtd</strong>
  * Pipe delimited list of public identifiers and absolute pathnames to files
  * containing the DTDs used to validate the input configuration files.
- * PRECONDITION: The list is the sequence: <public id>|<dtd path>|<public
- * id>|<dtd path>...</li> </ul>
+ * PRECONDITION: The list is the sequence: &lt;public id&gt;|&lt;dtd path&gt;|&lt;public
+ * id&gt;|&lt;dtd path&gt;...</li> </ul>
  */
 
 public class HtmlComponentGenerator extends AbstractGenerator {
@@ -93,6 +93,7 @@ public class HtmlComponentGenerator extends AbstractGenerator {
      * <p>Generate the concrete HTML component class based on the current
      * component configuration bean.</p>
      */
+    @Override
     public void generate(FacesConfigBean configBean) {
 
         this.configBean = configBean;
@@ -193,8 +194,8 @@ public class HtmlComponentGenerator extends AbstractGenerator {
         writer.writeImport("java.util.ArrayList");
         writer.writeImport("java.util.Arrays");
         if(useBehavior){
-            writer.writeImport("java.util.Collection");        	
-            writer.writeImport("java.util.Collections");        	
+            writer.writeImport("java.util.Collection");
+            writer.writeImport("java.util.Collections");
         }
         writer.writeImport("java.util.List");
         writer.write('\n');
@@ -350,7 +351,7 @@ public class HtmlComponentGenerator extends AbstractGenerator {
 
             // Document getter method
             String description = "<p>Return the value of the <code>" +
-                                 pb.getPropertyName() + "</code> property.</p>" + 
+                                 pb.getPropertyName() + "</code> property.</p>" +
                                  "\n@return the property value";
             DescriptionBean db = pb.getDescription("");
             if (db != null) {
@@ -424,10 +425,10 @@ public class HtmlComponentGenerator extends AbstractGenerator {
             //writer.fwrite("}\n\n");
 
             // Generate the setter method
-            
+
             String maybeUnderscore = (pb.getPropertyName().equals("for") || pb.getPropertyName().equals("public"))
                     ? "_" : "";
-            
+
             writer.writeJavadocComment("<p>Set the value of the <code>"
                                        +
                                        pb.getPropertyName()
@@ -578,7 +579,7 @@ public class HtmlComponentGenerator extends AbstractGenerator {
             writer.indent();
             writer.fwrite("return EVENT_NAMES;");
             writer.outdent();
-            writer.fwrite("}\n\n\n");        	
+            writer.fwrite("}\n\n\n");
             writer.fwrite("public String getDefaultEventName() {\n");
             writer.indent();
             if(null == defaultEventName){
@@ -587,7 +588,7 @@ public class HtmlComponentGenerator extends AbstractGenerator {
                 writer.fwrite("return \""+defaultEventName+"\";");
             }
             writer.outdent();
-            writer.fwrite("}\n\n\n");        	
+            writer.fwrite("}\n\n\n");
         }
         writer.fwrite( "private void handleAttribute(String name, Object value) {\n");
         writer.indent();

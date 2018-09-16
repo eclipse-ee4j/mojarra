@@ -17,16 +17,17 @@
 package com.sun.faces.config.beans;
 
 
-import com.sun.faces.util.ToolsUtil;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.util.ToolsUtil;
+
 
 
 /**
- * <p>Configuration bean for <code>&lt;render-kit&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;render-kit&gt;</code> element.</p>
  */
 
 public class RenderKitBean extends FeatureBean {

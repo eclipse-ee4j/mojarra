@@ -42,6 +42,7 @@ public interface PropertyHolder {
      * if any; otherwise, return <code>null</code>.</p>
      *
      * @param name Name of the property for which to retrieve a descriptor
+     * @return the property descriptor
      */
     public PropertyBean getProperty(String name);
 
@@ -49,6 +50,7 @@ public interface PropertyHolder {
     /**
      * <p>Return the descriptors of all properties for which descriptors have
      * been registered, or an empty array if none have been registered.</p>
+     * @return the descriptors of all properties
      */
     public PropertyBean[] getProperties();
 

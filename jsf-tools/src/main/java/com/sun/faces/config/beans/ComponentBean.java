@@ -22,7 +22,7 @@ import java.util.TreeMap;
 
 
 /**
- * <p>Configuration bean for <code>&lt;attribute&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;attribute&gt;</code> element.</p>
  */
 
 public class ComponentBean extends FeatureBean
@@ -81,22 +81,26 @@ public class ComponentBean extends FeatureBean
     private Map<String,AttributeBean> attributes = new TreeMap<String, AttributeBean>();
 
 
+    @Override
     public void addAttribute(AttributeBean descriptor) {
         attributes.put(descriptor.getAttributeName(), descriptor);
     }
 
 
+    @Override
     public AttributeBean getAttribute(String name) {
         return (attributes.get(name));
     }
 
 
+    @Override
     public AttributeBean[] getAttributes() {
         AttributeBean results[] = new AttributeBean[attributes.size()];
         return (attributes.values().toArray(results));
     }
 
 
+    @Override
     public void removeAttribute(AttributeBean descriptor) {
         attributes.remove(descriptor.getAttributeName());
     }
@@ -108,22 +112,26 @@ public class ComponentBean extends FeatureBean
     private Map<String,PropertyBean> properties = new TreeMap<String, PropertyBean>();
 
 
+    @Override
     public void addProperty(PropertyBean descriptor) {
         properties.put(descriptor.getPropertyName(), descriptor);
     }
 
 
+    @Override
     public PropertyBean getProperty(String name) {
         return (properties.get(name));
     }
 
 
+    @Override
     public PropertyBean[] getProperties() {
         PropertyBean results[] = new PropertyBean[properties.size()];
         return (properties.values().toArray(results));
     }
 
 
+    @Override
     public void removeProperty(PropertyBean descriptor) {
         properties.remove(descriptor.getPropertyName());
     }

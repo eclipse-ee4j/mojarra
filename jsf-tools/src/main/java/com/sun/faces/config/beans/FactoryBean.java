@@ -16,14 +16,15 @@
 
 package com.sun.faces.config.beans;
 
-import com.sun.faces.config.DigesterFactory;
-import com.sun.faces.config.DigesterFactory.VersionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.faces.config.DigesterFactory;
+import com.sun.faces.config.DigesterFactory.VersionListener;
+
 
 /**
- * <p>Configuration bean for <code>&lt;factory&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;factory&gt;</code> element.</p>
  */
 
 public class FactoryBean {
@@ -35,7 +36,7 @@ public class FactoryBean {
     private List<String> applicationFactories = new ArrayList<String>();
     public List<String> getApplicationFactories() { return applicationFactories; }
     public void addApplicationFactory(String applicationFactory)
-    { 
+    {
         VersionListener listener = DigesterFactory.getVersionListener();
         if (null != listener) {
             listener.takeActionOnArtifact(applicationFactory);
@@ -46,7 +47,7 @@ public class FactoryBean {
     private List<String> facesContextFactories = new ArrayList<String>();
     public List<String> getFacesContextFactories() { return facesContextFactories; }
     public void addFacesContextFactory(String facesContextFactory)
-    { 
+    {
         VersionListener listener = DigesterFactory.getVersionListener();
         if (null != listener) {
             listener.takeActionOnArtifact(facesContextFactory);
@@ -57,7 +58,7 @@ public class FactoryBean {
     private List<String> lifecycleFactories = new ArrayList<String>();
     public List<String> getLifecycleFactories() { return lifecycleFactories; }
     public void addLifecycleFactory(String lifecycleFactory)
-    { 
+    {
         VersionListener listener = DigesterFactory.getVersionListener();
         if (null != listener) {
             listener.takeActionOnArtifact(lifecycleFactory);
@@ -68,7 +69,7 @@ public class FactoryBean {
     private List<String> renderKitFactories = new ArrayList<String>();
     public List<String> getRenderKitFactories() { return renderKitFactories; }
     public void addRenderKitFactory(String renderKitFactory)
-    { 
+    {
         VersionListener listener = DigesterFactory.getVersionListener();
             if (null != listener) {
                 listener.takeActionOnArtifact(renderKitFactory);

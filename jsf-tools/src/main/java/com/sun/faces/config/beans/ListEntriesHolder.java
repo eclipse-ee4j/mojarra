@@ -31,6 +31,7 @@ public interface ListEntriesHolder {
     /**
      * <p>Return the current <code>listEntries</code> object
      * for this configuration bean.</p>
+     * @return the current <code>listEntries</code>
      */
     public ListEntriesBean getListEntries();
 

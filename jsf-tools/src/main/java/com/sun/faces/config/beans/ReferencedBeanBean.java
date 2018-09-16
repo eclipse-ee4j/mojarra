@@ -18,7 +18,7 @@ package com.sun.faces.config.beans;
 
 
 /**
- * <p>Configuration bean for <code>&lt;referenced-bean&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;referenced-bean&gt;</code> element.</p>
  */
 
 public class ReferencedBeanBean extends FeatureBean {

@@ -17,16 +17,17 @@
 package com.sun.faces.config.beans;
 
 
-import com.sun.faces.config.DigesterFactory;
-import com.sun.faces.config.DigesterFactory.VersionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.sun.faces.config.DigesterFactory;
+import com.sun.faces.config.DigesterFactory.VersionListener;
+
 
 /**
- * <p>Configuration bean for <code>&lt;application&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;application&gt;</code> element.</p>
  */
 
 // IMPLEMENTATION NOTE:  It is necessary to collect the class names of the
@@ -74,7 +75,7 @@ public class ApplicationBean {
 
     public String[] getActionListeners() {
         String results[] = new String[actionListeners.size()];
-        return ((String[]) actionListeners.toArray(results));
+        return (actionListeners.toArray(results));
     }
 
 
@@ -102,7 +103,7 @@ public class ApplicationBean {
 
     public String[] getNavigationHandlers() {
         String results[] = new String[navigationHandlers.size()];
-        return ((String[]) navigationHandlers.toArray(results));
+        return (navigationHandlers.toArray(results));
     }
 
 
@@ -130,7 +131,7 @@ public class ApplicationBean {
 
     public String[] getPropertyResolvers() {
         String results[] = new String[propertyResolvers.size()];
-        return ((String[]) propertyResolvers.toArray(results));
+        return (propertyResolvers.toArray(results));
     }
 
 
@@ -155,13 +156,13 @@ public class ApplicationBean {
     public ResourceBundleBean[] getResourceBundles() {
         ResourceBundleBean results[] =
             new ResourceBundleBean[resourceBundles.size()];
-        return ((ResourceBundleBean[]) resourceBundles.values().toArray(results));
+        return (resourceBundles.values().toArray(results));
     }
-    
+
     public void clearResourceBundles() {
         resourceBundles.clear();
     }
-    
+
     public void removeResourceBundle(ResourceBundleBean descriptor) {
         resourceBundles.remove(descriptor.getVar());
     }
@@ -185,7 +186,7 @@ public class ApplicationBean {
 
     public String[] getStateManagers() {
         String results[] = new String[stateManagers.size()];
-        return ((String[]) stateManagers.toArray(results));
+        return (stateManagers.toArray(results));
     }
 
 
@@ -213,14 +214,14 @@ public class ApplicationBean {
 
     public String[] getVariableResolvers() {
         String results[] = new String[variableResolvers.size()];
-        return ((String[]) variableResolvers.toArray(results));
+        return (variableResolvers.toArray(results));
     }
 
 
     public void removeVariableResolver(String variableResolver) {
         variableResolvers.remove(variableResolver);
     }
-    
+
     // ------------------------------------------ ELResolver Holder Methods
 
 
@@ -240,7 +241,7 @@ public class ApplicationBean {
 
     public String[] getELResolvers() {
         String results[] = new String[elResolvers.size()];
-        return ((String[]) elResolvers.toArray(results));
+        return (elResolvers.toArray(results));
     }
 
 
@@ -268,7 +269,7 @@ public class ApplicationBean {
 
     public String[] getViewHandlers() {
         String results[] = new String[viewHandlers.size()];
-        return ((String[]) viewHandlers.toArray(results));
+        return (viewHandlers.toArray(results));
     }
 
 

@@ -16,32 +16,31 @@
 
 package com.sun.faces.generate;
 
-import com.sun.faces.config.beans.ComponentBean;
-import com.sun.faces.config.beans.FacesConfigBean;
-import com.sun.faces.config.beans.PropertyBean;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.List;
+
+import com.sun.faces.config.beans.ComponentBean;
+import com.sun.faces.config.beans.FacesConfigBean;
+import com.sun.faces.config.beans.PropertyBean;
 
 /**
  * This class is used to generate the AttributeManager, which is used
  * by mainly Renderers to render passthrough attribues (via
  * RenderKitUtils#renderPassThruAttributes)
- * 
+ *
  * <p>
  * The AttributeManager mainly holds a [component name/attributes] map, and the code to
  * create that map is the main things this generator generates.
- * 
- * Prior to this generator, Mojarra maintained a static list of passthrough attributes that would 
+ *
+ * Prior to this generator, Mojarra maintained a static list of passthrough attributes that would
  * be applied to all components when rendered. The main problem with doing this is that some components
  * have a very small list of passthrough attributes and so we'd waste cycles processing the generic list.
- *  
+ *
  * To alleviate this issue:
  *
  *<pre>
@@ -62,15 +61,15 @@ import java.util.Iterator;
  *</pre>
  *
  * <p>
- * After profiling RenderKitUtils.renderPassThruAttributes has dropped quite in 
+ * After profiling RenderKitUtils.renderPassThruAttributes has dropped quite in
  * terms of cpu usage compared to the previous implementation.
- * 
+ *
  * <p>
  * The following shows an example of this generated Map:
- * 
- * <code>
+ *
  * <pre>
- * private static Map&lt;String,Attribute[]> ATTRIBUTE_LOOKUP=CollectionsUtils.&lt;String,Attribute[]>map()
+ * <code>
+ * private static Map&lt;String,Attribute[]&gt; ATTRIBUTE_LOOKUP=CollectionsUtils.&lt;String,Attribute[]&gt;map()
  *      .add("CommandButton",ar(
  *          attr("accesskey")
  *          ,attr("alt")
@@ -78,10 +77,10 @@ import java.util.Iterator;
  *          ,attr("lang")
  *          ,attr("onblur","blur")
  *          ...
- * </pre>
  * </code>
- * 
- *  
+ * </pre>
+ *
+ *
  */
 public class AttributeManagerGenerator extends AbstractGenerator {
 
@@ -103,6 +102,7 @@ public class AttributeManagerGenerator extends AbstractGenerator {
     // ------------------------------------------ Methods from AbstractGenerator
 
 
+    @Override
     public void generate(FacesConfigBean configBean) {
         try {
             CodeWriter writer = getCodeWriter();
@@ -189,7 +189,7 @@ public class AttributeManagerGenerator extends AbstractGenerator {
         addImport("com.sun.faces.util.CollectionsUtils");
         addImport("static com.sun.faces.renderkit.Attribute.*");
         addImport("com.sun.faces.renderkit.Attribute");
-        
+
         Collections.sort(imports);
 
         for (Iterator i = imports.iterator(); i.hasNext();) {
@@ -266,7 +266,7 @@ public class AttributeManagerGenerator extends AbstractGenerator {
                             && ("style".equals(aBean.getPropertyName())
                                 || ("border".equals(aBean.getPropertyName())))) {
                             continue;
-                        }                        
+                        }
                         if (attributeWritten) {
                             writer.fwrite(",attr(\"");
                         } else {

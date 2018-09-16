@@ -21,7 +21,7 @@ import java.util.List;
 
 
 /**
- * <p>Configuration bean for <code>&lt;property&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;property&gt;</code> element.</p>
  */
 
 public class PropertyBean extends FeatureBean {
@@ -119,15 +119,15 @@ public class PropertyBean extends FeatureBean {
     // Behavior attribute, [dafault=false]
     private List<String> behaviors = null;
 	/**
-	 * <p class="changed_added_2_0"></p>
+	 * <p class="changed_added_2_0">Something changed</p>
 	 * @return the behaviorAttribute
 	 */
 	public List<String> getBehaviors() {
 		return behaviors;
 	}
 	/**
-	 * <p class="changed_added_2_0"></p>
-	 * @param behaviorAttribute the behaviorAttribute to set
+	 * <p class="changed_added_2_0">Something changed</p>
+	 * @param behavior the behaviorAttribute to set
 	 */
 	public void addBehavior(String behavior) {
 		if(null == this.behaviors){
@@ -135,7 +135,7 @@ public class PropertyBean extends FeatureBean {
 		}
 		this.behaviors.add(behavior);
 	}
-	
+
 	public void addAllBehaviors(List<String>behaviors) {
 		if(null != behaviors){
 //			if(null == this.behaviors){
@@ -147,15 +147,17 @@ public class PropertyBean extends FeatureBean {
 	}
 
     private boolean defaultBehavior = false;
+
 	/**
-	 * <p class="changed_added_2_0"></p>
+	 * <p class="changed_added_2_0">Something changed</p>
 	 * @return the defaultBehavior
 	 */
 	public boolean isDefaultBehavior() {
 		return defaultBehavior;
 	}
+
 	/**
-	 * <p class="changed_added_2_0"></p>
+	 * <p class="changed_added_2_0">Something changed</p>
 	 * @param defaultBehavior the defaultBehavior to set
 	 */
 	public void setDefaultBehavior(boolean defaultBehavior) {

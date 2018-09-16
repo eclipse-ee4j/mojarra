@@ -23,23 +23,22 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.ArrayList;
 
 import com.sun.faces.config.beans.AttributeBean;
 import com.sun.faces.config.beans.DescriptionBean;
 import com.sun.faces.config.beans.FacesConfigBean;
 import com.sun.faces.config.beans.RenderKitBean;
 import com.sun.faces.config.beans.RendererBean;
-import java.util.Locale;
 
 
 /**
  * <p>Generate javadoc style documenation about the render-kits defined in a
  * faces-config.xml file.</p>
- * <p/>
  */
 
 public class RenderKitSpecificationGenerator implements Generator {
@@ -95,6 +94,7 @@ public class RenderKitSpecificationGenerator implements Generator {
     // ---------------------------------------------------------- Public Methods
 
 
+    @Override
     public void generate(FacesConfigBean configBean) {
 
         this.configBean = configBean;

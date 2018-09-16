@@ -16,13 +16,8 @@
 
 package com.sun.faces.config.beans;
 
-
-import java.util.Map;
-import java.util.TreeMap;
-
-
 /**
- * <p>Configuration bean for <code>&lt;attribute&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;attribute&gt;</code> element.</p>
  */
 
 public class ResourceBundleBean extends FeatureBean {

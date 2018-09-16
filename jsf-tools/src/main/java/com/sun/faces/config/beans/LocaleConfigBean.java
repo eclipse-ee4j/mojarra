@@ -22,7 +22,7 @@ import java.util.TreeSet;
 
 
 /**
- * <p>Configuration bean for <code>&lt;locale-config&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;locale-config&gt;</code> element.</p>
  */
 
 public class LocaleConfigBean {

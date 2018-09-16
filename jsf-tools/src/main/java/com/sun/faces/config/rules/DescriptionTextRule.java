@@ -17,13 +17,13 @@
 package com.sun.faces.config.rules;
 
 
+import org.apache.commons.digester.NodeCreateRule;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 
 import com.sun.faces.config.beans.DescriptionBean;
-import org.apache.commons.digester.NodeCreateRule;
 
 
 /**
@@ -43,11 +43,10 @@ public class DescriptionTextRule extends NodeCreateRule {
     /**
      * <p>Construct a variant of <code>NodeCreateRule</code> that will
      * create a <code>DocumentFragment</code> object.
+     * @throws Exception something went wrong
      */
     public DescriptionTextRule() throws Exception {
-
         super(Node.DOCUMENT_FRAGMENT_NODE);
-
     }
 
 
@@ -59,19 +58,20 @@ public class DescriptionTextRule extends NodeCreateRule {
      * <code>DescriptionBean</code>, then perform the standard
      * superclass processing.</p>
      *
-     * @param namespace the namespace URI of the matching element, or an 
+     * @param namespace the namespace URI of the matching element, or an
      *   empty string if the parser is not namespace aware or the element has
      *   no namespace
-     * @param name the local name if the parser is namespace aware, or just 
+     * @param name the local name if the parser is namespace aware, or just
      *   the element name otherwise
      * @param attributes The attribute list of this element
      *
      * @exception IllegalStateException if the parent stack element is not
      *  of type FeatureBean
      */
+    @Override
     public void begin(String namespace, String name,
                       Attributes attributes) throws Exception {
-        
+
         assert digester.peek() instanceof DescriptionBean
               : "Assertion Error: Expected DescriptionBean to be at the top of the stack";
 
@@ -89,13 +89,14 @@ public class DescriptionTextRule extends NodeCreateRule {
     /**
      * <p>No body processing is required.</p>
      *
-     * @param namespace the namespace URI of the matching element, or an 
+     * @param namespace the namespace URI of the matching element, or an
      *   empty string if the parser is not namespace aware or the element has
      *   no namespace
-     * @param name the local name if the parser is namespace aware, or just 
+     * @param name the local name if the parser is namespace aware, or just
      *   the element name otherwise
      * @param text The text of the body of this element
      */
+    @Override
     public void body(String namespace, String name,
                      String text) throws Exception {
     }
@@ -106,15 +107,16 @@ public class DescriptionTextRule extends NodeCreateRule {
      * <code>description</code> property of the parent
      * <code>DescriptionBean</code>.</p>
      *
-     * @param namespace the namespace URI of the matching element, or an 
+     * @param namespace the namespace URI of the matching element, or an
      *   empty string if the parser is not namespace aware or the element has
      *   no namespace
-     * @param name the local name if the parser is namespace aware, or just 
+     * @param name the local name if the parser is namespace aware, or just
      *   the element name otherwise
      *
      * @exception IllegalStateException if the popped object is not
      *  of the correct type
      */
+    @Override
     public void end(String namespace, String name) throws Exception {
 
         if (digester.getLogger().isDebugEnabled()) {
@@ -126,7 +128,7 @@ public class DescriptionTextRule extends NodeCreateRule {
         // Pop the DOM object off the stack (works around a bug in
         // NodeCreateRule that won't be fixed until version 1.6 of
         // commons-digester is released)
-        Node root = (Node) digester.pop();        
+        Node root = (Node) digester.pop();
 
         // Serialize the child nodes into a StringBuffer
         DescriptionBean db = (DescriptionBean) digester.peek();
@@ -147,6 +149,7 @@ public class DescriptionTextRule extends NodeCreateRule {
      * <p>No finish processing is required.</p>
      *
      */
+    @Override
     public void finish() throws Exception {
     }
 
@@ -154,6 +157,7 @@ public class DescriptionTextRule extends NodeCreateRule {
     // ---------------------------------------------------------- Public Methods
 
 
+    @Override
     public String toString() {
 
         StringBuffer sb = new StringBuffer("DescriptionTextRule[]");

@@ -42,6 +42,7 @@ public interface AttributeHolder {
      * if any; otherwise, return <code>null</code>.</p>
      *
      * @param name Name of the attribute for which to retrieve a descriptor
+     * @return the attribute descriptor
      */
     public AttributeBean getAttribute(String name);
 
@@ -49,6 +50,7 @@ public interface AttributeHolder {
     /**
      * <p>Return the descriptors of all attributes for which descriptors have
      * been registered, or an empty array if none have been registered.</p>
+     * @return the descriptors of all attributes
      */
     public AttributeBean[] getAttributes();
 

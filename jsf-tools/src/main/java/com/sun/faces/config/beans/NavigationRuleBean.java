@@ -22,7 +22,7 @@ import java.util.List;
 
 
 /**
- * <p>Configuration bean for <code>&lt;navigation-case&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;navigation-case&gt;</code> element.</p>
  */
 
 public class NavigationRuleBean extends FeatureBean {
