@@ -32,10 +32,7 @@ import java.util.Stack;
  *
  * <p>The methods in this class presume the following command line option
  * names and corresponding values:</p>
- * <ul>
- * </ul>
  */
-
 public abstract class AbstractGenerator implements Generator {
 
 
@@ -127,12 +124,13 @@ public abstract class AbstractGenerator implements Generator {
      * <p>Return the capitalized version of the specified property name.</p>
      *
      * @param name Uncapitalized property name
+     * @return the capitalized version
      */
     protected static String capitalize(String name) {
 
         return (Character.toUpperCase(name.charAt(0)) + name.substring(1));
 
-    }    
+    }
 
 
     /**
@@ -140,6 +138,8 @@ public abstract class AbstractGenerator implements Generator {
      * a Java keyword; otherwise, return the specified name unchanged.</p>
      *
      * @param name Name to be potentially mangled
+     *
+     * @return a mangled version
      */
     protected static String mangle(String name) {
 
@@ -156,6 +156,7 @@ public abstract class AbstractGenerator implements Generator {
      * <p>Parse the command line options into a <code>Map</code>.</p>
      *
      * @param args Command line arguments passed to this program
+     * @return a <code>Map</code>
      *
      * @exception IllegalArgumentException if an option flag does not start
      *  with a '-' or is missing a corresponding value
@@ -184,6 +185,7 @@ public abstract class AbstractGenerator implements Generator {
      * <p>Return <code>true</code> if the specified type is a primitive.</p>
      *
      * @param type Type to be tested
+     * @return true if the specified type is a primitive.
      */
     protected static boolean primitive(String type) {
 
@@ -198,6 +200,7 @@ public abstract class AbstractGenerator implements Generator {
      * input value is returned unchanged.</p>
      *
      * @param className Class name that is optionally fully qualified
+     * @return the short class name
      */
     protected static String shortName(String className) {
 
@@ -272,8 +275,8 @@ public abstract class AbstractGenerator implements Generator {
                 toString());
 
         } // END writeImport
-        
-       
+
+
         public void writePublicClassDeclaration(String className,
                                                 String extendsClass,
                                                 String[] implementsClasses,
@@ -338,7 +341,7 @@ public abstract class AbstractGenerator implements Generator {
                 fwrite("// ");
                 write(tokens[i].trim());
                 write('\n');
-            }           
+            }
 
         } // END writeLineComment
 
@@ -423,7 +426,7 @@ public abstract class AbstractGenerator implements Generator {
             writeLineComment("PROPERTY: " + propertyName);
             String iVarName = mangle(propertyName);
             fwrite("private " + type + ' ' + iVarName +
-		   (defaultValue == null ? ";" : " = " + defaultValue + ";") 
+		   (defaultValue == null ? ";" : " = " + defaultValue + ";")
 		   + '\n');
             fwrite("public void set" + capitalize(propertyName) +
                 '(' + type + ' ' + iVarName + ") {\n");
