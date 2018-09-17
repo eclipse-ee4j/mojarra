@@ -34,7 +34,6 @@ import javax.el.ELResolver;
 
 import com.sun.faces.util.Util;
 import com.sun.faces.util.MessageUtils;
-import com.sun.faces.application.ApplicationAssociate;
 
 public class ScopedAttributeELResolver extends ELResolver {
 
@@ -77,9 +76,12 @@ public class ScopedAttributeELResolver extends ELResolver {
         }
 
         // check session
-        result = ec.getSessionMap().get(attribute);
-        if (result != null) {
-            return result;
+        Object session = ec.getSession(false);
+        if (session != null) {
+            result = ec.getSessionMap().get(attribute);
+            if (result != null) {
+                return result;
+            }
         }
 
         // check application
@@ -110,7 +112,7 @@ public class ScopedAttributeELResolver extends ELResolver {
     }
 
     @Override
-    public void  setValue(ELContext context, Object base, Object property,
+    public void setValue(ELContext context, Object base, Object property,
                           Object val) throws ELException {
         if (base != null) {
             return;
@@ -129,9 +131,10 @@ public class ScopedAttributeELResolver extends ELResolver {
         ExternalContext ec = facesContext.getExternalContext();
         if ((ec.getRequestMap().get(attribute)) != null) {
             ec.getRequestMap().put(attribute, val);
-        } else if ((facesContext.getViewRoot()) != null && (facesContext.getViewRoot().getViewMap().get(attribute)) != null) {
+        } else if ((facesContext.getViewRoot()) != null && (facesContext.getViewRoot().getViewMap(false)) != null
+        		&& (facesContext.getViewRoot().getViewMap().get(attribute)) != null) {
             facesContext.getViewRoot().getViewMap().put(attribute, val);
-        } else if ((ec.getSessionMap().get(attribute)) != null) {
+        } else if ((ec.getSession(false)) != null && (ec.getSessionMap().get(attribute)) != null) {
             ec.getSessionMap().put(attribute, val);
         } else if ((ec.getApplicationMap().get(attribute)) != null) {
             ec.getApplicationMap().put(attribute, val);
