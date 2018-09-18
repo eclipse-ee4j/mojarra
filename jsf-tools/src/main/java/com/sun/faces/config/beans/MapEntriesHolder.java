@@ -31,6 +31,7 @@ public interface MapEntriesHolder {
     /**
      * <p>Return the current <code>mapEntries</code> object
      * for this configuration bean.</p>
+     * @return the current <code>mapEntries</code>
      */
     public MapEntriesBean getMapEntries();
 

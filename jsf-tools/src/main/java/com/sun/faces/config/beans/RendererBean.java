@@ -22,7 +22,7 @@ import java.util.TreeMap;
 
 
 /**
- * <p>Configuration bean for <code>&lt;renderer&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;renderer&gt;</code> element.</p>
  */
 
 public class RendererBean extends FeatureBean implements AttributeHolder {
@@ -94,22 +94,26 @@ public class RendererBean extends FeatureBean implements AttributeHolder {
     private Map<String,AttributeBean> attributes = new TreeMap<String, AttributeBean>();
 
 
+    @Override
     public void addAttribute(AttributeBean descriptor) {
         attributes.put(descriptor.getAttributeName(), descriptor);
     }
 
 
+    @Override
     public AttributeBean getAttribute(String name) {
         return (attributes.get(name));
     }
 
 
+    @Override
     public AttributeBean[] getAttributes() {
         AttributeBean results[] = new AttributeBean[attributes.size()];
         return (attributes.values().toArray(results));
     }
 
 
+    @Override
     public void removeAttribute(AttributeBean descriptor) {
         attributes.remove(descriptor.getAttributeName());
     }

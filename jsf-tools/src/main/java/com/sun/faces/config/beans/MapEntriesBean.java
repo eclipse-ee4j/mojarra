@@ -22,7 +22,7 @@ import java.util.List;
 
 
 /**
- * <p>Configuration bean for <code>&lt;map-entries&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;map-entries&gt;</code> element.</p>
  */
 
 public class MapEntriesBean {

@@ -17,13 +17,13 @@
 package com.sun.faces.config.beans;
 
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
- * <p>Configuration bean for <code>&lt;managed-bean&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;managed-bean&gt;</code> element.</p>
  */
 
 public class ManagedBeanBean extends FeatureBean
@@ -57,7 +57,9 @@ public class ManagedBeanBean extends FeatureBean
     // ----------------------------------------------- ListEntriesHolder Methods
 
     private ListEntriesBean listEntries;
+    @Override
     public ListEntriesBean getListEntries() { return listEntries; }
+    @Override
     public void setListEntries(ListEntriesBean listEntries)
     { this.listEntries = listEntries; }
 
@@ -96,7 +98,7 @@ public class ManagedBeanBean extends FeatureBean
 		return cur;
 	    }
 	}
-	    
+
         return null;
     }
 
@@ -112,7 +114,7 @@ public class ManagedBeanBean extends FeatureBean
 	if (null == descriptor) {
 	    return;
 	}
-	ManagedPropertyBean toRemove = 
+	ManagedPropertyBean toRemove =
 	    getManagedProperty(descriptor.getPropertyName());
 	if (null != toRemove) {
 	    managedProperties.remove(toRemove);
@@ -122,7 +124,9 @@ public class ManagedBeanBean extends FeatureBean
     // ------------------------------------------------ MapEntriesHolder Methods
 
     private MapEntriesBean mapEntries;
+    @Override
     public MapEntriesBean getMapEntries() { return mapEntries; }
+    @Override
     public void setMapEntries(MapEntriesBean mapEntries)
     { this.mapEntries = mapEntries; }
 

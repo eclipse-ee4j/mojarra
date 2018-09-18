@@ -16,35 +16,36 @@
 
 package com.sun.faces.generate;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.io.InputStream;
-import java.io.File;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import java.util.Map;
+import java.util.TreeMap;
 
+import org.apache.commons.digester.Digester;
+import org.xml.sax.InputSource;
+
+import com.sun.faces.config.DigesterFactory;
 import com.sun.faces.config.beans.ComponentBean;
+import com.sun.faces.config.beans.FacesConfigBean;
 import com.sun.faces.config.beans.RenderKitBean;
 import com.sun.faces.config.beans.RendererBean;
-import com.sun.faces.config.beans.FacesConfigBean;
-import com.sun.faces.config.DigesterFactory;
 import com.sun.faces.config.rules.FacesConfigRuleSet;
 
-import org.xml.sax.InputSource;
-import org.apache.commons.digester.Digester;
-
 /**
- * <p>Utility methods that may be useful to all <code>Generators</code>.</p>
+ * <p>
+ * Utility methods that may be useful to all <code>Generators</code>.
+ * </p>
  */
 public class GeneratorUtil {
 
     private static final String PREFIX = "javax.faces.";
 
-
-     // The set of unwrapper methods for primitives, keyed by the primitive type
-    private static Map<String,String> UNWRAPPERS = new HashMap<String, String>();
+    // The set of unwrapper methods for primitives, keyed by the primitive type
+    private static Map<String, String> UNWRAPPERS = new HashMap<String, String>();
     static {
         UNWRAPPERS.put("boolean", "booleanValue");
         UNWRAPPERS.put("byte", "byteValue");
@@ -56,9 +57,8 @@ public class GeneratorUtil {
         UNWRAPPERS.put("short", "shortValue");
     }
 
-
     // The set of wrapper classes for primitives, keyed by the primitive type
-    private static Map<String,String> WRAPPERS = new HashMap<String, String>();
+    private static Map<String, String> WRAPPERS = new HashMap<String, String>();
     static {
         WRAPPERS.put("boolean", "java.lang.Boolean");
         WRAPPERS.put("byte", "java.lang.Byte");
@@ -70,7 +70,6 @@ public class GeneratorUtil {
         WRAPPERS.put("short", "java.lang.Short");
     }
 
-
     // ---------------------------------------------------------- Public Methods
 
     public static String convertToPrimitive(String objectType) {
@@ -79,7 +78,6 @@ public class GeneratorUtil {
 
     }
 
-
     public static String convertToObject(String primitiveType) {
 
         return WRAPPERS.get(primitiveType);
@@ -87,28 +85,31 @@ public class GeneratorUtil {
     }
 
     /**
-     * Obtain an instance of JspTldGenerator based on the JSP version
-     * provided.
+     * Obtain an instance of JspTldGenerator based on the JSP version provided.
+     *
+     * @param propManager the PropertyManager
+     * @return JspTldGenerator based on the JSP version
      */
     public static JspTLDGenerator getTldGenerator(PropertyManager propManager) {
 
-        String version =
-            propManager.getProperty(PropertyManager.JSP_VERSION_PROPERTY);
+        String version = propManager.getProperty(PropertyManager.JSP_VERSION_PROPERTY);
         if ("1.2".equals(version)) {
             return new JspTLD12Generator(propManager);
         } else if ("2.1".equals(version)) {
             return new JspTLD21Generator(propManager);
         } else {
-            throw new IllegalArgumentException("Unsupported version of JSP '" +
-                version + '\'');
+            throw new IllegalArgumentException("Unsupported version of JSP '" + version + '\'');
         }
     }
 
     /**
-     * <p>Strip any "javax.faces." prefix from the beginning of the specified
-     * identifier, and return it.</p>
+     * <p>
+     * Strip any "javax.faces." prefix from the beginning of the specified
+     * identifier, and return it.
+     * </p>
      *
      * @param identifier Identifier to be stripped
+     * @return stripped Identifier
      */
     public static String stripJavaxFacesPrefix(String identifier) {
 
@@ -120,15 +121,14 @@ public class GeneratorUtil {
 
     } // END stripJavaxFacesPrefix
 
-
     /**
      * Build the tag handler class name from componentFamily and rendererType.
      *
      * @param componentFamily the component family
      * @param rendererType the renderer type
+     * @return tag handler class name
      */
-    public static String makeTagClassName(String componentFamily,
-                                          String rendererType) {
+    public static String makeTagClassName(String componentFamily, String rendererType) {
 
         if (componentFamily == null) {
             return null;
@@ -143,17 +143,16 @@ public class GeneratorUtil {
 
     } // END makeTagClassName
 
-
     /**
-     * @return a SortedMap, where the keys are component-family String entries,
-     *         and the values are {@link com.sun.faces.config.beans.ComponentBean}
-     *         instances Only include components that do not have a base
-     *         component type.
+     *
+     * @param configBean the FacesConfigBean
+     * @return a SortedMap, where the keys are component-family String entries, and
+     * the values are {@link com.sun.faces.config.beans.ComponentBean} instances
+     * Only include components that do not have a base component type.
      */
-    public static Map<String,ComponentBean> getComponentFamilyComponentMap(
-        FacesConfigBean configBean) {
+    public static Map<String, ComponentBean> getComponentFamilyComponentMap(FacesConfigBean configBean) {
 
-        TreeMap<String,ComponentBean> result = new TreeMap<String, ComponentBean>();
+        TreeMap<String, ComponentBean> result = new TreeMap<String, ComponentBean>();
         ComponentBean component;
         ComponentBean[] components = configBean.getComponents();
         for (int i = 0, len = components.length; i < len; i++) {
@@ -176,23 +175,19 @@ public class GeneratorUtil {
 
     } // END getComponentFamilyComponentMap
 
-
-    public static Map<String,ArrayList<RendererBean>> getComponentFamilyRendererMap(FacesConfigBean configBean,
-                                                    String renderKitId) {
+    public static Map<String, ArrayList<RendererBean>> getComponentFamilyRendererMap(FacesConfigBean configBean, String renderKitId) {
 
         RenderKitBean renderKit = configBean.getRenderKit(renderKitId);
         if (renderKit == null) {
-            throw new IllegalArgumentException("No RenderKit for id '" +
-                renderKitId + '\'');
+            throw new IllegalArgumentException("No RenderKit for id '" + renderKitId + '\'');
         }
 
         RendererBean[] renderers = renderKit.getRenderers();
         if (renderers == null) {
-            throw new IllegalStateException("No Renderers for RenderKit id" +
-                '"' + renderKitId + '"');
+            throw new IllegalStateException("No Renderers for RenderKit id" + '"' + renderKitId + '"');
         }
 
-        TreeMap<String,ArrayList<RendererBean>> result = new TreeMap<String, ArrayList<RendererBean>>();
+        TreeMap<String, ArrayList<RendererBean>> result = new TreeMap<String, ArrayList<RendererBean>>();
 
         for (int i = 0, len = renderers.length; i < len; i++) {
             RendererBean renderer = renderers[i];
@@ -218,14 +213,14 @@ public class GeneratorUtil {
         return result;
 
     } // END getComponentFamilyRendererMap
-    
-    public static String getFirstDivFromString(String toParse, int [] out) {
+
+    public static String getFirstDivFromString(String toParse, int[] out) {
         String result = null;
-        
+
         if (null == toParse) {
             return result;
         }
-        
+
         int divStart, divEnd;
         if (-1 != (divStart = toParse.indexOf("<div"))) {
             if (-1 != (divEnd = toParse.indexOf(">", divStart))) {
@@ -235,17 +230,17 @@ public class GeneratorUtil {
         if (null != out && 0 < out.length) {
             out[0] = divStart;
         }
-        
+
         return result;
     }
 
-    public static String getFirstSpanFromString(String toParse, int [] out) {
+    public static String getFirstSpanFromString(String toParse, int[] out) {
         String result = null;
-        
+
         if (null == toParse) {
             return result;
         }
-        
+
         int spanStart, spanEnd;
         if (-1 != (spanStart = toParse.indexOf("<span"))) {
             if (-1 != (spanEnd = toParse.indexOf(">", spanStart))) {
@@ -255,13 +250,11 @@ public class GeneratorUtil {
         if (null != out && 0 < out.length) {
             out[0] = spanStart;
         }
-        
+
         return result;
     }
-    
 
-    public static FacesConfigBean getConfigBean(String facesConfig)
-    throws Exception {
+    public static FacesConfigBean getConfigBean(String facesConfig) throws Exception {
 
         FacesConfigBean fcb = null;
         InputStream stream = null;
@@ -270,8 +263,7 @@ public class GeneratorUtil {
             stream = new BufferedInputStream(new FileInputStream(file));
             InputSource source = new InputSource(file.toURL().toString());
             source.setByteStream(stream);
-            fcb = (FacesConfigBean)
-                createDigester(true, false, true).parse(source);
+            fcb = (FacesConfigBean) createDigester(true, false, true).parse(source);
         } finally {
             if (stream != null) {
                 try {
@@ -286,21 +278,20 @@ public class GeneratorUtil {
 
     } // END getConfigBean
 
-    
     // --------------------------------------------------------- Private Methods
 
-
     /**
-     * <p>Configure and return a <code>Digester</code> instance suitable for
-     * use in the environment specified by our parameter flags.</p>
+     * <p>
+     * Configure and return a <code>Digester</code> instance suitable for use in the
+     * environment specified by our parameter flags.
+     * </p>
      *
      * @param design Include rules suitable for design time use in a tool
-     * @param generate Include rules suitable for generating component,
-     * renderer, and tag classes
+     * @param generate Include rules suitable for generating component, renderer,
+     * and tag classes
      * @param runtime Include rules suitable for runtime execution
      */
-    private static Digester createDigester(boolean design,
-                                       boolean generate, boolean runtime) {
+    private static Digester createDigester(boolean design, boolean generate, boolean runtime) {
 
         Digester digester = DigesterFactory.newInstance(true).createDigester();
 

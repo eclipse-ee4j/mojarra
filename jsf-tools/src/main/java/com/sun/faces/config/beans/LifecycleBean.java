@@ -17,14 +17,15 @@
 package com.sun.faces.config.beans;
 
 
-import com.sun.faces.config.DigesterFactory;
-import com.sun.faces.config.DigesterFactory.VersionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.faces.config.DigesterFactory;
+import com.sun.faces.config.DigesterFactory.VersionListener;
+
 
 /**
- * <p>Configuration bean for <code>&lt;lifecycle&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;lifecycle&gt;</code> element.</p>
  */
 
 public class LifecycleBean {

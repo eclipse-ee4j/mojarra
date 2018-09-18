@@ -18,7 +18,7 @@ package com.sun.faces.config.beans;
 
 
 /**
- * <p>Configuration bean for <code>&lt;list-entry&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;list-entry&gt;</code> element.</p>
  */
 
 public class ListEntryBean implements NullValueHolder {
@@ -38,7 +38,9 @@ public class ListEntryBean implements NullValueHolder {
     // ------------------------------------------------- NullValueHolder Methods
 
     private boolean nullValue = false;
+    @Override
     public boolean isNullValue() { return nullValue; }
+    @Override
     public void setNullValue(boolean nullValue) { this.nullValue = nullValue; }
 
 

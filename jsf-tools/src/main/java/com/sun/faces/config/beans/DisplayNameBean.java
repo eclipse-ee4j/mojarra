@@ -18,7 +18,7 @@ package com.sun.faces.config.beans;
 
 
 /**
- * <p>Configuration bean for <code>&lt;display-name&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;display-name&gt;</code> element.</p>
  */
 
 public class DisplayNameBean {

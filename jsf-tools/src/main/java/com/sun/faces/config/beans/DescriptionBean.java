@@ -18,7 +18,7 @@ package com.sun.faces.config.beans;
 
 
 /**
- * <p>Configuration bean for <code>&lt;description&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;description&gt;</code> element.</p>
  */
 
 public class DescriptionBean {

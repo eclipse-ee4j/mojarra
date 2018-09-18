@@ -30,7 +30,8 @@ public interface NullValueHolder {
 
     /**
      * <p>Return a flag indicating that the value of the parent
-     * compoennt should be set to <code>null</code>.</p>
+     * component should be set to <code>null</code>.</p>
+     * @return a flag
      */
     public boolean isNullValue();
 

@@ -18,7 +18,7 @@ package com.sun.faces.config.beans;
 
 
 /**
- * <p>Configuration bean for <code>&lt;managed-property&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;managed-property&gt;</code> element.</p>
  */
 
 public class ManagedPropertyBean extends FeatureBean
@@ -48,7 +48,9 @@ public class ManagedPropertyBean extends FeatureBean
     // ----------------------------------------------- ListEntriesHolder Methods
 
     private ListEntriesBean listEntries;
+    @Override
     public ListEntriesBean getListEntries() { return listEntries; }
+    @Override
     public void setListEntries(ListEntriesBean listEntries)
     { this.listEntries = listEntries; }
 
@@ -56,7 +58,9 @@ public class ManagedPropertyBean extends FeatureBean
     // ------------------------------------------------ MapEntriesHolder Methods
 
     private MapEntriesBean mapEntries;
+    @Override
     public MapEntriesBean getMapEntries() { return mapEntries; }
+    @Override
     public void setMapEntries(MapEntriesBean mapEntries)
     { this.mapEntries = mapEntries; }
 
@@ -65,7 +69,9 @@ public class ManagedPropertyBean extends FeatureBean
 
 
     private boolean nullValue = false;
+    @Override
     public boolean isNullValue() { return nullValue; }
+    @Override
     public void setNullValue(boolean nullValue) { this.nullValue = nullValue; }
 
 

@@ -18,7 +18,7 @@ package com.sun.faces.config.beans;
 
 
 /**
- * <p>Configuration bean for <code>&lt;map-entry&gt; element.</p>
+ * <p>Configuration bean for <code>&lt;map-entry&gt;</code> element.</p>
  */
 
 public class MapEntryBean implements NullValueHolder {
@@ -40,7 +40,9 @@ public class MapEntryBean implements NullValueHolder {
     // ------------------------------------------------- NullValueHolder Methods
 
     private boolean nullValue = false;
+    @Override
     public boolean isNullValue() { return nullValue; }
+    @Override
     public void setNullValue(boolean nullValue) { this.nullValue = nullValue; }
 
 

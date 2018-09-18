@@ -19,12 +19,14 @@ package com.sun.faces.generate;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.config.beans.AttributeBean;
 import com.sun.faces.config.beans.ComponentBean;
@@ -33,8 +35,6 @@ import com.sun.faces.config.beans.FacesConfigBean;
 import com.sun.faces.config.beans.PropertyBean;
 import com.sun.faces.config.beans.RendererBean;
 import com.sun.faces.util.ToolsUtil;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class generates tag handler class code that is special to the
@@ -43,10 +43,10 @@ import java.util.logging.Logger;
 public class HtmlTaglib12Generator extends AbstractGenerator {
 
     // -------------------------------------------------------- Static Variables
-    
+
     // Log instance for this class
     private static final Logger logger = Logger.getLogger(ToolsUtil.FACES_LOGGER +
-            ToolsUtil.GENERATE_LOGGER, ToolsUtil.TOOLS_LOG_STRINGS);    
+            ToolsUtil.GENERATE_LOGGER, ToolsUtil.TOOLS_LOG_STRINGS);
 
     // The Writer for each component class to be generated
     protected CodeWriter writer;
@@ -58,7 +58,7 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
 
     // Tag Handler Class Name
     protected String tagClassName = null;
-    protected FacesConfigBean configBean;    
+    protected FacesConfigBean configBean;
     protected PropertyManager propManager;
 
     private Generator tldGenerator;
@@ -72,7 +72,7 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
     public HtmlTaglib12Generator(PropertyManager propManager) {
 
         this.propManager = propManager;
-        
+
         // initialize structures from the data in propManager
 
         outputDir = getClassPackageDirectory();
@@ -93,6 +93,7 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
     // ---------------------------------------------------------- Public Methods
 
 
+    @Override
     public void generate(FacesConfigBean configBean) {
 
         this.configBean = configBean;
@@ -200,6 +201,7 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
     /**
      * Generate copyright, package declaration, import statements, class
      * declaration.
+     * @throws Exception when something went wrong
      */
     protected void tagHandlerPrefix() throws Exception {
 
@@ -308,6 +310,7 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
     /**
      * Generate Tag Handler setter methods from component properties and
      * renderer attributes.
+     * @throws Exception if something goes wrong
      */
     protected void tagHandlerSetterMethods() throws Exception {
 
@@ -588,6 +591,7 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
     /**
      * Generate Tag Handler general methods from component properties and
      * renderer attributes.
+     * @throws Exception if something goes wrong
      */
     protected void tagHandlerGeneralMethods() throws Exception {
 
@@ -629,46 +633,46 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
      protected static boolean isValueHolder(String componentClass) {
 
         String[] valueHolderClasses = {
-            "HtmlBody", 
-            "HtmlDoctype", 
-            "HtmlHead", 
-            "HtmlInputHidden", 
-            "HtmlInputSecret", 
+            "HtmlBody",
+            "HtmlDoctype",
+            "HtmlHead",
+            "HtmlInputHidden",
+            "HtmlInputSecret",
             "HtmlInputFile",
-            "HtmlInputText", 
-            "HtmlInputTextarea", 
-            "HtmlOutcomeTargetButton", 
-            "HtmlOutcomeTargetLink", 
-            "HtmlOutputFormat", 
-            "HtmlOutputLabel", 
-            "HtmlOutputLink", 
-            "HtmlOutputText", 
-            "HtmlSelectBooleanCheckbox", 
-            "HtmlSelectManyCheckbox", 
-            "HtmlSelectManyListbox", 
-            "HtmlSelectManyMenu", 
-            "HtmlSelectOneListbox", 
-            "HtmlSelectOneMenu", 
-            "HtmlSelectOneRadio", 
-            "UIInput", 
-            "UIOutcomeTarget", 
-            "UIOutput", 
-            "UISelectBoolean", 
-            "UISelectMany", 
-            "UISelectOne", 
+            "HtmlInputText",
+            "HtmlInputTextarea",
+            "HtmlOutcomeTargetButton",
+            "HtmlOutcomeTargetLink",
+            "HtmlOutputFormat",
+            "HtmlOutputLabel",
+            "HtmlOutputLink",
+            "HtmlOutputText",
+            "HtmlSelectBooleanCheckbox",
+            "HtmlSelectManyCheckbox",
+            "HtmlSelectManyListbox",
+            "HtmlSelectManyMenu",
+            "HtmlSelectOneListbox",
+            "HtmlSelectOneMenu",
+            "HtmlSelectOneRadio",
+            "UIInput",
+            "UIOutcomeTarget",
+            "UIOutput",
+            "UISelectBoolean",
+            "UISelectMany",
+            "UISelectOne",
             "UIViewParameter" };
-         
+
         boolean result = false;
-        
+
         for(int i = 0; i<valueHolderClasses.length; i++) {
             if (componentClass.endsWith(valueHolderClasses[i])) {
                 result = true;
                 break;
             }
-        } 
-        
+        }
+
         return result;
-//        
+//
 //        try {
 //            Class<?> clazz = Class.forName(componentClass);
 //            Class<?> valueHolderClass =
@@ -684,6 +688,7 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
 
     /**
      * Generate Tag Handler support methods
+     * @throws Exception if something goes wrong
      */
     protected void tagHandlerClassicSupportMethods() throws Exception {
 
@@ -709,7 +714,8 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
      * <p>Convience method to generate code for a super call to
      * a JSP tag lifecycle method.</p>
      * @param method JSP tag lifecycle method name
-     * @throws IOException
+     * @param hasReturn has the method a return or not
+     * @throws IOException is something goes wrong
      */
     protected void writeSuperTagCallBody(String method, boolean hasReturn)
     throws IOException {
@@ -735,6 +741,7 @@ public class HtmlTaglib12Generator extends AbstractGenerator {
 
     /**
      * Generate remaining Tag Handler methods
+     * @throws Exception when something went wrong
      */
     protected void tagHandlerSuffix() throws Exception {
 
