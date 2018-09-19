@@ -164,21 +164,6 @@
                                             tofile="src/main/resources/com/sun/faces/standard-html-renderkit.xml"/>
                                     </then>
                                 </if>
-                                
-                                <!--
-                                
-                                    Copy LogStrings and DTD/XSD
-                                    
-                                -->
-                                <echo message="${line.separator}${line.separator}${line.separator}${line.separator}Copy LogStrings and DTD/XSD${line.separator}${line.separator}${line.separator}${line.separator}" />
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" verbose="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="LogStrings.properties"/>
-                                </copy>
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" flatten="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="*.dtd,*.xsd"/>
-                                </copy>
-                                <delete dir="build"/>
-                                <delete dir="${jsf-tools-dir}/build"/>
                             </target>
                         </configuration>
                         <goals>
