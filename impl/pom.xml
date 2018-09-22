@@ -50,86 +50,30 @@
     </properties>
     
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/LogStrings*.properties</exclude>
+                </excludes>
+            </resource>
+            <!-- Sets the Main JSF version into the log strings -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/LogStrings*.properties</include>
+                </includes>
+            </resource>
+        </resources>
+    
+    
+        <!-- ###  C O M P R E S S  /  M I N I F Y   JSF.JS  ###   -->
         <plugins>
-        
-            <!-- Use ANT to drive much of our custom build steps -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                                        
-                    
-                    <!-- ###  G E N E R A T E   R E S O U R C E S  ### -->                    
-                    
-                    <execution>
-                        <id>generate-resources</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <target>
-                                <property name="jsf-tools-dir" value="${project.build.directory}/../../jsf-tools"/>
-                                
-                                 <echo message="${line.separator}${line.separator}${line.separator}${line.separator} * * *  G E N E R A T E   R E S O U R C E S${line.separator}${line.separator}${line.separator}${line.separator}" />
-                                
-                                
-                                <!--
-                                
-                                    Copy LogStrings
-                                
-                                -->
-                                <mkdir dir="${project.build.directory}/generated-resources/antrun"/>
-                                <copy todir="${project.build.directory}/generated-resources/antrun/com/sun/faces" overwrite="true" verbose="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="LogStrings*.properties"/>
-                                </copy>
-                                <!-- 
-                                    Replace the version placeholder in the LogStrings, so that the right
-                                    project version is used to print to log at startup                                
-                                 -->
-                                <replace dir="${project.build.directory}/generated-resources/antrun"
-                                    token="|version.string|"
-                                    value="${mojarra.logstrings.version}">
-                                    <include name="**/LogStrings*.properties"/>
-                                </replace>
-                             
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                
-                <!-- Ant plug-in dependencies -->
-                <dependencies>
-                    <dependency>
-                        <groupId>ant-contrib</groupId>
-                        <artifactId>ant-contrib</artifactId>
-                        <version>1.0b3</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>ant</groupId>
-                                <artifactId>ant</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant</artifactId>
-                        <version>1.9.6</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>commons-digester</groupId>
-                        <artifactId>commons-digester</artifactId>
-                        <version>2.1</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.sun.faces.build</groupId>
-                        <artifactId>jsf-tools</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
@@ -148,23 +92,20 @@
                                     <includes>
                                         <include>${project.basedir}/src/main/resources/META-INF/resources/javax.faces/jsf-uncompressed.js</include>
                                     </includes>
-                                    <output>${project.build.directory}/generated-resources/yui/jsf.js</output>
+                                    <output>${project.build.directory}/generated-resources/yuix/jsf.js</output>
                                 </aggregation>
                             </aggregations>
                             <includes>
                                 <include>*.js</include>
                             </includes>
-                            <sourceDirectory>${project.build.directory}/generated-resources/yui</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-resources/antrun/META-INF/resources/javax.faces/</outputDirectory>
+                            <sourceDirectory>${project.build.directory}/generated-resources/yuix</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/javax.faces/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-    
             
-
-            
-            <!-- Adds the paths where the source and resources generated above was stored -->
+            <!-- Adds the path where the resource generated above was stored -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -179,7 +120,7 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/generated-resources/antrun</directory>
+                                    <directory>${project.build.directory}/generated-resources/yui</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -188,68 +129,8 @@
             </plugin>
             
             
+            <!-- ###  G E N E R A T E   META-INF/MANIFEST.MF   F O R   OSGi   U S E  ### -->
             
-            <!-- ###  C O M P I L E  ### --> 
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                
-                <executions>
-                    <!-- Compile all Java code -->
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        
-                        <configuration>
-                            <proc>none</proc>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            
-            <!-- ###  C R E A T E    J A V A D O C   ### --> 
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <configuration>
-                            <excludePackageNames>com</excludePackageNames>
-                        </configuration>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-          
-                 
-            <!-- ###  C R E A T E    S O U R C E  ### --> 
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            <!-- Generate the META-INF/MANIFEST.MF file for OSGi use -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -350,6 +231,7 @@
             
             <!-- ###  V A L I D A T I O N  ### --> 
             
+            <!-- A number of basic Java language code checks -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -373,6 +255,18 @@
                 </dependencies>
             </plugin>
             
+            <!-- Another number of basic Java language code checks -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.4</version>
+                <configuration>
+                    <threshold>High</threshold>
+                    <excludeFilterFile>${project.basedir}/src/main/findbugs/exclude.xml</excludeFilterFile>
+                </configuration>
+            </plugin>
+            
+            <!-- Check the JSF API against a known API level -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>clirr-maven-plugin</artifactId>
@@ -395,16 +289,6 @@
                         <version>6.0</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.4</version>
-                <configuration>
-                    <threshold>High</threshold>
-                    <excludeFilterFile>${project.build.directory}/../src/main/findbugs/exclude.xml</excludeFilterFile>
-                </configuration>
             </plugin>
             
             <!-- Validate that the various XML files are well formed and match their schema-->
@@ -453,7 +337,47 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            
+              <!-- ###  C R E A T E    J A V A D O C   ### --> 
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <configuration>
+                            <excludePackageNames>com</excludePackageNames>
+                        </configuration>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+          
+                 
+            <!-- ###  C R E A T E    S O U R C E  ### --> 
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
+        
+        
         <pluginManagement>
             <plugins>
             
