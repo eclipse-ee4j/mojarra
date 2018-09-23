@@ -17,14 +17,10 @@
 package com.sun.faces.generate;
 
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 
 /**
@@ -33,7 +29,7 @@ import java.util.Stack;
  * <p>The methods in this class presume the following command line option
  * names and corresponding values:</p>
  */
-public abstract class AbstractGenerator implements Generator {
+public abstract class AbstractGenerator {
 
 
     // -------------------------------------------------------- Static Variables
@@ -188,9 +184,7 @@ public abstract class AbstractGenerator implements Generator {
      * @return true if the specified type is a primitive.
      */
     protected static boolean primitive(String type) {
-
         return ((GeneratorUtil.convertToPrimitive(type) != null));
-
     }
 
 
@@ -203,265 +197,12 @@ public abstract class AbstractGenerator implements Generator {
      * @return the short class name
      */
     protected static String shortName(String className) {
-
         int index = className.lastIndexOf('.');
         if (index >= 0) {
             return (className.substring(index + 1));
         } else {
             return (className);
         }
-
     }
 
-
-    // ----------------------------------------------------------- Inner Classes
-
-
-    protected static class CodeWriter extends BufferedWriter {
-
-        private final static String TAB = "    ";
-        private final int TAB_LENGTH = TAB.length();
-
-        private Stack<String> depth;
-        private String formatString = "";
-
-
-        // -------------------------------------------------------- Constructors
-
-        public CodeWriter(Writer writer) {
-
-            super(writer);
-            depth = new Stack<String>();
-
-        } // END CodeWriter
-
-
-        public void indent() {
-
-            depth.push(TAB);
-            updateFormatString(depth.size());
-
-
-        } // END indent
-
-        public void outdent() {
-
-            depth.pop();
-            updateFormatString(depth.size());
-
-        } // END outdent
-
-
-        public void fwrite(String str) throws IOException {
-
-            super.write(formatString + str);
-
-        } // END write
-
-
-        public void writePackage(String packageName) throws IOException {
-
-            fwrite(new StringBuffer("package ").append(packageName).
-                append(";\n").toString());
-
-        } // END writePackage
-
-
-        public void writeImport(String fullyQualifiedClassName)
-        throws IOException {
-
-            fwrite(new StringBuffer("import ").
-                append(fullyQualifiedClassName).append(";\n").
-                toString());
-
-        } // END writeImport
-
-
-        public void writePublicClassDeclaration(String className,
-                                                String extendsClass,
-                                                String[] implementsClasses,
-                                                boolean isAbstract,
-                                                boolean isFinal)
-        throws IOException {
-
-            if (isAbstract && isFinal) {
-                throw new IllegalArgumentException("Cannot have a class" +
-                    " declaration be both abstract and final.");
-            }
-
-            StringBuffer sb = new StringBuffer("public");
-            if (isAbstract) {
-                sb.append(" abstract");
-            }
-
-            if (isFinal) {
-                sb.append(" final");
-            }
-
-            sb.append(" class ").append(className);
-
-            if (extendsClass != null && extendsClass.length() > 0) {
-                sb.append(" extends ").append(extendsClass);
-            }
-
-            if (implementsClasses != null && implementsClasses.length > 0) {
-                sb.append(" implements ");
-                for (int i = 0; i < implementsClasses.length; i++) {
-                    sb.append(implementsClasses[i]);
-                    if (i < implementsClasses.length-1) {
-                        sb.append(", ");
-                    }
-                }
-            }
-
-            sb.append(" {\n\n");
-            fwrite(sb.toString());
-
-        } // END writePublicClassDeclaration
-
-
-        public void writeJavadocComment(String str) throws IOException {
-
-            fwrite("/**\n");
-            String[] tokens = str.split("\r|\n|\t");
-            for (int i = 0; i < tokens.length; i++) {
-                fwrite(" * ");
-                write(tokens[i].trim());
-                write('\n');
-            }
-            fwrite(" */\n");
-
-        } // END writeJavadocComment
-
-
-        public void writeLineComment(String str) throws IOException {
-
-            String[] tokens = str.split("\r|\n|\t");
-            for (int i = 0; i < tokens.length; i++) {
-                fwrite("// ");
-                write(tokens[i].trim());
-                write('\n');
-            }
-
-        } // END writeLineComment
-
-
-        public void writeBlockComment(String str) throws IOException {
-
-            fwrite("/*\n");
-            String[] tokens = str.split("\r|\n|\t");
-            for (int i = 0; i < tokens.length; i++) {
-                fwrite(" * ");
-                write(tokens[i].trim());
-                write('\n');
-            }
-            fwrite(" */\n");
-
-        } // END writeBlockComment
-
-
-        public void writeReadWriteProperty(String propertyName, String type,
-                                           String defaultValue)
-        throws IOException {
-
-            String iVarName = mangle(propertyName);
-            String methodName = capitalize(propertyName);
-            writeLineComment("PROPERTY: " + propertyName);
-            fwrite("private " + type + ' ' + iVarName +
-                (defaultValue == null ? ";" : " = " + defaultValue) + '\n');
-            fwrite("public void set" + methodName +
-                '(' + type + ' ' + iVarName + ") {\n");
-            indent();
-            fwrite("this." + iVarName + " = " + iVarName +
-                ";\n");
-            outdent();
-            fwrite("}\n\n");
-            fwrite("public " + type + "get" + methodName + "() {\n");
-            indent();
-            fwrite("return this." + iVarName + ";\n");
-            outdent();
-            fwrite("}\n\n");
-
-        } // END writeReadWriteProperty
-
-
-        public void writeReadWriteProperty(String propertyName, String type)
-        throws IOException {
-
-            writeReadWriteProperty(propertyName, type, null);
-
-        } // END writeReadWriteProperty
-
-
-        public void writeReadOnlyProperty(String propertyName, String type,
-                                          String defaultValue)
-        throws IOException {
-
-            writeLineComment("PROPERTY: " + propertyName);
-            String iVarName = mangle(propertyName);
-            fwrite("private " + type + ' ' + iVarName +
-                (defaultValue == null ? ";" : " = " + defaultValue) + '\n');
-            fwrite("public " + type + "get" + capitalize(propertyName) +
-                "() {\n");
-            indent();
-            fwrite("return this." + iVarName + ";\n");
-            outdent();
-            fwrite("}\n\n");
-
-        } // END writeReadOnlyProperty
-
-
-        public void writeReadOnlyProperty(String propertyName, String type)
-        throws IOException {
-
-            writeReadOnlyProperty(propertyName, type, null);
-
-        } // END writeReadOnlyProperty
-
-
-        public void writeWriteOnlyProperty(String propertyName, String type,
-                                           String defaultValue)
-        throws IOException {
-
-            writeLineComment("PROPERTY: " + propertyName);
-            String iVarName = mangle(propertyName);
-            fwrite("private " + type + ' ' + iVarName +
-		   (defaultValue == null ? ";" : " = " + defaultValue + ";")
-		   + '\n');
-            fwrite("public void set" + capitalize(propertyName) +
-                '(' + type + ' ' + iVarName + ") {\n");
-            indent();
-            fwrite("this." + iVarName + " = " + iVarName + ";\n");
-            outdent();
-            fwrite("}\n\n");
-
-        } // END writeWriteOnlyProperty
-
-
-        public void writeWriteOnlyProperty(String propertyName, String type)
-        throws IOException {
-
-            writeWriteOnlyProperty(propertyName, type, null);
-
-        } // END writeWriteOnlyProperty
-
-
-        // ----------------------------------------------------- Private Methods
-
-
-        private void updateFormatString(int numTabs) {
-
-            if (numTabs == 0) {
-                formatString = "";
-            } else {
-                StringBuffer sb = new StringBuffer(numTabs * TAB_LENGTH);
-                for (int i = 0; i < numTabs; i++) {
-                    sb.append(TAB);
-                }
-                formatString = sb.toString();
-            }
-
-        } // END updateFormatString
-
-    }
 }
