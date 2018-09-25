@@ -18,26 +18,19 @@ package com.sun.faces.ant;
 
 import org.apache.tools.ant.BuildException;
 
+import com.sun.faces.generate.RenderKitSpecificationGenerator;
+
 /**
- * <p>Task to create RenderKit documentation.</p>
+ * <p>
+ * Task to create RenderKit documentation.
+ * </p>
  */
 public class RenderkitDocGenTask extends AbstractGeneratorTask {
-    
-    
-    private static final String GENERATOR_CLASS = 
-        "com.sun.faces.generate.RenderKitSpecificationGenerator";
 
-
-    // ---------------------------------------------------------- Public Methods
-
-
+    @Override
     public void execute() throws BuildException {
-
-        setGeneratorClass(GENERATOR_CLASS);
-
+        setGeneratorClass(RenderKitSpecificationGenerator.class.getName());
         super.execute();
-
-
-    } // END execute
+    }
 
 }

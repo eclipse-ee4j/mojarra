@@ -16,8 +16,8 @@
 
 package com.sun.faces.ant;
 
-import org.apache.tools.ant.taskdefs.Java;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.taskdefs.Java;
 
 /**
  * <p>Base task for generators.</p>
@@ -31,7 +31,7 @@ public abstract class AbstractGeneratorTask extends Java {
     protected String generatorConfig;
 
     /**
-     * <p>The fully qualified <code>Generator</code class.</p>
+     * <p>The fully qualified <code>Generator</code> class.</p>
      */
     private String generatorClass;
 
@@ -46,36 +46,26 @@ public abstract class AbstractGeneratorTask extends Java {
 
 
     public void setGeneratorConfig(String generatorConfig) {
-
         this.generatorConfig = generatorConfig;
-
-    } // END setGeneratorConfig
-
+    }
 
     public void setFacesConfig(String facesConfig) {
-
         this.facesConfig = facesConfig;
-
-    } // END setFacesConfig
+    }
 
 
     public void setGeneratorClass(String generatorClass) {
-
         this.generatorClass = generatorClass;
+    }
 
-    } // END setGeneratorClass
 
-
+    @Override
     public void execute() throws BuildException {
-
         super.createArg().setValue(generatorConfig);
         super.createArg().setValue(facesConfig);
-
         super.setClassname(generatorClass);
 
         super.execute();
-
-    } // END execute
-
+    }
 
 }

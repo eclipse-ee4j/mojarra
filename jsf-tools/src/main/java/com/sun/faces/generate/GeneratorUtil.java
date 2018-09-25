@@ -85,24 +85,6 @@ public class GeneratorUtil {
     }
 
     /**
-     * Obtain an instance of JspTldGenerator based on the JSP version provided.
-     *
-     * @param propManager the PropertyManager
-     * @return JspTldGenerator based on the JSP version
-     */
-    public static JspTLDGenerator getTldGenerator(PropertyManager propManager) {
-
-        String version = propManager.getProperty(PropertyManager.JSP_VERSION_PROPERTY);
-        if ("1.2".equals(version)) {
-            return new JspTLD12Generator(propManager);
-        } else if ("2.1".equals(version)) {
-            return new JspTLD21Generator(propManager);
-        } else {
-            throw new IllegalArgumentException("Unsupported version of JSP '" + version + '\'');
-        }
-    }
-
-    /**
      * <p>
      * Strip any "javax.faces." prefix from the beginning of the specified
      * identifier, and return it.

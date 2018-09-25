@@ -19,7 +19,7 @@
 
 <!-- 
 
-    Project to create the JSF API jar and docs (vdldoc, tlddoc, renderkit docs).
+    Project to create the JSF API jar and docs (vdldoc, renderkit docs).
     
     This depends on [mojarra home]/impl being installed first (mvn build install).
 
@@ -396,14 +396,6 @@
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <!-- For the @PreParseFacesConfig annotation -->
-        <dependency>
-            <groupId>com.sun.faces.build</groupId>
-            <artifactId>jsf-tools</artifactId>
-            <version>3.0.0-m01-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         
