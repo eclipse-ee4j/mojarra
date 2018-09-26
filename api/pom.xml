@@ -275,8 +275,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <facesConfig>src/main/resources/com/sun/faces/standard-html-renderkit.xml</facesConfig>
-                    <schemaDirectory>src/main/resources</schemaDirectory>
+                    <facesConfig>${project.basedir}/src/main/resources/com/sun/faces/standard-html-renderkit.xml</facesConfig>
+                    <schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
                 </configuration>
             </plugin>
             
