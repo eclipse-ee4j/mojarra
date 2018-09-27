@@ -187,6 +187,31 @@
                     </artifactItems>
                 </configuration>
             </plugin>
+            
+            <!-- 
+                Clean unpacked sources jar
+             -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <target>
+                                <delete dir="src/main/java"/>
+                                <delete dir="src/main/resources"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
         
             <!-- 
                 Create VDL docs
@@ -236,83 +261,23 @@
                 </configuration>
             </plugin>
             
-            <!-- 
-                Create RenderkitDocs
-             -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <groupId>org.omnifaces</groupId>
+                <artifactId>renderkitdoc-maven-plugin</artifactId>
+                <version>1.0</version>
                 <executions>
-               
                     <execution>
-                        <id>clean</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <target>
-                                <delete dir="src/main/java"/>
-                                <delete dir="src/main/resources"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-               
-                    <execution>
+                        <id>generate-renderkitdoc</id>
                         <phase>prepare-package</phase>
-                        <configuration>
-                            <target>
-                                <property name="jsf-tools-dir" value="${project.build.directory}/../../jsf-tools"/>
-                                
-                                <!--
-                                
-                                    Generate RenderkitDocs
-                                
-                                -->
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="LogStrings.properties"/>
-                                </copy>
-                                <copy todir="${jsf-tools-dir}/build/classes/com/sun/faces" flatten="true">
-                                    <fileset dir="src/main/resources/com/sun/faces" includes="*.dtd,*.xsd"/>
-                                </copy>
-                                
-                                <taskdef name="generateRenderkitDocs" classname="com.sun.faces.ant.RenderkitDocGenTask">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${mojarra.version}.jar"/>
-                                    </classpath>
-                                </taskdef>        
-                                <generateRenderkitDocs
-                                    generatorConfig="${jsf-tools-dir}/conf/HtmlBasicTaglib21.properties"
-                                    facesConfig="src/main/resources/com/sun/faces/standard-html-renderkit.xml"
-                                    fork="true">
-                                    <classpath>
-                                        <pathelement location="${jsf-tools-dir}/target/jsf-tools-${mojarra.version}.jar"/>
-                                        <pathelement location="${jsf-tools-dir}/build/classes"/>
-                                        <path refid="maven.plugin.classpath"/>
-                                    </classpath>
-                                </generateRenderkitDocs>
-                                                           
-                                <copy todir="${project.build.directory}/renderkitdocs">
-                                    <fileset dir="build/generate/facesdoc"/>
-                                </copy>
-                                <delete dir="build"/>
-                                <delete dir="${jsf-tools-dir}/build"/>
-                            </target>
-                        </configuration>
                         <goals>
-                            <goal>run</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
-                
-                <dependencies>
-                    <dependency>
-                        <groupId>commons-digester</groupId>
-                        <artifactId>commons-digester</artifactId>
-                        <version>2.1</version>
-                    </dependency>
-                </dependencies>
+                <configuration>
+                    <facesConfig>${project.basedir}/src/main/resources/com/sun/faces/standard-html-renderkit.xml</facesConfig>
+                    <schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
+                </configuration>
             </plugin>
             
             <!-- 
@@ -382,6 +347,37 @@
             </plugin>
            
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[3.0.2,)</versionRange>
+                                        <goals>
+                                            <goal>unpack</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute>
+                                            <runOnIncremental>false</runOnIncremental>
+                                        </execute>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     
     <dependencies>
@@ -411,6 +407,13 @@
             <scope>provided</scope>
             <classifier>sources</classifier>
         </dependency>
+
+        <dependency>
+            <groupId>com.sun.faces.build</groupId>
+            <artifactId>jsf-tools</artifactId>
+            <version>${mojarra.version}</version>
+        </dependency>
+   
         
          <!-- 
             For the vendor SPI implementations shipped with Mojarra.
