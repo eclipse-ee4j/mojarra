@@ -340,9 +340,7 @@
                             <footer>DRAFT DRAFT DRAFT DRAFT</footer>
                             <header>DRAFT DRAFT DRAFT DRAFT</header>
                         </configuration>
-                        
                     </execution>
-                    
                 </executions>
             </plugin>
            
@@ -406,12 +404,6 @@
             <version>${mojarra.version}</version>
             <scope>provided</scope>
             <classifier>sources</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.faces.build</groupId>
-            <artifactId>jsf-tools</artifactId>
-            <version>${mojarra.version}</version>
         </dependency>
    
         
