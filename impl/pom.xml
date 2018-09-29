@@ -350,6 +350,7 @@
                         <id>attach-javadocs</id>
                         <configuration>
                             <excludePackageNames>com</excludePackageNames>
+                            <docfilessubdirs>true</docfilessubdirs>
                         </configuration>
                         <goals>
                             <goal>jar</goal>
