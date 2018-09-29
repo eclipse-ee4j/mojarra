@@ -294,13 +294,6 @@
             <scope>provided</scope>
         </dependency>
         
-        <dependency>
-            <groupId>com.sun.faces.build</groupId>
-            <artifactId>jsf-tools</artifactId>
-            <version>2.3.3.100</version>
-            <optional>true</optional>
-        </dependency>
-        
         <!-- 
             For the vendor SPI implementations shipped with Mojarra.
             See package com.sun.faces.vendor

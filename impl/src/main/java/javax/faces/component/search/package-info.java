@@ -131,7 +131,7 @@
  * system to create instances of the <code>SearchExpressionContext</code> which
  * holds state during the operation of this API.</p>
  * <p>
- * <strong>Adding new <code>{@link javax.faces.component.search.SearchKewordResolver}</code>s</strong></p>
+ * <strong>Adding new <code>{@link javax.faces.component.search.SearchKeywordResolver}</code>s</strong></p>
  * <p>
  * See
  * <code>{@link javax.faces.component.search.SearchKeywordResolver}</code>
