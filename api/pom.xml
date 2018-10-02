@@ -38,7 +38,7 @@
     
     <groupId>javax.faces</groupId>
     <artifactId>javax.faces-api</artifactId>
-    <version>2.4-SNAPSHOT</version>
+    <version>3.0.0-m01-SNAPSHOT</version>
     
     <packaging>jar</packaging>
     <name>JSF API ${project.version}</name>
