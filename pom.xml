@@ -17,23 +17,7 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <licenses>
-        <license>
-            <name>EPL 2.0</name>
-            <url>http://www.eclipse.org/legal/epl-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-        <license>
-            <name>GPL2 w/ CPE</name>
-            <url>https://www.gnu.org/software/classpath/license.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"> <modelVersion>4.0.0</modelVersion>
     
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
@@ -47,6 +31,19 @@
     <packaging>pom</packaging>
     
     <name>Mojarra ${project.version} - Project</name>
+    
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -77,5 +74,5 @@
             <scope>provided</scope>
         </dependency>
      </dependencies>
-    
+
 </project>
