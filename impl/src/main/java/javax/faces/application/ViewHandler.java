@@ -214,19 +214,6 @@ public abstract class ViewHandler {
      */
     public static final String FACELETS_DECORATORS_PARAM_NAME = "javax.faces.FACELETS_DECORATORS";
 
-    /**
-     * <p class="changed_modified_3_0">
-     *  This constant is deprecated and is to be completely ignored by the JSF runtime.
-     * </p>
-     *
-     * @since 2.0
-     * @deprecated
-     */
-    @Deprecated
-    public static final String DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME = "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
-
-
-
     // ---------------------------------------------------------- Public Methods
 
     /**

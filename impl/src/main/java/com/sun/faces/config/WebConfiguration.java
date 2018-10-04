@@ -1262,14 +1262,6 @@ public class WebConfiguration {
              "com.sun.faces.enableLazyBeanValidation",
              true
         ),
-        EnableLoadBundle11Compatibility(
-             "com.sun.faces.enabledLoadBundle11Compatibility",
-             false
-        ),
-        EnableRestoreView11Compatibility(
-              "com.sun.faces.enableRestoreView11Compatibility",
-              false
-        ),
         SerializeServerState(
               StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME,
               false
