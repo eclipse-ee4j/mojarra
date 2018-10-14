@@ -50,6 +50,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -71,9 +72,11 @@ import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
+import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
@@ -825,6 +828,18 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         
         if (requestParameterValuesMap.containsKey(clientId)) {
             String newValues[] = requestParameterValuesMap.get(clientId);
+
+            if (newValues != null && newValues.length > 0) {
+            	Set<String> disabledSelectItemValues = getDisabledSelectItemValues(context, component);
+             	if (!disabledSelectItemValues.isEmpty()) {
+            		List<String> newValuesList = new ArrayList<>(Arrays.asList(newValues));
+            		
+            		if (newValuesList.removeAll(disabledSelectItemValues)) {
+            			newValues = newValuesList.toArray(new String[newValuesList.size()]);
+            		}
+            	}
+            }
+
             setSubmittedValue(component, newValues);
             
             if (logger.isLoggable(FINE)) {
@@ -839,13 +854,21 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             }
         }
     }
-    
+
     private void decodeUISelectOne(FacesContext context, UIComponent component, String clientId) {
         Map<String, String> requestParameterMap = context.getExternalContext()
                                                          .getRequestParameterMap();
         
         if (requestParameterMap.containsKey(clientId)) {
             String newValue = requestParameterMap.get(clientId);
+
+            if (newValue != null && !newValue.isEmpty()) {
+            	Set<String> disabledSelectItemValues = getDisabledSelectItemValues(context, component);
+             	if (disabledSelectItemValues.contains(newValue)) {
+            		newValue = RIConstants.NO_VALUE;
+            	}
+            }
+
             setSubmittedValue(component, newValue);
             
             if (logger.isLoggable(FINE)) {
@@ -856,6 +879,16 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             // there is no value, but this is different from a null value.
             setSubmittedValue(component, NO_VALUE);
         }
+    }
+
+    private Set<String> getDisabledSelectItemValues(FacesContext context, UIComponent component) {
+    	Set<String> disabledSelectItemValues = new HashSet<>(2);
+        RenderKitUtils.getSelectItems(context, component).forEachRemaining(selectItem -> {
+        	if (selectItem.isDisabled()) {
+        		disabledSelectItemValues.add(getFormattedValue(context, component, selectItem.getValue()));
+        	}
+        });
+    	return disabledSelectItemValues;
     }
     
     private boolean isNoValueOrNull(String newValue, UIComponent component) {
