@@ -39,7 +39,6 @@ import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.PhaseId;
 import javax.faces.event.SystemEvent;
 
-import com.sun.faces.RIConstants;
 import com.sun.faces.util.FacesLogger;
 
 
@@ -172,7 +171,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
          try {
 
              ExternalContext extContext = context.getExternalContext();
-             extContext.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
+             extContext.setResponseContentType("text/xml");
              extContext.addResponseHeader("Cache-Control", "no-cache");
              PartialResponseWriter writer = context.getPartialViewContext().getPartialResponseWriter();
 

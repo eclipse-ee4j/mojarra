@@ -725,7 +725,7 @@ public class ExternalContextImpl extends ExternalContext {
             } else {
                 pwriter = ctx.getPartialViewContext().getPartialResponseWriter();
             }
-            setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
+            setResponseContentType("text/xml");
             setResponseCharacterEncoding("UTF-8");
             addResponseHeader("Cache-Control", "no-cache");
 //            pwriter.writePreamble("<?xml version='1.0' encoding='UTF-8'?>\n");
