@@ -88,8 +88,13 @@ public class WebsocketFacesListener implements SystemEventListener {
         }
 
         FacesContext context = ((ComponentSystemEvent) event).getFacesContext();
+        Map<String, Boolean> initializedWebsockets = getInitializedWebsockets(context);
 
-        for (Entry<String, Boolean> initializedWebsocket : getInitializedWebsockets(context).entrySet()) {
+        if (!context.getPartialViewContext().isAjaxRequest()) {
+        	initializedWebsockets.clear();
+        }
+
+        for (Entry<String, Boolean> initializedWebsocket : initializedWebsockets.entrySet()) {
             String clientId = initializedWebsocket.getKey();
             UIWebsocket websocket = (UIWebsocket) context.getViewRoot().findComponent(clientId);
             boolean connected = websocket.isRendered() && websocket.isConnected();
