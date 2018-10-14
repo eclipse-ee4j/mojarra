@@ -171,8 +171,6 @@ public class ApplicationAssociate {
 
     private List<ELResolver> elResolversFromFacesConfig;
 
-    private List<SearchKeywordResolver> searchKeywordResolversFromFacesConfig;
-
     @SuppressWarnings("deprecation")
     private VariableResolver legacyVRChainHead;
 
@@ -575,14 +573,6 @@ public class ApplicationAssociate {
 
     public List<ELResolver> getELResolversFromFacesConfig() {
         return elResolversFromFacesConfig;
-    }
-
-    public void setSearchKeywordResolversFromFacesConfig(List<SearchKeywordResolver> searchKeywordResolversFromFacesConfig) {
-        this.searchKeywordResolversFromFacesConfig = searchKeywordResolversFromFacesConfig;
-    }
-
-    public List<SearchKeywordResolver> getSearchKeywordResolversFromFacesConfig() {
-        return searchKeywordResolversFromFacesConfig;
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
