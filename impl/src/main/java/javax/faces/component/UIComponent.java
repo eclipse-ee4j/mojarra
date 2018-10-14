@@ -43,6 +43,7 @@ import java.util.Objects;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELContext;
@@ -1773,6 +1774,10 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             throw new NullPointerException();
         }
 
+        Map<Object, Object> contextAttributes = context.getAttributes();
+
+        ArrayDeque<UIComponent> componentELStack = _getComponentELStack(_CURRENT_COMPONENT_STACK_KEY, contextAttributes);
+
         // Detect cases where the stack has become unbalanced. Due to how UIComponentBase
         // implemented pushing and pooping of components from the ELContext, components
         // that
@@ -1781,12 +1786,12 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         //
         // detect case where push was never called. In that case, pop should be a no-op
         if (_isPushedAsCurrentRefCount < 1) {
-            return;
+        	if (componentELStack.peek() != this) {
+        		return;
+        	}
+            LOGGER.log(Level.SEVERE, "the component(" + this + 
+                ") is the head component of the stack, but it's _isPushedAsCurrentRefCount < 1");
         }
-
-        Map<Object, Object> contextAttributes = context.getAttributes();
-
-        ArrayDeque<UIComponent> componentELStack = _getComponentELStack(_CURRENT_COMPONENT_STACK_KEY, contextAttributes);
 
         // check for the other unbalanced case, a component was pushed but never popped.
         // Keep
