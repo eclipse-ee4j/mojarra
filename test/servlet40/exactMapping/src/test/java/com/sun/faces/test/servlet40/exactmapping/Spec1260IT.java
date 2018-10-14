@@ -18,6 +18,7 @@ package com.sun.faces.test.servlet40.exactmapping;
 
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_1_4;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_2_1;
+import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_3_1;
 import static com.sun.faces.test.junit.JsfVersion.JSF_2_3_0_M10;
 import static org.junit.Assert.assertTrue;
 
@@ -50,7 +51,7 @@ public class Spec1260IT {
     
     
     @Test
-    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1, WEBLOGIC_12_3_1})
     public void testExactMappedViewLoads() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "foo");
         String content = page.asXml();
@@ -60,7 +61,7 @@ public class Spec1260IT {
     }
     
     @Test
-    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1, WEBLOGIC_12_3_1})
     public void testPostBackToExactMappedView() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "foo");
         
@@ -75,7 +76,7 @@ public class Spec1260IT {
     }
     
     @Test
-    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1, WEBLOGIC_12_3_1})
     public void testLinkToNonExactMappedView() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "foo");
         
@@ -96,7 +97,7 @@ public class Spec1260IT {
     }
     
     @Test
-    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1, WEBLOGIC_12_3_1})
     public void testPostBackOnLinkedNonExactMappedView() throws Exception {
         
         // Navigate from /foo to /bar.jsf
@@ -114,7 +115,7 @@ public class Spec1260IT {
     
     
     @Test
-    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1, WEBLOGIC_12_3_1})
     public void testResourceReferenceFromExactMappedView() throws Exception {
         
         HtmlPage page = webClient.getPage(webUrl + "foo");
@@ -127,7 +128,7 @@ public class Spec1260IT {
     }
     
     @Test
-    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_3_0_M10, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1, WEBLOGIC_12_3_1})
     public void testAjaxFromExactMappedView() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "foo");
         
