@@ -33,18 +33,18 @@
     <parent>
         <groupId>com.sun.faces</groupId>
         <artifactId>project</artifactId>
-        <version>2.4.0-m01-SNAPSHOT</version>
+        <version>2.3.9-SNAPSHOT</version>
     </parent>
     
-    <groupId>javax.faces</groupId>
-    <artifactId>javax.faces-api</artifactId>
-    <version>2.4-SNAPSHOT</version>
+    <groupId>jakarta.faces</groupId>
+    <artifactId>jakarta.faces-api</artifactId>
+    <version>2.3.1-SNAPSHOT</version>
     
     <packaging>jar</packaging>
     <name>JSF API ${project.version}</name>
     
     <properties>
-        <mojarra.version>2.4.0-m01-SNAPSHOT</mojarra.version>
+        <mojarra.version>2.3.9-SNAPSHOT</mojarra.version>
     </properties>
     
     <inceptionYear>1997</inceptionYear>
@@ -169,7 +169,7 @@
                     <artifactItems>
                         <artifactItem>
                             <groupId>org.glassfish</groupId>
-                            <artifactId>javax.faces</artifactId>
+                            <artifactId>jakarta.faces</artifactId>
                             <version>${mojarra.version}</version>
                             <classifier>sources</classifier>
                             <outputDirectory>src/main/java</outputDirectory>
@@ -178,7 +178,7 @@
                         
                         <artifactItem>
                             <groupId>org.glassfish</groupId>
-                            <artifactId>javax.faces</artifactId>
+                            <artifactId>jakarta.faces</artifactId>
                             <version>${mojarra.version}</version>
                             <classifier>sources</classifier>
                             <outputDirectory>src/main/resources</outputDirectory>
@@ -416,7 +416,14 @@
         <dependency>
             <groupId>com.sun.faces.build</groupId>
             <artifactId>jsf-tools</artifactId>
-            <version>2.4.0-m01-SNAPSHOT</version>
+            <version>2.3.9-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.faces</artifactId>
+            <version>${mojarra.version}</version>
             <scope>provided</scope>
         </dependency>
         
@@ -427,7 +434,7 @@
         -->
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.faces</artifactId>
+            <artifactId>jakarta.faces</artifactId>
             <version>${mojarra.version}</version>
             <scope>provided</scope>
             <classifier>sources</classifier>
