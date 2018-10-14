@@ -119,6 +119,11 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     }
 
     @Override
+    public void updateModel(FacesContext context) {
+    	// Don't update the model. #4313
+    }
+
+    @Override
     public void encodeBegin(FacesContext context) throws IOException {
 
         // Check if the parent of this f:validateWholeBean is a form                   
