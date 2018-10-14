@@ -16,40 +16,21 @@
 
 package com.sun.faces.test.javaee8.validateWholeBean;
 
-import java.io.Serializable;
+import java.util.Objects;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
-@Named
-@RequestScoped
-@Password(groups = PasswordValidationGroup.class)
-public class BackingBean implements Serializable {
-
-    private static final long serialVersionUID = 1544275452223321526L;
+public class UserPasswordValidator implements ConstraintValidator<UserPassword, User> {
     
-    private String password1;
-    private String password2;
-    
-    private User user = new User();
-
-    public String getPassword1() {
-        return password1;
+    @Override
+    public void initialize(UserPassword constraintAnnotation) {
+        // NOOP
     }
 
-    public void setPassword1(String password1) {
-        this.password1 = password1;
+    @Override
+    public boolean isValid(User user, ConstraintValidatorContext context) {
+        return Objects.equals(user.getPassword1(), user.getPassword2());
     }
 
-    public String getPassword2() {
-        return password2;
-    }
-
-    public void setPassword2(String password2) {
-        this.password2 = password2;
-    }
-    
-    public User getUser() {
-		return user;
-	}
 }
