@@ -61,8 +61,6 @@ public final class ByteArrayGuardAESCTR {
     
     private SecretKey sk;
     
-    private IvParameterSpec ivspec;
-    
     private Charset utf8;
 
     // ------------------------------------------------------------ Constructors
@@ -99,12 +97,21 @@ public final class ByteArrayGuardAESCTR {
         String securedata = null;
         byte[] bytes = value.getBytes(utf8);
         try {
+            SecureRandom rand = new SecureRandom();
+            byte[] iv = new byte[16];
+            rand.nextBytes(iv);
+            IvParameterSpec ivspec = new IvParameterSpec(iv);
+
             Cipher encryptCipher = Cipher.getInstance(CIPHER_CODE);
+
             encryptCipher.init(Cipher.ENCRYPT_MODE, sk, ivspec);
             // encrypt the plaintext
             byte[] encdata = encryptCipher.doFinal(bytes);
+
+            byte[] temp = concatBytes(iv, encdata);
+
             // Base64 encode the encrypted bytes
-            securedata = DatatypeConverter.printBase64Binary(encdata);
+            securedata = DatatypeConverter.printBase64Binary(temp);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE,
@@ -122,10 +129,18 @@ public final class ByteArrayGuardAESCTR {
         byte[] bytes = DatatypeConverter.parseBase64Binary(value);;
         
         try {
+            byte[] iv = new byte[16];
+            System.arraycopy(bytes, 0, iv, 0, iv.length);
+            IvParameterSpec ivspec = new IvParameterSpec(iv);
+
             Cipher decryptCipher = Cipher.getInstance(CIPHER_CODE);
             decryptCipher.init(Cipher.DECRYPT_MODE, sk, ivspec);
 
-            byte[] plaindata = decryptCipher.doFinal(bytes);
+            byte[] encBytes = new byte[bytes.length - 16];
+            System.arraycopy(bytes, 16, encBytes, 0, encBytes.length);
+
+            byte[] plaindata = decryptCipher.doFinal(encBytes);
+
             for (byte cur : plaindata) {
                 // Values < 0 cause the conversion to text to fail.
                 if (cur < 0 || cur > Byte.MAX_VALUE) {
@@ -151,9 +166,6 @@ public final class ByteArrayGuardAESCTR {
                     throw new FacesException("key must be at least 16 bytes long.");
                 }
                 sk = new SecretKeySpec(keyArray, KEY_ALGORITHM);
-                byte[] iv = new byte[16];
-                System.arraycopy(keyArray, 0, iv, 0, 16);
-                ivspec = new IvParameterSpec(iv);
             }
         } catch(NamingException exception) {
             if (LOGGER.isLoggable(Level.FINEST)) { 
@@ -168,10 +180,6 @@ public final class ByteArrayGuardAESCTR {
                 KeyGenerator kg = KeyGenerator.getInstance(KEY_ALGORITHM);
                 kg.init(KEY_LENGTH);   // 256 if you're using the Unlimited Policy Files
                 sk = kg.generateKey(); 
-                SecureRandom rand = new SecureRandom();
-                byte[] iv = new byte[16];
-                rand.nextBytes(iv);
-                ivspec = new IvParameterSpec(iv);
             } catch (Exception e) {
                 throw new FacesException(e);
             }
@@ -187,6 +195,23 @@ public final class ByteArrayGuardAESCTR {
             throw new FacesException("Unable to get UTF-8 Charset.");
         }
         
+    }
+
+    /**
+     * This method concatenates two byte arrays
+     * @return a byte array of array1||array2
+     * @param array1 first byte array to be concatenated
+     * @param array2 second byte array to be concatenated
+     */
+    private static byte[] concatBytes(byte[] array1, byte[] array2) {
+        byte[] cBytes = new byte[array1.length + array2.length];
+        try {
+            System.arraycopy(array1, 0, cBytes, 0, array1.length);
+            System.arraycopy(array2, 0, cBytes, array1.length, array2.length);
+        } catch(Exception e) {
+            throw new FacesException(e);
+        }
+        return cBytes;
     }
 
 }

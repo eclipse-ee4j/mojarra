@@ -54,6 +54,7 @@
         <module>configLowercase</module>
 	<module>configInJarOnly</module>
 	<module>configInJarOnlyJar</module>
+	<module>content-type</module>
 	<module>contractBasic</module>
 	<module>contractBasicInJar</module>
 	<module>contractBasicJar</module>

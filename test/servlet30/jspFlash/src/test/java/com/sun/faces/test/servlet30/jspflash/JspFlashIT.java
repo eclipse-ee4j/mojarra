@@ -22,6 +22,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_1_4;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_2_1;
+import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_3_1;
 import com.sun.faces.test.junit.JsfTest;
 import com.sun.faces.test.junit.JsfTestRunner;
 import com.sun.faces.test.junit.JsfVersion;
@@ -48,7 +49,7 @@ public class JspFlashIT {
         webClient.close();
     }
 
-    @JsfTest(value = JsfVersion.JSF_2_3_0_M02, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    @JsfTest(value = JsfVersion.JSF_2_3_0_M02, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1, WEBLOGIC_12_3_1})
     @Test
     public void testFlash() throws Exception {
         // Get the first page

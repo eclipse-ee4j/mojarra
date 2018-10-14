@@ -68,12 +68,6 @@ public class SearchExpression {
         searchKeywordResolvers.add(new SearchKeywordResolverImplId());
         searchKeywordResolvers.add(new SearchKeywordResolverImplChild());
         searchKeywordResolvers.add(new SearchKeywordResolverImplAll());
-        
-        if (associate.getSearchKeywordResolversFromFacesConfig() != null) {
-            for (SearchKeywordResolver resolver : associate.getSearchKeywordResolversFromFacesConfig()) {
-                searchKeywordResolvers.add(resolver);
-            }
-        }
     }
     
     public SearchExpressionHandler getSearchExpressionHandler() {

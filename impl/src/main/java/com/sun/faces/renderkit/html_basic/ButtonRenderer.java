@@ -196,7 +196,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         }
 
         if (context.getPartialViewContext().isAjaxRequest()){
-            return BEHAVIOR_SOURCE_PARAM.getValue(context).contains(clientId);
+            return BEHAVIOR_SOURCE_PARAM.getValue(context).equals(clientId);
         } else {
             Map<String, String> requestParameterMap = context.getExternalContext()
                   .getRequestParameterMap();

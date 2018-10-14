@@ -320,7 +320,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                                 setSearchExpressionHandler(servletContext, facesContext, application, n);
                                 break;
                             case SEARCH_KEYWORD_RESOLVER:
-                                addSearchKeywordResolver(servletContext, facesContext, associate, n);
+                                addSearchKeywordResolver(servletContext, facesContext, application, n);
                                 break;
                             }
                         }
@@ -639,33 +639,25 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     }
 
-    private void addSearchKeywordResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node searchKeywordResolver) {
+    private void addSearchKeywordResolver(ServletContext sc, FacesContext facesContext, Application application, Node searchKeywordResolver) {
 
         if (searchKeywordResolver != null) {
-            if (associate != null) {
-                List<SearchKeywordResolver> resolvers = associate.getSearchKeywordResolversFromFacesConfig();
-                if (resolvers == null) {
-                    resolvers = new ArrayList<>();
-                    associate.setSearchKeywordResolversFromFacesConfig(resolvers);
-                }
+            String searchKeywordResolverClass = getNodeText(searchKeywordResolver);
+            if (searchKeywordResolverClass != null) {
+                boolean[] didPerformInjection = { false };
                 
-                String searchKeywordResolverClass = getNodeText(searchKeywordResolver);
-                if (searchKeywordResolverClass != null) {
-                    boolean[] didPerformInjection = { false };
-                    
-                    SearchKeywordResolver keywordResolver = (SearchKeywordResolver) 
-                            createInstance(sc, facesContext, searchKeywordResolverClass, SearchKeywordResolver.class, null,
-                            searchKeywordResolver, true, didPerformInjection);
-                    
-                    if (keywordResolver != null) {
-                        if (didPerformInjection[0]) {
-                            searchKeywordResolvers.add(keywordResolver);
-                        }
-                        if (LOGGER.isLoggable(FINE)) {
-                            LOGGER.log(FINE, format("Adding ''{0}'' to SearchKeywordResolver chain", searchKeywordResolverClass));
-                        }
-                        resolvers.add(keywordResolver);
+                SearchKeywordResolver keywordResolver = (SearchKeywordResolver) 
+                        createInstance(sc, facesContext, searchKeywordResolverClass, SearchKeywordResolver.class, null,
+                        searchKeywordResolver, true, didPerformInjection);
+                
+                if (keywordResolver != null) {
+                    if (didPerformInjection[0]) {
+                        searchKeywordResolvers.add(keywordResolver);
                     }
+                    if (LOGGER.isLoggable(FINE)) {
+                        LOGGER.log(FINE, format("Adding ''{0}'' to SearchKeywordResolver chain", searchKeywordResolverClass));
+                    }
+                    application.addSearchKeywordResolver(keywordResolver);
                 }
             }
         }

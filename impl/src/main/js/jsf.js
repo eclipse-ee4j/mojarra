@@ -330,6 +330,12 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              *@ignore
              */
             cleanupReqParams: function() {
+                var clone = this.frame.cloneNode();
+                while (this.frame.firstChild) {
+                    clone.appendChild(this.frame.lastChild);
+                }
+                this.frame.parentNode.replaceChild(clone, this.frame);
+                this.context.form.removeAttribute("target");
                 for (var i=0; i<this.requestParams.length; i++) {
                     var elements = this.context.form.childNodes;
                     for (var j=0; j<elements.length; j++) {

@@ -44,7 +44,7 @@ public class RIConstants {
      */
     public static final String TLV_RESOURCE_LOCATION = FACES_PREFIX + "resources.Resources";
 
-    public static final Object NO_VALUE = "";
+    public static final String NO_VALUE = "";
 
     public static final String CORE_NAMESPACE = CoreLibrary.Namespace;
     public static final String HTML_NAMESPACE = HtmlLibrary.Namespace;
