@@ -26,6 +26,9 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+import org.junit.Ignore;
+
+@Ignore
 public class Issue4358IT {
 
     /**
