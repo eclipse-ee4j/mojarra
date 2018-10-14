@@ -34,11 +34,11 @@
     <parent>
        <groupId>com.sun.faces</groupId>
         <artifactId>project</artifactId>
-        <version>2.4.0-m01-SNAPSHOT</version>
+        <version>2.3.9-SNAPSHOT</version>
     </parent>
     
     <groupId>org.glassfish</groupId>
-    <artifactId>javax.faces</artifactId>
+    <artifactId>jakarta.faces</artifactId>
     <packaging>jar</packaging>
     
     <name>Mojarra ${project.version}</name>
@@ -608,22 +608,19 @@
                 <configuration>
                     <instructions>
                     
-                        <Bundle-SymbolicName>org.glassfish.javax.faces</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.glassfish.jakarta.faces</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-Name>Mojarra JSF Implementation ${project.version}</Bundle-Name>
-                        <Bundle-Description>Mojarra JSF Implementation (javax.faces/2.3) ${project.version}</Bundle-Description>                        
+                        <Bundle-Description>Mojarra JSF Implementation (jakarta.faces/2.3) ${project.version}</Bundle-Description>                        
                         
                         <Specification-Title>JavaServer Faces</Specification-Title>
                         <Specification-Version>2.3</Specification-Version>
                         
                         <Implementation-Title>Mojarra</Implementation-Title> 
                         <Implementation-Version>${project.version}</Implementation-Version>
-                        <Implementation-Vendor>Oracle America, Inc.</Implementation-Vendor> 
-                        <Implementation-Vendor-Id>com.sun</Implementation-Vendor-Id>
+                        <Implementation-Vendor>Eclipse</Implementation-Vendor> 
+                        <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
                         
-                        <!--  
-                        <Include-Resource>META-INF=build/classes/META-INF,build/classes</Include-Resource> 
-                        -->
                         <Extension-Name>javax.faces</Extension-Name>
                         
                         <Export-Package>
@@ -824,7 +821,7 @@
         <dependency>
             <groupId>com.sun.faces.build</groupId>
             <artifactId>jsf-tools</artifactId>
-            <version>2.4.0-m01-SNAPSHOT</version>
+            <version>2.3.9-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         

@@ -181,8 +181,8 @@
     <dependencies>
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.faces</artifactId>
-            <version>2.3.0-m05</version>
+            <artifactId>jakarta.faces</artifactId>
+            <version>2.3.9-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
