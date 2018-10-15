@@ -31,12 +31,12 @@
             <h:commandButton id="button" value="push" action="#{issue4332.send}"><f:ajax /></h:commandButton>
         </h:form>
 
-        <f:websocket channel="push" onmessage="onmessageFunction" />
-
         <script>
             function onmessageFunction(message) {
                 document.getElementById("form:button").value = message;
             }
         </script>
+
+        <f:websocket channel="push" onmessage="onmessageFunction" />
     </h:body>
 </html>
