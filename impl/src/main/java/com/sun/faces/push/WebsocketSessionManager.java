@@ -18,7 +18,9 @@ package com.sun.faces.push;
 
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.push.WebsocketEndpoint.PARAM_CHANNEL;
+import static java.lang.String.format;
 import static java.util.Collections.emptySet;
+import static java.util.logging.Level.WARNING;
 import static javax.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
 
 import java.io.IOException;
@@ -26,11 +28,14 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.util.AnnotationLiteral;
@@ -59,6 +64,8 @@ public class WebsocketSessionManager {
 
     // Constants ------------------------------------------------------------------------------------------------------
 
+    private static final Logger logger = Logger.getLogger(WebsocketSessionManager.class.getName());
+
     private static final CloseReason REASON_EXPIRED = new CloseReason(NORMAL_CLOSURE, "Expired");
     private static final AnnotationLiteral<Opened> SESSION_OPENED = new AnnotationLiteral<Opened>() {
         private static final long serialVersionUID = 1L;
@@ -67,9 +74,20 @@ public class WebsocketSessionManager {
         private static final long serialVersionUID = 1L;
     };
 
-    private final ConcurrentMap<String, Collection<Session>> socketSessions = new ConcurrentHashMap<>();
+    private static final long TOMCAT_WEB_SOCKET_RETRY_TIMEOUT = 10; // Milliseconds.
+    private static final long TOMCAT_WEB_SOCKET_MAX_RETRIES = 100; // So, that's retrying for about 1 second.
+    private static final String WARNING_TOMCAT_WEB_SOCKET_BOMBED =
+        "Tomcat cannot handle concurrent push messages."
+            + " A push message has been sent only after %s retries of " + TOMCAT_WEB_SOCKET_RETRY_TIMEOUT + "ms apart."
+            + " Consider rate limiting sending push messages. For example, once every 500ms.";
+    private static final String ERROR_TOMCAT_WEB_SOCKET_BOMBED =
+        "Tomcat cannot handle concurrent push messages."
+            + " A push message could NOT be sent after %s retries of " + TOMCAT_WEB_SOCKET_RETRY_TIMEOUT + "ms apart."
+            + " Consider rate limiting sending push messages. For example, once every 500ms.";
 
     // Properties -----------------------------------------------------------------------------------------------------
+    
+    private final ConcurrentMap<String, Collection<Session>> socketSessions = new ConcurrentHashMap<>();
 
     @Inject
     private WebsocketUserManager socketUsers;
@@ -139,7 +157,7 @@ public class WebsocketSessionManager {
 
             for (Session session : sessions) {
                 if (session.isOpen()) {
-                    send(session, json, results);
+                    results.add(send(session, json, true));
                 }
             }
 
@@ -149,24 +167,60 @@ public class WebsocketSessionManager {
         return emptySet();
     }
 
-    private void send(Session session, String text, Set<Future<Void>> results) {
-        if (session.isOpen()) {
-            try {
-                results.add(session.getAsyncRemote().sendText(text));
-            }
-            catch (IllegalStateException e) {
-                // Awkward workaround for Tomcat not willing to queue/synchronize asyncRemote().
-                // https://bz.apache.org/bugzilla/show_bug.cgi?id=56026
-                if (session.getClass().getName().startsWith("org.apache.tomcat.websocket.") && e.getMessage().contains("[TEXT_FULL_WRITING]")) {
-                    synchronized (session) {
-                        send(session, text, results);
-                    }
+    private Future<Void> send(Session session, String text, boolean retrySendTomcatWebSocket) {
+        try {
+            return session.getAsyncRemote().sendText(text);
+        }
+        catch (IllegalStateException e) {
+            // Awkward workaround for Tomcat not willing to queue/synchronize asyncRemote().
+            // https://bz.apache.org/bugzilla/show_bug.cgi?id=56026
+            if (session.getClass().getName().startsWith("org.apache.tomcat.websocket.") && e.getMessage().contains("[TEXT_FULL_WRITING]")) {
+                if (retrySendTomcatWebSocket) {
+                    return CompletableFuture.supplyAsync(() -> retrySendTomcatWebSocket(session, text));
                 }
                 else {
-                    throw e;
+                    return null;
                 }
             }
+            else {
+                throw e;
+            }
         }
+    }
+
+    private Void retrySendTomcatWebSocket(Session session, String text) {
+        int retries = 0;
+        Exception cause = null;
+
+        while (++retries < TOMCAT_WEB_SOCKET_MAX_RETRIES) {
+            try {
+                Thread.sleep(TOMCAT_WEB_SOCKET_RETRY_TIMEOUT);
+
+                if (!session.isOpen()) {
+                    cause = new IllegalStateException("Too bad, session is now closed");
+                    break;
+                }
+
+                Future<Void> result = send(session, text, false);
+
+                if (result == null) {
+                    continue;
+                }
+
+                if (logger.isLoggable(WARNING)) {
+                    logger.log(WARNING, format(WARNING_TOMCAT_WEB_SOCKET_BOMBED, retries));
+                }
+
+                return result.get();
+            }
+            catch (InterruptedException | ExecutionException e) {
+                Thread.currentThread().interrupt();
+                cause = e;
+                break;
+            }
+        }
+
+        throw new UnsupportedOperationException(format(ERROR_TOMCAT_WEB_SOCKET_BOMBED, retries), cause);
     }
 
     /**
@@ -188,7 +242,7 @@ public class WebsocketSessionManager {
      */
     protected void deregister(Iterable<String> channelIds) {
         for (String channelId : channelIds) {
-            Collection<Session> sessions = socketSessions.get(channelId);
+            Collection<Session> sessions = socketSessions.remove(channelId);
 
             if (sessions != null) {
                 for (Session session : sessions) {
