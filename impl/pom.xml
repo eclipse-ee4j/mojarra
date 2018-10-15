@@ -92,7 +92,7 @@
                                     </or>
                                 </condition>
                                 <if>
-                                    <equals arg1="${osfamily}" arg2="unix"/>
+                                    <equals arg1="${osfamily}" arg2="unix-non"/>
                                     <then>
                                         
                                         <!-- 
