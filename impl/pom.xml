@@ -32,12 +32,11 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-       <groupId>com.sun.faces</groupId>
-        <artifactId>project</artifactId>
+        <groupId>org.glassfish</groupId>
+        <artifactId>mojarra-parent</artifactId>
         <version>2.3.9-SNAPSHOT</version>
     </parent>
     
-    <groupId>org.glassfish</groupId>
     <artifactId>jakarta.faces</artifactId>
     <packaging>jar</packaging>
     
