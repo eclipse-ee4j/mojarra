@@ -38,7 +38,7 @@
     
     <groupId>jakarta.faces</groupId>
     <artifactId>jakarta.faces-api</artifactId>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.3.1</version>
     
     <packaging>jar</packaging>
     <name>JSF API ${project.version}</name>
@@ -416,8 +416,9 @@
         <dependency>
             <groupId>com.sun.faces.build</groupId>
             <artifactId>jsf-tools</artifactId>
-            <version>2.3.9-SNAPSHOT</version>
+            <version>${mojarra.version}</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         
         <dependency>
