@@ -16,8 +16,8 @@
 
 package com.sun.faces.application;
 
-import com.sun.faces.application.view.ViewScopeManager;
-import static com.sun.faces.application.view.ViewScopeManager.ACTIVE_VIEW_MAPS;
+import com.sun.faces.cdi.ViewScopeManager;
+import static com.sun.faces.cdi.ViewScopeManager.ACTIVE_VIEW_MAPS;
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.WebConfiguration;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
