@@ -44,7 +44,7 @@
     <name>JSF API ${project.version}</name>
     
     <properties>
-        <mojarra.version>2.3.9-SNAPSHOT</mojarra.version>
+        <mojarra.version>${project.parent.version}</mojarra.version>
     </properties>
     
     <inceptionYear>1997</inceptionYear>
