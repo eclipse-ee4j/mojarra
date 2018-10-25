@@ -47,7 +47,7 @@ import javax.faces.convert.Converter;
  *
  * <p>The {@link javax.faces.render.Renderer} for this component must
  * perform the following logic on <a
- * id="getConvertedValue"><code>getConvertedValue()</code></a>:</p>
+ * name="getConvertedValue"><code>getConvertedValue()</code></a>:</p>
  *
  * <blockquote>
  *
