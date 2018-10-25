@@ -34,7 +34,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-ear-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>2.10</version>
                 <configuration>
                     <displayName>test-javaee6-correctScanningEar</displayName>
                     <encoding>UTF-8</encoding>

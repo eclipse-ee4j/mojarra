@@ -1519,8 +1519,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * <code>doAfterBody()</code> method when it is called.  Subclasses
      * may override this method to return the appropriate value.</p>
      *
-     * @return the value to return from <code>doAfterBody()</code>,
-     * JspException if the value cannot be returned
+     * @return the value to return from <code>doAfterBody()</code>
+     *
+     * @return JspException if the value cannot be returned
      *
      * @throws JspException if an unexpected condition arises while
      * getting the value
