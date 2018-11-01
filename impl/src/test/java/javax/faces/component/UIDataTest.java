@@ -16,53 +16,85 @@
 
 package javax.faces.component;
 
-import javax.faces.context.FacesContext;
-import org.easymock.EasyMock;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.reflect.Whitebox;
+
+import javax.faces.context.FacesContext;
+import javax.faces.render.RenderKit;
+
+import static javax.faces.component.NamingContainer.SEPARATOR_CHAR;
+import static javax.faces.component.UINamingContainer.SEPARATOR_CHAR_PARAM_NAME;
 import static org.easymock.EasyMock.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.*;
+import static org.powermock.api.easymock.PowerMock.createNicePartialMock;
+import static org.powermock.api.easymock.PowerMock.createNicePartialMockAndInvokeDefaultConstructor;
 
 /**
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
 public class UIDataTest {
-    
+
     /**
      * Test partial state saving.
      */
     @Test
     public void testSaveState() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = createMock(FacesContext.class);
         UIData data = new UIData();
         data.markInitialState();
         replay(context);
         assertNull(data.saveState(context));
         verify(context);
     }
-    
+
     /**
      * Test full state saving.
      */
     @Test
     public void testSaveState2() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = createMock(FacesContext.class);
         UIData data = new UIData();
         replay(context);
         assertNotNull(data.saveState(context));
         verify(context);
     }
-    
+
     /**
      * Test partial state saving with rowIndex.
      */
     @Test
     public void testSaveState3() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = createMock(FacesContext.class);
         UIData data = new UIData();
         data.markInitialState();
         data.setRowIndex(4);
         replay(context);
         assertNotNull(data.saveState(context));
         verify(context);
+    }
+
+    @Test
+    public void testInvokeOnComponentMustNotCallSetRowIndexIfNotTouched() throws Exception {
+        FacesContext context = createNicePartialMockAndInvokeDefaultConstructor(FacesContext.class, "getRenderKit");
+        context.getAttributes().put(SEPARATOR_CHAR_PARAM_NAME, SEPARATOR_CHAR);
+
+        UIData data = new UIData() {
+            @Override
+            public void setRowIndex(int rowIndex) {
+                context.getAttributes().put("setRowIndexCalled", true);
+            }
+        };
+
+        data.setId("data");
+        // simple way. otherwise, we have to mock the renderkit and whatever.
+        Whitebox.setInternalState(data, "clientId", data.getId());
+
+        data.invokeOnComponent(context, "differentId", (contextInLambda, target) -> {});
+
+        assertThat(context.getAttributes().get("setRowIndexCalled"), is(nullValue()));
     }
 }
