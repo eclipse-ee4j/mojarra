@@ -16,9 +16,9 @@
 
 package com.sun.faces.flow;
 
+import com.sun.faces.cdi.CDIUtil;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-import com.sun.faces.util.cdi11.CDIUtil;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;

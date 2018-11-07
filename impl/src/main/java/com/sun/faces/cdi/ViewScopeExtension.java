@@ -14,11 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.application.view;
+package com.sun.faces.cdi;
 
+import com.sun.faces.cdi.CDIUtil;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-import com.sun.faces.util.cdi11.CDIUtil;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
