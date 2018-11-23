@@ -17,6 +17,7 @@
 package javax.faces.context;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
 
 import javax.faces.component.NamingContainer;
@@ -370,5 +371,4 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
             inChanges = false;
         }
     }
-
 }
