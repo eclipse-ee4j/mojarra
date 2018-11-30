@@ -36,7 +36,7 @@ import javax.faces.render.ResponseStateManager;
  * into parts to allow for dynamic assembly. When the URL is to be build, a call
  * to createUrl() assembles the parts into a relative URL. This class should
  * be extended if the developer wishes to have it deal with absolute URLs.</p>
- * 
+ *
  * <p>Note that this class is optimized to parse the query string lazily so as
  * to avoid unnecessary work if the seed URL differs little from the URL to be
  * built.</p>
@@ -169,7 +169,7 @@ class UrlBuilder {
         if (queryString == null) {
             return;
         }
-        
+
         Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
 
         String[] pairs = Util.split(appMap, queryString, PARAMETER_PAIR_SEPARATOR);
@@ -195,7 +195,7 @@ class UrlBuilder {
 
     protected void appendQueryString() {
         boolean hasQueryString = false;
-        
+
         if (parameters != null) {
             String nextSeparatorChar;
             if ( queryString == null ) {
@@ -204,7 +204,7 @@ class UrlBuilder {
                 nextSeparatorChar = PARAMETER_PAIR_SEPARATOR;
                 url.append(QUERY_STRING_SEPARATOR).append(queryString);
             }
-            
+
             for (Map.Entry<String, List<String>> param : parameters.entrySet()) {
                 for (String value : param.getValue()) {
                     url.append(nextSeparatorChar);
@@ -215,11 +215,11 @@ class UrlBuilder {
                 }
             }
             hasQueryString = true;
-        } else if (queryString != null) { 
+        } else if (queryString != null) {
             url.append(QUERY_STRING_SEPARATOR).append(queryString);
             hasQueryString = true;
         }
-        
+
         FacesContext context = FacesContext.getCurrentInstance();
         ClientWindow  cw = context.getExternalContext().getClientWindow();
         boolean appendClientWindow = false;
@@ -235,19 +235,19 @@ class UrlBuilder {
                     url.append(PARAMETER_PAIR_SEPARATOR);
                 }
                 url.append(ResponseStateManager.CLIENT_WINDOW_URL_PARAM).append(PARAMETER_NAME_VALUE_SEPARATOR).append(clientWindow);
-    
+
                 Map<String, String> additionalParams = cw.getQueryURLParameters(context);
                 if (null != additionalParams) {
                     for (Map.Entry<String, String> cur : additionalParams.entrySet()) {
                         url.append(PARAMETER_NAME_VALUE_SEPARATOR);
                         url.append(cur.getKey()).
                                 append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).
-                                append(cur.getValue());                        
+                                append(cur.getValue());
                     }
                 }
             }
         }
-        
+
     }
 
 
@@ -294,7 +294,12 @@ class UrlBuilder {
                 String string = it.next();
                     if (encoding != null) {
                         try {
-                            values.add(URLEncoder.encode(string, encoding));
+                            if ( name.equals(ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM) ) {
+                                // token already encoded
+                                values.add(string);
+                            } else {
+                                values.add(URLEncoder.encode(string, encoding));
+                            }
                         } catch (UnsupportedEncodingException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -309,7 +314,7 @@ class UrlBuilder {
         if (parameters == null) {
             parameters = new LinkedHashMap<>();
         }
-        
+
         if (replace) {
             parameters.put(name, values);
         }
@@ -343,7 +348,7 @@ class UrlBuilder {
         }
     }
 
-    
+
     private void cleanQueryString() {
         if (queryString != null) {
             String q = queryString;
