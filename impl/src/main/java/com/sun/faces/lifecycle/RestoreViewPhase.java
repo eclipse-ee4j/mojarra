@@ -64,7 +64,6 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
@@ -128,9 +127,9 @@ public class RestoreViewPhase extends Phase {
         if (facesContext == null) {
             throw new FacesException(MessageUtils.getExceptionMessageString(NULL_CONTEXT_ERROR_MESSAGE_ID));
         }
-        
+
         // If an app had explicitely set the tree in the context, use that;
-        
+
         UIViewRoot viewRoot = facesContext.getViewRoot();
         if (viewRoot != null) {
             if (LOGGER.isLoggable(FINE)) {
@@ -153,7 +152,7 @@ public class RestoreViewPhase extends Phase {
             // Reconstitute or create the request tree
             Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
             String viewId = (String) requestMap.get("javax.servlet.include.path_info");
-            
+
             if (viewId == null) {
                 viewId = facesContext.getExternalContext().getRequestPathInfo();
             }
@@ -187,7 +186,7 @@ public class RestoreViewPhase extends Phase {
 
                 facesContext.setViewRoot(viewRoot);
                 facesContext.setProcessingEvents(true);
-                
+
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.fine("Postback: restored view for " + viewId);
                 }
@@ -198,26 +197,26 @@ public class RestoreViewPhase extends Phase {
 
                 String logicalViewId = viewHandler.deriveLogicalViewId(facesContext, viewId);
                 ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, logicalViewId);
-                
+
                 maybeTakeProtectedViewAction(facesContext, viewHandler, vdl, logicalViewId);
-                    
+
                 ViewMetadata metadata  = null;
                 if (vdl != null) {
                     // If we have one, get the ViewMetadata...
                     metadata = vdl.getViewMetadata(facesContext, logicalViewId);
-                    
+
                     if (metadata != null) { // perhaps it's not supported
                         // and use it to create the ViewRoot.  This will have, at most
                         // the UIViewRoot and its metadata facet.
                         viewRoot = metadata.createMetadataView(facesContext);
-                        
+
                         // Only skip to render response if there is no metadata
                         if (!ViewMetadata.hasMetadata(viewRoot)) {
                             facesContext.renderResponse();
                         }
                     }
                 }
-                
+
                 if (vdl == null || metadata == null) {
                     facesContext.renderResponse();
                 }
@@ -226,7 +225,7 @@ public class RestoreViewPhase extends Phase {
                     viewRoot = getViewHandler(facesContext).createView(facesContext, logicalViewId);
                 }
                 facesContext.setViewRoot(viewRoot);
-                
+
                 assert (viewRoot != null);
             }
         } catch (Throwable fe) {
@@ -241,7 +240,7 @@ public class RestoreViewPhase extends Phase {
                 if (flowHandler != null) {
                     flowHandler.clientWindowTransition(facesContext);
                 }
-                
+
                 deliverPostRestoreStateEvent(facesContext);
             } else {
                 throw thrownException;
@@ -252,22 +251,22 @@ public class RestoreViewPhase extends Phase {
             LOGGER.fine("Exiting RestoreViewPhase");
         }
     }
-    
+
     private void maybeTakeProtectedViewAction(FacesContext context, ViewHandler viewHandler, ViewDeclarationLanguage vdl, String viewId) {
         // http://java.net/jira/browse/JAVASERVERFACES-2204
         // PENDING: this code is optimized to be fast to write.
         // It must be optimized to be fast to run.
-        
+
         // See git clone ssh://edburns@git.java.net/grizzly~git 1_9_36 for
         // how grizzly does this.
-        
+
         Set<String> urlPatterns = viewHandler.getProtectedViewsUnmodifiable();
         // Implement section 12.1 of the Servlet spec.
-        boolean currentViewIsProtected = isProtectedView(viewId, urlPatterns);       
+        boolean currentViewIsProtected = isProtectedView(viewId, urlPatterns);
         if (currentViewIsProtected) {
             ExternalContext extContext = context.getExternalContext();
             Map<String, String> headers = extContext.getRequestHeaderMap();
-            
+
             //Check the token
             String rkId = viewHandler.calculateRenderKitId(context);
             ResponseStateManager rsm = RenderKitUtils.getResponseStateManager(context, rkId);
@@ -278,16 +277,16 @@ public class RestoreViewPhase extends Phase {
                     incomingSecretKeyValue = URLEncoder.encode(incomingSecretKeyValue, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Unable to re-encode value of request parameter " + 
-                               ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM + ":" + 
+                        LOGGER.log(Level.SEVERE, "Unable to re-encode value of request parameter " +
+                               ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM + ":" +
                                 incomingSecretKeyValue, e);
                     }
                   incomingSecretKeyValue = null;
                 }
            }
-            
+
             String correctSecretKeyValue = rsm.getCryptographicallyStrongTokenFromSession(context);
-            if (null == incomingSecretKeyValue || 
+            if (null == incomingSecretKeyValue ||
                 !correctSecretKeyValue.equals(incomingSecretKeyValue)) {
                 LOGGER.log(Level.SEVERE, "correctSecretKeyValue = {0} incomingSecretKeyValue = {1}", new Object[]{correctSecretKeyValue, incomingSecretKeyValue});
                 throw new ProtectedViewException();
@@ -302,15 +301,15 @@ public class RestoreViewPhase extends Phase {
                     try {
                         refererOriginatesInThisWebapp = originatesInWebapp(context, referer, vdl);
                     } catch(URISyntaxException ue) {
-                        throw new ProtectedViewException(ue);    
+                        throw new ProtectedViewException(ue);
                     }
                     if (!refererOriginatesInThisWebapp) {
-                        String message = FacesLogger.LIFECYCLE.interpolateMessage(context, 
+                        String message = FacesLogger.LIFECYCLE.interpolateMessage(context,
                             "jsf.lifecycle.invalid.referer", new String [] { referer, viewId });
                         if (LOGGER.isLoggable(SEVERE)) {
                             LOGGER.log(SEVERE, message);
                         }
-                        throw new ProtectedViewException(message);                
+                        throw new ProtectedViewException(message);
                     }
                 }
             }
@@ -323,21 +322,21 @@ public class RestoreViewPhase extends Phase {
                     try {
                         originOriginatesInThisWebapp = originatesInWebapp(context, origin, vdl);
                     } catch(URISyntaxException ue) {
-                        throw new ProtectedViewException(ue);    
+                        throw new ProtectedViewException(ue);
                     }
                     if (!originOriginatesInThisWebapp) {
-                        String message = FacesLogger.LIFECYCLE.interpolateMessage(context, 
+                        String message = FacesLogger.LIFECYCLE.interpolateMessage(context,
                             "jsf.lifecycle.invalid.origin", new String [] { origin, viewId });
                         if (LOGGER.isLoggable(SEVERE)) {
                             LOGGER.log(Level.SEVERE, message);
                         }
-                        throw new ProtectedViewException(message);                
+                        throw new ProtectedViewException(message);
                     }
                 }
             }
         }
     }
-    
+
     private boolean isProtectedView(String viewToCheck, Set<String> urlPatterns) {
         boolean isProtected = false;
         for (String urlPattern : urlPatterns) {
@@ -345,11 +344,11 @@ public class RestoreViewPhase extends Phase {
                 isProtected = true;
                 break;
             }
-        }   
-        
+        }
+
         return isProtected;
     }
-    
+
     private boolean originatesInWebapp(FacesContext context, String view, ViewDeclarationLanguage vdl) throws URISyntaxException {
         boolean doesOriginate = false;
         ExternalContext extContext = context.getExternalContext();
@@ -365,45 +364,52 @@ public class RestoreViewPhase extends Phase {
                 ":" + extContext.getRequestServerPort();
                 absoluteURI = new URI(base);
                 relativeURI = new URI(view);
-                uri = absoluteURI.resolve(relativeURI);  
+                uri = absoluteURI.resolve(relativeURI);
         }
         boolean hostsMatch = false,
             portsMatch = false,
             contextPathsMatch = false;
-            
+
         if (null == uri) {
             uri = new URI(view);
         }
         if (null == uri.getHost()) {
             hostsMatch = false;
         } else {
-            hostsMatch = uri.getHost().equals(extContext.getRequestServerName());    
+            hostsMatch = uri.getHost().equals(extContext.getRequestServerName());
         }
-        if (-1 == uri.getPort()) {
-            portsMatch = false;
-        } else {
-            portsMatch = uri.getPort() == extContext.getRequestServerPort();
+
+        int uriPort = uri.getPort();
+        if (-1 == uriPort && -1 != extContext.getRequestServerPort()) {
+            // set defaults for uri port
+            if ( "http".equals(extContext.getRequestScheme()) ) {
+                uriPort = 80;
+            } else if ( "https".equals(extContext.getRequestScheme()) ) {
+                uriPort = 443;
+            }
         }
+        portsMatch = uriPort == extContext.getRequestServerPort();
+
         path = uri.getPath();
         contextPathsMatch = path.contains(extContext.getApplicationContextPath());
-            
+
         doesOriginate = hostsMatch && portsMatch && contextPathsMatch;
-        
+
         if (!doesOriginate) {
             // Last chance view originates in this web app.
             int idx = path.lastIndexOf(sep);
             if (-1 != idx) {
                 path = path.substring(idx);
-            } 
+            }
             if (null == path || !vdl.viewExists(context, path)) {
                 doesOriginate = false;
             }    else {
                 doesOriginate = true;
             }
         }
-        return doesOriginate;      
+        return doesOriginate;
     }
-    
+
     private void deliverPostRestoreStateEvent(FacesContext facesContext) throws FacesException {
         UIViewRoot root = facesContext.getViewRoot();
         final PostRestoreStateEvent postRestoreStateEvent = new PostRestoreStateEvent(root);
