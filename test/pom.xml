@@ -193,7 +193,7 @@
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>util</artifactId>
-            <version>2.3.9-SNAPSHOT</version>
+            <version>2.3.9</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
