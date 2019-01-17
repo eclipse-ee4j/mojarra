@@ -811,20 +811,20 @@
             <optional>true</optional>
         </dependency>
 
-		<dependency>
-			<groupId>jakarta.servlet.jsp.jstl</groupId>
-			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-			<version>1.2.3</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>1.2.3</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
 
-		<dependency>	
-			<groupId>jakarta.websocket</groupId>
-			<artifactId>jakarta.websocket-api</artifactId>
-			<version>1.1.1</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>	
+            <groupId>jakarta.websocket</groupId>
+            <artifactId>jakarta.websocket-api</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>jakarta.el</groupId>
@@ -848,17 +848,17 @@
         </dependency>
         
         <dependency>
-			<groupId>jakarta.json</groupId>
-			<artifactId>jakarta.json-api</artifactId>
-			<version>1.1.5</version>
-			<scope>provided</scope>
-			<optional>true</optional>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <version>1.1.5</version>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>jakarta.ejb</groupId>
             <artifactId>jakarta.ejb-api</artifactId>
-            <version>3.2.3</version>
+            <version>3.2.4</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
