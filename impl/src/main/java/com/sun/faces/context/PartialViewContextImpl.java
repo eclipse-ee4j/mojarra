@@ -13,7 +13,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
 package com.sun.faces.context;
 
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EXECUTE_PARAM;
@@ -61,7 +60,7 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.Util;
 
- public class PartialViewContextImpl extends PartialViewContext {
+public class PartialViewContextImpl extends PartialViewContext {
 
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.CONTEXT.getLogger();
@@ -80,17 +79,12 @@ import com.sun.faces.util.Util;
 
     private static final String ORIGINAL_WRITER = "com.sun.faces.ORIGINAL_WRITER";
 
-
     // ----------------------------------------------------------- Constructors
-
-
     public PartialViewContextImpl(FacesContext ctx) {
         this.ctx = ctx;
     }
 
-
     // ---------------------------------------------- Methods from PartialViewContext
-
     /**
      * @see javax.faces.context.PartialViewContext#isAjaxRequest()
      */
@@ -100,10 +94,10 @@ import com.sun.faces.util.Util;
         assertNotReleased();
         if (ajaxRequest == null) {
             ajaxRequest = "partial/ajax".equals(ctx.
-                getExternalContext().getRequestHeaderMap().get("Faces-Request"));
+                    getExternalContext().getRequestHeaderMap().get("Faces-Request"));
             if (!ajaxRequest) {
                 ajaxRequest = "partial/ajax".equals(ctx.getExternalContext().getRequestParameterMap().
-                    get("Faces-Request"));
+                        get("Faces-Request"));
             }
         }
         return ajaxRequest;
@@ -118,14 +112,13 @@ import com.sun.faces.util.Util;
 
         assertNotReleased();
         if (partialRequest == null) {
-            partialRequest = isAjaxRequest() ||
-                    "partial/process".equals(ctx.
-                    getExternalContext().getRequestHeaderMap().get("Faces-Request"));
+            partialRequest = isAjaxRequest()
+                    || "partial/process".equals(ctx.
+                            getExternalContext().getRequestHeaderMap().get("Faces-Request"));
         }
         return partialRequest;
 
     }
-
 
     /**
      * @see javax.faces.context.PartialViewContext#isExecuteAll()
@@ -154,9 +147,9 @@ import com.sun.faces.util.Util;
         return renderAll;
 
     }
-    
+
     /**
-     * @see javax.faces.context.PartialViewContext#setRenderAll(boolean) 
+     * @see javax.faces.context.PartialViewContext#setRenderAll(boolean)
      */
     @Override
     public void setRenderAll(boolean renderAll) {
@@ -176,7 +169,6 @@ import com.sun.faces.util.Util;
         this.partialRequest = isPartialRequest;
     }
 
-
     /**
      * @see javax.faces.context.PartialViewContext#getExecuteIds()
      */
@@ -195,7 +187,7 @@ import com.sun.faces.util.Util;
             UIViewRoot root = ctx.getViewRoot();
             if (root.getFacetCount() > 0) {
                 if (root.getFacet(UIViewRoot.METADATA_FACET_NAME) != null) {
-                    executeIds.add(0, UIViewRoot.METADATA_FACET_NAME);   
+                    executeIds.add(0, UIViewRoot.METADATA_FACET_NAME);
                 }
             }
         }
@@ -218,41 +210,40 @@ import com.sun.faces.util.Util;
 
     }
 
-	/**
-	 * @see javax.faces.context.PartialViewContext#getEvalScripts()
-	 */
-	@Override
-	public List<String> getEvalScripts() {
-		assertNotReleased();
+    /**
+     * @see javax.faces.context.PartialViewContext#getEvalScripts()
+     */
+    @Override
+    public List<String> getEvalScripts() {
+        assertNotReleased();
 
-		if (evalScripts == null) {
-			evalScripts = new ArrayList<>(1);
-		}
+        if (evalScripts == null) {
+            evalScripts = new ArrayList<>(1);
+        }
 
-		return evalScripts;
-	}
+        return evalScripts;
+    }
 
     /**
-     * @see PartialViewContext#processPartial(javax.faces.event.PhaseId) 
+     * @see PartialViewContext#processPartial(javax.faces.event.PhaseId)
      */
     @Override
     public void processPartial(PhaseId phaseId) {
         PartialViewContext pvc = ctx.getPartialViewContext();
-        Collection <String> myExecuteIds = pvc.getExecuteIds();
-        Collection <String> myRenderIds = pvc.getRenderIds();
+        Collection<String> myExecuteIds = pvc.getExecuteIds();
+        Collection<String> myRenderIds = pvc.getRenderIds();
         UIViewRoot viewRoot = ctx.getViewRoot();
 
-        if (phaseId == PhaseId.APPLY_REQUEST_VALUES ||
-            phaseId == PhaseId.PROCESS_VALIDATIONS ||
-            phaseId == PhaseId.UPDATE_MODEL_VALUES) {
+        if (phaseId == PhaseId.APPLY_REQUEST_VALUES
+                || phaseId == PhaseId.PROCESS_VALIDATIONS
+                || phaseId == PhaseId.UPDATE_MODEL_VALUES) {
 
             // Skip this processing if "none" is specified in the render list,
             // or there were no execute phase client ids.
-
             if (myExecuteIds == null || myExecuteIds.isEmpty()) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE,
-                        "No execute and render identifiers specified.  Skipping component processing.");
+                            "No execute and render identifiers specified.  Skipping component processing.");
                 }
                 return;
             }
@@ -262,8 +253,8 @@ import com.sun.faces.util.Util;
             } catch (Exception e) {
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.log(Level.INFO,
-                           e.toString(),
-                           e);
+                            e.toString(),
+                            e);
                 }
                 throw new FacesException(e);
             }
@@ -292,18 +283,18 @@ import com.sun.faces.util.Util;
                 ExternalContext exContext = ctx.getExternalContext();
                 exContext.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
                 exContext.addResponseHeader("Cache-Control", "no-cache");
-                
+
 //                String encoding = writer.getCharacterEncoding( );
 //                if( encoding == null ) {
 //                    encoding = "UTF-8";
 //                }
 //                writer.writePreamble("<?xml version='1.0' encoding='" + encoding + "'?>\n");
                 writer.startDocument();
-                
+
                 if (isResetValues()) {
                     viewRoot.resetValues(ctx, myRenderIds);
                 }
-                
+
                 if (isRenderAll()) {
                     renderAll(ctx, viewRoot);
                     renderState(ctx);
@@ -350,7 +341,7 @@ import com.sun.faces.util.Util;
      */
     @Override
     public void release() {
-        
+
         released = true;
         ajaxRequest = null;
         renderAll = null;
@@ -364,9 +355,6 @@ import com.sun.faces.util.Util;
     }
 
     // -------------------------------------------------------- Private Methods
-
-
-
     private List<String> populatePhaseClientIds(PredefinedPostbackParameter parameterName) {
 
         String param = parameterName.getValue(ctx);
@@ -379,12 +367,12 @@ import com.sun.faces.util.Util;
                     ? new ArrayList<>(Arrays.asList(pcs))
                     : new ArrayList<>());
         }
-        
+
     }
 
     // Process the components specified in the phaseClientIds list
     private void processComponents(UIComponent component, PhaseId phaseId,
-        Collection<String> phaseClientIds, FacesContext context) throws IOException {
+            Collection<String> phaseClientIds, FacesContext context) throws IOException {
 
         // We use the tree visitor mechanism to locate the components to
         // process.  Create our (partial) VisitContext and the
@@ -392,11 +380,10 @@ import com.sun.faces.util.Util;
         // is visited.  Note that we use the SKIP_UNRENDERED hint as we
         // only want to visit the rendered subtree.
         EnumSet<VisitHint> hints = EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.EXECUTE_LIFECYCLE);
-        VisitContextFactory visitContextFactory = (VisitContextFactory) 
-                FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
+        VisitContextFactory visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
         VisitContext visitContext = visitContextFactory.getVisitContext(context, phaseClientIds, hints);
-        PhaseAwareVisitCallback visitCallback =
-            new PhaseAwareVisitCallback(ctx, phaseId);
+        PhaseAwareVisitCallback visitCallback
+                = new PhaseAwareVisitCallback(ctx, phaseId);
         component.visitTree(visitContext, visitCallback);
 
         PartialVisitContext partialVisitContext = unwrapPartialVisitContext(visitContext);
@@ -411,14 +398,16 @@ import com.sun.faces.util.Util;
                         "jsf.context.partial_visit_context_unvisited_children",
                         new Object[]{builder.toString()});
             }
-        }    
+        }
     }
 
     /**
-     * Unwraps {@link PartialVisitContext} from a chain of {@link VisitContextWrapper}s.
+     * Unwraps {@link PartialVisitContext} from a chain of
+     * {@link VisitContextWrapper}s.
      *
-     * If no {@link PartialVisitContext} is found in the chain, null is returned instead.
-     * 
+     * If no {@link PartialVisitContext} is found in the chain, null is returned
+     * instead.
+     *
      * @param visitContext the visit context.
      * @return the (unwrapped) partial visit context.
      */
@@ -434,7 +423,7 @@ import com.sun.faces.util.Util;
         }
         return null;
     }
-    
+
     private void renderAll(FacesContext context, UIViewRoot viewRoot) throws IOException {
         // If this is a "render all via ajax" request,
         // make sure to wrap the entire page in a <render> elemnt
@@ -443,7 +432,7 @@ import com.sun.faces.util.Util;
         // this response.
         PartialViewContext pvc = context.getPartialViewContext();
         PartialResponseWriter writer = pvc.getPartialResponseWriter();
-        
+
         if (!(viewRoot instanceof NamingContainer)) {
             writer.startUpdate(PartialResponseWriter.RENDER_ALL_MARKER);
             if (viewRoot.getChildCount() > 0) {
@@ -452,8 +441,7 @@ import com.sun.faces.util.Util;
                 }
             }
             writer.endUpdate();
-        }
-        else {
+        } else {
             /*
              * If we have a portlet request, start rendering at the view root.
              */
@@ -478,10 +466,9 @@ import com.sun.faces.util.Util;
             String name = (String) resource.getAttributes().get("name");
             String library = (String) resource.getAttributes().get("library");
 
-            if (resource.getChildCount() == 0 
-              && resourceHandler.getRendererTypeForResourceName(name) != null 
-              && !resourceHandler.isResourceRendered(context, name, library)) 
-            {
+            if (resource.getChildCount() == 0
+                    && resourceHandler.getRendererTypeForResourceName(name) != null
+                    && !resourceHandler.isResourceRendered(context, name, library)) {
                 if (!updateStarted) {
                     writer.startUpdate("javax.faces.Resource");
                     updateStarted = true;
@@ -495,7 +482,7 @@ import com.sun.faces.util.Util;
             writer.endUpdate();
         }
     }
-    
+
     private void renderState(FacesContext context) throws IOException {
         // Get the view state and write it to the response..
         PartialViewContext pvc = context.getPartialViewContext();
@@ -516,16 +503,16 @@ import com.sun.faces.util.Util;
         }
     }
 
-	private void renderEvalScripts(FacesContext context) throws IOException {
-		PartialViewContext pvc = context.getPartialViewContext();
-		PartialResponseWriter writer = pvc.getPartialResponseWriter();
+    private void renderEvalScripts(FacesContext context) throws IOException {
+        PartialViewContext pvc = context.getPartialViewContext();
+        PartialResponseWriter writer = pvc.getPartialResponseWriter();
 
-		for (String evalScript : pvc.getEvalScripts()) {
-			writer.startEval();
-			writer.write(evalScript);
-			writer.endEval();
-		}
-	}
+        for (String evalScript : pvc.getEvalScripts()) {
+            writer.startEval();
+            writer.write(evalScript);
+            writer.endEval();
+        }
+    }
 
     private PartialResponseWriter createPartialResponseWriter() {
 
@@ -539,31 +526,31 @@ import com.sun.faces.util.Util;
         } catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE,
-                           ioe.toString(),
-                           ioe);
+                        ioe.toString(),
+                        ioe);
             }
         }
 
         if (out != null) {
             UIViewRoot viewRoot = ctx.getViewRoot();
             if (viewRoot != null) {
-                responseWriter =
-                    ctx.getRenderKit().createResponseWriter(out,
-                    RIConstants.TEXT_XML_CONTENT_TYPE, encoding);
+                responseWriter
+                        = ctx.getRenderKit().createResponseWriter(out,
+                                RIConstants.TEXT_XML_CONTENT_TYPE, encoding);
             } else {
-                RenderKitFactory factory = (RenderKitFactory)
-                    FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+                RenderKitFactory factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
                 RenderKit renderKit = factory.getRenderKit(ctx, RenderKitFactory.HTML_BASIC_RENDER_KIT);
                 responseWriter = renderKit.createResponseWriter(out, RIConstants.TEXT_XML_CONTENT_TYPE, encoding);
             }
         }
-        if (responseWriter instanceof PartialResponseWriter)  {
+        if (responseWriter instanceof PartialResponseWriter) {
             return (PartialResponseWriter) responseWriter;
         } else {
-            return new PartialResponseWriter(responseWriter);
+            return new PartialResponseWriter(responseWriter == null ? null :
+                    responseWriter.cloneWithWriter(new IllegalXmlCharacterFilterWriter(responseWriter)));
         }
-
     }
+
 
     private void cleanupAfterView() {
         ResponseWriter orig = (ResponseWriter) ctx.getAttributes().
@@ -576,7 +563,9 @@ import com.sun.faces.util.Util;
     private void assertNotReleased() {
         if (released) {
             throw new IllegalStateException();
-        }
+        
+
+}
     }
 
     // ----------------------------------------------------------- Inner Classes
@@ -584,104 +573,96 @@ import com.sun.faces.util.Util;
 
     private static class PhaseAwareVisitCallback implements VisitCallback {
 
-        private PhaseId curPhase;
-        private FacesContext ctx;
+    private PhaseId curPhase;
+    private FacesContext ctx;
 
-        private PhaseAwareVisitCallback(FacesContext ctx, PhaseId curPhase) {
-            this.ctx = ctx;
-            this.curPhase = curPhase;
-        }  
-
-
-        @Override
-        public VisitResult visit(VisitContext context, UIComponent comp) {
-            try {
-
-                if (curPhase == PhaseId.APPLY_REQUEST_VALUES) {
-
-                    // RELEASE_PENDING handle immediate request(s)
-                    // If the user requested an immediate request
-                    // Make sure to set the immediate flag here.
-
-                    comp.processDecodes(ctx);
-                } else if (curPhase == PhaseId.PROCESS_VALIDATIONS) {
-                    comp.processValidators(ctx);
-                } else if (curPhase == PhaseId.UPDATE_MODEL_VALUES) {
-                    comp.processUpdates(ctx);
-                } else if (curPhase == PhaseId.RENDER_RESPONSE) {
-                    PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
-                    writer.startUpdate(comp.getClientId(ctx));
-                    // do the default behavior...
-                    comp.encodeAll(ctx);
-                    writer.endUpdate();
-                } else {
-                    throw new IllegalStateException("I18N: Unexpected " +
-                                                    "PhaseId passed to " +
-                                              " PhaseAwareContextCallback: " +
-                                                    curPhase.toString());
-                }
-            }
-            catch (IOException ex) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(ex.toString());
-                }
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE,
-                    ex.toString(),
-                    ex);
-                }
-                throw new FacesException(ex);
-            }
-
-            // Once we visit a component, there is no need to visit
-            // its children, since processDecodes/Validators/Updates and
-            // encodeAll() already traverse the subtree.  We return
-            // VisitResult.REJECT to supress the subtree visit.
-            return VisitResult.REJECT;
-        }
+    private PhaseAwareVisitCallback(FacesContext ctx, PhaseId curPhase) {
+        this.ctx = ctx;
+        this.curPhase = curPhase;
     }
 
+    @Override
+    public VisitResult visit(VisitContext context, UIComponent comp) {
+        try {
 
-     /**
-      * Delays the actual construction of the PartialResponseWriter <em>until</em>
-      * content is going to actually be written.
-      */
-    private static final class DelayedInitPartialResponseWriter extends PartialResponseWriter {
+            if (curPhase == PhaseId.APPLY_REQUEST_VALUES) {
 
-        private ResponseWriter writer;
-        private PartialViewContextImpl ctx;
-
-        // -------------------------------------------------------- Constructors
-
-
-        public DelayedInitPartialResponseWriter(PartialViewContextImpl ctx) {
-
-            super(null);
-            this.ctx = ctx;
-            ExternalContext extCtx = ctx.ctx.getExternalContext();
-            extCtx.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
-            extCtx.setResponseCharacterEncoding(extCtx.getRequestCharacterEncoding());
-            extCtx.setResponseBufferSize(ctx.ctx.getExternalContext().getResponseBufferSize());
-        }
-
-
-        // ---------------------------------- Methods from PartialResponseWriter
-
-        @Override
-        public void write(String text) throws IOException {
-            HtmlUtils.writeUnescapedTextForXML(getWrapped(), text);
-        }
-
-        @Override
-        public ResponseWriter getWrapped() {
-
-            if (writer == null) {
-                writer = ctx.createPartialResponseWriter();
+                // RELEASE_PENDING handle immediate request(s)
+                // If the user requested an immediate request
+                // Make sure to set the immediate flag here.
+                comp.processDecodes(ctx);
+            } else if (curPhase == PhaseId.PROCESS_VALIDATIONS) {
+                comp.processValidators(ctx);
+            } else if (curPhase == PhaseId.UPDATE_MODEL_VALUES) {
+                comp.processUpdates(ctx);
+            } else if (curPhase == PhaseId.RENDER_RESPONSE) {
+                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
+                writer.startUpdate(comp.getClientId(ctx));
+                // do the default behavior...
+                comp.encodeAll(ctx);
+                writer.endUpdate();
+            } else {
+                throw new IllegalStateException("I18N: Unexpected "
+                        + "PhaseId passed to "
+                        + " PhaseAwareContextCallback: "
+                        + curPhase.toString());
             }
-            return writer;
-
+        } catch (IOException ex) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(ex.toString());
+            }
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE,
+                        ex.toString(),
+                        ex);
+            }
+            throw new FacesException(ex);
         }
-         
-    } // END DelayedInitPartialResponseWriter
 
-} 
+        // Once we visit a component, there is no need to visit
+        // its children, since processDecodes/Validators/Updates and
+        // encodeAll() already traverse the subtree.  We return
+        // VisitResult.REJECT to supress the subtree visit.
+        return VisitResult.REJECT;
+    }
+}
+
+/**
+ * Delays the actual construction of the PartialResponseWriter <em>until</em>
+ * content is going to actually be written.
+ */
+private static final class DelayedInitPartialResponseWriter extends PartialResponseWriter {
+
+    private ResponseWriter writer;
+    private PartialViewContextImpl ctx;
+
+    // -------------------------------------------------------- Constructors
+    public DelayedInitPartialResponseWriter(PartialViewContextImpl ctx) {
+
+        super(null);
+        this.ctx = ctx;
+        ExternalContext extCtx = ctx.ctx.getExternalContext();
+        extCtx.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
+        extCtx.setResponseCharacterEncoding(extCtx.getRequestCharacterEncoding());
+        extCtx.setResponseBufferSize(ctx.ctx.getExternalContext().getResponseBufferSize());
+    }
+
+    // ---------------------------------- Methods from PartialResponseWriter
+    @Override
+    public void write(String text) throws IOException {
+        HtmlUtils.writeUnescapedTextForXML(getWrapped(), text);
+    }
+
+    @Override
+    public ResponseWriter getWrapped() {
+
+        if (writer == null) {
+            writer = ctx.createPartialResponseWriter();
+        }
+        return writer;
+
+    }
+
+} // END DelayedInitPartialResponseWriter
+
+}
