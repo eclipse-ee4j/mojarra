@@ -560,8 +560,9 @@ import com.sun.faces.util.Util;
         if (responseWriter instanceof PartialResponseWriter)  {
             return (PartialResponseWriter) responseWriter;
         } else {
-            return new PartialResponseWriter(responseWriter);
-        }
+            return new PartialResponseWriter(responseWriter == null ? null :
+                    responseWriter.cloneWithWriter(new IllegalXmlCharacterFilterWriter(responseWriter)));
+        }	        
 
     }
 
