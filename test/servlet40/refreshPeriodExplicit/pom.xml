@@ -22,7 +22,7 @@
     <parent>
         <artifactId>pom</artifactId>
         <groupId>com.sun.faces.test.servlet40</groupId>
-        <version>2.3.9-SNAPSHOT</version>
+        <version>2.3.10-SNAPSHOT</version>
     </parent>
     <artifactId>refreshPeriodExplicit</artifactId>
     <packaging>war</packaging>
