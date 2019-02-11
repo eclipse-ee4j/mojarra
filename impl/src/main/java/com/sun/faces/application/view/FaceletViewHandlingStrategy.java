@@ -66,10 +66,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -94,6 +96,7 @@ import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -174,6 +177,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
+
+    /**
+     * Stores the skip hint.
+     */
+    private static String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
 
     // ------------------------------------------------------------ Constructors
@@ -1984,49 +1992,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         }
 
     }
-    /**
-     * Find the given component in the component tree.
-     *
-     * @param context the Faces context.
-     * @param clientId the client id of the component to find.
-     */
-    private UIComponent locateComponentByClientId(final FacesContext context, final UIComponent parent, final String clientId) {
-        final List<UIComponent> found = new ArrayList<>();
-        UIComponent result = null;
-
-        parent.invokeOnComponent(context, clientId, new ContextCallback() {
-
-            @Override
-            public void invokeContextCallback(FacesContext context, UIComponent target) {
-                found.add(target);
-            }
-        });
-
-        /*
-         * Since we did not find it the cheaper way we need to assume there is a
-         * UINamingContainer that does not prepend its ID. So we are going to
-         * walk the tree to find it.
-         */
-        if (found.isEmpty()) {
-            VisitContext visitContext = VisitContext.createVisitContext(context);
-            parent.visitTree(visitContext, new VisitCallback() {
-
-                @Override
-                public VisitResult visit(VisitContext visitContext, UIComponent component) {
-                    VisitResult result = VisitResult.ACCEPT;
-                    if (component.getClientId(visitContext.getFacesContext()).equals(clientId)) {
-                        found.add(component);
-                        result = VisitResult.COMPLETE;
-                        }
-                    return result;
-                }
-            });
-        }
-        if (!found.isEmpty()) {
-            result = found.get(0);
-        }
-        return result;
-    }
 
     /**
      * Reapply the dynamic actions after Facelets reapply.
@@ -2041,13 +2006,32 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private void reapplyDynamicActions(FacesContext context) {
         StateContext stateContext = StateContext.getStateContext(context);
         List<ComponentStruct> actions = stateContext.getDynamicActions();
+
+        final Map<String, UIComponent> compCache = new HashMap<>();
+        try {
+            context.getAttributes().put(SKIP_ITERATION_HINT, true);
+            Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
+            VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
+            context.getViewRoot().visitTree(visitContext, new VisitCallback() {
+
+                @Override
+                public VisitResult visit(VisitContext visitContext, UIComponent component) {
+                    compCache.put(component.getClientId(visitContext.getFacesContext()), component);
+
+                    return VisitResult.ACCEPT;
+                }
+            });
+        } finally {
+            context.getAttributes().remove(SKIP_ITERATION_HINT);
+        }
+
         if (actions != null) {
             for (ComponentStruct action : actions) {
                 if (REMOVE.equals(action.getAction())) {
-                    reapplyDynamicRemove(context, action);
+                    reapplyDynamicRemove(context, action, compCache);
                 }
                 if (ADD.equals(action.getAction())) {
-                    reapplyDynamicAdd(context, action);
+                    reapplyDynamicAdd(context, action, compCache);
                 }
             }
         }
@@ -2059,12 +2043,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @param context the Faces context.
      * @param struct the component struct.
      */
-    private void reapplyDynamicAdd(FacesContext context, ComponentStruct struct) {
-        UIComponent parent = locateComponentByClientId(context, context.getViewRoot(), struct.getParentClientId());
+    private void reapplyDynamicAdd(FacesContext context, ComponentStruct struct, Map<String, UIComponent> compCache) {
+        UIComponent parent = compCache.get(struct.getParentClientId());
 
         if (parent != null) {
 
-            UIComponent child = locateComponentByClientId(context, parent, struct.getClientId());
+            UIComponent child = compCache.get(struct.getClientId());
             StateContext stateContext = StateContext.getStateContext(context);
 
             if (child == null) {
@@ -2091,6 +2075,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
                 }
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
+                compCache.put(struct.getClientId(), child);
             }
         }
     }
@@ -2101,13 +2086,14 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @param context the Faces context.
      * @param struct the component struct.
      */
-    private void reapplyDynamicRemove(FacesContext context, ComponentStruct struct) {
-        UIComponent child = locateComponentByClientId(context, context.getViewRoot(), struct.getClientId());
+    private void reapplyDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> compCache) {
+        UIComponent child = compCache.get(struct.getClientId());
         if (child != null) {
             StateContext stateContext = StateContext.getStateContext(context);
             stateContext.getDynamicComponents().put(struct.getClientId(), child);
             UIComponent parent = child.getParent();
             parent.getChildren().remove(child);
+            compCache.remove(struct.getClientId());
         }
     }
 

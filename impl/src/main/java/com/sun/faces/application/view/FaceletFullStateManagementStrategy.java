@@ -173,72 +173,6 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     }
 
     /**
-     * Find the given component in the component tree.
-     *
-     * @param context the Faces context.
-     * @param clientId the client id of the component to find.
-     */
-    private UIComponent locateComponentByClientId(final FacesContext context, final UIComponent subTree, final String clientId) {
-        if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.log(FINEST, "FaceletFullStateManagementStrategy.locateComponentByClientId", clientId);
-        }
-
-        final List<UIComponent> found = new ArrayList<>();
-        UIComponent result = null;
-
-        try {
-            context.getAttributes().put(SKIP_ITERATION_HINT, true);
-            Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
-
-            VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
-            subTree.visitTree(visitContext, new VisitCallback() {
-
-                @Override
-                public VisitResult visit(VisitContext visitContext, UIComponent component) {
-                    VisitResult result = ACCEPT;
-                    if (component.getClientId(visitContext.getFacesContext()).equals(clientId)) {
-                        /*
-                         * If the client id matches up we have found our match.
-                         */
-                        found.add(component);
-                        result = COMPLETE;
-                    } else if (component instanceof UIForm) {
-                        /*
-                         * If the component is a UIForm and it is prepending its
-                         * id then we can short circuit out of here if the the
-                         * client id of the component we are trying to find does
-                         * not begin with the id of the UIForm.
-                         */
-                        UIForm form = (UIForm) component;
-                        if (form.isPrependId() && !clientId.startsWith(form.getClientId(visitContext.getFacesContext()))) {
-                            result = REJECT;
-                        }
-                    } else if (component instanceof NamingContainer
-                            && !clientId.startsWith(component.getClientId(visitContext.getFacesContext()))) {
-                        /*
-                         * If the component is a naming container then assume it
-                         * is prepending its id so if our client id we are
-                         * looking for does not start with the naming container
-                         * id we can skip visiting this tree.
-                         */
-                        result = REJECT;
-                    }
-
-                    return result;
-                }
-            });
-        } finally {
-            context.getAttributes().remove(SKIP_ITERATION_HINT);
-        }
-
-        if (!found.isEmpty()) {
-            result = found.get(0);
-        }
-        
-        return result;
-    }
-
-    /**
      * Create a new component instance.
      *
      * @param treeNode the tree node.
@@ -375,15 +309,33 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         List<Object> savedActions = (List<Object>) context.getViewRoot().getAttributes().get(DYNAMIC_ACTIONS);
         List<ComponentStruct> actions = stateContext.getDynamicActions();
 
+        final Map<String, UIComponent> compCache = new HashMap<>();
+        try {
+            context.getAttributes().put(SKIP_ITERATION_HINT, true);
+            Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
+            VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
+            context.getViewRoot().visitTree(visitContext, new VisitCallback() {
+
+                @Override
+                public VisitResult visit(VisitContext visitContext, UIComponent component) {
+                    compCache.put(component.getClientId(visitContext.getFacesContext()), component);
+                    return VisitResult.ACCEPT;
+                }
+
+            });
+        } finally {
+            context.getAttributes().remove(SKIP_ITERATION_HINT);
+        }
+
         if (!isEmpty(savedActions)) {
             for (Object savedAction : savedActions) {
                 ComponentStruct action = new ComponentStruct();
                 action.restoreState(context, savedAction);
                 if (ADD.equals(action.getAction())) {
-                    restoreDynamicAdd(context, state, action);
+                    restoreDynamicAdd(context, state, action, compCache);
                 }
                 if (REMOVE.equals(action.getAction())) {
-                    restoreDynamicRemove(context, action);
+                    restoreDynamicRemove(context, action, compCache);
                 }
                 pruneAndReAddToDynamicActions(actions, action);
             }
@@ -397,15 +349,15 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
      * @param state the state.
      * @param struct the component struct.
      */
-    private void restoreDynamicAdd(FacesContext context, Map<String, Object> state, ComponentStruct struct) {
+    private void restoreDynamicAdd(FacesContext context, Map<String, Object> state, ComponentStruct struct, Map<String, UIComponent> compCache) {
         if (LOGGER.isLoggable(FINEST)) {
             LOGGER.finest("FaceletFullStateManagementStrategy.restoreDynamicAdd");
         }
 
-        UIComponent parent = locateComponentByClientId(context, context.getViewRoot(), struct.getParentClientId());
+        UIComponent parent = compCache.get(struct.getParentClientId());
 
         if (parent != null) {
-            UIComponent child = locateComponentByClientId(context, parent, struct.getClientId());
+            UIComponent child = compCache.get(struct.getClientId());
 
             /*
              * If Facelets engine restored the child before us we are going to
@@ -462,6 +414,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                 }
                 child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
+                compCache.put(struct.getClientId(), child);
             }
         }
     }
@@ -472,17 +425,18 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
      * @param context the Faces context.
      * @param struct the component struct.
      */
-    private void restoreDynamicRemove(FacesContext context, ComponentStruct struct) {
+    private void restoreDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> compCache) {
         if (LOGGER.isLoggable(FINEST)) {
             LOGGER.finest("FaceletFullStateManagementStrategy.restoreDynamicRemove");
         }
 
-        UIComponent child = locateComponentByClientId(context, context.getViewRoot(), struct.getClientId());
+        UIComponent child = compCache.get(struct.getClientId());
         if (child != null) {
             StateContext stateContext = StateContext.getStateContext(context);
             stateContext.getDynamicComponents().put(struct.getClientId(), child);
             UIComponent parent = child.getParent();
             parent.getChildren().remove(child);
+            compCache.remove(struct.getClientId());
         }
     }
 
