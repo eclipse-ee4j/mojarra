@@ -718,6 +718,18 @@
                 </dependencies>
             </plugin>
             
+            <!-- Another number of basic Java language code checks -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.4</version>
+                <configuration>
+                    <threshold>High</threshold>
+                    <excludeFilterFile>${project.basedir}/src/main/findbugs/exclude.xml</excludeFilterFile>
+                </configuration>
+            </plugin>
+
+            <!-- Check the JSF API against a known API level -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>clirr-maven-plugin</artifactId>
@@ -740,16 +752,6 @@
                         <version>6.0</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.4</version>
-                <configuration>
-                    <threshold>High</threshold>
-                    <excludeFilterFile>${project.build.directory}/../src/main/findbugs/exclude.xml</excludeFilterFile>
-                </configuration>
             </plugin>
             
             <!-- Validate that the various XML files are well formed and match their schema-->
