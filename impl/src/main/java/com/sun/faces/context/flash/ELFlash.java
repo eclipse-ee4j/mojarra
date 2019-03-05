@@ -1379,7 +1379,7 @@ public class ELFlash extends Flash {
             String temp;
             String value;
             
-            String urlDecodedValue = null;
+            String urlDecodedValue;
             
             try {
                 urlDecodedValue = URLDecoder.decode(cookie.getValue(), "UTF-8");
@@ -1387,9 +1387,9 @@ public class ELFlash extends Flash {
                 urlDecodedValue = cookie.getValue();
             }
             
-            value = guard.decrypt(urlDecodedValue);
-            
             try {
+                value = guard.decrypt(urlDecodedValue);
+
                 int i = value.indexOf("_");
 
                 // IMPORTANT: what was "next" when the cookie was
@@ -1442,15 +1442,16 @@ public class ELFlash extends Flash {
                     }
                     nextRequestFlashInfo.setFlashMap(flashMap);
                 }
+            } catch(InvalidKeyException e) {
+                throw e;
             } catch (Throwable t) {
                 context.getAttributes().put(CONSTANTS.ForceSetMaxAgeZero, Boolean.TRUE);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
                             "jsf.externalcontext.flash.bad.cookie",
-                            new Object [] { value });
+                            new Object [] { urlDecodedValue });
                 }
             }
-
         }
 
 	/**

@@ -126,7 +126,7 @@ public final class ByteArrayGuardAESCTR {
 
     public String decrypt(String value) throws InvalidKeyException {
         
-        byte[] bytes = DatatypeConverter.parseBase64Binary(value);;
+        byte[] bytes = DatatypeConverter.parseBase64Binary(value);
         
         try {
             byte[] iv = new byte[16];
