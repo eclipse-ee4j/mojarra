@@ -19,12 +19,14 @@ package com.sun.faces.lifecycle;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.faces.component.UINamingContainer;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.lifecycle.ClientWindow;
 import javax.faces.render.ResponseStateManager;
+import javax.faces.FacesException;
 
 public class ClientWindowImpl extends ClientWindow {
     
@@ -50,6 +52,10 @@ public class ClientWindowImpl extends ClientWindow {
         String paramName = CLIENT_WINDOW_PARAM.getName(context);
         if (requestParamMap.containsKey(paramName)) {
             id = requestParamMap.get(paramName);
+            Pattern safePattern = Pattern.compile(".*<(.*:script|script).*>[^&]*</\\s*\\1\\s*>.*");
+            if (safePattern.matcher(id).matches()) {
+                throw new FacesException("ClientWindow is illegal: " + id);
+            }
         }
         if (null == id) {
             id = calculateClientWindow(context);
