@@ -3309,6 +3309,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
         var RECONNECT_INTERVAL = 500;
         var MAX_RECONNECT_ATTEMPTS = 25;
         var REASON_EXPIRED = "Expired";
+        var REASON_UNKNOWN_CHANNEL = "Unknown channel";
 
         // Private static fields ------------------------------------------------------------------------------------------
 
@@ -3372,7 +3373,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                 socket.onclose = function(event) {
                     if (!socket
                             || (event.code == 1000 && event.reason == REASON_EXPIRED)
-                            || (event.code == 1008)
+                            || (event.code == 1008 || (event.code == 1005 && event.reason == REASON_UNKNOWN_CHANNEL)) // Older IE versions incorrectly return 1005 instead of 1008, hence the extra check on the message.
                             || (reconnectAttempts == null)
                             || (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS))
                     {
