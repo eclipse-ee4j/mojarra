@@ -511,7 +511,7 @@ import com.sun.faces.util.Util;
         if (null != window) {
             String clientWindowId = Util.getClientWindowId(context);
             writer.startUpdate(clientWindowId);
-            writer.write(window.getId());
+            writer.writeText(window.getId(), null);
             writer.endUpdate();
         }
     }
