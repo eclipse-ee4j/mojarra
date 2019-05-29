@@ -19,17 +19,22 @@ package com.sun.faces.spi;
 import javax.servlet.ServletContext;
 
 import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
+import com.sun.faces.util.FacesLogger;
 
 import javax.faces.FacesException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
  */
 public class AnnotationProviderFactory {
+
+    private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     private static final Class<? extends AnnotationProvider> DEFAULT_ANNOTATION_PROVIDER =
        FilterClassesFromFacesInitializerAnnotationProvider.class;
@@ -47,12 +52,29 @@ public class AnnotationProviderFactory {
         String[] services = ServiceFactoryUtils.getServiceEntries(ANNOTATION_PROVIDER_SERVICE_KEY);
         if (services.length > 0) {
             // only use the first entry...
-            Object provider = ServiceFactoryUtils.getProviderFromEntry(services[0],
-                new Class[] { ServletContext.class, AnnotationProvider.class }, new Object[] { sc , annotationProvider });
-            if (provider == null) {
-                provider = ServiceFactoryUtils.getProviderFromEntry(services[0], new Class[] { ServletContext.class }, new Object[] { sc });
+            Object provider = null;
+            try {
+                // try two arguments constructor
+                provider = ServiceFactoryUtils.getProviderFromEntry(services[0],
+                    new Class[] { ServletContext.class, AnnotationProvider.class }, new Object[] { sc , annotationProvider });
+            } catch (FacesException e) {
+                if(!NoSuchMethodException.class.isInstance(e.getCause())) {
+                    if (LOGGER.isLoggable(Level.FINE)) {
+                        LOGGER.log(Level.FINE, e.toString(), e);
+                    }
+                }
             }
-            
+
+            if (provider == null) {
+                try {
+                    // try one argument constructor
+                    provider = ServiceFactoryUtils.getProviderFromEntry(services[0], new Class[] { ServletContext.class }, new Object[] { sc });
+                } catch (FacesException e) {
+                    if (LOGGER.isLoggable(Level.FINE)) {
+                        LOGGER.log(Level.FINE, e.toString(), e);
+                    }
+                }
+            }
             if (provider != null) {
                 if (!(provider instanceof AnnotationProvider)) {
                     throw new FacesException("Class " + provider.getClass().getName() + " is not an instance of com.sun.faces.spi.AnnotationProvider");
