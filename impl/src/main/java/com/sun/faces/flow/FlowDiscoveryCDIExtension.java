@@ -43,7 +43,7 @@ import javax.faces.flow.builder.FlowDefinition;
  *  bean FlowDiscoveryCDIHelper.  I would rather not do this, but I
  *  couldn't get the system to find this bean in any other way.  I think
  *  this may have something to do with CDI being told not to scan within
- *  javax.faces.jar, or something like that.
+ *  jakarta.faces.jar, or something like that.
  *
  *  Use AfterBeanDiscovery to add a custom Context.  This is necessary
  *  because it was the only way I found that actually worked that let me

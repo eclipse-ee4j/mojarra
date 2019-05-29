@@ -32,6 +32,7 @@ import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -359,8 +360,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
               configManager.destroy(context, initContext);
               ConfigManager.removeInstance(context);
             } else {
-              if (LOGGER.isLoggable(Level.WARNING)) {
-                  LOGGER.log(Level.WARNING, "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
+              if (LOGGER.isLoggable(WARNING)) {
+                  LOGGER.log(WARNING, "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
               }
             }
             FactoryFinder.releaseFactories();
