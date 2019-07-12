@@ -304,10 +304,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             }
         }
 
-        if (configManager == null || !configManager.hasBeenInitialized(context)) {
-            return;
-        }
-
         InitFacesContext initContext = null;
         try {
             initContext = getInitFacesContext(context);
@@ -330,6 +326,10 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 LOGGER.log(FINE,
                            "ConfigureListener.contextDestroyed({0})",
                            context.getServletContextName());
+            }
+
+            if (configManager == null || !configManager.hasBeenInitialized(context)) {
+                return;
             }
             
             ELContext elContext = new ELContextImpl(initContext.getApplication().getELResolver());
@@ -355,8 +355,14 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             ApplicationAssociate.setCurrentInstance(null);
             
             // Release the initialization mark on this web application
-            configManager.destroy(context, initContext);
-            ConfigManager.removeInstance(context);
+            if( configManager != null ) {
+              configManager.destroy(context, initContext);
+              ConfigManager.removeInstance(context);
+            } else {
+              if (LOGGER.isLoggable(Level.SEVERE)) {
+                  LOGGER.log(Level.SEVERE, "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
+              }
+            }
             FactoryFinder.releaseFactories();
             ReflectionUtils.clearCache(Thread.currentThread().getContextClassLoader());
             WebConfiguration.clear(context);
