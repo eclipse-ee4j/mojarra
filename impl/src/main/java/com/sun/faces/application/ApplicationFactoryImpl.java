@@ -21,7 +21,6 @@ import static com.sun.faces.util.Util.notNull;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
