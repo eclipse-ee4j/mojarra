@@ -69,6 +69,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+import static com.sun.faces.util.Util.isOneOf;
 
 /**
  * <B>Lifetime And Scope</B> <P> Same lifetime and scope as
@@ -391,7 +392,9 @@ public class RestoreViewPhase extends Phase {
             hostsMatch = uri.getHost().equals(extContext.getRequestServerName());    
         }
         if (-1 == uri.getPort()) {
-            portsMatch = false;
+            //When running on default http/https ports the uri will not contain the port number
+            // to verify run test-javaee7-protectedView.war on port 80
+        	portsMatch = isOneOf(extContext.getRequestServerPort(), 80, 443);
         } else {
             portsMatch = uri.getPort() == extContext.getRequestServerPort();
         }
