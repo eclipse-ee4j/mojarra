@@ -60,9 +60,6 @@ import javax.faces.event.ExceptionQueuedEventContext;
  */
 public class WebappLifecycleListener {
 
-    // Log instance for this class
-    private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-
     private ServletContext servletContext;
     private ApplicationAssociate applicationAssociate;
     private ActiveSessions activeSessions;
