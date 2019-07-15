@@ -21,7 +21,6 @@ import static com.sun.faces.util.Util.notNull;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -61,15 +60,6 @@ public class ApplicationFactoryImpl extends ApplicationFactory {
      */
     @Override
     public Application getApplication() {
-        
-        ApplicationFactoryImpl applicationFactoryImpl = this;
-        
-        if (!applicationHolder.containsKey("default")) {
-            int a;
-            a = 4;
-            
-        }
-        
         return applicationHolder.computeIfAbsent("default", e -> {
             Application applicationImpl = new ApplicationImpl();
             InjectionApplicationFactory.setApplicationInstance(applicationImpl);
