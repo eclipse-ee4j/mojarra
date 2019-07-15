@@ -63,9 +63,6 @@ public class ApplicationFactoryImpl extends ApplicationFactory {
         
         ApplicationFactoryImpl applicationFactoryImpl = this;
         
-        if (!applicationHolder.containsKey("default")) {
-        }
-        
         return applicationHolder.computeIfAbsent("default", e -> {
             Application applicationImpl = new ApplicationImpl();
             InjectionApplicationFactory.setApplicationInstance(applicationImpl);
