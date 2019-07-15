@@ -64,9 +64,6 @@ public class ApplicationFactoryImpl extends ApplicationFactory {
         ApplicationFactoryImpl applicationFactoryImpl = this;
         
         if (!applicationHolder.containsKey("default")) {
-            int a;
-            a = 4;
-            
         }
         
         return applicationHolder.computeIfAbsent("default", e -> {
