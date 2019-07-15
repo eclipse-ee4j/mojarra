@@ -60,9 +60,6 @@ public class ApplicationFactoryImpl extends ApplicationFactory {
      */
     @Override
     public Application getApplication() {
-        
-        ApplicationFactoryImpl applicationFactoryImpl = this;
-        
         return applicationHolder.computeIfAbsent("default", e -> {
             Application applicationImpl = new ApplicationImpl();
             InjectionApplicationFactory.setApplicationInstance(applicationImpl);
