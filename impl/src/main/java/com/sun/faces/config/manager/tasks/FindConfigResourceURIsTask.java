@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
 
 import javax.servlet.ServletContext;
 
-import com.sun.faces.config.ConfigManager;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 
 

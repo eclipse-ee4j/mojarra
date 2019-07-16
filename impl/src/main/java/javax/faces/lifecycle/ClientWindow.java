@@ -18,7 +18,6 @@ package javax.faces.lifecycle;
 
 import java.util.Map;
 import javax.faces.context.FacesContext;
-import javax.faces.render.ResponseStateManager;
 
 /**
  * <p class="changed_added_2_2">This class represents a client window,
@@ -71,8 +70,8 @@ import javax.faces.render.ResponseStateManager;
  * must ensure that any component that renders a hyperlink that causes
  * the user agent to send a GET request to the Faces server when it is
  * clicked has a query parameter with a name and value specified in
- * {@link ResponseStateManager#CLIENT_WINDOW_URL_PARAM}.  This
- * requirement is met by several of the "encode" methods on {@link
+ * {@link javax.faces.render.ResponseStateManager#CLIENT_WINDOW_URL_PARAM}.
+ * This requirement is met by several of the "encode" methods on {@link
  * javax.faces.context.ExternalContext}. See {@link
  * javax.faces.context.ExternalContext#encodeActionURL(java.lang.String)
  * } for details.</p>

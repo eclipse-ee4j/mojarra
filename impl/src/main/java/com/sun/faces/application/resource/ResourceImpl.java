@@ -50,7 +50,6 @@ import java.util.logging.Logger;
 
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;

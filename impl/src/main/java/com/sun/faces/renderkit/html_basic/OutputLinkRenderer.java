@@ -18,8 +18,6 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import static com.sun.faces.renderkit.RenderKitUtils.getParameterName;
-
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.logging.Level;

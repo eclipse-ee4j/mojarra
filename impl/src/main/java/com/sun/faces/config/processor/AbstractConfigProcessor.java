@@ -51,7 +51,6 @@ import org.w3c.dom.Node;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ApplicationInstanceFactoryMetadataMap;
-import com.sun.faces.application.ApplicationResourceBundle;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.config.WebConfiguration;

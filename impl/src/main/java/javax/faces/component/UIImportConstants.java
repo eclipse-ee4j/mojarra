@@ -17,7 +17,6 @@
 package javax.faces.component;
 
 import javax.el.ValueExpression;
-import javax.faces.view.ViewMetadata;
 
 /**
  * <div class="changed_added_2_3">
@@ -28,7 +27,7 @@ import javax.faces.view.ViewMetadata;
  * <p>The {@link javax.faces.view.ViewDeclarationLanguage} implementation must cause an instance of this component to be
  * placed in the view for each occurrence of an <code>&lt;f:importConstants /&gt;</code> element placed inside of an
  * <code>&lt;f:metadata /&gt;</code> element. The user must place <code>&lt;f:metadata /&gt;</code> as a direct child of
- * the <code>UIViewRoot</code>. The {@link ViewMetadata#createMetadataView(javax.faces.context.FacesContext)} must 
+ * the <code>UIViewRoot</code>. The {@link javax.faces.view.ViewMetadata#createMetadataView(javax.faces.context.FacesContext)} must
  * take care of actual task of importing the constants.</p>
  * 
  * <p>Instances of this class participate in the regular JSF lifecycle, including on Ajax requests.</p>

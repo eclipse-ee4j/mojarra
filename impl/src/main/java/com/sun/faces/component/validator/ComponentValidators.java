@@ -29,8 +29,6 @@ import javax.faces.view.facelets.FaceletContext;
 
 import java.util.*;
 
-import javax.faces.event.PhaseId;
-
 /**
  * <p>
  * This class is responsible for adding default validators and/or validators

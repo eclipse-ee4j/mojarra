@@ -38,7 +38,6 @@ import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ResourceHandler;
-import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
@@ -59,7 +58,6 @@ import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 import javax.faces.webapp.FacesServlet;
@@ -1083,11 +1081,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * {@link UIViewRoot#getContainerClientId(FacesContext)} as per rules of {@link UIComponent#getClientId(FacesContext)}.
      * This also covers all predefined POST request parameters which are listed below:</p>
      * <ul class="changed_added_2_3">
-     * <li>{@link ResponseStateManager#VIEW_STATE_PARAM}</li>
-     * <li>{@link ResponseStateManager#CLIENT_WINDOW_PARAM}</li>
-     * <li>{@link ResponseStateManager#RENDER_KIT_ID_PARAM}</li>
-     * <li>{@link ClientBehaviorContext#BEHAVIOR_SOURCE_PARAM_NAME}</li>
-     * <li>{@link ClientBehaviorContext#BEHAVIOR_EVENT_PARAM_NAME}</li>
+     * <li>{@link javax.faces.render.ResponseStateManager#VIEW_STATE_PARAM}</li>
+     * <li>{@link javax.faces.render.ResponseStateManager#CLIENT_WINDOW_PARAM}</li>
+     * <li>{@link javax.faces.render.ResponseStateManager#RENDER_KIT_ID_PARAM}</li>
+     * <li>{@link javax.faces.component.behavior.ClientBehaviorContext#BEHAVIOR_SOURCE_PARAM_NAME}</li>
+     * <li>{@link javax.faces.component.behavior.ClientBehaviorContext#BEHAVIOR_EVENT_PARAM_NAME}</li>
      * <li>{@link PartialViewContext#PARTIAL_EVENT_PARAM_NAME}</li>
      * <li>{@link PartialViewContext#PARTIAL_EXECUTE_PARAM_NAME}</li>
      * <li>{@link PartialViewContext#PARTIAL_RENDER_PARAM_NAME}</li>

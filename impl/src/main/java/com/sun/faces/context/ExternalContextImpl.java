@@ -72,7 +72,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.swing.text.Utilities;
 
 /**
  * <p>This implementation of {@link ExternalContext} is specific to the
