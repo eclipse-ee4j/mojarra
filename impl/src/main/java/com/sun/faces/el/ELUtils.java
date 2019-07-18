@@ -212,12 +212,13 @@ public class ELUtils {
         if (getStreamELResolverMethod != null) {
             try {
                 ELResolver streamELResolver = (ELResolver) getStreamELResolverMethod.invoke(expressionFactory, (Object[]) null);
-                composite.addRootELResolver(streamELResolver);
+                if (streamELResolver != null) {
+                    composite.addRootELResolver(streamELResolver);
 
-                // Assume that if we have getStreamELResolver, then we must have
-                // javax.el.staticFieldELResolver
-                composite.addRootELResolver((ELResolver) newInstance("javax.el.StaticFieldELResolver"));
-
+                    // Assume that if we have getStreamELResolver, then we must have
+                    // javax.el.staticFieldELResolver
+                    composite.addRootELResolver((ELResolver) newInstance("javax.el.StaticFieldELResolver"));
+                }
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException t) {
                 // This is normal on containers that do not have these ELResolvers
             }
