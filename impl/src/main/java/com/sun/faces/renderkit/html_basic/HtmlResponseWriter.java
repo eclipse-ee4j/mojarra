@@ -872,7 +872,12 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         closeStartIfNecessary();
         if (dontEscape) {
-            writer.write(text);
+            if (writingCdata) {
+                charHolder[0] = text;
+                writeUnescapedCData(charHolder, 0, 1);
+            } else {
+                writer.write(text);
+            }
         } else if (isPartial || !writingCdata) {
             charHolder[0] = text;
             HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, charHolder);
@@ -911,7 +916,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         closeStartIfNecessary();
 
         if (dontEscape) {
-            writer.write(text);
+            if (writingCdata) {
+                writeUnescapedCData(text, 0, text.length);
+            } else {
+                writer.write(text);
+            }
         } else if (isPartial || !writingCdata) {
             HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text);
         } else { // if writingCdata
@@ -948,7 +957,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         String textStr = text.toString();
 
         if (dontEscape) {
-            writer.write(textStr);
+            if (writingCdata) {
+                writeUnescapedCData(textStr.toCharArray(), 0, textStr.length());
+            } else {
+                writer.write(textStr);
+            }
         } else if (isPartial || !writingCdata) {
             ensureTextBufferCapacity(textStr);
             HtmlUtils.writeText(writer,
@@ -1011,7 +1024,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (len == 0) return;
 
         if (dontEscape) {
-            writer.write(text, off, len);
+            if (writingCdata) {
+                writeUnescapedCData(text, off, len);
+            } else {
+                writer.write(text, off, len);
+            }
         } else if (isPartial || !writingCdata) {
             HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, off, len);
         } else { // if (writingCdata)
@@ -1410,4 +1427,61 @@ private void flushBuffer() throws IOException {
     writer.write(cdataBuffer, 0, cdataBufferLength);
     cdataBufferLength = 0;
 }
+
+    /**
+     * When writing un-escaped CDATA, "]]>" sequence still has to be escaped by breaking CDATA block.
+     */
+    private void writeUnescapedCData(char[] cbuf, int offset, int length) throws IOException {
+        // single char case
+        if (length == 1) {
+            if (cbuf[offset] == ']') {
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+            } else {
+                appendBuffer(cbuf[offset]);
+            }
+            flushBuffer();
+            return;
+        }
+
+        // two char case
+        if (length == 2) {
+            if (cbuf[offset] == ']' && cbuf[offset + 1] == ']') {
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+            } else {
+                appendBuffer(cbuf[offset]);
+                appendBuffer(cbuf[offset + 1]);
+            }
+            flushBuffer();
+            return;
+        }
+
+        // > 2 char case
+        boolean last = false;
+        for (int i = offset; i < length - 2; i++) {
+            if (cbuf[i] == ']' && cbuf[i + 1] == ']' && cbuf[i + 2] == '>') {
+                appendBuffer(ESCAPEDEND);
+                i += 2;
+            } else {
+                appendBuffer(cbuf[i]);
+            }
+            if (i == (offset + length - 1)) {
+                last = true;
+            }
+        }
+        // if we didn't look at the last characters, look at them now
+        if (!last) {
+            if (cbuf[offset + length - 2] == ']') {
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+            } else {
+                appendBuffer(cbuf[offset + length - 2]);
+            }
+            if (cbuf[offset + length - 1] == ']') {
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+            } else {
+                appendBuffer(cbuf[offset + length - 1]);
+            }
+        }
+        flushBuffer();
+    }
 }
