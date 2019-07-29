@@ -55,7 +55,6 @@
     <modules>
         <module>jsf-tools</module>
         <module>impl</module>
-        <module>api</module>
         <module>test</module>
         <module>util</module>
     </modules>
