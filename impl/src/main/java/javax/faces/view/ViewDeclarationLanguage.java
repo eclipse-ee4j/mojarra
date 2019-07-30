@@ -33,7 +33,7 @@ import javax.faces.context.FacesContext;
 /**
  * <p class="changed_added_2_0"><span class="changed_modified_2_0_rev_a
  * changed_modified_2_1 changed_modified_2_2">The</span> contract that a view declaration
- * language must implement to interact with the JSF runtime. An
+ * language must implement to interact with the Jakarta Server Faces runtime. An
  * implementation of this class must be thread-safe.</p>
  *
  * <div class="changed_added_2_0">
@@ -49,7 +49,7 @@ import javax.faces.context.FacesContext;
 public abstract class ViewDeclarationLanguage {
 
     /**
-     * <p class="changed_added_2_0">Identifier for the JSP view declaration 
+     * <p class="changed_added_2_0">Identifier for the Jakarta Server Pages view declaration 
      * language.</p>
      *
      * @since 2.1
@@ -86,12 +86,12 @@ public abstract class ViewDeclarationLanguage {
      * metadata for the view represented by the argument
      * <code>viewId</code>, or <code>null</code> if the metadata cannot
      * be found.  See section JSF.7.7.2 for the specification of the
-     * default implementation.  Facelets for JSF 2 implementation must
-     * return non-<code>null</code>. JSP implementations must return
+     * default implementation.  Facelets for Jakarta Server Faces 2 implementation must
+     * return non-<code>null</code>. Jakarta Server Pages implementations must return
      * <code>null</code>.</p>
      *
      * @param context The <code>FacesContext</code> for this request.
-     * @param viewId the view id from whith to extract the metadata
+     * @param viewId the view id from which to extract the metadata
      * @since 2.0
      *
      * @throws NullPointerException if any of the arguments are
@@ -190,7 +190,7 @@ public abstract class ViewDeclarationLanguage {
      * metadata for the composite component represented by the argument
      * <code>componentResource</code>, or <code>null</code> if the
      * metadata cannot be found.  See section JSF.7.7.2 for the
-     * specification of the default implementation. JSP implementations
+     * specification of the default implementation. Jakarta Server Pages implementations
      * must throw <code>UnsupportedOperationException</code>.</p>
      *
      * @param context The <code>FacesContext</code> for this request.
@@ -203,7 +203,7 @@ public abstract class ViewDeclarationLanguage {
      * @throws javax.faces.FacesException if there is an error in
      * obtaining the metadata
      *
-     * @throws UnsupportedOperationException if this is a JSP VDL
+     * @throws UnsupportedOperationException if this is a Jakarta Server Pages VDL
      * implementation.
      *
      * @return the component metadata
@@ -214,7 +214,7 @@ public abstract class ViewDeclarationLanguage {
      * <p class="changed_added_2_0">Take implementation specific action
      * to discover a <code>Resource</code> given the argument
      * <code>componentResource</code>.  See section JSF.7.7.2 for the
-     * specification of the default implementation.  JSP implementations
+     * specification of the default implementation.  Jakarta Server Pages implementations
      * must throw <code>UnsupportedOperationException</code>.</p>
      *
      * @param context The <code>FacesContext</code> for this request.
@@ -226,7 +226,7 @@ public abstract class ViewDeclarationLanguage {
      *
      * @throws javax.faces.FacesException if there is an error in
      * obtaining the script component resource
-     * @throws UnsupportedOperationException if this is a JSP VDL
+     * @throws UnsupportedOperationException if this is a Jakarta Server Pages VDL
      * implementation.
      *
      * @return the {@link Resource} corresponding to the argument {@code
@@ -556,7 +556,7 @@ public abstract class ViewDeclarationLanguage {
      * {@link StateManagementStrategy} allows them to do so.  Returning
      * <code>null</code> indicates that the implementation wishes the
      * runtime to handle the state saving and restoring.
-     * Implementations that provide the VDL for Facelets for JSF 2.0 and
+     * Implementations that provide the VDL for Facelets for Jakarta Server Faces 2.0 and
      * later must return non-<code>null</code> from this method.</p>
      *
      * @param context the {@code FacesContext} for the current request.

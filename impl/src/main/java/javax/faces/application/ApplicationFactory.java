@@ -22,13 +22,13 @@ import javax.faces.FacesWrapper;
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_3">ApplicationFactory</strong> is a
  * factory object that creates (if needed) and returns {@link Application} instances.
- * Implementations of JavaServer Faces must provide at least a default implementation of
+ * Implementations of Jakarta Server Faces must provide at least a default implementation of
  * {@link Application}.
  * </p>
  *
  * <p>
  * There must be one {@link ApplicationFactory} instance per web application that is utilizing
- * JavaServer Faces. This instance can be acquired, in a portable manner, by calling:
+ * Jakarta Server Faces. This instance can be acquired, in a portable manner, by calling:
  * </p>
  * 
  * <pre>

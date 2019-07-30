@@ -27,7 +27,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 
 /**
- * <p><strong>ValidatorTag</strong> is a base class for all JSP custom actions
+ * <p><strong>ValidatorTag</strong> is a base class for all Jakarta Server Pages custom actions
  * that create and register a <code>Validator</code> instance on the
  * {@link EditableValueHolder} associated with our most immediate surrounding instance
  * of a tag whose implementation class is a subclass of {@link UIComponentTag}.
@@ -102,7 +102,7 @@ public class ValidatorTag extends TagSupport {
      *
      * @param binding The new expression 
      *
-     * @throws JspException if a JSP error occurs
+     * @throws JspException if a Jakarta Server Pages error occurs
      */
     public void setBinding(String binding) 
         throws JspException {
@@ -120,9 +120,9 @@ public class ValidatorTag extends TagSupport {
      * class, and register it with the {@link UIComponent} instance associated
      * with our most immediately surrounding {@link UIComponentTag} instance, if
      * the {@link UIComponent} instance was created by this execution of the
-     * containing JSP page.</p>
+     * containing Jakarta Server Pages page.</p>
      *
-     * @throws JspException if a JSP error occurs
+     * @throws JspException if a Jakarta Server Pages error occurs
      */
     @Override
     public int doStartTag() throws JspException {

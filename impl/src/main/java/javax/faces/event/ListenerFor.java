@@ -153,7 +153,7 @@ public @interface ListenerFor {
     /**
      * <p class="changed_added_2_0">The kind of object that emits events
      * of the type given by the value of the {@link #systemEventClass}
-     * attribute.  It is valid to have EL Expressions in the value of
+     * attribute.  It is valid to have Jakarta Expression Language Expressions in the value of
      * this attribute, as long as the expression resolves to an instance
      * of the expected type.</p>
      *

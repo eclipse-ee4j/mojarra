@@ -18,7 +18,7 @@ package javax.faces;
 
 /**
  * <p class="changed_added_2_0">
- * <span class="changed_modified_2_3">Any</span> wrapper class in JSF that must provide access to
+ * <span class="changed_modified_2_3">Any</span> wrapper class in Jakarta Server Faces that must provide access to
  * the object it wraps must implement this interface.
  * </p>
  *

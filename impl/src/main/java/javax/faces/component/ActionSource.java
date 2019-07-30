@@ -33,7 +33,7 @@ public interface ActionSource {
    
     /**
      * <p>
-     * Return a flag indicating that the default {@link ActionListener} provided by the JavaServer
+     * Return a flag indicating that the default {@link ActionListener} provided by the Jakarta Server
      * Faces implementation should be executed immediately (that is, during <em>Apply Request
      * Values</em> phase of the request processing lifecycle), rather than waiting until the
      * <em>Invoke Application</em> phase. The default value for this property must be

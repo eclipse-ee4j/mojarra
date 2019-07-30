@@ -73,7 +73,7 @@ import javax.faces.render.Renderer;
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_1
  * changed_modified_2_2 changed_modified_2_3">UIComponent</strong> is the base class for
- * all user interface components in JavaServer Faces. The set of {@link UIComponent}
+ * all user interface components in Jakarta Server Faces. The set of {@link UIComponent}
  * instances associated with a particular request and response are organized into a
  * component tree under a {@link UIViewRoot} that represents the entire content of the
  * request or response.
@@ -237,7 +237,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     
     /**
      * Track whether we have been pushed as current in order to handle mismatched pushes
-     * and pops of EL context stack. We use a counter to handle cases where the same component
+     * and pops of Jakarta Expression Language context stack. We use a counter to handle cases where the same component
      * is pushed on multiple times
      */
     private int _isPushedAsCurrentRefCount = 0;
@@ -645,7 +645,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
     /**
      * <p class="changed_added_2_0">
-     * Enable EL to access the <code>clientId</code> of a component. This is particularly
+     * Enable Jakarta Expression Language to access the <code>clientId</code> of a component. This is particularly
      * useful in combination with the <code>component</code> and <code>cc</code> implicit
      * objects. A default implementation is provided that simply calls
      * {@link FacesContext#getCurrentInstance} and then calls through to
@@ -889,7 +889,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * child components. The default implementation in
      * {@link UIComponentBase#getRendersChildren} tries to find the renderer for this
      * component. If it does, it calls {@link Renderer#getRendersChildren} and returns the
-     * result. If it doesn't, it returns false. As of version 1.2 of the JavaServer Faces
+     * result. If it doesn't, it returns false. As of version 1.2 of the Jakarta Server Faces
      * Specification, component authors are encouraged to return <code>true</code> from
      * this method and rely on {@link UIComponentBase#encodeChildren}.
      * </p>
@@ -1054,7 +1054,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * <p class="changed_added_2_2">
      * WARNING: The found <code>UIComponent</code> instance, if any, is returned
      * <strong>without</strong> regard for its tree traversal context. Retrieving an
-     * EL-bound attribute from the component is not safe. EL expressions can contain
+     * Jakarta Expression Language-bound attribute from the component is not safe. Jakarta Expression Language expressions can contain
      * implicit objects, such as <code>#{component}</code>, which assume they are being
      * evaluated within the scope of a tree traversal context. Evaluating expressions with
      * these kinds of implicit objects outside of a tree traversal context produces
@@ -1373,7 +1373,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *            The {@link FacesEvent} to be broadcast
      *
      * @throws AbortProcessingException
-     *             Signal the JavaServer Faces implementation that no further processing
+     *             Signal the Jakarta Server Faces implementation that no further processing
      *             on the current event should be performed
      * @throws IllegalArgumentException
      *             if the implementation class of this {@link FacesEvent} is not supported
@@ -1446,7 +1446,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             return false;
         }
 
-        // Push ourselves to EL before visiting
+        // Push ourselves to Jakarta Expression Language before visiting
         FacesContext facesContext = visitContext.getFacesContext();
         pushComponentToEL(facesContext, null);
 
@@ -1474,7 +1474,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
                 }
             }
         } finally {
-            // Pop ourselves off the EL stack
+            // Pop ourselves off the Jakarta Expression Language stack
             popComponentFromEL(facesContext);
         }
 
@@ -1691,7 +1691,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *
      * <p class="changed_added_2_0">
      * This method and <code>popComponentFromEL()</code> form the basis for the contract
-     * that enables the EL Expression "<code>#{component}</code>" to resolve to the
+     * that enables the Jakarta Expression Language Expression "<code>#{component}</code>" to resolve to the
      * "current" component that is being processed in the lifecycle. The requirements for
      * when <code>pushComponentToEL()</code> and <code>popComponentFromEL()</code> must be
      * called are specified as needed in the javadoc for this class.
@@ -1898,7 +1898,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     /**
      * <p class="changed_added_2_0">
      * Return the <code>UIComponent</code> instance that is currently processing. This is
-     * equivalent to evaluating the EL expression "<code>#{component}</code>" and doing a
+     * equivalent to evaluating the Jakarta Expression Language expression "<code>#{component}</code>" and doing a
      * <code>getValue</code> operation on the resultant <code>ValueExpression</code>.
      * </p>
      *

@@ -507,7 +507,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * 
      * @param event {@link FacesEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the JavaServer Faces
+     * @throws AbortProcessingException Signal the Jakarta Server Faces
      *  implementation that no further processing on the current event
      *  should be performed
      * @throws IllegalArgumentException if the implementation class

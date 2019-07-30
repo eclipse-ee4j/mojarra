@@ -555,7 +555,7 @@ public abstract class ResourceHandler {
      * </p>
      *
      * For discussion, in all cases when a status code is to be set, this spec talks only using the
-     * Servlet API, but it is understood that in a portlet environment the appropriate equivalent
+     * Jakarta Servlet API, but it is understood that in a portlet environment the appropriate equivalent
      * API must be used.
      *
      * <ul>

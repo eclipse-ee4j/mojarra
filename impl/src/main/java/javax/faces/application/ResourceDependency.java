@@ -147,7 +147,7 @@ public @interface ResourceDependency {
     /**
      * <p class="changed_added_2_0">
      * The <em>resourceName</em> of the resource pointed to by this <code>ResourceDependency</code>.
-     * It is valid to have EL Expressions in the value of this attribute, as long as the expression
+     * It is valid to have Jakarta Expression Language Expressions in the value of this attribute, as long as the expression
      * resolves to an instance of the expected type.
      * </p>
      * 
@@ -159,7 +159,7 @@ public @interface ResourceDependency {
      * <p class="changed_added_2_0">
      * The <em>libraryName</em> in which the resource pointed to by this
      * <code>ResourceDependency</code> resides. If not specified, defaults to the empty string. It
-     * is valid to have EL Expressions in the value of this attribute, as long as the expression
+     * is valid to have Jakarta Expression Language Expressions in the value of this attribute, as long as the expression
      * resolves to an instance of the expected type.
      * </p>
      * 
@@ -173,7 +173,7 @@ public @interface ResourceDependency {
      * {@link javax.faces.component.UIViewRoot#addComponentResource(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.String)}.
      * If this attribute is specified,
      * {@link javax.faces.component.UIViewRoot#addComponentResource(javax.faces.context.FacesContext,javax.faces.component.UIComponent)}
-     * must be called instead, as described above. It is valid to have EL Expressions in the value
+     * must be called instead, as described above. It is valid to have Jakarta Expression Language Expressions in the value
      * of this attribute, as long as the expression resolves to an instance of the expected type.
      * </p>
      * 

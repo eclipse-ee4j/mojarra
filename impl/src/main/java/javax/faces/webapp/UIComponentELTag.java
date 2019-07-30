@@ -30,9 +30,9 @@ import javax.servlet.jsp.tagext.Tag;
 
 /**
  * <p>{@link UIComponentELTag} specializes its superclass to allow for
- * properties that take their values from EL API expressions.</p>
+ * properties that take their values from Jakarta Expression Language expressions.</p>
  *
- * <p>This tag is designed for use with Faces version 1.2 and JSP
+ * <p>This tag is designed for use with Faces version 1.2 and Jakarta Server Pages
  * version 2.1 containers.</p>
  *
  */

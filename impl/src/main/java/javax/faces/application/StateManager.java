@@ -514,7 +514,7 @@ public abstract class StateManager {
     /**
      * <p>
      * Convenience struct for encapsulating tree structure and component state. This is necessary to
-     * allow the API to be flexible enough to work in JSP and non-JSP environments.
+     * allow the API to be flexible enough to work in Jakarta Server Pages and non-Jakarta Server Pages environments.
      * </p>
      *
      * @deprecated This class was not marked <code>Serializable</code> in the 1.0 version of the

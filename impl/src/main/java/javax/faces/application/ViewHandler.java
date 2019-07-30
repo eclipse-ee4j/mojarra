@@ -41,7 +41,7 @@ import javax.faces.view.ViewDeclarationLanguage;
  * <p>
  * <strong><span class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2
  * changed_modified_2_3"> ViewHandler</span></strong> is the pluggablity mechanism for allowing
- * implementations of or applications using the JavaServer Faces specification to provide their own
+ * implementations of or applications using the JJakarta Server Faces specification to provide their own
  * handling of the activities in the <em>Render Response</em> and <em>Restore View</em> phases of
  * the request processing lifecycle. 
  * 
@@ -220,8 +220,8 @@ public abstract class ViewHandler {
      * its value returns true, the default ViewHandler must behave as specified in the latest 1.2
      * version of this specification. Any behavior specified in Section "Default
      * ViewDeclarationLanguage Implementation" of the spec prose document and implemented in the
-     * default ViewHandler that pertains to handling requests for pages authored in the JavaServer
-     * Faces View Declaration Language must not be executed by the runtime.
+     * default ViewHandler that pertains to handling requests for pages authored in the Jakarta Server Faces
+     * View Declaration Language must not be executed by the runtime.
      * </p>
      * 
      * @since 2.0
@@ -256,7 +256,7 @@ public abstract class ViewHandler {
      * 
      * @param context the Faces context.
      * @throws FacesException if a problem occurs setting the encoding, such as the
-     *             <code>UnsupportedEncodingException</code> thrown by the underlying Servlet or
+     *             <code>UnsupportedEncodingException</code> thrown by the underlying Jakarta Servlet or
      *             Portlet technology when the encoding is not supported.
      *
      */
@@ -301,7 +301,7 @@ public abstract class ViewHandler {
      * @param viewId the view identifier for the current request
      * @return the restored view root, or <b>null</b>.
      * @throws NullPointerException if <code>context</code> is <code>null</code>
-     * @throws FacesException if a servlet error occurs
+     * @throws FacesException if a Jakarta Servlet error occurs
      */
     public abstract UIViewRoot restoreView(FacesContext context, String viewId);
 
@@ -342,7 +342,7 @@ public abstract class ViewHandler {
      * @throws IOException if an input/output error occurs
      * @throws NullPointerException if <code>context</code> or <code>viewToRender</code> is
      *             <code>null</code>
-     * @throws FacesException if a servlet error occurs
+     * @throws FacesException if a Jakarta Servlet error occurs
      */
     public abstract void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException;
 

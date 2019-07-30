@@ -175,13 +175,13 @@ class SelectUtils {
 
 
     /**
-     * Coerce the provided value to the specified type using EL coercion.
+     * Coerce the provided value to the specified type using Jakarta Expression Language coercion.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param value the value to coerce
      * @param toType the type <code>value</code> should be coerced to
      *
-     * @return the result of the EL coersion
+     * @return the result of the Jakarta Expression Language coersion
      *
      * @see ExpressionFactory#coerceToType(Object, Class)
      */

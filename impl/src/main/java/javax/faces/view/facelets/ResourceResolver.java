@@ -21,12 +21,12 @@ import java.net.URL;
 
 /**
  * <p class="changed_added_2_0"><span class="changed_deleted_2_2">Deprecated as 
- * of JSF 2.2.  The same functionality is more correctly provided by
+ * of Jakarta Server Faces 2.2.  The same functionality is more correctly provided by
  * {@link javax.faces.application.ResourceHandler}.</span> Provide
  * a hook to decorate or override
  * the way that Facelets loads template files.  A default implementation
  * must be provided that satisfies the requirements for loading
- * templates as in Pre-JSF 2.0 Facelets.</p>
+ * templates as in Pre-Jakarta Server Faces 2.0 Facelets.</p>
 
  * <div class="changed_added_2_0">
 

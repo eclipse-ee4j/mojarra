@@ -24,7 +24,7 @@ import javax.faces.event.ActionListener;
  * <strong>ActionSource2</strong> extends {@link ActionSource} and provides a JavaBeans property
  * analogous to the "<code>action</code>" property on <code>ActionSource</code>. The difference is
  * the type of this property is a {@link MethodExpression} rather than a <code>MethodBinding</code>.
- * This allows the <code>ActionSource</code> concept to leverage the new Unified EL API.
+ * This allows the <code>ActionSource</code> concept to leverage the Jakarta Expression Language API.
  * </p>
  *
  * @since 1.2

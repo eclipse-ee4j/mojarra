@@ -88,7 +88,7 @@ public class AjaxBehaviorEvent extends BehaviorEvent {
      *
      * @param listener {@link FacesListener} to invoke 
      *
-     * @throws AbortProcessingException Signal the JavaServer Faces
+     * @throws AbortProcessingException Signal the Jakarta Server Faces
      *  implementation that no further processing on the current event
      *  should be performed
      *

@@ -46,7 +46,7 @@ import java.util.logging.Level;
 
 /**
  * <p><strong><code>UIComponentTagBase</code></strong> is the base class
- * for all JSP tags that use the "classic" JSP tag interface that
+ * for all Jakarta Server Pages tags that use the "classic" Jakarta Server Pages tag interface that
  * correspond to a {@link javax.faces.component.UIComponent} instance in
  * the view.  In Faces 1.2, all component tags are <code>BodyTag</code>
  * instances to allow for the execution of the page to build the
@@ -55,14 +55,14 @@ import java.util.logging.Level;
  *
  * <p>{@link UIComponentTag} extends
  * <code>UIComponentClassicTagBase</code> to add support for properties
- * that conform to the Faces 1.1 EL.</p>
+ * that conform to the Faces 1.1 Expression Language.</p>
  *
  * <p>{@link UIComponentELTag} extends
  * <code>UIComponentClassicTagBase</code> class to add support for
- * properties that conform to the EL API.</p>
+ * properties that conform to the Expression Language API.</p>
  *
  * <p>The default implementation allows the proper interweaving of
- * template text, non-Faces JSP tag output, and Faces component tag
+ * template text, non-Faces Jakarta Server Pages tag output, and Faces component tag
  * output in the same page, as expected by the page author.</p>
  *
  * <p>The CASE markers in the following example will be cited in the
@@ -249,13 +249,13 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
 
     /**
-     * <p>The JSP <code>PageContext</code> for the page we are embedded in.</p>
+     * <p>The Jakarta Server Pages <code>PageContext</code> for the page we are embedded in.</p>
      */
     protected PageContext pageContext = null;
 
 
     /**
-     * <p>The JSP <code>Tag</code> that is the parent of this tag.</p>
+     * <p>The Jakarta Server Pages <code>Tag</code> that is the parent of this tag.</p>
      */
     private Tag parent = null;
 
@@ -358,7 +358,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      *
      * @throws IOException if an input/output error occurs
      *
-     * @deprecated No encoding is done during JSP page execution.
+     * @deprecated No encoding is done during Jakarta Server Pages page execution.
      * Encoding is deferred until the page has completed executing to
      * allow the entire tree to be built before any encoding occurs.
      */
@@ -378,7 +378,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      *
      * @throws IOException if an input/output error occurs
      *
-     * @deprecated No encoding is done during JSP page execution.
+     * @deprecated No encoding is done during Jakarta Server Pages page execution.
      * Encoding is deferred until the page has completed executing to
      * allow the entire tree to be built before any encoding occurs.
      */
@@ -398,7 +398,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      *
      * @throws IOException if an input/output error occurs
      *
-     * @deprecated No encoding is done during JSP page execution.
+     * @deprecated No encoding is done during Jakarta Server Pages page execution.
      * Encoding is deferred until the page has completed executing to
      * allow the entire tree to be built before any encoding occurs.
      */
@@ -1301,7 +1301,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         if (null == getFacetName() &&
                 null != parentTag) {
             Tag p = this.getParent();
-            // If we're not inside a JSP tag or we're not inside
+            // If we're not inside a Jakarta Server Pages tag or we're not inside
             // a UIComponentTag flush the buffer
             if (null == p || !(p instanceof UIComponentTagBase)) {
                 JspWriter out = pageContext.getOut();
@@ -1346,7 +1346,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             // Because of this, two tags with the same ID within the same
             // naming container will not be detected as duplicates.  So
             // in order to ensure we detect it, if the instance is the same,
-            // verify the JSP IDs are different.  If they are, then continue,
+            // verify the Jakarta Server Pages IDs are different.  If they are, then continue,
             // if they aren't, then we're dealing with EVAL_BODY_AGAIN (see
             // below)
             //noinspection ObjectEquality
@@ -1356,7 +1356,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             } else if (temp != null
                     && temp != this
                     && this.getJspId().equals(temp.getJspId())) {
-                // new instance, same JSP ID - this is the EVAL_BODY_AGAIN case.
+                // new instance, same Jakarta Server Pages ID - this is the EVAL_BODY_AGAIN case.
                 tagInstance = temp;
             }
         }
@@ -1536,7 +1536,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
     /**
      * <p>Set the <code>bodyContent</code> for this tag handler.  This method
-     * is invoked by the JSP page implementation object at most once per
+     * is invoked by the Jakarta Server Pages page implementation object at most once per
      * action invocation, before <code>doInitiBody()</code>.  This method
      * will not be invoked for empty tags or for non-empty tags whose
      * <code>doStartTag()</code> method returns <code>SKIP_BODY</code> or
@@ -1573,7 +1573,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
     /**
      * <p>Prepare for evaluation of the body.  This method is invoked by the
-     * JSP page implementation object after <code>setBodyContent()</code>
+     * Jakarta Server Pages page implementation object after <code>setBodyContent()</code>
      * and before the first time the body is to be evaluated.  This method
      * will not be invoked for empty tags or for non-empty tags whose
      * <code>doStartTag()</code> method returns <code>SKIP_BODY</code>
@@ -1877,7 +1877,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
     @Override
     public void setJspId(String id) {
-        // reset JSP ID here instead of release as we may need
+        // reset Jakarta Server Pages ID here instead of release as we may need
         // to check the ID after the tag has been used
         this.jspId = null;
 
@@ -2032,8 +2032,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * <p>Return <code>true</code> if this component has a
      * non-<code>null</code> binding attribute.  This method is
      * necessary to allow subclasses that expose the
-     * <code>binding</code> property as an Faces 1.1 style EL property
-     * as well as subclasses that expose it as an EL API property.</p>
+     * <code>binding</code> property as an Faces 1.1 style Expression Language property
+     * as well as subclasses that expose it as a Jakarta Expression Language API property.</p>
      *
      * @return whether or not this component has a binding attribute
      */

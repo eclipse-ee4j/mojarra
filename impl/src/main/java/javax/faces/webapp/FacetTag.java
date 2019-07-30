@@ -22,7 +22,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 
 /**
- * <p><strong>FacetTag</strong> is the JSP mechanism for denoting a
+ * <p><strong>FacetTag</strong> is the Jakarta Server Pages mechanism for denoting a
  * {@link javax.faces.component.UIComponent} is to be added as a
  * <code>facet</code> to the component associated with its parent.</p>
  *

@@ -19,7 +19,7 @@ package javax.faces.view.facelets;
 
 
 /**
- * <p class="changed_added_2_0">A Facelet version of the JSP {@link
+ * <p class="changed_added_2_0">A Facelet version of the Jakarta Server Pages {@link
  * javax.faces.webapp.ConverterTag}.  All the attributes specified in
  * the documentation for the converter tags are valid attributes.</p>
  *

@@ -21,13 +21,13 @@ import javax.faces.FacesWrapper;
 /**
  * <p><strong class="changed_added_2_2 changed_modified_2_3">FlashFactory</strong> is a
  * factory object that creates (if needed) and returns {@link Flash}
- * instances.  Implementations of JavaServer Faces must provide at
+ * instances.  Implementations of Jakarta Server Faces must provide at
  * least a default implementation of {@link Flash}.</p>
 
  * <div class="changed_added_2_2">
  *
  * <p>There must be one {@link FlashFactory} instance per web
- * application that is utilizing JavaServer Faces.  This instance can
+ * application that is utilizing Jakarta Server Faces.  This instance can
  * be acquired, in a portable manner, by calling:</p>
  * <pre>
  *   FlashFactory factory = (FlashFactory)
@@ -36,7 +36,7 @@ import javax.faces.FacesWrapper;
 
  * <p>The common way to access the flash instance from Java code is
  * still via {@link ExternalContext#getFlash}.  The common way to access
- * the flash from Faces views is the implicit EL object "flash".  The
+ * the flash from Faces views is the implicit Jakarta Expression Language object "flash".  The
  * runtime must ensure that the <code>FlashFactory</code> is used to
  * instantiate the flash.</p>
 

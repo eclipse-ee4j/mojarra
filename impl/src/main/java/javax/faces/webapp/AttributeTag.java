@@ -94,7 +94,7 @@ public class AttributeTag extends TagSupport {
      * surrounding {@link UIComponentTag} instance, if this {@link UIComponent}
      * does not already have a value for the specified attribute name.</p>
      *
-     * @throws JspException if a JSP error occurs
+     * @throws JspException if a Jakarta Server Pages error occurs
      */
     @Override
     public int doStartTag() throws JspException {

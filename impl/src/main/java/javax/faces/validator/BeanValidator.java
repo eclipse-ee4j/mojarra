@@ -85,10 +85,10 @@ public class BeanValidator implements Validator, PartialStateHolder {
     public static final String MESSAGE_ID = "javax.faces.validator.BeanValidator.MESSAGE";
 
     /**
-     * <p class="changed_added_2_0">The name of the servlet context
-     * attribute which holds the object used by JSF to obtain Validator
-     * instances.  If the servlet context attribute is missing or
-     * contains a null value, JSF is free to use this servlet context
+     * <p class="changed_added_2_0">The name of the Jakarta Servlet context
+     * attribute which holds the object used by Jakarta Server Faces to obtain Validator
+     * instances.  If the Jakarta Servlet context attribute is missing or
+     * contains a null value, Jakarta Server Faces is free to use this Jakarta Servlet context
      * attribute to store the ValidatorFactory bootstrapped by this
      * validator.</p>
      */
@@ -216,7 +216,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * <code>ValueReference.getBase()</code> and <em>valueProperty</em>
      * be the return from calling
      * <code>ValueReference.getProperty()</code>.  If an earlier version
-     * of the Unified EL is present, use the appropriate methods to
+     * of Jakarta Expression Language is present, use the appropriate methods to
      * inspect <em>valueExpression</em> and derive values for
      * <em>valueBaseClass</em> and <em>valueProperty</em>.</p>
 
@@ -305,7 +305,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
         
         Class<?>[] validationGroupsArray = parseValidationGroups(getValidationGroups());
         
-        // PENDING(rlubke, driscoll): When EL 1.3 is present, we won't need
+        // PENDING(rlubke, driscoll): When Jakarta Expression Language 1.3 is present, we won't need
         // this.
         
         ValueExpressionAnalyzer expressionAnalyzer = 

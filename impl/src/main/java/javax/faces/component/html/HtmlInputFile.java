@@ -669,7 +669,7 @@ public class HtmlInputFile extends javax.faces.component.UIInput implements Clie
      * must be passed through unmodified on the element on which it
      * is declared in the final rendered markup.  The attribute, if
      * specified, must have a value that is a string literal that is,
-     * or an EL Expression that evaluates to, a set of
+     * or a Jakarta Expression Language Expression that evaluates to, a set of
      * space-separated tokens representing the various WAI-ARIA roles
      * that the element belongs to.
      * </p>

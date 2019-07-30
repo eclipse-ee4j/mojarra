@@ -19,7 +19,7 @@ package javax.faces.view.facelets;
 
 /**
  * <p class="changed_added_2_0">There are concrete subclasses within the
- * implementation that map concepts in the Facelet VDL page to JSF Java API
+ * implementation that map concepts in the Facelet VDL page to Jakarta Server Faces Java API
  * calls the appropriate instances. For example, the
  * &#8220;<code>validator</code>&#8221; attribute on an input component is
  * specified to point to a <code>MethodExpression</code> that references a
@@ -32,11 +32,11 @@ package javax.faces.view.facelets;
 public abstract class Metadata {
 
     /**
-     * <p class="changed_added_2_0">Take the action prescribed in the JSF
+     * <p class="changed_added_2_0">Take the action prescribed in the Jakarta Server Faces
      * specification for this particular VDL element attribute.</p>
      *
      * @param ctx The FaceletContext for this request.
-     * @param instance The instance from the JSF Java API on which the action
+     * @param instance The instance from the Jakarta Server Faces Java API on which the action
      * should be taken. For example, an instance of {@link
      * javax.faces.component.EditableValueHolder}.
      */

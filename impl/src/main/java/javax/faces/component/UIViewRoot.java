@@ -1598,7 +1598,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     public void setLocale(Locale locale) {
 
         getStateHelper().put(PropertyKeys.locale, locale);
-        // Make sure to appraise the EL of this switch in Locale.
+        // Make sure to appraise the Jakarta Expression Language of this switch in Locale.
         FacesContext.getCurrentInstance().getELContext().setLocale(locale);
 
     }

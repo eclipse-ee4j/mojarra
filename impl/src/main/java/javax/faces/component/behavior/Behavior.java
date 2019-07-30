@@ -48,7 +48,7 @@ public interface Behavior {
      *
      * @param event The {@link BehaviorEvent} to be broadcast
      *
-     * @throws javax.faces.event.AbortProcessingException Signal the JavaServer Faces
+     * @throws javax.faces.event.AbortProcessingException Signal the Jakarta Server Faces
      *  implementation that no further processing on the current event
      *  should be performed
      * @throws IllegalArgumentException if the implementation class

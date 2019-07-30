@@ -25,9 +25,9 @@ import javax.faces.context.FacesContext;
  * restoring of the view to enable the VDL to take over the
  * responsibility for handling this feature. Because {@link
  * ViewDeclarationLanguage#getStateManagementStrategy} is required to
- * return <code>null</code> for JSP views and non-<code>null</code> for
- * views authored in Facelets for JSF 2, this specification only applys
- * to Facelets for JSF 2.</p>
+ * return <code>null</code> for Jakarta Server Pages views and non-<code>null</code> for
+ * views authored in Facelets for Jakarta Server Faces 2, this specification only applies
+ * to Facelets for Jakarta Server Faces 2.</p>
  * 
  * <p class="changed_added_2_2">Implementations must call
  * {@link javax.faces.component.UIComponent#visitTree} on the 

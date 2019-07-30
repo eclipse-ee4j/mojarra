@@ -57,15 +57,15 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_1
- * changed_modified_2_2 changed_modified_2_3">FacesServlet</strong> is a servlet that manages the
- * request processing lifecycle for web applications that are utilizing JavaServer Faces to
+ * changed_modified_2_2 changed_modified_2_3">FacesServlet</strong> is a Jakarta Servlet servlet that manages the
+ * request processing lifecycle for web applications that are utilizing Jakarta Server Faces to
  * construct the user interface.
  * </p>
  *
  * <div class="changed_added_2_1">
  *
  * <p>
- * If the application is running in a Servlet 3.0 (and beyond) container, the runtime must provide
+ * If the application is running in a Jakarta Servlet 3.0 (and beyond) container, the runtime must provide
  * an implementation of the {@link javax.servlet.ServletContainerInitializer} interface that
  * declares the following classes in its {@link javax.servlet.annotation.HandlesTypes} annotation.
  * </p>
@@ -103,7 +103,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ul>
  * 
  * <p>
- * This servlet must automatically be mapped if it is <strong>not</strong> explicitly mapped in
+ * This Jakarta Servlet servlet must automatically be mapped if it is <strong>not</strong> explicitly mapped in
  * <code>web.xml</code> or <code>web-fragment.xml</code> and one or more of the following conditions
  * are true.
  * </p>
@@ -169,7 +169,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * <p>
  * This class must be annotated with {@code javax.servlet.annotation.MultipartConfig}. This causes
- * the Servlet container in which the JSF implementation is running to correctly handle multipart
+ * the Jakarta Servlet container in which the Jakarta Server Faces implementation is running to correctly handle multipart
  * form data.
  * </p>
  * 
@@ -197,7 +197,7 @@ import javax.servlet.http.HttpServletResponse;
  * prevent access to the view source without its first being processed by the
  * <code>FacesServlet</code>. One common approach is to apply a &lt;security-constraint&gt; to all
  * facelet files and flow definition files. Please see the <strong>Deployment Descriptor</strong>
- * chapter of the Java Servlet Specification for more information the use of
+ * chapter of the Jakarta Servlet Specification for more information the use of
  * &lt;security-constraint&gt;.
  * </p>
  * 
@@ -206,11 +206,11 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  * 
  * <p>
- * The JSF specification only requires the use of the GET and POST http methods. If your web
+ * The Jakarta Server Faces specification only requires the use of the GET and POST http methods. If your web
  * application does not require any other http methods, such as PUT and DELETE, please consider
  * restricting the allowable http methods using the &lt;http-method&gt; and
- * &lt;http-method-omission&gt; elements. Please see the <strong>Security</strong> of the Java
- * Servlet Specification for more information the use of these elements.
+ * &lt;http-method-omission&gt; elements. Please see the <strong>Security</strong> sections of the
+ * Jakarta Servlet Specification for more information about the use of these elements.
  * </p>
  * 
  * 
@@ -225,7 +225,7 @@ public final class FacesServlet implements Servlet {
      * <p>
      * Context initialization parameter name for a comma delimited list of context-relative resource
      * paths (in addition to <code>/WEB-INF/faces-config.xml</code> which is loaded automatically if
-     * it exists) containing JavaServer Faces configuration information.
+     * it exists) containing Jakarta Server Faces configuration information.
      * </p>
      */
     public static final String CONFIG_FILES_ATTR = "javax.faces.CONFIG_FILES";
@@ -409,17 +409,17 @@ public final class FacesServlet implements Servlet {
      * 
      * <p class="changed_modified_2_0_rev_a">
      * The implementation must make it so {@link javax.faces.context.FacesContext#release} is called
-     * within a finally block as late as possible in the processing for the JSF related portion of
+     * within a finally block as late as possible in the processing for the Jakarta Server Faces related portion of
      * this request.
      * </p>
      * 
      * </div>
      *
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req The Jakarta Servlet request we are processing
+     * @param resp The Jakarta Servlet response we are creating
      *
      * @throws IOException if an input/output error occurs during processing
-     * @throws ServletException if a servlet error occurs during processing
+     * @throws ServletException if a Jakarta Servlet error occurs during processing
      * 
      */
     @Override
@@ -510,7 +510,7 @@ public final class FacesServlet implements Servlet {
         try {
             LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(LIFECYCLE_FACTORY);
             
-            // First look in the servlet init-param set
+            // First look in the Jakarta Servlet init-param set
             String lifecycleId = servletConfig.getInitParameter(LIFECYCLE_ID_ATTR);
 
             if (lifecycleId == null) {

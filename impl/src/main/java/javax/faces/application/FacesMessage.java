@@ -77,7 +77,7 @@ public class FacesMessage implements Serializable {
     /**
      * <p>
      * <code>ResourceBundle</code> identifier for messages whose message identifiers are defined in
-     * the JavaServer Faces specification.
+     * the Jakarta Server Faces specification.
      * </p>
      */
     public static final String FACES_MESSAGES = "javax.faces.Messages";

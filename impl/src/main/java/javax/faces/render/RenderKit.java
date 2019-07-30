@@ -31,14 +31,14 @@ import java.util.Set;
  * <p><span
  * class="changed_modified_2_0"><strong>RenderKit</strong></span>
  * represents a collection of {@link Renderer} instances that, together,
- * know how to render JavaServer Faces {@link UIComponent} instances for
+ * know how to render Jakarta Server Faces {@link UIComponent} instances for
  * a specific client.  Typically, {@link RenderKit}s are specialized for
  * some combination of client device type, markup language, and/or user
  * <code>Locale</code>.  A {@link RenderKit} also acts as a Factory for
  * associated {@link Renderer} instances, which perform the actual
  * rendering process for each component.</p>
  *
- * <p>A typical JavaServer Faces implementation will configure one or
+ * <p>A typical Jakarta Server Faces implementation will configure one or
  * more {@link RenderKit} instances at web application startup.  They
  * are made available through calls to the <code>getRenderKit()</code>
  * methods of {@link RenderKitFactory}.  Because {@link RenderKit}

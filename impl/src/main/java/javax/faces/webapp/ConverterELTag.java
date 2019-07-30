@@ -30,7 +30,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 
 /**
- * <p><strong>ConverterELTag</strong> is a base class for all JSP custom
+ * <p><strong>ConverterELTag</strong> is a base class for all Jakarta Server Pages custom
  * actions that create and register a <code>Converter</code> instance on
  * the {@link ValueHolder} associated with our most immediate
  * surrounding instance of a tag whose implementation class is a
@@ -68,10 +68,10 @@ public abstract class ConverterELTag extends TagSupport {
      * class, and register it with the {@link UIComponent} instance associated
      * with our most immediately surrounding {@link UIComponentClassicTagBase} instance, if
      * the {@link UIComponent} instance was created by this execution of the
-     * containing JSP page.  If the localValue of the
+     * containing Jakarta Server Pages page.  If the localValue of the
      * {@link UIComponent} is a String, attempt to convert it.</p>
      *
-     * @throws JspException if a JSP error occurs
+     * @throws JspException if a Jakarta Server Pages error occurs
      */
     @Override
     public int doStartTag() throws JspException {
