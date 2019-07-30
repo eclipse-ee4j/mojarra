@@ -65,7 +65,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
     /**
      * <p class="changed_added_2_0">The standard validator id for this
-     * validator, as defined by the JSF specification.</p>
+     * validator, as defined by the Jakarta Server Face specification.</p>
      */
     public static final String VALIDATOR_ID = "javax.faces.Bean";
     
@@ -80,7 +80,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * </ul>
      * <p>The message format string provided by the default implementation should be a the placeholder {0},
      * thus fully delegating the message handling to Bean Validation. A developer can override this message
-     * format string to make it conform to other JSF validator messages (i.e., by including the component label)</p>
+     * format string to make it conform to other Jakarta Server Face validator messages (i.e., by including the component label)</p>
      */
     public static final String MESSAGE_ID = "javax.faces.validator.BeanValidator.MESSAGE";
 
@@ -501,7 +501,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
     
     // ----------------------------------------------------- Private helper methods for bean validation
     
-    // MOJARRA IMPLEMENTATION NOTE: identical code exists in JSF-RI's com.sun.faces.util.BeanValidation
+    // MOJARRA IMPLEMENTATION NOTE: identical code exists in Mojarra's com.sun.faces.util.BeanValidation
     
     private static javax.validation.Validator getBeanValidator(FacesContext context) {
         ValidatorFactory validatorFactory = getValidatorFactory(context);

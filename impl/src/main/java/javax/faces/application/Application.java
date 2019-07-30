@@ -983,7 +983,7 @@ public abstract class Application {
      * Obtain a reference to the <em>composite component metadata</em> for this composite component
      * by calling {@link ViewDeclarationLanguage#getComponentMetadata}, passing the
      * <code>facesContext</code> and <code>componentResource</code> arguments to this method. This
-     * version of JSF specification uses JavaBeans as the API to the component metadata.
+     * version of the Jakarta Server Faces specification uses JavaBeans as the API to the component metadata.
      * </p>
      * </li>
      * 

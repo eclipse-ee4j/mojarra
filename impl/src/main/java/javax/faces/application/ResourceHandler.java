@@ -113,7 +113,7 @@ import javax.faces.context.FacesContext;
  * <blockquote>
  *
  * <p>
- * During the handling of view requests, the JSF run-time may be called upon to encode a resource in
+ * During the handling of view requests, the Jakarta Server Face run-time may be called upon to encode a resource in
  * such a way as to instruct the user-agent to make a subsequent resource request. This behavior is
  * orchestrated by one of the resource renderers (<code>ScriptRenderer</code>,
  * <code>StylesheetRenderer</code>, <code>ImageRenderer</code>), which all call
