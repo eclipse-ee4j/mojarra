@@ -39,7 +39,7 @@ public @interface FacesConfig {
 
         /**
          * <p class="changed_added_2_3">This value indicates CDI should be used
-         * for EL resolution as well as enabling JSF CDI injection, as specified
+         * for Jakarta Expression Language resolution as well as enabling Jakarta Server Faces CDI injection, as specified
          * in Section 5.6.3 "CDI for EL Resolution" and Section 5.9 "CDI Integration".</p>
          */
         JSF_2_3

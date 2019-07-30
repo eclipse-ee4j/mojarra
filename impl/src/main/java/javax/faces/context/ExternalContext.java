@@ -45,7 +45,7 @@ import javax.faces.lifecycle.ClientWindow;
  * <code>ExternalContext</code> is specified under the revision of the
  * <span style="text-decoration: underline;">Portlet Bridge
  * Specification for JavaServer Faces</span> JSR that corresponds to
- * this version of the JSF specification.  See the Preface of the
+ * this version of the Jakarta Server Faces specification.  See the Preface of the
  * &quot;prose document&quot;, <a
  * href="../../../overview-summary.html#overview_description">linked
  * from the javadocs</a>, for a reference.</p>
@@ -414,7 +414,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Return the threadsafe {@link Flash}
      * for this application.  The default implementation will throw
-     * <code>UnsupportedOperationException</code>.  Compliant JSF
+     * <code>UnsupportedOperationException</code>.  Compliant Jakarta Server Faces
      * runtimes must provide an implementation of this method.</p>
      *
      * @return the <code>Flash</code> for this application. 
@@ -2080,7 +2080,7 @@ public abstract class ExternalContext {
      * This method must be able to encode the parameters to a baseUrl that may or may not have
      * existing query parameters. The parameter values should be encoded appropriately for the
      * environment so that the resulting URL can be used as the target of a link (e.g., in an
-     * href attribute) in a JSF response.  It's possible for an ExternalContext implementation to
+     * href attribute) in a Jakarta Server Faces response.  It's possible for an ExternalContext implementation to
      * override this method in any way that would make the URL bookmarkable in that environment.
      * </p>
      * 

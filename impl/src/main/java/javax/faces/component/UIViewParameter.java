@@ -47,7 +47,7 @@ import javax.faces.validator.Validator;
  * <p>Because this class extends <code>UIInput</code> any actions that
  * one would normally take on a <code>UIInput</code> instance are valid
  * for instances of this class.  Instances of this class participate in
- * the regular JSF lifecycle, including on Ajax requests.</p>
+ * the regular Jakarta Server Faces lifecycle, including on Ajax requests.</p>
 
  * </div>
  *

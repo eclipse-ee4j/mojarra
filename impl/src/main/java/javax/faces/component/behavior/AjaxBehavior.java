@@ -564,7 +564,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
                                        Map<String, ValueExpression> bindings) {
 
         // Note: This code is copied from UIComponentBase.  In a future
-        // version of the JSF spec, it would be useful to define a
+        // version of the Jakarta Server Faces spec, it would be useful to define a
         // attribute/property/bindings/state helper object that can be
         // shared across components/behaviors/validaters/converters.
         

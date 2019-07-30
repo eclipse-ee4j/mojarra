@@ -355,7 +355,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * </p>
      *
      * <p>
-     * This method must be overridden and implemented for components that comply with JSF
+     * This method must be overridden and implemented for components that comply with Jakarta Server Faces
      * 1.2 and later.
      * </p>
      *
@@ -401,7 +401,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * </p>
      *
      * <p>
-     * This method must be overridden and implemented for components that comply with JSF
+     * This method must be overridden and implemented for components that comply with Jakarta Server Faces
      * 1.2 and later.
      * </p>
      *
@@ -958,7 +958,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     }
    
 
-    // This is necessary for JSF components that extend from UIComponent
+    // This is necessary for Jakarta Server Faces components that extend from UIComponent
     // directly rather than extending from UIComponentBase. Such components
     // may need to have implementations provided for methods that originated
     // from a spec version more recent than the version with which the component

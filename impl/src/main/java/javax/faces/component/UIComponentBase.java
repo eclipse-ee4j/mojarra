@@ -1752,7 +1752,7 @@ public abstract class UIComponentBase extends UIComponent {
             for (List<ClientBehavior> eventBehaviors : behaviors.values()) {
                 // we need to take different action depending on whether
                 // or not markInitialState() was called. If it's not called,
-                // assume JSF 1.2 style state saving and call through to
+                // assume Jakarta Server Faces 1.2 style state saving and call through to
                 // saveAttachedState(), otherwise, call saveState() on the
                 // behaviors directly.
                 Object[] attachedEventBehaviors = new Object[eventBehaviors.size()];
@@ -1785,7 +1785,7 @@ public abstract class UIComponentBase extends UIComponent {
             Object[] attachedBehaviors = (Object[]) values[1];
             // we need to take different action depending on whether
             // or not markInitialState() was called. If it's not called,
-            // assume JSF 1.2 style state saving and call through to
+            // assume Jakarta Server Faces 1.2 style state saving and call through to
             // restoreAttachedState(), otherwise, call restoreState() on the
             // behaviors directly.
             if (!initialStateMarked()) {

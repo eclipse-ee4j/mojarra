@@ -15,8 +15,8 @@
  */
 
 /**
- * This package is now deprecated. The specification for managed beans from JSF
- * has been placed into its own specifications, namely Managed Beans and CDI.
+ * This package is now deprecated. The specification for managed beans from Jakarta Server Faces
+ * has been placed into its own specifications, namely Jakarta Managed Beans and CDI.
  */
 @Deprecated
 package javax.faces.bean;

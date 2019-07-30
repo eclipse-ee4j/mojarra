@@ -198,7 +198,8 @@ public abstract class Application {
      * element.</li>
      * </ul>
      * <p>
-     * The runtime must employ the decorator pattern as for every other pluggable artifact in JSF.
+     * The runtime must employ the decorator pattern as for every other pluggable artifact in 
+     * Jakarta Server Faces.
      * </p>
      * </div>
      *
@@ -221,7 +222,7 @@ public abstract class Application {
     /**
      * <p class="changed_added_2_0">
      * Return the singleton, stateless, thread-safe {@link ResourceHandler} for this application.
-     * The JSF implementation must support the following techniques for declaring an alternate
+     * The Jakarta Server Faces implementation must support the following techniques for declaring an alternate
      * implementation of <code>ResourceHandler</code>.
      * </p>
      * <div class="changed_added_2_0">
@@ -237,7 +238,7 @@ public abstract class Application {
      * </ul>
      * <p>
      * In all of the above cases, the runtime must employ the decorator pattern as for every other
-     * pluggable artifact in JSF.
+     * pluggable artifact in Jakarta Server Faces.
      * </p>
      * 
      * <p class="changed_added_2_0">

@@ -106,7 +106,7 @@ public abstract class StateManager {
     /**
      * <p class="changed_added_2_0">
      * The runtime must interpret the value of this parameter as a comma separated list of view IDs,
-     * each of which must have their state saved using the state saving mechanism specified in JSF
+     * each of which must have their state saved using the state saving mechanism specified in Jakarta Server Faces
      * 1.2.
      * </p>
      */

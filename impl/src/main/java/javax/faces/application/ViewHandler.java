@@ -60,7 +60,7 @@ import javax.faces.view.ViewDeclarationLanguage;
  * <p class="changed_added_2_0">
  * Version 2 of the specification formally introduced the concept of <em>View Declaration
  * Language</em>. A View Declaration Language (VDL) is a syntax used to declare user interfaces
- * comprised of instances of JSF {@link UIComponent}s. Any of the responsibilities of the
+ * comprised of instances of Jakarta Server Faces {@link UIComponent}s. Any of the responsibilities of the
  * <code>ViewHandler</code> that specifically deal with the VDL sub-system are now the domain of the
  * VDL implementation. These responsibilities are defined on the {@link ViewDeclarationLanguage}
  * class. The <code>ViewHandler</code> provides {@link #getViewDeclarationLanguage} as a convenience
@@ -87,7 +87,7 @@ public abstract class ViewHandler {
     /**
      * <p>
      * <span class="changed_modified_2_0">Allow</span> the web application to define a
-     * <span class="changed_modified_2_0">list of alternate suffixes</span> for pages containing JSF
+     * <span class="changed_modified_2_0">list of alternate suffixes</span> for pages containing Jakarta Server Faces
      * content. <span class="changed_modified_2_0">This list is a space separated list of values of
      * the form <i><code>.&lt;extension&gt;</code></i>. The first physical resource whose extension
      * matches one of the configured extensions will be the suffix used to create the view
@@ -120,7 +120,7 @@ public abstract class ViewHandler {
     /**
      * <p class="changed_added_2_0">
      * Allow the web application to define an alternate suffix for Facelet based XHTML pages
-     * containing JSF content. If this init parameter is not specified, the default value is taken
+     * containing Jakarta Server Faces content. If this init parameter is not specified, the default value is taken
      * from the value of the constant {@link #DEFAULT_FACELETS_SUFFIX}
      * </p>
      * 
@@ -512,7 +512,7 @@ public abstract class ViewHandler {
      * the <code>file</code> argument to the four-argument constructor for <code>java.net.URL</code>
      * (assuming appropriate values are used for the first three arguments), then a client making a
      * request to the <code>toExternalForm()</code> of that <code>URL</code> will select the
-     * argument <code>viewId</code> for traversing the JSF lifecycle. Please see section JSF.7.6.2
+     * argument <code>viewId</code> for traversing the Jakarta Server Faces lifecycle. Please see section JSF.7.6.2
      * for the complete specification, <span class="changed_added_2_2">especially for details
      * related to view protection using the
      * {@link javax.faces.render.ResponseStateManager#NON_POSTBACK_VIEW_TOKEN_PARAM}
@@ -535,7 +535,7 @@ public abstract class ViewHandler {
 
     /**
      * <p class="changed_added_2_0">
-     * Return a JSF action URL derived from the <code>viewId</code> argument that is suitable to be
+     * Return a Jakarta Server Faces action URL derived from the <code>viewId</code> argument that is suitable to be
      * used by the {@link NavigationHandler} to issue a redirect request to the URL using a NonFaces
      * request. Compliant implementations must implement this method as specified in section
      * JSF.7.6.2. The default implementation simply calls through to {@link #getActionURL}, passing
@@ -556,8 +556,8 @@ public abstract class ViewHandler {
 
     /**
      * <p class="changed_added_2_0">
-     * Return a JSF action URL derived from the viewId argument that is suitable to be used as the
-     * target of a link in a JSF response. Compiliant implementations must implement this method as
+     * Return a Jakarta Server Faces action URL derived from the viewId argument that is suitable to be used as the
+     * target of a link in a Jakarta Server Faces response. Compliant implementations must implement this method as
      * specified in section JSF.7.6.2. The default implementation simply calls through to
      * {@link #getActionURL}, passing the arguments <code>context</code> and <code>viewId</code>.
      * </p>
