@@ -27,7 +27,7 @@ import javax.faces.context.FacesContext;
  * </p>
  *
  * <p>
- * A default implementation of <code>NavigationHandler</code> must be provided by the JSF
+ * A default implementation of <code>NavigationHandler</code> must be provided by the Jakarta Server Faces
  * implementation, which will be utilized unless <code>setNavigationHandler()</code> is called to
  * establish a different one. <span class="changed_added_2_0">An implementation of this class must
  * be thread-safe.</span> This default instance will compare the view identifier of the current

@@ -26,7 +26,7 @@ import javax.faces.FacesWrapper;
  * for the processing of the specified request and response objects.</p>
  *
  * <p>There must be one <code>ExternalContextFactory</code> instance per web
- * application that is utilizing JavaServer Faces.  This instance can be
+ * application that is utilizing Jakarta Server Faces.  This instance can be
  * acquired, in a portable manner, by calling:</p>
  * <pre>
  *   ExternalContextFactory factory = (ExternalContextFactory)
@@ -79,12 +79,12 @@ public abstract class ExternalContextFactory implements FacesWrapper<ExternalCon
      * for the processing of the specified request and response objects,
      * for this web application.</p>
      *
-     * @param context In servlet environments, the
+     * @param context In Jakarta Servlet environments, the
      * <code>ServletContext</code> that is associated with this web
      * application
-     * @param request In servlet environments, the
+     * @param request In Jakarta Servlet environments, the
      * <code>ServletRequest</code> that is to be processed
-     * @param response In servlet environments, the
+     * @param response In Jakarta Servlet environments, the
      * <code>ServletResponse</code> that is to be processed
      *
      * @return the instance of <code>ExternalContext</code>.

@@ -49,7 +49,7 @@ import javax.faces.render.ResponseStateManager;
  * and "url" are not specified.  However, for all values of {@link
  * #CLIENT_WINDOW_MODE_PARAM_NAME}, the lifetime of a
  * <code>ClientWindow</code> starts on the first request made by a
- * particular client window (or tab, or pop-up, etc) to the JSF runtime
+ * particular client window (or tab, or pop-up, etc) to the Jakarta Server Faces runtime
  * and persists as long as that window remains open or the session
  * expires, whichever comes first.  A client window is always associated
  * with exactly one <code>UIViewRoot</code> instance at a time, but may

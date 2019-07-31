@@ -39,7 +39,7 @@ import javax.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_0">This {@link ExceptionHandlerFactory} instance 
- * produces JSF 1.2 compatible
+ * produces Jakarta Server Faces 1.2 compatible
  * {@link ExceptionHandler} instances.  The {@link ExceptionHandler#handle} 
  * method of the <code>ExceptionHandler</code> produced by this factory must 
  * meet the following requirements</p>
@@ -78,7 +78,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
     /**
      * @return a new {@link ExceptionHandler} that behaves in a fashion compatible
-     *  with specifications prior to JavaServerFaces 1.2
+     *  with specifications prior to Jakarta Server Faces 1.2
      */
     @Override
     public ExceptionHandler getExceptionHandler() {
@@ -92,7 +92,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
 
     /**
-     * JSF 1.2-style <code>ExceptionHandler</code> implementation.
+     * Jakarta Server Faces 1.2-style <code>ExceptionHandler</code> implementation.
      */
     private static final class PreJsf2ExceptionHandler extends ExceptionHandler {
 

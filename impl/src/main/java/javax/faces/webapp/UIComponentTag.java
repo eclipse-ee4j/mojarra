@@ -27,9 +27,9 @@ import javax.servlet.jsp.tagext.Tag;
 
 
 /**
- * <p>{@link UIComponentTag} is the base class for all JSP custom
+ * <p>{@link UIComponentTag} is the base class for all Jakarta Server Pages custom
  * actions that correspond to user interface components in a page that is
- * rendered by JavaServer Faces.</p>
+ * rendered by Jakarta Server Faces.</p>
  *
  * <p>In this version of the specification, <code>UIComponentTag</code>
  * extends {@link UIComponentClassicTagBase} to add properties that use
@@ -38,7 +38,7 @@ import javax.servlet.jsp.tagext.Tag;
  * @deprecated Use of this class has been replaced with {@link
  * UIComponentELTag}, which extends
  * <code>UIComponentClassicTagBase</code> to add properties that use the
- * EL API introduced as part of JSP 2.1.
+ * Jakarta Expression Language API introduced as part of Jakarta Server Pages 2.1.
  */
 
 public abstract class UIComponentTag extends UIComponentClassicTagBase implements Tag {

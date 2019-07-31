@@ -85,7 +85,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
             + " You need to set web.xml context param '" + ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME + "' with value 'true'.";
     private static final String ERROR_INVALID_CHANNEL =
         "f:websocket 'channel' attribute '%s' does not represent a valid channel name. It is required, it may not be an"
-               + "  EL expression and it may only contain alphanumeric characters, hyphens, underscores and periods.";
+               + "Jakarta Expression Language expression and it may only contain alphanumeric characters, hyphens, underscores and periods.";
     private static final String ERROR_INVALID_USER =
         "f:websocket 'user' attribute '%s' does not represent a valid user identifier. It must implement Serializable and"
             + " preferably have low memory footprint. Suggestion: use #{request.remoteUser} or #{someLoggedInUser.id}.";
@@ -184,7 +184,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Sets the name of the websocket channel.
-     * It may not be an EL expression and it may only contain alphanumeric characters, hyphens, underscores and periods.
+     * It may not be an Jakarta Expression Language expression and it may only contain alphanumeric characters, hyphens, underscores and periods.
      * All open websockets on the same channel will receive the same push message from the server.
      * @param channel The name of the websocket channel.
      * @throws IllegalArgumentException When the value does not represent a valid channel name.
@@ -207,7 +207,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Sets the scope of the websocket channel.
-     * It may not be an EL expression and allowed values are <code>application</code>, <code>session</code> and
+     * It may not be an Jakarta Expression Language expression and allowed values are <code>application</code>, <code>session</code> and
      * <code>view</code>, case insensitive. When the value is <code>application</code>, then all channels with the same
      * name throughout the application will receive the same push message. When the value is <code>session</code>, then
      * only the channels with the same name in the current user session will receive the same push message. When the

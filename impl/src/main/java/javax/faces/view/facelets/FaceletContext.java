@@ -122,7 +122,7 @@ public abstract class FaceletContext extends ELContext {
     /**
      * <p class="changed_added_2_0">Include another Facelet defined at
      * some path, relative to the executing context, not the current
-     * Facelet (same as include directive in JSP)</p>
+     * Facelet (same as include directive in Jakarta Server Pages)</p>
      * 
      * @param parent the <code>UIComponent</code> that will be the
      * parent of any components in the included facelet.

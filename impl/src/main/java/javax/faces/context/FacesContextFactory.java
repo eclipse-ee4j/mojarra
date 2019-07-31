@@ -32,7 +32,7 @@ import javax.faces.lifecycle.Lifecycle;
  * every time.</p>
  *
  * <p>There must be one <code>FacesContextFactory</code> instance per web
- * application that is utilizing JavaServer Faces.  This instance can be
+ * application that is utilizing Jakarta Server Faces.  This instance can be
  * acquired, in a portable manner, by calling:</p>
  * <pre>
  *   FacesContextFactory factory = (FacesContextFactory)
@@ -107,12 +107,12 @@ public abstract class FacesContextFactory implements FacesWrapper<FacesContextFa
      * to {@link ExternalContext#getClientWindow()} on the returned
      * <code>ExternalContext</code> instance.</p>
      *
-     * @param context In servlet environments, the
+     * @param context In Jakarta Servlet environments, the
      * <code>ServletContext</code> that is associated with this web
      * application
-     * @param request In servlet environments, the
+     * @param request In Jakarta Servlet environments, the
      * <code>ServletRequest</code> that is to be processed
-     * @param response In servlet environments, the
+     * @param response In Jakarta Servlet environments, the
      * <code>ServletResponse</code> that is to be processed
      * @param lifecycle The {@link Lifecycle} instance being used
      *  to process this request

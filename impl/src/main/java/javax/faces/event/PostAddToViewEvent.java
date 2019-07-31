@@ -61,8 +61,8 @@ import javax.faces.context.FacesContext;
 
 	  <li><p>On a non-initial rendering of the view, if a component
 	  is added to the view by the View Declaration Language
-	  implememtation as a result of changes in evaluation result of
-	  EL expressions referenced by VDL tags such as
+	  implementation as a result of changes in evaluation result of
+	  Jakarta Expression Language expressions referenced by VDL tags such as
 	  <code>c:if</code>, <code>ui:include</code>, and other tags
 	  that dynamically influence the assembly of the view.</p></li>
 

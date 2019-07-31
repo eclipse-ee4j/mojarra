@@ -93,7 +93,7 @@ import com.sun.faces.application.ValueExpressionValueBindingAdapter;
  * <p>
  * By default, this class defines <code>getRendersChildren()</code> to find the renderer for this
  * component and call its <code>getRendersChildren()</code> method. The default implementation on
- * the <code>Renderer</code> returns <code>false</code>. As of version 1.2 of the JavaServer Faces
+ * the <code>Renderer</code> returns <code>false</code>. As of version 1.2 of the Jakarta Server Faces
  * Specification, component authors are encouraged to return <code>true</code> from this method and
  * rely on the implementation of {@link #encodeChildren} in this class and in the Renderer
  * ({@link Renderer#encodeChildren}). Subclasses that wish to manage the rendering of their children
@@ -1752,7 +1752,7 @@ public abstract class UIComponentBase extends UIComponent {
             for (List<ClientBehavior> eventBehaviors : behaviors.values()) {
                 // we need to take different action depending on whether
                 // or not markInitialState() was called. If it's not called,
-                // assume JSF 1.2 style state saving and call through to
+                // assume Jakarta Server Faces 1.2 style state saving and call through to
                 // saveAttachedState(), otherwise, call saveState() on the
                 // behaviors directly.
                 Object[] attachedEventBehaviors = new Object[eventBehaviors.size()];
@@ -1785,7 +1785,7 @@ public abstract class UIComponentBase extends UIComponent {
             Object[] attachedBehaviors = (Object[]) values[1];
             // we need to take different action depending on whether
             // or not markInitialState() was called. If it's not called,
-            // assume JSF 1.2 style state saving and call through to
+            // assume Jakarta Server Faces 1.2 style state saving and call through to
             // restoreAttachedState(), otherwise, call restoreState() on the
             // behaviors directly.
             if (!initialStateMarked()) {

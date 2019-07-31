@@ -306,7 +306,7 @@ public class NavigationCase {
      * Evaluates the <code>&lt;if&gt;</code> for this <code>&lt;navigation-case&gt;</code>, if any.
      * The expression to be evaluated is passed into the constructor as a string. When the
      * expression is evaluated, its value must be coerced into a <code>boolean</code> per the normal
-     * EL coercion rules.
+     * Jakarta Expression Language coercion rules.
      * </p>
      *
      * Note throws any exceptions encountered during the process of evaluating the expression or

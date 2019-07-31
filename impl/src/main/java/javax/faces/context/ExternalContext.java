@@ -36,16 +36,16 @@ import javax.faces.lifecycle.ClientWindow;
 /**
  * <p><span class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2 changed_modified_2_3">
  * This</span> class allows the Faces API to be unaware of the nature of its containing
- * application environment.  In particular, this class allows JavaServer Faces based
- * appications to run in either a Servlet or a Portlet environment.</p>
+ * application environment.  In particular, this class allows Jakarta Server Faces based
+ * applications to run in either a Jakarta Servlet or a Portlet environment.</p>
  *
  * <p class="changed_modified_2_0">The documentation for this class only
- * specifies the behavior for the <em>Servlet</em> implementation of
+ * specifies the behavior for the <em>Jakarta Servlet</em> implementation of
  * <code>ExternalContext</code>.  The <em>Portlet</em> implementation of
  * <code>ExternalContext</code> is specified under the revision of the
  * <span style="text-decoration: underline;">Portlet Bridge
  * Specification for JavaServer Faces</span> JSR that corresponds to
- * this version of the JSF specification.  See the Preface of the
+ * this version of the Jakarta Server Faces specification.  See the Preface of the
  * &quot;prose document&quot;, <a
  * href="../../../overview-summary.html#overview_description">linked
  * from the javadocs</a>, for a reference.</p>
@@ -105,7 +105,7 @@ public abstract class ExternalContext {
      *
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em> This must be accomplished by calling the
+     * <p><em>Jakarta Servlet:</em> This must be accomplished by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> method
      * <code>addCookie()</code>.  The <code>Cookie</code> argument must
      * be constructed by passing the <code>name</code> and
@@ -230,7 +230,7 @@ public abstract class ExternalContext {
      * <p><span class="changed_modified_2_2">Dispatch</span> a request to the specified resource to create output
      * for this response.</p>
      *
-     * <p><em>Servlet:</em> This must be accomplished by calling the
+     * <p><em>Jakarta Servlet:</em> This must be accomplished by calling the
      * <code>javax.servlet.ServletContext</code> method
      * <code>getRequestDispatcher(path)</code>, and calling the
      * <code>forward()</code> method on the resulting object.</p>
@@ -274,7 +274,7 @@ public abstract class ExternalContext {
      * 
      * </blockquote>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletResponse</code> method
      * <code>encodeURL(url)</code>.</p>
      *
@@ -293,7 +293,7 @@ public abstract class ExternalContext {
      * name, after prefixing it with a namespace that ensures that it
      * will be unique within the context of a particular page.</p>
      *
-     * <p><em>Servlet:</em> The input value must be returned unchanged.</p>
+     * <p><em>Jakarta Servlet:</em> The input value must be returned unchanged.</p>
      *
      * @param name Name to be encoded
      * 
@@ -310,7 +310,7 @@ public abstract class ExternalContext {
      * ensure that it will correctly identify an addressable resource in the
      * current application.</p>
      * 
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletResponse</code> method
      * <code>encodeURL(url)</code>.</p>
      *
@@ -333,7 +333,7 @@ public abstract class ExternalContext {
      * </p>
      * 
      * <p>
-     * <em>Servlet:</em> This must ensure that the input URL is prefixed 
+     * <em>Jakarta Servlet:</em> This must ensure that the input URL is prefixed 
      * with the correct websocket scheme, domain and port and then
      * encoded by {@link #encodeResourceURL(String)}.
      * </p>
@@ -383,7 +383,7 @@ public abstract class ExternalContext {
      * <code>ExternalContext</code> returned by the
      * <code>FacesContext</code> during an actual request.</p>
      *
-     * <p><em>Servlet:</em>  This must be the set of attributes available via
+     * <p><em>Jakarta Servlet:</em>  This must be the set of attributes available via
      * the <code>javax.servlet.ServletContext</code> methods
      * <code>getAttribute()</code>, <code>getAttributeNames()</code>,
      * <code>removeAttribute()</code>, and <code>setAttribute()</code>.</p>
@@ -402,7 +402,7 @@ public abstract class ExternalContext {
      * <code>BASIC_AUTH</code>, <code>CLIENT_CERT_AUTH</code>,
      * <code>DIGEST_AUTH</code>, or <code>FORM_AUTH</code>.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletRequest</code> method
      * <code>getAuthType()</code>.</p>
      *
@@ -414,7 +414,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Return the threadsafe {@link Flash}
      * for this application.  The default implementation will throw
-     * <code>UnsupportedOperationException</code>.  Compliant JSF
+     * <code>UnsupportedOperationException</code>.  Compliant Jakarta Server Faces
      * runtimes must provide an implementation of this method.</p>
      *
      * @return the <code>Flash</code> for this application. 
@@ -452,7 +452,7 @@ public abstract class ExternalContext {
 
      * <div class="changed_added_2_0">
  
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletContext</code> method
      * <code>getMimeType()</code>.</p>
      *
@@ -489,7 +489,7 @@ public abstract class ExternalContext {
      * <code>FacesContext</code> during an actual request.</p>
 
      *
-     * <p><em>Servlet:</em>  This must be the current application's
+     * <p><em>Jakarta Servlet:</em>  This must be the current application's
      * <code>javax.servlet.ServletContext</code> instance.</p>
      *
      * @return the object of the <code>ServletContext</code>.
@@ -530,7 +530,7 @@ public abstract class ExternalContext {
      * <p class="changed_added_2_2">Return the name of the container
      * context for this application.  </p>
      *
-     * <p class="changed_added_2_2"><em>Servlet:</em>
+     * <p class="changed_added_2_2"><em>Jakarta Servlet:</em>
      * Return the result of calling
      * <code>getContextPath()</code> on the
      * <code>ServletContext</code> instance for this application.</p>
@@ -564,7 +564,7 @@ public abstract class ExternalContext {
      * <p><span class="changed_modified_2_0">Return</span> the value of
      * the specified application initialization parameter (if any).</p>
      *
-     * <p><em>Servlet:</em> This must be the result of the
+     * <p><em>Jakarta Servlet:</em> This must be the result of the
      * <code>javax.servlet.ServletContext</code> method
      * <code>getInitParameter(name)</code>.</p>
      *
@@ -602,7 +602,7 @@ public abstract class ExternalContext {
      * <code>ExternalContext</code> returned by the
      * <code>FacesContext</code> during an actual request.</p>
      *
-     * <p><em>Servlet:</em> This result must be as if it were synthesized
+     * <p><em>Jakarta Servlet:</em> This result must be as if it were synthesized
      * by calling the <code>javax.servlet.ServletContext</code>
      * method <code>getInitParameterNames</code>, and putting
      * each configured parameter name/value pair into the result.</p>
@@ -617,7 +617,7 @@ public abstract class ExternalContext {
      * <p>Return the login name of the user making the current request
      * if any; otherwise, return <code>null</code>.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletRequest</code> method
      * <code>getRemoteUser()</code>.</p>
      *
@@ -631,7 +631,7 @@ public abstract class ExternalContext {
      * <p>Return the environment-specific object instance for the current
      * request.</p>
      *
-     * <p><em>Servlet:</em>  This must be the current request's
+     * <p><em>Jakarta Servlet:</em>  This must be the current request's
      * <code>javax.servlet.http.HttpServletRequest</code> instance.</p>
      *
      * @return the instance of the current request.
@@ -669,7 +669,7 @@ public abstract class ExternalContext {
      * to make this request, for example, http, https, or ftp.</p>
      *
      * <div class="changed_added_2_0">
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletRequest</code> method
      * <code>getScheme()</code>.</p>
      *
@@ -699,7 +699,7 @@ public abstract class ExternalContext {
      *
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletRequest</code> method
      * <code>getServerName()</code>.</p>
      *
@@ -730,7 +730,7 @@ public abstract class ExternalContext {
      *
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletRequest</code> method
      * <code>getServerPort()</code>.</p>
      *
@@ -764,7 +764,7 @@ public abstract class ExternalContext {
      * obtained from the request, in which case an <code>IllegalStateException</code>
      * is thrown.</p>
      *
-     * <p><em>Servlet:</em> This must call through to the
+     * <p><em>Jakarta Servlet:</em> This must call through to the
      * <code>javax.servlet.ServletRequest</code> method
      * <code>setCharacterEncoding()</code>.</p>
      *
@@ -808,7 +808,7 @@ public abstract class ExternalContext {
      * 
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletContext</code> method
      * <code>getRealPath()</code>.</p>
      *
@@ -840,7 +840,7 @@ public abstract class ExternalContext {
      * <p>Return the portion of the request URI that identifies the web
      * application context for this request.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletRequest</code> method
      * <code>getContextPath()</code>.</p>
      *
@@ -858,7 +858,7 @@ public abstract class ExternalContext {
      * <code>Map</code> must implement the entire contract for an unmodifiable
      * map as described in the JavaDocs for <code>java.util.Map</code>.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletRequest</code> method
      * <code>getCookies()</code>, unless <code>null</code> was returned,
      * in which case this must be a zero-length array.</p>
@@ -879,7 +879,7 @@ public abstract class ExternalContext {
      * addition, key comparisons must be performed in a case insensitive
      * manner.</p>
      *
-     * <p><em>Servlet:</em> This must be the set of headers available via
+     * <p><em>Jakarta Servlet:</em> This must be the set of headers available via
      * the <code>javax.servlet.http.HttpServletRequest</code> methods
      * <code>getHeader()</code> and <code>getHeaderNames()</code>.</p>
      *
@@ -899,7 +899,7 @@ public abstract class ExternalContext {
      * addition, key comparisons must be performed in a case insensitive
      * manner.</p>
      *
-     * <p><em>Servlet:</em> This must be the set of headers available via
+     * <p><em>Jakarta Servlet:</em> This must be the set of headers available via
      * the <code>javax.servlet.http.HttpServletRequest</code> methods
      * <code>getHeaders()</code> and <code>getHeaderNames()</code>.</p>
      *
@@ -912,7 +912,7 @@ public abstract class ExternalContext {
      * <p>Return the preferred <code>Locale</code> in which the client
      * will accept content.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletRequest</code> method
      * <code>getLocale()</code>.</p>
      *
@@ -926,7 +926,7 @@ public abstract class ExternalContext {
      * <code>Locale</code>s specified in the request, in decreasing
      * order of preference.</p>
      *
-     * <p><em>Servlet:</em> This must be an <code>Iterator</code>
+     * <p><em>Jakarta Servlet:</em> This must be an <code>Iterator</code>
      * over the values returned by the <code>javax.servlet.ServletRequest</code>
      * method <code>getLocales()</code>.</p>
      *
@@ -961,7 +961,7 @@ public abstract class ExternalContext {
      * <code>PreDestroy</code> annotated methods must by caught and not
      * rethrown.  The exception may be logged.</p>
      *
-     * <p><em>Servlet:</em>  This must be the set of attributes available via
+     * <p><em>Jakarta Servlet:</em>  This must be the set of attributes available via
      * the <code>javax.servlet.ServletRequest</code> methods
      * <code>getAttribute()</code>, <code>getAttributeNames()</code>,
      * <code>removeAttribute()</code>, and <code>setAttribute()</code>.</p>
@@ -980,7 +980,7 @@ public abstract class ExternalContext {
      * <code>Map</code> must implement the entire contract for an unmodifiable
      * map as described in the JavaDocs for <code>java.util.Map</code>.</p>
      *
-     * <p><em>Servlet:</em> This must be the set of parameters available via
+     * <p><em>Jakarta Servlet:</em> This must be the set of parameters available via
      * the <code>javax.servlet.ServletRequest</code> methods
      * <code>getParameter()</code> and <code>getParameterNames()</code>.</p>
      *
@@ -994,7 +994,7 @@ public abstract class ExternalContext {
      * <p>Return an <code>Iterator</code> over the names of all request
      * parameters included in the current request.</p>
      *
-     * <p><em>Servlet:</em> This must be an <code>Iterator</code> over the
+     * <p><em>Jakarta Servlet:</em> This must be an <code>Iterator</code> over the
      * values returned by the <code>javax.servlet.ServletRequest</code>
      * method <code>getParameterNames()</code>.</p>
      *
@@ -1012,7 +1012,7 @@ public abstract class ExternalContext {
      * <code>Map</code> must implement the entire contract for an unmodifiable
      * map as described in the JavaDocs for <code>java.util.Map</code>.</p>
      *
-     * <p><em>Servlet:</em> This must be the set of parameters available via
+     * <p><em>Jakarta Servlet:</em> This must be the set of parameters available via
      * the <code>javax.servlet.ServletRequest</code> methods
      * <code>getParameterValues()</code> and
      * <code>getParameterNames()</code>.</p>
@@ -1027,7 +1027,7 @@ public abstract class ExternalContext {
      * <p>Return the extra path information (if any) included in the
      * request URI; otherwise, return <code>null</code>.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletRequest</code> method
      * <code>getPathInfo()</code>.</p>
      *
@@ -1038,14 +1038,14 @@ public abstract class ExternalContext {
     
 
     /**
-     * <p>Return the servlet path information (if any) included in the
+     * <p>Return the Jakarta Servlet path information (if any) included in the
      * request URI; otherwise, return <code>null</code>.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletRequest</code> method
      * <code>getServletPath()</code>.</p>
      *
-     * @return the servlet path information of the current request.
+     * @return the Jakarta Servlet path information of the current request.
      */
     public abstract String getRequestServletPath();
     
@@ -1054,7 +1054,7 @@ public abstract class ExternalContext {
      * <p> Return the character encoding currently being used
      * to interpret this request.</p>
      *
-     * <p><em>Servlet:</em> This must return the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must return the value returned by the
      * <code>javax.servlet.ServletRequest</code> method
      * <code>getCharacterEncoding()</code>.</p>
      *
@@ -1082,7 +1082,7 @@ public abstract class ExternalContext {
      * <p>Return the MIME Content-Type for this request.  If not
      * available, return <code>null</code>.</p>
      *
-     * <p><em>Servlet:</em> This must return the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must return the value returned by the
      * <code>javax.servlet.ServletRequest</code> method
      * <code>getContentType()</code>.</p>
      *
@@ -1137,7 +1137,7 @@ public abstract class ExternalContext {
      * the character encoding (MIME charset) used for the body sent in
      * this response. </p>
      *
-     * <p><em>Servlet:</em> This must return the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must return the value returned by the
      * <code>javax.servlet.ServletResponse</code> method
      * <code>getCharacterEncoding()</code>.</p>
 
@@ -1171,7 +1171,7 @@ public abstract class ExternalContext {
      * <p>Return the MIME Content-Type for this response.  If not
      * available, return <code>null</code>.</p>
      *
-     * <p><em>Servlet:</em> This must return the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must return the value returned by the
      * <code>javax.servlet.ServletResponse</code> method
      * <code>getContentType()</code>.</p>
      *
@@ -1211,7 +1211,7 @@ public abstract class ExternalContext {
      * <code>ExternalContext</code> returned by the
      * <code>FacesContext</code> during an actual request.</p>
 
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletContext</code> method
      * <code>getResource(path)</code>.</p>
      *
@@ -1244,7 +1244,7 @@ public abstract class ExternalContext {
      * <code>ExternalContext</code> returned by the
      * <code>FacesContext</code> during an actual request.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletContext</code> method
      * <code>getResourceAsStream(path)</code>.</p>
      *
@@ -1274,7 +1274,7 @@ public abstract class ExternalContext {
      * <code>ExternalContext</code> returned by the
      * <code>FacesContext</code> during an actual request.</p>
 
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.ServletContext</code> method
      * <code>getResourcePaths(path).</code></p>
      *
@@ -1293,7 +1293,7 @@ public abstract class ExternalContext {
      * <p>Return the environment-specific object instance for the current
      * response.</p>
      *
-     * <p><em>Servlet:</em>  This is the current request's
+     * <p><em>Jakarta Servlet:</em>  This is the current request's
      * <code>javax.servlet.http.HttpServletResponse</code> instance.</p>
      *
      * @return the instance of the current <code>javax.servlet.http.HttpServletResponse</code>.
@@ -1330,7 +1330,7 @@ public abstract class ExternalContext {
      *
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em> This must return the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must return the value returned by the
      * <code>javax.servlet.ServletResponse</code> method
      * <code>getOutputStream()</code>.</p>
      *
@@ -1364,7 +1364,7 @@ public abstract class ExternalContext {
      *
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em> This must return the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must return the value returned by the
      * {@link javax.servlet.ServletResponse#getWriter}.</p>
      *
      * <p>The default implementation throws
@@ -1396,7 +1396,7 @@ public abstract class ExternalContext {
      * <p>Sets the character encoding (MIME charset) of the response being sent 
      * to the client, for example, to UTF-8.</p>
      *
-     * <p><em>Servlet:</em> This must call through to the
+     * <p><em>Jakarta Servlet:</em> This must call through to the
      * <code>javax.servlet.ServletResponse</code> method
      * <code>setCharacterEncoding()</code>.</p>
      *
@@ -1428,7 +1428,7 @@ public abstract class ExternalContext {
      *
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em> This must call
+     * <p><em>Jakarta Servlet:</em> This must call
      * <code>setContentType()</code> on the underlying
      * <code>javax.servlet.ServletResponse</code> instance.</p>
      *
@@ -1463,7 +1463,7 @@ public abstract class ExternalContext {
      * associated with the current request, or return <code>null</code> if
      * there is no such session.</p>
      *
-     * <p><em>Servlet:</em> This must return the result of calling
+     * <p><em>Jakarta Servlet:</em> This must return the result of calling
      * <code>getSession(create)</code> on the underlying
      * <code>javax.servlet.http.HttpServletRequest</code> instance.</p>
      *
@@ -1481,7 +1481,7 @@ public abstract class ExternalContext {
      * 
      * <div class="changed_added_2_2">
      *
-     * <p><em>Servlet:</em> If <code>create</code> is true, obtain
+     * <p><em>Jakarta Servlet:</em> If <code>create</code> is true, obtain
      * a reference to the <code>HttpSession</code> for the current request
      * (creating the session if necessary) and return its id.  If 
      * <code>create</code> is <code>false</code>, obtain a reference to the
@@ -1509,15 +1509,15 @@ public abstract class ExternalContext {
 
     /**
      * <p class="changed_added_2_1">Returns the maximum time interval, in seconds, that
-     * the servlet container will keep this session open between client accesses.
-     * After this interval, the servlet container will invalidate the session.
+     * the Jakarta Servlet container will keep this session open between client accesses.
+     * After this interval, the Jakarta Servlet container will invalidate the session.
      * The maximum time interval can be set with the
      * {@link #setSessionMaxInactiveInterval} method. </p>
      *
      * <p class="changed_added_2_1">A return value of zero or less indicates
      * that the session will never timeout. </p>
      *
-     * <p><em>Servlet:</em> This must return the result of calling
+     * <p><em>Jakarta Servlet:</em> This must return the result of calling
      * <code>getMaxInactiveInterval</code> on the underlying
      * <code class="changed_modified_2_3">javax.servlet.http.HttpSession</code> instance.</p>
      *
@@ -1568,7 +1568,7 @@ public abstract class ExternalContext {
      * <code>PreDestroy</code> annotated methods must by caught and not
      * rethrown.  The exception may be logged.</p>
      *
-     * <p><em>Servlet:</em>  This must be the set of attributes available via
+     * <p><em>Jakarta Servlet:</em>  This must be the set of attributes available via
      * the <code>javax.servlet.http.HttpSession</code> methods
      * <code>getAttribute()</code>, <code>getAttributeNames()</code>,
      * <code>removeAttribute()</code>, and <code>setAttribute()</code>.</p>
@@ -1584,7 +1584,7 @@ public abstract class ExternalContext {
      * the current authenticated user, if any; otherwise, return
      * <code>null</code>.</p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletRequest</code> method
      * <code>getUserPrincipal()</code>.</p>
      * 
@@ -1617,7 +1617,7 @@ public abstract class ExternalContext {
      *
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpSession</code> method
      * <code>invalidate()</code>.</p>
      *
@@ -1646,7 +1646,7 @@ public abstract class ExternalContext {
      * included in the specified role.  Otherwise, return <code>false</code>.
      * </p>
      *
-     * <p><em>Servlet:</em> This must be the value returned by the
+     * <p><em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>javax.servlet.http.HttpServletRequest</code> method
      * <code>isUserInRole(role)</code>.</p>
      *
@@ -1673,7 +1673,7 @@ public abstract class ExternalContext {
      * by the <code>FacesContext</code> during an actual request.</p>
      *
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.ServletContext</code> method
      * <code>log(String)</code>.</p>
      *
@@ -1697,7 +1697,7 @@ public abstract class ExternalContext {
      * <code>log()</code> on the <code>ExternalContext</code> returned
      * by the <code>FacesContext</code> during an actual request.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.ServletContext</code> method
      * <code>log(String,Throwable)</code>.</p>
      *
@@ -1721,7 +1721,7 @@ public abstract class ExternalContext {
      * {@link PartialViewContext} instance from the {@link FacesContext} and
      * calling {@link PartialViewContext#isAjaxRequest()}.</p>
      *
-     * <p><em>Servlet:</em> <span class="changed_modified_2_0">For
+     * <p><em>Jakarta Servlet:</em> <span class="changed_modified_2_0">For
      * non <code>Ajax</code> requests, this must be accomplished by calling 
      * the <code>javax.servlet.http.HttpServletResponse</code> method
      * <code>sendRedirect()</code>.</span> <div class="changed_added_2_0">
@@ -1746,7 +1746,7 @@ public abstract class ExternalContext {
      * @throws IllegalStateException if, in a portlet environment,
      *  the current response object is a <code>RenderResponse</code>
      *  instead of an <code>ActionResponse</code>
-     * @throws IllegalStateException if, in a servlet environment,
+     * @throws IllegalStateException if, in a Jakarta Servlet environment,
      *  the current response has already been committed
      * @throws IOException if an input/output error occurs
      */
@@ -1756,7 +1756,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Set the response header with the given name and value.</p>
      *
-     * <p><em>Servlet:</em>This must be performed by calling the 
+     * <p><em>Jakarta Servlet:</em>This must be performed by calling the 
      * <code>javax.servlet.http.HttpServletResponse</code> <code>setHeader</code>
      * method.</p>
      *
@@ -1783,7 +1783,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Add the given name and value to the response header.</p>
      *
-     * <p><em>Servlet:</em>This must be performed by calling the 
+     * <p><em>Jakarta Servlet:</em>This must be performed by calling the 
      * <code>javax.servlet.http.HttpServletResponse</code> <code>addHeader</code>
      * method.</p>
      *
@@ -1811,7 +1811,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Set the buffer size for the current response.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> <code>setBufferSize</code>
      * method.</p>
      *
@@ -1838,7 +1838,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Return the buffer size for the current response.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> <code>getBufferSize</code>
      * method.</p>
      *
@@ -1865,7 +1865,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Check if the current response has been committed.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> <code>isCommitted</code>
      * method.</p>
      *
@@ -1891,7 +1891,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Resets the current response.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> <code>reset</code>
      * method.</p>
      *
@@ -1916,7 +1916,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Sends an HTTP status code with message.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> <code>sendError</code>
      * method.</p>
      *
@@ -1946,7 +1946,7 @@ public abstract class ExternalContext {
      /**
      * <p class="changed_added_2_0">Sets the HTTP status code for the response.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> <code>setStatus</code>
      * method.</p>
      *
@@ -1972,13 +1972,13 @@ public abstract class ExternalContext {
 
     /**
      * <p class="changed_added_2_1">Specifies the time, in seconds, between
-     * client requests before the servlet container will invalidate this
+     * client requests before the Jakarta Servlet container will invalidate this
      * session.</p>
      *
      * <p class="changed_added_2_1">An interval value of zero or less indicates
      * that the session should never timeout. </p>
      *
-     * <p><em>Servlet:</em> This must call
+     * <p><em>Jakarta Servlet:</em> This must call
      * <code>setMaxInactiveInterval</code> on the underlying
      * <code>javax.servlet.http.HttpServletRequest</code> instance.</p>
      *
@@ -2021,7 +2021,7 @@ public abstract class ExternalContext {
      * <p class="changed_added_2_0">Flushes the buffered response content to the
      * client.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> <code>flushBuffer</code>
      * method.</p>
      *
@@ -2048,7 +2048,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">Set the content length of the response.</p>
      *
-     * <p><em>Servlet:</em> This must be performed by calling the
+     * <p><em>Jakarta Servlet:</em> This must be performed by calling the
      * <code>javax.servlet.http.HttpServletResponse</code> <code>setContentLength</code>
      * method.</p>
      *
@@ -2080,7 +2080,7 @@ public abstract class ExternalContext {
      * This method must be able to encode the parameters to a baseUrl that may or may not have
      * existing query parameters. The parameter values should be encoded appropriately for the
      * environment so that the resulting URL can be used as the target of a link (e.g., in an
-     * href attribute) in a JSF response.  It's possible for an ExternalContext implementation to
+     * href attribute) in a Jakarta Server Faces response.  It's possible for an ExternalContext implementation to
      * override this method in any way that would make the URL bookmarkable in that environment.
      * </p>
      * 
@@ -2154,7 +2154,7 @@ public abstract class ExternalContext {
      *
      * <div class="changed_added_2_0">
      *
-     * <p><em>Servlet:</em>Returns the same encoded URL as the
+     * <p><em>Jakarta Servlet:</em>Returns the same encoded URL as the
      * {@link #encodeActionURL(String url)} method.</p>
      *
      * <p><em>Portlet:</em>Returns an encoded URL that, upon HTTP POST, will
@@ -2183,7 +2183,7 @@ public abstract class ExternalContext {
      * was made using a secure channel, such as HTTPS.
      *
      *
-     * <p><em>Servlet:</em> This must return the result of calling
+     * <p><em>Jakarta Servlet:</em> This must return the result of calling
      * <code>isSecure</code> on the underlying
      * <code>javax.servlet.http.HttpServletRequest</code> instance.</p>
      *

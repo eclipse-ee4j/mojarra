@@ -23,9 +23,9 @@ import javax.faces.event.PhaseListener;
 
 /**
  * <p><strong class="changed_modified_2_2">Lifecycle</strong> manages the
- * processing of the entire lifecycle of a particular JavaServer Faces
+ * processing of the entire lifecycle of a particular Jakarta Server Faces
  * request.  It is responsible for executing all of the phases that have
- * been defined by the JavaServer Faces Specification, in the specified
+ * been defined by the Jakarta Server Faces Specification, in the specified
  * order, unless otherwise directed by activities that occurred during
  * the execution of each phase.</p>
  *
@@ -58,7 +58,7 @@ public abstract class Lifecycle {
     /**
      * <p>Execute all of the phases of the request processing lifecycle,
      * up to but not including the <em>Render Response</em> phase,
-     * as described in the JavaServer Faces Specification, in the specified
+     * as described in the Jakarta Server Faces Specification, in the specified
      * order.  The processing flow can be affected (by the application,
      * by components, or by event listeners) by calls to the
      * <code>renderResponse()</code> or <code>responseComplete()</code>

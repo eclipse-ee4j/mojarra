@@ -1088,7 +1088,7 @@ public class UIData extends UIComponentBase
      *
      * @param event The {@link FacesEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the JavaServer Faces
+     * @throws AbortProcessingException Signal the Jakarta Server Faces
      *                                  implementation that no further
      *                                  processing on the current event should
      *                                  be performed
@@ -1479,7 +1479,7 @@ public class UIData extends UIComponentBase
             }
         }
         finally {
-            // Clean up - pop EL and restore old row index
+            // Clean up - pop Jakarta Expression Language and restore old row index
             popComponentFromEL(facesContext);
             if (visitRows) {
                 setRowIndex(oldRowIndex);

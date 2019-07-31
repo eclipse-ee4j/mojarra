@@ -91,8 +91,9 @@ public interface Validator<T> extends EventListener {
      * <code>null</code> or empty values unless it is specifically
      * intended to address <code>null</code> or empty values.  An
      * application-wide <code>&lt;context-param&gt;</code> is provided
-     * to allow validators designed for JSF 1.2 to work with JSF 2 and
-     * later. The <code>javax.faces.VALIDATE_EMPTY_FIELDS</code>
+     * to allow validators designed for Jakarta Server Faces 1.2 to work
+     * with Jakarta Server Faces 2 and later. 
+     * The <code>javax.faces.VALIDATE_EMPTY_FIELDS</code>
      * <code>&lt;context-param&gt;</code> must be set to
      * <code>false</code> to enable this backwards compatibility
      * behavior.</p>

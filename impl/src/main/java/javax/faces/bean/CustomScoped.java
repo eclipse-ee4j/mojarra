@@ -27,7 +27,7 @@ import java.lang.annotation.Inherited;
  * ManagedBean} is found on a class, the runtime must act as if a
  * <code>&lt;managed-bean-scope&gt;VALUE&lt;managed-bean-scope&gt;</code>
  * element was declared for the corresponding managed bean, where VALUE is the
- * value of the {@link #value} attribute, which must be an EL expression that
+ * value of the {@link #value} attribute, which must be a Jakarta Expression Language expression that
  * evaluates to a <code>Map</code>.</p>
  *
  * <p class="changed_added_2_0">Developers must take care when using custom

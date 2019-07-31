@@ -21,7 +21,7 @@ package javax.faces.component;
  * <span class="changed_modified_2_2">This</span> component is paired with the
  * <code>javax.faces.Button</code> or <code>javax.faces.Link</code> renderers and encapsulates
  * properties relating to the rendering of outcomes directly to the response. This enables
- * bookmarkability in JSF applications.
+ * bookmarkability in Jakarta Server Faces applications.
  * </p>
  *
  * @since 2.0

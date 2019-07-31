@@ -32,7 +32,7 @@ import javax.faces.FacesWrapper;
  * <div class="changed_added_2_0">
  *
  * <p>There must be one <code>ViewDeclarationLanguageFactory</code> instance per web
- * application that is utilizing JavaServer Faces.  This instance can be
+ * application that is utilizing Jakarta Server Faces.  This instance can be
  * acquired, in a portable manner, by calling:</p>
  *
  * <pre><code>
@@ -90,8 +90,8 @@ public abstract class ViewDeclarationLanguageFactory implements FacesWrapper<Vie
      * handling the VDL contained in the page referenced by the argument
      * <code>viewId</code>.  The default implementation must return a
      * valid <code>ViewDeclarationLanguage</code> instance for views
-     * written in either JSP, Faces XML Views, or Facelets for JSF
-     * 2.</p>
+     * written in either Jakarta Server Pages, Faces XML Views, or Facelets for 
+     * Jakarta Server Faces 2.</p>
      *
      * @param viewId the viewId to be inspected for an appropriate
      * <code>ViewDeclarationLanguage</code> implementation for the VDL used

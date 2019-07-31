@@ -24,11 +24,11 @@ import javax.faces.component.UIComponent;
 
 /**
  * <p class="changed_added_2_0"><span
- * class="changed_modified_2_0_rev_a">Enable</span> the JSF
+ * class="changed_modified_2_0_rev_a">Enable</span> the Jakarta Server Faces
  * implementation to provide the appropriate behavior for the kind of
  * {@link MetaTagHandler} subclass for each kind of element in the view,
  * while providing a base-class from which those wanting to make a Java
- * language custom tag handler can inherit.  The JSF runtime provides
+ * language custom tag handler can inherit.  The Jakarta Server Faces runtime provides
  * the implementation of {@link #getTagHandlerDelegate} for the
  * appropriate subclass.</p>
  */

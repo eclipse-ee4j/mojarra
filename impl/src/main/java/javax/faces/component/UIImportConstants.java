@@ -31,7 +31,7 @@ import javax.faces.view.ViewMetadata;
  * the <code>UIViewRoot</code>. The {@link ViewMetadata#createMetadataView(javax.faces.context.FacesContext)} must 
  * take care of actual task of importing the constants.</p>
  * 
- * <p>Instances of this class participate in the regular JSF lifecycle, including on Ajax requests.</p>
+ * <p>Instances of this class participate in the regular Jakarta Server Faces lifecycle, including on Ajax requests.</p>
  * 
  * <p>The purpose of this component is to provide a mapping of all constant field values of the given type in the
  * current view. Constant field values are all <code>public static final</code> fields of the given type. The map key

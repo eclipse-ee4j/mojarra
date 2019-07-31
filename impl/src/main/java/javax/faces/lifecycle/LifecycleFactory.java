@@ -24,7 +24,7 @@ import javax.faces.FacesWrapper;
 /**
  * <p><strong class="changed_modified_2_0 changed_modified_2_3">LifecycleFactory</strong> is
  * a factory object that creates (if needed) and returns {@link
- * Lifecycle} instances.  Implementations of JavaServer Faces must
+ * Lifecycle} instances.  Implementations of Jakarta Server Faces must
  * provide at least a default implementation of {@link Lifecycle}.
  * Advanced implementations (or external third party libraries) MAY
  * provide additional {@link Lifecycle} implementations (keyed by
@@ -32,7 +32,7 @@ import javax.faces.FacesWrapper;
  * processing on a per-request basis.</p>
  *
  * <p>There must be one <code>LifecycleFactory</code> instance per web
- * application that is utilizing JavaServer Faces.  This instance can be
+ * application that is utilizing Jakarta Server Faces.  This instance can be
  * acquired, in a portable manner, by calling:</p>
  * <pre>
  *   LifecycleFactory factory = (LifecycleFactory)
@@ -81,7 +81,7 @@ public abstract class LifecycleFactory implements FacesWrapper<LifecycleFactory>
 
     /**
      * <p>The lifecycle identifier for the default {@link Lifecycle} instance
-     * for this JavaServer Faces implementation.</p>
+     * for this Jakarta Server Faces implementation.</p>
      */
     public static final String DEFAULT_LIFECYCLE = "DEFAULT";
 

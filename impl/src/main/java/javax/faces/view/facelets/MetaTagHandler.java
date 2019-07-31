@@ -19,10 +19,10 @@ package javax.faces.view.facelets;
 
 /**
  * <p class="changed_added_2_0">Every kind of markup element in Facelets VDL
- * that has attributes that need to take action on a JSF Java API artifact is
+ * that has attributes that need to take action on a Jakarta Server Faces Java API artifact is
  * associated with an instance of this class. This class is an abstraction to
  * enable a rule based method for directing how different kinds of elements take
- * different kinds of actions in the JSF Java API. For example, consider this
+ * different kinds of actions in the Jakarta Server Faces Java API. For example, consider this
  * markup:</p>
  *
  * <div class="changed_added_2_0">
@@ -40,7 +40,7 @@ package javax.faces.view.facelets;
  *
  * <p>
  * Facelets employes the strategy pattern to allow the manner in which all
- * possible attributes are handled based on the nature of the JSF Java API
+ * possible attributes are handled based on the nature of the Jakarta Server Faces Java API
  * artifact associated with the markup element.</p>
  *
  * <p>

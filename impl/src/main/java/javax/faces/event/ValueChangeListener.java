@@ -36,7 +36,7 @@ public interface ValueChangeListener extends FacesListener {
      *
      * @param event The {@link ValueChangeEvent} that has occurred
      *
-     * @throws AbortProcessingException Signal the JavaServer Faces
+     * @throws AbortProcessingException Signal the Jakarta Server Faces
      *  implementation that no further processing on the current event
      *  should be performed
      */

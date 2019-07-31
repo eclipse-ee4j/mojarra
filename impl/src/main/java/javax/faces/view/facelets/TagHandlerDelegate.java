@@ -24,7 +24,7 @@ import javax.faces.component.UIComponent;
  * <p class="changed_added_2_0"><span class="changed_modified_2_2">Abstract</span>
  * class that defines methods
  * relating to helping tag handler instances.  This abstraction enables
- * implementation details to be hidden by the JSF implementation while
+ * implementation details to be hidden by the Jakarta Server Faces implementation while
  * still allowing concrete classes to be defined for extension by
  * users.</p>
  * 

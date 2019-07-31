@@ -25,7 +25,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 
 /**
- * <p><strong>ValidatorELTag</strong> is a base class for all JSP custom actions
+ * <p><strong>ValidatorELTag</strong> is a base class for all Jakarta Server Pages custom actions
  * that create and register a <code>Validator</code> instance on the
  * {@link EditableValueHolder} associated with our most immediate surrounding instance
  * of a tag whose implementation class is a subclass of {@link UIComponentTag}.
@@ -63,9 +63,9 @@ public abstract class ValidatorELTag extends TagSupport {
      * class, and register it with the {@link UIComponent} instance associated
      * with our most immediately surrounding {@link UIComponentTagBase} instance, if
      * the {@link UIComponent} instance was created by this execution of the
-     * containing JSP page.</p>
+     * containing Jakarta Server Pages page.</p>
      *
-     * @throws JspException if a JSP error occurs
+     * @throws JspException if a Jakarta Server Pages error occurs
      */
     @Override
     public int doStartTag() throws JspException {

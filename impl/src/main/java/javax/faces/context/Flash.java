@@ -38,7 +38,7 @@ import javax.faces.event.PostPutFlashValueEvent;
  * scoped object that must be thread safe.</p>
 
  * <p>The implementation requirements will be described in terms of the
- * runtime traversing the JSF lifecycle.  The flash exposes a
+ * runtime traversing the Jakarta Server Faces lifecycle.  The flash exposes a
  * <code>Map</code> interface over two logical maps.  The choice of
  * which logical map is accessed depends on the current faces lifecycle
  * phase.  One logical map is for the current traversal and the other is
@@ -74,15 +74,15 @@ import javax.faces.event.PostPutFlashValueEvent;
  * design pattern.</p>
  *
  * <p>The implementation must allow the user to access the flash via the
- * EL implicit object <code>flash</code> and also via {@link
+ * Jakarta Expression Language implicit object <code>flash</code> and also via {@link
  * javax.faces.context.ExternalContext#getFlash}.  The implementation must
- * ensure that the flash is usable from both JSP and from Facelets for
- * JSF 2.  In addition to exposing the <code>Map</code> interface, there
+ * ensure that the flash is usable from both Jakarta Server Pages and from Facelets for
+ * Jakarta Server Faces 2.  In addition to exposing the <code>Map</code> interface, there
  * are several features exposed as methods on the <code>Flash</code>
- * itself.  Each of these features may be accessed via the EL as well,
+ * itself.  Each of these features may be accessed via Jakarta Expression Language as well,
  * as described in the javadocs.</p>
  *
- * <p>EL Usage Example</p>
+ * <p>Jakarta Expression Language Usage Example</p>
 
  * <blockquote>
  *
@@ -109,7 +109,7 @@ import javax.faces.event.PostPutFlashValueEvent;
 
  * </blockquote>
  *
- * <p>The same usage syntax must be available in JSP.</p>
+ * <p>The same usage syntax must be available in Jakarta Server Pages.</p>
 
  * <p>Note that extra action must be taken when using the flash in
  * concert with output components that cause the browser to issue a GET
@@ -179,7 +179,7 @@ public abstract class Flash implements Map<String, Object> {
      * <div class="changed_added_2_0">
 
      *
-     * <p>EL Usage Example</p>
+     * <p>Jakarta Expression Language Usage Example</p>
 
      * <blockquote>
      *
@@ -263,7 +263,7 @@ public abstract class Flash implements Map<String, Object> {
 
      * <div class="changed_added_2_0">
 
-     * <p>EL Usage Example</p>
+     * <p>Jakarta Expression Language Usage Example</p>
 
      * <blockquote>
      *
@@ -296,7 +296,7 @@ public abstract class Flash implements Map<String, Object> {
      *
      * <div class="changed_added_2_0">
 
-     * <p>EL Usage Example</p>
+     * <p>Jakarta Expression Language Usage Example</p>
 
      * <blockquote>
      *
@@ -328,7 +328,7 @@ public abstract class Flash implements Map<String, Object> {
 
     /**
      * <p class="changed_added_2_0">Causes a value stored with a
-     * previous call to {@link #putNow}, its EL equivalent, or to the
+     * previous call to {@link #putNow}, its Jakarta Expression Language equivalent, or to the
      * request <code>Map</code>, to be promoted to the flash so that is
      * available on the next traversal through the lifecycle on this
      * session.</p>

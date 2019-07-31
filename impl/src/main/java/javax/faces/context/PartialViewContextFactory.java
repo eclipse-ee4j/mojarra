@@ -26,7 +26,7 @@ import javax.faces.FacesWrapper;
  * <div class="changed_added_2_0">
  *
  * <p>There must be one <code>PartialViewContextFactory</code> instance per web
- * application that is utilizing JavaServer Faces.  This instance can be
+ * application that is utilizing Jakarta Server Faces.  This instance can be
  * acquired, in a portable manner, by calling:</p>
  * <pre>
  *   PartialViewContextFactory factory = (PartialViewContextFactory)

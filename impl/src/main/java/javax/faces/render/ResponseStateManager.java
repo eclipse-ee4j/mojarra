@@ -409,8 +409,8 @@ public abstract class ResponseStateManager {
      * and only if there is a key equal to the value of the symbolic
      * constant {@link #VIEW_STATE_PARAM}.</p>
      *
-     * <p>For backwards compatability with implementations of
-     * <code>ResponseStateManager</code> prior to JSF 1.2, a default
+     * <p>For backwards compatibility with implementations of
+     * <code>ResponseStateManager</code> prior to Jakarta Server Faces 1.2, a default
      * implementation is provided that consults the {@link
      * javax.faces.context.ExternalContext}'s <code>requestParameterMap</code> and return
      * <code>true</code> if its size is greater than 0.</p>

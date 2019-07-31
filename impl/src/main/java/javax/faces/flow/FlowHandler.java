@@ -74,14 +74,14 @@ import javax.faces.context.FacesContext;
 
  * <li><p>View</p>
 
- * <p>This is the regular JSF VDL View that has been in the
+ * <p>This is the regular Jakarta Server Faces VDL View that has been in the
  * specification since the beginning.</p>
 
  * </li>
 
  * <li><p>Switch</p>
 
- * <p>This is a list of EL expressions.  When control is passed to a
+ * <p>This is a list of Jakarta Expression Language expressions.  When control is passed to a
  * switch node, each expression in the list is evaluated and the first
  * one that returns {@code true} is used to define the id of the next
  * node to which control must be passed.  If none of the expressions
@@ -116,7 +116,7 @@ import javax.faces.context.FacesContext;
 
  * </ul>
  * 
- * <p>Edges in the graph are defined by the existing JSF navigation rule system.</p>
+ * <p>Edges in the graph are defined by the existing Jakarta Server Faces navigation rule system.</p>
 
  * <p><strong>Flows and Model Objects</strong></p>
 
@@ -128,7 +128,7 @@ import javax.faces.context.FacesContext;
  * made available for garbage collection when the user agent leaves the
  * flow.</p>
 
- * <p>The <code>flowScope</code> EL implicit object is also
+ * <p>The <code>flowScope</code> Jakarta Expression Language implicit object is also
  * available to store values in the "current" slope.  Values stored in
  * this scope must be made available for garbage collection when the
  * user agent leaves the flow.</p>
@@ -179,7 +179,7 @@ public abstract class FlowHandler {
 
     /**
      * <p class="changed_added_2_2">Return the {@code Map} that backs
-     * the {@code #{flowScope}} EL implicit object or {@code null}
+     * the {@code #{flowScope}} Jakarta Expression Language implicit object or {@code null}
      * if no flow is currently active. </p>
      * 
      * @return the {@code Map} for this flow scope.

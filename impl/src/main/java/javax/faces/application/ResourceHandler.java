@@ -113,7 +113,7 @@ import javax.faces.context.FacesContext;
  * <blockquote>
  *
  * <p>
- * During the handling of view requests, the JSF run-time may be called upon to encode a resource in
+ * During the handling of view requests, the Jakarta Server Face run-time may be called upon to encode a resource in
  * such a way as to instruct the user-agent to make a subsequent resource request. This behavior is
  * orchestrated by one of the resource renderers (<code>ScriptRenderer</code>,
  * <code>StylesheetRenderer</code>, <code>ImageRenderer</code>), which all call
@@ -135,7 +135,7 @@ import javax.faces.context.FacesContext;
  * <blockquote>
  *
  * <p>
- * During the handling of resource requests, the JSF run-time will be called upon to decode a
+ * During the handling of resource requests, the Jakarta Server Faces run-time will be called upon to decode a
  * resource in such a way as to serve up the bytes of the resource to the user-agent. This behavior
  * is orchestrated by {@link #handleResourceRequest}, which calls {@link Resource#getInputStream} to
  * obtain bytes of the resource. See {@link #handleResourceRequest} for the complete specification.
@@ -165,7 +165,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_added_2_3">
-     * Resource name of JSF script resource.
+     * Resource name of Jakarta Server Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -174,7 +174,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_added_2_3">
-     * Library name of JSF script resource.
+     * Library name of Jakarta Server Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -322,7 +322,7 @@ public abstract class ResourceHandler {
      * <li>
      * <p>
      * Considering faces flows (at the locations specified in the spec prose document section
-     * <em>Faces Flows</em> in the <em>Using JSF in Web Applications</em> chapter).
+     * <em>Faces Flows</em> in the <em>Using Jakarta Server Faces in Web Applications</em> chapter).
      * </p>
      * </li>
      *
@@ -555,7 +555,7 @@ public abstract class ResourceHandler {
      * </p>
      *
      * For discussion, in all cases when a status code is to be set, this spec talks only using the
-     * Servlet API, but it is understood that in a portlet environment the appropriate equivalent
+     * Jakarta Servlet API, but it is understood that in a portlet environment the appropriate equivalent
      * API must be used.
      *
      * <ul>

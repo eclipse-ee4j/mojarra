@@ -1078,7 +1078,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <code>false</code>, delegate to the parent {@link
      * javax.faces.component.UIComponentBase#encodeChildren} method.</p>
      *
-     * <p class="changed_added_2_3">If this {@link UIViewRoot} is an instance of {@link NamingContainer}, then the JSF
+     * <p class="changed_added_2_3">If this {@link UIViewRoot} is an instance of {@link NamingContainer}, then the Jakarta Server Faces
      * implementation must ensure that all encoded POST request parameter names are prefixed with
      * {@link UIViewRoot#getContainerClientId(FacesContext)} as per rules of {@link UIComponent#getClientId(FacesContext)}.
      * This also covers all predefined POST request parameters which are listed below:</p>
@@ -1598,7 +1598,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     public void setLocale(Locale locale) {
 
         getStateHelper().put(PropertyKeys.locale, locale);
-        // Make sure to appraise the EL of this switch in Locale.
+        // Make sure to appraise the Jakarta Expression Language of this switch in Locale.
         FacesContext.getCurrentInstance().getELContext().setLocale(locale);
 
     }

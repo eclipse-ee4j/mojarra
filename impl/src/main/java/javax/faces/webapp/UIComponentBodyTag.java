@@ -18,7 +18,7 @@ package javax.faces.webapp;
 
 
 /**
- * <p><strong>UIComponentBodyTag</strong> is a base class for all JSP custom
+ * <p><strong>UIComponentBodyTag</strong> is a base class for all Jakarta Server Pages custom
  * actions, related to a UIComponent, that need to process their tag bodies.
  * </p>
  *

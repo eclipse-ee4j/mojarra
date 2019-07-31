@@ -149,10 +149,10 @@ public abstract class Resource extends ViewResource {
      * @return an <code>InputStream</code> containing the bytes of the resource.
      *
      *         <p class="changed_modified_2_1">
-     *         Any EL expressions present in the resource must be evaluated before serving the bytes
-     *         of the resource. Note that due to browser and server caching, EL expressions in a
+     *         Any Jakarta Expression Language expressions present in the resource must be evaluated before serving the bytes
+     *         of the resource. Note that due to browser and server caching, Jakarta Expression Language expressions in a
      *         resource file will generally only be evaluated once, when the resource is first
-     *         served up. Therefore, using EL expressions that refer to per-request data is not
+     *         served up. Therefore, using Jakarta Expression Language expressions that refer to per-request data is not
      *         advisable since this data can become stale.
      *         </p>
      *

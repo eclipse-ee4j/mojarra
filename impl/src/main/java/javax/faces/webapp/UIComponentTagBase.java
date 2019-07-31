@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 
 /**
  * <p><strong><code>UIComponentTagBase</code></strong> is the base class
- * for all JSP tags that correspond to a {@link
+ * for all Jakarta Server Pages tags that correspond to a {@link
  * javax.faces.component.UIComponent} instance in the view.  This base
- * class allows a single view to be described in a JSP page consisting
+ * class allows a single view to be described in a Jakarta Server Pages page consisting
  * of both {@link UIComponentELTag} and {@link UIComponentTag}
  * instances.</p>
  */

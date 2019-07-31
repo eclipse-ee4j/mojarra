@@ -40,7 +40,7 @@ import javax.faces.event.PhaseId;
  * <p><strong class="changed_modified_2_0 changed_modified_2_1
  * changed_modified_2_2">FacesContext</strong> contains all of the
  * per-request state information related to the processing of a single
- * JavaServer Faces request, and the rendering of the corresponding
+ * Jakarta Server Faces request, and the rendering of the corresponding
  * response.  It is passed to, and potentially modified by, each phase
  * of the request processing lifecycle.</p>
  *
@@ -51,7 +51,7 @@ import javax.faces.event.PhaseId;
  * remains active until its <code>release()</code> method is called, after
  * which no further references to this instance are allowed.  While a
  * {@link FacesContext} instance is active, it must not be referenced
- * from any thread other than the one upon which the servlet container
+ * from any thread other than the one upon which the Jakarta Servlet container
  * executing this web application utilizes for the processing of this request.
  * </p>
  * 
@@ -117,7 +117,7 @@ public abstract class FacesContext {
      * <code>FacesContext</code> instance.  This <code>Map</code> is 
      * useful to store attributes that you want to go out of scope when the
      * Faces lifecycle for the current request ends, which is not always the same 
-     * as the request ending, especially in the case of Servlet filters
+     * as the request ending, especially in the case of Jakarta Servlet filters
      * that are invoked <strong>after</strong> the Faces lifecycle for this
      * request completes.  Accessing this <code>Map</code> does not cause any 
      * events to fire, as is the case with the other maps: for request, session, and 
@@ -353,7 +353,7 @@ public abstract class FacesContext {
     /**
      * <p class="changed_added_2_0">Like {@link #getMessages}, but
      * returns a <code>List&lt;FacesMessage&gt;</code>,
-     * enabling use from EL expressions.</p>
+     * enabling use from Jakarta Expression Language expressions.</p>
      *
      * <p>The default implementation throws
      * <code>UnsupportedOperationException</code> and is provided
@@ -437,7 +437,7 @@ public abstract class FacesContext {
      * <p class="changed_added_2_2">Return the result of calling {@link
      * UINamingContainer#getSeparatorChar}, passing <code>this</code> as
      * the argument.  Note that this enables accessing the value of this
-     * property from the EL expression
+     * property from the Jakarta Expression Language expression
      * <code>#{facesContext.namingContainerSeparatorChar}</code>.</p>
      * 
      * @return the separator char.
@@ -735,7 +735,7 @@ public abstract class FacesContext {
 
 
     /**
-     * <p>Signal the JavaServer faces implementation that, as soon as the
+     * <p>Signal the Jakarta Server Faces implementation that, as soon as the
      * current phase of the request processing lifecycle has been completed,
      * control should be passed to the <em>Render Response</em> phase,
      * bypassing any phases that have not been executed yet.</p>
@@ -775,7 +775,7 @@ public abstract class FacesContext {
 
 
     /**
-     * <p>Signal the JavaServer Faces implementation that the HTTP response
+     * <p>Signal the Jakarta Server Faces implementation that the HTTP response
      * for this request has already been generated (such as an HTTP redirect),
      * and that the request processing lifecycle should be terminated as soon
      * as the current phase is completed.</p>
@@ -942,7 +942,7 @@ public abstract class FacesContext {
         // to obtain the init FacesContext corresponding to that ServletContext.  
         if (null == facesContext) {
             // In the non-init case, this will immediately return null.
-            // In the init case, this will return null if JSF hasn't been
+            // In the init case, this will return null if Jakarta Server Faces hasn't been
             // initialized in the ServletContext corresponding to this 
             // Thread's context ClassLoader.
             ClassLoader cl = Thread.currentThread().getContextClassLoader();

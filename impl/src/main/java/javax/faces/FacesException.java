@@ -18,7 +18,7 @@ package javax.faces;
 
 /**
  * <p>
- * This class encapsulates general JavaServer Faces exceptions.
+ * This class encapsulates general Jakarta Server Faces exceptions.
  * </p>
  */
 

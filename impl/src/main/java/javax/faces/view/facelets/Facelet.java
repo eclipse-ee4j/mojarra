@@ -25,7 +25,7 @@ import java.io.IOException;
  * <p><span class="changed_modified_2_2">The</span> parent or root object
  * in a FaceletHandler composition. The Facelet will take care of
  * populating the passed UIComponent parent in relation to the
- * create/restore lifecycle of JSF.</p>
+ * create/restore lifecycle of Jakarta Server Faces.</p>
  * 
  */
 public abstract class Facelet {

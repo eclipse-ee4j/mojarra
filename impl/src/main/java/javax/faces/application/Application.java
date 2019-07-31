@@ -52,9 +52,9 @@ import javax.faces.view.ViewDeclarationLanguage;
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_2
  * changed_modified_2_3">Application</strong> represents a per-web-application singleton object
- * where applications based on JavaServer Faces (or implementations wishing to provide extended
+ * where applications based on Jakarta Server Faces (or implementations wishing to provide extended
  * functionality) can register application-wide singletons that provide functionality required by
- * JavaServer Faces. Default implementations of each object are provided for cases where the
+ * Jakarta Server Faces. Default implementations of each object are provided for cases where the
  * application does not choose to customize the behavior.
  * </p>
  *
@@ -160,7 +160,7 @@ public abstract class Application {
     /**
      * <p>
      * Return the fully qualified class name of the <code>ResourceBundle</code> to be used for
-     * JavaServer Faces messages for this application. If not explicitly set, <code>null</code> is
+     * Jakarta Server Faces messages for this application. If not explicitly set, <code>null</code> is
      * returned.
      * </p>
      *
@@ -171,7 +171,7 @@ public abstract class Application {
     /**
      * <p>
      * Set the fully qualified class name of the <code>ResourceBundle</code> to be used for
-     * JavaServer Faces messages for this application. See the JavaDocs for the
+     * Jakarta Server Faces messages for this application. See the JavaDocs for the
      * <code>java.util.ResourceBundle</code> class for more information about the syntax for
      * resource bundle names.
      * </p>
@@ -198,7 +198,8 @@ public abstract class Application {
      * element.</li>
      * </ul>
      * <p>
-     * The runtime must employ the decorator pattern as for every other pluggable artifact in JSF.
+     * The runtime must employ the decorator pattern as for every other pluggable artifact in 
+     * Jakarta Server Faces.
      * </p>
      * </div>
      *
@@ -221,7 +222,7 @@ public abstract class Application {
     /**
      * <p class="changed_added_2_0">
      * Return the singleton, stateless, thread-safe {@link ResourceHandler} for this application.
-     * The JSF implementation must support the following techniques for declaring an alternate
+     * The Jakarta Server Faces implementation must support the following techniques for declaring an alternate
      * implementation of <code>ResourceHandler</code>.
      * </p>
      * <div class="changed_added_2_0">
@@ -237,7 +238,7 @@ public abstract class Application {
      * </ul>
      * <p>
      * In all of the above cases, the runtime must employ the decorator pattern as for every other
-     * pluggable artifact in JSF.
+     * pluggable artifact in Jakarta Server Faces.
      * </p>
      * 
      * <p class="changed_added_2_0">
@@ -289,7 +290,7 @@ public abstract class Application {
     /**
      * <p>
      * Return a {@link PropertyResolver} instance that wraps the {@link ELResolver} instance that
-     * Faces provides to the unified EL for the resolution of expressions that appear
+     * Faces provides to the Jakarta Expression Language for the resolution of expressions that appear
      * programmatically in an application.
      * </p>
      *
@@ -325,12 +326,12 @@ public abstract class Application {
      *
      * @throws NullPointerException if <code>resolver</code> is <code>null</code>
      *
-     * @deprecated The recommended way to affect the execution of the EL is to provide an
+     * @deprecated The recommended way to affect the execution of the Jakarta Expression Language is to provide an
      *             <code>&lt;el-resolver&gt;</code> element at the right place in the application
      *             configuration resources which will be considered in the normal course of
      *             expression evaluation. This method now will cause the argument
      *             <code>resolver</code> to be wrapped inside an implementation of
-     *             {@link ELResolver} and exposed to the EL resolution system as if the user had
+     *             {@link ELResolver} and exposed to the Jakarta Expression Language resolution system as if the user had
      *             called {@link #addELResolver}.
      *
      * @throws IllegalStateException if called after the first request to the
@@ -433,7 +434,7 @@ public abstract class Application {
     /**
      * <p>
      * Return the {@link VariableResolver} that wraps the {@link ELResolver} instance that Faces
-     * provides to the unified EL for the resolution of expressions that appear programmatically in
+     * provides to the Jakarta Expression Language for the resolution of expressions that appear programmatically in
      * an application. The implementation of the <code>VariableResolver</code>must pass
      * <code>null</code> as the base argument for any methods invoked on the underlying
      * <code>ELResolver</code>.
@@ -442,7 +443,7 @@ public abstract class Application {
      * <p>
      * Note that this method no longer returns the default <code>VariableResolver</code>, since that
      * class now is a no-op that aids in allowing custom <code>VariableResolver</code>s to affect
-     * the EL resolution process.
+     * the Jakarta Expression Language resolution process.
      * </p>
      *
      * @return the variable resolver.
@@ -471,13 +472,13 @@ public abstract class Application {
      *
      * @throws NullPointerException if <code>resolver</code> is <code>null</code>
      *
-     * @deprecated The recommended way to affect the execution of the EL is to provide an
+     * @deprecated The recommended way to affect the execution of the Jakarta Expression Language is to provide an
      *             <code>&lt;el-resolver&gt;</code> element at the
      *
      *             right place in the application configuration resources which will be considered
      *             in the normal course of expression evaluation. This method now will cause the
      *             argument <code>resolver</code> to be wrapped inside an implementation of
-     *             {@link ELResolver} and exposed to the EL resolution system as if the user had
+     *             {@link ELResolver} and exposed to the Jakarta Expression Language resolution system as if the user had
      *             called {@link #addELResolver}.
      *
      * @throws IllegalStateException if called after the first request to the
@@ -488,7 +489,7 @@ public abstract class Application {
     /**
      * <p>
      * <span class="changed_modified_2_0_rev_a">Cause</span> an the argument <code>resolver</code>
-     * to be added to the resolver chain as specified in section JSF.5.5.1 of the JavaServer Faces
+     * to be added to the resolver chain as specified in section JSF.5.5.1 of the Jakarta Server Faces
      * Specification.
      * </p>
      *
@@ -501,7 +502,7 @@ public abstract class Application {
      * It is illegal to register an <code>ELResolver</code> after the application has received any
      * requests from the client. If an attempt is made to register a listener after that time, an
      * <code>IllegalStateException</code> must be thrown. This restriction is in place to allow the
-     * JSP container to optimize for the common case where no additional <code>ELResolver</code>s
+     * Jakarta Server Pages container to optimize for the common case where no additional <code>ELResolver</code>s
      * are in the chain, aside from the standard ones. It is permissible to add
      * <code>ELResolver</code>s before or after initialization to a <code>CompositeELResolver</code>
      * that is already in the chain.
@@ -516,7 +517,7 @@ public abstract class Application {
      *             first request to the {@link javax.faces.webapp.FacesServlet} has been
      *             serviced.</span>
      *
-     * @param resolver the EL resolver to add.
+     * @param resolver the Jakarta Expression Language resolver to add.
      * @since 1.2
      */
     public void addELResolver(ELResolver resolver) {
@@ -531,7 +532,7 @@ public abstract class Application {
 
     /**
      * <p>
-     * Return the singleton {@link ELResolver} instance to be used for all EL resolution. This is
+     * Return the singleton {@link ELResolver} instance to be used for all Jakarta Expression Language resolution. This is
      * actually an instance of {@link javax.el.CompositeELResolver} that must contain the following
      * <code>ELResolver</code> instances in the following order:
      * </p>
@@ -574,7 +575,7 @@ public abstract class Application {
      * for the sole purpose of not breaking existing applications that extend {@link Application}.
      * </p>
      *
-     * @return the EL resolver.
+     * @return the Jakarta Expression Language resolver.
      * @since 1.2
      */
     public ELResolver getELResolver() {
@@ -643,7 +644,7 @@ public abstract class Application {
      * Return the {@link ViewHandler} instance that will be utilized during the <em>Restore
      * View</em> and <em>Render Response</em> phases of the request processing lifecycle. If not
      * explicitly set, a default implementation must be provided that performs the functions
-     * described in the {@link ViewHandler} description in the JavaServer Faces Specification.
+     * described in the {@link ViewHandler} description in the JJakarta Server Faces Specification.
      * </p>
      *
      * @return the view handler.
@@ -669,7 +670,7 @@ public abstract class Application {
      * Return the {@link StateManager} instance that will be utilized during the <em>Restore
      * View</em> and <em>Render Response</em> phases of the request processing lifecycle. If not
      * explicitly set, a default implementation must be provided that performs the functions
-     * described in the {@link StateManager} description in the JavaServer Faces Specification.
+     * described in the {@link StateManager} description in the Jakarta Server Faces Specification.
      * </p>
      *
      * @return the state manager.
@@ -982,7 +983,7 @@ public abstract class Application {
      * Obtain a reference to the <em>composite component metadata</em> for this composite component
      * by calling {@link ViewDeclarationLanguage#getComponentMetadata}, passing the
      * <code>facesContext</code> and <code>componentResource</code> arguments to this method. This
-     * version of JSF specification uses JavaBeans as the API to the component metadata.
+     * version of the Jakarta Server Faces specification uses JavaBeans as the API to the component metadata.
      * </p>
      * </li>
      * 
@@ -1287,7 +1288,7 @@ public abstract class Application {
      * </p>
      *
      * <p>
-     * The implementation must return the <code>ExpressionFactory</code> from the JSP container by
+     * The implementation must return the <code>ExpressionFactory</code> from the Jakarta Server Pages container by
      * calling
      * <code>JspFactory.getDefaultFactory().getJspApplicationContext(servletContext).getExpressionFactory()</code>.
      * </p>
@@ -1393,7 +1394,7 @@ public abstract class Application {
      * An implementation is provided that throws <code>UnsupportedOperationException</code> so that
      * users that decorate the <code>Application</code> continue to work.
      *
-     * @param listener the EL context listener to add.
+     * @param listener the Jakarta Expression Language context listener to add.
      * @since 1.2
      */
 
@@ -1418,7 +1419,7 @@ public abstract class Application {
      * An implementation is provided that throws <code>UnsupportedOperationException</code> so that
      * users that decorate the <code>Application</code> continue to work.
      *
-     * @param listener the EL context listener to remove.
+     * @param listener the Jakarta Expression Language context listener to remove.
      * @since 1.2
      */
 
@@ -1447,7 +1448,7 @@ public abstract class Application {
      * An implementation is provided that throws <code>UnsupportedOperationException</code> so that
      * users that decorate the <code>Application</code> continue to work.
      *
-     * @return an array of EL context listeners.
+     * @return an array of Jakarta Expression Language context listeners.
      * @since 1.2
      */
 

@@ -57,9 +57,9 @@ import javax.websocket.CloseReason.CloseCodes;
  *
  * <h3 id="usage-client"><a href="#usage-client">Usage (client)</a></h3>
  * <p>
- * Declare <strong><code>&lt;f:websocket&gt;</code></strong> tag in the JSF view with at least a
+ * Declare <strong><code>&lt;f:websocket&gt;</code></strong> tag in the Jakarta Server Faces view with at least a
  * <strong><code>channel</code></strong> name and an <strong><code>onmessage</code></strong> JavaScript listener
- * function. The channel name may not be an EL expression and it may only contain alphanumeric characters, hyphens,
+ * function. The channel name may not be a Jakarta Expression Language expression and it may only contain alphanumeric characters, hyphens,
  * underscores and periods.
  * <p>
  * Here's an example which refers an existing JavaScript listener function.
@@ -130,8 +130,8 @@ import javax.websocket.CloseReason.CloseCodes;
  * <p>
  * Although web sockets support two-way communication, the <code>&lt;f:websocket&gt;</code> push is designed for one-way
  * communication, from server to client. In case you intend to send some data from client to server, continue
- * using JSF ajax the usual way. This has among others the advantage of maintaining the JSF view
- * state, the HTTP session and, importantingly, all security constraints on business service methods.
+ * using Jakarta Server Faces ajax the usual way. This has among others the advantage of maintaining the Jakarta Server Faces view
+ * state, the HTTP session and, importantly, all security constraints on business service methods.
  *
  *
  * <h3 id="scopes-and-users"><a href="#scopes-and-users">Scopes and users</a></h3>
@@ -154,7 +154,7 @@ import javax.websocket.CloseReason.CloseCodes;
  * &lt;f:websocket channel="someChannel" scope="view" ... /&gt;
  * </pre>
  * <p>
- * The <code>scope</code> attribute may not be an EL expression and allowed values are <code>application</code>,
+ * The <code>scope</code> attribute may not be a Jakarta Expression Language expression and allowed values are <code>application</code>,
  * <code>session</code> and <code>view</code>, case insensitive.
  * <p>
  * Additionally, the optional <strong><code>user</code></strong> attribute can be set to the unique identifier of the
@@ -168,7 +168,7 @@ import javax.websocket.CloseReason.CloseCodes;
  * &lt;f:websocket channel="someChannel" user="#{request.remoteUser}" ... /&gt;
  * </pre>
  * <p>
- * Or when you have a custom user entity around in EL as <code>#{someLoggedInUser}</code> which has an <code>id</code>
+ * Or when you have a custom user entity around in Jakarta Expression Language as <code>#{someLoggedInUser}</code> which has an <code>id</code>
  * property representing its identifier:
  * <pre>
  * &lt;f:websocket channel="someChannel" user="#{someLoggedInUser.id}" ... /&gt;
@@ -209,7 +209,7 @@ import javax.websocket.CloseReason.CloseCodes;
  * </pre>
  * <p>
  * It defaults to <code>true</code> and it's under the covers interpreted as a JavaScript instruction whether to open or
- * close the web socket push connection. If the value is an EL expression and it becomes <code>false</code> during an
+ * close the web socket push connection. If the value is a Jakarta Expression Language expression and it becomes <code>false</code> during an
  * ajax request, then the push connection will explicitly be closed during oncomplete of that ajax request.
  * <p>
  * You can also explicitly set it to <code>false</code> and manually open the push connection in client side by

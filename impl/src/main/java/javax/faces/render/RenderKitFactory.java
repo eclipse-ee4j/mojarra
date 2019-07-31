@@ -27,14 +27,14 @@ import javax.faces.context.FacesContext;
  * <p><strong class="changed_modified_2_0 changed_modified_2_3">RenderKitFactory</strong> is a
  * factory object that registers
  * and returns {@link RenderKit} instances.  Implementations of
- * JavaServer Faces must provide at least a default implementation of
+ * Jakarta Server Faces must provide at least a default implementation of
  * {@link RenderKit}.  Advanced implementations (or external third party
  * libraries) may provide additional {@link RenderKit} implementations
  * (keyed by render kit identifiers) for performing different types of
  * rendering for the same components.</p>
  *
  * <p>There must be one {@link RenderKitFactory} instance per web
- * application that is utilizing JavaServer Faces.  This instance can be
+ * application that is utilizing Jakarta Server Faces.  This instance can be
  * acquired, in a portable manner, by calling:</p>
  * <pre>
  *   RenderKitFactory factory = (RenderKitFactory)
@@ -82,7 +82,7 @@ public abstract class RenderKitFactory implements FacesWrapper<RenderKitFactory>
 
     /**
      * <p>The render kit identifier of the default {@link RenderKit} instance
-     * for this JavaServer Faces implementation.</p>
+     * for this Jakarta Server Faces implementation.</p>
      */
     public static final String HTML_BASIC_RENDER_KIT = "HTML_BASIC";
 
