@@ -299,8 +299,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         
         // The additional check for a WebConfiguration instance was added at the request of JBoss
         if (configManager == null && WebConfiguration.getInstanceWithoutCreating(context) != null) {
-            if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.log(Level.WARNING, "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
             }
         }
 
