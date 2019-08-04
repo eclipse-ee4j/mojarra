@@ -171,8 +171,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
         notNull("resourceId", resourceId);
         FacesContext ctx = FacesContext.getCurrentInstance();
 
-        boolean development = ctx.isProjectStage(Development);
-        
         ResourceInfo info = manager.findResource(resourceId);
         String ctype = getContentType(ctx, resourceId);
         if (info == null) {
