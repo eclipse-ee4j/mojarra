@@ -21,12 +21,9 @@ import static com.sun.faces.cdi.ViewScopeManager.ACTIVE_VIEW_MAPS;
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.WebConfiguration;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextEvent;
@@ -39,9 +36,7 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.flow.FlowCDIContext;
-import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.StateHelper;
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
@@ -59,9 +54,6 @@ import javax.faces.event.ExceptionQueuedEventContext;
  * </p>
  */
 public class WebappLifecycleListener {
-
-    // Log instance for this class
-    private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     private ServletContext servletContext;
     private ApplicationAssociate applicationAssociate;
