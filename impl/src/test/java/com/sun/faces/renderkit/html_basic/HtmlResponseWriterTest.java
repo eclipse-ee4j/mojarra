@@ -141,4 +141,46 @@ public class HtmlResponseWriterTest {
         responseWriter.flush();
         assertEquals(expected, stringWriter.toString());
     }
+
+    /**
+     * Test CDATA escaping.
+     */
+    @Test
+    public void testUnescapedCDATA() throws Exception {
+        String expectedStart = "<style>\n<![CDATA[\n";
+        String expectedEnd = "\n]]>\n</style>";
+
+        // single char
+        StringWriter stringWriter = new StringWriter();
+        HtmlResponseWriter responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("style", null);
+        responseWriter.startCDATA();
+        responseWriter.writeText(']', null);
+        responseWriter.endCDATA();
+        responseWriter.endElement("style");
+        responseWriter.flush();
+        assertEquals(expectedStart + "]]]><![CDATA[" + expectedEnd, stringWriter.toString());
+
+        // two chars
+        stringWriter = new StringWriter();
+        responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("style", null);
+        responseWriter.startCDATA();
+        responseWriter.writeText("]]".toCharArray());
+        responseWriter.endCDATA();
+        responseWriter.endElement("style");
+        responseWriter.flush();
+        assertEquals(expectedStart + "]]]><![CDATA[]]]><![CDATA[" + expectedEnd, stringWriter.toString());
+
+        // long string
+        stringWriter = new StringWriter();
+        responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("style", null);
+        responseWriter.startCDATA();
+        responseWriter.writeText("abc]]>abc", null);
+        responseWriter.endCDATA();
+        responseWriter.endElement("style");
+        responseWriter.flush();
+        assertEquals(expectedStart + "abc]]]><![CDATA[]>abc" + expectedEnd, stringWriter.toString());
+    }
 }
