@@ -997,22 +997,22 @@ public class UIData extends UIComponentBase
         }
 
         int lastSep, newRow, savedRowIndex = this.getRowIndex();
-        try {
-            char sepChar = UINamingContainer.getSeparatorChar(context);
-            // If we need to strip out the rowIndex from our id
-            // PENDING(edburns): is this safe with respect to I18N?
-            if (myId.endsWith(sepChar + Integer.toString(savedRowIndex, 10))) {
-                lastSep = myId.lastIndexOf(sepChar);
-                assert (-1 != lastSep);
-                myId = myId.substring(0, lastSep);
-            }
+        char sepChar = UINamingContainer.getSeparatorChar(context);
+        // If we need to strip out the rowIndex from our id
+        // PENDING(edburns): is this safe with respect to I18N?
+        if (myId.endsWith(sepChar + Integer.toString(savedRowIndex, 10))) {
+            lastSep = myId.lastIndexOf(sepChar);
+            assert (-1 != lastSep);
+            myId = myId.substring(0, lastSep);
+        }
 
-            // myId will be something like form:outerData for a non-nested table,
-            // and form:outerData:3:data for a nested table.
-            // clientId will be something like form:outerData:3:outerColumn
-            // for a non-nested table.  clientId will be something like
-            // outerData:3:data:3:input for a nested table.
-            if (clientId.startsWith(myId)) {
+        // myId will be something like form:outerData for a non-nested table,
+        // and form:outerData:3:data for a nested table.
+        // clientId will be something like form:outerData:3:outerColumn
+        // for a non-nested table.  clientId will be something like
+        // outerData:3:data:3:input for a nested table.
+        if (clientId.startsWith(myId)) {
+            try {
                 int preRowIndexSep, postRowIndexSep;
 
                 if (-1 != (preRowIndexSep =
@@ -1047,15 +1047,15 @@ public class UIData extends UIComponentBase
                     }
                 }
             }
-        }
-        catch (FacesException fe) {
-            throw fe;
-        }
-        catch (NumberFormatException e) {
-            throw new FacesException(e);
-        }
-        finally {
-            this.setRowIndex(savedRowIndex);
+            catch (FacesException fe) {
+                throw fe;
+            }
+            catch (NumberFormatException e) {
+                throw new FacesException(e);
+            }
+            finally {
+                this.setRowIndex(savedRowIndex);
+            }
         }
         return found;
     }

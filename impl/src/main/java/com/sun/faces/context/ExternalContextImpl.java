@@ -666,7 +666,7 @@ public class ExternalContextImpl extends ExternalContext {
                 port = requestURL.getPort();
             }
 
-            String websocketURL = new URL(request.getScheme(), requestURL.getHost(), port, url).toExternalForm();
+            String websocketURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
             return encodeResourceURL(websocketURL.replaceFirst("http", "ws"));
         }
         catch (MalformedURLException e) {

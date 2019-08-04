@@ -49,7 +49,7 @@ final class ServiceFactoryUtils {
     // ---------------------------------------------------------- Public Methods
 
 
-    static Object getProviderFromEntry(String entry, Class<?>[] argumentTypes, Object[] arguments) {
+    static Object getProviderFromEntry(String entry, Class<?>[] argumentTypes, Object[] arguments) throws FacesException {
 
         if (entry == null) {
             return null;
@@ -62,11 +62,8 @@ final class ServiceFactoryUtils {
                 throw new FacesException("Unable to find constructor accepting arguments: " + Arrays.toString(arguments));
             }
             return c.newInstance(arguments);
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | FacesException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, e.toString(), e);
-            }
-            return null;
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new FacesException(e);
         }
 
     }
