@@ -16,7 +16,7 @@
 
 # Mojarra
 
-Oracle's implementation of the Jakarta Faces specification 
+Eclipse EE4J implementation of the Jakarta Faces specification 
 
 
 ## Minimum Requirements
