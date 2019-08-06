@@ -45,7 +45,6 @@ import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import static javax.faces.application.ProjectStage.Development;
 import static javax.faces.application.ProjectStage.Production;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;

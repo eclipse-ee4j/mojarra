@@ -26,7 +26,6 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -691,7 +690,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * the <code>UpdateModelException</code>, this component instance, and
      * {@link PhaseId#UPDATE_MODEL_VALUES} to its constructor.  Call
      * {@link FacesContext#getExceptionHandler} and then call
-     * {@link ExceptionHandler#processEvent}, passing the
+     * {@link javax.faces.context.ExceptionHandler#processEvent}, passing the
      * <code>ExceptionQueuedEventContext</code>.
      * </li>
      * <li>Set the <code>valid</code> property of this {@link UIInput}

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
@@ -314,7 +313,8 @@ public abstract class PartialViewContext {
      * {@link ResourceHandler#isResourceRendered(FacesContext, String, String)} returns <code>false</code>, in an
      * <code>update</code> element with an identifier of <code>javax.faces.Resource</code>.</li>
      * <li>Process the components.</li>
-     * <li>Obtain the state by calling {@link StateManager#getViewState} and write it out as an <code>update</code>
+     * <li>Obtain the state by calling {@link javax.faces.application.StateManager#getViewState}
+     * and write it out as an <code>update</code>
      * element with an identifier of <code>&lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt;&lt;SEP&gt;javax.faces.ViewState</code>
      * where <code>&lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt;</code> is the return from
      * {@link UIViewRoot#getContainerClientId(FacesContext)} on the view from whence this state originated, and

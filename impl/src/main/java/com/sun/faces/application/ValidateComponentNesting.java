@@ -19,7 +19,6 @@ package com.sun.faces.application;
 import java.util.EnumSet;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
 import javax.faces.component.ActionSource;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.EditableValueHolder;
