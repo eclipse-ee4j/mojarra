@@ -341,7 +341,7 @@
                                             <type>jar</type>
                                             <overWrite>true</overWrite>                                     
                                             <outputDirectory>${glassfish.patch.home}/glassfish/modules</outputDirectory>
-                                            <destFileName>javax.faces.jar</destFileName>
+                                            <destFileName>jakarta.faces.jar</destFileName>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>

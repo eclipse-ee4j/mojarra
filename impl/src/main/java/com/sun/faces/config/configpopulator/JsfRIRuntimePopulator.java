@@ -148,7 +148,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element system_event_listenerElement = toPopulate.createElementNS(ns, "system-event-listener");
                 {
                     Element system_event_listener_classElement = toPopulate.createElementNS(ns, "system-event-listener-class");
-                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.view.ViewScopeEventListener"));
+                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.cdi.ViewScopeEventListener"));
                     system_event_listenerElement.appendChild(system_event_listener_classElement);
                 }
                 {
@@ -167,7 +167,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element system_event_listenerElement = toPopulate.createElementNS(ns, "system-event-listener");
                 {
                     Element system_event_listener_classElement = toPopulate.createElementNS(ns, "system-event-listener-class");
-                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.view.ViewScopeEventListener"));
+                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.cdi.ViewScopeEventListener"));
                     system_event_listenerElement.appendChild(system_event_listener_classElement);
                 }
                 {
