@@ -4,8 +4,8 @@ Thanks for your interest in this project.
 
 ## Project description
 
-Eclipse Mojarra is an implementation for the JavaServer Faces specification
-(JSR-372). JavaServer Faces (JSF) is a Java specification for building
+Eclipse Mojarra is an implementation for the Jakarta Faces specification. 
+Jakarta Faces is a Java specification for building
 component-based user interfaces for web applications. It is also a MVC web
 framework that simplifies construction of user interfaces (UI) for server-based
 applications by using reusable UI components in a page.
