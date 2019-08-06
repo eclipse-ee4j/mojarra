@@ -16,7 +16,7 @@
 #
 
 if [ "$#" -eq 0 ]; then
-    declare -a arr=("htmlunitaware" "servlet30" "servlet30-isolated" "servlet31" "servlet40" "javaee6web" "javaee6" "javaee7" "javaee8")
+    declare -a arr=("htmlunitaware" "servlet30" "servlet31" "servlet40" "javaee6web" "javaee6" "javaee7" "javaee8")
     printf '\nNo tests specified as command arguments, using default set\n'
 else
     declare -a arr=("$@")
