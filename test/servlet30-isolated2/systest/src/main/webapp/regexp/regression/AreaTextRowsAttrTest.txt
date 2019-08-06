@@ -1,1 +1,0 @@
-(?s).*<html>\s*<head>\s*<title>\s*Text\s*Area\s*Row\s*Attribute\s*Regression\s*Test\s*</title>\s*</head>\s*<body>\s*<textarea\s*name=".*"\s*rows="30">\s*</textarea>\s*</body>\s*</html>.*
