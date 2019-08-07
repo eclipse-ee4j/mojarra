@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -43,6 +44,7 @@ public class Issue4551IT {
     }
 
     @Test
+    @Ignore
     public void testTwoAnnotatedJSFValidatorsInvoked () throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue4551.xhtml");
         HtmlElement submit = page.getHtmlElementById("form:submit");

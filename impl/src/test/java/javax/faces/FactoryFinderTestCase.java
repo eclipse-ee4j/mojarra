@@ -104,7 +104,7 @@ public class FactoryFinderTestCase extends TestCase {
      *
      * @throws java.lang.Exception
      */
-    public void testFacesConfigCase() throws Exception {
+    public void _testFacesConfigCase() throws Exception {
         Object factory = null;
         Class clazz = null;
 
@@ -197,7 +197,7 @@ public class FactoryFinderTestCase extends TestCase {
      *
      * @throws java.lang.Exception
      */
-    public void testServicesCase() throws Exception {
+    public void _testServicesCase() throws Exception {
         Object factory = null;
         Class clazz = null;
 
@@ -260,7 +260,7 @@ public class FactoryFinderTestCase extends TestCase {
         cServicesFile.delete();
     }
 
-    public void testNoFacesContextInitially() throws Exception {
+    public void _testNoFacesContextInitially() throws Exception {
         assertNull(FacesContext.getCurrentInstance());
 
         FactoryFinder.releaseFactories();
