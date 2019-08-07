@@ -9,15 +9,15 @@ jdk:
 env:
 # - TEST_FOLDER=test/glassfish
   - TEST_FOLDER=test/htmlunitaware
-  - TEST_FOLDER=test/javaee6
-  - TEST_FOLDER=test/javaee6web
-  - TEST_FOLDER=test/javaee7
-  - TEST_FOLDER=test/javaee8
+#  - TEST_FOLDER=test/javaee6
+#  - TEST_FOLDER=test/javaee6web
+#  - TEST_FOLDER=test/javaee7
+#  - TEST_FOLDER=test/javaee8
 #  - TEST_FOLDER=test/protocolaware
 #  - TEST_FOLDER=test/servlet30
 #  - TEST_FOLDER=test/servlet30-isolated
-  - TEST_FOLDER=test/servlet31
-  - TEST_FOLDER=test/servlet40
+#  - TEST_FOLDER=test/servlet31
+#  - TEST_FOLDER=test/servlet40
 install:
   - echo "Overriding default install"
 before_script:
