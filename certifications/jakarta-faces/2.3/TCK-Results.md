@@ -10,7 +10,7 @@ following is a summary of the TCK results for releases of Jakarta Server Faces.
 - [x] Organization Name ("Organization") and, if applicable, URL\
   Eclipse Foundation
 - [x] Product Name, Version and download URL (if applicable)\
-  [Mojarra 2.3.13](https://oss.sonatype.org/content/repositories/staging/org/glassfish/jakarta.faces/2.3.13/)
+  [Mojarra 2.3.13](https://eclipse-ee4j.github.io/mojarra)
 - [x] Specification Name, Version and download URL\
    [Jakarta Server Faces 2.3](https://jakarta.ee/specifications/faces/2.3/)
 - [x] TCK Version, digital SHA-256 fingerprint and download URL\
