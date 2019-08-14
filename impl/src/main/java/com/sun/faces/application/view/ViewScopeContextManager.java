@@ -13,6 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
+// Portions Copyright [2018] [Payara Foundation and/or its affiliates]
 
 package com.sun.faces.application.view;
 
@@ -152,7 +153,18 @@ public class ViewScopeContextManager {
                 CreationalContext creationalContext = beanManager.createCreationalContext(contextual);
                 // We can no longer get this from the contextObject. Instead we must call
                 // beanManager.createCreationalContext(contextual)
-                contextual.destroy(viewMap.get(contextObject.getName()), creationalContext);
+                Object contextualInstance = viewMap.get(contextObject.getName());
+
+                // Contextual instance may be null if already removed from view map (and thus already destroyed).
+                // This can happen when a mid-request navigation happens and a new view root is being set, and then
+                // in the same request a session.invalidate is called.
+                // See https://github.com/javaserverfaces/mojarra/issues/3454
+                // Also see https://github.com/payara/Payara/issues/2506 for why we can't just clean the contextMap
+                // (it contains abstract descriptors for all instances, not just the one we want to destroy here).
+                if (contextualInstance != null) {
+                    contextual.destroy(contextualInstance, creationalContext);
+                }
+
                 removalNameList.add(contextObject.getName());
             }
 
@@ -161,8 +173,7 @@ public class ViewScopeContextManager {
                 String name = removalNames.next();
                 viewMap.remove(name);
             }
-            
-            contextMap.clear();
+
         }
     }
 
