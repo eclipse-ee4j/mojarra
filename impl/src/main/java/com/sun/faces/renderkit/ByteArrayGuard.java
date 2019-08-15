@@ -34,6 +34,7 @@ import com.sun.faces.RIConstants;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -42,7 +43,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpSession;
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * <p>This utility class is to provide both encryption and
@@ -203,7 +203,7 @@ public final class ByteArrayGuard {
         try {
             InitialContext context = new InitialContext();
             String encodedKeyArray = (String) context.lookup("java:comp/env/jsf/ClientSideSecretKey");
-            byte[] keyArray = DatatypeConverter.parseBase64Binary(encodedKeyArray);
+            byte[] keyArray = Base64.getDecoder().decode(encodedKeyArray);
             sk = new SecretKeySpec(keyArray, KEY_ALGORITHM);
         }
         catch(NamingException exception) {
