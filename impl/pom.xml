@@ -59,6 +59,7 @@
                 <executions>
                     <execution>
                         <id>minify-jsf-js</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>compress</goal>
                         </goals>
@@ -82,6 +83,31 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- Adds the path where the resource generated above was stored -->
+            <!--  
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-resources/yui</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
         
             <!-- Use ANT to drive much of our custom build steps -->
             <plugin>
@@ -492,6 +518,9 @@
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}/generated-resources/antrun</directory>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-resources/yui</directory>
                                 </resource>
                             </resources>
                         </configuration>
