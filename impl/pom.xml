@@ -51,6 +51,38 @@
     <build>
         <plugins>
         
+            <!-- ###  C O M P R E S S  /  M I N I F Y   JSF.JS  ###   -->
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>yuicompressor-maven-plugin</artifactId>
+                <version>1.5.1</version>
+                <executions>
+                    <execution>
+                        <id>minify-jsf-js</id>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                        <configuration>
+                            <nosuffix>true</nosuffix>
+                            <preProcessAggregates>true</preProcessAggregates>
+                            <aggregations>
+                                <aggregation>
+                                    <includes>
+                                        <include>${project.basedir}/src/main/resources/META-INF/resources/javax.faces/jsf-uncompressed.js</include>
+                                    </includes>
+                                    <output>${project.build.directory}/generated-resources/yuix/jsf.js</output>
+                                </aggregation>
+                            </aggregations>
+                            <includes>
+                                <include>*.js</include>
+                            </includes>
+                            <sourceDirectory>${project.build.directory}/generated-resources/yuix</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/javax.faces/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        
             <!-- Use ANT to drive much of our custom build steps -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -380,27 +412,7 @@
                                       
                                 <delete dir="build"/>
                                 <delete dir="${jsf-tools-dir}/build"/>
-                                
-                                
-                                <!--
-                                
-                                    Generate jsf(-uncompressed).js
-                                
-                                -->
-                                <mkdir dir="${project.build.directory}/generated-resources/antrun/META-INF/resources/javax.faces"/>
-                                <concat destfile="${project.build.directory}/generated-resources/antrun/META-INF/resources/javax.faces/jsf-uncompressed.js" fixlastline="yes">
-                                    <filelist dir="src/main/js">
-                                        <file name="jsf.js"/>
-                                    </filelist>
-                                    <filelist  dir="src/main/js">
-                                        <file name="mojarra.js"/>
-                                    </filelist>
-                                </concat>
-                                <get src="https://github.com/yui/yuicompressor/releases/download/v2.4.8/yuicompressor-2.4.8.jar" dest="yuicompressor.jar" usetimestamp="true" skipexisting="true"/>
-                                <java jar="yuicompressor.jar" fork="true" failonerror="true"
-                                    args="-o ${project.build.directory}/generated-resources/antrun/META-INF/resources/javax.faces/jsf.js ${project.build.directory}/generated-resources/antrun/META-INF/resources/javax.faces/jsf-uncompressed.js"/>
-                                
-                                
+                               
                                 <!--
                                 
                                     Generate jsf-ri-runtime.xml
@@ -788,6 +800,39 @@
                 </executions>
             </plugin>
         </plugins>
+        
+        <pluginManagement>
+            <plugins>
+            
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>net.alchim31.maven</groupId>
+                                        <artifactId>yuicompressor-maven-plugin</artifactId>
+                                        <versionRange>[1.5,)</versionRange>
+                                        <goals>
+                                            <goal>compress</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute>
+                                            <runOnIncremental>false</runOnIncremental>
+                                        </execute>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     
     
