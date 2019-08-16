@@ -97,6 +97,7 @@ import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderFactory;
 import com.sun.faces.spi.ThreadContext;
 import com.sun.faces.util.FacesLogger;
+import com.sun.faces.config.configpopulator.JsfRIRuntimePopulator;
 
 /**
  * <p>
@@ -447,13 +448,7 @@ public class ConfigManager {
         
         List<ApplicationConfigurationPopulator> configPopulators = new ArrayList<>();
         
-        try {
-            configPopulators.add( (ApplicationConfigurationPopulator)
-                Class.forName("com.sun.faces.config.configpopulator.JsfRIRuntimePopulator_Generated")
-                     .newInstance());
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e1) {
-            throw new FacesException(e1);
-        }
+        configPopulators.add(new JsfRIRuntimePopulator());
         
         ServiceLoader.load(ApplicationConfigurationPopulator.class)
                      .forEach(e -> configPopulators.add(e));

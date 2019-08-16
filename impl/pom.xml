@@ -366,45 +366,6 @@
                                       
                                 <delete dir="build"/>
                                 <delete dir="${jsf-tools-dir}/build"/>
-                               
-                                <!--
-                                
-                                    Generate jsf-ri-runtime.xml
-                                
-                                -->
-                                <xslt in="src/main/resources/com/sun/faces/standard-html-renderkit.xml" 
-                                      out="merged.xml"
-                                      style="${jsf-tools-dir}/src/main/xsl/merge-config.xsl">
-                                </xslt>
-                                <replace file="${basedir}/merged.xml">
-                                    <replacetoken><![CDATA[xmlns:jsf="http://xmlns.jcp.org/xml/ns/javaee"]]></replacetoken>
-                                    <replacevalue><![CDATA[]]></replacevalue>
-                                </replace>
-                                <replace file="${basedir}/merged.xml">
-                                    <replacetoken><![CDATA[ >]]></replacetoken>
-                                    <replacevalue><![CDATA[>]]></replacevalue>
-                                </replace>
-                                <xslt in="${basedir}/merged.xml"
-                                      out="${project.build.directory}/generated-resources/antrun/com/sun/faces/jsf-ri-runtime.xml"
-                                      style="${jsf-tools-dir}/src/main/xsl/prune-tool-data.xsl">
-                                </xslt>
-                                <replace file="${project.build.directory}/generated-resources/antrun/com/sun/faces/jsf-ri-runtime.xml">
-                                    <replacetoken><![CDATA[xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"]]></replacetoken>
-                                </replace>
-                                <replace file="${project.build.directory}/generated-resources/antrun/com/sun/faces/jsf-ri-runtime.xml">
-                                    <replacetoken><![CDATA[ >]]></replacetoken>
-                                    <replacevalue><![CDATA[>]]></replacevalue>
-                                </replace>
-                                <replace file="${project.build.directory}/generated-resources/antrun/com/sun/faces/jsf-ri-runtime.xml">
-                                    <replacetoken><![CDATA[<faces-config>]]></replacetoken>
-                                    <replacevalue><![CDATA[
-<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
-    version="2.3">]]>
-                                    </replacevalue>
-                                </replace>
-                                <delete file="${basedir}/merged.xml"/>
                             </target>
                         </configuration>
                         <goals>
@@ -500,21 +461,7 @@
                         </goals>
                     </execution>
                     
-                    <!-- Process annotation - generate code based on them  -->
-                    <execution>
-                        <id>process-annotations</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <annotationProcessors>com.sun.faces.generate.PreParseFacesConfigProcessor</annotationProcessors>
-                            <generatedSourcesDirectory>${project.build.directory}/generated-sources/antrun</generatedSourcesDirectory>
-                            <proc>only</proc>
-                        </configuration>
-                    </execution>
-                    
-                    <!-- Compile all Java code, including the code generated above -->
+                    <!-- Compile all Java code -->
                     <execution>
                         <id>default-compile</id>
                         <phase>compile</phase>
