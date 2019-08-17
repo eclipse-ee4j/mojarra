@@ -259,8 +259,6 @@ In case you want to checkout this repository and manually build from source your
 
     ```bash
     # under the root dir of project
-    cd jsf-tools
-    mvn clean install
     cd ../impl
     mvn clean install
     ```
