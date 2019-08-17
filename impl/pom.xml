@@ -292,17 +292,18 @@
             </plugin>
      
             
-            <!-- Generate the META-INF/MANIFEST.MF file for OSGi use -->
+            <!-- Creates the OSGi MANIFEST.MF file -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>4.0.0</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
-                        <id>bundle</id>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
                         <goals>
-                            <goal>bundle</goal>
+                            <goal>manifest</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -383,6 +384,22 @@
                                 version:Version="2.3"
                         </Provide-Capability>
                     </instructions>
+                </configuration>
+            </plugin>
+            
+            <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <excludes>
+                        <exclude>**/*.java</exclude>
+                        <exclude>**/*.html</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             
