@@ -249,7 +249,7 @@ In case you want to checkout this repository and manually build from source your
     mvn clean install
     ```
 
-4. The binary is now available as `impl/target/jakarta.faces-2.4.x-SNAPSHOT.jar`.
+4. The binary is now available as `impl/target/jakarta.faces-3.0.x-SNAPSHOT.jar`.
 
 ### Jakarta Faces 2.3
 
@@ -259,9 +259,6 @@ In case you want to checkout this repository and manually build from source your
 
     ```bash
     # under the root dir of project
-    cd jsf-tools
-    mvn clean install
-    cd ../impl
     mvn clean install
     ```
 

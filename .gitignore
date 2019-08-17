@@ -14,8 +14,6 @@ target/
 /dist/
 /dependencies/
 /jsf-demo/dist/
-/jsf-tools/build/
-/jsf-tools/target/
 /build.properties
 .settings/
 .classpath
