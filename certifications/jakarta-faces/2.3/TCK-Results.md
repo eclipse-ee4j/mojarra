@@ -5560,9 +5560,9 @@ Test results:
 [javatest.batch] PASSED........com/sun/ts/tests/jsf/spec/webapp/factoryfinder/URLClient.java#factoryFinderConfig4Test
 [javatest.batch] PASSED........com/sun/ts/tests/jsf/spec/webapp/tldsig/URLClient.java#jsfTldSignatureTest
 [javatest.batch] 
-[javatest.batch] Aug 5, 2019 1:22:04 AM Finished executing all tests, wait for cleanup...
-[javatest.batch] Aug 5, 2019 1:22:04 AM Harness done with cleanup from test run.
-[javatest.batch] Total time = 8,173s
+[javatest.batch] Aug 20, 2019 3:10:04 PM Finished executing all tests, wait for cleanup...
+[javatest.batch] Aug 20, 2019 3:10:05 PM Harness done with cleanup from test run.
+[javatest.batch] Total time = 9,682s
 [javatest.batch] Setup time = 0s
 [javatest.batch] Cleanup time = 0s
 [javatest.batch] Test results: passed: 5,525
@@ -5570,5 +5570,8 @@ Test results:
 [javatest.batch] Report written to /home/jenkins/workspace/2_mojarra-run-tck-against-staged-build/report
 
 BUILD SUCCESSFUL
-Total time: 136 minutes 29 seconds
+Total time: 162 minutes 7 seconds
+SHA256_GF=SHA256(/home/jenkins/workspace/2_mojarra-run-tck-against-staged-build/download/glassfish.zip)= 26f3fa6463d24c5ed3956e4cab24a97e834ca37d7a23d341aadaa78d9e0093ce
+SHA256_API=SHA256(/home/jenkins/workspace/2_mojarra-run-tck-against-staged-build/download/jakarta.faces.jar)= 4b8a7b1e91154dcbbbdc952fa599a9071370aad5ce6a377b3c2eacef7972a319
+SHA256_TCK=SHA256(/home/jenkins/workspace/2_mojarra-run-tck-against-staged-build/download/facestck.zip)= 77375ad39f8b736034dbfd554152bbd3e3931a9c9ef1760049c60c5fa87a06d9
 ```
