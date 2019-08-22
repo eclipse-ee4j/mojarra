@@ -123,229 +123,12 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
          * @ignore
          */
         var getTransport = function getTransport(context) {
-            var returnVal;
-            // Here we check for encoding type for file upload(s).
-            // This is where we would also include a check for the existence of
-            // input file control for the current form (see hasInputFileControl
-            // function) but IE9 (at least) seems to render controls outside of
-            // form.
-            if (typeof context !== 'undefined' && context !== null &&
-                context.includesInputFile &&
-                context.form.enctype === "multipart/form-data") {
-                returnVal = new FrameTransport(context);
-                return returnVal;
+            try {
+                return new XMLHttpRequest();
+            } catch(e) {
+                throw new Error('Could not create an XHR object.');
             }
-            var methods = [
-                function() {
-                    return new XMLHttpRequest();
-                },
-                function() {
-                    return new ActiveXObject('Msxml2.XMLHTTP');
-                },
-                function() {
-                    return new ActiveXObject('Microsoft.XMLHTTP');
-                }
-            ];
-
-            for (var i = 0, len = methods.length; i < len; i++) {
-                try {
-                    returnVal = methods[i]();
-                } catch(e) {
-                    continue;
-                }
-                return returnVal;
-            }
-            throw new Error('Could not create an XHR object.');
-        };
-        
-        /**
-         * Used for iframe based communication (instead of XHR).
-         * @ignore
-         */
-        var FrameTransport = function FrameTransport(context) {
-            this.context = context;
-            this.frame = null;
-            this.FRAME_ID = "JSFFrameId";
-            this.FRAME_PARTIAL_ID = "Faces-Request";
-            this.partial = null;
-            this.aborted = false;
-            this.responseText = null;
-            this.responseXML = null;
-            this.readyState = 0;
-            this.requestHeader = {};
-            this.status = null;
-            this.method = null;
-            this.url = null;
-            this.requestParams = null;
-        };
-        
-        /**
-         * Extends FrameTransport an adds method functionality.
-         * @ignore
-         */
-        FrameTransport.prototype = {
-            
-            /**
-             *@ignore
-             */
-            setRequestHeader:function(key, value) {
-                if (typeof(value) !== "undefined") {
-                    this.requestHeader[key] = value;  
-                }
-            },
-            
-            /**
-             * Creates the hidden iframe and sets readystate.
-             * @ignore
-             */
-            open:function(method, url, async) {
-                this.method = method;
-                this.url = url;
-                this.async = async;
-                this.frame = document.getElementById(this.FRAME_ID);
-                if (this.frame) {
-                    this.frame.parentNode.removeChild(this.frame);
-                    this.frame = null;
-                }
-                if (!this.frame) {  
-                    if ((!isIE() && !isIE9Plus())) {
-                        this.frame = document.createElement('iframe');
-                        this.frame.src = "about:blank";
-                        this.frame.id = this.FRAME_ID;
-                        this.frame.name = this.FRAME_ID;
-                        this.frame.type = "content";
-                        this.frame.collapsed = "true";
-                        this.frame.style = "visibility:hidden";   
-                        this.frame.width = "0";
-                        this.frame.height = "0";
-                        this.frame.style = "border:0";
-                        this.frame.frameBorder = 0;
-                        document.body.appendChild(this.frame);
-                        this.frame.onload = bind(this, this.callback);
-                    } else {
-                        var div = document.createElement("div");
-                        div.id = "frameDiv";
-                        div.innerHTML = "<iframe id='" + this.FRAME_ID + "' name='" + this.FRAME_ID + "' style='display:none;' src='about:blank' type='content' onload='this.onload_cb();'  ></iframe>";
-                        document.body.appendChild(div);
-                        this.frame = document.getElementById(this.FRAME_ID);
-                        this.frame.onload_cb = bind(this, this.callback);
-                    }
-                }
-                // Create to send "Faces-Request" param with value "partial/ajax"
-                // For iframe approach we are sending as request parameter
-                // For non-iframe (xhr ajax) it is sent in the request header
-                this.partial = document.createElement("input");
-                this.partial.setAttribute("type", "hidden");
-                this.partial.setAttribute("id", this.FRAME_PARTIAL_ID);
-                this.partial.setAttribute("name", this.FRAME_PARTIAL_ID);
-                this.partial.setAttribute("value", "partial/ajax");
-                this.context.form.appendChild(this.partial);
-  
-                this.readyState = 1;                         
-            },
-            
-            /**
-             * Sets the form target to iframe, sets up request parameters
-             * and submits the form.
-             * @ignore
-             */
-            send: function(data) {
-                var evt = {};
-                this.context.form.target = this.frame.name;
-                this.context.form.method = this.method;
-                if (this.url) {
-                    this.context.form.action = this.url;
-                }
-
-                this.readyState = 3;
-
-                this.onreadystatechange(evt);
-                
-                var ddata = decodeURIComponent(data);
-                var dataArray = ddata.split("&");
-                var input;
-                this.requestParams = new Array();
-                for (var i=0; i<dataArray.length; i++) {
-                    var nameValue = dataArray[i].split("=");
-                    if (nameValue[0] === this.context.namingContainerPrefix + "javax.faces.source" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "javax.faces.partial.event" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "javax.faces.partial.execute" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "javax.faces.partial.render" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "javax.faces.partial.ajax" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "javax.faces.behavior.event") {
-                        input = document.createElement("input");
-                        input.setAttribute("type", "hidden");
-                        input.setAttribute("id", nameValue[0]);
-                        input.setAttribute("name", nameValue[0]);
-                        input.setAttribute("value", nameValue[1]);
-                        this.context.form.appendChild(input);
-                        this.requestParams.push(nameValue[0]);
-                    }
-                }
-                this.requestParams.push(this.FRAME_PARTIAL_ID);
-                this.context.form.submit();
-            },
-            
-            /**
-             *@ignore
-             */
-            abort:function() {
-                this.aborted = true; 
-            },
-            
-            /**
-             *@ignore
-             */
-            onreadystatechange:function(evt) {
-                
-            },
-            
-            /**
-             * Extracts response from iframe document, sets readystate.
-             * @ignore
-             */
-            callback: function() {
-                if (this.aborted) {
-                    return;
-                }
-                var iFrameDoc;
-                var docBody;
-                try {
-                    var evt = {};
-                    iFrameDoc = this.frame.contentWindow.document || 
-                        this.frame.contentDocument || this.frame.document;
-                    docBody = iFrameDoc.body || iFrameDoc.documentElement;
-                    this.responseText = docBody.innerHTML;
-                    this.responseXML = iFrameDoc.XMLDocument || iFrameDoc;
-                    this.status = 201;
-                    this.readyState = 4;  
-
-                    this.onreadystatechange(evt);                
-                } finally {
-                    this.cleanupReqParams();
-                }               
-            },
-            
-            /**
-             *@ignore
-             */
-            cleanupReqParams: function() {
-                for (var i=0; i<this.requestParams.length; i++) {
-                    var elements = this.context.form.childNodes;
-                    for (var j=0; j<elements.length; j++) {
-                        if (!elements[j].type === "hidden") {
-                            continue;
-                        }
-                        if (elements[j].name === this.requestParams[i]) {
-                            var node = this.context.form.removeChild(elements[j]);
-                            node = null;                           
-                            break;
-                        }
-                    }   
-                }
-            }
-        };
-        
+        };  
        
         /**
          *Utility function that binds function to scope.
@@ -1816,12 +1599,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
             req.fromQueue = false;         // Indicates if the request was taken off the queue before being sent. This prevents the request from entering the queue redundantly.
 
             req.que = Queue;
-            
-            // Get a transport Handle
-            // The transport will be an iframe transport if the form
-            // has multipart encoding type.  This is where we could
-            // handle XMLHttpRequest Level2 as well (perhaps 
-            // something like:  if ('upload' in req.xmlReq)'
+
             req.xmlReq = getTransport(context);
 
             if (req.xmlReq === null) {
@@ -1934,12 +1712,16 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                         req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + "" + req.requestIndex;
                     }
                     var content = null; // For POST requests, to hold query string
+                    
+                    var fakeForm = new FormData(context.form);
+                    fakeForm.append('Faces-Request', 'partial/ajax');
                     for (var i in req.parameters) {
                         if (req.parameters.hasOwnProperty(i)) {
                             if (req.queryString.length > 0) {
                                 req.queryString += "&";
                             }
                             req.queryString += encodeURIComponent(i) + "=" + encodeURIComponent(req.parameters[i]);
+                            fakeForm.append(i, req.parameters[i]);
                         }
                     }
                     if (req.method === "GET") {
@@ -1955,7 +1737,9 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                     if (req.method === "POST") {
                         if (typeof req.xmlReq.setRequestHeader !== 'undefined') {
                             req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
-                            req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+                            if(context.form.enctype !== 'multipart/form-data') {
+                                req.xmlReq.setRequestHeader('Content-type', context.form.enctype + ';charset=UTF-8');
+                            }
                         }
                         content = req.queryString;
                     }
@@ -1965,7 +1749,12 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                         req.xmlReq.onreadystatechange = null; // no need for readystate change listening
                     }
                     sendEvent(req.xmlReq, req.context, "begin");
-                    req.xmlReq.send(content);
+                    
+                    if (req.method === "POST" && context.form.enctype === 'multipart/form-data') {
+                        req.xmlReq.send(fakeForm);
+                    } else {
+                        req.xmlReq.send(content);
+                    }
                     if(!req.async){
                         req.onComplete();
                 }
