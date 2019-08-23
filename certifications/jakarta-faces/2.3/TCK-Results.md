@@ -5,23 +5,23 @@ As required by the
 [Eclipse Foundation Technology Compatibility Kit License](https://www.eclipse.org/legal/tck.php),
 following is a summary of the TCK results for releases of Jakarta Server Faces.
 
-# 1.0 Certification Request
+# 2.3 Certification Request
 
-- [x] Organization Name ("Organization") and, if applicable, URL\
+- [x] Organization Name ("Organization") and, if applicable, URL
   Eclipse Foundation
-- [x] Product Name, Version and download URL (if applicable)\
+- [x] Product Name, Version and download URL (if applicable)
   [Mojarra 2.3.13](https://eclipse-ee4j.github.io/mojarra)
-- [x] Specification Name, Version and download URL\
+- [x] Specification Name, Version and download URL
    [Jakarta Server Faces 2.3](https://jakarta.ee/specifications/faces/2.3/)
-- [x] TCK Version, digital SHA-256 fingerprint and download URL\
-  [Jakarta Server Faces TCK 2.3.0](http://download.eclipse.org/ee4j/jakartaee-tck/jakartaee8-eftl/promoted/eclipse-faces-tck-2.3.0.zip), SHA-256: db9a385010cd8544bc1f2468a1fbcaca16f14014fa341e5343c487616f8670dc
-- [x] Public URL of TCK Results Summary\
+- [x] TCK Version, digital SHA-256 fingerprint and download URL
+  [Jakarta Server Faces TCK 2.3.0](http://download.eclipse.org/ee4j/jakartaee-tck/jakartaee8-eftl/promoted/eclipse-faces-tck-2.3.0.zip), SHA-256: 77375ad39f8b736034dbfd554152bbd3e3931a9c9ef1760049c60c5fa87a06d9
+- [x] Public URL of TCK Results Summary
   [TCK results summary](https://eclipse-ee4j.github.io/mojarra/certifications/jakarta-faces/2.3/TCK-Results)
-- [x] Any Additional Specification Certification Requirements\
+- [x] Any Additional Specification Certification Requirements
   None
-- [x] Java runtime used to run the implementation\
+- [x] Java runtime used to run the implementation
   Oracle JDK 1.8.0_202
-- [x] Summary of the information for the certification environment, operating system, cloud, ...\
+- [x] Summary of the information for the certification environment, operating system, cloud, ...
   Linux
 - [x] By checking this box I acknowledge that the Organization I represent accepts the terms of the [EFTL](https://www.eclipse.org/legal/tck.php).
 - [x] By checking this box I attest that all TCK requirements have been met, including any compatibility rules.
@@ -5560,9 +5560,9 @@ Test results:
 [javatest.batch] PASSED........com/sun/ts/tests/jsf/spec/webapp/factoryfinder/URLClient.java#factoryFinderConfig4Test
 [javatest.batch] PASSED........com/sun/ts/tests/jsf/spec/webapp/tldsig/URLClient.java#jsfTldSignatureTest
 [javatest.batch] 
-[javatest.batch] Aug 5, 2019 1:22:04 AM Finished executing all tests, wait for cleanup...
-[javatest.batch] Aug 5, 2019 1:22:04 AM Harness done with cleanup from test run.
-[javatest.batch] Total time = 8,173s
+[javatest.batch] Aug 20, 2019 3:10:04 PM Finished executing all tests, wait for cleanup...
+[javatest.batch] Aug 20, 2019 3:10:05 PM Harness done with cleanup from test run.
+[javatest.batch] Total time = 9,682s
 [javatest.batch] Setup time = 0s
 [javatest.batch] Cleanup time = 0s
 [javatest.batch] Test results: passed: 5,525
@@ -5570,5 +5570,8 @@ Test results:
 [javatest.batch] Report written to /home/jenkins/workspace/2_mojarra-run-tck-against-staged-build/report
 
 BUILD SUCCESSFUL
-Total time: 136 minutes 29 seconds
+Total time: 162 minutes 7 seconds
+SHA256_GF=SHA256(/home/jenkins/workspace/2_mojarra-run-tck-against-staged-build/download/glassfish.zip)= 26f3fa6463d24c5ed3956e4cab24a97e834ca37d7a23d341aadaa78d9e0093ce
+SHA256_API=SHA256(/home/jenkins/workspace/2_mojarra-run-tck-against-staged-build/download/jakarta.faces.jar)= 4b8a7b1e91154dcbbbdc952fa599a9071370aad5ce6a377b3c2eacef7972a319
+SHA256_TCK=SHA256(/home/jenkins/workspace/2_mojarra-run-tck-against-staged-build/download/facestck.zip)= 77375ad39f8b736034dbfd554152bbd3e3931a9c9ef1760049c60c5fa87a06d9
 ```
