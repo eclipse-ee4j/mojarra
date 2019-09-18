@@ -351,7 +351,7 @@ public class ResourceManager {
         }
     }
     
-    private static boolean nameContainsForbiddenSequence(String name) {
+    static boolean nameContainsForbiddenSequence(String name) {
         boolean result = false;
         if (name != null) {
             name = name.toLowerCase();
@@ -567,6 +567,8 @@ public class ResourceManager {
         
         if(localePrefix != null && !nameContainsForbiddenSequence(localePrefix)){
             return localePrefix;
+        } else {
+            localePrefix = null; 
         }
         
         String appBundleName = context.getApplication().getMessageBundle();

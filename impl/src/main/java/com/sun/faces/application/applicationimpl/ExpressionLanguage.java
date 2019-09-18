@@ -69,7 +69,7 @@ public class ExpressionLanguage {
     
     private List<ELContextListener> elContextListeners;
     private CompositeELResolver elResolvers;
-    private FacesCompositeELResolver compositeELResolver;
+    private volatile FacesCompositeELResolver compositeELResolver;
 
     private Version version = new Version();
     
@@ -117,7 +117,11 @@ public class ExpressionLanguage {
     public ELResolver getELResolver() {
 
         if (compositeELResolver == null) {
-            performOneTimeELInitialization();
+            synchronized(this) {
+                if (compositeELResolver == null) {
+                    performOneTimeELInitialization();
+                }
+            }
         }
 
         return compositeELResolver;
