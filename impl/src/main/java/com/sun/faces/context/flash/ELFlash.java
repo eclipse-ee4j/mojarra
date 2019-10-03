@@ -1083,13 +1083,6 @@ public class ELFlash extends Flash {
             }
             contextMap.put(CONSTANTS.DidWriteCookieAttributeName, Boolean.TRUE);
         } else {
-            // if the cookie is removed, make sure the empty maps are removed from innerMap
-            if (nextFlash != null) {
-                flashManager.expireNext();
-            }
-            if (prevFlash != null) {
-                flashManager.expirePrevious();
-            }
             removeCookie(extContext, toSet);
         }
     }
