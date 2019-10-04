@@ -24,7 +24,7 @@
 
     <groupId>com.sun.faces.test</groupId>
     <artifactId>pom</artifactId>
-    <version>2.3.13-SNAPSHOT</version>
+    <version>2.3.14-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Mojarra ${project.version} - Test</name>
