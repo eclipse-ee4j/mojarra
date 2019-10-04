@@ -16,26 +16,27 @@
 
 package javax.faces.component;
 
-import com.sun.faces.mock.MockRenderKit;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
-import java.io.IOException;
-import javax.faces.FactoryFinder;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseListener;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import javax.el.ValueExpression;
+
 import javax.el.MethodExpression;
+import javax.el.ValueExpression;
+import javax.faces.FactoryFinder;
+import javax.faces.application.ResourceHandler;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
+import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+
+import com.sun.faces.mock.MockRenderKit;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -158,6 +159,43 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         assertNotNull(root.getFacet("javax_faces_location_gt"));
         components = root.getComponentResources(facesContext, "gt");
         assertTrue(components.size() == 1);
+    }
+
+ // Tests that the resources are rendered again if renderall, @all, is set
+    public void testRenderAllComponentResources() {
+        application.addComponent("javax.faces.ComponentResourceContainer", Container.class.getName());
+        UIViewRoot previousRoot = facesContext.getViewRoot();
+        UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
+        //from partial-request we get the resources added to the ViewRoot
+        facesContext.setViewRoot(root);
+        UIOutput script = new UIOutput();
+        script.getAttributes().putIfAbsent("name", "scriptTest");
+        script.getAttributes().putIfAbsent("library", "scriptLibrary");
+
+        root.addComponentResource(facesContext, script);
+
+        facesContext.getPartialViewContext().setPartialRequest(true);
+        //update @all
+        facesContext.getPartialViewContext().setRenderAll(true);
+
+        final PostRestoreStateEvent postRestoreStateEvent = new PostRestoreStateEvent(root);
+        ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
+
+        postRestoreStateEvent.setComponent(root);
+        root.processEvent(postRestoreStateEvent);
+
+        assertFalse("Resource should not be marked as rendered", resourceHandler.isResourceRendered(facesContext, "scriptTest", "scriptLibrary"));
+
+        //partial update i.e. @form
+        facesContext.getPartialViewContext().setRenderAll(false);
+        root.processEvent(postRestoreStateEvent);
+
+        assertTrue("Resource should be marked as rendered", resourceHandler.isResourceRendered(facesContext, "scriptTest", "scriptLibrary"));
+
+        facesContext.getPartialViewContext().setPartialRequest(false);
+        facesContext.getPartialViewContext().setRenderAll(false);
+        facesContext.setViewRoot(previousRoot);
+
     }
 
     // Test AbortProcessingException support

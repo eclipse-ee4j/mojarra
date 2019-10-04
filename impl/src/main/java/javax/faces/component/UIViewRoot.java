@@ -945,7 +945,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
         FacesContext context = event.getFacesContext();
 
-        if (event instanceof PostRestoreStateEvent && context.getPartialViewContext().isPartialRequest()) {
+        if (event instanceof PostRestoreStateEvent && context.getPartialViewContext().isPartialRequest()
+                && !context.getPartialViewContext().isRenderAll()) {
             ResourceHandler resourceHandler = context.getApplication().getResourceHandler();
 
             for (UIComponent resource : getComponentResources(context)) {
