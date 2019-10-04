@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,6 +16,7 @@
 
 package com.sun.faces.cdi;
 
+import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 import static com.sun.faces.cdi.CdiUtils.getAnnotation;
 import static java.util.Collections.unmodifiableMap;
 import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
@@ -79,14 +80,15 @@ public class CdiExtension implements Extension {
      * @param beanManager the bean manager.
      */
     public void beforeBean(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketUserManager.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketSessionManager.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketChannelManager.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketChannelManager.ViewScope.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(InjectionPointGenerator.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketPushContextProducer.class), null);
+        addAnnotatedTypes(beforeBeanDiscovery, beanManager, 
+            WebsocketUserManager.class, 
+            WebsocketSessionManager.class,
+            WebsocketChannelManager.class,
+            WebsocketChannelManager.ViewScope.class,
+            InjectionPointGenerator.class,
+            WebsocketPushContextProducer.class);
     }
-
+    
     /**
      * After bean discovery.
      *
