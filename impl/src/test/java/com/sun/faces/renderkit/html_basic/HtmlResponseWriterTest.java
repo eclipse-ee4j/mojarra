@@ -155,6 +155,9 @@ public class HtmlResponseWriterTest {
         HtmlResponseWriter responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
         responseWriter.startElement("style", null);
         responseWriter.startCDATA();
+        // make sure empty string is handle correct
+        responseWriter.writeText("".toCharArray());
+        responseWriter.writeText("", null);
         responseWriter.writeText(']', null);
         responseWriter.endCDATA();
         responseWriter.endElement("style");
