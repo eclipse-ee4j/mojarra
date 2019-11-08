@@ -910,6 +910,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
         closeStartIfNecessary();
 
+        if (text.length == 0) return;
+
         if (dontEscape) {
             if (writingCdata) {
                 writeUnescapedCData(text, 0, text.length);
@@ -950,6 +952,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
         closeStartIfNecessary();
         String textStr = text.toString();
+
+        if (textStr.length() == 0) return;
 
         if (dontEscape) {
             if (writingCdata) {
