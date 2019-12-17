@@ -47,13 +47,6 @@ public enum VisitHint {
    */
   SKIP_ITERATION,
 
-  /** 
-   * <p class="changed_added_2_3">Same as SKIP_ITERATION, but must not 
-   * be ignored.</p>
-   * @since 2.3
-   */  
-  SKIP_ITERATION_STRICT,
-
   /**
    * <p class="changed_added_2_0 changed_modified_2_3">
    * Hint that indicates that the visit is being performed as part of lifecycle
