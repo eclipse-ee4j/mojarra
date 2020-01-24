@@ -130,6 +130,11 @@ public final class ByteArrayGuardAESCTR {
         
         try {
             byte[] iv = new byte[16];
+
+            if (bytes.length < iv.length) {
+                throw new InvalidKeyException("Invalid characters in decrypted value");
+            }
+
             System.arraycopy(bytes, 0, iv, 0, iv.length);
             IvParameterSpec ivspec = new IvParameterSpec(iv);
 
