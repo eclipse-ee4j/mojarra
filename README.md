@@ -220,9 +220,9 @@ public class YourApplicationConfig {
 
 ## Branches
 
-. master - old work towards JSF.Next, now obsolete because of the javax to jakarta package change
-. 3.0 - Branch working on Mojarra 3.0.0, which with respect to features has no differences with 2.3.x, but will only contain the package change for Jakarta EE 9
-. 2.3 - Branch supporting Jakarta Server Faces 2.3 for Jakarta EE 8. Note that earlier revisions in the branch (pre 2.3.13 were Java EE 8)
+- **master** - old work towards JSF.Next, now obsolete because of the javax to jakarta package change
+- **3.0** - Branch working on Mojarra 3.0.0, which with respect to features has no differences with 2.3.x, but will only contain the package change for Jakarta EE 9
+- **2.3** - Branch supporting Jakarta Server Faces 2.3 for Jakarta EE 8. Note that earlier revisions in the branch (pre 2.3.13 were Java EE 8)
 
 
 ## Building
