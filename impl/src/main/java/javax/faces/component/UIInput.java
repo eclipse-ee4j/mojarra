@@ -1024,10 +1024,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             if (submittedValue == null) {
                 setSubmittedValue("");
             }
-        } else {
-            if (submittedValue == null) {
-                setSubmittedValue("");
-            }
         }
 
         if (compareValues(previous, newValue)) {
