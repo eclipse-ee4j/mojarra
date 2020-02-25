@@ -25,7 +25,7 @@
     <parent>
         <artifactId>pom</artifactId>
         <groupId>com.sun.faces.test.servlet30</groupId>
-        <version>2.3.14-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>app-sets-tccl</artifactId>
     <packaging>war</packaging>
