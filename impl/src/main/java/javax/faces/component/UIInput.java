@@ -856,9 +856,8 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         // If non-null, an instanceof String, and we're configured to treat
         // zero-length Strings as null:
         //   call setSubmittedValue(null)
-        if ((considerEmptyStringNull(context)
-             && submittedValue instanceof String
-             && ((String) submittedValue).length() == 0)) {
+        boolean isEmptyStringNull = (considerEmptyStringNull(context) && submittedValue instanceof String && ((String) submittedValue).length() == 0);
+        if (isEmptyStringNull) {
             setSubmittedValue(null);
             submittedValue = null;
         }
@@ -877,13 +876,18 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
         // If our value is valid, store the new value, erase the
         // "submitted" value, and emit a ValueChangeEvent if appropriate
-        if (isValid()) {
-            Object previous = getValue();
+        Object previous = getValue();
+        if (isValid() && !isEmptyStringNull) {
             setValue(newValue);
             setSubmittedValue(null);
-            if (compareValues(previous, newValue)) {
-                queueEvent(new ValueChangeEvent(context, this, previous, newValue));
+        } else {
+            if (submittedValue == null) {
+                setSubmittedValue("");
             }
+        }
+
+        if (compareValues(previous, newValue)) {
+            queueEvent(new ValueChangeEvent(context, this, previous, newValue));
         }
 
     }
