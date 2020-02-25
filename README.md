@@ -232,7 +232,7 @@ In case you want to checkout this repository and manually build from source your
 ### Faces 3.0.0
 
 1. Make sure that you have JDK 1.8, Ant and Maven installed.
-2. Checkout branch [`master`][28].
+2. Checkout branch [`3.0`][28].
 3. Run the following commands from the root directory of the project:
 
     ```bash
@@ -303,11 +303,11 @@ In case you want to checkout to edit the source code of Mojarra with full IDE su
 
 Pull requests are accepted on following branches:
 
-- [`master`][28] (JSF.next)
-- [`MOJARRA_2_3X_ROLLING`][29] (2.3.x)
-- [`MOJARRA_2_2X_ROLLING`][30] (2.2.x)
+- [`3.0`][28] (3.0.x)
+- [`2.3`][29] (2.3.x)
 
-Note that it's okay to send a PR to the master branch, but these are for JSF.next and not the current 2.3.x version!
+
+Master is currently unused
 
 
 ## Resources
@@ -349,6 +349,6 @@ Note that it's okay to send a PR to the master branch, but these are for JSF.nex
   [25]: http://docs.oracle.com/javaee/7/tutorial/jsf-intro.htm
   [26]: http://arjan-tijms.omnifaces.org/p/jsf-23.html
   [27]: https://github.com/javaeekickoff/java-ee-kickoff-app
-  [28]: https://github.com/javaserverfaces/mojarra
-  [29]: https://github.com/javaserverfaces/mojarra/tree/MOJARRA_2_3X_ROLLING
-  [30]: https://github.com/javaserverfaces/mojarra/tree/MOJARRA_2_2X_ROLLING
+  [28]: https://github.com/eclipse-ee4j/mojarra/tree/3.0
+  [29]: https://github.com/javaserverfaces/mojarra/tree/2.3
+ 
