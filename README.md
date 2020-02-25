@@ -218,11 +218,18 @@ public class YourApplicationConfig {
 }
 ```
 
+## Branches
+
+. master - old work towards JSF.Next, now obsolete because of the javax to jakarta package change
+. 3.0 - Branch working on Mojarra 3.0.0, which with respect to features has no differences with 2.3.x, but will only contain the package change for Jakarta EE 9
+. 2.3 - Branch supporting Jakarta Server Faces 2.3 for Jakarta EE 8. Note that earlier revisions in the branch (pre 2.3.13 were Java EE 8)
+
+
 ## Building
 
 In case you want to checkout this repository and manually build from source yourself (if necessary after editing source code), here are the instructions:
 
-### JSF 2.4 (JSF.next)
+### Faces 3.0.0
 
 1. Make sure that you have JDK 1.8, Ant and Maven installed.
 2. Checkout branch [`master`][28].
@@ -233,7 +240,7 @@ In case you want to checkout this repository and manually build from source your
     mvn clean install
     ```
 
-4. The binary is now available as `impl/target/javax.faces-2.4.x-SNAPSHOT.jar`.
+4. The binary is now available as `impl/target/jakarta.faces-3.0.0.x-SNAPSHOT.jar`.
 
 ### JSF 2.3
 
