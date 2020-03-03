@@ -2,6 +2,7 @@
 <!--
 
     Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2020 Payara Services Ltd.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -34,7 +35,7 @@
     </parent>
     
     <groupId>org.glassfish</groupId>
-    <artifactId>javax.faces</artifactId>
+    <artifactId>jakarta.faces</artifactId>
     <packaging>jar</packaging>
     
     <name>Mojarra ${project.version}</name>
@@ -143,10 +144,10 @@
                 <configuration>
                     <instructions>
                     
-                        <Bundle-SymbolicName>org.glassfish.javax.faces</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.glassfish.jakarta.faces</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-Name>Mojarra JSF Implementation ${project.version}</Bundle-Name>
-                        <Bundle-Description>Mojarra JSF Implementation (javax.faces/2.3) ${project.version}</Bundle-Description>                        
+                        <Bundle-Description>Mojarra JSF Implementation (jakarta.faces/2.3) ${project.version}</Bundle-Description>                        
                         
                         <Specification-Title>JavaServer Faces</Specification-Title>
                         <Specification-Version>2.3</Specification-Version>
@@ -270,8 +271,8 @@
                 <configuration>
                     <comparisonArtifacts>
                         <comparisonArtifact>
-                            <groupId>javax.faces</groupId>
-                            <artifactId>javax.faces-api</artifactId>
+                            <groupId>jakarta.faces</groupId>
+                            <artifactId>jakarta.faces-api</artifactId>
                             <version>2.3</version>
                         </comparisonArtifact>
                     </comparisonArtifacts>
@@ -417,29 +418,29 @@
         
         <!-- Servlet 4 dependency overriding Java EE 7 main dependency -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.0</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>4.0.3</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- Expression Language 3.0.1 overriding Java EE 7 main dependency  -->
         <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>3.0.1-b04</version>
+            <groupId>jakarta.el</groupId>
+            <artifactId>jakarta.el-api</artifactId>
+            <version>3.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>3.0.1-b04</version>
+            <artifactId>jakarta.el</artifactId>
+            <version>3.0.3</version>
         </dependency>
     
-        <!-- The main dependency against which Mojarra 2.3 is created: Java EE 7 -->
+        <!-- The main dependency against which Mojarra 2.3 is created: Jakarta EE 8 -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>8.0.0</version>
             <scope>provided</scope>
         </dependency>
         
@@ -475,12 +476,12 @@
         
         <!-- TEST DEPENDENCIES -->
         
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>2.2.3</version>
+        <!-- <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>3.0.3</version>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
         
         <dependency>
             <groupId>org.easymock</groupId>
@@ -567,8 +568,8 @@
                     </includes>
                     <comparisonArtifacts>
                         <comparisonArtifact>
-                            <groupId>javax.faces</groupId>
-                            <artifactId>javax.faces-api</artifactId>
+                            <groupId>jakarta.faces</groupId>
+                            <artifactId>jakarta.faces-api</artifactId>
                             <version>2.3</version>
                         </comparisonArtifact>
                     </comparisonArtifacts>
