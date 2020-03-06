@@ -312,7 +312,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -483,7 +483,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
         List<PhaseListener> result = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
 
-        return ((result != null) ? Collections.unmodifiableList(result) : Collections.unmodifiableList(Collections.<PhaseListener>emptyList()));
+        return result != null ? Collections.unmodifiableList(result) : Collections.unmodifiableList(Collections.<PhaseListener>emptyList());
 
     }
 
@@ -643,7 +643,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
         List<UIComponent> resources = getComponentResources(context, target, false);
 
-        return ((resources != null) ? resources : Collections.<UIComponent>emptyList());
+        return resources != null ? resources : Collections.<UIComponent>emptyList();
 
     }
 
@@ -866,9 +866,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             }
 
             // true if we have any more ANY_PHASE events
-            hasMoreAnyPhaseEvents = (null != (eventsForPhaseId = events.get(PhaseId.ANY_PHASE.getOrdinal()))) && !eventsForPhaseId.isEmpty();
+            hasMoreAnyPhaseEvents = null != (eventsForPhaseId = events.get(PhaseId.ANY_PHASE.getOrdinal())) && !eventsForPhaseId.isEmpty();
             // true if we have any more events for the argument phaseId
-            hasMoreCurrentPhaseEvents = (null != events.get(phaseId.getOrdinal())) && !events.get(phaseId.getOrdinal()).isEmpty();
+            hasMoreCurrentPhaseEvents = null != events.get(phaseId.getOrdinal()) && !events.get(phaseId.getOrdinal()).isEmpty();
 
         } while (hasMoreAnyPhaseEvents || hasMoreCurrentPhaseEvents);
 
@@ -881,7 +881,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         skipPhase = false;
         beforeMethodException = false;
         List<PhaseListener> listeners = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
-        phaseListenerIterator = ((listeners != null) ? listeners.listIterator() : null);
+        phaseListenerIterator = listeners != null ? listeners.listIterator() : null;
     }
 
     // avoid creating the PhaseEvent if possible by doing redundant
@@ -1139,7 +1139,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
         MethodExpression beforePhase = getBeforePhaseListener();
         MethodExpression afterPhase = getAfterPhaseListener();
-        boolean hasPhaseMethodExpression = (isBefore && (null != beforePhase)) || (!isBefore && (null != afterPhase) && !beforeMethodException);
+        boolean hasPhaseMethodExpression = isBefore && null != beforePhase || !isBefore && null != afterPhase && !beforeMethodException;
         MethodExpression expression = isBefore ? beforePhase : afterPhase;
 
         if (hasPhaseMethodExpression) {
@@ -1152,7 +1152,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
                 }
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "severe.component.unable_to_process_expression",
-                            new Object[] { expression.getExpressionString(), (isBefore ? "beforePhase" : "afterPhase") });
+                            new Object[] { expression.getExpressionString(), isBefore ? "beforePhase" : "afterPhase" });
                 }
                 if (context.getAttributes().containsKey(VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME)) {
                     ExceptionQueuedEventContext extx = new ExceptionQueuedEventContext(context, e);
@@ -1165,8 +1165,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             }
         }
         if (phaseListenerIterator != null && !beforeMethodException) {
-            while ((isBefore) ? phaseListenerIterator.hasNext() : phaseListenerIterator.hasPrevious()) {
-                PhaseListener curListener = ((isBefore) ? phaseListenerIterator.next() : phaseListenerIterator.previous());
+            while (isBefore ? phaseListenerIterator.hasNext() : phaseListenerIterator.hasPrevious()) {
+                PhaseListener curListener = isBefore ? phaseListenerIterator.next() : phaseListenerIterator.previous();
                 if (phaseId == curListener.getPhaseId() || PhaseId.ANY_PHASE == curListener.getPhaseId()) {
                     try {
                         if (isBefore) {
@@ -1208,7 +1208,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             lifecycle = lifecycleFactory.getLifecycle(lifecycleId);
         }
 
-        return (new PhaseEvent(context, phaseId, lifecycle));
+        return new PhaseEvent(context, phaseId, lifecycle);
 
     }
 
@@ -1380,7 +1380,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             return UIViewRoot.UNIQUE_ID_PREFIX + seed;
         } else {
             Integer i = (Integer) getStateHelper().get(PropertyKeys.lastId);
-            int lastId = ((i != null) ? i : 0);
+            int lastId = i != null ? i : 0;
             getStateHelper().put(PropertyKeys.lastId, ++lastId);
             return UIViewRoot.UNIQUE_ID_PREFIX + lastId;
         }
@@ -1444,7 +1444,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         int j = 0;
 
         // to have a language, the length must be >= 2
-        if ((inputLength >= 2) && ((i = indexOfSet(localeStr, seps, 0)) == -1)) {
+        if (inputLength >= 2 && (i = indexOfSet(localeStr, seps, 0)) == -1) {
             // we have only Language, no country or variant
             if (2 != localeStr.length()) {
                 throw new IllegalArgumentException("Illegal locale String: " + localeStr);
@@ -1457,7 +1457,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             lang = localeStr.substring(0, i);
             // look for the country sep.
             // to have a country, the length must be >= 5
-            if ((inputLength >= 5) && (-1 == (j = indexOfSet(localeStr, seps, i + 1)))) {
+            if (inputLength >= 5 && -1 == (j = indexOfSet(localeStr, seps, i + 1))) {
                 // no further separators, length must be 5
                 if (inputLength != 5) {
                     throw new IllegalArgumentException("Illegal locale String: " + localeStr);
@@ -1766,7 +1766,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             values = new Object[] { superState, viewMapId };
         }
 
-        return (values);
+        return values;
 
     }
 
@@ -1826,7 +1826,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             getFacets().put(location, facet);
         }
 
-        return ((facet != null) ? facet.getChildren() : null);
+        return facet != null ? facet.getChildren() : null;
 
     }
 

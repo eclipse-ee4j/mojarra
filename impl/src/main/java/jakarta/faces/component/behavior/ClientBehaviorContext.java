@@ -166,7 +166,7 @@ public abstract class ClientBehaviorContext {
             this.eventName = eventName;
             this.sourceId = sourceId;
 
-            this.parameters = (parameters == null) ? Collections.<ClientBehaviorContext.Parameter>emptyList() : parameters;
+            this.parameters = parameters == null ? Collections.<ClientBehaviorContext.Parameter>emptyList() : parameters;
         }
 
         @Override

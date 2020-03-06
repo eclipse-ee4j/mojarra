@@ -45,7 +45,7 @@ public class RequestHeaderMap extends BaseContextMap<String> {
     public String get(Object key) {
         Util.notNull("key", key);
 
-        return (request.getHeader(key.toString()));
+        return request.getHeader(key.toString());
     }
 
     @Override
@@ -65,7 +65,7 @@ public class RequestHeaderMap extends BaseContextMap<String> {
 
     @Override
     public boolean containsKey(Object key) {
-        return (request.getHeader(key.toString()) != null);
+        return request.getHeader(key.toString()) != null;
     }
 
     @Override

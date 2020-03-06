@@ -90,7 +90,7 @@ public class FormRenderer extends HtmlBasicRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
         String clientId = component.getClientId(context);
         // since method and action are rendered here they are not added
         // to the pass through attributes in Util class.
@@ -129,7 +129,7 @@ public class FormRenderer extends HtmlBasicRenderer {
         ExternalContext externalContext = context.getExternalContext();
         String encodedActionURL = externalContext.encodeActionURL(actionURL);
         String encodedPartialActionURL = externalContext.encodePartialActionURL(actionURL);
-        if (encodedPartialActionURL != null && (!encodedPartialActionURL.equals(encodedActionURL))) {
+        if (encodedPartialActionURL != null && !encodedPartialActionURL.equals(encodedActionURL)) {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", "type");
             writer.writeAttribute("name", getParameterName(context, "jakarta.faces.encodedURL"), null);
@@ -154,12 +154,12 @@ public class FormRenderer extends HtmlBasicRenderer {
 
         // Render the end tag for form
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         // Render ay resources that have been targeted for this form.
 
         UIViewRoot viewRoot = context.getViewRoot();
-        ListIterator iter = (viewRoot.getComponentResources(context, "form")).listIterator();
+        ListIterator iter = viewRoot.getComponentResources(context, "form").listIterator();
         while (iter.hasNext()) {
             UIComponent resource = (UIComponent) iter.next();
             resource.encodeAll(context);
@@ -187,7 +187,7 @@ public class FormRenderer extends HtmlBasicRenderer {
 
         String viewId = context.getViewRoot().getViewId();
         String actionURL = context.getApplication().getViewHandler().getActionURL(context, viewId);
-        return (context.getExternalContext().encodeActionURL(actionURL));
+        return context.getExternalContext().encodeActionURL(actionURL);
 
     }
 

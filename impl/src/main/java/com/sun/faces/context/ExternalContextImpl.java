@@ -141,7 +141,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Object getSession(boolean create) {
-        return (((HttpServletRequest) request).getSession(create));
+        return ((HttpServletRequest) request).getSession(create);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public String getContextName() {
 
-        if (servletContext.getMajorVersion() >= 3 || (servletContext.getMajorVersion() == 2 && servletContext.getMinorVersion() == 5)) {
+        if (servletContext.getMajorVersion() >= 3 || servletContext.getMajorVersion() == 2 && servletContext.getMinorVersion() == 5) {
             return servletContext.getServletContextName();
         } else {
             // for servlet 2.4 support
@@ -394,7 +394,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Iterator<Locale> getRequestLocales() {
-        return (new LocalesIterator(request.getLocales()));
+        return new LocalesIterator(request.getLocales());
     }
 
     /**
@@ -402,7 +402,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String getRequestPathInfo() {
-        return (((HttpServletRequest) request).getPathInfo());
+        return ((HttpServletRequest) request).getPathInfo();
     }
 
     /**
@@ -418,7 +418,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String getRequestContextPath() {
-        return (((HttpServletRequest) request).getContextPath());
+        return ((HttpServletRequest) request).getContextPath();
     }
 
     /**
@@ -426,7 +426,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String getRequestServletPath() {
-        return (((HttpServletRequest) request).getServletPath());
+        return ((HttpServletRequest) request).getServletPath();
     }
 
     /**
@@ -434,7 +434,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String getRequestCharacterEncoding() {
-        return (request.getCharacterEncoding());
+        return request.getCharacterEncoding();
     }
 
     /**
@@ -442,7 +442,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String getRequestContentType() {
-        return (request.getContentType());
+        return request.getContentType();
     }
 
     /**
@@ -450,7 +450,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public int getRequestContentLength() {
-        return (request.getContentLength());
+        return request.getContentLength();
     }
 
     /**
@@ -458,7 +458,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String getResponseCharacterEncoding() {
-        return (response.getCharacterEncoding());
+        return response.getCharacterEncoding();
     }
 
     /**
@@ -466,7 +466,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String getResponseContentType() {
-        return (response.getContentType());
+        return response.getContentType();
     }
 
     /**
@@ -974,7 +974,7 @@ public class ExternalContextImpl extends ExternalContext {
             encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
 
-        String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
+        String currentResponseEncoding = null != encodingFromContext ? encodingFromContext : getResponseCharacterEncoding();
 
         UrlBuilder builder = new UrlBuilder(baseUrl, currentResponseEncoding);
         builder.addParameters(parameters);
@@ -990,7 +990,7 @@ public class ExternalContextImpl extends ExternalContext {
             encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
 
-        String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
+        String currentResponseEncoding = null != encodingFromContext ? encodingFromContext : getResponseCharacterEncoding();
 
         UrlBuilder builder = new UrlBuilder(baseUrl, currentResponseEncoding);
         builder.addParameters(parameters);
@@ -1013,7 +1013,7 @@ public class ExternalContextImpl extends ExternalContext {
             encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
 
-        String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
+        String currentResponseEncoding = null != encodingFromContext ? encodingFromContext : getResponseCharacterEncoding();
 
         UrlBuilder builder = new UrlBuilder(url, currentResponseEncoding);
         return ((HttpServletResponse) response).encodeURL(builder.createUrl());

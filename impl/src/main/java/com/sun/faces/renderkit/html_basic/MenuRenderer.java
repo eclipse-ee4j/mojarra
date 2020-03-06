@@ -119,7 +119,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             }
 
             if (convertedValue == null) {
-                Object[] params = { (newValues == null) ? "" : stream(newValues).collect(joining("")), valueExpression.getExpressionString() };
+                Object[] params = { newValues == null ? "" : stream(newValues).collect(joining("")), valueExpression.getExpressionString() };
                 throw new ConverterException(getExceptionMessage(CONVERSION_ERROR_MESSAGE_ID, params));
             }
         } else {
@@ -200,9 +200,9 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             // (need a better way to determine the currently processing UIComponent ...)
             RequestStateManager.set(context, TARGET_COMPONENT_ATTRIBUTE_NAME, component);
 
-            return convertSelectManyValue(context, ((UISelectMany) component), (String[]) submittedValue);
+            return convertSelectManyValue(context, (UISelectMany) component, (String[]) submittedValue);
         } else {
-            return convertSelectOneValue(context, ((UISelectOne) component), (String) submittedValue);
+            return convertSelectOneValue(context, (UISelectOne) component, (String) submittedValue);
         }
 
     }
@@ -293,7 +293,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
         Collection<Object> collection = null;
         Converter<?> converter;
-        int length = (null != newValues) ? newValues.length : 0;
+        int length = null != newValues ? newValues.length : 0;
 
         // See if the collectionType hint is available, if so, use that.
         Object collectionTypeHint = uiSelectMany.getAttributes().get("collectionType");
@@ -397,9 +397,9 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
         writer.writeText("\t", component, null);
-        writer.startElement("option", (null != selectComponent) ? selectComponent : component);
+        writer.startElement("option", null != selectComponent ? selectComponent : component);
         writer.writeAttribute("value", valueString, "value");
 
         if (isSelected) {
@@ -537,7 +537,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
                     return true;
                 }
 
-                if ((value == null) ^ (itemValue == null)) {
+                if (value == null ^ itemValue == null) {
                     continue;
                 }
 
@@ -584,12 +584,12 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
             if (item instanceof SelectItemGroup) {
                 // render OPTGROUP
-                writer.startElement("optgroup", (null != selectComponent) ? selectComponent : component);
+                writer.startElement("optgroup", null != selectComponent ? selectComponent : component);
                 writer.writeAttribute("label", item.getLabel(), "label");
 
                 // if the component is disabled, "disabled" attribute would be rendered
                 // on "select" tag, so don't render "disabled" on every option.
-                if ((!optionInfo.isDisabled()) && item.isDisabled()) {
+                if (!optionInfo.isDisabled() && item.isDisabled()) {
                     writer.writeAttribute("disabled", true, "disabled");
                 }
                 count++;

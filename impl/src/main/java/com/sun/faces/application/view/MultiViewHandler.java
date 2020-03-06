@@ -850,7 +850,7 @@ public class MultiViewHandler extends ViewHandler {
         // extension. If jakarta.faces.DEFAULT_SUFFIX is not explicitly set,
         // we honor the default 1.2 behavior and use ".jsp" as the suffix.
 
-        String extension = (extensionsSet && !(configuredExtensions.length == 0)) ? configuredExtensions[0] : ".jsp";
+        String extension = extensionsSet && !(configuredExtensions.length == 0) ? configuredExtensions[0] : ".jsp";
 
         if (viewId.endsWith(extension)) {
             return viewId;

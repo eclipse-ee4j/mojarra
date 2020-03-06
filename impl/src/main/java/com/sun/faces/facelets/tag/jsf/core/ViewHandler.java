@@ -84,9 +84,9 @@ public final class ViewHandler extends TagHandlerImpl {
         contentType = getAttribute("contentType");
         encoding = getAttribute("encoding");
         TagAttribute testForNull = getAttribute("beforePhase");
-        beforePhase = (null == testForNull) ? getAttribute("beforePhaseListener") : testForNull;
+        beforePhase = null == testForNull ? getAttribute("beforePhaseListener") : testForNull;
         testForNull = getAttribute("afterPhase");
-        afterPhase = (null == testForNull) ? getAttribute("afterPhaseListener") : testForNull;
+        afterPhase = null == testForNull ? getAttribute("afterPhaseListener") : testForNull;
         contracts = getAttribute("contracts");
         transientFlag = getAttribute("transient");
     }
@@ -145,8 +145,8 @@ public final class ViewHandler extends TagHandlerImpl {
 
             // At this point in the lifecycle we should have a non-null/empty
             // view id. The partial state saving check below requires this.
-            assert (null != viewId);
-            assert (0 < viewId.length());
+            assert null != viewId;
+            assert 0 < viewId.length();
 
         }
 

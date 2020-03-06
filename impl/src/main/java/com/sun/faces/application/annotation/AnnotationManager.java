@@ -377,7 +377,7 @@ public class AnnotationManager {
                 }
             }
 
-            return ((map != null) ? map : EMPTY);
+            return map != null ? map : EMPTY;
 
         }
 

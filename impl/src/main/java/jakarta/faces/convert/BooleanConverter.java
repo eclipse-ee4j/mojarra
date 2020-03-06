@@ -81,17 +81,17 @@ public class BooleanConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         // Let them know that the value being converted is not specifically
         // "true" or "false".
         try {
-            return (Boolean.valueOf(value));
+            return Boolean.valueOf(value);
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, BOOLEAN_ID, value, MessageFactory.getLabel(context, component)), e);
         }

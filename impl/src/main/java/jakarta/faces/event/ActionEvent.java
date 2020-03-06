@@ -65,7 +65,7 @@ public class ActionEvent extends FacesEvent {
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
 
-        return (listener instanceof ActionListener);
+        return listener instanceof ActionListener;
 
     }
 

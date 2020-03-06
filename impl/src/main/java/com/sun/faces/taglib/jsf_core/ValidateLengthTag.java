@@ -92,7 +92,7 @@ public class ValidateLengthTag extends MaxMinValidatorTag {
     protected Validator createValidator() throws JspException {
 
         LengthValidator result = (LengthValidator) super.createValidator();
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         if (maximumSet) {

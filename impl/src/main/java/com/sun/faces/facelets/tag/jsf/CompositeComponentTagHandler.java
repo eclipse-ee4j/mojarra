@@ -301,7 +301,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         } else {
             facetComponent = (UIPanel) c.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         }
-        assert (null != facetComponent);
+        assert null != facetComponent;
 
         try {
             VariableMapper wrapper = new VariableMapperWrapper(orig) {
@@ -381,7 +381,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
                 if (compDescriptor != null) {
                     // composite:attribute declaration...
                     Object obj = compDescriptor.getValue("type");
-                    if ((null != obj) && !(obj instanceof Class)) {
+                    if (null != obj && !(obj instanceof Class)) {
                         ValueExpression typeVE = (ValueExpression) obj;
                         String className = (String) typeVE.getValue(FacesContext.getCurrentInstance().getELContext());
                         if (className != null) {
@@ -422,7 +422,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             private String prefix(String className) {
 
                 if (className.indexOf('.') == -1 && Character.isUpperCase(className.charAt(0))) {
-                    return ("java.lang." + className);
+                    return "java.lang." + className;
                 } else {
                     return className;
                 }
@@ -526,7 +526,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
 
                 ValueExpression ve = attr.getValueExpression(ctx, type);
                 UIComponent cc = (UIComponent) instance;
-                assert (UIComponent.isCompositeComponent(cc));
+                assert UIComponent.isCompositeComponent(cc);
                 Map<String, Object> attrs = cc.getAttributes();
                 BeanInfo componentMetadata = (BeanInfo) attrs.get(UIComponent.BEANINFO_KEY);
                 BeanDescriptor desc = componentMetadata.getBeanDescriptor();

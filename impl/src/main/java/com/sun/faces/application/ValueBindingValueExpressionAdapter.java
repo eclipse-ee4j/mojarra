@@ -59,7 +59,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
      */
     @Override
     public String getExpressionString() {
-        assert (null != valueExpression);
+        assert null != valueExpression;
         return valueExpression.getExpressionString();
     }
 
@@ -227,7 +227,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
         if (other instanceof ValueBindingValueExpressionAdapter) {
             ValueExpression expr = ((ValueBindingValueExpressionAdapter) other).getWrapped();
-            return (valueExpression.equals(expr));
+            return valueExpression.equals(expr);
         } else if (other instanceof ValueBinding) {
             FacesContext context = FacesContext.getCurrentInstance();
             ValueBinding otherVB = (ValueBinding) other;
@@ -242,7 +242,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     @Override
     public int hashCode() {
-        assert (null != valueExpression);
+        assert null != valueExpression;
         return valueExpression.hashCode();
     }
 

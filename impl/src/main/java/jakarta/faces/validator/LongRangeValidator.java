@@ -170,7 +170,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
      */
     public long getMaximum() {
 
-        return (maximum != null ? maximum : 0);
+        return maximum != null ? maximum : 0;
 
     }
 
@@ -199,7 +199,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
      */
     public long getMinimum() {
 
-        return (minimum != null ? minimum : 0);
+        return minimum != null ? minimum : 0;
 
     }
 
@@ -226,13 +226,13 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
-        if ((context == null) || (component == null)) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
         if (value != null) {
             try {
                 long converted = longValue(value);
-                if (isMaximumSet() && (converted > maximum)) {
+                if (isMaximumSet() && converted > maximum) {
                     if (isMinimumSet()) {
                         throw new ValidatorException(MessageFactory.getMessage(context, NOT_IN_RANGE_MESSAGE_ID, stringValue(component, minimum, context),
                                 stringValue(component, maximum, context), MessageFactory.getLabel(context, component)));
@@ -242,7 +242,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
                                 MessageFactory.getLabel(context, component)));
                     }
                 }
-                if (isMinimumSet() && (converted < minimum)) {
+                if (isMinimumSet() && converted < minimum) {
                     if (isMaximumSet()) {
                         throw new ValidatorException(MessageFactory.getMessage(context, NOT_IN_RANGE_MESSAGE_ID, stringValue(component, minimum, context),
                                 stringValue(component, maximum, context), MessageFactory.getLabel(context, component)));
@@ -266,8 +266,8 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
             return false;
         }
         LongRangeValidator other = (LongRangeValidator) otherObj;
-        return ((getMaximum() == other.getMaximum()) && (getMinimum() == other.getMinimum()) && (isMaximumSet() == other.isMaximumSet())
-                && (isMinimumSet() == other.isMinimumSet()));
+        return getMaximum() == other.getMaximum() && getMinimum() == other.getMinimum() && isMaximumSet() == other.isMaximumSet()
+                && isMinimumSet() == other.isMinimumSet();
 
     }
 
@@ -276,7 +276,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
 
         int hashCode = Long.valueOf(getMinimum()).hashCode() + Long.valueOf(getMaximum()).hashCode() + Boolean.valueOf(isMinimumSet()).hashCode()
                 + Boolean.valueOf(isMaximumSet()).hashCode();
-        return (hashCode);
+        return hashCode;
 
     }
 
@@ -293,9 +293,9 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
     private static long longValue(Object attributeValue) throws NumberFormatException {
 
         if (attributeValue instanceof Number) {
-            return (((Number) attributeValue).longValue());
+            return ((Number) attributeValue).longValue();
         } else {
-            return (Long.parseLong(attributeValue.toString()));
+            return Long.parseLong(attributeValue.toString());
         }
 
     }
@@ -309,13 +309,13 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
 
     private boolean isMinimumSet() {
 
-        return (minimum != null);
+        return minimum != null;
 
     }
 
     private boolean isMaximumSet() {
 
-        return (maximum != null);
+        return maximum != null;
 
     }
 
@@ -331,7 +331,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
             Object values[] = new Object[2];
             values[0] = maximum;
             values[1] = minimum;
-            return (values);
+            return values;
         }
         return null;
 
@@ -356,7 +356,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (transientValue);
+        return transientValue;
 
     }
 

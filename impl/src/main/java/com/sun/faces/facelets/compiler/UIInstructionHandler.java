@@ -106,7 +106,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
                 // mark it owned by a facelet instance
                 String uid;
                 IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-                String mid = ((mapper != null) ? mapper.getAliasedId(id) : id);
+                String mid = mapper != null ? mapper.getAliasedId(id) : id;
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
                 if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);

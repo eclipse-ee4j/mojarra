@@ -47,10 +47,12 @@ public class TypedCollections {
      */
     @SuppressWarnings("unchecked")
     public static <E, TypedC extends Collection<E>> TypedC dynamicallyCastCollection(Collection<?> c, Class<E> type, Class<TypedC> collectionType) {
-        if (c == null)
+        if (c == null) {
             return null;
-        if (!collectionType.isInstance(c))
+        }
+        if (!collectionType.isInstance(c)) {
             throw new ClassCastException(c.getClass().getName());
+        }
         assert checkCollectionMembers(c, type) : "The collection contains members with a type other than " + type.getName();
 
         return collectionType.cast(c);

@@ -44,7 +44,7 @@ public class ReturnNodeImpl extends ReturnNode implements Serializable {
 
         if (null != fromOutcome) {
             Object objResult = fromOutcome.getValue(context.getELContext());
-            result = (null != objResult) ? objResult.toString() : null;
+            result = null != objResult ? objResult.toString() : null;
         }
         return result;
     }

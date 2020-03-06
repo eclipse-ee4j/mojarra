@@ -72,7 +72,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         UIViewRoot viewRoot = context.getViewRoot();
-        ListIterator iter = (viewRoot.getComponentResources(context, "body")).listIterator();
+        ListIterator iter = viewRoot.getComponentResources(context, "body").listIterator();
         while (iter.hasNext()) {
             UIComponent resource = (UIComponent) iter.next();
             resource.encodeAll(context);

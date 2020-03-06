@@ -212,7 +212,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         Boolean isResourceRequest = (Boolean) RequestStateManager.get(context, RESOURCE_REQUEST);
         if (isResourceRequest == null) {
             String resourceId = normalizeResourceRequest(context);
-            isResourceRequest = (resourceId != null ? resourceId.startsWith(RESOURCE_IDENTIFIER) : FALSE);
+            isResourceRequest = resourceId != null ? resourceId.startsWith(RESOURCE_IDENTIFIER) : FALSE;
             RequestStateManager.set(context, RESOURCE_REQUEST, isResourceRequest);
         }
 
@@ -255,15 +255,15 @@ public class ResourceHandlerImpl extends ResourceHandler {
             return;
         }
 
-        assert (null != resourceId);
-        assert (resourceId.startsWith(RESOURCE_IDENTIFIER));
+        assert null != resourceId;
+        assert resourceId.startsWith(RESOURCE_IDENTIFIER);
 
         Resource resource = null;
         String resourceName = null;
         String libraryName = null;
         if (RESOURCE_IDENTIFIER.length() < resourceId.length()) {
             resourceName = resourceId.substring(RESOURCE_IDENTIFIER.length() + 1);
-            assert (resourceName != null);
+            assert resourceName != null;
             libraryName = context.getExternalContext().getRequestParameterMap().get("ln");
 
             boolean createResource;
@@ -344,7 +344,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private boolean libraryNameIsSafe(String libraryName) {
-        assert (null != libraryName);
+        assert null != libraryName;
         boolean result;
 
         result = !(libraryName.startsWith(".") ||

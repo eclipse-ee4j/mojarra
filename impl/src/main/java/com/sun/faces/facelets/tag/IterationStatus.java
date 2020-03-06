@@ -59,9 +59,9 @@ public class IterationStatus implements Serializable {
         this.first = first;
         this.last = last;
         this.current = current;
-        int iBegin = ((begin != null) ? begin : 0);
-        int iStep = ((step != null) ? step : 1);
-        even = ((index - iBegin) / iStep) % 2 == 0;
+        int iBegin = begin != null ? begin : 0;
+        int iStep = step != null ? step : 1;
+        even = (index - iBegin) / iStep % 2 == 0;
         this.iterationCount = iterationCount;
     }
 

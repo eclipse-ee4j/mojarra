@@ -414,7 +414,7 @@ public final class DevTools {
 
     private static boolean isText(UIComponent c) {
 
-        return (c.getClass().getName().startsWith("com.sun.faces.facelets.compiler"));
+        return c.getClass().getName().startsWith("com.sun.faces.facelets.compiler");
 
     }
 

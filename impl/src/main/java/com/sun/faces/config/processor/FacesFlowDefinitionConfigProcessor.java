@@ -207,7 +207,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     private List<FlowDefinitionDocument> getSavedFlowDefinitions(FacesContext context) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
         List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
-        return (null != def) ? def : Collections.EMPTY_LIST;
+        return null != def ? def : Collections.EMPTY_LIST;
     }
 
     private void clearSavedFlowDefinitions(FacesContext context) {

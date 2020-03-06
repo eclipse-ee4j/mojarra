@@ -81,7 +81,7 @@ public final class ComponentSupport {
         }
 
         String rendererType = config.getRendererType();
-        return ("jakarta.faces.resource.Script".equals(rendererType) || "jakarta.faces.resource.Stylesheet".equals(rendererType));
+        return "jakarta.faces.resource.Script".equals(rendererType) || "jakarta.faces.resource.Stylesheet".equals(rendererType);
     }
 
     public static boolean isBuildingNewComponentTree(FacesContext context) {
@@ -127,7 +127,7 @@ public final class ComponentSupport {
                 if (attrs.containsKey(MARK_DELETED)) {
                     itr.remove();
                 } else if (UIComponent.COMPOSITE_FACET_NAME.equals(curEntry.getKey())
-                        || (attrs.containsKey(IMPLICIT_PANEL) && !curEntry.getKey().equals(UIViewRoot.METADATA_FACET_NAME))) {
+                        || attrs.containsKey(IMPLICIT_PANEL) && !curEntry.getKey().equals(UIViewRoot.METADATA_FACET_NAME)) {
                     List<UIComponent> implicitPanelChildren = fc.getChildren();
                     UIComponent innerChild;
                     for (Iterator<UIComponent> innerItr = implicitPanelChildren.iterator(); innerItr.hasNext();) {
@@ -226,7 +226,7 @@ public final class ComponentSupport {
     public static UIComponent findChildByTagId(FacesContext context, UIComponent parent, String id) {
         UIComponent c = null;
         UIViewRoot root = context.getViewRoot();
-        boolean hasDynamicComponents = (null != root && root.getAttributes().containsKey(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS));
+        boolean hasDynamicComponents = null != root && root.getAttributes().containsKey(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS);
         String cid = null;
         List<UIComponent> components;
         String facetName = getFacetName(parent);
@@ -511,7 +511,7 @@ public final class ComponentSupport {
             Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
             Object attrValue = null;
             for (TagAttribute cur : passthroughAttrs) {
-                attrValue = (cur.isLiteral()) ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
+                attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
                 componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
             }
         }

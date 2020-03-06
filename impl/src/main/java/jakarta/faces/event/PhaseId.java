@@ -87,7 +87,7 @@ public class PhaseId implements Comparable {
      */
     public int getOrdinal() {
 
-        return (ordinal);
+        return ordinal;
 
     }
 
@@ -99,10 +99,10 @@ public class PhaseId implements Comparable {
     @Override
     public String toString() {
         if (null == phaseName) {
-            return (String.valueOf(ordinal));
+            return String.valueOf(ordinal);
         }
 
-        return (String.valueOf(phaseName) + ' ' + ordinal);
+        return String.valueOf(phaseName) + ' ' + ordinal;
     }
 
     /**

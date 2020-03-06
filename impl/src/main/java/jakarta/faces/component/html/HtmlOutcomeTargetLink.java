@@ -68,7 +68,7 @@ public class HtmlOutcomeTargetLink extends UIOutcomeTarget implements ClientBeha
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

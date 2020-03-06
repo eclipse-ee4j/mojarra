@@ -172,7 +172,7 @@ public class SelectItem implements Serializable {
      */
     public String getDescription() {
 
-        return (description);
+        return description;
 
     }
 
@@ -199,7 +199,7 @@ public class SelectItem implements Serializable {
      */
     public boolean isDisabled() {
 
-        return (disabled);
+        return disabled;
 
     }
 
@@ -225,7 +225,7 @@ public class SelectItem implements Serializable {
      */
     public String getLabel() {
 
-        return (label);
+        return label;
 
     }
 
@@ -249,7 +249,7 @@ public class SelectItem implements Serializable {
      */
     public Object getValue() {
 
-        return (value);
+        return value;
 
     }
 

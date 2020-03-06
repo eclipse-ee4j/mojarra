@@ -74,19 +74,19 @@ public class LibraryInfo {
             return true;
         }
         final LibraryInfo other = (LibraryInfo) obj;
-        if ((name == null) ? (other.name != null) : !name.equals(other.name)) {
+        if (name == null ? other.name != null : !name.equals(other.name)) {
             return false;
         }
         if (version != other.version && (version == null || !version.equals(other.version))) {
             return false;
         }
-        if ((localePrefix == null) ? (other.localePrefix != null) : !localePrefix.equals(other.localePrefix)) {
+        if (localePrefix == null ? other.localePrefix != null : !localePrefix.equals(other.localePrefix)) {
             return false;
         }
-        if ((contract == null) ? (other.contract != null) : !contract.equals(other.contract)) {
+        if (contract == null ? other.contract != null : !contract.equals(other.contract)) {
             return false;
         }
-        if ((path == null) ? (other.path != null) : !path.equals(other.path)) {
+        if (path == null ? other.path != null : !path.equals(other.path)) {
             return false;
         }
         return true;
@@ -157,8 +157,8 @@ public class LibraryInfo {
 
     @Override
     public String toString() {
-        return "LibraryInfo{" + "name='" + (name != null ? name : "NONE") + '\'' + ", version=" + ((version != null) ? version : "NONE") + '\''
-                + ", localePrefix='" + ((localePrefix != null) ? localePrefix : "NONE") + '\'' + ", contract='" + ((contract != null) ? contract : "NONE")
+        return "LibraryInfo{" + "name='" + (name != null ? name : "NONE") + '\'' + ", version=" + (version != null ? version : "NONE") + '\''
+                + ", localePrefix='" + (localePrefix != null ? localePrefix : "NONE") + '\'' + ", contract='" + (contract != null ? contract : "NONE")
                 + '\'' + ", path='" + path + '\'' + '}';
     }
 

@@ -116,7 +116,7 @@ public class DefaultFaceletFactory {
         baseUrl = resolver.resolveUrl("/");
         idMappers = new Cache<>(new IdMapperFactory());
         // this.location = url;
-        refreshPeriod = (refreshPeriod >= 0) ? refreshPeriod * 1000 : -1;
+        refreshPeriod = refreshPeriod >= 0 ? refreshPeriod * 1000 : -1;
         this.refreshPeriod = refreshPeriod;
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Using ResourceResolver: {0}", resolver);

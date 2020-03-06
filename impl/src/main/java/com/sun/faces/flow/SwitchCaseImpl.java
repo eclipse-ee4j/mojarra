@@ -44,7 +44,7 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
             conditionExpr = factory.createValueExpression(context.getELContext(), condition, Boolean.class);
         }
 
-        return ((conditionExpr != null) ? (Boolean) conditionExpr.getValue(context.getELContext()) : Boolean.FALSE);
+        return conditionExpr != null ? (Boolean) conditionExpr.getValue(context.getELContext()) : Boolean.FALSE;
     }
 
     public void setCondition(String condition) {

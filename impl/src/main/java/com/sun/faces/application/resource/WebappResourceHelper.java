@@ -77,10 +77,10 @@ public class WebappResourceHelper extends ResourceHelper {
             return false;
         }
         final WebappResourceHelper other = (WebappResourceHelper) obj;
-        if ((BASE_RESOURCE_PATH == null) ? (other.BASE_RESOURCE_PATH != null) : !BASE_RESOURCE_PATH.equals(other.BASE_RESOURCE_PATH)) {
+        if (BASE_RESOURCE_PATH == null ? other.BASE_RESOURCE_PATH != null : !BASE_RESOURCE_PATH.equals(other.BASE_RESOURCE_PATH)) {
             return false;
         }
-        if ((BASE_CONTRACTS_PATH == null) ? (other.BASE_CONTRACTS_PATH != null) : !BASE_CONTRACTS_PATH.equals(other.BASE_CONTRACTS_PATH)) {
+        if (BASE_CONTRACTS_PATH == null ? other.BASE_CONTRACTS_PATH != null : !BASE_CONTRACTS_PATH.equals(other.BASE_CONTRACTS_PATH)) {
             return false;
         }
         if (cacheTimestamp != other.cacheTimestamp) {

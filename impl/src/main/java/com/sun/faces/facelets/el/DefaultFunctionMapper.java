@@ -139,7 +139,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          */
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeUTF((prefix != null) ? prefix : "");
+            out.writeUTF(prefix != null ? prefix : "");
             out.writeUTF(localName);
             out.writeUTF(m.getDeclaringClass().getName());
             out.writeUTF(m.getName());

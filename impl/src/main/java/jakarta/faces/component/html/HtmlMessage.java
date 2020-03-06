@@ -60,7 +60,7 @@ public class HtmlMessage extends UIMessage {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

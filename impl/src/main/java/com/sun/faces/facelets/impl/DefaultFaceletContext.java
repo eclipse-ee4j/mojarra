@@ -325,8 +325,9 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         for (int i = 0, size = clients.size(); i < size && !found; i++) {
             client = clients.get(i);
             // noinspection EqualsBetweenInconvertibleTypes
-            if (client.equals(facelet))
+            if (client.equals(facelet)) {
                 continue;
+            }
             found = client.apply(this, parent, name);
         }
 
@@ -351,7 +352,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         @Override
         public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
 
-            String testName = (name != null) ? name : "facelets._NULL_DEF_";
+            String testName = name != null ? name : "facelets._NULL_DEF_";
             if (names.contains(testName)) {
                 return false;
             } else {

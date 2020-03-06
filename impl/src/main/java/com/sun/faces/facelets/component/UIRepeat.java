@@ -220,14 +220,14 @@ public class UIRepeat extends UINamingContainer {
                         throw new IllegalArgumentException("end");
                     }
                 } else {
-                    int b = (begin == null) ? 0 : begin;
+                    int b = begin == null ? 0 : begin;
                     int e = end;
-                    int d = (b < e) ? 1 : (b > e) ? -1 : 0;
+                    int d = b < e ? 1 : b > e ? -1 : 0;
                     int s = Math.abs(e - b) + 1;
                     Integer[] array = new Integer[s];
 
                     for (int i = 0; i < s; i++) {
-                        array[i] = b + (i * d);
+                        array[i] = b + i * d;
                     }
 
                     model = new ArrayDataModel<>(array);
@@ -432,14 +432,14 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean keepSaved(FacesContext context) {
 
-        return (hasErrorMessages(context) || isNestedInIterator());
+        return hasErrorMessages(context) || isNestedInIterator();
 
     }
 
     private boolean hasErrorMessages(FacesContext context) {
 
         FacesMessage.Severity sev = context.getMaximumSeverity();
-        return (sev != null && (FacesMessage.SEVERITY_ERROR.compareTo(sev) <= 0));
+        return sev != null && FacesMessage.SEVERITY_ERROR.compareTo(sev) <= 0;
 
     }
 
@@ -493,8 +493,9 @@ public class UIRepeat extends UINamingContainer {
     public void process(FacesContext faces, PhaseId phase) {
 
         // stop if not rendered
-        if (!isRendered())
+        if (!isRendered()) {
             return;
+        }
 
         // clear datamodel
         resetDataModel();
@@ -536,16 +537,16 @@ public class UIRepeat extends UINamingContainer {
                 }
 
                 int rowCount = getDataModel().getRowCount();
-                int i = ((begin != null) ? begin : 0);
-                int e = ((end != null) ? end : rowCount);
-                int s = ((step != null) ? step : 1);
+                int i = begin != null ? begin : 0;
+                int e = end != null ? end : rowCount;
+                int s = step != null ? step : 1;
                 validateIterationControlValues(rowCount, i, e);
                 if (null != size && size > 0) {
                     e = size - 1;
                 }
 
                 setIndex(faces, i);
-                updateIterationStatus(faces, new IterationStatus(true, (i + s > e || rowCount == 1), i, begin, end, step));
+                updateIterationStatus(faces, new IterationStatus(true, i + s > e || rowCount == 1, i, begin, end, step));
                 while (i <= e && isIndexAvailable()) {
 
                     if (PhaseId.RENDER_RESPONSE.equals(phase) && renderer != null) {
@@ -667,7 +668,7 @@ public class UIRepeat extends UINamingContainer {
             }
 
             // Visit children, short-circuiting as necessary
-            if ((result == VisitResult.ACCEPT) && doVisitChildren(context)) {
+            if (result == VisitResult.ACCEPT && doVisitChildren(context)) {
 
                 // And finally, visit rows
                 if (!visitRows) {
@@ -721,10 +722,10 @@ public class UIRepeat extends UINamingContainer {
             setIndex(context.getFacesContext(), -1);
         }
         Collection<String> idsToVisit = context.getSubtreeIdsToVisit(this);
-        assert (idsToVisit != null);
+        assert idsToVisit != null;
 
         // All ids or non-empty collection means we need to visit our children.
-        return (!idsToVisit.isEmpty());
+        return !idsToVisit.isEmpty();
 
     }
 
@@ -752,13 +753,13 @@ public class UIRepeat extends UINamingContainer {
         Integer step = getStep();
 
         int rowCount = getDataModel().getRowCount();
-        int i = ((begin != null) ? begin : 0);
-        int e = ((end != null) ? end : rowCount);
-        int s = ((step != null) ? step : 1);
+        int i = begin != null ? begin : 0;
+        int e = end != null ? end : rowCount;
+        int s = step != null ? step : 1;
         validateIterationControlValues(rowCount, i, e);
         FacesContext faces = context.getFacesContext();
         setIndex(faces, i);
-        updateIterationStatus(faces, new IterationStatus(true, (i + s > e || rowCount == 1), i, begin, end, step));
+        updateIterationStatus(faces, new IterationStatus(true, i + s > e || rowCount == 1, i, begin, end, step));
         while (i < e && isIndexAvailable()) {
 
             setIndex(faces, i);
@@ -776,27 +777,31 @@ public class UIRepeat extends UINamingContainer {
 
     @Override
     public void processDecodes(FacesContext faces) {
-        if (!isRendered())
+        if (!isRendered()) {
             return;
+        }
         setDataModel(null);
-        if (!keepSaved(faces))
+        if (!keepSaved(faces)) {
             childState = null;
+        }
         process(faces, PhaseId.APPLY_REQUEST_VALUES);
         decode(faces);
     }
 
     @Override
     public void processUpdates(FacesContext faces) {
-        if (!isRendered())
+        if (!isRendered()) {
             return;
+        }
         resetDataModel();
         process(faces, PhaseId.UPDATE_MODEL_VALUES);
     }
 
     @Override
     public void processValidators(FacesContext faces) {
-        if (!isRendered())
+        if (!isRendered()) {
             return;
+        }
         resetDataModel();
         Application app = faces.getApplication();
         app.publishEvent(faces, PreValidateEvent.class, this);
@@ -814,7 +819,7 @@ public class UIRepeat extends UINamingContainer {
         private static final long serialVersionUID = 2920252657338389849L;
 
         Object getSubmittedValue() {
-            return (submittedValue);
+            return submittedValue;
         }
 
         void setSubmittedValue(Object submittedValue) {
@@ -824,7 +829,7 @@ public class UIRepeat extends UINamingContainer {
         private boolean valid = true;
 
         boolean isValid() {
-            return (valid);
+            return valid;
         }
 
         void setValid(boolean valid) {
@@ -834,7 +839,7 @@ public class UIRepeat extends UINamingContainer {
         private Object value;
 
         Object getValue() {
-            return (value);
+            return value;
         }
 
         public void setValue(Object value) {
@@ -844,7 +849,7 @@ public class UIRepeat extends UINamingContainer {
         private boolean localValueSet;
 
         boolean isLocalValueSet() {
-            return (localValueSet);
+            return localValueSet;
         }
 
         public void setLocalValueSet(boolean localValueSet) {
@@ -853,7 +858,7 @@ public class UIRepeat extends UINamingContainer {
 
         @Override
         public String toString() {
-            return ("submittedValue: " + submittedValue + " value: " + value + " localValueSet: " + localValueSet);
+            return "submittedValue: " + submittedValue + " value: " + value + " localValueSet: " + localValueSet;
         }
 
         public void populate(EditableValueHolder evh) {
@@ -888,7 +893,7 @@ public class UIRepeat extends UINamingContainer {
 
         @Override
         public PhaseId getPhaseId() {
-            return (target.getPhaseId());
+            return target.getPhaseId();
         }
 
         @Override
@@ -943,10 +948,10 @@ public class UIRepeat extends UINamingContainer {
                 Integer begin = getBegin();
                 Integer end = getEnd();
                 Integer step = getStep();
-                int b = ((begin != null) ? begin : 0);
-                int e = ((end != null) ? end : rowCount);
-                int s = ((step != null) ? step : 1);
-                updateIterationStatus(ctx, new IterationStatus(idx == b, (idx + s >= e || rowCount == 1), idx, begin, end, step));
+                int b = begin != null ? begin : 0;
+                int e = end != null ? end : rowCount;
+                int s = step != null ? step : 1;
+                updateIterationStatus(ctx, new IterationStatus(idx == b, idx + s >= e || rowCount == 1, idx, begin, end, step));
                 if (isIndexAvailable()) {
                     if (!UIComponent.isCompositeComponent(source)) {
                         compositeParent = UIComponent.getCompositeComponentParent(source);

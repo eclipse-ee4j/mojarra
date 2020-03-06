@@ -70,7 +70,7 @@ public class HtmlDataTable extends UIData implements ClientBehaviorHolder {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

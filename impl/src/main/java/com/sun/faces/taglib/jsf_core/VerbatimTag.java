@@ -99,7 +99,7 @@ public class VerbatimTag extends UIComponentELTag {
                 getBodyContent().clearBody();
             }
         }
-        return (getDoAfterBodyValue());
+        return getDoAfterBodyValue();
 
     }
 

@@ -347,7 +347,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
                 // add the config entries to the existing
                 try {
                     target = (Map) readMethod.invoke(bean, RIConstants.EMPTY_METH_ARGS);
-                    mapReturned = (target != null);
+                    mapReturned = target != null;
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ignored) {
                     // ignored
                 }
@@ -493,7 +493,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
             if (pd != null) {
                 Method writeMethod = pd.getWriteMethod();
                 try {
-                    writeMethod.invoke(bean, ((value != null) ? value.evaluate(context.getELContext()) : null));
+                    writeMethod.invoke(bean, value != null ? value.evaluate(context.getELContext()) : null);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID, pd.getName(),
                             beanInfo.getName());
@@ -501,7 +501,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
                 }
             } else {
                 // no PropertyDescriptor means this bean is a UIComponent
-                ((UIComponent) bean).getAttributes().put(propertyName, ((value != null) ? value.evaluate(context.getELContext()) : ""));
+                ((UIComponent) bean).getAttributes().put(propertyName, value != null ? value.evaluate(context.getELContext()) : "");
             }
 
         }

@@ -39,7 +39,7 @@ public class CompositeAttributePropertyDescriptor extends PropertyDescriptor {
     @Override
     public Object getValue(String attributeName) {
         Object result = super.getValue(attributeName);
-        if ("type".equals(attributeName) && (null != result) && !(result instanceof Class)) {
+        if ("type".equals(attributeName) && null != result && !(result instanceof Class)) {
             FacesContext context = FacesContext.getCurrentInstance();
             ELContext elContext = context.getELContext();
             String classStr = (String) ((ValueExpression) result).getValue(elContext);

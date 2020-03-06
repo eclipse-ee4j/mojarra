@@ -216,7 +216,7 @@ public class Util {
         }
         if (instance == null && type != null) {
             try {
-                instance = ReflectionUtils.newInstance(((String) type.getValue(faces.getELContext())));
+                instance = ReflectionUtils.newInstance((String) type.getValue(faces.getELContext()));
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new AbortProcessingException(e.getMessage(), e);
             }
@@ -405,7 +405,7 @@ public class Util {
         if (-1 != lastSlash) {
 
             int startOrPreviousSlash = input.lastIndexOf("/", lastSlash - 1);
-            startOrPreviousSlash = (-1 == startOrPreviousSlash) ? 0 : startOrPreviousSlash;
+            startOrPreviousSlash = -1 == startOrPreviousSlash ? 0 : startOrPreviousSlash;
 
             input = input.substring(startOrPreviousSlash, lastSlash);
         }
@@ -672,9 +672,9 @@ public class Util {
         }
         try {
             Application application = context.getApplication();
-            return (application.createConverter(converterClass));
+            return application.createConverter(converterClass);
         } catch (Exception e) {
-            return (null);
+            return null;
         }
     }
 
@@ -684,14 +684,14 @@ public class Util {
         }
         try {
             Application application = context.getApplication();
-            return (application.createConverter(converterId));
+            return application.createConverter(converterId);
         } catch (Exception e) {
-            return (null);
+            return null;
         }
     }
 
     public static StateManager getStateManager(FacesContext context) throws FacesException {
-        return (context.getApplication().getStateManager());
+        return context.getApplication().getStateManager();
     }
 
     public static Class getTypeFromString(String type) throws ClassNotFoundException {
@@ -738,17 +738,17 @@ public class Util {
     public static ViewHandler getViewHandler(FacesContext context) throws FacesException {
         // Get Application instance
         Application application = context.getApplication();
-        assert (application != null);
+        assert application != null;
 
         // Get the ViewHandler
         ViewHandler viewHandler = application.getViewHandler();
-        assert (viewHandler != null);
+        assert viewHandler != null;
 
         return viewHandler;
     }
 
     public static boolean componentIsDisabled(UIComponent component) {
-        return (Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled"))));
+        return Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled")));
     }
 
     public static boolean componentIsDisabledOrReadonly(UIComponent component) {
@@ -788,7 +788,7 @@ public class Util {
             int j = 0;
 
             // to have a language, the length must be >= 2
-            if ((inputLength >= 2) && ((i = indexOfSet(localeStr, seps, 0)) == -1)) {
+            if (inputLength >= 2 && (i = indexOfSet(localeStr, seps, 0)) == -1) {
                 // we have only Language, no country or variant
                 if (2 != localeStr.length()) {
                     throw new IllegalArgumentException("Illegal locale String: " + localeStr);
@@ -801,7 +801,7 @@ public class Util {
                 lang = localeStr.substring(0, i);
                 // look for the country sep.
                 // to have a country, the length must be >= 5
-                if ((inputLength >= 5) && ((j = indexOfSet(localeStr, seps, i + 1)) == -1)) {
+                if (inputLength >= 5 && (j = indexOfSet(localeStr, seps, i + 1)) == -1) {
                     // no further separators, length must be 5
                     if (inputLength != 5) {
                         throw new IllegalArgumentException("Illegal locale String: " + localeStr);

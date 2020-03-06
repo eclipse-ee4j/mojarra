@@ -65,7 +65,7 @@ public class PassThroughElementComponentHandler extends ComponentHandler {
         if (parent.getParent() == null) {
             Map<String, Object> passThroughAttrs = c.getPassThroughAttributes(true);
             Object attrValue;
-            attrValue = (elementName.isLiteral()) ? elementName.getValue(ctx) : elementName.getValueExpression(ctx, Object.class);
+            attrValue = elementName.isLiteral() ? elementName.getValue(ctx) : elementName.getValueExpression(ctx, Object.class);
             passThroughAttrs.put(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY, attrValue);
         }
 

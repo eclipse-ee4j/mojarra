@@ -87,7 +87,7 @@ class PropertyHandlerManager {
         }
 
         PropertyHandler h = managedHandlers.get(name);
-        return ((h != null) ? h : genericHandler);
+        return h != null ? h : genericHandler;
 
     }
 
@@ -185,7 +185,7 @@ class PropertyHandlerManager {
             // Object.class, if no type-attribute was set.
             Class<?> type = Object.class;
             Object obj = target.getValue("type");
-            if ((null != obj) && !(obj instanceof Class)) {
+            if (null != obj && !(obj instanceof Class)) {
                 TagValueExpression typeVE = (TagValueExpression) obj;
                 Object value = typeVE.getValue(ctx);
                 if (value instanceof Class<?>) {

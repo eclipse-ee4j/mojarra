@@ -68,7 +68,7 @@ public class UIMessages extends UIComponentBase {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 
@@ -91,7 +91,7 @@ public class UIMessages extends UIComponentBase {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 

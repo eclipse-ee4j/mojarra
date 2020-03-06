@@ -138,7 +138,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
         try {
             reverse(parentComponent.getChildren()).stream().forEach((UIComponent childComponent) -> {
                 if (childComponent.isRendered()) {
-                    if ((childComponent instanceof EditableValueHolder) && (!(childComponent instanceof UIValidateWholeBean))) {
+                    if (childComponent instanceof EditableValueHolder && !(childComponent instanceof UIValidateWholeBean)) {
                         throw new IllegalArgumentException(ERROR_MISPLACED_COMPONENT);
                     } else {
                         if (!childComponent.getClientId().equals(clientId)) {

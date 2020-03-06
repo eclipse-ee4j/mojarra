@@ -84,15 +84,15 @@ public class BigIntegerConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (new BigInteger(value));
+            return new BigInteger(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, BIGINTEGER_ID, value, "9876", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public class BigIntegerConverter implements Converter {
         }
 
         try {
-            return (value.toString());
+            return value.toString();
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

@@ -344,7 +344,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         if (faceletFactory == null) {
             ApplicationAssociate associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
             faceletFactory = associate.getFaceletFactory();
-            assert (faceletFactory != null);
+            assert faceletFactory != null;
         }
         RequestStateManager.set(ctx, FACELET_FACTORY, faceletFactory);
         Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
@@ -708,7 +708,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     BehaviorHolderAttachedObjectHandler behaviorHandler = (BehaviorHolderAttachedObjectHandler) curHandler;
                     BehaviorHolderAttachedObjectTarget behaviorTarget = (BehaviorHolderAttachedObjectTarget) curTarget;
                     String eventName = behaviorHandler.getEventName();
-                    if ((null != eventName && eventName.equals(curTargetName)) || (null == eventName && behaviorTarget.isDefaultEvent())) {
+                    if (null != eventName && eventName.equals(curTargetName) || null == eventName && behaviorTarget.isDefaultEvent()) {
                         for (UIComponent curTargetComponent : targetComponents) {
                             retargetHandler(context, curHandler, curTargetComponent);
                         }
@@ -1336,7 +1336,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                             // current index; update the current index.
                             curIndex = idx;
                         }
-                        return (curIndex < descriptors.length);
+                        return curIndex < descriptors.length;
                     }
                 }
             }
@@ -1362,10 +1362,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             boolean result;
             String name = pd.getName();
             ValueExpression ve = (ValueExpression) pd.getValue("targetAttributeName");
-            String targetAttributeName = ((ve != null) ? (String) ve.getValue(context.getELContext()) : "");
+            String targetAttributeName = ve != null ? (String) ve.getValue(context.getELContext()) : "";
 
             boolean isSpecialAttributeName = Util.isSpecialAttributeName(name) || Util.isSpecialAttributeName(targetAttributeName);
-            result = (!isSpecialAttributeName && (pd.getValue("type") != null || pd.getValue("method-signature") == null));
+            result = !isSpecialAttributeName && (pd.getValue("type") != null || pd.getValue("method-signature") == null);
 
             return result;
         }
@@ -1424,7 +1424,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         public String getTargetAttributeName(FacesContext ctx) {
             ValueExpression ve = (ValueExpression) pd.getValue("targetAttributeName");
-            return ((ve != null) ? (String) ve.getValue(ctx.getELContext()) : null);
+            return ve != null ? (String) ve.getValue(ctx.getELContext()) : null;
 
         }
 
@@ -1436,7 +1436,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         public boolean isRequired(FacesContext ctx) {
 
             ValueExpression rd = (ValueExpression) pd.getValue("required");
-            return ((rd != null) ? Boolean.valueOf(rd.getValue(ctx.getELContext()).toString()) : false);
+            return rd != null ? Boolean.valueOf(rd.getValue(ctx.getELContext()).toString()) : false;
 
         }
 
@@ -1539,11 +1539,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             @Override
             public void retarget(FacesContext ctx, CompCompInterfaceMethodMetadata metadata, Object sourceValue, UIComponent target) {
 
-                String expr = (sourceValue instanceof ValueExpression) ? ((ValueExpression) sourceValue).getExpressionString() : sourceValue.toString();
+                String expr = sourceValue instanceof ValueExpression ? ((ValueExpression) sourceValue).getExpressionString() : sourceValue.toString();
                 ExpressionFactory f = ctx.getApplication().getExpressionFactory();
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), expr, Object.class, NO_ARGS);
                 ((ActionSource2) target).setActionExpression(
-                        new ContextualCompositeMethodExpression(((sourceValue instanceof ValueExpression) ? (ValueExpression) sourceValue : null), me));
+                        new ContextualCompositeMethodExpression(sourceValue instanceof ValueExpression ? (ValueExpression) sourceValue : null, me));
 
             }
 
@@ -1673,7 +1673,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 // expectedReturnType and expectedParameters
 
                 String methodSignature = metadata.getMethodSignature(ctx);
-                assert (null != methodSignature);
+                assert null != methodSignature;
                 methodSignature = methodSignature.trim();
                 Class<?> expectedReturnType;
                 Class<?>[] expectedParameters = NO_ARGS;
@@ -1726,8 +1726,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
                 }
 
-                assert (null != expectedReturnType);
-                assert (null != expectedParameters);
+                assert null != expectedReturnType;
+                assert null != expectedParameters;
 
                 // JAVASERVERFACES-4073
                 ELContext elContext = (ELContext) ctx.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
@@ -1971,7 +1971,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private DefaultFaceletFactory getFaceletFactory() {
         if (faceletFactory == null) {
             faceletFactory = associate.getFaceletFactory();
-            assert (faceletFactory != null);
+            assert faceletFactory != null;
         }
 
         return faceletFactory;

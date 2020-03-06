@@ -287,7 +287,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     public boolean isResetValues() {
         Boolean result = (Boolean) eval(RESET_VALUES, resetValues);
-        return ((result != null) ? result : false);
+        return result != null ? result : false;
     }
 
     /**
@@ -318,7 +318,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
     public boolean isDisabled() {
 
         Boolean result = (Boolean) eval(DISABLED, disabled);
-        return ((result != null) ? result : false);
+        return result != null ? result : false;
     }
 
     /**
@@ -348,7 +348,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      */
     public boolean isImmediate() {
         Boolean result = (Boolean) eval(IMMEDIATE, immediate);
-        return ((result != null) ? result : false);
+        return result != null ? result : false;
     }
 
     /**
@@ -380,7 +380,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public boolean isImmediateSet() {
-        return ((immediate != null) || (getValueExpression(IMMEDIATE) != null));
+        return immediate != null || getValueExpression(IMMEDIATE) != null;
     }
 
     /**
@@ -394,7 +394,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.2
      */
     public boolean isResetValuesSet() {
-        return ((resetValues != null) || (getValueExpression(RESET_VALUES) != null));
+        return resetValues != null || getValueExpression(RESET_VALUES) != null;
     }
 
     /**
@@ -414,7 +414,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
             throw new NullPointerException();
         }
 
-        return ((bindings == null) ? null : bindings.get(name));
+        return bindings == null ? null : bindings.get(name);
     }
 
     /**
@@ -569,7 +569,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
         // shared across components/behaviors/validaters/converters.
 
         if (bindings == null) {
-            return (null);
+            return null;
         }
 
         Object values[] = new Object[2];
@@ -582,7 +582,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
         values[1] = bindingValues;
 
-        return (values);
+        return values;
     }
 
     // Utility for restoring bindings from state
@@ -592,7 +592,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
         // in saveBindings().
 
         if (state == null) {
-            return (null);
+            return null;
         }
         Object values[] = (Object[]) state;
         String names[] = (String[]) values[0];
@@ -601,13 +601,13 @@ public class AjaxBehavior extends ClientBehaviorBase {
         for (int i = 0; i < names.length; i++) {
             bindings.put(names[i], (ValueExpression) UIComponentBase.restoreAttachedState(context, states[i]));
         }
-        return (bindings);
+        return bindings;
     }
 
     // Save the List<String>, either as a String (single element) or as
     // a String[] (multiple elements.
     private static Object saveList(List<String> list) {
-        if ((list == null) || list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             return null;
         }
 
@@ -686,7 +686,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
     // Sets a property, converting it from a literal
     private void setLiteralValue(String propertyName, ValueExpression expression) {
 
-        assert (expression.isLiteralText());
+        assert expression.isLiteralText();
 
         Object value;
         ELContext context = FacesContext.getCurrentInstance().getELContext();
@@ -743,7 +743,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
             // We're stuck splitting up the string.
             String[] values = SPLIT_PATTERN.split(strValue);
-            if ((values == null) || (values.length == 0)) {
+            if (values == null || values.length == 0) {
                 return null;
             }
 
@@ -761,7 +761,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     // Converts a String with no spaces to a singleton list
     private static List<String> toSingletonList(String propertyName, String value) {
-        if ((null == value) || (value.length() == 0)) {
+        if (null == value || value.length() == 0) {
             return null;
         }
 
@@ -787,7 +787,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
     // (to make state saving a bit easier).
     private List<String> copyToList(Collection<String> collection) {
 
-        if ((collection == null) || collection.isEmpty()) {
+        if (collection == null || collection.isEmpty()) {
             return null;
         }
 

@@ -86,7 +86,7 @@ public class PreRemoveFromViewEvent extends ComponentSystemEvent {
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
 
-        return (listener instanceof SystemEventListener);
+        return listener instanceof SystemEventListener;
 
     }
 

@@ -84,7 +84,7 @@ public class ViewMetadataImpl extends ViewMetadata {
             if (faceletFactory == null) {
                 ApplicationAssociate associate = ApplicationAssociate.getInstance(context.getExternalContext());
                 faceletFactory = associate.getFaceletFactory();
-                assert (faceletFactory != null);
+                assert faceletFactory != null;
             }
             ViewHandler vh = context.getApplication().getViewHandler();
             result = vh.createView(context, viewId);

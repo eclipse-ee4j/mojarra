@@ -37,7 +37,7 @@ class SharedUtils {
         }
 
         // if it doesn't start and end with delimiters
-        return (!(expression.startsWith("#{") && expression.endsWith("}"))) && isExpression(expression);
+        return !(expression.startsWith("#{") && expression.endsWith("}")) && isExpression(expression);
 
     }
 

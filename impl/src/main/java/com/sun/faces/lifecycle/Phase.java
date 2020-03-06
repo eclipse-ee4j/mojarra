@@ -200,11 +200,11 @@ public abstract class Phase {
     private boolean shouldSkip(FacesContext context) {
 
         if (context.getResponseComplete()) {
-            return (true);
+            return true;
         } else if (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(getId())) {
-            return (true);
+            return true;
         } else {
-            return (false);
+            return false;
         }
 
     }

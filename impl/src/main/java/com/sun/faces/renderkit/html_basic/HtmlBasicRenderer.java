@@ -114,7 +114,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
             clientId = component.getClientId(context);
         }
 
-        assert (clientId != null);
+        assert clientId != null;
         Map<String, String> requestMap = context.getExternalContext().getRequestParameterMap();
         // Don't overwrite the value unless you have to!
         String newValue = requestMap.get(clientId);
@@ -137,7 +137,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String currentValue = getCurrentValue(context, component);
         if (logger.isLoggable(Level.FINE)) {
@@ -202,7 +202,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
      */
     protected boolean isBehaviorSource(FacesContext ctx, String behaviorSourceId, String componentClientId) {
 
-        return (behaviorSourceId != null && behaviorSourceId.equals(componentClientId));
+        return behaviorSourceId != null && behaviorSourceId.equals(componentClientId);
 
     }
 
@@ -345,11 +345,11 @@ public abstract class HtmlBasicRenderer extends Renderer {
         UIComponent facet = null;
         if (component.getFacetCount() > 0) {
             facet = component.getFacet(name);
-            if ((facet != null) && !facet.isRendered()) {
+            if (facet != null && !facet.isRendered()) {
                 facet = null;
             }
         }
-        return (facet);
+        return facet;
 
     }
 
@@ -518,7 +518,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
                     UIParameter uiParam = (UIParameter) kid;
                     if (!uiParam.isDisable()) {
                         Object value = uiParam.getValue();
-                        Param param = new Param(uiParam.getName(), (value == null ? null : value.toString()));
+                        Param param = new Param(uiParam.getName(), value == null ? null : value.toString());
                         parameterList.add(param);
                     }
                 }
@@ -598,8 +598,8 @@ public abstract class HtmlBasicRenderer extends Renderer {
         // may need access to the id (AjaxBehavior certainly does).
 
         String id;
-        return (null != (id = component.getId()) && (!id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)
-                || ((component instanceof ClientBehaviorHolder) && !((ClientBehaviorHolder) component).getClientBehaviors().isEmpty())));
+        return null != (id = component.getId()) && (!id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)
+                || component instanceof ClientBehaviorHolder && !((ClientBehaviorHolder) component).getClientBehaviors().isEmpty());
     }
 
     protected String writeIdAttributeIfNecessary(FacesContext context, ResponseWriter writer, UIComponent component) {
@@ -695,7 +695,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
             // If the behavior map only contains behaviors for non-pass
             // thru attributes, return null.
-            if ((size == 1 && (hasDomBehavior || hasComponentBehavior)) || (size == 2 && hasDomBehavior && hasComponentBehavior)) {
+            if (size == 1 && (hasDomBehavior || hasComponentBehavior) || size == 2 && hasDomBehavior && hasComponentBehavior) {
                 return null;
             }
         }

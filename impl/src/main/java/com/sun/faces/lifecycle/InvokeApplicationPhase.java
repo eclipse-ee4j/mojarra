@@ -50,7 +50,7 @@ public class InvokeApplicationPhase extends Phase {
         }
 
         UIViewRoot root = facesContext.getViewRoot();
-        assert (null != root);
+        assert null != root;
 
         try {
             root.processApplication(facesContext);

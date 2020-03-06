@@ -150,7 +150,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
         private int getIdx() {
             Integer idx = (Integer) component.getAttributes().get("idx");
-            return ((idx != null) ? idx : this.idx);
+            return idx != null ? idx : this.idx;
         }
 
         private void throwRequiredException(FaceletContext ctx, UIComponent compositeParent) {
@@ -162,7 +162,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
         private boolean isRequired() {
 
-            return ((required != null) && required.getBoolean(ctx));
+            return required != null && required.getBoolean(ctx);
 
         }
 

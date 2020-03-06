@@ -243,7 +243,7 @@ public class InitFacesContext extends NoOpFacesContext {
     // Cactus / unit test only
 
     public void reInitializeExternalContext(ServletContext sc) {
-        assert (Util.isUnitTestModeEnabled());
+        assert Util.isUnitTestModeEnabled();
         servletContextAdapter = new ServletContextAdapter(sc);
     }
 

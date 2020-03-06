@@ -56,7 +56,7 @@ public class AjaxBehaviors implements Serializable {
         Map<Object, Object> attrs = context.getAttributes();
         AjaxBehaviors ajaxBehaviors = (AjaxBehaviors) attrs.get(AJAX_BEHAVIORS);
 
-        if ((ajaxBehaviors == null) && createIfNull) {
+        if (ajaxBehaviors == null && createIfNull) {
             ajaxBehaviors = new AjaxBehaviors();
             attrs.put(AJAX_BEHAVIORS, ajaxBehaviors);
         }
@@ -67,7 +67,7 @@ public class AjaxBehaviors implements Serializable {
     // Adds AjaxBehaviors to the specified ClientBehaviorHolder
     public void addBehaviors(FacesContext context, ClientBehaviorHolder behaviorHolder) {
 
-        if ((behaviorStack == null) || behaviorStack.isEmpty()) {
+        if (behaviorStack == null || behaviorStack.isEmpty()) {
             return;
         }
 
@@ -159,7 +159,7 @@ public class AjaxBehaviors implements Serializable {
             Map<String, List<ClientBehavior>> allBehaviors = behaviorHolder.getClientBehaviors();
             List<ClientBehavior> eventBehaviors = allBehaviors.get(eventName);
 
-            if ((eventBehaviors == null) || (eventBehaviors.isEmpty())) {
+            if (eventBehaviors == null || eventBehaviors.isEmpty()) {
                 return true;
             }
 

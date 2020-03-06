@@ -87,7 +87,7 @@ public class RenderKitFactoryImpl extends RenderKitFactory {
 
     @Override
     public Iterator<String> getRenderKitIds() {
-        return (renderKits.keySet().iterator());
+        return renderKits.keySet().iterator();
     }
 
 }

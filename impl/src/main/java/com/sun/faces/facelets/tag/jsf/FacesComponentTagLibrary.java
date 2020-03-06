@@ -100,7 +100,7 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
 
     @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
-        assert (containsTagHandler(ns, localName));
+        assert containsTagHandler(ns, localName);
         TagHandler result = super.createTagHandler(ns, localName, tag);
         if (null == result) {
             FacesComponentUsage facesComponentUsage = findFacesComponentUsageForLocalName(ns, localName);

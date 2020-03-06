@@ -66,7 +66,7 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

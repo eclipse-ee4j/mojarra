@@ -44,7 +44,7 @@ public class UpdateModelValuesPhase extends Phase {
             LOGGER.fine("Entering UpdateModelValuesPhase");
         }
         UIComponent component = facesContext.getViewRoot();
-        assert (null != component);
+        assert null != component;
 
         try {
             component.processUpdates(facesContext);

@@ -101,7 +101,7 @@ public class TableRenderer extends BaseTableRenderer {
         int rowIndex = data.getFirst() - 1;
         int rows = data.getRows();
         List<Integer> bodyRows = getBodyRows(context.getExternalContext().getApplicationMap(), data);
-        boolean hasBodyRows = (bodyRows != null && !bodyRows.isEmpty());
+        boolean hasBodyRows = bodyRows != null && !bodyRows.isEmpty();
         boolean wroteTableBody = false;
         if (!hasBodyRows) {
             renderTableBodyStart(context, component, writer);
@@ -110,7 +110,7 @@ public class TableRenderer extends BaseTableRenderer {
         while (true) {
 
             // Have we displayed the requested number of rows?
-            if ((rows > 0) && (++processed > rows)) {
+            if (rows > 0 && ++processed > rows) {
                 break;
             }
             // Select the current row
@@ -401,7 +401,7 @@ public class TableRenderer extends BaseTableRenderer {
         if (childCount > 0) {
             List<UIColumn> results = new ArrayList<>(childCount);
             for (UIComponent kid : table.getChildren()) {
-                if ((kid instanceof UIColumn) && kid.isRendered()) {
+                if (kid instanceof UIColumn && kid.isRendered()) {
                     results.add((UIColumn) kid);
                 }
             }

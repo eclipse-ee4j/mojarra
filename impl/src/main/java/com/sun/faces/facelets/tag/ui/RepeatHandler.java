@@ -47,7 +47,7 @@ public class RepeatHandler extends ComponentHandler {
         MetaRuleset meta = super.createMetaRuleset(type);
         String myNamespace = tag.getNamespace();
 
-        if ((!UILibrary.Namespace.equals(myNamespace)) && (!UILibrary.XMLNSNamespace.equals(myNamespace))) {
+        if (!UILibrary.Namespace.equals(myNamespace) && !UILibrary.XMLNSNamespace.equals(myNamespace)) {
             meta.add(new TagMetaData(type));
         }
 

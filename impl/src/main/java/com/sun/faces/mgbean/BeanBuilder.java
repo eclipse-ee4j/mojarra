@@ -96,7 +96,7 @@ public abstract class BeanBuilder {
 
     public boolean hasMessages() {
 
-        return (messages != null && !messages.isEmpty());
+        return messages != null && !messages.isEmpty();
 
     }
 
@@ -228,7 +228,7 @@ public abstract class BeanBuilder {
             String sk = m.getKey();
             String sv = m.getValue();
 
-            target.put(new Expression(sk, keyClazz), (!sv.equals(ManagedBeanInfo.NULL_VALUE)) ? new Expression(sv, valueClazz) : null);
+            target.put(new Expression(sk, keyClazz), !sv.equals(ManagedBeanInfo.NULL_VALUE) ? new Expression(sv, valueClazz) : null);
         }
 
         return target;
@@ -242,7 +242,7 @@ public abstract class BeanBuilder {
         // noinspection StringBufferWithoutInitialCapacity
         List<Expression> target = new ArrayList<>(entries.size());
         for (String item : entries) {
-            target.add((!ManagedBeanInfo.NULL_VALUE.equals(item)) ? new Expression(item, valueClazz) : null);
+            target.add(!ManagedBeanInfo.NULL_VALUE.equals(item) ? new Expression(item, valueClazz) : null);
         }
 
         return target;
@@ -255,7 +255,7 @@ public abstract class BeanBuilder {
             Expression k = entry.getKey();
             Expression v = entry.getValue();
             // noinspection unchecked
-            target.put(k.evaluate(context.getELContext()), (v != null) ? v.evaluate(context.getELContext()) : null);
+            target.put(k.evaluate(context.getELContext()), v != null ? v.evaluate(context.getELContext()) : null);
         }
 
     }
@@ -265,7 +265,7 @@ public abstract class BeanBuilder {
         for (int i = 0, size = source.size(); i < size; i++) {
             Expression value = source.get(i);
             // noinspection unchecked
-            target.add((value != null) ? value.evaluate(context.getELContext()) : null);
+            target.add(value != null ? value.evaluate(context.getELContext()) : null);
         }
 
     }
@@ -429,14 +429,14 @@ public abstract class BeanBuilder {
                 validateLifespan(expScope, true);
             }
             if (ve == null) {
-                ve = ((expectedType.isPrimitive()) ? ELUtils.createValueExpression(expressionString, expectedType)
-                        : ELUtils.createValueExpression(expressionString, Object.class));
+                ve = expectedType.isPrimitive() ? ELUtils.createValueExpression(expressionString, expectedType)
+                        : ELUtils.createValueExpression(expressionString, Object.class);
             }
             if (expectedType.isPrimitive()) {
                 return ve.getValue(context);
             } else {
                 Object tmpval = ve.getValue(context);
-                return ((tmpval != null) ? ELUtils.coerce(tmpval, expectedType) : null);
+                return tmpval != null ? ELUtils.coerce(tmpval, expectedType) : null;
             }
         }
 

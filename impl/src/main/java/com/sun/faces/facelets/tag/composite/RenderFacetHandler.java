@@ -53,7 +53,7 @@ public class RenderFacetHandler extends ComponentHandler {
         if (compositeParent == null) {
             return;
         }
-        boolean requiredValue = ((required != null) && required.getBoolean(ctx));
+        boolean requiredValue = required != null && required.getBoolean(ctx);
         String nameValue = name.getValue(ctx);
 
         if (compositeParent.getFacetCount() == 0 && requiredValue) {

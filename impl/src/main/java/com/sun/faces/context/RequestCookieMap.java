@@ -121,12 +121,12 @@ public class RequestCookieMap extends BaseContextMap<Object> {
 
         public CookieArrayEnumerator(Cookie[] cookies) {
             this.cookies = cookies;
-            upperBound = ((this.cookies != null) ? this.cookies.length : -1);
+            upperBound = this.cookies != null ? this.cookies.length : -1;
         }
 
         @Override
         public boolean hasMoreElements() {
-            return (curIndex + 2 <= upperBound);
+            return curIndex + 2 <= upperBound;
         }
 
         @Override

@@ -97,7 +97,7 @@ public class RequestParameterMap extends BaseContextMap<String> {
 
     @Override
     public boolean containsKey(Object key) {
-        return (key != null && get(key) != null);
+        return key != null && get(key) != null;
     }
 
     @Override

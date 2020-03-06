@@ -694,7 +694,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      */
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof TagLibrary && obj.hashCode() == hashCode());
+        return obj instanceof TagLibrary && obj.hashCode() == hashCode();
     }
 
     /*

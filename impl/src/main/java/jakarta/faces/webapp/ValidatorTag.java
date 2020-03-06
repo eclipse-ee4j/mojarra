@@ -133,7 +133,7 @@ public class ValidatorTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -169,7 +169,7 @@ public class ValidatorTag extends TagSupport {
         // Register an instance with the appropriate component
         ((EditableValueHolder) component).addValidator(validator);
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 

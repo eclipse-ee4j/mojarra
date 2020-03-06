@@ -74,11 +74,11 @@ public class ScalarDataModel<E> extends DataModel<E> {
     public boolean isRowAvailable() {
 
         if (scalar == null) {
-            return (false);
+            return false;
         } else if (index == 0) {
-            return (true);
+            return true;
         } else {
-            return (false);
+            return false;
         }
 
     }
@@ -94,9 +94,9 @@ public class ScalarDataModel<E> extends DataModel<E> {
     public int getRowCount() {
 
         if (scalar == null) {
-            return (-1);
+            return -1;
         }
-        return (1);
+        return 1;
 
     }
 
@@ -112,12 +112,12 @@ public class ScalarDataModel<E> extends DataModel<E> {
     public E getRowData() {
 
         if (scalar == null) {
-            return (null);
+            return null;
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         } else {
             // noinspection unchecked
-            return (scalar);
+            return scalar;
         }
 
     }
@@ -128,7 +128,7 @@ public class ScalarDataModel<E> extends DataModel<E> {
     @Override
     public int getRowIndex() {
 
-        return (index);
+        return index;
 
     }
 
@@ -148,7 +148,7 @@ public class ScalarDataModel<E> extends DataModel<E> {
             return;
         }
         DataModelListener[] listeners = getDataModelListeners();
-        if ((old != index) && (listeners != null)) {
+        if (old != index && listeners != null) {
             Object rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
@@ -167,7 +167,7 @@ public class ScalarDataModel<E> extends DataModel<E> {
     @Override
     public Object getWrappedData() {
 
-        return (this.scalar);
+        return this.scalar;
 
     }
 

@@ -57,7 +57,7 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

@@ -96,7 +96,7 @@ public class ELContextImpl extends ELContext {
 
         @Override
         public ValueExpression setVariable(String s, ValueExpression valueExpression) {
-            return (variables.put(s, valueExpression));
+            return variables.put(s, valueExpression);
         }
     }
 

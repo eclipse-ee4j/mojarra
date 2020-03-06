@@ -394,7 +394,7 @@ public class ConfigManager {
 
         // Insert the custom providers after the META-INF providers and
         // before those that scan /WEB-INF
-        providers.addAll((defaultProviders.size() - 1), asList(customProviders));
+        providers.addAll(defaultProviders.size() - 1, asList(customProviders));
 
         return unmodifiableList(providers);
     }

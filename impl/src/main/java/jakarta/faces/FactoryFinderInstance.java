@@ -333,7 +333,7 @@ final class FactoryFinderInstance {
 
         // step 3.
         if (implementations != null) {
-            for (len = (implementations.size() - 1); 0 <= len; len--) {
+            for (len = implementations.size() - 1; 0 <= len; len--) {
                 curImplClass = implementations.remove(len);
                 implementation = getImplGivenPreviousImpl(classLoader, factoryName, curImplClass, implementation);
             }

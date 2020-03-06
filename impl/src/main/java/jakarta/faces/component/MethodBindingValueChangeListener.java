@@ -77,10 +77,10 @@ class MethodBindingValueChangeListener extends MethodBindingAdapterBase implemen
         } catch (EvaluationException ee) {
             Throwable cause = getExpectedCause(AbortProcessingException.class, ee);
             if (cause instanceof AbortProcessingException) {
-                throw ((AbortProcessingException) cause);
+                throw (AbortProcessingException) cause;
             }
             if (cause instanceof RuntimeException) {
-                throw ((RuntimeException) cause);
+                throw (RuntimeException) cause;
             }
             throw new IllegalStateException(ee);
         }

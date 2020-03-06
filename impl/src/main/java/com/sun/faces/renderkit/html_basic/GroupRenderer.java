@@ -50,7 +50,7 @@ public class GroupRenderer extends HtmlBasicRenderer {
         ResponseWriter writer = context.getResponseWriter();
 
         if (divOrSpan(component)) {
-            if (("block".equals(component.getAttributes().get("layout")))) {
+            if ("block".equals(component.getAttributes().get("layout"))) {
                 writer.startElement("div", component);
             } else {
                 writer.startElement("span", component);
@@ -121,7 +121,7 @@ public class GroupRenderer extends HtmlBasicRenderer {
      */
     private boolean divOrSpan(UIComponent component) {
 
-        return (shouldWriteIdAttribute(component) || (component.getAttributes().get("style") != null) || (component.getAttributes().get("styleClass") != null));
+        return shouldWriteIdAttribute(component) || component.getAttributes().get("style") != null || component.getAttributes().get("styleClass") != null;
 
     }
 

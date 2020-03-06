@@ -102,9 +102,9 @@ public final class JstlFunction {
             skipDelim = true;
         }
         StringBuilder sb = new StringBuilder();
-        for (int i = 0, len = a.length, delimCount = (len - 1); i < len; i++) {
+        for (int i = 0, len = a.length, delimCount = len - 1; i < len; i++) {
             sb.append(a[i]);
-            if (!skipDelim && (i < delimCount)) {
+            if (!skipDelim && i < delimCount) {
                 sb.append(delim);
             }
         }

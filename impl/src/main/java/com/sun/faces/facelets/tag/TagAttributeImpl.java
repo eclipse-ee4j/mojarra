@@ -78,7 +78,7 @@ public class TagAttributeImpl extends TagAttribute {
     public TagAttributeImpl(Location location, String ns, String localName, String qName, String value) {
         this.location = location;
         namespace = ns;
-        this.localName = (null == localName || 0 == localName.length()) ? qName : localName;
+        this.localName = null == localName || 0 == localName.length() ? qName : localName;
         this.qName = qName;
         this.value = value;
         try {

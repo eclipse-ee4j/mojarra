@@ -123,7 +123,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
         this.context = context;
         this.thrown = thrown;
         this.component = component;
-        this.phaseId = ((phaseId == null) ? context.getCurrentPhaseId() : phaseId);
+        this.phaseId = phaseId == null ? context.getCurrentPhaseId() : phaseId;
 
     }
 
@@ -241,7 +241,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
 
     private boolean isAttributeDefined(String key) {
 
-        return ((attributes != null) && attributes.containsKey(key));
+        return attributes != null && attributes.containsKey(key);
 
     }
 

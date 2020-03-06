@@ -797,7 +797,7 @@ public class ApplicationAssociate {
         } else {
 
             Set<? extends Class<?>> resourceResolvers = getAnnotatedClasses(ctx).get(FaceletsResourceResolver.class);
-            if ((null != resourceResolvers) && !resourceResolvers.isEmpty()) {
+            if (null != resourceResolvers && !resourceResolvers.isEmpty()) {
                 Class<?> resolverClass = resourceResolvers.iterator().next();
                 if (resourceResolvers.size() > 1 && LOGGER.isLoggable(SEVERE)) {
                     LOGGER.log(SEVERE, "Found more than one class " + "annotated with FaceletsResourceResolver.  Will " + "use {0} and ignore the others",

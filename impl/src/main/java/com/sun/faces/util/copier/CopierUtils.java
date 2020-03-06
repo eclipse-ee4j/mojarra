@@ -85,7 +85,7 @@ public class CopierUtils {
     }
 
     private static boolean isCopierTypeSimpleName(String copierType) {
-        return (isIdentifier(copierType) && !(isKeyword(copierType)));
+        return isIdentifier(copierType) && !isKeyword(copierType);
     }
 
     // maybe the following four methods should be moved in com.sun.faces.util

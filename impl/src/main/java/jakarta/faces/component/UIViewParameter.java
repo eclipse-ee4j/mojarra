@@ -115,7 +115,7 @@ public class UIViewParameter extends UIInput {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -380,7 +380,7 @@ public class UIViewParameter extends UIInput {
         if (hasValueExpression()) {
             result = getStringValueFromModel(context);
         } else {
-            result = (null != rawValue) ? rawValue : (String) getValue();
+            result = null != rawValue ? rawValue : (String) getValue();
         }
         return result;
     }
@@ -458,7 +458,7 @@ public class UIViewParameter extends UIInput {
             RenderKit standard = rkf.getRenderKit(context, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             inputTextRenderer = standard.getRenderer("jakarta.faces.Input", "jakarta.faces.Text");
         }
-        assert (null != inputTextRenderer);
+        assert null != inputTextRenderer;
         return inputTextRenderer;
     }
 

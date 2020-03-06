@@ -230,7 +230,7 @@ public class ViewTag extends UIComponentELTag {
         viewTagStack.pop();
 
         if (null == (bodyContent = getBodyContent()) || null == (content = bodyContent.getString()) || 0 == (trimContent = content.trim()).length()
-                || (trimContent.startsWith("<!--") && trimContent.endsWith("-->"))) {
+                || trimContent.startsWith("<!--") && trimContent.endsWith("-->")) {
             return result;
         }
 
@@ -275,7 +275,7 @@ public class ViewTag extends UIComponentELTag {
 
     @Override
     protected int getDoEndValue() throws JspException {
-        return (EVAL_PAGE);
+        return EVAL_PAGE;
     }
 
     //

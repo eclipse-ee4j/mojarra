@@ -270,7 +270,7 @@ public class UISelectMany extends UIInput {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -284,7 +284,7 @@ public class UISelectMany extends UIInput {
      */
     public Object[] getSelectedValues() {
 
-        return ((Object[]) getValue());
+        return (Object[]) getValue();
 
     }
 
@@ -326,9 +326,9 @@ public class UISelectMany extends UIInput {
     public ValueBinding getValueBinding(String name) {
 
         if ("selectedValues".equals(name)) {
-            return (super.getValueBinding("value"));
+            return super.getValueBinding("value");
         } else {
-            return (super.getValueBinding(name));
+            return super.getValueBinding(name);
         }
 
     }
@@ -378,9 +378,9 @@ public class UISelectMany extends UIInput {
     public ValueExpression getValueExpression(String name) {
 
         if ("selectedValues".equals(name)) {
-            return (super.getValueExpression("value"));
+            return super.getValueExpression("value");
         } else {
-            return (super.getValueExpression(name));
+            return super.getValueExpression(name);
         }
 
     }
@@ -424,12 +424,12 @@ public class UISelectMany extends UIInput {
     @Override
     protected boolean compareValues(Object previous, Object value) {
 
-        if ((previous == null) && (value != null)) {
-            return (true);
-        } else if ((previous != null) && (value == null)) {
-            return (true);
-        } else if ((previous == null)) {
-            return (false);
+        if (previous == null && value != null) {
+            return true;
+        } else if (previous != null && value == null) {
+            return true;
+        } else if (previous == null) {
+            return false;
         }
 
         boolean valueChanged = false;
@@ -570,7 +570,7 @@ public class UISelectMany extends UIInput {
         super.validateValue(context, value);
 
         // Skip validation if it is not necessary
-        if (!isValid() || (value == null)) {
+        if (!isValid() || value == null) {
             return;
         }
 
@@ -618,7 +618,7 @@ public class UISelectMany extends UIInput {
         if (value instanceof Collection) {
             return ((Collection) value).iterator();
         } else {
-            return (new ArrayIterator(value));
+            return new ArrayIterator(value);
         }
 
     }
@@ -647,7 +647,7 @@ public class UISelectMany extends UIInput {
 
         @Override
         public boolean hasNext() {
-            return (idx < length);
+            return idx < length;
         }
 
         @Override

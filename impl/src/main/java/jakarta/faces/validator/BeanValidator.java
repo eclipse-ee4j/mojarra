@@ -381,7 +381,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
             }
         }
 
-        resolvable = ((null != resolvable) ? resolvable : true);
+        resolvable = null != resolvable ? resolvable : true;
 
         if (!resolvable) {
             LOGGER.fine(failureMessage);

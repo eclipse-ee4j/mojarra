@@ -218,8 +218,9 @@ public class ClientSideStateHelper extends StateHelper {
                 byte[] decodedBytes = Base64.getDecoder().decode(bytes);
 
                 bytes = guard.decrypt(ctx, decodedBytes);
-                if (bytes == null)
+                if (bytes == null) {
                     return null;
+                }
                 bis = new ByteArrayInputStream(bytes);
             }
 
@@ -406,7 +407,7 @@ public class ClientSideStateHelper extends StateHelper {
 
         if (stateTimeoutEnabled) {
             long elapsed = (System.currentTimeMillis() - stateTime) / 60000;
-            return (elapsed > stateTimeout);
+            return elapsed > stateTimeout;
         } else {
             return false;
         }

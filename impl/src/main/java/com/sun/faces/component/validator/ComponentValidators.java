@@ -75,7 +75,7 @@ public class ComponentValidators {
         Map<Object, Object> attrs = context.getAttributes();
         ComponentValidators componentValidators = (ComponentValidators) attrs.get(COMPONENT_VALIDATORS);
 
-        if ((componentValidators == null) && createIfNull) {
+        if (componentValidators == null && createIfNull) {
             componentValidators = new ComponentValidators();
             attrs.put(COMPONENT_VALIDATORS, componentValidators);
         }
@@ -123,7 +123,7 @@ public class ComponentValidators {
     @SuppressWarnings({ "unchecked" })
     public void addValidators(FacesContext ctx, EditableValueHolder editableValueHolder) {
 
-        if ((validatorStack == null) || validatorStack.isEmpty()) {
+        if (validatorStack == null || validatorStack.isEmpty()) {
             addDefaultValidatorsToComponent(ctx, editableValueHolder);
             return;
         }
@@ -141,7 +141,7 @@ public class ComponentValidators {
         int count = validatorStack.size();
         for (int i = count - 1; i >= 0; i--) {
             ValidatorInfo info = validatorStack.get(i);
-            if (!info.isEnabled() || (disabledIds != null && disabledIds.contains(info.getValidatorId()))) {
+            if (!info.isEnabled() || disabledIds != null && disabledIds.contains(info.getValidatorId())) {
                 if (validatorIds.contains(info.getValidatorId())) {
                     validatorIds.remove(info.getValidatorId());
                 }
@@ -153,7 +153,7 @@ public class ComponentValidators {
         }
 
         // add the validators to the EditableValueHolder.
-        addValidatorsToComponent(ctx, validatorIds, editableValueHolder, ((validatorStack == null || validatorStack.isEmpty()) ? null : validatorStack));
+        addValidatorsToComponent(ctx, validatorIds, editableValueHolder, validatorStack == null || validatorStack.isEmpty() ? null : validatorStack);
 
     }
 

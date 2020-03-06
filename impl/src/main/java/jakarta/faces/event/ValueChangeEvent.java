@@ -95,7 +95,7 @@ public class ValueChangeEvent extends FacesEvent {
      */
     public Object getOldValue() {
 
-        return (oldValue);
+        return oldValue;
 
     }
 
@@ -115,7 +115,7 @@ public class ValueChangeEvent extends FacesEvent {
      */
     public Object getNewValue() {
 
-        return (newValue);
+        return newValue;
 
     }
 
@@ -124,7 +124,7 @@ public class ValueChangeEvent extends FacesEvent {
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
 
-        return (listener instanceof ValueChangeListener);
+        return listener instanceof ValueChangeListener;
 
     }
 

@@ -83,7 +83,7 @@ public abstract class FacesEvent extends EventObject {
      */
     public UIComponent getComponent() {
 
-        return ((UIComponent) getSource());
+        return (UIComponent) getSource();
 
     }
 

@@ -38,7 +38,7 @@ public class LRUMap<K, V> extends LinkedHashMap<K, V> {
 
     @Override
     protected boolean removeEldestEntry(Map.Entry eldest) {
-        return (size() > maxCapacity);
+        return size() > maxCapacity;
     }
 
     // TEST: com.sun.faces.TestLRUMap_local

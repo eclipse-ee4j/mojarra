@@ -91,7 +91,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
         @Override
         public PhaseId getPhaseId() {
             PhaseListener pl = getInstance();
-            return (pl != null) ? pl.getPhaseId() : PhaseId.ANY_PHASE;
+            return pl != null ? pl.getPhaseId() : PhaseId.ANY_PHASE;
         }
 
         @Override

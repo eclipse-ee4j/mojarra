@@ -161,7 +161,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
             Object values[] = new Object[1];
             values[0] = regex;
 
-            return (values);
+            return values;
         }
         return null;
 
@@ -185,7 +185,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (transientValue);
+        return transientValue;
 
     }
 

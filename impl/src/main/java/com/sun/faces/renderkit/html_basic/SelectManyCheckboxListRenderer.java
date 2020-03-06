@@ -56,7 +56,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String alignStr;
         Object borderObj;
@@ -149,14 +149,14 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             actualBehaviorId = behaviorSourceId;
         }
 
-        return (actualBehaviorId.equals(componentClientId));
+        return actualBehaviorId.equals(componentClientId);
 
     }
 
     protected void renderBeginText(UIComponent component, int border, boolean alignVertical, FacesContext context, boolean outerTable) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("table", component);
         if (border != Integer.MIN_VALUE) {
@@ -192,7 +192,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
     protected void renderEndText(UIComponent component, boolean alignVertical, FacesContext context) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         if (!alignVertical) {
             writer.writeText("\t", component, null);
@@ -226,7 +226,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         if (alignVertical) {
             writer.writeText("\t", component, null);

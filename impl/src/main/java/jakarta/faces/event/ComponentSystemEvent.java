@@ -82,7 +82,7 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      */
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
-        boolean result = (listener instanceof ComponentSystemEventListener);
+        boolean result = listener instanceof ComponentSystemEventListener;
         if (!result) {
             result = super.isAppropriateListener(listener);
         }
@@ -135,7 +135,7 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      */
     public UIComponent getComponent() {
 
-        return ((UIComponent) getSource());
+        return (UIComponent) getSource();
 
     }
 

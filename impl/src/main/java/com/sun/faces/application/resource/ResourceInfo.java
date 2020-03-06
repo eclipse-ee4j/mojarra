@@ -83,16 +83,16 @@ public class ResourceInfo {
         if (library != other.library && (library == null || !library.equals(other.library))) {
             return false;
         }
-        if ((libraryName == null) ? (other.libraryName != null) : !libraryName.equals(other.libraryName)) {
+        if (libraryName == null ? other.libraryName != null : !libraryName.equals(other.libraryName)) {
             return false;
         }
-        if ((localePrefix == null) ? (other.localePrefix != null) : !localePrefix.equals(other.localePrefix)) {
+        if (localePrefix == null ? other.localePrefix != null : !localePrefix.equals(other.localePrefix)) {
             return false;
         }
-        if ((name == null) ? (other.name != null) : !name.equals(other.name)) {
+        if (name == null ? other.name != null : !name.equals(other.name)) {
             return false;
         }
-        if ((path == null) ? (other.path != null) : !path.equals(other.path)) {
+        if (path == null ? other.path != null : !path.equals(other.path)) {
             return false;
         }
         if (version != other.version && (version == null || !version.equals(other.version))) {
@@ -162,7 +162,7 @@ public class ResourceInfo {
     }
 
     public String getContract() {
-        return (null != contract) ? contract.toString() : null;
+        return null != contract ? contract.toString() : null;
     }
 
     /**

@@ -46,7 +46,7 @@ public final class UIInstructions extends UILeaf {
 
     @Override
     public String toString() {
-        return (txt != null) ? txt.toString() : "UIInstructions[" + Arrays.asList(instructions) + "]";
+        return txt != null ? txt.toString() : "UIInstructions[" + Arrays.asList(instructions) + "]";
     }
 
 }

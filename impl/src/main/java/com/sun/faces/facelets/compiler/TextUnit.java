@@ -217,8 +217,9 @@ final class TextUnit extends CompilationUnit {
         if (size > 0) {
             try {
                 String s = buffer.toString();
-                if (child)
+                if (child) {
                     s = trimRight(s);
+                }
                 ELText txt = ELText.parse(s);
                 if (txt != null) {
                     Instruction[] instructions = (Instruction[]) instructionBuffer.toArray(new Instruction[size]);

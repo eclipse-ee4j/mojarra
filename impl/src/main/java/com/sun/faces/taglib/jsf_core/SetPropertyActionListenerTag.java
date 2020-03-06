@@ -125,7 +125,7 @@ public class SetPropertyActionListenerTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -140,7 +140,7 @@ public class SetPropertyActionListenerTag extends TagSupport {
         ActionListener handler = new SetPropertyActionListenerImpl(target, value);
         ((ActionSource) component).addActionListener(handler);
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 

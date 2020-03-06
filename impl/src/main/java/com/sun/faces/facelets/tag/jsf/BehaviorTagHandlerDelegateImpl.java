@@ -75,7 +75,7 @@ class BehaviorTagHandlerDelegateImpl extends TagHandlerDelegate implements Attac
             for (AttachedObjectTarget target : targetList) {
                 if (target instanceof BehaviorHolderAttachedObjectTarget) {
                     BehaviorHolderAttachedObjectTarget behaviorTarget = (BehaviorHolderAttachedObjectTarget) target;
-                    if ((null != eventName && eventName.equals(behaviorTarget.getName())) || (null == eventName && behaviorTarget.isDefaultEvent())) {
+                    if (null != eventName && eventName.equals(behaviorTarget.getName()) || null == eventName && behaviorTarget.isDefaultEvent()) {
                         supportedEvent = true;
                         break;
                     }

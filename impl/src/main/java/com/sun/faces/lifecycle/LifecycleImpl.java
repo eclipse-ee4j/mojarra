@@ -97,7 +97,7 @@ public class LifecycleImpl extends Lifecycle {
 
     private void postConstructApplicationInitialization() {
         String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
-        isClientWindowEnabled = (null != optionValue) && !optionValue.equals(WebConfiguration.WebContextInitParameter.ClientWindowMode.getDefaultValue());
+        isClientWindowEnabled = null != optionValue && !optionValue.equals(WebConfiguration.WebContextInitParameter.ClientWindowMode.getDefaultValue());
     }
 
     // ------------------------------------------------------- Lifecycle Methods

@@ -84,7 +84,7 @@ final class ValueHolderRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             UIComponent c = (UIComponent) instance;
-            c.setValueExpression("value", attr.getValueExpression(ctx, ((c instanceof UISelectBoolean) ? Boolean.class : Object.class)));
+            c.setValueExpression("value", attr.getValueExpression(ctx, c instanceof UISelectBoolean ? Boolean.class : Object.class));
         }
     }
 

@@ -314,7 +314,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             if (columnStyleCounter < columnClasses.length && columnStyleCounter <= columnCount) {
                 style = columnClasses[columnStyleCounter++];
             }
-            return ((style != null && style.length() > 0) ? style : null);
+            return style != null && style.length() > 0 ? style : null;
 
         }
 
@@ -372,7 +372,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
                 if (childCount > 0) {
                     List<UIColumn> results = new ArrayList<>(childCount);
                     for (UIComponent kid : table.getChildren()) {
-                        if ((kid instanceof UIColumn) && kid.isRendered()) {
+                        if (kid instanceof UIColumn && kid.isRendered()) {
                             results.add((UIColumn) kid);
                         }
                     }
@@ -383,8 +383,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             } else {
                 int count;
                 Object value = table.getAttributes().get("columns");
-                if ((value != null) && (value instanceof Integer)) {
-                    count = ((Integer) value);
+                if (value != null && value instanceof Integer) {
+                    count = (Integer) value;
                 } else {
                     count = 2;
                 }
@@ -440,7 +440,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
             String values = (String) table.getAttributes().get("rowClasses");
             if (values == null) {
-                return (EMPTY_STRING_ARRAY);
+                return EMPTY_STRING_ARRAY;
             }
             Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
             return Util.split(appMap, values.trim(), ",");

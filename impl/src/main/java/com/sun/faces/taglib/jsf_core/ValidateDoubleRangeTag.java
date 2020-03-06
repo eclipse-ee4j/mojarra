@@ -98,7 +98,7 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
 
         DoubleRangeValidator result = (DoubleRangeValidator) super.createValidator();
 
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         if (maximumSet) {

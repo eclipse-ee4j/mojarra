@@ -75,11 +75,11 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public boolean isBytes() {
-        return (null != basos);
+        return null != basos;
     }
 
     public boolean isChars() {
-        return (null != caw);
+        return null != caw;
     }
 
     public byte[] getBytes() {
@@ -148,7 +148,7 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        if (pw != null && (!pw.isComitted() && !isCommitted())) {
+        if (pw != null && !pw.isComitted() && !isCommitted()) {
             throw new IllegalStateException();
         } else if (pw != null && (pw.isComitted() || isCommitted())) {
             return ByteArrayWebOutputStream.NOOP_STREAM;
@@ -161,7 +161,7 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        if (basos != null && (!basos.isCommitted() && !isCommitted())) {
+        if (basos != null && !basos.isCommitted() && !isCommitted()) {
             throw new IllegalStateException();
         } else if (basos != null && (basos.isCommitted() || isCommitted())) {
             return new WebPrintWriter(WebPrintWriter.NOOP_WRITER);

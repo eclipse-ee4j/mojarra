@@ -44,7 +44,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);

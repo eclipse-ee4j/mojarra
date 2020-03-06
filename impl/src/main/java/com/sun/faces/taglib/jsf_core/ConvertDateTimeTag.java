@@ -151,7 +151,7 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
     protected Converter createConverter() throws JspException {
 
         DateTimeConverter result = (DateTimeConverter) super.createConverter();
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         result.setDateStyle(dateStyle);

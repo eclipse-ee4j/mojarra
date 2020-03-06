@@ -82,15 +82,15 @@ public class ByteConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (Byte.valueOf(value));
+            return Byte.valueOf(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, BYTE_ID, value, "254", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class ByteConverter implements Converter {
         }
 
         try {
-            return (Byte.toString(((Byte) value).byteValue()));
+            return Byte.toString(((Byte) value).byteValue());
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

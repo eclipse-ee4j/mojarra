@@ -63,7 +63,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String forClientId = null;
         String forValue = (String) component.getAttributes().get("for");
@@ -101,7 +101,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
         if (value != null && value.length() != 0) {
             Object val = component.getAttributes().get("escape");
-            boolean escape = (val != null) && Boolean.valueOf(val.toString());
+            boolean escape = val != null && Boolean.valueOf(val.toString());
 
             if (escape) {
                 writer.writeText(value, component, "value");
@@ -127,7 +127,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         if ("yes".equals(render)) {
             component.getAttributes().remove(RENDER_END_ELEMENT);
             ResponseWriter writer = context.getResponseWriter();
-            assert (writer != null);
+            assert writer != null;
             writer.endElement("label");
         }
 

@@ -59,7 +59,7 @@ public class IdMapper {
     public static IdMapper getMapper(FacesContext ctx) {
 
         Util.notNull("ctx", ctx);
-        return ((IdMapper) ctx.getAttributes().get(KEY));
+        return (IdMapper) ctx.getAttributes().get(KEY);
 
     }
 

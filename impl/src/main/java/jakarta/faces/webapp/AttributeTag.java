@@ -118,14 +118,14 @@ public class AttributeTag extends TagSupport {
         if (component.getAttributes().get(nameVal) == null) {
             component.getAttributes().put(nameVal, valueVal);
         }
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
     @Override
     public int doEndTag() throws JspException {
         release();
-        return (EVAL_PAGE);
+        return EVAL_PAGE;
     }
 
     /**

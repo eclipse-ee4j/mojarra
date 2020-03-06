@@ -70,7 +70,7 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
             String attrName;
             Object attrValue;
             attrName = name.getValue(ctx);
-            attrValue = (value.isLiteral()) ? value.getValue(ctx) : value.getValueExpression(ctx, Object.class);
+            attrValue = value.isLiteral() ? value.getValue(ctx) : value.getValueExpression(ctx, Object.class);
             passThroughAttrs.put(attrName, attrValue);
         }
     }

@@ -138,7 +138,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     @Override
     public boolean isListenerForSource(Object source) {
 
-        return (source instanceof ExceptionQueuedEventContext);
+        return source instanceof ExceptionQueuedEventContext;
 
     }
 
@@ -189,7 +189,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     @Override
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
 
-        return ((unhandledExceptions != null) ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
+        return unhandledExceptions != null ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
     }
 
@@ -199,7 +199,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {
 
-        return ((handledExceptions != null) ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
+        return handledExceptions != null ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
     }
 
@@ -246,13 +246,13 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
      */
     private boolean shouldUnwrap(Class<? extends Throwable> c) {
 
-        return (FacesException.class.equals(c) || ELException.class.equals(c));
+        return FacesException.class.equals(c) || ELException.class.equals(c);
 
     }
 
     private boolean isRethrown(Throwable t) {
 
-        return (!(t instanceof AbortProcessingException));
+        return !(t instanceof AbortProcessingException);
 
     }
 
@@ -269,7 +269,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         Level level = LOGGER.isLoggable(INCIDENT_ERROR) && LOGGER.isLoggable(Level.SEVERE) ? INCIDENT_ERROR : Level.SEVERE;
 
         if (LOGGER.isLoggable(level)) {
-            LOGGER.log(level, key, new Object[] { t.getClass().getName(), phaseId.toString(), ((c != null) ? c.getClientId(exceptionContext.getContext()) : ""),
+            LOGGER.log(level, key, new Object[] { t.getClass().getName(), phaseId.toString(), c != null ? c.getClientId(exceptionContext.getContext()) : "",
                     t.getMessage() });
             if (t.getMessage() != null) {
                 LOGGER.log(level, t.getMessage(), t);

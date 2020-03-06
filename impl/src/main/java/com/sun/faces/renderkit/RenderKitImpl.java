@@ -120,10 +120,10 @@ public class RenderKitImpl extends RenderKit {
         Util.notNull("family", family);
         Util.notNull("rendererType", rendererType);
 
-        assert (rendererFamilies != null);
+        assert rendererFamilies != null;
 
         HashMap<String, Renderer> renderers = rendererFamilies.get(family);
-        return ((renderers != null) ? renderers.get(rendererType) : null);
+        return renderers != null ? renderers.get(rendererType) : null;
 
     }
 
@@ -147,7 +147,7 @@ public class RenderKitImpl extends RenderKit {
 
         Util.notNull("behaviorRendererType", behaviorRendererType);
 
-        return ((behaviorRenderers != null) ? behaviorRenderers.get(behaviorRendererType) : null);
+        return behaviorRenderers != null ? behaviorRenderers.get(behaviorRendererType) : null;
 
     }
 
@@ -213,7 +213,7 @@ public class RenderKitImpl extends RenderKit {
 
             if (null != desiredContentTypeList) {
                 desiredContentTypeList = RenderKitUtils.determineContentType(desiredContentTypeList, SUPPORTED_CONTENT_TYPES,
-                        ((preferXhtml()) ? RIConstants.XHTML_CONTENT_TYPE : null));
+                        preferXhtml() ? RIConstants.XHTML_CONTENT_TYPE : null);
                 if (null != desiredContentTypeList) {
                     contentType = findMatch(desiredContentTypeList, SUPPORTED_CONTENT_TYPES_ARRAY);
                 }
@@ -257,7 +257,7 @@ public class RenderKitImpl extends RenderKit {
 
     private String getDefaultContentType() {
 
-        return ((preferXhtml()) ? RIConstants.XHTML_CONTENT_TYPE : RIConstants.HTML_CONTENT_TYPE);
+        return preferXhtml() ? RIConstants.XHTML_CONTENT_TYPE : RIConstants.HTML_CONTENT_TYPE;
 
     }
 

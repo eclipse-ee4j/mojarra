@@ -49,7 +49,7 @@ public class RequestParameterValuesMap extends StringArrayValuesMap {
 
     @Override
     public boolean containsKey(Object key) {
-        return (request.getParameterValues(key.toString()) != null);
+        return request.getParameterValues(key.toString()) != null;
     }
 
     @Override

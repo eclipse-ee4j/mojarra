@@ -131,7 +131,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             clientId = radio.getClientId(context);
         }
 
-        assert (clientId != null);
+        assert clientId != null;
         Map<String, String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
         String newValue = requestParameterMap.get(group.getClientName());
         String prefix = clientId + UINamingContainer.getSeparatorChar(context);
@@ -174,7 +174,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         boolean disabled = Util.componentIsDisabled(radio);
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         renderInput(context, writer, radio, clientId, itemValue, converter, checked, disabled, group);
 
@@ -204,7 +204,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             } else if (Collection.class.isAssignableFrom(type)) {
                 Iterator<?> valueIter = ((Collection<?>) currentValue).iterator();
 
-                if ((null != valueIter) && valueIter.hasNext()) {
+                if (null != valueIter && valueIter.hasNext()) {
                     currentValue = valueIter.next();
 
                     if (null != currentValue) {
@@ -225,7 +225,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             newValue = itemValue;
         }
 
-        return (newValue != null) && newValue.equals(currentValue);
+        return newValue != null && newValue.equals(currentValue);
     }
 
     @Override
@@ -233,7 +233,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             Object[] submittedValues, boolean alignVertical, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         UISelectOne selectOne = (UISelectOne) component;
         Object curValue = curItem.getValue();
@@ -278,7 +278,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             writer.writeAttribute("checked", Boolean.TRUE, null);
         }
 
-        Object value = (getFormattedValue(context, component, itemValue, converter));
+        Object value = getFormattedValue(context, component, itemValue, converter);
 
         if (group == null) {
             writer.writeAttribute("name", component.getClientId(context), "clientId");

@@ -118,7 +118,7 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
-        if (parent == null || !(ComponentHandler.isNew(parent))) {
+        if (parent == null || !ComponentHandler.isNew(parent)) {
             return;
         }
 

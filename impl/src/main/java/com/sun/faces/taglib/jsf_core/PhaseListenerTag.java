@@ -120,7 +120,7 @@ public class PhaseListenerTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIViewRoot viewRoot = (UIViewRoot) tag.getComponentInstance();
@@ -143,7 +143,7 @@ public class PhaseListenerTag extends TagSupport {
         }
         viewRoot.addPhaseListener(listener);
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 

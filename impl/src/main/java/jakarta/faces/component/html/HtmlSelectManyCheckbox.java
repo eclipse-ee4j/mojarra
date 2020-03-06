@@ -70,7 +70,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

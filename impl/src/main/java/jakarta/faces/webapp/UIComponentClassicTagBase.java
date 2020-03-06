@@ -360,7 +360,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      */
     protected int getDoEndValue() throws JspException {
 
-        return (EVAL_PAGE);
+        return EVAL_PAGE;
 
     }
 
@@ -442,7 +442,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @Override
     public Tag getParent() {
 
-        return (parent);
+        return parent;
 
     }
 
@@ -495,7 +495,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         }
         parent.getChildren().add(indexOfNextChildTag, component);
         created = true;
-        return (component);
+        return component;
 
     }
 
@@ -515,7 +515,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         UIComponent component = createComponent(context, newId);
         parent.getFacets().put(name, component);
         created = true;
-        return (component);
+        return component;
 
     }
 
@@ -544,10 +544,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
                 // from O(n^2) for all of the children to O(n)
                 int startIndex;
 
-                if (tag != null)
+                if (tag != null) {
                     startIndex = tag._nextChildIndex;
-                else
+                } else {
                     startIndex = 0;
+                }
 
                 // start searching from location remembered from last time
                 for (int i = startIndex; i < childCount; i++) {
@@ -557,7 +558,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
                         // bump up the index to search next and wrap around
                         i++;
 
-                        tag._nextChildIndex = (i < childCount) ? i : 0;
+                        tag._nextChildIndex = i < childCount ? i : 0;
                         return child;
                     }
                 }
@@ -579,8 +580,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             } else {
                 // List doesn't support RandomAccess, do it the iterator way
                 for (UIComponent child : children) {
-                    if (componentId.equals(child.getId()))
+                    if (componentId.equals(child.getId())) {
                         return child;
+                    }
                 }
             }
         }
@@ -633,7 +635,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     protected UIComponent findComponent(FacesContext context) throws JspException {
         // Step 1 -- Have we already found the relevant component?
         if (component != null) {
-            return (component);
+            return component;
         }
 
         // Step 2 -- Identify the component that is, or will be, our parent
@@ -658,7 +660,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
                     setProperties(parentComponent);
                 } catch (FacesException e) {
                     if (e.getCause() instanceof JspException) {
-                        throw ((JspException) e.getCause());
+                        throw (JspException) e.getCause();
                     }
                     throw e;
                 }
@@ -666,7 +668,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
                 if (null != id) {
                     parentComponent.setId(id);
                 } else {
-                    assert (null != getFacesJspId());
+                    assert null != getFacesJspId();
                     parentComponent.setId(getFacesJspId());
                 }
                 parentComponent.getAttributes().put(CURRENT_VIEW_ROOT, CURRENT_VIEW_ROOT);
@@ -676,7 +678,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
                     setProperties(parentComponent);
                 } catch (FacesException e) {
                     if (e.getCause() instanceof JspException) {
-                        throw ((JspException) e.getCause());
+                        throw (JspException) e.getCause();
                     }
                     throw e;
                 }
@@ -686,7 +688,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             // be bound to this UIViewRoot, take no extra action.
 
             component = parentComponent;
-            return (component);
+            return component;
         }
 
         // Step 3 -- Calculate the component identifier for this component
@@ -701,7 +703,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             if (component == null) {
                 component = createFacet(context, parentComponent, facetName, newId);
             }
-            return (component);
+            return component;
         } else {
 
             // Step 5 -- Create or return a child with the specified id
@@ -709,7 +711,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             if (component == null) {
                 component = createChild(context, parentComponent, parentTag, newId);
             }
-            return (component);
+            return component;
         }
 
     }
@@ -744,7 +746,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         }
 
         if (list != null) {
-            return ((UIComponentClassicTagBase) list.get(list.size() - 1));
+            return (UIComponentClassicTagBase) list.get(list.size() - 1);
         } else {
             return null;
         }
@@ -759,9 +761,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     protected int getIndexOfNextChildTag() {
 
         if (createdComponents != null) {
-            return (createdComponents.size());
+            return createdComponents.size();
         } else {
-            return (0);
+            return 0;
         }
 
     }
@@ -861,7 +863,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         for (int currIndex = startIndex; currIndex < itemCount; currIndex++) {
             Object currId = list.get(currIndex);
 
-            if ((searchValue == currId) || ((searchValue != null) && searchValue.equals(currId))) {
+            if (searchValue == currId || searchValue != null && searchValue.equals(currId)) {
                 return currIndex;
             }
         }
@@ -872,7 +874,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             for (int currIndex = 0; currIndex < startIndex; currIndex++) {
                 Object currId = list.get(currIndex);
 
-                if ((searchValue == currId) || ((searchValue != null) && searchValue.equals(currId))) {
+                if (searchValue == currId || searchValue != null && searchValue.equals(currId)) {
                     return currIndex;
                 }
             }
@@ -1080,7 +1082,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      */
 
     protected UIOutput createVerbatimComponent() {
-        assert (null != getFacesContext());
+        assert null != getFacesContext();
         UIOutput verbatim;
         Application application = getFacesContext().getApplication();
         verbatim = (UIOutput) application.createComponent("jakarta.faces.HtmlOutputText");
@@ -1123,11 +1125,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         // value of indexOfComponentInParent, otherwise, call add()
         List createdIds = (List) parent.getAttributes().get(JSP_CREATED_COMPONENT_IDS);
         int indexOfComponentInParent = children.indexOf(component);
-        boolean replace = (indexOfComponentInParent > 0 && createdIds != null && createdIds.size() == children.size());
+        boolean replace = indexOfComponentInParent > 0 && createdIds != null && createdIds.size() == children.size();
         if (replace) {
             UIComponent oldVerbatim = children.get(indexOfComponentInParent - 1);
             if (oldVerbatim instanceof UIOutput && oldVerbatim.isTransient()) {
-                children.set((indexOfComponentInParent - 1), verbatim);
+                children.set(indexOfComponentInParent - 1, verbatim);
             } else {
                 children.add(indexOfComponentInParent, verbatim);
             }
@@ -1220,7 +1222,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
         List list = (List) context.getAttributes().get(COMPONENT_TAG_STACK_ATTR);
         if (list != null) {
-            parentTag = ((UIComponentClassicTagBase) list.get(list.size() - 1));
+            parentTag = (UIComponentClassicTagBase) list.get(list.size() - 1);
         } else {
             parentTag = null;
         }
@@ -1259,7 +1261,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         Object tagInstance = null;
         String clientId = null;
 
-        if (component instanceof NamingContainer || (parentTag == null)) {
+        if (component instanceof NamingContainer || parentTag == null) {
             namingContainerChildIds = new HashMap<>();
         }
 
@@ -1329,7 +1331,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
         // Return the appropriate control value
         pushUIComponentClassicTagBase();
-        return (getDoStartValue());
+        return getDoStartValue();
 
     }
 
@@ -1405,7 +1407,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         }
 
         release();
-        return (getDoEndValue());
+        return getDoEndValue();
 
     }
 
@@ -1443,7 +1445,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      */
     protected int getDoAfterBodyValue() throws JspException {
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
@@ -1475,13 +1477,13 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      */
     public JspWriter getPreviousOut() {
 
-        return (bodyContent.getEnclosingWriter());
+        return bodyContent.getEnclosingWriter();
 
     }
 
     public BodyContent getBodyContent() {
 
-        return (bodyContent);
+        return bodyContent;
 
     }
 
@@ -1523,7 +1525,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         // if we are the root tag, or if we are inside of a
         // rendersChildren==true component
         // noinspection ObjectEquality
-        if (this == parentTag || (null != parentTag && parentTag.getComponentInstance().getRendersChildren())) {
+        if (this == parentTag || null != parentTag && parentTag.getComponentInstance().getRendersChildren()) {
             // stuff the template text or custom tag output into a
             // transient component
             if (null != (verbatim = createVerbatimComponentFromBodyContent())) {
@@ -1544,7 +1546,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
                 if (createdIds != null) {
                     int listIdx = component.getChildCount();
                     if (createdIds.size() == listIdx) {
-                        component.getChildren().set((listIdx - 1), verbatim);
+                        component.getChildren().set(listIdx - 1, verbatim);
                     } else {
                         component.getChildren().add(verbatim);
                     }
@@ -1555,7 +1557,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             }
         }
 
-        return (getDoAfterBodyValue());
+        return getDoAfterBodyValue();
 
     }
 
@@ -1591,7 +1593,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      */
     protected String getId() {
 
-        return (id);
+        return id;
 
     }
 
@@ -1646,7 +1648,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             // with several levels of nesting.
             if (childComponents != null) {
                 result = childComponents.contains(componentId);
-                if (result && (!isNestedInIterator)) {
+                if (result && !isNestedInIterator) {
                     return true;
                 }
             }
@@ -1711,7 +1713,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
                     }
                 }
             }
-            return (id);
+            return id;
         }
 
     }
@@ -1938,7 +1940,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @Override
     public UIComponent getComponentInstance() {
 
-        return (component);
+        return component;
 
     }
 
@@ -1952,12 +1954,12 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @Override
     public boolean getCreated() { // NOPMD
 
-        return (created);
+        return created;
 
     }
 
     private Map getNamingContainerChildIds() {
-        return (namingContainerChildIds);
+        return namingContainerChildIds;
     }
 
     @Override
@@ -1977,7 +1979,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             }
         }
 
-        return (context);
+        return context;
 
     }
 
@@ -1993,9 +1995,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
         Tag parent = getParent();
         if (parent instanceof FacetTag) {
-            return (((FacetTag) parent).getName());
+            return ((FacetTag) parent).getName();
         } else {
-            return (null);
+            return null;
         }
 
     }
@@ -2012,7 +2014,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             }
         }
 
-        return (context);
+        return context;
 
     }
 

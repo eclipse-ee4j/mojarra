@@ -175,7 +175,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
     // --------------------------------------------------------- Protected Methods
 
     protected boolean processJar(String entry) {
-        return (classpathPackages == null || (classpathPackages.containsKey(entry) || classpathPackages.containsKey(WILDCARD)));
+        return classpathPackages == null || classpathPackages.containsKey(entry) || classpathPackages.containsKey(WILDCARD);
     }
 
     /**
@@ -236,7 +236,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
             }
         }
 
-        return ((annotatedClasses != null) ? annotatedClasses : Collections.<Class<? extends Annotation>, Set<Class<?>>>emptyMap());
+        return annotatedClasses != null ? annotatedClasses : Collections.<Class<? extends Annotation>, Set<Class<?>>>emptyMap();
     }
 
     protected boolean isAnnotationScanPackagesSet() {

@@ -68,7 +68,7 @@ public class HtmlOutputLabel extends UIOutput implements ClientBehaviorHolder {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

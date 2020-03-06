@@ -65,7 +65,7 @@ public class InitParameterMap extends BaseContextMap<String> {
 
     @Override
     public boolean containsKey(Object key) {
-        return (servletContext.getInitParameter(key.toString()) != null);
+        return servletContext.getInitParameter(key.toString()) != null;
     }
 
     @Override

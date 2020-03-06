@@ -55,7 +55,7 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
         if (clientId == null) {
             clientId = component.getClientId(context);
         }
-        assert (clientId != null);
+        assert clientId != null;
         // Convert the new value
 
         Map<String, String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
@@ -77,7 +77,7 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
 
-        return ((submittedValue instanceof Boolean) ? submittedValue : Boolean.valueOf(submittedValue.toString()));
+        return submittedValue instanceof Boolean ? submittedValue : Boolean.valueOf(submittedValue.toString());
 
     }
 
@@ -87,7 +87,7 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
     protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
         String styleClass;
 
         writer.startElement("input", component);

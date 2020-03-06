@@ -190,16 +190,16 @@ final class WriteBehindStateWriter extends Writer {
         int tildeIdx = getNextDelimiterIndex(builder, pos);
         while (pos < totalLen) {
             if (tildeIdx != -1) {
-                if (tildeIdx > pos && (tildeIdx - pos) > bufSize) {
+                if (tildeIdx > pos && tildeIdx - pos > bufSize) {
                     // there's enough content before the first ~
                     // to fill the entire buffer
-                    builder.getChars(pos, (pos + bufSize), buf, 0);
+                    builder.getChars(pos, pos + bufSize, buf, 0);
                     orig.write(buf);
                     pos += bufSize;
                 } else {
                     // write all content up to the first '~'
                     builder.getChars(pos, tildeIdx, buf, 0);
-                    int len = (tildeIdx - pos);
+                    int len = tildeIdx - pos;
                     orig.write(buf, 0, len);
                     // now check to see if the state saving string is
                     // at the begining of pos, if so, write our
@@ -208,13 +208,13 @@ final class WriteBehindStateWriter extends Writer {
                         // buf is effectively zero'd out at this point
                         int statePos = 0;
                         while (statePos < stateLen) {
-                            if ((stateLen - statePos) > bufSize) {
+                            if (stateLen - statePos > bufSize) {
                                 // enough state to fill the buffer
-                                stateBuilder.getChars(statePos, (statePos + bufSize), buf, 0);
+                                stateBuilder.getChars(statePos, statePos + bufSize, buf, 0);
                                 orig.write(buf);
                                 statePos += bufSize;
                             } else {
-                                int slen = (stateLen - statePos);
+                                int slen = stateLen - statePos;
                                 stateBuilder.getChars(statePos, stateLen, buf, 0);
                                 orig.write(buf, 0, slen);
                                 statePos += slen;
@@ -222,7 +222,7 @@ final class WriteBehindStateWriter extends Writer {
 
                         }
                         // push us past the last '~' at the end of the marker
-                        pos += (len + STATE_MARKER_LEN);
+                        pos += len + STATE_MARKER_LEN;
                         tildeIdx = getNextDelimiterIndex(builder, pos);
 
                         stateBuilder = getState(stateManager, origWriter);
@@ -237,15 +237,15 @@ final class WriteBehindStateWriter extends Writer {
                 // finish writing content
                 if (totalLen - pos > bufSize) {
                     // there's enough content to fill the buffer
-                    builder.getChars(pos, (pos + bufSize), buf, 0);
+                    builder.getChars(pos, pos + bufSize, buf, 0);
                     orig.write(buf);
                     pos += bufSize;
                 } else {
                     // we're near the end of the response
                     builder.getChars(pos, totalLen, buf, 0);
-                    int len = (totalLen - pos);
+                    int len = totalLen - pos;
                     orig.write(buf, 0, len);
-                    pos += (len + 1);
+                    pos += len + 1;
                 }
             }
         }
@@ -271,7 +271,7 @@ final class WriteBehindStateWriter extends Writer {
      * @throws IOException when an I/O error occurs.
      */
     private StringBuilder getState(StateManager stateManager, ResponseWriter origWriter) throws IOException {
-        FastStringWriter stateWriter = new FastStringWriter((stateManager.isSavingStateInClient(context)) ? bufSize : 128);
+        FastStringWriter stateWriter = new FastStringWriter(stateManager.isSavingStateInClient(context) ? bufSize : 128);
         context.setResponseWriter(origWriter.cloneWithWriter(stateWriter));
         if (state == null) {
             state = stateManager.saveView(context);

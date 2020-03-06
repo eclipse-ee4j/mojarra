@@ -246,7 +246,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         }
 
         try {
-            Class<?> clazz = ((classMap != null) ? classMap.get(treeNode.componentType) : null);
+            Class<?> clazz = classMap != null ? classMap.get(treeNode.componentType) : null;
             if (clazz == null) {
                 clazz = loadClass(treeNode.componentType, treeNode);
                 if (!isAnyNull(clazz, classMap)) {

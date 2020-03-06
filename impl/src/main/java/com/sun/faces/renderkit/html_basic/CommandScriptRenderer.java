@@ -88,7 +88,7 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
         RenderKitUtils.renderJsfJsIfNecessary(context);
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("span", commandScript);
         writer.writeAttribute("id", clientId, "id");
@@ -108,7 +108,7 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.endElement("script");
         writer.endElement("span");

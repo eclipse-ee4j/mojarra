@@ -150,7 +150,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         }
 
         try {
-            Class<?> t = ((classMap != null) ? classMap.get(n.componentType) : null);
+            Class<?> t = classMap != null ? classMap.get(n.componentType) : null;
             if (t == null) {
                 t = Util.loadClass(n.componentType, n);
                 if (t != null && classMap != null) {
@@ -162,7 +162,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
                 }
             }
 
-            assert (t != null);
+            assert t != null;
             UIComponent c = (UIComponent) t.newInstance();
             c.setId(n.id);
 
@@ -205,7 +205,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
                 if (i != tn.parent) {
                     ((UIComponent) tree[tn.parent]).getChildren().add(c);
                 } else {
-                    assert (c instanceof UIViewRoot);
+                    assert c instanceof UIViewRoot;
                     UIViewRoot viewRoot = (UIViewRoot) c;
                     context.setViewRoot(viewRoot);
                     viewRoot.setRenderKitId(renderKitId);

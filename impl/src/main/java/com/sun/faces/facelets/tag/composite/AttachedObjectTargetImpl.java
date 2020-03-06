@@ -44,7 +44,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget {
 
     @Override
     public List<UIComponent> getTargets(UIComponent topLevelComponent) {
-        assert (null != name);
+        assert null != name;
 
         List<UIComponent> result;
         FacesContext ctx = FacesContext.getCurrentInstance();

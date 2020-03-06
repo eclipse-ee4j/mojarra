@@ -110,7 +110,7 @@ public abstract class SystemEvent extends EventObject {
      */
     public boolean isAppropriateListener(FacesListener listener) {
 
-        return (listener instanceof SystemEventListener);
+        return listener instanceof SystemEventListener;
 
     }
 

@@ -68,7 +68,7 @@ public class VersionInfo implements Comparable {
     @Override
     public int hashCode() {
 
-        return (version.hashCode() ^ ((extension != null) ? extension.hashCode() : 0));
+        return version.hashCode() ^ (extension != null ? extension.hashCode() : 0);
 
     }
 
@@ -85,11 +85,11 @@ public class VersionInfo implements Comparable {
         boolean versionsEqual = version.equals(passed.version);
         boolean extensionEqual;
         if (extension == null) {
-            extensionEqual = (passed.extension == null);
+            extensionEqual = passed.extension == null;
         } else {
             extensionEqual = extension.equals(passed.extension);
         }
-        return (versionsEqual && extensionEqual);
+        return versionsEqual && extensionEqual;
 
     }
 
@@ -97,8 +97,8 @@ public class VersionInfo implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        assert (o instanceof VersionInfo);
+        assert o instanceof VersionInfo;
         VersionInfo c = (VersionInfo) o;
-        return (version.compareTo(c.version));
+        return version.compareTo(c.version);
     }
 }

@@ -116,16 +116,16 @@ public class IdTagParserImpl implements TagParser {
 
         if (isNamingContainerTag(validator, ns, ln)) {
             nestedInNamingContainer = true;
-        } else if ((ns.equals(RIConstants.HTML_NAMESPACE)) && (requiresIdCount > 0)) {
+        } else if (ns.equals(RIConstants.HTML_NAMESPACE) && requiresIdCount > 0) {
             // make sure that id is present in attributes
-            if ((!(nestedInNamingContainer)) && (!hasIdAttribute(a))) {
+            if (!nestedInNamingContainer && !hasIdAttribute(a)) {
                 // add to list of jsf tags for error report
                 failed = true;
                 requiresIdList.append(qn).append(' ');
             }
-        } else if ((requiresIdCount == 0) && (!siblingSatisfied)) {
+        } else if (requiresIdCount == 0 && !siblingSatisfied) {
             // make sure jsf sibling has an id
-            if (((ns.equals(RIConstants.HTML_NAMESPACE)) || (ns.equals(RIConstants.CORE_NAMESPACE))) && (!hasIdAttribute(a)) && (!(nestedInNamingContainer))) {
+            if ((ns.equals(RIConstants.HTML_NAMESPACE) || ns.equals(RIConstants.CORE_NAMESPACE)) && !hasIdAttribute(a) && !nestedInNamingContainer) {
 
                 // add to list of jsf tags for error report
                 failed = true;

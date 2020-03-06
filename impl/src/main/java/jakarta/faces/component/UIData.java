@@ -245,7 +245,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -348,7 +348,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     public boolean isRowAvailable() {
 
-        return (getDataModel().isRowAvailable());
+        return getDataModel().isRowAvailable();
 
     }
 
@@ -362,7 +362,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     public int getRowCount() {
 
-        return (getDataModel().getRowCount());
+        return getDataModel().getRowCount();
 
     }
 
@@ -378,7 +378,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     public Object getRowData() {
 
-        return (getDataModel().getRowData());
+        return getDataModel().getRowData();
 
     }
 
@@ -834,7 +834,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             if (!isNestedWithinIterator()) {
                 clientIdBuilder = new StringBuilder(super.getClientId(context));
                 baseClientId = clientIdBuilder.toString();
-                baseClientIdLength = (baseClientId.length() + 1);
+                baseClientIdLength = baseClientId.length() + 1;
                 clientIdBuilder.append(UINamingContainer.getSeparatorChar(context));
                 clientIdBuilder.setLength(baseClientIdLength);
             } else {
@@ -860,11 +860,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 cid = clientIdBuilder.append(super.getClientId(context)).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
                 clientIdBuilder.setLength(0);
             }
-            return (cid);
+            return cid;
         } else {
             if (!isNestedWithinIterator()) {
                 // Not nested and no row available, so just return our baseClientId
-                return (baseClientId);
+                return baseClientId;
             } else {
                 // nested and no row available, return the result of getClientId().
                 // this is necessary as the client ID will reflect the row that
@@ -965,7 +965,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // PENDING(edburns): is this safe with respect to I18N?
         if (myId.endsWith(sepChar + Integer.toString(savedRowIndex, 10))) {
             lastSep = myId.lastIndexOf(sepChar);
-            assert (-1 != lastSep);
+            assert -1 != lastSep;
             myId = myId.substring(0, lastSep);
         }
 
@@ -1241,7 +1241,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public String createUniqueId(FacesContext context, String seed) {
         Integer i = (Integer) getStateHelper().get(PropertyKeys.lastId);
-        int lastId = ((i != null) ? i : 0);
+        int lastId = i != null ? i : 0;
         getStateHelper().put(PropertyKeys.lastId, ++lastId);
         return UIViewRoot.UNIQUE_ID_PREFIX + (seed == null ? lastId : seed);
     }
@@ -1382,8 +1382,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // First check to see whether we are visitable. If not
         // short-circuit out of this subtree, though allow the
         // visit to proceed through to other subtrees.
-        if (!isVisitable(context))
+        if (!isVisitable(context)) {
             return false;
+        }
 
         FacesContext facesContext = context.getFacesContext();
         // NOTE: that the visitRows local will be obsolete once the
@@ -1408,31 +1409,35 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             VisitResult result = context.invokeVisitCallback(this, callback);
 
             // If the visit is complete, short-circuit out and end the visit
-            if (result == VisitResult.COMPLETE)
+            if (result == VisitResult.COMPLETE) {
                 return true;
+            }
 
             // Visit children, short-circuiting as necessary
             // NOTE: that the visitRows parameter will be obsolete once the
             // appropriate visit hints have been added to the API
-            if ((result == VisitResult.ACCEPT) && doVisitChildren(context, visitRows)) {
+            if (result == VisitResult.ACCEPT && doVisitChildren(context, visitRows)) {
 
                 // First visit facets
                 // NOTE: that the visitRows parameter will be obsolete once the
                 // appropriate visit hints have been added to the API
-                if (visitFacets(context, callback, visitRows))
+                if (visitFacets(context, callback, visitRows)) {
                     return true;
+                }
 
                 // Next column facets
                 // NOTE: that the visitRows parameter will be obsolete once the
                 // appropriate visit hints have been added to the API
-                if (visitColumnsAndColumnFacets(context, callback, visitRows))
+                if (visitColumnsAndColumnFacets(context, callback, visitRows)) {
                     return true;
+                }
 
                 // And finally, visit rows
                 // NOTE: that the visitRows parameter will be obsolete once the
                 // appropriate visit hints have been added to the API
-                if (visitRows(context, callback, visitRows))
+                if (visitRows(context, callback, visitRows)) {
                     return true;
+                }
             }
         } finally {
             // Clean up - pop Jakarta Expression Language and restore old row index
@@ -1617,7 +1622,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             // reset the client id (see spec 3.1.6)
             component.setId(component.getId());
             if (!component.isTransient()) {
-                component.restoreTransientState(facesContext, (state == null) ? null : state.get(component.getClientId(facesContext)));
+                component.restoreTransientState(facesContext, state == null ? null : state.get(component.getClientId(facesContext)));
 
                 Iterator<UIComponent> childsIterator;
                 if (restoreChildFacets) {
@@ -1728,7 +1733,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         // Return any previously cached DataModel instance
         if (model != null) {
-            return (model);
+            return model;
         }
 
         // Synthesize a DataModel around our current value if possible
@@ -1760,7 +1765,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 setDataModel(new ScalarDataModel(current));
             }
         }
-        return (model);
+        return model;
 
     }
 
@@ -1962,7 +1967,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         while (true) {
 
             // Have we processed the requested number of rows?
-            if ((rows > 0) && (++processed > rows)) {
+            if (rows > 0 && ++processed > rows) {
                 break;
             }
 
@@ -2012,10 +2017,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             setRowIndex(-1);
         }
         Collection<String> idsToVisit = context.getSubtreeIdsToVisit(this);
-        assert (idsToVisit != null);
+        assert idsToVisit != null;
 
         // All ids or non-empty collection means we need to visit our children.
-        return (!idsToVisit.isEmpty());
+        return !idsToVisit.isEmpty();
     }
 
 //    // Performs pre-phase initialization before visiting children
@@ -2047,8 +2052,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         if (getFacetCount() > 0) {
             for (UIComponent facet : getFacets().values()) {
-                if (facet.visitTree(context, callback))
+                if (facet.visitTree(context, callback)) {
                     return true;
+                }
             }
         }
 
@@ -2097,7 +2103,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
             // Have we processed the requested number of rows?
             if (visitRows) {
-                if ((rows > 0) && (++processed > rows)) {
+                if (rows > 0 && ++processed > rows) {
                     break;
                 }
                 // Expose the current row in the specified request attribute
@@ -2151,7 +2157,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private boolean keepSaved(FacesContext context) {
 
-        return (contextHasErrorMessages(context) || isNestedWithinIterator());
+        return contextHasErrorMessages(context) || isNestedWithinIterator();
 
     }
 
@@ -2176,7 +2182,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private boolean contextHasErrorMessages(FacesContext context) {
 
         FacesMessage.Severity sev = context.getMaximumSeverity();
-        return (sev != null && (FacesMessage.SEVERITY_ERROR.compareTo(sev) >= 0));
+        return sev != null && FacesMessage.SEVERITY_ERROR.compareTo(sev) >= 0;
 
     }
 
@@ -2217,7 +2223,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             EditableValueHolder input = (EditableValueHolder) component;
             String clientId = component.getClientId(context);
 
-            SavedState state = (saved == null ? null : saved.get(clientId));
+            SavedState state = saved == null ? null : saved.get(clientId);
             if (state == null) {
                 input.resetValue();
             } else {
@@ -2231,7 +2237,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         } else if (component instanceof UIForm) {
             UIForm form = (UIForm) component;
             String clientId = component.getClientId(context);
-            SavedState state = (saved == null ? null : saved.get(clientId));
+            SavedState state = saved == null ? null : saved.get(clientId);
             if (state == null) {
                 // submitted is transient state
                 form.setSubmitted(false);
@@ -2355,7 +2361,7 @@ class SavedState implements Serializable {
     private boolean submitted;
 
     Object getSubmittedValue() {
-        return (submittedValue);
+        return submittedValue;
     }
 
     void setSubmittedValue(Object submittedValue) {
@@ -2365,7 +2371,7 @@ class SavedState implements Serializable {
     private boolean valid = true;
 
     boolean isValid() {
-        return (valid);
+        return valid;
     }
 
     void setValid(boolean valid) {
@@ -2375,7 +2381,7 @@ class SavedState implements Serializable {
     private Object value;
 
     Object getValue() {
-        return (value);
+        return value;
     }
 
     public void setValue(Object value) {
@@ -2385,7 +2391,7 @@ class SavedState implements Serializable {
     private boolean localValueSet;
 
     boolean isLocalValueSet() {
-        return (localValueSet);
+        return localValueSet;
     }
 
     public void setLocalValueSet(boolean localValueSet) {
@@ -2406,7 +2412,7 @@ class SavedState implements Serializable {
 
     @Override
     public String toString() {
-        return ("submittedValue: " + submittedValue + " value: " + value + " localValueSet: " + localValueSet);
+        return "submittedValue: " + submittedValue + " value: " + value + " localValueSet: " + localValueSet;
     }
 
 }
@@ -2426,16 +2432,16 @@ class WrapperEvent extends FacesEvent {
     private int rowIndex = -1;
 
     public FacesEvent getFacesEvent() {
-        return (event);
+        return event;
     }
 
     public int getRowIndex() {
-        return (rowIndex);
+        return rowIndex;
     }
 
     @Override
     public PhaseId getPhaseId() {
-        return (event.getPhaseId());
+        return event.getPhaseId();
     }
 
     @Override
@@ -2445,7 +2451,7 @@ class WrapperEvent extends FacesEvent {
 
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
-        return (false);
+        return false;
     }
 
     @Override

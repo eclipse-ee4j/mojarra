@@ -256,7 +256,7 @@ public class WebConfiguration {
 
     public Map<String, String> getFacesConfigOptionValue(WebContextInitParameter param, boolean create) {
 
-        assert (facesConfigParameters != null);
+        assert facesConfigParameters != null;
 
         Map<String, String> result = facesConfigParameters.get(param);
         if (result == null) {
@@ -278,7 +278,7 @@ public class WebConfiguration {
     public String[] getOptionValue(WebContextInitParameter param, String sep) {
         String[] result;
 
-        assert (cachedListParams != null);
+        assert cachedListParams != null;
 
         if ((result = cachedListParams.get(param)) == null) {
             String value = getOptionValue(param);
@@ -369,7 +369,7 @@ public class WebConfiguration {
         value = value.trim();
         String oldVal = contextParameters.put(param, value);
         cachedListParams.remove(param);
-        if (oldVal != null && LOGGER.isLoggable(FINE) && !(oldVal.equals(value))) {
+        if (oldVal != null && LOGGER.isLoggable(FINE) && !oldVal.equals(value)) {
             LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
         }
     }
@@ -420,7 +420,7 @@ public class WebConfiguration {
 
         // Scan for "contractMappings" in the web app root
         String contractsDirName = getOptionValue(WebContextInitParameter.WebAppContractsDirectory);
-        assert (null != contractsDirName);
+        assert null != contractsDirName;
         candidates = extContex.getResourcePaths(contractsDirName);
         if (null != candidates) {
             int contractsDirNameLen = contractsDirName.length();
@@ -572,7 +572,7 @@ public class WebConfiguration {
 
                     if (LOGGER.isLoggable(Level.INFO) && alternate != null) {
                         queueLoggingAction(new DeferredBooleanParameterLoggingAction(param, Level.INFO,
-                                ((value) ? "jsf.config.webconfig.configinfo.reset.enabled" : "jsf.config.webconfig.configinfo.reset.disabled"),
+                                value ? "jsf.config.webconfig.configinfo.reset.enabled" : "jsf.config.webconfig.configinfo.reset.disabled",
                                 new Object[] { contextName, alternate.getQualifiedName() }));
                     }
 
@@ -599,7 +599,7 @@ public class WebConfiguration {
                 }
 
                 if (LOGGER.isLoggable(loggingLevel)) {
-                    LOGGER.log(loggingLevel, ((value) ? "jsf.config.webconfig.boolconfiginfo.enabled" : "jsf.config.webconfig.boolconfiginfo.disabled"),
+                    LOGGER.log(loggingLevel, value ? "jsf.config.webconfig.boolconfiginfo.enabled" : "jsf.config.webconfig.boolconfiginfo.disabled",
                             new Object[] { contextName, param.getQualifiedName() });
                 }
 

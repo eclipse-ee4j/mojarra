@@ -72,10 +72,10 @@ public class FlowCDIContext implements Context, Serializable {
                 return false;
             }
             final FlowBeanInfo other = (FlowBeanInfo) obj;
-            if ((definingDocumentId == null) ? (other.definingDocumentId != null) : !definingDocumentId.equals(other.definingDocumentId)) {
+            if (definingDocumentId == null ? other.definingDocumentId != null : !definingDocumentId.equals(other.definingDocumentId)) {
                 return false;
             }
-            if ((id == null) ? (other.id != null) : !id.equals(other.id)) {
+            if (id == null ? other.id != null : !id.equals(other.id)) {
                 return false;
             }
             return true;
@@ -159,7 +159,7 @@ public class FlowCDIContext implements Context, Serializable {
         }
 
         private boolean isFlowExists() {
-            return (null != flowBeansForClientWindowKey && null != creationalForClientWindowKey);
+            return null != flowBeansForClientWindowKey && null != creationalForClientWindowKey;
         }
 
         public String getCreationalForClientWindowKey() {
@@ -327,8 +327,8 @@ public class FlowCDIContext implements Context, Serializable {
         FlowScopeMapHelper mapHelper = new FlowScopeMapHelper(facesContext, currentFlow, depth);
         Map<String, Object> flowScopedBeanMap = mapHelper.getFlowScopedBeanMapForCurrentFlow();
         Map<String, CreationalContext<?>> creationalMap = mapHelper.getFlowScopedCreationalMapForCurrentFlow();
-        assert (!flowScopedBeanMap.isEmpty());
-        assert (!creationalMap.isEmpty());
+        assert !flowScopedBeanMap.isEmpty();
+        assert !creationalMap.isEmpty();
         BeanManager beanManager = Util.getCdiBeanManager(facesContext);
 
         for (Entry<String, Object> entry : flowScopedBeanMap.entrySet()) {

@@ -60,7 +60,7 @@ public class HtmlHead extends UIOutput {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

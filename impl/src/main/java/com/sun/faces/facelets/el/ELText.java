@@ -416,7 +416,7 @@ public class ELText {
                 }
             } else if ('{' == c && !insideString) {
                 nested++;
-            } else if (str == 0 && ('}' == c)) {
+            } else if (str == 0 && '}' == c) {
                 if (nested > 1) {
                     nested--;
                 } else {

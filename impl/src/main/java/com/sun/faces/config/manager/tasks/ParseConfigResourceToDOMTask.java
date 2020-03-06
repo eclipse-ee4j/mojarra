@@ -246,9 +246,9 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                     DocumentBuilder builder = getBuilderForSchema(schema);
                     if (builder.isValidating()) {
                         builder.getSchema().newValidator().validate(domSource);
-                        returnDoc = ((Document) domSource.getNode());
+                        returnDoc = (Document) domSource.getNode();
                     } else {
-                        returnDoc = ((Document) domSource.getNode());
+                        returnDoc = (Document) domSource.getNode();
                     }
                 } else {
                     // this shouldn't happen, but...
@@ -285,9 +285,9 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                     DocumentBuilder builder = getBuilderForSchema(schema);
                     if (builder.isValidating()) {
                         builder.getSchema().newValidator().validate(domSource);
-                        returnDoc = ((Document) domSource.getNode());
+                        returnDoc = (Document) domSource.getNode();
                     } else {
-                        returnDoc = ((Document) domSource.getNode());
+                        returnDoc = (Document) domSource.getNode();
                     }
                 } else {
                     // this shouldn't happen, but...
@@ -346,16 +346,16 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     }
 
     private boolean streamIsZeroLengthOrEmpty(InputStream is) throws IOException {
-        boolean isZeroLengthOrEmpty = (0 == is.available());
+        boolean isZeroLengthOrEmpty = 0 == is.available();
         final int size = 1024;
         byte[] b = new byte[size];
         String s;
         while (!isZeroLengthOrEmpty && -1 != is.read(b, 0, size)) {
-            s = (new String(b, RIConstants.CHAR_ENCODING)).trim();
+            s = new String(b, RIConstants.CHAR_ENCODING).trim();
             isZeroLengthOrEmpty = 0 == s.length();
             b[0] = 0;
             for (int i = 1; i < size; i += i) {
-                System.arraycopy(b, 0, b, i, ((size - i) < i) ? (size - i) : i);
+                System.arraycopy(b, 0, b, i, size - i < i ? size - i : i);
             }
         }
 

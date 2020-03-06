@@ -108,7 +108,7 @@ public class DebugObjectOutputStream extends ObjectOutputStream {
      */
     private int currentDepth() {
         try {
-            Integer oneBased = ((Integer) DEPTH_FIELD.get(this));
+            Integer oneBased = (Integer) DEPTH_FIELD.get(this);
             return oneBased - 1;
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);

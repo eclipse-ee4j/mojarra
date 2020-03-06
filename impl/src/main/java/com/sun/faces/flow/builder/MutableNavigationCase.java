@@ -70,7 +70,7 @@ public class MutableNavigationCase extends NavigationCase {
         this.condition = condition;
         this.toViewId = toViewId;
         this.toFlowDocumentId = toFlowDocumentId;
-        this.parameters = (null != parameters) ? parameters : new ConcurrentHashMap<>();
+        this.parameters = null != parameters ? parameters : new ConcurrentHashMap<>();
         this.redirect = redirect;
         this.includeViewParams = includeViewParams;
 
@@ -162,7 +162,7 @@ public class MutableNavigationCase extends NavigationCase {
     @Override
     public boolean hasCondition() {
 
-        return (condition != null);
+        return condition != null;
 
     }
 
@@ -174,7 +174,7 @@ public class MutableNavigationCase extends NavigationCase {
             conditionExpr = factory.createValueExpression(context.getELContext(), condition, Boolean.class);
         }
 
-        return ((conditionExpr != null) ? (Boolean) conditionExpr.getValue(context.getELContext()) : null);
+        return conditionExpr != null ? (Boolean) conditionExpr.getValue(context.getELContext()) : null;
 
     }
 
@@ -225,22 +225,22 @@ public class MutableNavigationCase extends NavigationCase {
             return false;
         }
         final MutableNavigationCase other = (MutableNavigationCase) obj;
-        if ((fromViewId == null) ? (other.fromViewId != null) : !fromViewId.equals(other.fromViewId)) {
+        if (fromViewId == null ? other.fromViewId != null : !fromViewId.equals(other.fromViewId)) {
             return false;
         }
-        if ((fromAction == null) ? (other.fromAction != null) : !fromAction.equals(other.fromAction)) {
+        if (fromAction == null ? other.fromAction != null : !fromAction.equals(other.fromAction)) {
             return false;
         }
-        if ((fromOutcome == null) ? (other.fromOutcome != null) : !fromOutcome.equals(other.fromOutcome)) {
+        if (fromOutcome == null ? other.fromOutcome != null : !fromOutcome.equals(other.fromOutcome)) {
             return false;
         }
-        if ((condition == null) ? (other.condition != null) : !condition.equals(other.condition)) {
+        if (condition == null ? other.condition != null : !condition.equals(other.condition)) {
             return false;
         }
-        if ((toViewId == null) ? (other.toViewId != null) : !toViewId.equals(other.toViewId)) {
+        if (toViewId == null ? other.toViewId != null : !toViewId.equals(other.toViewId)) {
             return false;
         }
-        if ((toFlowDocumentId == null) ? (other.toFlowDocumentId != null) : !toFlowDocumentId.equals(other.toFlowDocumentId)) {
+        if (toFlowDocumentId == null ? other.toFlowDocumentId != null : !toFlowDocumentId.equals(other.toFlowDocumentId)) {
             return false;
         }
         if (parameters != other.parameters && (parameters == null || !parameters.equals(other.parameters))) {
@@ -283,7 +283,7 @@ public class MutableNavigationCase extends NavigationCase {
             sb.append(", toViewId='").append(toViewId).append('\'');
             sb.append(", faces-redirect=").append(redirect);
             sb.append(", includeViewParams=").append(includeViewParams).append('\'');
-            sb.append(", parameters=").append(((parameters != null) ? parameters.toString() : ""));
+            sb.append(", parameters=").append(parameters != null ? parameters.toString() : "");
             sb.append('}');
             toString = sb.toString();
         }

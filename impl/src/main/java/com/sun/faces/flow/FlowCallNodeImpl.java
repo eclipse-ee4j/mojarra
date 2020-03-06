@@ -74,7 +74,7 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
             return false;
         }
         final FlowCallNodeImpl other = (FlowCallNodeImpl) obj;
-        if ((id == null) ? (other.id != null) : !id.equals(other.id)) {
+        if (id == null ? other.id != null : !id.equals(other.id)) {
             return false;
         }
         if (calledFlowIdVE != other.calledFlowIdVE && (calledFlowIdVE == null || !calledFlowIdVE.equals(other.calledFlowIdVE))) {

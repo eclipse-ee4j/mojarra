@@ -53,7 +53,7 @@ public class ValidateComponentNesting implements SystemEventListener {
 
     @Override
     public boolean isListenerForSource(Object source) {
-        return (source instanceof UIViewRoot);
+        return source instanceof UIViewRoot;
     }
 
     /**

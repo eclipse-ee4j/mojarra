@@ -43,7 +43,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler {
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
      */
     protected String getValidator(FaceletContext ctx) {
-        return ((validatorId != null) ? validatorId.getValue(ctx) : null);
+        return validatorId != null ? validatorId.getValue(ctx) : null;
     }
 
     @Override

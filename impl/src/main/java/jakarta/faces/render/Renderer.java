@@ -179,10 +179,10 @@ public abstract class Renderer {
      */
     public String convertClientId(FacesContext context, String clientId) {
 
-        if ((context == null) || (clientId == null)) {
+        if (context == null || clientId == null) {
             throw new NullPointerException();
         }
-        return (clientId);
+        return clientId;
 
     }
 
@@ -217,7 +217,7 @@ public abstract class Renderer {
      * @return the converted value
      */
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
-        if ((context == null) || (component == null)) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
         return submittedValue;

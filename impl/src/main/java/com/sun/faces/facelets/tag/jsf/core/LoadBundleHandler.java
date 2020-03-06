@@ -76,7 +76,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
             @Override
             public boolean equals(Object obj) {
-                return (obj instanceof ResourceEntry && hashCode() == obj.hashCode());
+                return obj instanceof ResourceEntry && hashCode() == obj.hashCode();
             }
         }
 

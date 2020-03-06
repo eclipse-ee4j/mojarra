@@ -172,7 +172,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
      */
     public double getMaximum() {
 
-        return (maximum != null ? maximum : Double.MAX_VALUE);
+        return maximum != null ? maximum : Double.MAX_VALUE;
 
     }
 
@@ -202,7 +202,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
      */
     public double getMinimum() {
 
-        return (minimum != null ? minimum : Double.MIN_VALUE);
+        return minimum != null ? minimum : Double.MIN_VALUE;
 
     }
 
@@ -228,13 +228,13 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        if ((context == null) || (component == null)) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
         if (value != null) {
             try {
                 double converted = doubleValue(value);
-                if (isMaximumSet() && (converted > maximum)) {
+                if (isMaximumSet() && converted > maximum) {
                     if (isMinimumSet()) {
                         throw new ValidatorException(MessageFactory.getMessage(context, NOT_IN_RANGE_MESSAGE_ID, stringValue(component, minimum, context),
                                 stringValue(component, maximum, context), MessageFactory.getLabel(context, component)));
@@ -244,7 +244,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
                                 MessageFactory.getLabel(context, component)));
                     }
                 }
-                if (isMinimumSet() && (converted < minimum)) {
+                if (isMinimumSet() && converted < minimum) {
                     if (isMaximumSet()) {
                         throw new ValidatorException(MessageFactory.getMessage(context, NOT_IN_RANGE_MESSAGE_ID, stringValue(component, minimum, context),
                                 stringValue(component, maximum, context), MessageFactory.getLabel(context, component)));
@@ -277,8 +277,8 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
             return false;
         }
         DoubleRangeValidator other = (DoubleRangeValidator) otherObj;
-        return ((getMaximum() == other.getMaximum()) && (getMinimum() == other.getMinimum()) && (isMaximumSet() == other.isMaximumSet())
-                && (isMinimumSet() == other.isMinimumSet()));
+        return getMaximum() == other.getMaximum() && getMinimum() == other.getMinimum() && isMaximumSet() == other.isMaximumSet()
+                && isMinimumSet() == other.isMinimumSet();
 
     }
 
@@ -292,9 +292,9 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
     @Override
     public int hashCode() {
 
-        int hashCode = (Double.valueOf(getMinimum()).hashCode() + Double.valueOf(getMaximum()).hashCode() + Boolean.valueOf(isMinimumSet()).hashCode()
-                + Boolean.valueOf(isMaximumSet()).hashCode());
-        return (hashCode);
+        int hashCode = Double.valueOf(getMinimum()).hashCode() + Double.valueOf(getMaximum()).hashCode() + Boolean.valueOf(isMinimumSet()).hashCode()
+                + Boolean.valueOf(isMaximumSet()).hashCode();
+        return hashCode;
 
     }
 
@@ -311,9 +311,9 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
     private static double doubleValue(Object attributeValue) throws NumberFormatException {
 
         if (attributeValue instanceof Number) {
-            return (((Number) attributeValue).doubleValue());
+            return ((Number) attributeValue).doubleValue();
         } else {
-            return (Double.parseDouble(attributeValue.toString()));
+            return Double.parseDouble(attributeValue.toString());
         }
 
     }
@@ -327,13 +327,13 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
 
     private boolean isMaximumSet() {
 
-        return (maximum != null);
+        return maximum != null;
 
     }
 
     private boolean isMinimumSet() {
 
-        return (minimum != null);
+        return minimum != null;
 
     }
 
@@ -349,7 +349,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
             Object values[] = new Object[2];
             values[0] = maximum;
             values[1] = minimum;
-            return (values);
+            return values;
         }
         return null;
 
@@ -374,7 +374,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (transientValue);
+        return transientValue;
 
     }
 

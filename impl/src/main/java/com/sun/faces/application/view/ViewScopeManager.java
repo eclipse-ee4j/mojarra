@@ -205,7 +205,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      */
     @Override
     public boolean isListenerForSource(Object source) {
-        return (source instanceof UIViewRoot);
+        return source instanceof UIViewRoot;
     }
 
     /**

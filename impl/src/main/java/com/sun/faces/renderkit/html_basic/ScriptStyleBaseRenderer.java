@@ -129,7 +129,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
 
         String name = (String) attributes.get("name");
         int childCount = component.getChildCount();
-        boolean renderChildren = (0 < childCount);
+        boolean renderChildren = 0 < childCount;
 
         // If we have no "name" attribute...
         if (null == name) {
@@ -212,7 +212,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         } else {
             resourceUrl = resource.getRequestPath();
             if (query != null) {
-                resourceUrl = resourceUrl + ((resourceUrl.indexOf("?") > -1) ? "&amp;" : "?") + query;
+                resourceUrl = resourceUrl + (resourceUrl.indexOf("?") > -1 ? "&amp;" : "?") + query;
             }
             resourceUrl = context.getExternalContext().encodeResourceURL(resourceUrl);
         }
@@ -253,7 +253,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
                 break;
             }
         }
-        return (result);
+        return result;
 
     }
 

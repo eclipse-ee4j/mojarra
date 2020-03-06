@@ -591,25 +591,25 @@ public class ViewHandlerImpl extends ViewHandler {
 
         // If no mapping can be identified, just return a server-relative path
         if (mapping == null) {
-            return (contextPath + viewId);
+            return contextPath + viewId;
         }
 
         // Deal with prefix mapping
         if (Util.isPrefixMapped(mapping)) {
             if (mapping.equals("/*")) {
-                return (contextPath + viewId);
+                return contextPath + viewId;
             } else {
-                return (contextPath + mapping + viewId);
+                return contextPath + mapping + viewId;
             }
         }
 
         // Deal with extension mapping
         for (String extension : configuredExtensions) {
             if (viewId.endsWith(extension)) {
-                return (contextPath + viewId.substring(0, viewId.lastIndexOf('.')) + mapping);
+                return contextPath + viewId.substring(0, viewId.lastIndexOf('.')) + mapping;
             }
         }
-        return (contextPath + viewId);
+        return contextPath + viewId;
 
     }
 
@@ -617,7 +617,7 @@ public class ViewHandlerImpl extends ViewHandler {
     public String getResourceURL(FacesContext context, String path) {
         ExternalContext extContext = context.getExternalContext();
         if (path.charAt(0) == '/' && !path.startsWith(extContext.getRequestContextPath())) {
-            return (extContext.getRequestContextPath() + path);
+            return extContext.getRequestContextPath() + path;
         } else {
             return path;
         }
@@ -834,7 +834,7 @@ public class ViewHandlerImpl extends ViewHandler {
             // multiple forms.
             StateManager stateManager = Util.getStateManager(context);
             ResponseWriter origWriter = context.getResponseWriter();
-            FastStringWriter state = new FastStringWriter((stateManager.isSavingStateInClient(context)) ? bufSize : 128);
+            FastStringWriter state = new FastStringWriter(stateManager.isSavingStateInClient(context) ? bufSize : 128);
             context.setResponseWriter(origWriter.cloneWithWriter(state));
             stateManager.writeState(context, stateManager.saveView(context));
             context.setResponseWriter(origWriter);
@@ -847,16 +847,16 @@ public class ViewHandlerImpl extends ViewHandler {
             int tildeIdx = getNextDelimiterIndex(builder, pos);
             while (pos < totalLen) {
                 if (tildeIdx != -1) {
-                    if (tildeIdx > pos && (tildeIdx - pos) > bufSize) {
+                    if (tildeIdx > pos && tildeIdx - pos > bufSize) {
                         // there's enough content before the first ~
                         // to fill the entire buffer
-                        builder.getChars(pos, (pos + bufSize), buf, 0);
+                        builder.getChars(pos, pos + bufSize, buf, 0);
                         orig.write(buf);
                         pos += bufSize;
                     } else {
                         // write all content up to the first '~'
                         builder.getChars(pos, tildeIdx, buf, 0);
-                        int len = (tildeIdx - pos);
+                        int len = tildeIdx - pos;
                         orig.write(buf, 0, len);
                         // now check to see if the state saving string is
                         // at the begining of pos, if so, write our
@@ -865,13 +865,13 @@ public class ViewHandlerImpl extends ViewHandler {
                             // buf is effectively zero'd out at this point
                             int statePos = 0;
                             while (statePos < stateLen) {
-                                if ((stateLen - statePos) > bufSize) {
+                                if (stateLen - statePos > bufSize) {
                                     // enough state to fill the buffer
-                                    stateBuilder.getChars(statePos, (statePos + bufSize), buf, 0);
+                                    stateBuilder.getChars(statePos, statePos + bufSize, buf, 0);
                                     orig.write(buf);
                                     statePos += bufSize;
                                 } else {
-                                    int slen = (stateLen - statePos);
+                                    int slen = stateLen - statePos;
                                     stateBuilder.getChars(statePos, stateLen, buf, 0);
                                     orig.write(buf, 0, slen);
                                     statePos += slen;
@@ -879,7 +879,7 @@ public class ViewHandlerImpl extends ViewHandler {
 
                             }
                             // push us past the last '~' at the end of the marker
-                            pos += (len + STATE_MARKER_LEN);
+                            pos += len + STATE_MARKER_LEN;
                             tildeIdx = getNextDelimiterIndex(builder, pos);
                         } else {
                             pos = tildeIdx;
@@ -892,15 +892,15 @@ public class ViewHandlerImpl extends ViewHandler {
                     // finish writing content
                     if (totalLen - pos > bufSize) {
                         // there's enough content to fill the buffer
-                        builder.getChars(pos, (pos + bufSize), buf, 0);
+                        builder.getChars(pos, pos + bufSize, buf, 0);
                         orig.write(buf);
                         pos += bufSize;
                     } else {
                         // we're near the end of the response
                         builder.getChars(pos, totalLen, buf, 0);
-                        int len = (totalLen - pos);
+                        int len = totalLen - pos;
                         orig.write(buf, 0, len);
-                        pos += (len + 1);
+                        pos += len + 1;
                     }
                 }
             }

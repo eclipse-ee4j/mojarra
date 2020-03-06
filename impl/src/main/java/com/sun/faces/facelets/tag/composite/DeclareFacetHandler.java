@@ -48,7 +48,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
-        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || null == (parent = parent.getParent()) || !ComponentHandler.isNew(parent)) {
             return;
         }
 

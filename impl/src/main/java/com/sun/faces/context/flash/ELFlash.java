@@ -307,7 +307,7 @@ public class ELFlash extends Flash {
 
         if (null != (phaseMap = loggingGetPhaseMapForReading(false))) {
             Object value = phaseMap.get(CONSTANTS.KeepAllMessagesAttributeName.toString());
-            result = (null != value) ? (Boolean) value : false;
+            result = null != value ? (Boolean) value : false;
         }
 
         return result;
@@ -373,7 +373,7 @@ public class ELFlash extends Flash {
         }
         if (distributable && context.getExternalContext().getSession(false) != null) {
             SessionHelper sessionHelper = SessionHelper.getInstance(context.getExternalContext());
-            assert (null != sessionHelper);
+            assert null != sessionHelper;
             sessionHelper.update(context.getExternalContext(), this);
         }
 
@@ -402,7 +402,7 @@ public class ELFlash extends Flash {
         }
         FacesContext context = FacesContext.getCurrentInstance();
         if (!wasSpecialPut) {
-            result = (null == b) ? getPhaseMapForWriting().put(key, value) : b;
+            result = null == b ? getPhaseMapForWriting().put(key, value) : b;
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "put({0},{1})", new Object[] { key, value });
             }
@@ -767,7 +767,7 @@ public class ELFlash extends Flash {
         boolean result = false;
 
         // If it was false, but it's now true, return true
-        result = (Boolean.FALSE == contextMap.get(CONSTANTS.SavedResponseCompleteFlagValue) && context.getResponseComplete());
+        result = Boolean.FALSE == contextMap.get(CONSTANTS.SavedResponseCompleteFlagValue) && context.getResponseComplete();
 
         return result;
     }
@@ -974,7 +974,7 @@ public class ELFlash extends Flash {
         }
 
         // Don't try to write the cookie unless there is data in the flash.
-        if (forceWrite || (null != nextFlash && !nextFlash.getFlashMap().isEmpty()) || (null != prevFlash && !prevFlash.getFlashMap().isEmpty())) {
+        if (forceWrite || null != nextFlash && !nextFlash.getFlashMap().isEmpty() || null != prevFlash && !prevFlash.getFlashMap().isEmpty()) {
             if (extContext.isResponseCommitted()) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "jsf.externalcontext.flash.response.already.committed");
@@ -1205,8 +1205,8 @@ public class ELFlash extends Flash {
         public String toString() {
             String result = null;
 
-            result = "previousRequestSequenceNumber: " + ((null != previousRequestFlashInfo) ? previousRequestFlashInfo.getSequenceNumber() : "null")
-                    + " nextRequestSequenceNumber: " + ((null != nextRequestFlashInfo) ? nextRequestFlashInfo.getSequenceNumber() : "null");
+            result = "previousRequestSequenceNumber: " + (null != previousRequestFlashInfo ? previousRequestFlashInfo.getSequenceNumber() : "null")
+                    + " nextRequestSequenceNumber: " + (null != nextRequestFlashInfo ? nextRequestFlashInfo.getSequenceNumber() : "null");
 
             return result;
         }
@@ -1384,8 +1384,8 @@ public class ELFlash extends Flash {
         Cookie encode() {
             Cookie result = null;
 
-            String value = ((null != previousRequestFlashInfo) ? previousRequestFlashInfo.encode() : "") + "_"
-                    + ((null != nextRequestFlashInfo) ? nextRequestFlashInfo.encode() : "");
+            String value = (null != previousRequestFlashInfo ? previousRequestFlashInfo.encode() : "") + "_"
+                    + (null != nextRequestFlashInfo ? nextRequestFlashInfo.encode() : "");
             String encryptedValue = guard.encrypt(value);
             try {
                 result = new Cookie(FLASH_COOKIE_NAME, URLEncoder.encode(encryptedValue, "UTF-8"));
@@ -1523,7 +1523,7 @@ public class ELFlash extends Flash {
             int hash = 7;
             hash = 71 * hash + (isRedirect ? 1 : 0);
             hash = 71 * hash + (lifetimeMarker != null ? lifetimeMarker.hashCode() : 0);
-            hash = 71 * hash + (int) (sequenceNumber ^ (sequenceNumber >>> 32));
+            hash = 71 * hash + (int) (sequenceNumber ^ sequenceNumber >>> 32);
             return hash;
         }
 

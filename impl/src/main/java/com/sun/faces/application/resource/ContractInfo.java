@@ -35,7 +35,7 @@ public final class ContractInfo {
             return false;
         }
         final ContractInfo other = (ContractInfo) obj;
-        if ((contract == null) ? (other.contract != null) : !contract.equals(other.contract)) {
+        if (contract == null ? other.contract != null : !contract.equals(other.contract)) {
             return false;
         }
         return true;

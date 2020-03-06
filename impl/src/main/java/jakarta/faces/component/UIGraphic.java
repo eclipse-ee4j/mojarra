@@ -86,7 +86,7 @@ public class UIGraphic extends UIComponentBase {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -99,7 +99,7 @@ public class UIGraphic extends UIComponentBase {
      */
     public String getUrl() {
 
-        return ((String) getValue());
+        return (String) getValue();
 
     }
 
@@ -161,9 +161,9 @@ public class UIGraphic extends UIComponentBase {
     public ValueBinding getValueBinding(String name) {
 
         if ("url".equals(name)) {
-            return (super.getValueBinding("value"));
+            return super.getValueBinding("value");
         } else {
-            return (super.getValueBinding(name));
+            return super.getValueBinding(name);
         }
 
     }
@@ -209,9 +209,9 @@ public class UIGraphic extends UIComponentBase {
     public ValueExpression getValueExpression(String name) {
 
         if ("url".equals(name)) {
-            return (super.getValueExpression("value"));
+            return super.getValueExpression("value");
         } else {
-            return (super.getValueExpression(name));
+            return super.getValueExpression(name);
         }
 
     }

@@ -58,7 +58,7 @@ public class PropertyResolverImpl extends PropertyResolver {
                 return type.getComponentType();
             } else if (base instanceof List) {
                 Object value = ((List) base).get(index);
-                return (value != null) ? value.getClass() : null;
+                return value != null ? value.getClass() : null;
             } else {
                 throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(MessageUtils.EL_PROPERTY_TYPE_ERROR_ID, base));
             }
@@ -190,7 +190,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         Class<?> type = base.getClass();
         if (type.isArray()) {
             try {
-                Array.set(base, index, (context.getApplication().getExpressionFactory()).coerceToType(value, type.getComponentType()));
+                Array.set(base, index, context.getApplication().getExpressionFactory().coerceToType(value, type.getComponentType()));
             } catch (ArrayIndexOutOfBoundsException aioobe) {
                 throw new PropertyNotFoundException(
                         MessageUtils.getExceptionMessageString(MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID, base, index, Array.getLength(base)));

@@ -59,7 +59,7 @@ public class RegexValidatorTag extends AbstractValidatorTag {
     protected Validator createValidator() throws JspException {
         super.setValidatorId(VALIDATOR_ID_EXPR);
         RegexValidator validator = (RegexValidator) super.createValidator();
-        assert (validator != null);
+        assert validator != null;
         if (regex != null) {
             FacesContext ctx = FacesContext.getCurrentInstance();
             validator.setPattern((String) regex.getValue(ctx.getELContext()));

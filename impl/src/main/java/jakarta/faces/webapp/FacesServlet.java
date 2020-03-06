@@ -702,9 +702,9 @@ public final class FacesServlet implements Servlet {
     }
 
     private void uninitHttpMethodValidityVerification() {
-        assert (null != allowedUnknownHttpMethods);
-        assert (null != defaultAllowedHttpMethods);
-        assert (null != allHttpMethods);
+        assert null != allowedUnknownHttpMethods;
+        assert null != defaultAllowedHttpMethods;
+        assert null != allHttpMethods;
 
         allowedUnknownHttpMethods.clear();
         allowedUnknownHttpMethods = null;

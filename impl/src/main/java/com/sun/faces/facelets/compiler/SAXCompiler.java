@@ -341,7 +341,7 @@ public final class SAXCompiler extends Compiler {
                     super.startElement(uri, localName, qName, attributes);
                 }
             }
-            if ((localName.equals("view") && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri)))) {
+            if (localName.equals("view") && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri))) {
                 super.startElement(uri, localName, qName, attributes);
             }
         }
@@ -360,7 +360,7 @@ public final class SAXCompiler extends Compiler {
                     }
                 }
             }
-            if ((localName.equals("view") && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri)))) {
+            if (localName.equals("view") && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri))) {
                 super.endElement(uri, localName, qName);
             }
         }
@@ -418,7 +418,7 @@ public final class SAXCompiler extends Compiler {
             ExternalContext extContext = context.getExternalContext();
             encodingFromRequest = extContext.getRequestCharacterEncoding();
         }
-        result = (null != encodingFromRequest) ? encodingFromRequest : RIConstants.CHAR_ENCODING;
+        result = null != encodingFromRequest ? encodingFromRequest : RIConstants.CHAR_ENCODING;
 
         return result;
     }

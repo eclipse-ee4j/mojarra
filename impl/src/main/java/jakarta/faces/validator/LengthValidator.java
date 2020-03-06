@@ -143,7 +143,7 @@ public class LengthValidator implements Validator, PartialStateHolder {
      */
     public int getMaximum() {
 
-        return (maximum != null ? maximum : 0);
+        return maximum != null ? maximum : 0;
 
     }
 
@@ -173,7 +173,7 @@ public class LengthValidator implements Validator, PartialStateHolder {
      */
     public int getMinimum() {
 
-        return (minimum != null ? minimum : 0);
+        return minimum != null ? minimum : 0;
 
     }
 
@@ -200,16 +200,16 @@ public class LengthValidator implements Validator, PartialStateHolder {
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
-        if ((context == null) || (component == null)) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
         if (value != null) {
             String converted = stringValue(value);
-            if (isMaximumSet() && (converted.length() > maximum)) {
+            if (isMaximumSet() && converted.length() > maximum) {
                 throw new ValidatorException(MessageFactory.getMessage(context, MAXIMUM_MESSAGE_ID, integerToString(component, maximum, context),
                         MessageFactory.getLabel(context, component)));
             }
-            if (isMinimumSet() && (converted.length() < minimum)) {
+            if (isMinimumSet() && converted.length() < minimum) {
                 throw new ValidatorException(MessageFactory.getMessage(context, MINIMUM_MESSAGE_ID, integerToString(component, minimum, context),
                         MessageFactory.getLabel(context, component)));
             }
@@ -224,17 +224,17 @@ public class LengthValidator implements Validator, PartialStateHolder {
             return false;
         }
         LengthValidator other = (LengthValidator) otherObj;
-        return ((getMaximum() == other.getMaximum()) && (getMinimum() == other.getMinimum()) && (isMinimumSet() == other.isMinimumSet())
-                && (isMaximumSet() == other.isMaximumSet()));
+        return getMaximum() == other.getMaximum() && getMinimum() == other.getMinimum() && isMinimumSet() == other.isMinimumSet()
+                && isMaximumSet() == other.isMaximumSet();
 
     }
 
     @Override
     public int hashCode() {
 
-        int hashCode = (Integer.valueOf(getMinimum()).hashCode() + Integer.valueOf(getMaximum()).hashCode() + Boolean.valueOf(isMaximumSet()).hashCode()
-                + Boolean.valueOf(isMinimumSet()).hashCode());
-        return (hashCode);
+        int hashCode = Integer.valueOf(getMinimum()).hashCode() + Integer.valueOf(getMaximum()).hashCode() + Boolean.valueOf(isMaximumSet()).hashCode()
+                + Boolean.valueOf(isMinimumSet()).hashCode();
+        return hashCode;
 
     }
 
@@ -250,11 +250,11 @@ public class LengthValidator implements Validator, PartialStateHolder {
     private static String stringValue(Object attributeValue) {
 
         if (attributeValue == null) {
-            return (null);
+            return null;
         } else if (attributeValue instanceof String) {
-            return ((String) attributeValue);
+            return (String) attributeValue;
         } else {
-            return (attributeValue.toString());
+            return attributeValue.toString();
         }
 
     }
@@ -268,13 +268,13 @@ public class LengthValidator implements Validator, PartialStateHolder {
 
     private boolean isMaximumSet() {
 
-        return (maximum != null);
+        return maximum != null;
 
     }
 
     private boolean isMinimumSet() {
 
-        return (minimum != null);
+        return minimum != null;
 
     }
 
@@ -290,7 +290,7 @@ public class LengthValidator implements Validator, PartialStateHolder {
             Object values[] = new Object[2];
             values[0] = maximum;
             values[1] = minimum;
-            return (values);
+            return values;
         }
         return null;
 
@@ -315,7 +315,7 @@ public class LengthValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (transientValue);
+        return transientValue;
 
     }
 

@@ -115,7 +115,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         if (Boolean.TRUE.equals(component.getAttributes().get("disabled"))) {
             writer.endElement("span");
@@ -148,7 +148,7 @@ public class CommandLinkRenderer extends LinkRenderer {
     protected void renderAsActive(FacesContext context, UIComponent command) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         // make link act as if it's a button using javascript
         writer.startElement("a", command);
@@ -188,7 +188,7 @@ public class CommandLinkRenderer extends LinkRenderer {
 
         // Fire an action event if we've had a traditional (non-Ajax)
         // postback, or if we've had a partial or behavior-based postback.
-        return (requestParamMap.containsKey(clientId) || RenderKitUtils.isPartialOrBehaviorAction(context, clientId));
+        return requestParamMap.containsKey(clientId) || RenderKitUtils.isPartialOrBehaviorAction(context, clientId);
     }
 
     // Returns the Behaviors map, but only if it contains some entry other

@@ -101,7 +101,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
         if (items != null) {
             if (items.hasNext()) {
-                return (true);
+                return true;
             } else {
                 items = null;
             }
@@ -134,7 +134,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             throw new NoSuchElementException();
         }
         if (items != null) {
-            return (items.next());
+            return items.next();
         }
         return next();
 
@@ -330,8 +330,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
-            item.setLabel(((key != null) ? key.toString() : value.toString()));
-            item.setValue(((value != null) ? value : ""));
+            item.setLabel(key != null ? key.toString() : value.toString());
+            item.setValue(value != null ? value : "");
             return item;
 
         }
@@ -449,11 +449,11 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                     Object itemDisabledResult = attrs.get(ITEM_DISABLED);
                     Object noSelectionValueResult = attrs.get(NO_SELECTION_VALUE);
                     Object noSelectionOptionResult = attrs.get(NO_SELECTION_OPTION);
-                    setValue(((itemValueResult != null) ? itemValueResult : value));
-                    setLabel(((itemLabelResult != null) ? itemLabelResult.toString() : value.toString()));
-                    setDescription(((itemDescriptionResult != null) ? itemDescriptionResult.toString() : null));
-                    setEscape(((itemEscapedResult != null) ? Boolean.valueOf(itemEscapedResult.toString()) : true));
-                    setDisabled(((itemDisabledResult != null) ? Boolean.valueOf(itemDisabledResult.toString()) : false));
+                    setValue(itemValueResult != null ? itemValueResult : value);
+                    setLabel(itemLabelResult != null ? itemLabelResult.toString() : value.toString());
+                    setDescription(itemDescriptionResult != null ? itemDescriptionResult.toString() : null);
+                    setEscape(itemEscapedResult != null ? Boolean.valueOf(itemEscapedResult.toString()) : true);
+                    setDisabled(itemDisabledResult != null ? Boolean.valueOf(itemDisabledResult.toString()) : false);
                     if (null != noSelectionOptionResult) {
                         setNoSelectionOption(Boolean.valueOf(noSelectionOptionResult.toString()));
                     } else if (null != noSelectionValueResult) {
@@ -522,7 +522,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         @Override
         public boolean hasNext() {
 
-            return (index < count);
+            return index < count;
 
         }
 

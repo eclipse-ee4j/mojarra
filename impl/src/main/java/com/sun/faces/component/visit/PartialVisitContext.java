@@ -75,7 +75,7 @@ public class PartialVisitContext extends VisitContext {
         initializeCollections(clientIds);
 
         // Copy and store hints - ensure unmodifiable and non-empty
-        EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty())) ? EnumSet.noneOf(VisitHint.class) : EnumSet.copyOf(hints);
+        EnumSet<VisitHint> hintsEnumSet = hints == null || hints.isEmpty() ? EnumSet.noneOf(VisitHint.class) : EnumSet.copyOf(hints);
 
         this.hints = Collections.unmodifiableSet(hintsEnumSet);
     }
@@ -126,8 +126,9 @@ public class PartialVisitContext extends VisitContext {
         String clientId = component.getClientId();
         Collection<String> ids = subtreeClientIds.get(clientId);
 
-        if (ids == null)
+        if (ids == null) {
             return Collections.emptyList();
+        }
 
         return Collections.unmodifiableCollection(ids);
     }
@@ -158,8 +159,9 @@ public class PartialVisitContext extends VisitContext {
 
         // If the unvisited collection is now empty, we are done.
         // Return VisitResult.COMPLETE to terminate the visit.
-        if (unvisitedClientIds.isEmpty())
+        if (unvisitedClientIds.isEmpty()) {
             return VisitResult.COMPLETE;
+        }
 
         // Otherwise, just return the callback's result
         return result;
@@ -247,14 +249,15 @@ public class PartialVisitContext extends VisitContext {
         // for the full client id because getting the full client id
         // is more expensive than just getting the local id.
         String id = component.getId();
-        if ((id != null) && !ids.contains(id))
+        if (id != null && !ids.contains(id)) {
             return null;
+        }
 
         // The id was a match - now check the client id.
         // note that client id should never be null (should be
         // generated even if id is null, so asserting this.)
         String clientId = component.getClientId();
-        assert (clientId != null);
+        assert clientId != null;
 
         return clientIds.contains(clientId) ? clientId : null;
     }
@@ -270,7 +273,7 @@ public class PartialVisitContext extends VisitContext {
 
         if (lastIndex < 0) {
             id = clientId;
-        } else if (lastIndex < (clientId.length() - 1)) {
+        } else if (lastIndex < clientId.length() - 1) {
             id = clientId.substring(lastIndex + 1);
         }
 

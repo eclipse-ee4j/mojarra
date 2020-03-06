@@ -61,7 +61,7 @@ public class HtmlInputHidden extends UIInput {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

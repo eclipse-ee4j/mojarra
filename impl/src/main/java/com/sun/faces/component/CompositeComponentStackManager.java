@@ -329,7 +329,7 @@ public class CompositeComponentStackManager {
                     if (stack != null && !stack.isEmpty()) {
                         ccp = getCompositeParent(stack.peek());
                     } else {
-                        ccp = getCompositeParent((UIComponent.getCurrentCompositeComponent(FacesContext.getCurrentInstance())));
+                        ccp = getCompositeParent(UIComponent.getCurrentCompositeComponent(FacesContext.getCurrentInstance()));
                     }
                 } else {
                     ccp = compositeComponent;
@@ -392,7 +392,7 @@ public class CompositeComponentStackManager {
         public boolean push(UIComponent compositeComponent) {
 
             if (compositeComponent != null) {
-                assert (UIComponent.isCompositeComponent(compositeComponent));
+                assert UIComponent.isCompositeComponent(compositeComponent);
                 Stack<UIComponent> s = getStack(true);
                 s.push(compositeComponent);
                 return true;
@@ -412,7 +412,7 @@ public class CompositeComponentStackManager {
                 if (idx == 0) { // no parent
                     return null;
                 }
-                return (s.get(idx - 1));
+                return s.get(idx - 1);
             }
         }
 

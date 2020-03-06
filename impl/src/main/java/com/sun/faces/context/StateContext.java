@@ -233,7 +233,7 @@ public class StateContext {
         Map<String, Object> attrs = parent.getAttributes();
         Integer cur = (Integer) attrs.get(DYNAMIC_CHILD_COUNT);
         if (null != cur) {
-            result = (0 < cur) ? cur-- : 0;
+            result = 0 < cur ? cur-- : 0;
 
         }
         if (0 == result && null != cur) {
@@ -248,7 +248,7 @@ public class StateContext {
      * Get the dynamic list (of adds and removes).
      */
     public List<ComponentStruct> getDynamicActions() {
-        return ((modListener != null) ? modListener.getDynamicActions() : null);
+        return modListener != null ? modListener.getDynamicActions() : null;
     }
 
     /**
@@ -257,7 +257,7 @@ public class StateContext {
      * @return the hash map of dynamic components.
      */
     public HashMap<String, UIComponent> getDynamicComponents() {
-        return ((modListener != null) ? modListener.getDynamicComponents() : null);
+        return modListener != null ? modListener.getDynamicComponents() : null;
     }
 
     // ---------------------------------------------------------- Nested Classes
@@ -330,7 +330,7 @@ public class StateContext {
          */
         @Override
         public boolean isListenerForSource(Object source) {
-            return (source instanceof UIComponent && !(source instanceof UIViewRoot));
+            return source instanceof UIComponent && !(source instanceof UIViewRoot);
         }
 
         /**
@@ -510,7 +510,7 @@ public class StateContext {
             if (parent != null) {
                 Map<String, Object> attrs = parent.getAttributes();
                 Collection<String> removedChildrenIds = (Collection<String>) attrs.get(ComponentSupport.REMOVED_CHILDREN);
-                if ((removedChildrenIds != null) && removedChildrenIds.remove(childTagId)) {
+                if (removedChildrenIds != null && removedChildrenIds.remove(childTagId)) {
                     if (removedChildrenIds.isEmpty()) {
                         attrs.remove(ComponentSupport.REMOVED_CHILDREN);
                     }

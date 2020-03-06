@@ -204,7 +204,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
 
         for (int i = 0, size = navigationRules.getLength(); i < size; i++) {
             Node navigationRule = navigationRules.item(i);
-            if ((!("flow-definition".equals(navigationRule.getParentNode().getLocalName()))) && (navigationRule.getNodeType() == Node.ELEMENT_NODE)) {
+            if (!"flow-definition".equals(navigationRule.getParentNode().getLocalName()) && navigationRule.getNodeType() == Node.ELEMENT_NODE) {
                 NodeList children = navigationRule.getChildNodes();
                 String fromViewId = FROM_VIEW_ID_DEFAULT;
                 List<Node> navigationCases = null;
@@ -214,7 +214,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                         switch (n.getLocalName()) {
                         case FROM_VIEW_ID:
                             String t = getNodeText(n);
-                            fromViewId = ((t == null) ? FROM_VIEW_ID_DEFAULT : t);
+                            fromViewId = t == null ? FROM_VIEW_ID_DEFAULT : t;
                             if (!fromViewId.equals(FROM_VIEW_ID_DEFAULT) && fromViewId.charAt(0) != '/') {
                                 if (LOGGER.isLoggable(Level.WARNING)) {
                                     LOGGER.log(Level.WARNING, "jsf.config.navigation.from_view_id_leading_slash", new String[] { fromViewId });

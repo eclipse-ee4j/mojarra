@@ -204,7 +204,7 @@ public class ConvertNumberTag extends AbstractConverterTag {
     protected Converter createConverter() throws JspException {
 
         NumberConverter result = (NumberConverter) super.createConverter();
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         result.setCurrencyCode(currencyCode);

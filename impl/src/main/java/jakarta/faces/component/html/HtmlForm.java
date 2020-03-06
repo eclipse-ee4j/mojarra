@@ -70,7 +70,7 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

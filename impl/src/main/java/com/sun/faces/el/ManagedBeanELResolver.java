@@ -130,7 +130,7 @@ public class ManagedBeanELResolver extends ELResolver {
                     description = descriptions.get("DEFAULT");
                 }
             }
-            list.add(Util.getFeatureDescriptor(beanName, beanName, (description == null) ? "" : description, false, false, true, builder.getBeanClass(),
+            list.add(Util.getFeatureDescriptor(beanName, beanName, description == null ? "" : description, false, false, true, builder.getBeanClass(),
                     Boolean.TRUE));
         }
 
@@ -150,7 +150,7 @@ public class ManagedBeanELResolver extends ELResolver {
     private static BeanManager getBeanManager() {
 
         ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-        return ((associate != null) ? associate.getBeanManager() : null);
+        return associate != null ? associate.getBeanManager() : null;
 
     }
 
@@ -177,7 +177,7 @@ public class ManagedBeanELResolver extends ELResolver {
                 if (result == null) {
                     result = manager.create(beanName, builder, facesContext);
                 }
-                context.setPropertyResolved(markAsResolvedIfCreated && (result != null));
+                context.setPropertyResolved(markAsResolvedIfCreated && result != null);
             }
         }
 

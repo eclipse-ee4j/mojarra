@@ -619,7 +619,7 @@ public class ELUtils {
     @SuppressWarnings("deprecation")
     private static String stripBracketsIfNecessary(String expression) throws ReferenceSyntaxException {
 
-        assert (null != expression);
+        assert null != expression;
 
         // look for invalid expressions
         if (expression.charAt(0) == '#') {
@@ -640,9 +640,9 @@ public class ELUtils {
     public static Scope getScopeForExpression(String expression) {
 
         if (SharedUtils.isMixedExpression(expression)) {
-            return (getNarrowestScopeFromExpression(expression));
+            return getNarrowestScopeFromExpression(expression);
         } else {
-            return (getScopeForSingleExpression(expression));
+            return getScopeForSingleExpression(expression);
         }
 
     }
@@ -684,7 +684,7 @@ public class ELUtils {
         // "session", "application", or "none" scopes. One of the previous decision
         // statements must be true.
         // noinspection ConstantConditions
-        assert (false);
+        assert false;
         return false;
     }
 

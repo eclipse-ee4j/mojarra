@@ -97,7 +97,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
                     logger.log(Level.SEVERE, "Could not instantiate converter for type {0}: {1}", new Object[] { converterType, e.toString() });
                     logger.log(Level.SEVERE, "", e);
                 }
-                return (null);
+                return null;
             }
         } else if (converter == null) {
             // if there is no valueExpression and converter attribute set,
@@ -180,7 +180,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     private boolean hasStringConverter(FacesContext context) {
 
         if (!hasStringConverterSet) {
-            hasStringConverter = (null != context.getApplication().createConverter(String.class));
+            hasStringConverter = null != context.getApplication().createConverter(String.class);
             hasStringConverterSet = true;
         }
         return hasStringConverter;

@@ -233,7 +233,7 @@ public class RestoreViewPhase extends Phase {
                 }
                 facesContext.setViewRoot(viewRoot);
 
-                assert (viewRoot != null);
+                assert viewRoot != null;
             }
         } catch (Throwable fe) {
             if (fe instanceof FacesException) {
@@ -458,7 +458,7 @@ public class RestoreViewPhase extends Phase {
             } catch (Exception e) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "severe.component.unable_to_process_expression",
-                            new Object[] { afterPhase.getExpressionString(), ("afterPhase") });
+                            new Object[] { afterPhase.getExpressionString(), "afterPhase" });
                 }
                 return;
             }
@@ -480,7 +480,7 @@ public class RestoreViewPhase extends Phase {
      */
     private static boolean isErrorPage(FacesContext context) {
 
-        return (context.getExternalContext().getRequestMap().get(WEBAPP_ERROR_PAGE_MARKER) != null);
+        return context.getExternalContext().getRequestMap().get(WEBAPP_ERROR_PAGE_MARKER) != null;
 
     }
 
@@ -495,7 +495,7 @@ public class RestoreViewPhase extends Phase {
 
     private boolean is11CompatEnabled(FacesContext context) {
 
-        return (getWebConfig(context).isOptionEnabled(BooleanWebContextInitParameter.EnableRestoreView11Compatibility));
+        return getWebConfig(context).isOptionEnabled(BooleanWebContextInitParameter.EnableRestoreView11Compatibility);
 
     }
 

@@ -68,7 +68,7 @@ public class HtmlInputText extends UIInput implements ClientBehaviorHolder {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

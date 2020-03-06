@@ -54,7 +54,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
                 // Take special action to resolve the "this" library name
                 if ("this".equals(lib)) {
                     String thisLibrary = (String) attrs.get(com.sun.faces.application.ApplicationImpl.THIS_LIBRARY);
-                    assert (null != thisLibrary);
+                    assert null != thisLibrary;
                     lib = thisLibrary;
                 }
 
@@ -109,7 +109,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
     private boolean hasBeenProcessed(FacesContext ctx, ResourceDependency dep) {
 
         Set<ResourceDependency> dependencies = (Set<ResourceDependency>) RequestStateManager.get(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES);
-        return ((dependencies != null) && dependencies.contains(dep));
+        return dependencies != null && dependencies.contains(dep);
 
     }
 

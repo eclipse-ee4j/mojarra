@@ -58,7 +58,7 @@ public class ImageRenderer extends HtmlBasicRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("img", component);
         writeIdAttributeIfNecessary(context, writer, component);

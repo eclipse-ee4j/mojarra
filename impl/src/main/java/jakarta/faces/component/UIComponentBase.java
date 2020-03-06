@@ -261,7 +261,7 @@ public abstract class UIComponentBase extends UIComponent {
         // if the current ID is not null, and the passed
         // argument is the same, no need to validate it
         // as it has already been validated.
-        if (this.id == null || !(this.id.equals(id))) {
+        if (this.id == null || !this.id.equals(id)) {
             validateId(id);
             this.id = id;
         }
@@ -1430,7 +1430,7 @@ public abstract class UIComponentBase extends UIComponent {
     private static Map<String, ValueExpression> restoreBindingsState(FacesContext context, Object state) {
 
         if (state == null) {
-            return (null);
+            return null;
         }
         Object values[] = (Object[]) state;
         String names[] = (String[]) values[0];
@@ -1439,14 +1439,14 @@ public abstract class UIComponentBase extends UIComponent {
         for (int i = 0; i < names.length; i++) {
             bindings.put(names[i], (ValueExpression) restoreAttachedState(context, states[i]));
         }
-        return (bindings);
+        return bindings;
 
     }
 
     private Object saveBindingsState(FacesContext context) {
 
         if (bindings == null) {
-            return (null);
+            return null;
         }
 
         Object values[] = new Object[2];
@@ -1459,7 +1459,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         values[1] = bindingValues;
 
-        return (values);
+        return values;
 
     }
 
@@ -1484,7 +1484,7 @@ public abstract class UIComponentBase extends UIComponent {
             }
         }
 
-        return ((savedState) ? listeners : null);
+        return savedState ? listeners : null;
 
     }
 
@@ -1710,10 +1710,10 @@ public abstract class UIComponentBase extends UIComponent {
                 // behaviors directly.
                 Object[] attachedEventBehaviors = new Object[eventBehaviors.size()];
                 for (int j = 0; j < attachedEventBehaviors.length; j++) {
-                    attachedEventBehaviors[j] = ((initialStateMarked()) ? saveBehavior(context, eventBehaviors.get(j))
-                            : saveAttachedState(context, eventBehaviors.get(j)));
+                    attachedEventBehaviors[j] = initialStateMarked() ? saveBehavior(context, eventBehaviors.get(j))
+                            : saveAttachedState(context, eventBehaviors.get(j));
                     if (!stateWritten) {
-                        stateWritten = (attachedEventBehaviors[j] != null);
+                        stateWritten = attachedEventBehaviors[j] != null;
                     }
                 }
                 attachedBehaviors[i++] = attachedEventBehaviors;
@@ -1774,7 +1774,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         // if the Behavior isn't a StateHolder, do nothing as it will be
         // added to the BehaviorMap when the template is re-executed.
-        return ((behavior instanceof StateHolder) ? ((StateHolder) behavior).saveState(ctx) : null);
+        return behavior instanceof StateHolder ? ((StateHolder) behavior).saveState(ctx) : null;
 
     }
 
@@ -1915,10 +1915,10 @@ public abstract class UIComponentBase extends UIComponent {
                 if (attributes != null) {
                     return attributes.containsKey(key);
                 } else {
-                    return (false);
+                    return false;
                 }
             } else {
-                return (false);
+                return false;
             }
         }
 
@@ -1950,7 +1950,7 @@ public abstract class UIComponentBase extends UIComponent {
                         }
 
                         if (readMethod != null) {
-                            result = (readMethod.invoke(component, EMPTY_OBJECT_ARRAY));
+                            result = readMethod.invoke(component, EMPTY_OBJECT_ARRAY);
                         } else {
                             throw new IllegalArgumentException(key);
                         }
@@ -2009,7 +2009,7 @@ public abstract class UIComponentBase extends UIComponent {
                         // TODO: i18n
                         throw new IllegalArgumentException("Setter not found for property " + keyValue);
                     }
-                    return (result);
+                    return result;
                 } catch (IllegalAccessException e) {
                     throw new FacesException(e);
                 } catch (InvocationTargetException e) {
@@ -2057,7 +2057,7 @@ public abstract class UIComponentBase extends UIComponent {
                 Map<String, Object> attributes = getAttributes();
                 if (attributes != null) {
                     component.getStateHelper().remove(UIComponent.PropertyKeysPrivate.attributesThatAreSet, key);
-                    return (component.getStateHelper().remove(PropertyKeys.attributes, key));
+                    return component.getStateHelper().remove(PropertyKeys.attributes, key);
                 } else {
                     return null;
                 }
@@ -2067,19 +2067,19 @@ public abstract class UIComponentBase extends UIComponent {
         @Override
         public int size() {
             Map attributes = getAttributes();
-            return (attributes != null ? attributes.size() : 0);
+            return attributes != null ? attributes.size() : 0;
         }
 
         @Override
         public boolean isEmpty() {
             Map attributes = getAttributes();
-            return (attributes == null || attributes.isEmpty());
+            return attributes == null || attributes.isEmpty();
         }
 
         @Override
         public boolean containsValue(java.lang.Object value) {
             Map attributes = getAttributes();
-            return (attributes != null && attributes.containsValue(value));
+            return attributes != null && attributes.containsValue(value);
         }
 
         @Override
@@ -2091,24 +2091,27 @@ public abstract class UIComponentBase extends UIComponent {
         @Override
         public Set<String> keySet() {
             Map<String, Object> attributes = getAttributes();
-            if (attributes != null)
+            if (attributes != null) {
                 return Collections.unmodifiableSet(attributes.keySet());
+            }
             return Collections.emptySet();
         }
 
         @Override
         public Collection<Object> values() {
             Map<String, Object> attributes = getAttributes();
-            if (attributes != null)
+            if (attributes != null) {
                 return Collections.unmodifiableCollection(attributes.values());
+            }
             return Collections.emptyList();
         }
 
         @Override
         public Set<Entry<String, Object>> entrySet() {
             Map<String, Object> attributes = getAttributes();
-            if (attributes != null)
+            if (attributes != null) {
                 return Collections.unmodifiableSet(attributes.entrySet());
+            }
             return Collections.emptySet();
         }
 
@@ -2176,9 +2179,9 @@ public abstract class UIComponentBase extends UIComponent {
          */
         PropertyDescriptor getPropertyDescriptor(String name) {
             if (pdMap != null) {
-                return (pdMap.get(name));
+                return pdMap.get(name);
             }
-            return (null);
+            return null;
         }
 
         // ----------------------------------------------- Serialization Methods
@@ -2225,7 +2228,7 @@ public abstract class UIComponentBase extends UIComponent {
         public void add(int index, UIComponent element) {
             if (element == null) {
                 throw new NullPointerException();
-            } else if ((index < 0) || (index > size())) {
+            } else if (index < 0 || index > size()) {
                 throw new IndexOutOfBoundsException();
             } else {
                 eraseParent(element);
@@ -2249,7 +2252,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean addAll(Collection<? extends UIComponent> collection) {
-            Iterator<UIComponent> elements = (new ArrayList<UIComponent>(collection)).iterator();
+            Iterator<UIComponent> elements = new ArrayList<UIComponent>(collection).iterator();
             boolean changed = false;
             while (elements.hasNext()) {
                 UIComponent element = elements.next();
@@ -2260,12 +2263,12 @@ public abstract class UIComponentBase extends UIComponent {
                     changed = true;
                 }
             }
-            return (changed);
+            return changed;
         }
 
         @Override
         public boolean addAll(int index, Collection<? extends UIComponent> collection) {
-            Iterator<UIComponent> elements = (new ArrayList<UIComponent>(collection)).iterator();
+            Iterator<UIComponent> elements = new ArrayList<UIComponent>(collection).iterator();
             boolean changed = false;
             while (elements.hasNext()) {
                 UIComponent element = elements.next();
@@ -2276,7 +2279,7 @@ public abstract class UIComponentBase extends UIComponent {
                     changed = true;
                 }
             }
-            return (changed);
+            return changed;
         }
 
         @Override
@@ -2294,17 +2297,17 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public Iterator<UIComponent> iterator() {
-            return (new ChildrenListIterator(this));
+            return new ChildrenListIterator(this);
         }
 
         @Override
         public ListIterator<UIComponent> listIterator() {
-            return (new ChildrenListIterator(this));
+            return new ChildrenListIterator(this);
         }
 
         @Override
         public ListIterator<UIComponent> listIterator(int index) {
-            return (new ChildrenListIterator(this, index));
+            return new ChildrenListIterator(this, index);
         }
 
         @Override
@@ -2312,7 +2315,7 @@ public abstract class UIComponentBase extends UIComponent {
             UIComponent child = get(index);
             child.setParent(null);
             super.remove(index);
-            return (child);
+            return child;
         }
 
         @Override
@@ -2326,9 +2329,9 @@ public abstract class UIComponentBase extends UIComponent {
                 element.setParent(null);
             }
             if (super.remove(element)) {
-                return (true);
+                return true;
             } else {
-                return (false);
+                return false;
             }
         }
 
@@ -2340,7 +2343,7 @@ public abstract class UIComponentBase extends UIComponent {
                     result = true;
                 }
             }
-            return (result);
+            return result;
         }
 
         @Override
@@ -2353,14 +2356,14 @@ public abstract class UIComponentBase extends UIComponent {
                     modified = true;
                 }
             }
-            return (modified);
+            return modified;
         }
 
         @Override
         public UIComponent set(int index, UIComponent element) {
             if (element == null) {
                 throw new NullPointerException();
-            } else if ((index < 0) || (index >= size())) {
+            } else if (index < 0 || index >= size()) {
                 throw new IndexOutOfBoundsException();
             } else {
                 eraseParent(element);
@@ -2368,7 +2371,7 @@ public abstract class UIComponentBase extends UIComponent {
                 super.set(index, element);
                 previous.setParent(null);
                 element.setParent(component);
-                return (previous);
+                return previous;
             }
         }
     }
@@ -2383,7 +2386,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         public ChildrenListIterator(ChildrenList list, int index) {
             this.list = list;
-            if ((index < 0) || (index > list.size())) {
+            if (index < 0 || index > list.size()) {
                 throw new IndexOutOfBoundsException(String.valueOf(index));
             } else {
                 this.index = index;
@@ -2398,7 +2401,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean hasNext() {
-            return (index < list.size());
+            return index < list.size();
         }
 
         @Override
@@ -2406,7 +2409,7 @@ public abstract class UIComponentBase extends UIComponent {
             try {
                 UIComponent o = list.get(index);
                 last = index++;
-                return (o);
+                return o;
             } catch (IndexOutOfBoundsException e) {
                 throw new NoSuchElementException(String.valueOf(index));
             }
@@ -2434,12 +2437,12 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean hasPrevious() {
-            return (index > 1);
+            return index > 1;
         }
 
         @Override
         public int nextIndex() {
-            return (index);
+            return index;
         }
 
         @Override
@@ -2449,7 +2452,7 @@ public abstract class UIComponentBase extends UIComponent {
                 UIComponent o = list.get(current);
                 last = current;
                 index = current;
-                return (o);
+                return o;
             } catch (IndexOutOfBoundsException e) {
                 throw new NoSuchElementException();
             }
@@ -2457,7 +2460,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public int previousIndex() {
-            return (index - 1);
+            return index - 1;
         }
 
         @Override
@@ -2547,17 +2550,17 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public Set<Map.Entry<String, UIComponent>> entrySet() {
-            return (new FacetsMapEntrySet(this));
+            return new FacetsMapEntrySet(this);
         }
 
         @Override
         public Set<String> keySet() {
-            return (new FacetsMapKeySet(this));
+            return new FacetsMapKeySet(this);
         }
 
         @Override
         public UIComponent put(String key, UIComponent value) {
-            if ((key == null) || (value == null)) {
+            if (key == null || value == null) {
                 throw new NullPointerException();
             } else // noinspection ConstantConditions
             if (!(key instanceof String) || !(value instanceof UIComponent)) {
@@ -2571,7 +2574,7 @@ public abstract class UIComponentBase extends UIComponent {
             UIComponent result = super.put(key, value);
             value.setParent(component);
 
-            return (result);
+            return result;
         }
 
         @Override
@@ -2591,16 +2594,16 @@ public abstract class UIComponentBase extends UIComponent {
                 previous.setParent(null);
             }
             super.remove(key);
-            return (previous);
+            return previous;
         }
 
         @Override
         public Collection<UIComponent> values() {
-            return (new FacetsMapValues(this));
+            return new FacetsMapValues(this);
         }
 
         Iterator<String> keySetIterator() {
-            return ((new ArrayList<>(super.keySet())).iterator());
+            return new ArrayList<>(super.keySet()).iterator();
         }
 
     }
@@ -2635,29 +2638,29 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
             if (!(o instanceof Map.Entry)) {
-                return (false);
+                return false;
             }
             Map.Entry e = (Map.Entry) o;
             Object k = e.getKey();
             Object v = e.getValue();
             if (!map.containsKey(k)) {
-                return (false);
+                return false;
             }
             if (v == null) {
-                return (map.get(k) == null);
+                return map.get(k) == null;
             } else {
-                return (v.equals(map.get(k)));
+                return v.equals(map.get(k));
             }
         }
 
         @Override
         public boolean isEmpty() {
-            return (map.isEmpty());
+            return map.isEmpty();
         }
 
         @Override
         public Iterator<Map.Entry<String, UIComponent>> iterator() {
-            return (new FacetsMapEntrySetIterator(map));
+            return new FacetsMapEntrySetIterator(map);
         }
 
         @Override
@@ -2666,14 +2669,14 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
             if (!(o instanceof Map.Entry)) {
-                return (false);
+                return false;
             }
             Object k = ((Map.Entry) o).getKey();
             if (map.containsKey(k)) {
                 map.remove(k);
-                return (true);
+                return true;
             } else {
-                return (false);
+                return false;
             }
         }
 
@@ -2685,7 +2688,7 @@ public abstract class UIComponentBase extends UIComponent {
                     result = true;
                 }
             }
-            return (result);
+            return result;
         }
 
         @Override
@@ -2698,12 +2701,12 @@ public abstract class UIComponentBase extends UIComponent {
                     result = true;
                 }
             }
-            return (result);
+            return result;
         }
 
         @Override
         public int size() {
-            return (map.size());
+            return map.size();
         }
 
     }
@@ -2722,55 +2725,55 @@ public abstract class UIComponentBase extends UIComponent {
         @Override
         public boolean equals(Object o) {
             if (o == null) {
-                return (false);
+                return false;
             }
             if (!(o instanceof Map.Entry)) {
-                return (false);
+                return false;
             }
             Map.Entry e = (Map.Entry) o;
             if (key == null) {
                 if (e.getKey() != null) {
-                    return (false);
+                    return false;
                 }
             } else {
                 if (!key.equals(e.getKey())) {
-                    return (false);
+                    return false;
                 }
             }
             UIComponent v = map.get(key);
             if (v == null) {
                 if (e.getValue() != null) {
-                    return (false);
+                    return false;
                 }
             } else {
                 if (!v.equals(e.getValue())) {
-                    return (false);
+                    return false;
                 }
             }
-            return (true);
+            return true;
         }
 
         @Override
         public String getKey() {
-            return (key);
+            return key;
         }
 
         @Override
         public UIComponent getValue() {
-            return (map.get(key));
+            return map.get(key);
         }
 
         @Override
         public int hashCode() {
             Object value = map.get(key);
-            return (((key == null) ? 0 : key.hashCode()) ^ ((value == null) ? 0 : value.hashCode()));
+            return (key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode());
         }
 
         @Override
         public UIComponent setValue(UIComponent value) {
             UIComponent previous = map.get(key);
             map.put(key, value);
-            return (previous);
+            return previous;
         }
 
     }
@@ -2789,13 +2792,13 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean hasNext() {
-            return (iterator.hasNext());
+            return iterator.hasNext();
         }
 
         @Override
         public Map.Entry<String, UIComponent> next() {
             last = new FacetsMapEntrySetEntry(map, iterator.next());
-            return (last);
+            return last;
         }
 
         @Override
@@ -2835,36 +2838,36 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean contains(Object o) {
-            return (map.containsKey(o));
+            return map.containsKey(o);
         }
 
         @Override
         public boolean containsAll(Collection c) {
             for (Object item : c) {
                 if (!map.containsKey(item)) {
-                    return (false);
+                    return false;
                 }
             }
-            return (true);
+            return true;
         }
 
         @Override
         public boolean isEmpty() {
-            return (map.isEmpty());
+            return map.isEmpty();
         }
 
         @Override
         public Iterator<String> iterator() {
-            return (new FacetsMapKeySetIterator(map));
+            return new FacetsMapKeySetIterator(map);
         }
 
         @Override
         public boolean remove(Object o) {
             if (map.containsKey(o)) {
                 map.remove(o);
-                return (true);
+                return true;
             } else {
-                return (false);
+                return false;
             }
         }
 
@@ -2877,7 +2880,7 @@ public abstract class UIComponentBase extends UIComponent {
                     result = true;
                 }
             }
-            return (result);
+            return result;
         }
 
         @Override
@@ -2890,12 +2893,12 @@ public abstract class UIComponentBase extends UIComponent {
                     result = true;
                 }
             }
-            return (result);
+            return result;
         }
 
         @Override
         public int size() {
-            return (map.size());
+            return map.size();
         }
 
     }
@@ -2914,13 +2917,13 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean hasNext() {
-            return (iterator.hasNext());
+            return iterator.hasNext();
         }
 
         @Override
         public String next() {
             last = iterator.next();
-            return (last);
+            return last;
         }
 
         @Override
@@ -2960,17 +2963,17 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean isEmpty() {
-            return (map.isEmpty());
+            return map.isEmpty();
         }
 
         @Override
         public Iterator<UIComponent> iterator() {
-            return (new FacetsMapValuesIterator(map));
+            return new FacetsMapValuesIterator(map);
         }
 
         @Override
         public int size() {
-            return (map.size());
+            return map.size();
         }
 
     }
@@ -2989,13 +2992,13 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean hasNext() {
-            return (iterator.hasNext());
+            return iterator.hasNext();
         }
 
         @Override
         public UIComponent next() {
             last = iterator.next();
-            return (map.get(last));
+            return map.get(last);
         }
 
         @Override
@@ -3057,7 +3060,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         private void validateKey(Object key) {
-            if (!(key instanceof String) || (key instanceof ValueExpression) || !(key instanceof Serializable)) {
+            if (!(key instanceof String) || key instanceof ValueExpression || !(key instanceof Serializable)) {
                 throw new IllegalArgumentException();
             }
         }
@@ -3261,8 +3264,8 @@ public abstract class UIComponentBase extends UIComponent {
         UIComponent result = null;
 
         String[] segments = expression.split(SEPARATOR_STRING);
-        for (int i = 0, length = (segments.length - 1); i < segments.length; i++, length--) {
-            result = findComponent(base, segments[i], (i == 0));
+        for (int i = 0, length = segments.length - 1; i < segments.length; i++, length--) {
+            result = findComponent(base, segments[i], i == 0);
 
             // the first element of the expression may match base.id
             // (vs. a child if of base)

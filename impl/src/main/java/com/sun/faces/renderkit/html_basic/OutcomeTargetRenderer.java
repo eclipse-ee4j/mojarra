@@ -66,7 +66,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
     protected String getFragment(UIComponent component) {
 
         String fragment = (String) component.getAttributes().get("fragment");
-        fragment = (fragment != null ? fragment.trim() : "");
+        fragment = fragment != null ? fragment.trim() : "";
         if (fragment.length() > 0) {
             fragment = "#" + fragment;
         }
@@ -83,7 +83,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
 
     protected boolean isIncludeViewParams(UIComponent component, NavigationCase navcase) {
 
-        return (((UIOutcomeTarget) component).isIncludeViewParams() || navcase.isIncludeViewParams());
+        return ((UIOutcomeTarget) component).isIncludeViewParams() || navcase.isIncludeViewParams();
 
     }
 

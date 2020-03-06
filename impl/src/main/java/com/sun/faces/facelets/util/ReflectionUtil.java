@@ -76,8 +76,9 @@ public class ReflectionUtil {
      * @throws ClassNotFoundException
      */
     public static Class[] toTypeArray(String[] s) throws ClassNotFoundException {
-        if (s == null)
+        if (s == null) {
             return null;
+        }
         Class[] c = new Class[s.length];
         for (int i = 0; i < s.length; i++) {
             c[i] = forName(s[i]);
@@ -92,8 +93,9 @@ public class ReflectionUtil {
      * @return the array of class names.
      */
     public static String[] toTypeNameArray(Class[] c) {
-        if (c == null)
+        if (c == null) {
             return null;
+        }
         String[] s = new String[c.length];
         for (int i = 0; i < c.length; i++) {
             s[i] = c[i].getName();
@@ -161,7 +163,7 @@ public class ReflectionUtil {
             if (returnObject == null) {
                 // Look for an adapter constructor if we've got
                 // an object to adapt
-                if ((rootType != null) && (root != null)) {
+                if (rootType != null && root != null) {
                     Constructor construct = ReflectionUtils.lookupConstructor(clazz, rootType);
                     if (construct != null) {
                         returnObject = construct.newInstance(root);
@@ -226,6 +228,6 @@ public class ReflectionUtil {
 
     private static boolean isDevModeEnabled() {
         WebConfiguration webconfig = WebConfiguration.getInstance();
-        return (webconfig != null && "Development".equals(webconfig.getOptionValue(WebContextInitParameter.JakartaFacesProjectStage)));
+        return webconfig != null && "Development".equals(webconfig.getOptionValue(WebContextInitParameter.JakartaFacesProjectStage));
     }
 }

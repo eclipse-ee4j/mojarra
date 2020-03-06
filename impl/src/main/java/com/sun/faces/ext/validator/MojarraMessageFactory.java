@@ -158,7 +158,7 @@ class MojarraMessageFactory {
         // At this point, we have a summary and a bundle.
         FacesMessage ret = new BindingFacesMessage(locale, summary, detail, params);
         ret.setSeverity(FacesMessage.SEVERITY_ERROR);
-        return (ret);
+        return ret;
     }
 
     /**
@@ -194,7 +194,7 @@ class MojarraMessageFactory {
             return message;
         }
         locale = Locale.getDefault();
-        return (getMessage(locale, messageId, params));
+        return getMessage(locale, messageId, params);
     }
 
     /**
@@ -210,7 +210,7 @@ class MojarraMessageFactory {
     protected static Object getLabel(FacesContext context, UIComponent component) {
 
         Object o = component.getAttributes().get("label");
-        if (o == null || (o instanceof String && ((String) o).length() == 0)) {
+        if (o == null || o instanceof String && ((String) o).length() == 0) {
             o = component.getValueExpression("label");
         }
         // Use the "clientId" if there was no label specified.
@@ -223,10 +223,10 @@ class MojarraMessageFactory {
     protected static Application getApplication() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (context != null) {
-            return (FacesContext.getCurrentInstance().getApplication());
+            return FacesContext.getCurrentInstance().getApplication();
         }
         ApplicationFactory afactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        return (afactory.getApplication());
+        return afactory.getApplication();
     }
 
     protected static ClassLoader getCurrentLoader(Object fallbackClass) {

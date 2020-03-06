@@ -280,19 +280,19 @@ public class ResourceImpl extends Resource implements Externalizable {
         }
 
         if (version.length() > 0) {
-            uri += ((queryStarted) ? "&v=" : "?v=") + version;
+            uri += (queryStarted ? "&v=" : "?v=") + version;
             queryStarted = true;
         }
 
         String localePrefix = resourceInfo.getLocalePrefix();
         if (localePrefix != null) {
-            uri += ((queryStarted) ? "&loc=" : "?loc=") + localePrefix;
+            uri += (queryStarted ? "&loc=" : "?loc=") + localePrefix;
             queryStarted = true;
         }
 
         String contract = resourceInfo.getContract();
         if (contract != null) {
-            uri += ((queryStarted) ? "&con=" : "?con=") + contract;
+            uri += (queryStarted ? "&con=" : "?con=") + contract;
             queryStarted = true;
         }
 
@@ -300,16 +300,16 @@ public class ResourceImpl extends Resource implements Externalizable {
             ProjectStage stage = context.getApplication().getProjectStage();
             switch (stage) {
             case Development:
-                uri += ((queryStarted) ? "&stage=Development" : "?stage=Development");
+                uri += queryStarted ? "&stage=Development" : "?stage=Development";
                 break;
             case SystemTest:
-                uri += ((queryStarted) ? "&stage=SystemTest" : "?stage=SystemTest");
+                uri += queryStarted ? "&stage=SystemTest" : "?stage=SystemTest";
                 break;
             case UnitTest:
-                uri += ((queryStarted) ? "&stage=UnitTest" : "?stage=UnitTest");
+                uri += queryStarted ? "&stage=UnitTest" : "?stage=UnitTest";
                 break;
             default:
-                assert (stage.equals(Production));
+                assert stage.equals(Production);
             }
         }
 
@@ -351,7 +351,7 @@ public class ResourceImpl extends Resource implements Externalizable {
              * Make sure that we strip the milliseconds out of what comes back from the getLastModified call for a resource as the
              * 'If-Modified-Since' header does not use milliseconds.
              */
-            long lastModifiedOfResource = (((ClientResourceInfo) resourceInfo).getLastModified(context) / 1000) * 1000;
+            long lastModifiedOfResource = ((ClientResourceInfo) resourceInfo).getLastModified(context) / 1000 * 1000;
             long lastModifiedHeader = getIfModifiedHeader(context.getExternalContext());
             if (0 == lastModifiedOfResource) {
                 long startupTime = ApplicationAssociate.getInstance(context.getExternalContext()).getTimeOfInstantiation();

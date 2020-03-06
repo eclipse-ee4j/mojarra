@@ -54,7 +54,7 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
-        if (null == parent || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || !ComponentHandler.isNew(parent)) {
             return;
         }
         if (parent instanceof ActionSource) {

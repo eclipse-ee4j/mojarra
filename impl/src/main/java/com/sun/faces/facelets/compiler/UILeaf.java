@@ -218,7 +218,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
 
     @Override
     public boolean isTransient() {
-        return ((returnLocalTransient) || super.isTransient());
+        return returnLocalTransient || super.isTransient();
     }
 
     @Override

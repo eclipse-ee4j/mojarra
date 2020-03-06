@@ -128,7 +128,7 @@ public class ActionListenerTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -156,7 +156,7 @@ public class ActionListenerTag extends TagSupport {
 
         ((ActionSource) component).addActionListener(listener);
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 

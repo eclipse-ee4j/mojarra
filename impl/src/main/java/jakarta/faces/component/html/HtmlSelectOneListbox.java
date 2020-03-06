@@ -69,7 +69,7 @@ public class HtmlSelectOneListbox extends UISelectOne implements ClientBehaviorH
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

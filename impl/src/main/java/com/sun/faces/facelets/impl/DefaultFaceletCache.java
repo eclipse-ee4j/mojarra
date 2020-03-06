@@ -51,7 +51,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         // Create Factory objects here for the cache. The objects will be delegating to our
         // own instance factories
 
-        final boolean checkExpiry = (refreshPeriod > 0);
+        final boolean checkExpiry = refreshPeriod > 0;
 
         ConcurrentCache.Factory<URL, Record> faceletFactory = new ConcurrentCache.Factory<URL, Record>() {
             @Override
@@ -78,7 +78,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
             _faceletCache = new NoCache(faceletFactory);
             _metadataFaceletCache = new NoCache(metadataFaceletFactory);
         } else {
-            ExpiringConcurrentCache.ExpiryChecker<URL, Record> checker = (refreshPeriod > 0) ? new ExpiryChecker() : new NeverExpired();
+            ExpiringConcurrentCache.ExpiryChecker<URL, Record> checker = refreshPeriod > 0 ? new ExpiryChecker() : new NeverExpired();
             _faceletCache = new ExpiringConcurrentCache<>(faceletFactory, checker);
             _metadataFaceletCache = new ExpiringConcurrentCache<>(metadataFaceletFactory, checker);
         }
@@ -154,7 +154,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
             _refreshInterval = refreshInterval;
 
             // There is no point in calculating the next refresh time if we are refreshing always/never
-            _nextRefreshTime = (_refreshInterval > 0) ? new AtomicLong(creationTime + refreshInterval) : null;
+            _nextRefreshTime = _refreshInterval > 0 ? new AtomicLong(creationTime + refreshInterval) : null;
         }
 
         DefaultFacelet getFacelet() {
@@ -167,12 +167,12 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
 
         long getNextRefreshTime() {
             // There is no point in calculating the next refresh time if we are refreshing always/never
-            return (_refreshInterval > 0) ? _nextRefreshTime.get() : 0;
+            return _refreshInterval > 0 ? _nextRefreshTime.get() : 0;
         }
 
         long getAndUpdateNextRefreshTime() {
             // There is no point in calculating the next refresh time if we are refreshing always/never
-            return (_refreshInterval > 0) ? _nextRefreshTime.getAndSet(System.currentTimeMillis() + _refreshInterval) : 0;
+            return _refreshInterval > 0 ? _nextRefreshTime.getAndSet(System.currentTimeMillis() + _refreshInterval) : 0;
         }
 
         private final long _lastModified;
@@ -191,7 +191,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
                 long lastModified = Util.getLastModified(url);
                 // The record is considered expired if its original last modified time
                 // is older than the URL's current last modified time
-                return (lastModified > record.getLastModified());
+                return lastModified > record.getLastModified();
             }
             return false;
         }

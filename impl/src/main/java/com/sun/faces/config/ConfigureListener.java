@@ -964,7 +964,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         public WebConfigResourceMonitor(ServletContext sc, Collection<URI> uris) {
 
-            assert (uris != null);
+            assert uris != null;
             this.sc = sc;
             for (URI uri : uris) {
                 if (monitors == null) {
@@ -993,7 +993,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         @Override
         public void run() {
 
-            assert (monitors != null);
+            assert monitors != null;
             boolean reloaded = false;
             for (Iterator<Monitor> i = monitors.iterator(); i.hasNext();) {
                 Monitor m = i.next();

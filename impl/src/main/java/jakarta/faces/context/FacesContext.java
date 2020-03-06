@@ -824,7 +824,7 @@ public abstract class FacesContext {
         if (stage == null) {
             throw new NullPointerException();
         }
-        return (stage.equals(getApplication().getProjectStage()));
+        return stage.equals(getApplication().getProjectStage());
 
     }
 
@@ -838,7 +838,7 @@ public abstract class FacesContext {
     private static ThreadLocal<FacesContext> instance = new ThreadLocal<FacesContext>() {
         @Override
         protected FacesContext initialValue() {
-            return (null);
+            return null;
         }
     };
 

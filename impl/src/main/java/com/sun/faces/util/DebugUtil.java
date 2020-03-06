@@ -156,7 +156,7 @@ public class DebugUtil {
     private static void indentPrintln(Logger out, Object toPrint) {
 
         StringBuilder builder = new StringBuilder();
-        String str = (null == toPrint) ? "null" : toPrint.toString();
+        String str = null == toPrint ? "null" : toPrint.toString();
 
         // handle indentation
         for (int i = 0; i < curDepth; i++) {
@@ -319,8 +319,8 @@ public class DebugUtil {
         for (Map.Entry cur : entrySet) {
             key = cur.getKey();
             value = cur.getValue();
-            keyIsSerializable = (key instanceof Serializable) ? "true" : "+_+_+_+FALSE+_+_+_+_";
-            valueIsSerializable = (value instanceof Serializable) ? "true" : "+_+_+_+FALSE+_+_+_+_";
+            keyIsSerializable = key instanceof Serializable ? "true" : "+_+_+_+FALSE+_+_+_+_";
+            valueIsSerializable = value instanceof Serializable ? "true" : "+_+_+_+FALSE+_+_+_+_";
             out.severe("key: " + key.toString() + " class:" + key.getClass() + " Serializable: " + keyIsSerializable);
             out.severe("value: " + value.toString() + " class:" + key.getClass() + " Serializable: " + keyIsSerializable);
             if (value instanceof Object[]) {

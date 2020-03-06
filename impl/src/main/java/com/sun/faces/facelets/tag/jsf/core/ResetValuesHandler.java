@@ -89,7 +89,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
 
         // We're stuck splitting up the string.
         String[] values = SPLIT_PATTERN.split(strValue);
-        if ((values == null) || (values.length == 0)) {
+        if (values == null || values.length == 0) {
             return null;
         }
 

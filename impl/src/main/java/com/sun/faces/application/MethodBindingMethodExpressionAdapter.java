@@ -116,7 +116,7 @@ public class MethodBindingMethodExpressionAdapter extends MethodBinding implemen
             int idx = expr.indexOf('.');
             String target = expr.substring(0, idx).substring(2);
             String t = expr.substring(idx + 1);
-            String method = t.substring(0, (t.length() - 1));
+            String method = t.substring(0, t.length() - 1);
 
             FacesContext context = FacesContext.getCurrentInstance();
             ELContext elContext = context.getELContext();

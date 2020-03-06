@@ -84,7 +84,7 @@ public class RenderResponsePhase extends Phase {
                 String afterPublishViewId = facesContext.getViewRoot().getViewId();
 
                 viewIdsUnchanged = beforePublishViewId == null && afterPublishViewId == null
-                        || (beforePublishViewId != null && afterPublishViewId != null) && beforePublishViewId.equals(afterPublishViewId);
+                        || beforePublishViewId != null && afterPublishViewId != null && beforePublishViewId.equals(afterPublishViewId);
                 if (facesContext.getResponseComplete()) {
                     return;
                 }

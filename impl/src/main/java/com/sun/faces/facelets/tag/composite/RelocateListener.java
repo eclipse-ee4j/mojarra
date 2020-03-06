@@ -62,7 +62,7 @@ abstract class RelocateListener implements ComponentSystemEventListener, StateHo
      */
     protected Resource getBackingResource(UIComponent component) {
 
-        assert (UIComponent.isCompositeComponent(component));
+        assert UIComponent.isCompositeComponent(component);
         Resource resource = (Resource) component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
         if (resource == null) {
             throw new IllegalStateException("Backing resource information not found in composite component attribute map");
@@ -78,7 +78,7 @@ abstract class RelocateListener implements ComponentSystemEventListener, StateHo
     protected boolean resourcesMatch(Resource compositeResource, Location handlerLocation) {
 
         String resName = compositeResource.getResourceName();
-        return (handlerLocation.getPath().contains(resName));
+        return handlerLocation.getPath().contains(resName);
 
     }
 

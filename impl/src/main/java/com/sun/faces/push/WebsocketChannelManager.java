@@ -74,7 +74,7 @@ public class WebsocketChannelManager implements Serializable {
 
         static Scope of(String value, Serializable user) {
             if (value == null) {
-                return (user == null) ? APPLICATION : SESSION;
+                return user == null ? APPLICATION : SESSION;
             }
 
             for (Scope scope : values()) {
@@ -213,7 +213,7 @@ public class WebsocketChannelManager implements Serializable {
      */
     static Map<String, String> getViewScope(boolean create) {
         ViewScope bean = getBeanInstance(ViewScope.class, create);
-        return (bean == null) ? EMPTY_SCOPE : bean.viewScope;
+        return bean == null ? EMPTY_SCOPE : bean.viewScope;
     }
 
     /**

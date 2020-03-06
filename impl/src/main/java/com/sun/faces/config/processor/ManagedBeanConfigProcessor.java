@@ -350,10 +350,10 @@ public class ManagedBeanConfigProcessor extends AbstractConfigProcessor {
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, MessageFormat.format("Created ListEntry valueClass={1}, values={3}", valueClass,
-                        (values != null && !values.isEmpty()) ? values.toString() : "none"));
+                        values != null && !values.isEmpty() ? values.toString() : "none"));
             }
-            return (new ManagedBeanInfo.ListEntry(valueClass,
-                    (values == null) ? TypedCollections.dynamicallyCastList(Collections.emptyList(), String.class) : values));
+            return new ManagedBeanInfo.ListEntry(valueClass,
+                    values == null ? TypedCollections.dynamicallyCastList(Collections.emptyList(), String.class) : values);
         }
 
         return null;
@@ -407,9 +407,9 @@ public class ManagedBeanConfigProcessor extends AbstractConfigProcessor {
             }
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, MessageFormat.format("Created MapEntry keyClass={0}, valueClass={1}, entries={3}", keyClass, valueClass,
-                        (entries != null) ? entries.toString() : "none"));
+                        entries != null ? entries.toString() : "none"));
             }
-            return (new ManagedBeanInfo.MapEntry(keyClass, valueClass, entries));
+            return new ManagedBeanInfo.MapEntry(keyClass, valueClass, entries);
 
         }
 
@@ -454,7 +454,7 @@ public class ManagedBeanConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE,
                         MessageFormat.format("Adding ManagedProperty propertyName={0}, propertyClass={1}, propertyValue={2}, hasMapEntry={3}, hasListEntry={4}",
-                                propertyName, ((propertyClass != null) ? propertyClass : "inferred"), value, (mapEntry != null), (listEntry != null)));
+                                propertyName, propertyClass != null ? propertyClass : "inferred", value, mapEntry != null, listEntry != null));
             }
             return new ManagedBeanInfo.ManagedProperty(propertyName, propertyClass, value, mapEntry, listEntry);
         }

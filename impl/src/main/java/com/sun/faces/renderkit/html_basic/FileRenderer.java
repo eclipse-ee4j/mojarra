@@ -56,7 +56,7 @@ public class FileRenderer extends TextRenderer {
             clientId = component.getClientId(context);
         }
 
-        assert (clientId != null);
+        assert clientId != null;
         ExternalContext externalContext = context.getExternalContext();
         Map<String, String> requestMap = externalContext.getRequestParameterMap();
 

@@ -82,15 +82,15 @@ public class DoubleConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (Double.valueOf(value));
+            return Double.valueOf(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, DOUBLE_ID, value, "1999999", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class DoubleConverter implements Converter {
         }
 
         try {
-            return (Double.toString(((Number) value).doubleValue()));
+            return Double.toString(((Number) value).doubleValue());
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

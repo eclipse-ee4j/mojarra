@@ -123,7 +123,7 @@ public final class UIDebug extends UIComponentBase {
 
                 @Override
                 protected boolean removeEldestEntry(Map.Entry eldest) {
-                    return (size() > 5);
+                    return size() > 5;
                 }
             };
         }
@@ -173,6 +173,6 @@ public final class UIDebug extends UIComponentBase {
     }
 
     public void setHotkey(String hotkey) {
-        this.hotkey = (hotkey != null) ? hotkey.toUpperCase() : "";
+        this.hotkey = hotkey != null ? hotkey.toUpperCase() : "";
     }
 }

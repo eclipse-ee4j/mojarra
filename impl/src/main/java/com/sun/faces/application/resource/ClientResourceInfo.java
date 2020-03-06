@@ -63,7 +63,7 @@ public class ClientResourceInfo extends ResourceInfo {
         this.compressible = compressible;
         this.supportsEL = supportsEL;
         this.isDevStage = isDevStage;
-        this.cacheTimestamp = (!isDevStage && cacheTimestamp);
+        this.cacheTimestamp = !isDevStage && cacheTimestamp;
         initPath(isDevStage);
     }
 
@@ -90,7 +90,7 @@ public class ClientResourceInfo extends ResourceInfo {
         this.compressible = compressible;
         this.supportsEL = supportsEL;
         this.isDevStage = isDevStage;
-        this.cacheTimestamp = (!isDevStage && cacheTimestamp);
+        this.cacheTimestamp = !isDevStage && cacheTimestamp;
         initPath(isDevStage);
     }
 
@@ -176,9 +176,9 @@ public class ClientResourceInfo extends ResourceInfo {
 
     @Override
     public String toString() {
-        return "ResourceInfo{" + "name='" + name + '\'' + ", version=\'" + ((version != null) ? version : "NONE") + '\'' + ", libraryName='" + libraryName
+        return "ResourceInfo{" + "name='" + name + '\'' + ", version=\'" + (version != null ? version : "NONE") + '\'' + ", libraryName='" + libraryName
                 + '\'' + ", contractInfo='" + (contract != null ? contract.contract : "NONE") + '\'' + ", libraryVersion='"
-                + ((library != null) ? library.getVersion() : "NONE") + '\'' + ", localePrefix='" + ((localePrefix != null) ? localePrefix : "NONE") + '\''
+                + (library != null ? library.getVersion() : "NONE") + '\'' + ", localePrefix='" + (localePrefix != null ? localePrefix : "NONE") + '\''
                 + ", path='" + path + '\'' + ", compressible='" + compressible + '\'' + ", compressedPath=" + compressedPath + '}';
     }
 
@@ -226,11 +226,11 @@ public class ClientResourceInfo extends ResourceInfo {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE,
                             "File ({0}) referenced by jakarta.servlet.context.tempdir attribute is null, or was is not a directory.  Compression for {1} will be unavailable.",
-                            new Object[] { ((servletTmpDir == null) ? "null" : servletTmpDir.toString()), path });
+                            new Object[] { servletTmpDir == null ? "null" : servletTmpDir.toString(), path });
                 }
                 compressible = false;
             } else {
-                String tPath = ((path.charAt(0) == '/') ? path : '/' + path);
+                String tPath = path.charAt(0) == '/' ? path : '/' + path;
                 File newDir = new File(servletTmpDir, COMPRESSED_CONTENT_DIRECTORY + tPath);
 
                 try {

@@ -66,7 +66,7 @@ public class SetHandler extends TagHandlerImpl {
         }
 
         // true if either a value in body or value attr
-        boolean valSet = bodyValue.length() > 0 || (value != null && value.getValue().length() > 0);
+        boolean valSet = bodyValue.length() > 0 || value != null && value.getValue().length() > 0;
 
         // Apply precedence algorithm for attributes. The JstlCoreTLV doesn't
         // seem to enforce much in the way of this, so I edburns needs to check
@@ -116,8 +116,8 @@ public class SetHandler extends TagHandlerImpl {
         } else {
 
             // Otherwise, target, property and value must be set
-            if ((null == target || null == target.getValue() || target.getValue().length() <= 0)
-                    || (null == property || null == property.getValue() || property.getValue().length() <= 0) || !valSet) {
+            if (null == target || null == target.getValue() || target.getValue().length() <= 0
+                    || null == property || null == property.getValue() || property.getValue().length() <= 0 || !valSet) {
 
                 throw new TagException(tag, "when using this tag either one of var and value, or (target, property, value) must be set.");
             }

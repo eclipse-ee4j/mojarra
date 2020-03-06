@@ -84,7 +84,7 @@ public class SessionMap extends BaseContextMap<Object> {
     public Object get(Object key) {
         Util.notNull("key", key);
         HttpSession session = getSession(false);
-        return ((session != null) ? session.getAttribute(key.toString()) : null);
+        return session != null ? session.getAttribute(key.toString()) : null;
 
     }
 
@@ -108,7 +108,7 @@ public class SessionMap extends BaseContextMap<Object> {
         if (doSet) {
             session.setAttribute(key, value);
         }
-        return (result);
+        return result;
     }
 
     @Override
@@ -121,7 +121,7 @@ public class SessionMap extends BaseContextMap<Object> {
             String keyString = key.toString();
             Object result = session.getAttribute(keyString);
             session.removeAttribute(keyString);
-            return (result);
+            return result;
         }
         return null;
     }
@@ -129,7 +129,7 @@ public class SessionMap extends BaseContextMap<Object> {
     @Override
     public boolean containsKey(Object key) {
         HttpSession session = getSession(false);
-        return ((session != null) && session.getAttribute(key.toString()) != null);
+        return session != null && session.getAttribute(key.toString()) != null;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class SessionMap extends BaseContextMap<Object> {
     @Override
     public int hashCode() {
         HttpSession session = getSession(false);
-        int hashCode = 7 * ((session != null) ? session.hashCode() : super.hashCode());
+        int hashCode = 7 * (session != null ? session.hashCode() : super.hashCode());
         if (session != null) {
             for (Iterator i = entrySet().iterator(); i.hasNext();) {
                 hashCode += i.next().hashCode();

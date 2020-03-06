@@ -129,7 +129,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
                 ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
                 try {
                     Throwable t = context.getException();
-                    if (isRethrown(t, (context.inBeforePhase() || context.inAfterPhase()))) {
+                    if (isRethrown(t, context.inBeforePhase() || context.inAfterPhase())) {
                         handled = event;
                         Throwable unwrapped = getRootCause(t);
                         if (unwrapped != null) {
@@ -162,7 +162,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
         @Override
         public boolean isListenerForSource(Object source) {
 
-            return (source instanceof ExceptionQueuedEventContext);
+            return source instanceof ExceptionQueuedEventContext;
 
         }
 
@@ -213,7 +213,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
         @Override
         public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
 
-            return ((unhandledExceptions != null) ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
+            return unhandledExceptions != null ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
         }
 
@@ -225,7 +225,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
         @Override
         public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {
 
-            return ((handledExceptions != null) ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
+            return handledExceptions != null ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
         }
 
@@ -238,13 +238,13 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
          */
         private boolean shouldUnwrap(Class<? extends Throwable> c) {
 
-            return (FacesException.class.equals(c) || ELException.class.equals(c));
+            return FacesException.class.equals(c) || ELException.class.equals(c);
 
         }
 
         private boolean isRethrown(Throwable t, boolean isBeforeOrAfterPhase) {
 
-            return (!isBeforeOrAfterPhase && !(t instanceof AbortProcessingException) && !(t instanceof UpdateModelException));
+            return !isBeforeOrAfterPhase && !(t instanceof AbortProcessingException) && !(t instanceof UpdateModelException);
 
         }
 
@@ -264,7 +264,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
                 String key = getLoggingKey(beforePhase, afterPhase);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, key, new Object[] { t.getClass().getName(), phaseId.toString(),
-                            ((c != null) ? c.getClientId(exceptionContext.getContext()) : ""), t.getMessage() });
+                            c != null ? c.getClientId(exceptionContext.getContext()) : "", t.getMessage() });
                     LOGGER.log(Level.SEVERE, t.getMessage(), t);
                 }
             }

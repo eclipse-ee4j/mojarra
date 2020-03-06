@@ -172,7 +172,7 @@ public class HtmlUtils {
                             // script: in the attribute value.
                             // ensure the attribute value is long enough
                             // to accomodate "script:"
-                            if (!isScriptInAttributeValueEnabled && ((i + 6) < text.length())) {
+                            if (!isScriptInAttributeValueEnabled && i + 6 < text.length()) {
                                 if ('c' == text.charAt(i + 1) && 'r' == text.charAt(i + 2) && 'i' == text.charAt(i + 3) && 'p' == text.charAt(i + 4)
                                         && 't' == text.charAt(i + 5) && ':' == text.charAt(i + 6)) {
                                     return;
@@ -195,7 +195,7 @@ public class HtmlUtils {
                         if (ch == '&') {
                             // HTML 4.0, section B.7.1: ampersands followed by
                             // an open brace don't get escaped
-                            if ((i + 1 < length) && (text.charAt(i + 1) == '{')) {
+                            if (i + 1 < length && text.charAt(i + 1) == '{') {
                                 buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
                             } else {
                                 buffIndex = addToBuffer(out, buff, buffIndex, buffLength, AMP_CHARS);
@@ -261,7 +261,7 @@ public class HtmlUtils {
                         // script: in the attribute value.
                         // ensure the attribute value is long enough
                         // to accomodate "script:"
-                        if (!isScriptInAttributeValueEnabled && ((i + 6) < text.length)) {
+                        if (!isScriptInAttributeValueEnabled && i + 6 < text.length) {
                             if ('c' == text[i + 1] && 'r' == text[i + 2] && 'i' == text[i + 3] && 'p' == text[i + 4] && 't' == text[i + 5]
                                     && ':' == text[i + 6]) {
                                 return;
@@ -285,7 +285,7 @@ public class HtmlUtils {
                     if (ch == '&') {
                         // HTML 4.0, section B.7.1: ampersands followed by
                         // an open brace don't get escaped
-                        if ((i + 1 < end) && (text[i + 1] == '{')) {
+                        if (i + 1 < end && text[i + 1] == '{') {
                             buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
                         } else {
                             buffIndex = addToBuffer(out, buff, buffIndex, buffLength, AMP_CHARS);
@@ -318,7 +318,7 @@ public class HtmlUtils {
 
     static private boolean isPrintableControlChar(int ch) {
 
-        return (ch == 0x09 || ch == 0x0A || ch == 0x0C || ch == 0x0D);
+        return ch == 0x09 || ch == 0x0A || ch == 0x0C || ch == 0x0D;
 
     }
 
@@ -337,29 +337,29 @@ public class HtmlUtils {
         // going gonzo, it should be even better)
         int i = ch;
         if (i > 10000) {
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 10000))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 10000));
             i = i % 10000;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 1000))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 1000));
             i = i % 1000;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 100))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 100));
             i = i % 100;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 10))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 10));
             i = i % 10;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + i)));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i));
         } else if (i > 1000) {
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 1000))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 1000));
             i = i % 1000;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 100))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 100));
             i = i % 100;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 10))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 10));
             i = i % 10;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + i)));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i));
         } else {
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 100))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 100));
             i = i % 100;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 10))));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 10));
             i = i % 10;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + i)));
+            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i));
         }
 
         return addToBuffer(out, buffer, bufferIndex, bufferLength, ';');
@@ -393,7 +393,7 @@ public class HtmlUtils {
      */
     private static int addToBuffer(Writer out, char[] buffer, int bufferIndex, int bufferLength, char[] toAdd) throws IOException {
 
-        if (bufferIndex >= bufferLength || (toAdd.length + bufferIndex >= bufferLength)) {
+        if (bufferIndex >= bufferLength || toAdd.length + bufferIndex >= bufferLength) {
             out.write(buffer, 0, bufferIndex);
             bufferIndex = 0;
         }
@@ -406,8 +406,9 @@ public class HtmlUtils {
      * Flush the contents of the buffer to the output stream and return the reset buffer index
      */
     private static int flushBuffer(Writer out, char[] buffer, int bufferIndex) throws IOException {
-        if (bufferIndex > 0)
+        if (bufferIndex > 0) {
             out.write(buffer, 0, bufferIndex);
+        }
 
         return 0;
     }
@@ -449,7 +450,7 @@ public class HtmlUtils {
             for (int i = 0; i < length; i++) {
                 char ch = text.charAt(i);
 
-                if ((ch < 33) || (ch > 126)) {
+                if (ch < 33 || ch > 126) {
                     if (ch == ' ') {
                         out.write('+');
                     } else {
@@ -512,7 +513,7 @@ public class HtmlUtils {
         for (int i = start; i < end; i++) {
             char ch = textBuff[i];
 
-            if ((ch < 33) || (ch > 126)) {
+            if (ch < 33 || ch > 126) {
                 encodeURIString(out, textBuff, "UTF-8", i, i + 1);
             }
             // DO NOT encode '%'. If you do, then for starters,
@@ -555,7 +556,7 @@ public class HtmlUtils {
         for (int i = 0; i < length; i++) {
             final char ch = text.charAt(i);
 
-            if (ch < 0x20 ? (ch == 0x9 || ch == 0xA || ch == 0xD) : (ch <= 0xD7FF || (ch >= 0xE000 && ch <= 0xFFFD))) {
+            if (ch < 0x20 ? ch == 0x9 || ch == 0xA || ch == 0xD : ch <= 0xD7FF || ch >= 0xE000 && ch <= 0xFFFD) {
                 // Only those chars are allowed in XML. https://www.w3.org/TR/xml/#charsets Character Range
                 out.write(ch);
             }
@@ -576,7 +577,7 @@ public class HtmlUtils {
             char ch = text.charAt(i);
             if (DONT_ENCODE_SET.get(ch)) {
                 if (ch == '&') {
-                    if (((i + 1) < length) && isAmpEscaped(text, i + 1)) {
+                    if (i + 1 < length && isAmpEscaped(text, i + 1)) {
                         out.write(ch);
                         continue;
                     }
@@ -631,7 +632,7 @@ public class HtmlUtils {
             char ch = textBuff[i];
             if (DONT_ENCODE_SET.get(ch)) {
                 if (ch == '&') {
-                    if (((i + 1) < end) && isAmpEscaped(textBuff, i + 1)) {
+                    if (i + 1 < end && isAmpEscaped(textBuff, i + 1)) {
                         out.write(ch);
                         continue;
                     }
@@ -706,10 +707,11 @@ public class HtmlUtils {
     }
 
     static private char intToHex(int i) {
-        if (i < 10)
-            return ((char) ('0' + i));
-        else
-            return ((char) ('A' + (i - 10)));
+        if (i < 10) {
+            return (char) ('0' + i);
+        } else {
+            return (char) ('A' + (i - 10));
+        }
     }
 
     static private final char[] AMP_CHARS = "&amp;".toCharArray();
@@ -813,23 +815,25 @@ public class HtmlUtils {
 
     static public boolean isEmptyElement(String name) {
         char firstChar = name.charAt(0);
-        if (firstChar > _LAST_EMPTY_ELEMENT_START)
+        if (firstChar > _LAST_EMPTY_ELEMENT_START) {
             return false;
+        }
 
         // Can we improve performance here? It's certainly slower to use
         // a HashMap, at least if we can't assume the input name is lowercased.
         String[] array = emptyElementArr[firstChar];
         if (array != null) {
             for (int i = array.length - 1; i >= 0; i--) {
-                if (name.equalsIgnoreCase(array[i]))
+                if (name.equalsIgnoreCase(array[i])) {
                     return true;
+                }
             }
         }
         return false;
     }
 
     static private char _LAST_EMPTY_ELEMENT_START = 'p';
-    static private String[][] emptyElementArr = new String[(_LAST_EMPTY_ELEMENT_START) + 1][];
+    static private String[][] emptyElementArr = new String[_LAST_EMPTY_ELEMENT_START + 1][];
 
     static private String[] aNames = new String[] { "area", };
 

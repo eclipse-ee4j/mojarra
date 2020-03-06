@@ -264,7 +264,7 @@ public class FlowHandlerImpl extends FlowHandler {
             ValueExpression toSet;
             for (Map.Entry<String, Object> curOutbound : evaluatedParams.entrySet()) {
                 curName = curOutbound.getKey();
-                assert (inboundParameters.containsKey(curName));
+                assert inboundParameters.containsKey(curName);
                 toSet = inboundParameters.get(curName).getValue();
                 toSet.setValue(elContext, curOutbound.getValue());
             }
@@ -303,7 +303,7 @@ public class FlowHandlerImpl extends FlowHandler {
     private void performPops(FacesContext context, Flow sourceFlow, Flow targetFlow) {
         // case 0: sourceFlow is null. There must be nothing to pop.
         if (null == sourceFlow) {
-            assert (null == peekFlow(context));
+            assert null == peekFlow(context);
             return;
         }
 
@@ -343,7 +343,7 @@ public class FlowHandlerImpl extends FlowHandler {
         boolean result = false;
         if (flow1 == flow2) {
             result = true;
-        } else if ((null == flow1) || (null == flow2)) {
+        } else if (null == flow1 || null == flow2) {
             result = false;
         } else {
             result = flow1.equals(flow2);

@@ -56,6 +56,6 @@ public class ViewScopeEventListener implements ViewMapListener {
      */
     @Override
     public boolean isListenerForSource(Object source) {
-        return (source instanceof UIViewRoot);
+        return source instanceof UIViewRoot;
     }
 }

@@ -69,7 +69,7 @@ public class HtmlSelectManyMenu extends UISelectMany implements ClientBehaviorHo
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

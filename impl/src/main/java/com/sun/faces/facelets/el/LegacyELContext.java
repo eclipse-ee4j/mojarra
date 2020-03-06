@@ -103,7 +103,7 @@ public final class LegacyELContext extends ELContext {
                 context.setPropertyResolved(true);
                 if (base == null) {
                     Object obj = getVariableResolver().resolveVariable(faces, property.toString());
-                    return (obj != null) ? obj.getClass() : null;
+                    return obj != null ? obj.getClass() : null;
                 } else {
                     if (base instanceof List || base.getClass().isArray()) {
                         return getPropertyResolver().getType(base, Integer.parseInt(property.toString()));

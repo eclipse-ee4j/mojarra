@@ -782,7 +782,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                         }
                     }
                 }
-                if ((baseName != null) && (var != null)) {
+                if (baseName != null && var != null) {
                     associate.addResourceBundle(var, new ApplicationResourceBundle(baseName, getTextMap(displayNames), getTextMap(descriptions)));
                 }
             }
@@ -864,11 +864,11 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     }
 
                     // If there is a sourceClass, use it, otherwise use null
-                    Class<?> sourceClazz = (sourceClass != null && sourceClass.length() != 0) ? Util.loadClass(sourceClass, this.getClass()) : null;
+                    Class<?> sourceClazz = sourceClass != null && sourceClass.length() != 0 ? Util.loadClass(sourceClass, this.getClass()) : null;
                     application.subscribeToEvent(eventClazz, sourceClazz, selInstance);
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.log(Level.FINE, "Subscribing for event {0} and source {1} using listener {2}", new Object[] { eventClazz.getName(),
-                                ((sourceClazz != null) ? sourceClazz.getName() : "ANY"), selInstance.getClass().getName() });
+                                sourceClazz != null ? sourceClazz.getName() : "ANY", selInstance.getClass().getName() });
                     }
                 } catch (ClassNotFoundException cnfe) {
                     throw new ConfigurationException(cnfe);

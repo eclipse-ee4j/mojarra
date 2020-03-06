@@ -127,7 +127,7 @@ public class FacesContextImpl extends FacesContext {
         }
         ApplicationFactory aFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         application = aFactory.getApplication();
-        assert (null != application);
+        assert null != application;
         return application;
     }
 
@@ -246,7 +246,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public Iterator<String> getClientIdsWithMessages() {
         assertNotReleased();
-        return ((componentMessageLists == null) ? Collections.<String>emptyList().iterator() : componentMessageLists.keySet().iterator());
+        return componentMessageLists == null ? Collections.<String>emptyList().iterator() : componentMessageLists.keySet().iterator();
     }
 
     /**
@@ -256,7 +256,7 @@ public class FacesContextImpl extends FacesContext {
     public Severity getMaximumSeverity() {
         assertNotReleased();
         Severity result = null;
-        if (componentMessageLists != null && !(componentMessageLists.isEmpty())) {
+        if (componentMessageLists != null && !componentMessageLists.isEmpty()) {
             for (Iterator<FacesMessage> i = new ComponentMessagesIterator(componentMessageLists); i.hasNext();) {
                 Severity severity = i.next().getSeverity();
                 if (result == null || severity.compareTo(result) > 0) {
@@ -302,7 +302,7 @@ public class FacesContextImpl extends FacesContext {
             return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
         } else {
             List<FacesMessage> list = componentMessageLists.get(clientId);
-            return Collections.unmodifiableList((list != null) ? list : Collections.<FacesMessage>emptyList());
+            return Collections.unmodifiableList(list != null ? list : Collections.<FacesMessage>emptyList());
         }
 
     }
@@ -315,14 +315,14 @@ public class FacesContextImpl extends FacesContext {
         assertNotReleased();
         if (null == componentMessageLists) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
 
         if (componentMessageLists.size() > 0) {
             return new ComponentMessagesIterator(componentMessageLists);
         } else {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
     }
 
@@ -337,15 +337,15 @@ public class FacesContextImpl extends FacesContext {
         // return an empty List Iterator
         if (null == componentMessageLists) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
 
         List<FacesMessage> list = componentMessageLists.get(clientId);
         if (list == null) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
-        return (list.iterator());
+        return list.iterator();
     }
 
     /**
@@ -356,7 +356,7 @@ public class FacesContextImpl extends FacesContext {
         assertNotReleased();
         UIViewRoot vr = getViewRoot();
         if (vr == null) {
-            return (null);
+            return null;
         }
         String renderKitId = vr.getRenderKitId();
 
@@ -589,7 +589,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public List<String> getResourceLibraryContracts() {
         assertNotReleased();
-        return (null == resourceLibraryContracts) ? Collections.emptyList() : resourceLibraryContracts;
+        return null == resourceLibraryContracts ? Collections.emptyList() : resourceLibraryContracts;
     }
 
     @Override
@@ -673,7 +673,7 @@ public class FacesContextImpl extends FacesContext {
             }
             while (!inner.hasNext()) {
                 outerIndex++;
-                if ((outerIndex) < messagesSize) {
+                if (outerIndex < messagesSize) {
                     inner = messages.get(keys.next()).iterator();
                 } else {
                     return false;

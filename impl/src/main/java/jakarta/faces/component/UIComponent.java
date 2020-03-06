@@ -529,7 +529,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      */
     @Override
     public void restoreTransientState(FacesContext context, Object state) {
-        boolean forceCreate = (state != null);
+        boolean forceCreate = state != null;
         TransientStateHelper helper = getTransientStateHelper(forceCreate);
 
         if (helper != null) {
@@ -1341,7 +1341,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         // Check for both of these and if set, verify that we comply.
         Set<VisitHint> hints = context.getHints();
 
-        if ((hints.contains(SKIP_UNRENDERED) && !isRendered()) || (hints.contains(SKIP_TRANSIENT) && isTransient())) {
+        if (hints.contains(SKIP_UNRENDERED) && !isRendered() || hints.contains(SKIP_TRANSIENT) && isTransient()) {
             return false;
         }
 
@@ -1639,7 +1639,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         if (null != component.isCompositeComponent) {
             result = component.isCompositeComponent.booleanValue();
         } else {
-            result = component.isCompositeComponent = (component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY));
+            result = component.isCompositeComponent = component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY);
         }
         return result;
 
@@ -2125,7 +2125,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
                 throw new NullPointerException();
             }
 
-            return new Object[] { ((wrapped instanceof UIComponent) ? null : new StateHolderSaver(context, wrapped)), instanceClass };
+            return new Object[] { wrapped instanceof UIComponent ? null : new StateHolderSaver(context, wrapped), instanceClass };
         }
 
         /**
@@ -2147,7 +2147,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
             Object[] s = (Object[]) state;
             Object listener = s[0];
-            wrapped = (ComponentSystemEventListener) ((listener == null) ? UIComponent.getCurrentComponent(context)
+            wrapped = (ComponentSystemEventListener) (listener == null ? UIComponent.getCurrentComponent(context)
                     : ((StateHolderSaver) listener).restore(context));
             instanceClass = (Class<?>) s[1];
         }
@@ -2278,7 +2278,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             @Override
             @SuppressWarnings("unchecked")
             public boolean equals(Object obj) {
-                return !((obj == null) || !(obj instanceof Map)) && entrySet().equals(((Map<String, String>) obj).entrySet());
+                return !(obj == null || !(obj instanceof Map)) && entrySet().equals(((Map<String, String>) obj).entrySet());
             }
 
             @Override

@@ -77,11 +77,11 @@ public class ListDataModel<E> extends DataModel<E> {
     public boolean isRowAvailable() {
 
         if (list == null) {
-            return (false);
-        } else if ((index >= 0) && (index < list.size())) {
-            return (true);
+            return false;
+        } else if (index >= 0 && index < list.size()) {
+            return true;
         } else {
-            return (false);
+            return false;
         }
 
     }
@@ -98,9 +98,9 @@ public class ListDataModel<E> extends DataModel<E> {
     public int getRowCount() {
 
         if (list == null) {
-            return (-1);
+            return -1;
         }
-        return (list.size());
+        return list.size();
 
     }
 
@@ -117,11 +117,11 @@ public class ListDataModel<E> extends DataModel<E> {
     public E getRowData() {
 
         if (list == null) {
-            return (null);
+            return null;
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         } else {
-            return ((E) list.get(index));
+            return (E) list.get(index);
         }
 
     }
@@ -132,7 +132,7 @@ public class ListDataModel<E> extends DataModel<E> {
     @Override
     public int getRowIndex() {
 
-        return (index);
+        return index;
 
     }
 
@@ -152,7 +152,7 @@ public class ListDataModel<E> extends DataModel<E> {
             return;
         }
         DataModelListener[] listeners = getDataModelListeners();
-        if ((old != index) && (listeners != null)) {
+        if (old != index && listeners != null) {
             Object rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
@@ -171,7 +171,7 @@ public class ListDataModel<E> extends DataModel<E> {
     @Override
     public Object getWrappedData() {
 
-        return (this.list);
+        return this.list;
 
     }
 

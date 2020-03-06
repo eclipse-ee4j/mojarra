@@ -177,7 +177,7 @@ public class ResourceELResolver extends ELResolver {
     private boolean isPropertyValid(String property) {
 
         int idx = property.indexOf(':');
-        return (property.indexOf(':', idx + 1) == -1);
+        return property.indexOf(':', idx + 1) == -1;
 
     }
 

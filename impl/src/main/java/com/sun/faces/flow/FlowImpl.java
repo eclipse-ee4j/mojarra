@@ -131,10 +131,10 @@ public class FlowImpl extends Flow implements Serializable {
             return false;
         }
         final Flow other = (Flow) obj;
-        if ((id == null) ? (other.getId() != null) : !id.equals(other.getId())) {
+        if (id == null ? other.getId() != null : !id.equals(other.getId())) {
             return false;
         }
-        if ((startNodeId == null) ? (other.getStartNodeId() != null) : !startNodeId.equals(other.getStartNodeId())) {
+        if (startNodeId == null ? other.getStartNodeId() != null : !startNodeId.equals(other.getStartNodeId())) {
             return false;
         }
         if (_views != other.getViews() && (_views == null || !_views.equals(other.getViews()))) {

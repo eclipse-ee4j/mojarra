@@ -51,7 +51,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
     private MethodBinding binding = null;
 
     public MethodExpressionMethodBindingAdapter(MethodBinding binding) {
-        assert (null != binding);
+        assert null != binding;
         this.binding = binding;
     }
 
@@ -63,7 +63,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
 
     @Override
     public MethodInfo getMethodInfo(ELContext context) throws ELException {
-        assert (null != binding);
+        assert null != binding;
 
         if (context == null) {
             throw new NullPointerException("ELContext -> null");
@@ -86,7 +86,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
 
     @Override
     public Object invoke(ELContext context, Object[] params) throws ELException {
-        assert (null != binding);
+        assert null != binding;
 
         if (context == null) {
             throw new NullPointerException("ELContext -> null");
@@ -106,16 +106,16 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
 
     @Override
     public String getExpressionString() {
-        assert (null != binding);
+        assert null != binding;
         return binding.getExpressionString();
 
     }
 
     @Override
     public boolean isLiteralText() {
-        assert (binding != null);
+        assert binding != null;
         String expr = binding.getExpressionString();
-        return (!(expr.startsWith("#{") && expr.endsWith("}")));
+        return !(expr.startsWith("#{") && expr.endsWith("}"));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
 
         if (other instanceof MethodExpressionMethodBindingAdapter) {
             MethodBinding ob = ((MethodExpressionMethodBindingAdapter) other).getWrapped();
-            return (binding.equals(ob));
+            return binding.equals(ob);
         } else if (other instanceof MethodExpression) {
             MethodExpression expression = (MethodExpression) other;
 
@@ -138,7 +138,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
             int idx = expr.indexOf('.');
             String target = expr.substring(0, idx).substring(2);
             String t = expr.substring(idx + 1);
-            String method = t.substring(0, (t.length() - 1));
+            String method = t.substring(0, t.length() - 1);
 
             FacesContext context = FacesContext.getCurrentInstance();
             ELContext elContext = context.getELContext();
@@ -180,7 +180,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
 
     @Override
     public int hashCode() {
-        assert (null != binding);
+        assert null != binding;
 
         return binding.hashCode();
     }

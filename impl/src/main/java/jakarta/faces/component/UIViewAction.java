@@ -376,7 +376,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
     @Override
     public ActionListener[] getActionListeners() {
         ActionListener al[] = (ActionListener[]) getFacesListeners(ActionListener.class);
-        return (al);
+        return al;
     }
 
     /**
@@ -546,12 +546,12 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
 
         // only proceed if the response has not been marked complete and
         // navigation to another view has not occurred
-        if (!context.getResponseComplete() && (context.getViewRoot() == getViewRootOf(event))) {
+        if (!context.getResponseComplete() && context.getViewRoot() == getViewRootOf(event)) {
             ActionListener listener = context.getApplication().getActionListener();
             if (listener != null) {
                 boolean hasMoreViewActionEvents = false;
                 UIViewRoot viewRootBefore = context.getViewRoot();
-                assert (null != viewRootBefore);
+                assert null != viewRootBefore;
                 InstrumentedFacesContext instrumentedContext = null;
                 try {
                     instrumentedContext = new InstrumentedFacesContext(context);
@@ -570,14 +570,14 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
                 // if the response is marked complete, the story is over
                 if (!context.getResponseComplete()) {
                     UIViewRoot viewRootAfter = context.getViewRoot();
-                    assert (null != viewRootAfter);
+                    assert null != viewRootAfter;
 
                     // if the view id changed as a result of navigation, then
                     // execute the Jakarta Server Faces lifecycle for the new view
                     // id
                     String viewIdBefore = viewRootBefore.getViewId();
                     String viewIdAfter = viewRootAfter.getViewId();
-                    assert (null != viewIdBefore && null != viewIdAfter);
+                    assert null != viewIdBefore && null != viewIdAfter;
                     boolean viewIdsSame = viewIdBefore.equals(viewIdAfter);
 
                     if (viewIdsSame && !hasMoreViewActionEvents) {
@@ -662,7 +662,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
             throw new NullPointerException();
         }
 
-        if ((context.isPostback() && !isOnPostback()) || !isRendered()) {
+        if (context.isPostback() && !isOnPostback() || !isRendered()) {
             return;
         }
 

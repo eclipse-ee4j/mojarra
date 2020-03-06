@@ -100,7 +100,7 @@ final class CurrentThreadToServletContext {
                 // We must create a new FactoryFinderInstance if there was no matchingKey
                 // at all found in the applicationMap, or a matchingKey was found
                 // and the matchingKey is safe to use in this web app
-                createNewFactoryFinderInstance = foundNoMatchInApplicationMap || (factoryFinder == null && classLoadersMatchButContextsDoNotMatch);
+                createNewFactoryFinderInstance = foundNoMatchInApplicationMap || factoryFinder == null && classLoadersMatchButContextsDoNotMatch;
             } else {
                 createNewFactoryFinderInstance = true;
             }

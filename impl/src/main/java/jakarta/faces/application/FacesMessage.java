@@ -440,10 +440,10 @@ public class FacesMessage implements Serializable {
         @Override
         public String toString() {
             if (severityName == null) {
-                return (String.valueOf(ordinal));
+                return String.valueOf(ordinal);
             }
 
-            return (String.valueOf(severityName) + ' ' + ordinal);
+            return String.valueOf(severityName) + ' ' + ordinal;
         }
 
         // --------------------------------------------------- Static Variables

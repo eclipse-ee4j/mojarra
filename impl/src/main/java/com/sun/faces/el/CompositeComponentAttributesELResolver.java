@@ -96,7 +96,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         Util.notNull("context", context);
 
-        if (base != null && (base instanceof UIComponent) && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
+        if (base != null && base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
 
             String propertyName = property.toString();
             if (COMPOSITE_COMPONENT_ATTRIBUTES_NAME.equals(propertyName)) {
@@ -149,14 +149,14 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
             FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
             UIComponent cc = UIComponent.getCurrentCompositeComponent(facesContext);
             BeanInfo metadata = (BeanInfo) cc.getAttributes().get(UIComponent.BEANINFO_KEY);
-            assert (null != metadata);
+            assert null != metadata;
             PropertyDescriptor[] attributes = metadata.getPropertyDescriptors();
             if (null != attributes) {
                 for (PropertyDescriptor cur : attributes) {
                     if (property.equals(cur.getName())) {
                         Object type = cur.getValue("type");
                         if (null != type) {
-                            assert (type instanceof Class);
+                            assert type instanceof Class;
                             metaType = (Class) type;
                             break;
                         }
@@ -306,7 +306,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         @Override
         public ValueExpression getExpression(String name) {
             Object ve = cc.getValueExpression(name);
-            return ((ve instanceof ValueExpression) ? (ValueExpression) ve : null);
+            return ve instanceof ValueExpression ? (ValueExpression) ve : null;
         }
 
         // ---------------------------------------------------- Methods from Map

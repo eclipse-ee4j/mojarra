@@ -164,7 +164,7 @@ public class LoadBundleTag extends TagSupport {
             public boolean containsKey(Object key) {
                 boolean result = false;
                 if (null != key) {
-                    result = (null != bundle.getObject(key.toString()));
+                    result = null != bundle.getObject(key.toString());
                 }
                 return result;
             }
@@ -175,7 +175,7 @@ public class LoadBundleTag extends TagSupport {
                 boolean result = false;
                 while (keys.hasMoreElements()) {
                     Object curObj = bundle.getObject(keys.nextElement());
-                    if ((curObj == value) || ((null != curObj) && curObj.equals(value))) {
+                    if (curObj == value || null != curObj && curObj.equals(value)) {
                         result = true;
                         break;
                     }
@@ -197,7 +197,7 @@ public class LoadBundleTag extends TagSupport {
 
             @Override
             public boolean equals(Object obj) {
-                return !((obj == null) || !(obj instanceof Map)) && entrySet().equals(((Map) obj).entrySet());
+                return !(obj == null || !(obj instanceof Map)) && entrySet().equals(((Map) obj).entrySet());
 
             }
 
@@ -294,7 +294,7 @@ public class LoadBundleTag extends TagSupport {
             }
         }
 
-        return (EVAL_BODY_INCLUDE);
+        return EVAL_BODY_INCLUDE;
 
     }
 
@@ -315,7 +315,7 @@ public class LoadBundleTag extends TagSupport {
             } catch (InvocationTargetException targetException) {
                 Throwable cause = targetException.getCause();
                 if (cause instanceof RuntimeException) {
-                    throw ((RuntimeException) cause);
+                    throw (RuntimeException) cause;
                 }
             }
         }
@@ -347,7 +347,7 @@ public class LoadBundleTag extends TagSupport {
      */
     private UIComponentClassicTagBase getParentUIComponentTag() {
         Tag parent = getParent();
-        while (null != parent && (!(parent instanceof UIComponentClassicTagBase))) {
+        while (null != parent && !(parent instanceof UIComponentClassicTagBase)) {
             parent = getParent();
         }
         UIComponentClassicTagBase result = (UIComponentClassicTagBase) parent;

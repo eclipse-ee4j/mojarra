@@ -236,7 +236,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -854,7 +854,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
                 setValid(false);
             }
             if (caught != null) {
-                assert (message != null);
+                assert message != null;
                 // PENDING(edburns): verify this is in the spec.
                 @SuppressWarnings({ "ThrowableInstanceNeverThrown" })
                 UpdateModelException toQueue = new UpdateModelException(message, caught);
@@ -938,7 +938,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         // If non-null, an instanceof String, and we're configured to treat
         // zero-length Strings as null:
         // call setSubmittedValue(null)
-        boolean isEmptyStringNull = (considerEmptyStringNull(context) && submittedValue instanceof String && ((String) submittedValue).length() == 0);
+        boolean isEmptyStringNull = considerEmptyStringNull(context) && submittedValue instanceof String && ((String) submittedValue).length() == 0;
         if (isEmptyStringNull) {
             setSubmittedValue(null);
             submittedValue = null;
@@ -1205,7 +1205,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         boolean result = true;
 
         if (previous == null) {
-            result = (value != null);
+            result = value != null;
         } else if (value == null) {
             result = true;
         } else {
@@ -1259,25 +1259,25 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     public static boolean isEmpty(Object value) {
 
         if (value == null) {
-            return (true);
-        } else if ((value instanceof String) && (((String) value).length() < 1)) {
-            return (true);
+            return true;
+        } else if (value instanceof String && ((String) value).length() < 1) {
+            return true;
         } else if (value.getClass().isArray()) {
             if (0 == java.lang.reflect.Array.getLength(value)) {
-                return (true);
+                return true;
             }
         } else if (value instanceof List) {
             if (((List) value).isEmpty()) {
-                return (true);
+                return true;
             }
         } else if (value instanceof Collection) {
             if (((Collection) value).isEmpty()) {
-                return (true);
+                return true;
             }
-        } else if ((value instanceof Map) && (((Map) value).isEmpty())) {
+        } else if (value instanceof Map && ((Map) value).isEmpty()) {
             return true;
         }
-        return (false);
+        return false;
     }
 
     /**
@@ -1318,7 +1318,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public Validator[] getValidators() {
 
-        return ((validators != null) ? validators.asArray(Validator.class) : EMPTY_VALIDATOR);
+        return validators != null ? validators.asArray(Validator.class) : EMPTY_VALIDATOR;
 
     }
 
@@ -1400,13 +1400,13 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         Object[] result = null;
 
         Object superState = super.saveState(context);
-        Object validatorsState = ((validators != null) ? validators.saveState(context) : null);
+        Object validatorsState = validators != null ? validators.saveState(context) : null;
 
         if (superState != null || validatorsState != null) {
             result = new Object[] { superState, validatorsState };
         }
 
-        return (result);
+        return result;
     }
 
     @Override
@@ -1460,7 +1460,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             Application application = context.getApplication();
             return application.createConverter(converterType);
         } catch (Exception e) {
-            return (null);
+            return null;
         }
     }
 

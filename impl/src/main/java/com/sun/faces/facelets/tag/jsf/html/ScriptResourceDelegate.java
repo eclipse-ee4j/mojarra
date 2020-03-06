@@ -43,7 +43,7 @@ public class ScriptResourceDelegate extends ComponentResourceDelegate {
     protected String getLocationTarget(FaceletContext ctx) {
 
         TagAttribute attr = getAttribute("target");
-        return ((attr != null) ? attr.getValue(ctx) : null);
+        return attr != null ? attr.getValue(ctx) : null;
 
     }
 

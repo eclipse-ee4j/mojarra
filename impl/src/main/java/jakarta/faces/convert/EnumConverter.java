@@ -114,11 +114,11 @@ public class EnumConverter implements Converter, PartialStateHolder {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {

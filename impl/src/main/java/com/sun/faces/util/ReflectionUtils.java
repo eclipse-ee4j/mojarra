@@ -213,7 +213,7 @@ public final class ReflectionUtils {
      */
     public static Class<?> toClass(String className) {
         try {
-            return (Class.forName(className, true, Thread.currentThread().getContextClassLoader()));
+            return Class.forName(className, true, Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException e) {
             try {
                 return Class.forName(className);
@@ -581,7 +581,7 @@ public final class ReflectionUtils {
             Map<Integer, Method> map = methods.get(name);
             Integer key = getKey(params);
             Method result = null;
-            if ((null == map) || null == (result = map.get(key))) {
+            if (null == map || null == (result = map.get(key))) {
                 map = declaredMethods.get(name);
                 if (null != map) {
                     result = map.get(key);

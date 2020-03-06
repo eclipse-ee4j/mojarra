@@ -80,7 +80,7 @@ public class UISelectItems extends UIComponentBase {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 

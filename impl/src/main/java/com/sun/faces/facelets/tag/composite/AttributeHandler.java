@@ -58,14 +58,14 @@ public class AttributeHandler extends TagHandlerImpl {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
-        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || null == (parent = parent.getParent()) || !ComponentHandler.isNew(parent)) {
             return;
         }
 
         Map<String, Object> attrs = parent.getAttributes();
 
         CompositeComponentBeanInfo componentBeanInfo = (CompositeComponentBeanInfo) attrs.get(UIComponent.BEANINFO_KEY);
-        assert (null != componentBeanInfo);
+        assert null != componentBeanInfo;
         List<PropertyDescriptor> declaredAttributes = componentBeanInfo.getPropertyDescriptorsList();
 
         // Get the value of required the name propertyDescriptor
@@ -137,7 +137,7 @@ public class AttributeHandler extends TagHandlerImpl {
         public Object getValue(String attributeName) {
             Object result = super.getValue(attributeName);
             if ("type".equals(attributeName)) {
-                if ((null != result) && !(result instanceof Class)) {
+                if (null != result && !(result instanceof Class)) {
                     FacesContext context = FacesContext.getCurrentInstance();
                     ELContext elContext = context.getELContext();
                     String classStr = (String) ((ValueExpression) result).getValue(elContext);

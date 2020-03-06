@@ -113,14 +113,14 @@ public class InterfaceHandler extends TagHandlerImpl {
                 // Is the attribute a method expression?
                 if (null != cur.getValue("method-signature") && null == cur.getValue("type")) {
                     // Yes, look for it as an EL expression.
-                    found = (null != cc.getValueExpression(key));
+                    found = null != cc.getValueExpression(key);
                 } else {
                     // No, look for it as an actual attribute
                     found = attrs.containsKey(key);
                     // Special case: nested composite components
                     if (!found) {
                         // Check if an EL expression was given.
-                        found = (null != cc.getValueExpression(key));
+                        found = null != cc.getValueExpression(key);
                     }
                 }
                 if (!found) {
@@ -177,7 +177,7 @@ public class InterfaceHandler extends TagHandlerImpl {
     @SuppressWarnings({ "unchecked" })
     private void imbueComponentWithMetadata(FaceletContext ctx, UIComponent parent) {
         // only process if it's been created
-        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || null == (parent = parent.getParent()) || !ComponentHandler.isNew(parent)) {
             return;
         }
 

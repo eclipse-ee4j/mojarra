@@ -80,8 +80,9 @@ public class Cache<K, V> {
             // an existing entry
             V oldResult = cache.putIfAbsent(key, result);
 
-            if (oldResult != null)
+            if (oldResult != null) {
                 result = oldResult;
+            }
         }
 
         return result;

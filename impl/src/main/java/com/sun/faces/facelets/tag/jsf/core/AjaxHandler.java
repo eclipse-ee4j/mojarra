@@ -165,7 +165,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
     public String getEventName() {
         FacesContext context = FacesContext.getCurrentInstance();
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-        return (event != null) ? event.getValue(ctx) : null;
+        return event != null ? event.getValue(ctx) : null;
     }
 
     // Tests whether the <f:ajax> is wrapping other tags.
@@ -176,7 +176,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         // non-null nextHandler - the CompilationUnit.LEAF instance.
         // We assume that if we've got a TagHandler or CompositeFaceletHandler
         // as our nextHandler, we are not a leaf.
-        return ((nextHandler instanceof TagHandler) || (nextHandler instanceof CompositeFaceletHandler));
+        return nextHandler instanceof TagHandler || nextHandler instanceof CompositeFaceletHandler;
     }
 
     // Applies a wrapping AjaxHandler by pushing/popping the AjaxBehavior
@@ -233,7 +233,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             for (AttachedObjectTarget target : targetList) {
                 if (target instanceof BehaviorHolderAttachedObjectTarget) {
                     BehaviorHolderAttachedObjectTarget behaviorTarget = (BehaviorHolderAttachedObjectTarget) target;
-                    if ((null != eventName && eventName.equals(behaviorTarget.getName())) || (null == eventName && behaviorTarget.isDefaultEvent())) {
+                    if (null != eventName && eventName.equals(behaviorTarget.getName()) || null == eventName && behaviorTarget.isDefaultEvent()) {
                         supportedEvent = true;
                         break;
                     }

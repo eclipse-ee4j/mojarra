@@ -82,15 +82,15 @@ public class LongConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (Long.valueOf(value));
+            return Long.valueOf(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, LONG_ID, value, "98765432", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class LongConverter implements Converter {
         }
 
         try {
-            return (Long.toString(((Number) value).longValue()));
+            return Long.toString(((Number) value).longValue());
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

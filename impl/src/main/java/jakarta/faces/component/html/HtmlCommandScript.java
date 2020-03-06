@@ -63,7 +63,7 @@ public class HtmlCommandScript extends UICommand {
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

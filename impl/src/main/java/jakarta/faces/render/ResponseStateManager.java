@@ -386,7 +386,7 @@ public abstract class ResponseStateManager {
      */
 
     public boolean isPostback(FacesContext context) {
-        return (!context.getExternalContext().getRequestParameterMap().isEmpty());
+        return !context.getExternalContext().getRequestParameterMap().isEmpty();
     }
 
     /**

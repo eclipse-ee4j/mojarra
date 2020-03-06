@@ -282,7 +282,7 @@ public class DocumentOrderingWrapper {
         } catch (CircularDependencyException re) {
             String msg = "Circular dependencies detected!\nDocument Info\n==================\n";
             for (DocumentOrderingWrapper w : documents) {
-                msg += ("  " + w.toString() + '\n');
+                msg += "  " + w.toString() + '\n';
             }
             throw new ConfigurationException(msg);
         }
@@ -375,7 +375,7 @@ public class DocumentOrderingWrapper {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     String msg = "Exceeded maximum number of attempts to sort the application's faces-config documents.\nDocument Info\n==================";
                     for (DocumentOrderingWrapper w : documents) {
-                        msg += ("  " + w.toString() + '\n');
+                        msg += "  " + w.toString() + '\n';
                     }
                     LOGGER.severe(msg);
                 }
@@ -528,7 +528,7 @@ public class DocumentOrderingWrapper {
      */
     private static boolean search(String[] ids, String id) {
 
-        return (Arrays.binarySearch(ids, id) >= 0);
+        return Arrays.binarySearch(ids, id) >= 0;
 
     }
 
@@ -562,8 +562,8 @@ public class DocumentOrderingWrapper {
                 }
             }
         }
-        this.beforeIds = ((beforeIds != null) ? beforeIds.toArray(new String[beforeIds.size()]) : new String[0]);
-        this.afterIds = ((afterIds != null) ? afterIds.toArray(new String[afterIds.size()]) : new String[0]);
+        this.beforeIds = beforeIds != null ? beforeIds.toArray(new String[beforeIds.size()]) : new String[0];
+        this.afterIds = afterIds != null ? afterIds.toArray(new String[afterIds.size()]) : new String[0];
         Arrays.sort(this.beforeIds);
         Arrays.sort(this.afterIds);
 
@@ -647,7 +647,7 @@ public class DocumentOrderingWrapper {
             }
         }
 
-        return ((res != null && res.length() != 0) ? res : null);
+        return res != null && res.length() != 0 ? res : null;
 
     }
 
@@ -678,7 +678,7 @@ public class DocumentOrderingWrapper {
             String[] afs = w.getAfterIds();
             int knowledge = bfs.length + afs.length;
 
-            if ((w.id == null || "".equals(w.id)) && (!w.isOrdered())) {
+            if ((w.id == null || "".equals(w.id)) && !w.isOrdered()) {
                 anonymousAndUnorderedList.add(w);
             } else {
                 linkedMap.put(i, knowledge);
@@ -706,7 +706,7 @@ public class DocumentOrderingWrapper {
         Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
             @Override
             public int compare(Map.Entry<K, V> a, Map.Entry<K, V> b) {
-                return (b.getValue()).compareTo(a.getValue());
+                return b.getValue().compareTo(a.getValue());
             }
         });
 

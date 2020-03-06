@@ -349,13 +349,13 @@ public class NavigationCase {
 
         NavigationCase that = (NavigationCase) o;
 
-        return (redirect == that.redirect && !(fromAction != null ? !fromAction.equals(that.fromAction) : that.fromAction != null)
+        return redirect == that.redirect && !(fromAction != null ? !fromAction.equals(that.fromAction) : that.fromAction != null)
                 && !(fromOutcome != null ? !fromOutcome.equals(that.fromOutcome) : that.fromOutcome != null)
                 && !(condition != null ? !condition.equals(that.condition) : that.condition != null)
                 && !(fromViewId != null ? !fromViewId.equals(that.fromViewId) : that.fromViewId != null)
                 && !(toViewId != null ? !toViewId.equals(that.toViewId) : that.toViewId != null)
                 && !(toFlowDocumentId != null ? !toFlowDocumentId.equals(that.toFlowDocumentId) : that.toFlowDocumentId != null)
-                && !(parameters != null ? !parameters.equals(that.parameters) : that.parameters != null));
+                && !(parameters != null ? !parameters.equals(that.parameters) : that.parameters != null);
 
     }
 
@@ -390,7 +390,7 @@ public class NavigationCase {
             sb.append(", toViewId='").append(toViewId).append('\'');
             sb.append(", faces-redirect=").append(redirect);
             sb.append(", includeViewParams=").append(includeViewParams).append('\'');
-            sb.append(", parameters=").append(((parameters != null) ? parameters.toString() : ""));
+            sb.append(", parameters=").append(parameters != null ? parameters.toString() : "");
             sb.append('}');
             toString = sb.toString();
         }

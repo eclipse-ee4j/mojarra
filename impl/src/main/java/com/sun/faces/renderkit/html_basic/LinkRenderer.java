@@ -44,7 +44,7 @@ public abstract class LinkRenderer extends HtmlBasicRenderer {
     protected void renderAsDisabled(FacesContext context, UIComponent component) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("span", component);
         String writtenId = writeIdAttributeIfNecessary(context, writer, component);

@@ -43,7 +43,7 @@ public class ProcessValidationsPhase extends Phase {
             LOGGER.fine("Entering ProcessValidationsPhase");
         }
         UIComponent component = facesContext.getViewRoot();
-        assert (null != component);
+        assert null != component;
 
         try {
             component.processValidators(facesContext);

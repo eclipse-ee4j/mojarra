@@ -70,10 +70,10 @@ class MethodBindingValidator extends MethodBindingAdapterBase implements Validat
         } catch (EvaluationException ee) {
             Throwable cause = getExpectedCause(ValidatorException.class, ee);
             if (cause instanceof ValidatorException) {
-                throw ((ValidatorException) cause);
+                throw (ValidatorException) cause;
             }
             if (cause instanceof RuntimeException) {
-                throw ((RuntimeException) cause);
+                throw (RuntimeException) cause;
             }
             throw new IllegalStateException(ee);
         }

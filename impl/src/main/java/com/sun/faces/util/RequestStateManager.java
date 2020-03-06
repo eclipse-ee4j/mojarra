@@ -234,7 +234,7 @@ public class RequestStateManager {
     @SuppressWarnings("unchecked")
     public static Map<String, Object> getStateMap(FacesContext ctx) {
 
-        assert (ctx != null); // all callers guard against a null context
+        assert ctx != null; // all callers guard against a null context
         Map<Object, Object> contextMap = ctx.getAttributes();
         Map<String, Object> reqState = (Map<String, Object>) contextMap.get(KEY);
         if (reqState == null) {

@@ -109,7 +109,7 @@ public class BeanManager implements SystemEventListener {
     @Override
     public boolean isListenerForSource(Object source) {
 
-        return (source instanceof ScopeContext);
+        return source instanceof ScopeContext;
 
     }
 
@@ -162,7 +162,7 @@ public class BeanManager implements SystemEventListener {
 
     public boolean isManaged(String name) {
 
-        return (managedBeans != null && managedBeans.containsKey(name));
+        return managedBeans != null && managedBeans.containsKey(name);
 
     }
 
@@ -470,7 +470,7 @@ public class BeanManager implements SystemEventListener {
             public boolean isInScope(String name, FacesContext context) {
 
                 Map<String, Object> viewMap = context.getViewRoot().getViewMap(false);
-                return ((viewMap != null) && viewMap.containsKey(name));
+                return viewMap != null && viewMap.containsKey(name);
 
             }
 
@@ -478,7 +478,7 @@ public class BeanManager implements SystemEventListener {
             public Object getFromScope(String name, FacesContext context) {
 
                 Map<String, Object> viewMap = context.getViewRoot().getViewMap(false);
-                return ((viewMap != null) ? viewMap.get(name) : null);
+                return viewMap != null ? viewMap.get(name) : null;
 
             }
 

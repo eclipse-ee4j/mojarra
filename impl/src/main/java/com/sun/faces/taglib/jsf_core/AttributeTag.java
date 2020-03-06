@@ -134,14 +134,14 @@ public class AttributeTag extends TagSupport {
                 component.setValueExpression(nameVal, value);
             }
         }
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
     @Override
     public int doEndTag() throws JspException {
         release();
-        return (EVAL_PAGE);
+        return EVAL_PAGE;
     }
 
     /**

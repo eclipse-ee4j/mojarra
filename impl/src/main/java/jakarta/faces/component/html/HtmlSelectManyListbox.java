@@ -69,7 +69,7 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

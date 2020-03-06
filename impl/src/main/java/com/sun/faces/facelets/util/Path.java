@@ -22,8 +22,9 @@ package com.sun.faces.facelets.util;
 public final class Path {
 
     public static String normalize(String path) {
-        if (path.length() == 0)
+        if (path.length() == 0) {
             return path;
+        }
         String n = path;
         boolean abs = false;
         while (n.indexOf('\\') >= 0) {

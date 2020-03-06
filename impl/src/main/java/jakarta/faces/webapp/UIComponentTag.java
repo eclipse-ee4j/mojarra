@@ -107,7 +107,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
 
     protected boolean isSuppressed() {
 
-        return (suppressed);
+        return suppressed;
 
     }
 
@@ -130,7 +130,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
             throw new NullPointerException();
         }
         int start = value.indexOf("#{");
-        if ((start != -1) && (start < value.indexOf('}', start))) {
+        if (start != -1 && start < value.indexOf('}', start)) {
             return true;
         }
         return false;
@@ -219,7 +219,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
         if (!(result instanceof UIComponentTag)) {
             return new UIComponentTagAdapter(result);
         }
-        return ((UIComponentTag) result);
+        return (UIComponentTag) result;
 
     }
 

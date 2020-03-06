@@ -78,7 +78,7 @@ public class MethodExpressionValidator implements Validator, StateHolder {
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
-        if ((context == null) || (component == null)) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
         if (validateEmptyFields(context) || value != null) {
@@ -105,7 +105,7 @@ public class MethodExpressionValidator implements Validator, StateHolder {
         }
         Object values[] = new Object[1];
         values[0] = methodExpression;
-        return (values);
+        return values;
 
     }
 
@@ -126,7 +126,7 @@ public class MethodExpressionValidator implements Validator, StateHolder {
     @Override
     public boolean isTransient() {
 
-        return (transientValue);
+        return transientValue;
 
     }
 

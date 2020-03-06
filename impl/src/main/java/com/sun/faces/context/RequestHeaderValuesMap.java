@@ -46,7 +46,7 @@ public class RequestHeaderValuesMap extends StringArrayValuesMap {
 
     @Override
     public boolean containsKey(Object key) {
-        return (request.getHeaders(key.toString()) != null);
+        return request.getHeaders(key.toString()) != null;
     }
 
     @Override

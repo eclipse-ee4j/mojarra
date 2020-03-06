@@ -45,7 +45,7 @@ public class ApplyRequestValuesPhase extends Phase {
         }
 
         UIComponent component = facesContext.getViewRoot();
-        assert (null != component);
+        assert null != component;
 
         try {
             component.processDecodes(facesContext);

@@ -161,8 +161,8 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         // non-null nextHandler - the CompilationUnit.LEAF instance.
         // We assume that if we've got a TagHandler or CompositeFaceletHandler
         // as our nextHandler, we are not a leaf.
-        return ((owner.getValidatorConfig().getNextHandler() instanceof TagHandler)
-                || (owner.getValidatorConfig().getNextHandler() instanceof CompositeFaceletHandler));
+        return owner.getValidatorConfig().getNextHandler() instanceof TagHandler
+                || owner.getValidatorConfig().getNextHandler() instanceof CompositeFaceletHandler;
 
     }
 

@@ -172,7 +172,7 @@ public class InsertFacetHandler extends TagHandlerImpl {
 
         private boolean isRequired() {
 
-            return ((required != null) && required.getBoolean(ctx));
+            return required != null && required.getBoolean(ctx);
 
         }
 

@@ -151,7 +151,7 @@ public class WebsocketSessionManager {
      * was successfully delivered and otherwise throw {@link ExecutionException}.
      */
     protected Set<Future<Void>> send(String channelId, Object message) {
-        Collection<Session> sessions = (channelId != null) ? socketSessions.get(channelId) : null;
+        Collection<Session> sessions = channelId != null ? socketSessions.get(channelId) : null;
 
         if (sessions != null && !sessions.isEmpty()) {
             Set<Future<Void>> results = new HashSet<>(sessions.size());
@@ -286,7 +286,7 @@ public class WebsocketSessionManager {
     private static void fireEvent(Session session, CloseReason reason, AnnotationLiteral<?> qualifier) {
         Serializable user = (Serializable) session.getUserProperties().get("user");
         Util.getCdiBeanManager(FacesContext.getCurrentInstance())
-                .fireEvent(new WebsocketEvent(getChannel(session), user, (reason != null) ? reason.getCloseCode() : null), qualifier);
+                .fireEvent(new WebsocketEvent(getChannel(session), user, reason != null ? reason.getCloseCode() : null), qualifier);
     }
 
 }

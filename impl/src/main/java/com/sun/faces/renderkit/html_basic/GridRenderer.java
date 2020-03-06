@@ -85,7 +85,7 @@ public class GridRenderer extends BaseTableRenderer {
             if (!child.isRendered()) {
                 continue;
             }
-            if ((i % columnCount) == 0) {
+            if (i % columnCount == 0) {
                 if (open) {
                     renderRowEnd(context, component, writer);
                 }

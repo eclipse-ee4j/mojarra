@@ -42,8 +42,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     private int _allELResolverCount = 0;
 
     public DemuxCompositeELResolver(ELResolverChainType chainType) {
-        if (chainType == null)
+        if (chainType == null) {
             throw new NullPointerException();
+        }
 
         _chainType = chainType;
     }
@@ -54,8 +55,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     }
 
     private void _addAllELResolver(ELResolver elResolver) {
-        if (elResolver == null)
+        if (elResolver == null) {
             throw new NullPointerException();
+        }
 
         // grow array, if necessary
         if (_allELResolverCount == _allELResolvers.length) {
@@ -70,8 +72,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     }
 
     private void _addRootELResolver(ELResolver elResolver) {
-        if (elResolver == null)
+        if (elResolver == null) {
             throw new NullPointerException();
+        }
 
         // grow array, if necessary
         if (_rootELResolverCount == _rootELResolvers.length) {
@@ -86,8 +89,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     }
 
     public void _addPropertyELResolver(ELResolver elResolver) {
-        if (elResolver == null)
+        if (elResolver == null) {
             throw new NullPointerException();
+        }
 
         // grow array, if necessary
         if (_propertyELResolverCount == _propertyELResolvers.length) {
@@ -136,8 +140,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         for (int i = 0; i < resolverCount; i++) {
             Object result = resolvers[i].getValue(context, base, property);
 
-            if (context.isPropertyResolved())
+            if (context.isPropertyResolved()) {
                 return result;
+            }
         }
 
         return null;
@@ -165,8 +170,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         for (int i = 0; i < resolverCount; i++) {
             Class<?> type = resolvers[i].getType(context, base, property);
 
-            if (context.isPropertyResolved())
+            if (context.isPropertyResolved()) {
                 return type;
+            }
         }
 
         return null;
@@ -194,8 +200,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         for (int i = 0; i < resolverCount; i++) {
             resolvers[i].setValue(context, base, property, val);
 
-            if (context.isPropertyResolved())
+            if (context.isPropertyResolved()) {
                 return;
+            }
         }
     }
 
@@ -221,8 +228,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         for (int i = 0; i < resolverCount; i++) {
             boolean isReadOnly = resolvers[i].isReadOnly(context, base, property);
 
-            if (context.isPropertyResolved())
+            if (context.isPropertyResolved()) {
                 return isReadOnly;
+            }
         }
 
         return false;
@@ -301,10 +309,11 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
 
         @Override
         public FeatureDescriptor next() {
-            if (hasNext())
+            if (hasNext()) {
                 return _getCurrIterator().next();
-            else
+            } else {
                 throw new NoSuchElementException();
+            }
         }
 
         @Override

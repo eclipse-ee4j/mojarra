@@ -147,7 +147,7 @@ public class CommandTagParserImpl implements TagParser {
                 hasBinding = true;
             }
         }
-        if (failed = (!hasBinding && !(hasValue || hasImage))) {
+        if (failed = !hasBinding && !(hasValue || hasImage)) {
             Object[] obj = new Object[1];
             obj[0] = ln;
             ResourceBundle rb = ResourceBundle.getBundle(RIConstants.TLV_RESOURCE_LOCATION);

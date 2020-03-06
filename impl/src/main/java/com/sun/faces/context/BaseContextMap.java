@@ -86,7 +86,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
     // ------------------------------------------------------- Protected Methods
 
     protected boolean removeKey(Object key) {
-        return (this.remove(key) != null);
+        return this.remove(key) != null;
     }
 
     protected boolean removeValue(Object value) {
@@ -98,7 +98,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             for (Iterator i = entrySet().iterator(); i.hasNext();) {
                 Map.Entry e = (Map.Entry) i.next();
                 if (value.equals(e.getValue())) {
-                    valueRemoved = (remove(e.getKey()) != null);
+                    valueRemoved = remove(e.getKey()) != null;
                 }
             }
         }
@@ -299,7 +299,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         @Override
         public int hashCode() {
-            return ((key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode()));
+            return (key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode());
         }
 
         @Override
@@ -312,8 +312,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             Object inputKey = input.getKey();
             Object inputValue = input.getValue();
 
-            if (inputKey == key || (inputKey != null && inputKey.equals(key))) {
-                if (inputValue == value || (inputValue != null && inputValue.equals(value))) {
+            if (inputKey == key || inputKey != null && inputKey.equals(key)) {
+                if (inputValue == value || inputValue != null && inputValue.equals(value)) {
                     return true;
                 }
             }

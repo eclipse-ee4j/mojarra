@@ -57,7 +57,7 @@ public class SystemEventHelper {
 
     public EventInfo getEventInfo(Class<? extends SystemEvent> systemEventClass, Object source, Class<?> sourceBaseType, boolean useSourceForLookup) {
 
-        Class<?> sourceClass = (useSourceForLookup ? (sourceBaseType != null ? sourceBaseType : source.getClass()) : Void.class);
+        Class<?> sourceClass = useSourceForLookup ? sourceBaseType != null ? sourceBaseType : source.getClass() : Void.class;
         return getEventInfo(systemEventClass, sourceClass);
 
     }

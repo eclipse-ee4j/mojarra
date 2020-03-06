@@ -70,7 +70,7 @@ public class ApplicationMap extends BaseContextMap<Object> {
         Util.notNull("key", key);
         Object result = servletContext.getAttribute(key);
         servletContext.setAttribute(key, value);
-        return (result);
+        return result;
     }
 
     @Override
@@ -81,12 +81,12 @@ public class ApplicationMap extends BaseContextMap<Object> {
         String keyString = key.toString();
         Object result = servletContext.getAttribute(keyString);
         servletContext.removeAttribute(keyString);
-        return (result);
+        return result;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return (servletContext.getAttribute(key.toString()) != null);
+        return servletContext.getAttribute(key.toString()) != null;
     }
 
     @Override

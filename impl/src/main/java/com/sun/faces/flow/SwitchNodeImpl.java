@@ -53,7 +53,7 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
             return false;
         }
         final SwitchNodeImpl other = (SwitchNodeImpl) obj;
-        if ((id == null) ? (other.id != null) : !id.equals(other.id)) {
+        if (id == null ? other.id != null : !id.equals(other.id)) {
             return false;
         }
         if (defaultOutcome != other.defaultOutcome && (defaultOutcome == null || !defaultOutcome.equals(other.defaultOutcome))) {
@@ -94,7 +94,7 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
 
         if (null != defaultOutcome) {
             Object objResult = defaultOutcome.getValue(context.getELContext());
-            result = (null != objResult) ? objResult.toString() : null;
+            result = null != objResult ? objResult.toString() : null;
         }
         return result;
     }

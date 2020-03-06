@@ -203,7 +203,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getCurrencyCode() {
 
-        return (currencyCode);
+        return currencyCode;
 
     }
 
@@ -231,7 +231,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getCurrencySymbol() {
 
-        return (currencySymbol);
+        return currencySymbol;
 
     }
 
@@ -259,7 +259,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public boolean isGroupingUsed() {
 
-        return (groupingUsed != null ? groupingUsed : true);
+        return groupingUsed != null ? groupingUsed : true;
 
     }
 
@@ -287,7 +287,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public boolean isIntegerOnly() {
 
-        return (integerOnly != null ? integerOnly : false);
+        return integerOnly != null ? integerOnly : false;
 
     }
 
@@ -315,7 +315,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMaxFractionDigits() {
 
-        return (maxFractionDigits != null ? maxFractionDigits : 0);
+        return maxFractionDigits != null ? maxFractionDigits : 0;
 
     }
 
@@ -343,7 +343,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMaxIntegerDigits() {
 
-        return (maxIntegerDigits != null ? maxIntegerDigits : 0);
+        return maxIntegerDigits != null ? maxIntegerDigits : 0;
 
     }
 
@@ -371,7 +371,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMinFractionDigits() {
 
-        return (minFractionDigits != null ? minFractionDigits : 0);
+        return minFractionDigits != null ? minFractionDigits : 0;
 
     }
 
@@ -399,7 +399,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMinIntegerDigits() {
 
-        return (minIntegerDigits != null ? minIntegerDigits : 0);
+        return minIntegerDigits != null ? minIntegerDigits : 0;
 
     }
 
@@ -432,7 +432,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
         if (locale == null) {
             locale = getLocale(FacesContext.getCurrentInstance());
         }
-        return (locale);
+        return locale;
 
     }
 
@@ -460,7 +460,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getPattern() {
 
-        return (pattern);
+        return pattern;
 
     }
 
@@ -490,7 +490,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getType() {
 
-        return (type);
+        return type;
 
     }
 
@@ -530,11 +530,11 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
             // If the specified value is null or zero-length, return null
             if (value == null) {
-                return (null);
+                return null;
             }
             value = value.trim();
             if (value.length() < 1) {
-                return (null);
+                return null;
             }
 
             // Identify the Locale to use for parsing
@@ -542,7 +542,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
             // Create and configure the parser to be used
             parser = getNumberFormat(locale);
-            if (((pattern != null) && pattern.length() != 0) || "currency".equals(type)) {
+            if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
                 configureCurrency(parser);
             }
             parser.setParseIntegerOnly(isIntegerOnly());
@@ -636,13 +636,13 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
             // Create and configure the formatter to be used
             NumberFormat formatter = getNumberFormat(locale);
-            if (((pattern != null) && pattern.length() != 0) || "currency".equals(type)) {
+            if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
                 configureCurrency(formatter);
             }
             configureFormatter(formatter);
 
             // Perform the requested formatting
-            return (formatter.format(value));
+            return formatter.format(value);
 
         } catch (ConverterException e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
@@ -706,22 +706,24 @@ public class NumberConverter implements Converter, PartialStateHolder {
         String code = null;
         String symbol = null;
 
-        if ((currencyCode == null) && (currencySymbol == null)) {
+        if (currencyCode == null && currencySymbol == null) {
             return;
         }
 
-        if ((currencyCode != null) && (currencySymbol != null)) {
-            if (currencyClass != null)
+        if (currencyCode != null && currencySymbol != null) {
+            if (currencyClass != null) {
                 code = currencyCode;
-            else
+            } else {
                 symbol = currencySymbol;
+            }
         } else if (currencyCode == null) {
             symbol = currencySymbol;
         } else {
-            if (currencyClass != null)
+            if (currencyClass != null) {
                 code = currencyCode;
-            else
+            } else {
                 symbol = currencyCode;
+            }
         }
 
         if (code != null) {
@@ -782,25 +784,25 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
     private boolean isMaxIntegerDigitsSet() {
 
-        return (maxIntegerDigits != null);
+        return maxIntegerDigits != null;
 
     }
 
     private boolean isMinIntegerDigitsSet() {
 
-        return (minIntegerDigits != null);
+        return minIntegerDigits != null;
 
     }
 
     private boolean isMaxFractionDigitsSet() {
 
-        return (maxFractionDigits != null);
+        return maxFractionDigits != null;
 
     }
 
     private boolean isMinFractionDigitsSet() {
 
-        return (minFractionDigits != null);
+        return minFractionDigits != null;
 
     }
 
@@ -818,7 +820,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
         if (locale == null) {
             locale = context.getViewRoot().getLocale();
         }
-        return (locale);
+        return locale;
 
     }
 
@@ -841,16 +843,16 @@ public class NumberConverter implements Converter, PartialStateHolder {
         // If pattern is specified, type is ignored
         if (pattern != null) {
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-            return (new DecimalFormat(pattern, symbols));
+            return new DecimalFormat(pattern, symbols);
         }
 
         // Create an instance based on the specified type
         else if (type.equals("currency")) {
-            return (NumberFormat.getCurrencyInstance(locale));
+            return NumberFormat.getCurrencyInstance(locale);
         } else if (type.equals("number")) {
-            return (NumberFormat.getNumberInstance(locale));
+            return NumberFormat.getNumberInstance(locale);
         } else if (type.equals("percent")) {
-            return (NumberFormat.getPercentInstance(locale));
+            return NumberFormat.getPercentInstance(locale);
         } else {
             // PENDING(craigmcc) - i18n
             throw new ConverterException(new IllegalArgumentException(type));
@@ -879,7 +881,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
             values[8] = locale;
             values[9] = pattern;
             values[10] = type;
-            return (values);
+            return values;
         }
         return null;
 
@@ -912,7 +914,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
     @Override
     public boolean isTransient() {
-        return (transientFlag);
+        return transientFlag;
     }
 
     @Override

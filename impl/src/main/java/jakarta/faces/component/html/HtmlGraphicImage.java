@@ -68,7 +68,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

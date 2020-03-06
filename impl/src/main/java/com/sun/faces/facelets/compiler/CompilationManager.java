@@ -166,8 +166,9 @@ final class CompilationManager {
     }
 
     public void writeComment(String text) {
-        if (compiler.isTrimmingComments())
+        if (compiler.isTrimmingComments()) {
             return;
+        }
 
         if (finished) {
             return;
@@ -394,13 +395,13 @@ final class CompilationManager {
 
     protected static boolean isImplementation(String ns, String name) {
         boolean matchInCompositeLibrary = (CompositeLibrary.Namespace.equals(ns) || CompositeLibrary.XMLNSNamespace.equals(ns))
-                && (ImplementationHandler.Name.equals(name));
+                && ImplementationHandler.Name.equals(name);
         return matchInCompositeLibrary;
     }
 
     protected static boolean isInterface(String ns, String name) {
         boolean matchInCompositeLibrary = (CompositeLibrary.Namespace.equals(ns) || CompositeLibrary.XMLNSNamespace.equals(ns))
-                && (InterfaceHandler.Name.equals(name));
+                && InterfaceHandler.Name.equals(name);
         return matchInCompositeLibrary;
     }
 

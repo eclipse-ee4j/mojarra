@@ -69,7 +69,7 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 

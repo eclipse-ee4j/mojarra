@@ -96,7 +96,7 @@ public final class CompositeTagLibrary implements TagLibrary {
                     // EMPTY_LIBRARY class variable of the Compiler class.
                     // This code will never be called on that CompositeTagLibrary
                     // instance.
-                    assert (null != messageHolder);
+                    assert null != messageHolder;
                     String prefix = getPrefixFromTag(t);
                     if (null != prefix) {
                         List<FacesMessage> prefixMessages = messageHolder.getNamespacePrefixMessages(context, prefix);

@@ -558,7 +558,7 @@ public class ConverterPropertyEditorFactory {
         }
         byte[] info = new byte[utf8.length + 3];
         info[0] = 1;
-        info[1] = (byte) ((utf8.length >> 8) & 0xff);
+        info[1] = (byte) (utf8.length >> 8 & 0xff);
         info[2] = (byte) (utf8.length & 0xff);
         System.arraycopy(utf8, 0, info, 3, utf8.length);
         return info;

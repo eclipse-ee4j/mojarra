@@ -79,7 +79,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
         if (null != (ccResource = getCompositeComponentResource(ns, localName))) {
 
             try (InputStream componentStream = ccResource.getInputStream();) {
-                result = (componentStream != null);
+                result = componentStream != null;
             } catch (IOException ex) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, ex.toString(), ex);
@@ -148,7 +148,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
         InputStream is = null;
         try {
             is = scriptComponentResource.getInputStream();
-            result = (null != scriptComponentResource) && (null != is);
+            result = null != scriptComponentResource && null != is;
         } catch (IOException ex) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ex.toString(), ex);

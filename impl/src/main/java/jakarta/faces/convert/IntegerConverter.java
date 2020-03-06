@@ -82,15 +82,15 @@ public class IntegerConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (Integer.valueOf(value));
+            return Integer.valueOf(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, INTEGER_ID, value, "9346", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class IntegerConverter implements Converter {
         }
 
         try {
-            return (Integer.toString(((Number) value).intValue()));
+            return Integer.toString(((Number) value).intValue());
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

@@ -85,7 +85,7 @@ public class CreditCardValidator implements Validator, Serializable {
             if (timestwo) {
                 n *= 2;
                 if (n > 9) {
-                    n = (n % 10) + 1;
+                    n = n % 10 + 1;
                 }
             }
             sum += n;

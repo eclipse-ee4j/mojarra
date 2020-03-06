@@ -127,7 +127,7 @@ public class PartialViewContextImpl extends PartialViewContext {
 
         assertNotReleased();
         String execute = PARTIAL_EXECUTE_PARAM.getValue(ctx);
-        return (ALL_PARTIAL_PHASE_CLIENT_IDS.equals(execute));
+        return ALL_PARTIAL_PHASE_CLIENT_IDS.equals(execute);
 
     }
 
@@ -140,7 +140,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         assertNotReleased();
         if (renderAll == null) {
             String render = PARTIAL_RENDER_PARAM.getValue(ctx);
-            renderAll = (ALL_PARTIAL_PHASE_CLIENT_IDS.equals(render));
+            renderAll = ALL_PARTIAL_PHASE_CLIENT_IDS.equals(render);
         }
 
         return renderAll;
@@ -160,7 +160,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     @Override
     public boolean isResetValues() {
         Object value = PARTIAL_RESET_VALUES_PARAM.getValue(ctx);
-        return (null != value && "true".equals(value)) ? true : false;
+        return null != value && "true".equals(value) ? true : false;
     }
 
     @Override
@@ -359,7 +359,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         } else {
             Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
             String[] pcs = Util.split(appMap, param, "[ \t]+");
-            return ((pcs != null && pcs.length != 0) ? new ArrayList<>(Arrays.asList(pcs)) : new ArrayList<>());
+            return pcs != null && pcs.length != 0 ? new ArrayList<>(Arrays.asList(pcs)) : new ArrayList<>();
         }
 
     }
@@ -536,7 +536,7 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     private void cleanupAfterView() {
         ResponseWriter orig = (ResponseWriter) ctx.getAttributes().get(ORIGINAL_WRITER);
-        assert (null != orig);
+        assert null != orig;
         // move aside the PartialResponseWriter
         ctx.setResponseWriter(orig);
     }

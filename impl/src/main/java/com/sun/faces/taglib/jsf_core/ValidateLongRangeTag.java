@@ -92,7 +92,7 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
     protected Validator createValidator() throws JspException {
 
         LongRangeValidator result = (LongRangeValidator) super.createValidator();
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         if (maximumSet) {

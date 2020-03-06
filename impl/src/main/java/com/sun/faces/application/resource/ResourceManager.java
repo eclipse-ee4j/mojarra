@@ -281,7 +281,7 @@ public class ResourceManager {
         }
 
         String resName = trimLeadingSlash(resourceName);
-        if (nameContainsForbiddenSequence(resName) || (!isViewResource && resName.startsWith("WEB-INF"))) {
+        if (nameContainsForbiddenSequence(resName) || !isViewResource && resName.startsWith("WEB-INF")) {
             return null;
         }
 
@@ -630,7 +630,7 @@ public class ResourceManager {
      */
     private boolean isPatternValid(String input) {
 
-        return (CONFIG_MIMETYPE_PATTERN.matcher(input).matches());
+        return CONFIG_MIMETYPE_PATTERN.matcher(input).matches();
 
     }
 

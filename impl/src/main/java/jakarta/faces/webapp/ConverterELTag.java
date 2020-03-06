@@ -80,7 +80,7 @@ public abstract class ConverterELTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -118,7 +118,7 @@ public abstract class ConverterELTag extends TagSupport {
             }
         }
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
