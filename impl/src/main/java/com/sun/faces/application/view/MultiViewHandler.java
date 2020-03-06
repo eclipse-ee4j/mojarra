@@ -52,7 +52,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.RenderKitUtils;

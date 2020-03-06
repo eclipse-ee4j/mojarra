@@ -22,8 +22,8 @@ import static com.sun.faces.util.Util.newInstance;
 
 import java.io.Serializable;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
@@ -75,7 +75,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
         Class result = null;
         try {
             result = valueExpression.getType(context.getELContext());
-        } catch (javax.el.PropertyNotFoundException pnfe) {
+        } catch (jakarta.el.PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(pnfe);
         } catch (ELException elex) {
             throw new EvaluationException(elex);
@@ -95,7 +95,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
         Object result = null;
         try {
             result = valueExpression.getValue(context.getELContext());
-        } catch (javax.el.PropertyNotFoundException pnfe) {
+        } catch (jakarta.el.PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(pnfe);
         } catch (ELException elex) {
             throw new EvaluationException(elex);
@@ -134,9 +134,9 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
         }
         try {
             valueExpression.setValue(context.getELContext(), value);
-        } catch (javax.el.PropertyNotFoundException pnfe) {
+        } catch (jakarta.el.PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(pnfe);
-        } catch (javax.el.PropertyNotWritableException pnwe) {
+        } catch (jakarta.el.PropertyNotWritableException pnwe) {
             throw new PropertyNotFoundException(pnwe);
         } catch (ELException elex) {
             throw new EvaluationException(elex);

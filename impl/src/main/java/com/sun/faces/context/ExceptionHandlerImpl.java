@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import com.sun.faces.util.FacesLogger;
 

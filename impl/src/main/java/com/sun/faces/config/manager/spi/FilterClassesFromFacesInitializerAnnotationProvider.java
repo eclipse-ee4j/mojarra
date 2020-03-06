@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.AnnotationProvider;

@@ -24,7 +24,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Arrays;

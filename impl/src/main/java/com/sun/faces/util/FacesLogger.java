@@ -58,7 +58,7 @@ public enum FacesLogger {
     private static final String LOGGER_RESOURCES
          = "com.sun.faces.LogStrings";
     public static final String FACES_LOGGER_NAME_PREFIX
-         = "javax.enterprise.resource.webcontainer.jsf.";
+         = "jakarta.enterprise.resource.webcontainer.jsf.";
     private String loggerName;
 
 

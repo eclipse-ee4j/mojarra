@@ -27,7 +27,7 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 
-import javax.el.VariableMapper;
+import jakarta.el.VariableMapper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

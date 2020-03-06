@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;

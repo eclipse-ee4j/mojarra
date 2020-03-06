@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceContext;
 
 /**
  * <code>Scanner</code> implementation responsible for {@link PersistenceContext} annotations.

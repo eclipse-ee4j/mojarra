@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.sql.Connection;
 
 import javax.naming.InitialContext;
-import javax.annotation.Resource;
-import javax.annotation.Resources;
+import jakarta.annotation.Resource;
+import jakarta.annotation.Resources;
 import javax.sql.DataSource;
 
 

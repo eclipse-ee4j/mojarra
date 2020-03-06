@@ -36,19 +36,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ResourceBundleELResolver;
-import javax.el.ValueExpression;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
+import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ListELResolver;
+import jakarta.el.MapELResolver;
+import jakarta.el.ResourceBundleELResolver;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspFactory;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.cdi.CdiExtension;
@@ -281,7 +281,7 @@ public class ELUtils {
     private static boolean tryAddCDIELResolver(FacesCompositeELResolver composite) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         
-        javax.enterprise.inject.spi.BeanManager beanManager = getCdiBeanManager(facesContext);
+        jakarta.enterprise.inject.spi.BeanManager beanManager = getCdiBeanManager(facesContext);
         
         if (beanManager == null) {
             // TODO: use version enum and >=
@@ -313,8 +313,8 @@ public class ELUtils {
                     composite.addRootELResolver(streamELResolver);
 
                     // Assume that if we have getStreamELResolver, then we must have
-                    // javax.el.staticFieldELResolver
-                    composite.addRootELResolver((ELResolver) newInstance("javax.el.StaticFieldELResolver"));
+                    // jakarta.el.staticFieldELResolver
+                    composite.addRootELResolver((ELResolver) newInstance("jakarta.el.StaticFieldELResolver"));
                 }
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException t) {
                 // This is normal on containers that do not have these ELResolvers

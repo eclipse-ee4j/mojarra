@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;

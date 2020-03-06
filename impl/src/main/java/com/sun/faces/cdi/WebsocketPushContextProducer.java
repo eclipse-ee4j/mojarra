@@ -18,10 +18,10 @@ package com.sun.faces.cdi;
 
 import static com.sun.faces.cdi.CdiUtils.getQualifier;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 import com.sun.faces.push.WebsocketPushContext;
 import com.sun.faces.push.WebsocketSessionManager;

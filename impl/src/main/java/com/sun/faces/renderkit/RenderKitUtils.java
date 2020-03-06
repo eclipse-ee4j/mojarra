@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;

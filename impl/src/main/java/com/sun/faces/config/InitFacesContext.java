@@ -27,8 +27,8 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELContext;
-import javax.servlet.ServletContext;
+import jakarta.el.ELContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.initfacescontext.NoOpELContext;

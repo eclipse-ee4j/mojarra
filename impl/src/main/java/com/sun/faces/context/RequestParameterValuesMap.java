@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 import com.sun.faces.util.Util;
 

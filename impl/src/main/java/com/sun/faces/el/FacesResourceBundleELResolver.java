@@ -23,11 +23,11 @@ import com.sun.faces.util.Util;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
 
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;

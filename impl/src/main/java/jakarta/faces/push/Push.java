@@ -26,9 +26,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
-import javax.websocket.CloseReason.CloseCodes;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
+import jakarta.websocket.CloseReason.CloseCodes;
 
 import jakarta.faces.component.UIWebsocket;
 import jakarta.faces.event.WebsocketEvent;

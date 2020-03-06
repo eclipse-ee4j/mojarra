@@ -25,9 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.MethodNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.facelets.tag.TagHandlerImpl;

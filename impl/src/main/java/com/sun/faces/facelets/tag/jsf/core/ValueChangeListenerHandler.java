@@ -30,7 +30,7 @@ import jakarta.faces.event.ValueChangeListener;
 import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
 import jakarta.faces.view.facelets.*;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.io.IOException;
 import java.io.Serializable;

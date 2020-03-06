@@ -24,7 +24,7 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import java.io.IOException;
 

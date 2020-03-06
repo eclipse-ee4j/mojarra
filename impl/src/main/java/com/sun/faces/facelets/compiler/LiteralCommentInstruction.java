@@ -16,8 +16,8 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
 
 import jakarta.faces.context.FacesContext;
 

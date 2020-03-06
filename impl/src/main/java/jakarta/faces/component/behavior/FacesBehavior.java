@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import jakarta.faces.component.behavior.Behavior;
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 
 /**
  * <p class="changed_added_2_0 changed_modified_2_3">The presence of this annotation on a

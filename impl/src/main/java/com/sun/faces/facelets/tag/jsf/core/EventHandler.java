@@ -34,9 +34,9 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.MethodNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 
 import java.io.IOException;
 import java.io.Serializable;

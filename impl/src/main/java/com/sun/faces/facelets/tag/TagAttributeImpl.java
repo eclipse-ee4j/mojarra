@@ -33,12 +33,12 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.el.MethodInfo;
-import javax.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.el.MethodInfo;
+import jakarta.el.ELContext;
 
 /**
  * Representation of a Tag's attribute in a Facelet File
@@ -160,7 +160,7 @@ public class TagAttributeImpl extends TagAttribute {
      * Create a MethodExpression, using this attribute's value as the expression
      * String.
      * 
-     * @see ExpressionFactory#createMethodExpression(javax.el.ELContext,
+     * @see ExpressionFactory#createMethodExpression(jakarta.el.ELContext,
      *      java.lang.String, java.lang.Class, java.lang.Class[])
      * @see MethodExpression
      * @param ctx
@@ -289,7 +289,7 @@ public class TagAttributeImpl extends TagAttribute {
      * ExpressionFactory, otherwise create a ValueExpression and evaluate it.
      * 
      * @see ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
-     * @see ExpressionFactory#createValueExpression(javax.el.ELContext,
+     * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext,
      *      java.lang.String, java.lang.Class)
      * @see ValueExpression
      * @param ctx
@@ -325,7 +325,7 @@ public class TagAttributeImpl extends TagAttribute {
      * Create a ValueExpression, using this attribute's literal value and the
      * passed expected type.
      * 
-     * @see ExpressionFactory#createValueExpression(javax.el.ELContext,
+     * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext,
      *      java.lang.String, java.lang.Class)
      * @see ValueExpression
      * @param ctx

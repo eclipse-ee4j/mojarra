@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -341,7 +341,7 @@ public class UISelectMany extends UIInput {
      * @throws NullPointerException if <code>name</code>
      *  is <code>null</code>
      *
-     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, javax.el.ValueExpression)}.
+     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
     @Override
     public void setValueBinding(String name, ValueBinding binding) {

@@ -25,7 +25,7 @@ import jakarta.faces.model.SelectItem;
  * causes the addition of one or more {@link SelectItem} instances to the
  * list of available options in the parent component.  The
  * <code>value</code> of this component (set either directly, or acquired
- * indirectly a {@link javax.el.ValueExpression}, can be of any
+ * indirectly a {@link jakarta.el.ValueExpression}, can be of any
  * of the following types:</p>
  * <ul>
  * <li><em>Single instance of {@link SelectItem}</em> - This instance is

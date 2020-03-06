@@ -16,15 +16,15 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 
 /**
  * Composite VariableMapper that attempts to load the ValueExpression from the first
  * VariableMapper, then the second if <code>null</code>.
  * 
- * @see javax.el.VariableMapper
- * @see javax.el.ValueExpression
+ * @see jakarta.el.VariableMapper
+ * @see jakarta.el.ValueExpression
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -41,7 +41,7 @@ public final class CompositeVariableMapper extends VariableMapper {
     }
 
     /**
-     * @see javax.el.VariableMapper#resolveVariable(java.lang.String)
+     * @see jakarta.el.VariableMapper#resolveVariable(java.lang.String)
      */
     @Override
     public ValueExpression resolveVariable(String name) {
@@ -53,7 +53,7 @@ public final class CompositeVariableMapper extends VariableMapper {
     }
 
     /**
-     * @see javax.el.VariableMapper#setVariable(java.lang.String, javax.el.ValueExpression)
+     * @see jakarta.el.VariableMapper#setVariable(java.lang.String, jakarta.el.ValueExpression)
      */
     @Override
     public ValueExpression setVariable(String name, ValueExpression expression) {

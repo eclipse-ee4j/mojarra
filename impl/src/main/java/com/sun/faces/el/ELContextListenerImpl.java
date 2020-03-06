@@ -16,10 +16,10 @@
 
 package com.sun.faces.el;
 
-import javax.el.ELContext;
-import javax.el.ELContextListener;
-import javax.el.ELContextEvent;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELContext;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ExpressionFactory;
 
 import jakarta.faces.context.FacesContext;
 

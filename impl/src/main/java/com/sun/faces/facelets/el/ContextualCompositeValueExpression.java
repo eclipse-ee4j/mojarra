@@ -22,8 +22,8 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;
 
-import javax.el.ValueExpression;
-import javax.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.ELContext;
 
 /**
  * <p>

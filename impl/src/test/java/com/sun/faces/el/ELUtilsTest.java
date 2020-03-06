@@ -16,7 +16,7 @@ import jakarta.faces.FactoryFinder;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 
 import java.net.URL;
 

@@ -18,7 +18,7 @@ package com.sun.faces.facelets.tag.jstl.core;
 
 import com.sun.faces.facelets.tag.IterationStatus;
 
-import javax.servlet.jsp.jstl.core.LoopTagStatus;
+import jakarta.servlet.jsp.jstl.core.LoopTagStatus;
 
 public class JstlIterationStatus extends IterationStatus implements
       LoopTagStatus {

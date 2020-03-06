@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.RequestStateManager;

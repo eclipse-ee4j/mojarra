@@ -24,8 +24,8 @@ import jakarta.faces.context.FacesContext;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 /**
  * A property descriptor for a composite component attribute.

@@ -19,8 +19,8 @@ package com.sun.faces.context.flash;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.servlet.http.HttpSessionActivationListener;
-import javax.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionActivationListener;
+import jakarta.servlet.http.HttpSessionEvent;
 
 import jakarta.faces.context.ExternalContext;
 

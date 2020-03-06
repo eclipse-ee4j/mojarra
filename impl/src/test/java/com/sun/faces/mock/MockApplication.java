@@ -35,12 +35,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ELContextListener;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.servlet.ServletContext;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.ServletContext;
 import com.sun.el.ExpressionFactoryImpl;
 
 import jakarta.faces.FacesException;

@@ -16,8 +16,8 @@
 
 package jakarta.faces.webapp;
 
-import javax.el.ELContext;
-import javax.servlet.jsp.tagext.JspTag;
+import jakarta.el.ELContext;
+import jakarta.servlet.jsp.tagext.JspTag;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;

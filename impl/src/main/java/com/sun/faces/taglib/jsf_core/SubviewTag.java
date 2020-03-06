@@ -20,7 +20,7 @@ import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import java.lang.reflect.Method;
 

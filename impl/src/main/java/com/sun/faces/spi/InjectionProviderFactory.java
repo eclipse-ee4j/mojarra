@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
@@ -167,8 +167,8 @@ public class InjectionProviderFactory {
         // NoopInjectionProvider
         if (NOOP_PROVIDER.equals(provider)) {
             try {
-                if (Util.loadClass("javax.annotation.PostConstruct", null) != null
-                    && Util.loadClass("javax.annotation.PreDestroy", null) != null) {
+                if (Util.loadClass("jakarta.annotation.PostConstruct", null) != null
+                    && Util.loadClass("jakarta.annotation.PreDestroy", null) != null) {
                     provider = GENERIC_WEB_PROVIDER;
                 }
             } catch (Exception e) {

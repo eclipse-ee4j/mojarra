@@ -43,11 +43,11 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.json.stream.JsonGenerator;
+import jakarta.json.stream.JsonGenerator;
 
 /**
  * <p>
- * Generic JSON encoder using javax.json API.
+ * Generic JSON encoder using jakarta.json API.
  * <p>
  * This supports the standard types {@link Boolean}, {@link Number}, {@link Character}, {@link CharSequence},
  * {@link Date}, {@link LocalDate} and {@link Instant}.
@@ -112,7 +112,7 @@ public class Json {
      * @throws IllegalArgumentException When given object or one of its properties cannot be inspected as a JavaBean.
      */
     public static void encode(Object object, Writer writer, Option... options) {
-        try (JsonGenerator generator = javax.json.Json.createGenerator(writer)) {
+        try (JsonGenerator generator = jakarta.json.Json.createGenerator(writer)) {
             generator.writeStartObject();
             encode("data", object, generator, options.length == 0 ? noneOf(Option.class) : copyOf(asList(options)));
             generator.writeEnd();

@@ -20,7 +20,7 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Iterator;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 import com.sun.faces.util.Util;
 

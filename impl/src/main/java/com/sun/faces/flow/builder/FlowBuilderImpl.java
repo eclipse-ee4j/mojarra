@@ -30,10 +30,10 @@ import jakarta.faces.flow.builder.ReturnBuilder;
 import jakarta.faces.flow.builder.SwitchBuilder;
 import jakarta.faces.flow.builder.ViewBuilder;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 public class FlowBuilderImpl extends FlowBuilder {
     

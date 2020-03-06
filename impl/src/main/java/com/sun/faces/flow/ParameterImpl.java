@@ -17,7 +17,7 @@
 package com.sun.faces.flow;
 
 import java.io.Serializable;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.flow.Parameter;
 

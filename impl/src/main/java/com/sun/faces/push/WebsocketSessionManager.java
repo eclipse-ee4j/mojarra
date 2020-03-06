@@ -21,7 +21,7 @@ import static com.sun.faces.push.WebsocketEndpoint.PARAM_CHANNEL;
 import static java.lang.String.format;
 import static java.util.Collections.emptySet;
 import static java.util.logging.Level.WARNING;
-import static javax.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
+import static jakarta.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -37,11 +37,11 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-import javax.websocket.CloseReason;
-import javax.websocket.Session;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Inject;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Session;
 
 import com.sun.faces.util.Json;
 import com.sun.faces.util.Util;

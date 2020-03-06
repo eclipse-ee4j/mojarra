@@ -18,7 +18,7 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
@@ -34,122 +34,122 @@ public class MessagesTag extends UIComponentELTag {
 
     // Setter Methods
     // PROPERTY: for
-    private javax.el.ValueExpression _for;
-    public void setFor(javax.el.ValueExpression _for) {
+    private jakarta.el.ValueExpression _for;
+    public void setFor(jakarta.el.ValueExpression _for) {
         this._for = _for;
     }
 
     // PROPERTY: globalOnly
-    private javax.el.ValueExpression globalOnly;
-    public void setGlobalOnly(javax.el.ValueExpression globalOnly) {
+    private jakarta.el.ValueExpression globalOnly;
+    public void setGlobalOnly(jakarta.el.ValueExpression globalOnly) {
         this.globalOnly = globalOnly;
     }
 
     // PROPERTY: showDetail
-    private javax.el.ValueExpression showDetail;
-    public void setShowDetail(javax.el.ValueExpression showDetail) {
+    private jakarta.el.ValueExpression showDetail;
+    public void setShowDetail(jakarta.el.ValueExpression showDetail) {
         this.showDetail = showDetail;
     }
 
     // PROPERTY: showSummary
-    private javax.el.ValueExpression showSummary;
-    public void setShowSummary(javax.el.ValueExpression showSummary) {
+    private jakarta.el.ValueExpression showSummary;
+    public void setShowSummary(jakarta.el.ValueExpression showSummary) {
         this.showSummary = showSummary;
     }
 
     // PROPERTY: dir
-    private javax.el.ValueExpression dir;
-    public void setDir(javax.el.ValueExpression dir) {
+    private jakarta.el.ValueExpression dir;
+    public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: errorClass
-    private javax.el.ValueExpression errorClass;
-    public void setErrorClass(javax.el.ValueExpression errorClass) {
+    private jakarta.el.ValueExpression errorClass;
+    public void setErrorClass(jakarta.el.ValueExpression errorClass) {
         this.errorClass = errorClass;
     }
 
     // PROPERTY: errorStyle
-    private javax.el.ValueExpression errorStyle;
-    public void setErrorStyle(javax.el.ValueExpression errorStyle) {
+    private jakarta.el.ValueExpression errorStyle;
+    public void setErrorStyle(jakarta.el.ValueExpression errorStyle) {
         this.errorStyle = errorStyle;
     }
 
     // PROPERTY: fatalClass
-    private javax.el.ValueExpression fatalClass;
-    public void setFatalClass(javax.el.ValueExpression fatalClass) {
+    private jakarta.el.ValueExpression fatalClass;
+    public void setFatalClass(jakarta.el.ValueExpression fatalClass) {
         this.fatalClass = fatalClass;
     }
 
     // PROPERTY: fatalStyle
-    private javax.el.ValueExpression fatalStyle;
-    public void setFatalStyle(javax.el.ValueExpression fatalStyle) {
+    private jakarta.el.ValueExpression fatalStyle;
+    public void setFatalStyle(jakarta.el.ValueExpression fatalStyle) {
         this.fatalStyle = fatalStyle;
     }
 
     // PROPERTY: infoClass
-    private javax.el.ValueExpression infoClass;
-    public void setInfoClass(javax.el.ValueExpression infoClass) {
+    private jakarta.el.ValueExpression infoClass;
+    public void setInfoClass(jakarta.el.ValueExpression infoClass) {
         this.infoClass = infoClass;
     }
 
     // PROPERTY: infoStyle
-    private javax.el.ValueExpression infoStyle;
-    public void setInfoStyle(javax.el.ValueExpression infoStyle) {
+    private jakarta.el.ValueExpression infoStyle;
+    public void setInfoStyle(jakarta.el.ValueExpression infoStyle) {
         this.infoStyle = infoStyle;
     }
 
     // PROPERTY: lang
-    private javax.el.ValueExpression lang;
-    public void setLang(javax.el.ValueExpression lang) {
+    private jakarta.el.ValueExpression lang;
+    public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: layout
-    private javax.el.ValueExpression layout;
-    public void setLayout(javax.el.ValueExpression layout) {
+    private jakarta.el.ValueExpression layout;
+    public void setLayout(jakarta.el.ValueExpression layout) {
         this.layout = layout;
     }
 
     // PROPERTY: role
-    private javax.el.ValueExpression role;
-    public void setRole(javax.el.ValueExpression role) {
+    private jakarta.el.ValueExpression role;
+    public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: style
-    private javax.el.ValueExpression style;
-    public void setStyle(javax.el.ValueExpression style) {
+    private jakarta.el.ValueExpression style;
+    public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
-    private javax.el.ValueExpression styleClass;
-    public void setStyleClass(javax.el.ValueExpression styleClass) {
+    private jakarta.el.ValueExpression styleClass;
+    public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: title
-    private javax.el.ValueExpression title;
-    public void setTitle(javax.el.ValueExpression title) {
+    private jakarta.el.ValueExpression title;
+    public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
 
     // PROPERTY: tooltip
-    private javax.el.ValueExpression tooltip;
-    public void setTooltip(javax.el.ValueExpression tooltip) {
+    private jakarta.el.ValueExpression tooltip;
+    public void setTooltip(jakarta.el.ValueExpression tooltip) {
         this.tooltip = tooltip;
     }
 
     // PROPERTY: warnClass
-    private javax.el.ValueExpression warnClass;
-    public void setWarnClass(javax.el.ValueExpression warnClass) {
+    private jakarta.el.ValueExpression warnClass;
+    public void setWarnClass(jakarta.el.ValueExpression warnClass) {
         this.warnClass = warnClass;
     }
 
     // PROPERTY: warnStyle
-    private javax.el.ValueExpression warnStyle;
-    public void setWarnStyle(javax.el.ValueExpression warnStyle) {
+    private jakarta.el.ValueExpression warnStyle;
+    public void setWarnStyle(jakarta.el.ValueExpression warnStyle) {
         this.warnStyle = warnStyle;
     }
 

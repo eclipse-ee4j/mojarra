@@ -16,9 +16,9 @@
 
 package jakarta.faces.webapp;
 
-import javax.el.ValueExpression;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;

@@ -47,69 +47,71 @@
     
     <dependencies>
         <!-- Java EE Dependencies -->
-         
-        <dependency>
-            <groupId>jakarta.transaction</groupId>
-            <artifactId>jakarta.transaction-api</artifactId>
-            <version>1.3.2</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>4.0.2</version>
+            <version>5.0.0-M1</version>
             <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>jakarta.servlet.jsp</groupId>
-            <artifactId>jakarta.servlet.jsp-api</artifactId>
-            <version>2.3.4</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.servlet.jsp.jstl</groupId>
-            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-            <version>1.2.3</version>
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
 
         <dependency>    
             <groupId>jakarta.websocket</groupId>
             <artifactId>jakarta.websocket-api</artifactId>
-            <version>1.1.1</version>
+            <version>2.0.0-M1</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>jakarta.el</groupId>
             <artifactId>jakarta.el-api</artifactId>
-            <version>3.0.2</version>
+            <version>4.0.0-RC1</version>
             <scope>provided</scope>
         </dependency>
     
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <version>2.0.SP1</version>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>3.0.0-M1</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.0-M1</version>
             <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
+            <version>1.3.2</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Optional -->
+        
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>3.0.0-M1</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>2.0.0-RC1</version>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
-            <version>1.1.5</version>
+            <version>2.0.0-RC2</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -117,47 +119,40 @@
         <dependency>
             <groupId>jakarta.ejb</groupId>
             <artifactId>jakarta.ejb-api</artifactId>
-            <version>3.2.4</version>
+            <version>4.0.0-RC1</version>
             <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        
-        
-        <!-- 
-            For the vendor SPI implementations shipped with Mojarra.
-            See package com.sun.faces.vendor
-            TODO: Is this really needed still? These are extremely old
-         -->
-         
-         <!-- Jetty 6 -->
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty-plus</artifactId>
-            <version>6.1.26</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty-annotations</artifactId>
-            <version>6.1.26</version>
             <optional>true</optional>
         </dependency>
 
-        <!-- Tomcat 6 -->
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>catalina</artifactId>
-            <version>6.0.51</version>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.0.0-RC1</version>
             <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.ws</groupId>
+            <artifactId>jakarta.xml.ws-api</artifactId>
+            <version>3.0.0-RC1</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.0.0-RC1</version>
         </dependency>
         
         
         <!-- TEST DEPENDENCIES -->
         
         <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>2.2.3</version>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>4.0.0-RC1</version>
             <scope>test</scope>
         </dependency>
         
@@ -322,28 +317,25 @@
                         <Import-Package>
                             jakarta.faces.*,
                             com.sun.faces.*,
-                            javax.servlet.annotation.*;resolution:=optional,
-                            javax.servlet.*,
-                            javax.el.*,
-                            javax.inject.*,
-                            javax.enterprise.inject.*,
-                            javax.enterprise.util.*,
-                            javax.enterprise.context.*,
-                            javax.annotation.processing.*,
-                            javax.annotation.*;version="[1.0.0,2.0.0)",
+                            jakarta.servlet.annotation.*;resolution:=optional,
+                            jakarta.servlet.*,
+                            jakarta.el.*,
+                            jakarta.inject.*,
+                            jakarta.enterprise.inject.*,
+                            jakarta.enterprise.util.*,
+                            jakarta.enterprise.context.*,
+                            jakarta.annotation.processing.*,
+                            jakarta.annotation.*;version="[1.0.0,2.0.0)",
                             javax.crypto.*,
-                            javax.websocket.*;resolution:=optional,
-                            javax.json.*;resolution:=optional,
-                            javax.validation.*;resolution:=optional,
-                            javax.enterprise.event;resolution:=optional,
-                            javax.ejb.*;resolution:=optional,
-                            javax.persistence.*;resolution:=optional,
+                            jakarta.websocket.*;resolution:=optional,
+                            jakarta.json.*;resolution:=optional,
+                            jakarta.validation.*;resolution:=optional,
+                            jakarta.enterprise.event;resolution:=optional,
+                            jakarta.ejb.*;resolution:=optional,
+                            jakarta.persistence.*;resolution:=optional,
                             javax.xml.*,
                             org.w3c.dom.*,
                             com.sun.enterprise.*;resolution:=optional,
-                            org.mortbay.jetty.annotations;resolution:=optional,
-                            org.mortbay.jetty.plus.annotation;resolution:=optional,
-                            org.apache.*;resolution:=optional,
                             org.jboss.weld.*;resolution:=optional,
                             org.xml.sax.*,
                             javax.naming.*

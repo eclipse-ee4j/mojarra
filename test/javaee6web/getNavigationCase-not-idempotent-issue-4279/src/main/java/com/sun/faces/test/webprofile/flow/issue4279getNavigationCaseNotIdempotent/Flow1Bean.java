@@ -18,8 +18,8 @@ package com.sun.faces.test.webprofile.flow.issue4279getNavigationCaseNotIdempote
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import javax.faces.flow.FlowScoped;
 import javax.inject.Named;
 

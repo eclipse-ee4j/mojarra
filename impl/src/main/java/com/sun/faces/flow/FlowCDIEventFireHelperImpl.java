@@ -17,10 +17,10 @@
 package com.sun.faces.flow;
 
 import java.io.Serializable;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowScoped;

@@ -17,7 +17,7 @@
 package com.sun.faces.annotation;
 
 import java.util.Map;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;

@@ -22,7 +22,7 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MultiKeyConcurrentHashMap;
 import com.sun.faces.util.Util;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;

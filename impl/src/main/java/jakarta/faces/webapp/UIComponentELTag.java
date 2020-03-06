@@ -17,11 +17,11 @@
 package jakarta.faces.webapp;
 
 
-import javax.el.ELException;
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
+import jakarta.el.ELException;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;

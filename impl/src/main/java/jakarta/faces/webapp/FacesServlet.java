@@ -26,8 +26,8 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,15 +37,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.UnavailableException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.UnavailableException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -67,8 +67,8 @@ import jakarta.faces.lifecycle.LifecycleFactory;
  *
  * <p>
  * If the application is running in a Jakarta Servlet 3.0 (and beyond) container, the runtime must provide
- * an implementation of the {@link javax.servlet.ServletContainerInitializer} interface that
- * declares the following classes in its {@link javax.servlet.annotation.HandlesTypes} annotation.
+ * an implementation of the {@link jakarta.servlet.ServletContainerInitializer} interface that
+ * declares the following classes in its {@link jakarta.servlet.annotation.HandlesTypes} annotation.
  * </p>
  * 
  * <ul>
@@ -169,7 +169,7 @@ import jakarta.faces.lifecycle.LifecycleFactory;
  * <div class="changed_added_2_2">
  *
  * <p>
- * This class must be annotated with {@code javax.servlet.annotation.MultipartConfig}. This causes
+ * This class must be annotated with {@code jakarta.servlet.annotation.MultipartConfig}. This causes
  * the Jakarta Servlet container in which the Jakarta Server Faces implementation is running to correctly handle multipart
  * form data.
  * </p>

@@ -20,10 +20,10 @@ import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.PropertyNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
@@ -70,7 +70,7 @@ public class ResourceELResolver extends ELResolver {
      * the result of {@link jakarta.faces.application.Resource#getRequestPath()}
      * </li>
      * </ul>
-     * @see ELResolver#getValue(javax.el.ELContext, Object, Object)
+     * @see ELResolver#getValue(jakarta.el.ELContext, Object, Object)
      */
     @Override
     public Object getValue(ELContext context, Object base, Object property) {

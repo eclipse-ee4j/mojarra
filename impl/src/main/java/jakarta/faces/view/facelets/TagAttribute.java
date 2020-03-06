@@ -17,9 +17,9 @@
 
 package jakarta.faces.view.facelets;
 
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.view.Location;
 
@@ -77,7 +77,7 @@ public abstract class TagAttribute {
      * Create a MethodExpression, using this attribute's value as the expression
      * String.
      *
-     * @see ExpressionFactory#createMethodExpression(javax.el.ELContext,
+     * @see ExpressionFactory#createMethodExpression(jakarta.el.ELContext,
      * java.lang.String, java.lang.Class, java.lang.Class[])
      * @see MethodExpression
      * @param ctx FaceletContext to use
@@ -133,7 +133,7 @@ public abstract class TagAttribute {
      * ExpressionFactory, otherwise create a ValueExpression and evaluate it.
      *
      * @see ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
-     * @see ExpressionFactory#createValueExpression(javax.el.ELContext,
+     * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext,
      * java.lang.String, java.lang.Class)
      * @see ValueExpression
      * @param ctx FaceletContext to use
@@ -149,7 +149,7 @@ public abstract class TagAttribute {
      * @param ctx FaceletContext to use.
      * @param type expected return type.
      * @return the {@link ValueExpression}.
-     * @see ExpressionFactory#createValueExpression(javax.el.ELContext,
+     * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext,
      * java.lang.String, java.lang.Class)
      * @see ValueExpression
      */

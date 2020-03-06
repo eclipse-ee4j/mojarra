@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;

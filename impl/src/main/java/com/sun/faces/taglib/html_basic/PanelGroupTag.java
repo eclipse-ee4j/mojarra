@@ -18,7 +18,7 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
@@ -34,80 +34,80 @@ public class PanelGroupTag extends UIComponentELTag {
 
     // Setter Methods
     // PROPERTY: layout
-    private javax.el.ValueExpression layout;
-    public void setLayout(javax.el.ValueExpression layout) {
+    private jakarta.el.ValueExpression layout;
+    public void setLayout(jakarta.el.ValueExpression layout) {
         this.layout = layout;
     }
 
     // PROPERTY: onclick
-    private javax.el.ValueExpression onclick;
-    public void setOnclick(javax.el.ValueExpression onclick) {
+    private jakarta.el.ValueExpression onclick;
+    public void setOnclick(jakarta.el.ValueExpression onclick) {
         this.onclick = onclick;
     }
 
     // PROPERTY: ondblclick
-    private javax.el.ValueExpression ondblclick;
-    public void setOndblclick(javax.el.ValueExpression ondblclick) {
+    private jakarta.el.ValueExpression ondblclick;
+    public void setOndblclick(jakarta.el.ValueExpression ondblclick) {
         this.ondblclick = ondblclick;
     }
 
     // PROPERTY: onkeydown
-    private javax.el.ValueExpression onkeydown;
-    public void setOnkeydown(javax.el.ValueExpression onkeydown) {
+    private jakarta.el.ValueExpression onkeydown;
+    public void setOnkeydown(jakarta.el.ValueExpression onkeydown) {
         this.onkeydown = onkeydown;
     }
 
     // PROPERTY: onkeypress
-    private javax.el.ValueExpression onkeypress;
-    public void setOnkeypress(javax.el.ValueExpression onkeypress) {
+    private jakarta.el.ValueExpression onkeypress;
+    public void setOnkeypress(jakarta.el.ValueExpression onkeypress) {
         this.onkeypress = onkeypress;
     }
 
     // PROPERTY: onkeyup
-    private javax.el.ValueExpression onkeyup;
-    public void setOnkeyup(javax.el.ValueExpression onkeyup) {
+    private jakarta.el.ValueExpression onkeyup;
+    public void setOnkeyup(jakarta.el.ValueExpression onkeyup) {
         this.onkeyup = onkeyup;
     }
 
     // PROPERTY: onmousedown
-    private javax.el.ValueExpression onmousedown;
-    public void setOnmousedown(javax.el.ValueExpression onmousedown) {
+    private jakarta.el.ValueExpression onmousedown;
+    public void setOnmousedown(jakarta.el.ValueExpression onmousedown) {
         this.onmousedown = onmousedown;
     }
 
     // PROPERTY: onmousemove
-    private javax.el.ValueExpression onmousemove;
-    public void setOnmousemove(javax.el.ValueExpression onmousemove) {
+    private jakarta.el.ValueExpression onmousemove;
+    public void setOnmousemove(jakarta.el.ValueExpression onmousemove) {
         this.onmousemove = onmousemove;
     }
 
     // PROPERTY: onmouseout
-    private javax.el.ValueExpression onmouseout;
-    public void setOnmouseout(javax.el.ValueExpression onmouseout) {
+    private jakarta.el.ValueExpression onmouseout;
+    public void setOnmouseout(jakarta.el.ValueExpression onmouseout) {
         this.onmouseout = onmouseout;
     }
 
     // PROPERTY: onmouseover
-    private javax.el.ValueExpression onmouseover;
-    public void setOnmouseover(javax.el.ValueExpression onmouseover) {
+    private jakarta.el.ValueExpression onmouseover;
+    public void setOnmouseover(jakarta.el.ValueExpression onmouseover) {
         this.onmouseover = onmouseover;
     }
 
     // PROPERTY: onmouseup
-    private javax.el.ValueExpression onmouseup;
-    public void setOnmouseup(javax.el.ValueExpression onmouseup) {
+    private jakarta.el.ValueExpression onmouseup;
+    public void setOnmouseup(jakarta.el.ValueExpression onmouseup) {
         this.onmouseup = onmouseup;
     }
 
     // PROPERTY: style
-    private javax.el.ValueExpression style;
-    public void setStyle(javax.el.ValueExpression style) {
+    private jakarta.el.ValueExpression style;
+    public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
-    private javax.el.ValueExpression styleClass;
-    public void setStyleClass(javax.el.ValueExpression styleClass) {
+    private jakarta.el.ValueExpression styleClass;
+    public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 

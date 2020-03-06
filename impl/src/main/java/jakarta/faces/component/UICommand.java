@@ -19,7 +19,7 @@ package jakarta.faces.component;
 import static jakarta.faces.event.PhaseId.APPLY_REQUEST_VALUES;
 import static jakarta.faces.event.PhaseId.INVOKE_APPLICATION;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 
 import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
 import com.sun.faces.application.MethodExpressionMethodBindingAdapter;
@@ -293,7 +293,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      * {@inheritDoc}
      *
      * @deprecated This has been replaced by
-     *             {@link #setActionExpression(javax.el.MethodExpression)}.
+     *             {@link #setActionExpression(jakarta.el.MethodExpression)}.
      */
     @Override
     public void setAction(MethodBinding action) {

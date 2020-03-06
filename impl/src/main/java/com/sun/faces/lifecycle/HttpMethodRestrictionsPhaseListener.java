@@ -16,7 +16,7 @@
 
 package com.sun.faces.lifecycle;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;

@@ -19,7 +19,7 @@ package jakarta.faces.component.html;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.component.UIColumn;
 

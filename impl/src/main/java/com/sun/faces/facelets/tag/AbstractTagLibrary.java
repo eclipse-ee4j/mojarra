@@ -25,7 +25,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.*;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -664,7 +664,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     /**
      * Add a Method to be used as a Function at Compilation.
      * 
-     * @see javax.el.FunctionMapper
+     * @see jakarta.el.FunctionMapper
      * 
      * @param name (suffix) of function name
      * @param method method instance 

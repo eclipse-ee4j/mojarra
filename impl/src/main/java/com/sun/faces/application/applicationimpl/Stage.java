@@ -16,7 +16,7 @@
 
 package com.sun.faces.application.applicationimpl;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesProjectStage;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ProjectStage.Production;
 import static java.util.logging.Level.FINE;
@@ -72,7 +72,7 @@ public class Stage {
                 LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
             }
         } else {
-            value = webConfig.getOptionValue(JavaxFacesProjectStage);
+            value = webConfig.getOptionValue(JakartaFacesProjectStage);
             if (value != null && LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);
             }

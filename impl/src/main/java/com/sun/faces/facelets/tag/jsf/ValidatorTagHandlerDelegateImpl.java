@@ -30,7 +30,7 @@ import jakarta.faces.view.facelets.*;
 
 import com.sun.faces.util.RequestStateManager;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.io.IOException;
 import java.util.Set;

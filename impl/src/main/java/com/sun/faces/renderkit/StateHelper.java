@@ -29,7 +29,7 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;

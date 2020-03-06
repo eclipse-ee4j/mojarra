@@ -16,8 +16,8 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * An annotation literal for @Default.

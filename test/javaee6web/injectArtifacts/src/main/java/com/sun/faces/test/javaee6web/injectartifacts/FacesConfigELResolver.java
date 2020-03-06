@@ -18,8 +18,8 @@ package com.sun.faces.test.javaee6web.injectartifacts;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 

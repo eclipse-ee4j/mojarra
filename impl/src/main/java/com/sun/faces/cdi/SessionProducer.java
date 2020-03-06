@@ -16,7 +16,7 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;

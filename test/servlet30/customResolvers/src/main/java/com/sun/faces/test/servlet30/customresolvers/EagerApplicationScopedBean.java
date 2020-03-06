@@ -16,7 +16,7 @@
 
 package com.sun.faces.test.servlet30.customresolvers;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.el.ELResolver;
 import javax.faces.application.Application;
 import javax.faces.bean.ApplicationScoped;

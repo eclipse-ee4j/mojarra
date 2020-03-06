@@ -16,8 +16,8 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import javax.el.ValueExpression;
-import javax.servlet.jsp.JspException;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;

@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.spi.ConfigurationResourceProvider;
@@ -33,7 +33,7 @@ import com.sun.faces.spi.ConfigurationResourceProvider;
 
 /**
  * <p>
- *  This <code>Callable</code> will be used by {@link ConfigManager#getXMLDocuments(javax.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
+ *  This <code>Callable</code> will be used by {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
  *  It represents one or more URIs to configuration resources that require processing.
  * </p>
  */

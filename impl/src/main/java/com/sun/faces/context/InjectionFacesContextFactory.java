@@ -21,7 +21,7 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;

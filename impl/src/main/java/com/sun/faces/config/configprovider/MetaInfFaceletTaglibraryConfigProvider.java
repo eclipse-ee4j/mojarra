@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.facelets.util.Classpath;
 import com.sun.faces.spi.ConfigurationResourceProvider;

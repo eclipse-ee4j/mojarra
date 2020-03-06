@@ -16,7 +16,7 @@
 
 package jakarta.faces.el;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * This interface <em>must</em> be implemented by the <code>Map</code>

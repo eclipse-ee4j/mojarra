@@ -23,14 +23,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.enterprise.context.NormalScope;
+import jakarta.enterprise.context.NormalScope;
 
 /**
  * <p class="changed_added_2_2"><strong class="changed_modified_2_3">
  * FlowScoped</strong> is a CDI scope that causes the runtime to
  * consider classes with this annotation to be in the scope of the
  * specified {@link Flow}.  The implementation must provide an
- * implementation of {@code javax.enterprise.inject.spi.Extension} that
+ * implementation of {@code jakarta.enterprise.inject.spi.Extension} that
  * implements the semantics such that beans with this annotation are
  * created <span class="changed_added_2_3">lazily, when referenced,
  * after</span> the user enters into the specified {@code Flow}, and

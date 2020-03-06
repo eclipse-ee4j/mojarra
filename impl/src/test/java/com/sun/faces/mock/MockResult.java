@@ -19,7 +19,7 @@ package com.sun.faces.mock;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.servlet.jsp.jstl.sql.Result;
+import jakarta.servlet.jsp.jstl.sql.Result;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import jakarta.faces.FacesException;
@@ -27,7 +27,7 @@ import jakarta.faces.FacesException;
 /**
  * <p>
  * Mock object that implements enough of
- * <code>javax.servlet.jsp.jstl.sql.ResultSet</code> to exercise the
+ * <code>jakarta.servlet.jsp.jstl.sql.ResultSet</code> to exercise the
  * <code>ResultDataModel</code> functionality. It wraps an array of JavaBeans
  * objects that are passed to the constructor.</p>
  *

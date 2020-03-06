@@ -16,7 +16,7 @@
 
 package jakarta.faces.flow;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * <p class="changed_added_2_2">Represents a parameter in any of several

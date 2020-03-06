@@ -16,9 +16,9 @@
 
 package com.sun.faces.el;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;

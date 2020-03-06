@@ -46,9 +46,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.InitFacesContext;

@@ -33,7 +33,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -139,7 +139,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
     // ------------------------------------------------------ Manifest Constants
 
-    public static final String METADATA_FACET_NAME = "javax_faces_metadata";
+    public static final String METADATA_FACET_NAME = "jakarta_faces_metadata";
     
     /**
      * <p class="changed_added_2_0">The key in the value set of the
@@ -182,7 +182,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     private static final Logger LOGGER =
           Logger.getLogger("jakarta.faces", "jakarta.faces.LogStrings");
 
-    private static final String LOCATION_IDENTIFIER_PREFIX = "javax_faces_location_";
+    private static final String LOCATION_IDENTIFIER_PREFIX = "jakarta_faces_location_";
     private static final Map<String,String> LOCATION_IDENTIFIER_MAP =
           new LinkedHashMap<>(3, 1.0f);
     static {
@@ -589,7 +589,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
      * <li class="changed_modified_2_1">Set the <code>id</code> of the
      * facet to be a string created by prepending the literal string
-     * &#8220;<code>javax_faces_location_</code>&#8221; (without the
+     * &#8220;<code>jakarta_faces_location_</code>&#8221; (without the
      * quotes) to the value of the <code>target</code> argument</li>
 
      * <li>Add the facet to the facets <code>Map</code> using <code>target</code> as the key</li>

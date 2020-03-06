@@ -17,17 +17,17 @@
 package com.sun.faces.el;
 
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 
 /**
- * Concrete implementation of {@link javax.el.ELContext}.
+ * Concrete implementation of {@link jakarta.el.ELContext}.
  * ELContext's constructor is protected to control creation of ELContext
  * objects through their appropriate factory methods.  This version of
  * ELContext forces construction through FacesContextImpl.

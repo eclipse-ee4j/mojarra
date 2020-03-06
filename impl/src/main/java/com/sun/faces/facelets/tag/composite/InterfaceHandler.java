@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 public class InterfaceHandler extends TagHandlerImpl {
 

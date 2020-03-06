@@ -32,7 +32,7 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -61,7 +61,7 @@ import com.sun.faces.util.Timer;
 /**
  * <p>
  * This <code>Callable</code> will be used by
- * {@link ConfigManager#getXMLDocuments(javax.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
+ * {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
  * It represents a single configuration resource to be parsed into a DOM.
  * </p>
  */

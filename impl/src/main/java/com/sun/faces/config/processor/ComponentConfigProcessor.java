@@ -23,7 +23,7 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
@@ -74,7 +74,7 @@ public class ComponentConfigProcessor extends AbstractConfigProcessor {
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[]) @param
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[]) @param
      *      sc
      * @param documentInfos
      */

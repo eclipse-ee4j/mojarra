@@ -218,7 +218,7 @@ public class ClientResourceInfo extends ResourceInfo {
     /**
      * Create the full path to the resource.  If the resource can be compressed,
      * setup the compressedPath ivar so that the path refers to the
-     * directory refereneced by the context attribute <code>javax.servlet.context.tempdir</code>.  
+     * directory refereneced by the context attribute <code>jakarta.servlet.context.tempdir</code>.  
      */
     private void initPath(boolean isDevStage) {
 
@@ -254,11 +254,11 @@ public class ClientResourceInfo extends ResourceInfo {
         if (compressible && !supportsEL) { // compression for static resources
             FacesContext ctx = FacesContext.getCurrentInstance();
             File servletTmpDir = (File) ctx.getExternalContext()
-                  .getApplicationMap().get("javax.servlet.context.tempdir");
+                  .getApplicationMap().get("jakarta.servlet.context.tempdir");
             if (servletTmpDir == null || !servletTmpDir.isDirectory()) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE,
-                               "File ({0}) referenced by javax.servlet.context.tempdir attribute is null, or was is not a directory.  Compression for {1} will be unavailable.",
+                               "File ({0}) referenced by jakarta.servlet.context.tempdir attribute is null, or was is not a directory.  Compression for {1} will be unavailable.",
                                new Object[]{((servletTmpDir == null)
                                              ? "null"
                                              : servletTmpDir.toString()),

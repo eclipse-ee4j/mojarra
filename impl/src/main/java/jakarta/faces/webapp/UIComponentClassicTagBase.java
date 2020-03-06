@@ -15,13 +15,13 @@
  */
 
 package jakarta.faces.webapp;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTag;
-import javax.servlet.jsp.tagext.JspIdConsumer;
-import javax.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.BodyContent;
+import jakarta.servlet.jsp.tagext.BodyTag;
+import jakarta.servlet.jsp.tagext.JspIdConsumer;
+import jakarta.servlet.jsp.tagext.Tag;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
@@ -196,7 +196,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * The value of the attribute is an Integer that is unqiue
      * to this page context.
      */
-    private static final String JAVAX_FACES_PAGECONTEXT_MARKER =
+    private static final String JAKARTA_FACES_PAGECONTEXT_MARKER =
             "jakarta.faces.webapp.PAGECONTEXT_MARKER";
 
     /**
@@ -204,7 +204,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * an AtomicInteger which we use to increment the PageContext
      * count.
      */
-    private static final String JAVAX_FACES_PAGECONTEXT_COUNTER =
+    private static final String JAKARTA_FACES_PAGECONTEXT_COUNTER =
             "jakarta.faces.webapp.PAGECONTEXT_COUNTER";
 
     // ------------------------------------------------------ Instance Variables
@@ -1883,20 +1883,20 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         this.jspId = null;
 
         Integer pcId = (Integer)
-                pageContext.getAttribute(JAVAX_FACES_PAGECONTEXT_MARKER,
+                pageContext.getAttribute(JAKARTA_FACES_PAGECONTEXT_MARKER,
                         PageContext.PAGE_SCOPE);
         if (pcId == null) {
             if (null == context) {
                 context = FacesContext.getCurrentInstance();
             }
-            AtomicInteger aInt = (AtomicInteger) context.getAttributes().get(JAVAX_FACES_PAGECONTEXT_COUNTER);
+            AtomicInteger aInt = (AtomicInteger) context.getAttributes().get(JAKARTA_FACES_PAGECONTEXT_COUNTER);
             if (aInt == null) {
                 aInt = new AtomicInteger();
-                context.getAttributes().put(JAVAX_FACES_PAGECONTEXT_COUNTER, aInt);
+                context.getAttributes().put(JAKARTA_FACES_PAGECONTEXT_COUNTER, aInt);
             }
 
             pcId = aInt.incrementAndGet();
-            pageContext.setAttribute(JAVAX_FACES_PAGECONTEXT_MARKER, pcId);
+            pageContext.setAttribute(JAKARTA_FACES_PAGECONTEXT_MARKER, pcId);
         }
         if (pcId.intValue() > 1) {
             StringBuilder builder = new StringBuilder(id.length() + 3);

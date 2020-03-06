@@ -22,9 +22,9 @@ import java.util.Iterator;
 
 import java.util.NoSuchElementException;
 
-import javax.el.ELResolver;
-import javax.el.ELContext;
-import javax.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
 
 /**
  * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.

@@ -16,8 +16,8 @@
 
 package com.sun.faces.el;
 
-import javax.el.ELResolver;
-import javax.el.CompositeELResolver;
+import jakarta.el.ELResolver;
+import jakarta.el.CompositeELResolver;
 
 /**
  * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.

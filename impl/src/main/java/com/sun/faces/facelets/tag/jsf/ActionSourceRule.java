@@ -24,8 +24,8 @@ import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.MethodExpressionActionListener;
 import jakarta.faces.view.facelets.*;
 
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
 
 /**
  * 

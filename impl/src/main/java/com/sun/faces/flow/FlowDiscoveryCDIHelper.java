@@ -24,9 +24,9 @@ import jakarta.faces.flow.builder.FlowBuilderParameter;
 
 import com.sun.faces.RIConstants;
 import java.io.Serializable;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 
 /*
  * This is an application scoped bean named with a well-defined,

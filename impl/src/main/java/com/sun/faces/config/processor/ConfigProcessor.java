@@ -16,7 +16,7 @@
 
 package com.sun.faces.config.processor;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.config.manager.documents.DocumentInfo;
 

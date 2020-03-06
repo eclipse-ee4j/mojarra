@@ -19,7 +19,7 @@ package com.sun.faces.spi;
 import java.net.URI;
 import java.util.Collection;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p> Classes that implement this interface return zero or more

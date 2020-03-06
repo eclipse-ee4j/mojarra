@@ -16,7 +16,7 @@
 
 package com.sun.faces.test.servlet30.ajax;
  
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlInputText;

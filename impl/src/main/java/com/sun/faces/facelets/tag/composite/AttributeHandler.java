@@ -26,7 +26,7 @@ import jakarta.faces.view.facelets.*;
 
 import java.lang.reflect.Method;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 
 
 public class AttributeHandler extends TagHandlerImpl {

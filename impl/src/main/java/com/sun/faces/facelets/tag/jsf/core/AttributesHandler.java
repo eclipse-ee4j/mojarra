@@ -26,7 +26,7 @@ import jakarta.faces.view.facelets.TagException;
 
 import java.io.IOException;
 import java.util.Map;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 public final class AttributesHandler extends TagHandlerImpl 
     implements jakarta.faces.view.facelets.AttributeHandler {

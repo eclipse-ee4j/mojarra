@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  *
@@ -43,7 +43,7 @@ public class MojarraFacesConfigResourceProvider implements
 
 
     /**
-     * @see ConfigurationResourceProvider#getResources(javax.servlet.ServletContext)
+     * @see ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
      */
     @Override
     public Collection<URI> getResources(ServletContext context) {

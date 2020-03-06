@@ -22,7 +22,7 @@ import com.sun.faces.util.Util;
 import jakarta.faces.flow.builder.SwitchBuilder;
 import jakarta.faces.flow.builder.SwitchCaseBuilder;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 public class SwitchBuilderImpl extends SwitchBuilder {
     

@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import javax.websocket.RemoteEndpoint.Async;
+import jakarta.websocket.RemoteEndpoint.Async;
 
 /**
  * <p class="changed_added_2_3">

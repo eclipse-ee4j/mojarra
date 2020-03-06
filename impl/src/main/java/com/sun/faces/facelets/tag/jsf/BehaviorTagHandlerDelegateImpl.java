@@ -29,7 +29,7 @@ import jakarta.faces.view.AttachedObjectTarget;
 import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
 import jakarta.faces.view.facelets.*;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;

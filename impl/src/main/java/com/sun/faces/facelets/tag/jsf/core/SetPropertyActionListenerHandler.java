@@ -32,9 +32,9 @@ import jakarta.faces.event.ActionListener;
 import jakarta.faces.view.ActionSource2AttachedObjectHandler;
 import jakarta.faces.view.facelets.*;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 
 import java.io.IOException;
 import java.io.Serializable;

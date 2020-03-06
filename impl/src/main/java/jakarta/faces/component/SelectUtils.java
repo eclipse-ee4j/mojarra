@@ -19,8 +19,8 @@ package jakarta.faces.component;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;

@@ -41,7 +41,7 @@ import java.lang.annotation.Inherited;
  *
  * @since 2.0
  * @deprecated This has been replaced by CDI custom scopes and 
- * {@code javax.enterprise.context.spi.Context}. See 2.4.2 and 6.2 of the CDI
+ * {@code jakarta.enterprise.context.spi.Context}. See 2.4.2 and 6.2 of the CDI
  * specification for further details.
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -16,7 +16,7 @@
 
 package com.sun.faces.facelets;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;

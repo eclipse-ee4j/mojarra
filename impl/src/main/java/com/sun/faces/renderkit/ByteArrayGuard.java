@@ -44,7 +44,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * <p>This utility class is to provide both encryption and

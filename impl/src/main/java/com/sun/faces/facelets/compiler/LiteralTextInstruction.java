@@ -21,8 +21,8 @@ import com.sun.faces.config.FaceletsConfiguration;
 import jakarta.faces.context.FacesContext;
 
 import java.io.IOException;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
 
 final class LiteralTextInstruction implements Instruction {
     private final String text;

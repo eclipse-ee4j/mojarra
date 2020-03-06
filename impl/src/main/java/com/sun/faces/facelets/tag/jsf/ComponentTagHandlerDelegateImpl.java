@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import com.sun.faces.component.CompositeComponentStackManager;
 import com.sun.faces.component.behavior.AjaxBehaviors;

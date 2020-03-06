@@ -17,7 +17,7 @@
 package jakarta.faces.convert;
 
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.MessageFactory;

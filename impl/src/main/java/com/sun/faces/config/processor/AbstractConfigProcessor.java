@@ -18,7 +18,7 @@ package com.sun.faces.config.processor;
 
 import static com.sun.faces.application.ApplicationResourceBundle.DEFAULT_KEY;
 import static com.sun.faces.config.ConfigManager.INJECTION_PROVIDER_KEY;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesProjectStage;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
 import static com.sun.faces.util.ReflectionUtils.lookupConstructor;
 import static jakarta.faces.FactoryFinder.APPLICATION_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -347,7 +347,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
                 }
             } else {
-                value = webConfig.getOptionValue(JavaxFacesProjectStage);
+                value = webConfig.getOptionValue(JakartaFacesProjectStage);
                 if (value != null) {
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);

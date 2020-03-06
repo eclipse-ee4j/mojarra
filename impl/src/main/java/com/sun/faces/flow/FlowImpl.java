@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 
 public class FlowImpl extends Flow implements Serializable {
 

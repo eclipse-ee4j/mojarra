@@ -37,7 +37,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
@@ -82,7 +82,7 @@ import static com.sun.faces.util.Util.isOneOf;
 public class RestoreViewPhase extends Phase {
 
     private static final String WEBAPP_ERROR_PAGE_MARKER =
-            "javax.servlet.error.message";
+            "jakarta.servlet.error.message";
 
     private static final Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
@@ -155,7 +155,7 @@ public class RestoreViewPhase extends Phase {
 
             // Reconstitute or create the request tree
             Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
-            String viewId = (String) requestMap.get("javax.servlet.include.path_info");
+            String viewId = (String) requestMap.get("jakarta.servlet.include.path_info");
             
             if (viewId == null) {
                 viewId = facesContext.getExternalContext().getRequestPathInfo();
@@ -164,7 +164,7 @@ public class RestoreViewPhase extends Phase {
             // It could be that this request was mapped using a prefix mapping in which case there would be no
             // path_info. Query the servlet path.
             if (viewId == null) {
-                viewId = (String) requestMap.get("javax.servlet.include.servlet_path");
+                viewId = (String) requestMap.get("jakarta.servlet.include.servlet_path");
             }
 
             if (viewId == null) {

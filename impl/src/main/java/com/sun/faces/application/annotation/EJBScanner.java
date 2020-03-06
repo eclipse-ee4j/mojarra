@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import javax.ejb.EJB;
+import jakarta.ejb.EJB;
 
 /**
  * <code>Scanner</code> implementation responsible for EJB annotations.

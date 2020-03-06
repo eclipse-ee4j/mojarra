@@ -24,7 +24,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Set;
 
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 
 import jakarta.faces.component.UIData;
 

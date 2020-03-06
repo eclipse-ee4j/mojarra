@@ -30,8 +30,8 @@ import java.beans.SimpleBeanInfo;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.ELContext;
-import javax.el.MapELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.MapELResolver;
 
 import org.easymock.EasyMock;
 import org.junit.Test;

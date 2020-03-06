@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.ContextCallback;
@@ -389,7 +389,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, javax.el.ValueExpression)
+     * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, jakarta.el.ValueExpression)
      */
     @Override
     public void setValueExpression(String name, ValueExpression binding) {

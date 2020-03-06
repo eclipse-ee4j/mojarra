@@ -16,7 +16,7 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * An annotation literal for classifier for obtaining the map 

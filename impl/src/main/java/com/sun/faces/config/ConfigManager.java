@@ -47,13 +47,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
-import javax.el.ELContext;
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.config.configprovider.MetaInfFaceletTaglibraryConfigProvider;
 import com.sun.faces.config.configprovider.MetaInfFacesConfigResourceProvider;

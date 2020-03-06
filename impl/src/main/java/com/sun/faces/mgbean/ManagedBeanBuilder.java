@@ -22,7 +22,7 @@ import com.sun.faces.util.MessageUtils;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

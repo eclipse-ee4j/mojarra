@@ -25,9 +25,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Objects;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Qualifier;
-import javax.websocket.CloseReason.CloseCode;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Qualifier;
+import jakarta.websocket.CloseReason.CloseCode;
 
 import jakarta.faces.push.Push;
 

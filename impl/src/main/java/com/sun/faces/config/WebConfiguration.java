@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.view.FaceletViewHandlingStrategy;
@@ -881,11 +881,11 @@ public class WebConfiguration {
               ViewHandler.DEFAULT_SUFFIX_PARAM_NAME,
               ViewHandler.DEFAULT_SUFFIX
         ),
-        JavaxFacesConfigFiles(
+        JakartaFacesConfigFiles(
               FacesServlet.CONFIG_FILES_ATTR,
               ""
         ),
-        JavaxFacesProjectStage(
+        JakartaFacesProjectStage(
               ProjectStage.PROJECT_STAGE_PARAM_NAME,
               "Production"
         ),

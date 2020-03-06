@@ -37,14 +37,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.servlet.ServletContext;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -235,7 +235,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
      */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
@@ -398,7 +398,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             result = (Boolean) appMap.get(beansValidationAvailabilityCacheKey);
         } else {
             try {
-                Thread.currentThread().getContextClassLoader().loadClass("javax.validation.MessageInterpolator");
+                Thread.currentThread().getContextClassLoader().loadClass("jakarta.validation.MessageInterpolator");
                 // Check if the Implementation is available.
                 Object cachedObject = appMap.get(BeanValidator.VALIDATOR_FACTORY_KEY);
                 if (cachedObject instanceof ValidatorFactory) {

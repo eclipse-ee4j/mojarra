@@ -20,10 +20,10 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;

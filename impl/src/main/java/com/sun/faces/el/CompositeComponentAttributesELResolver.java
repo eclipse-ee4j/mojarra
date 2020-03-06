@@ -24,10 +24,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import javax.el.ELResolver;
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.el.MethodExpression;
+import jakarta.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.MethodExpression;
 
 import com.sun.faces.util.Util;
 
@@ -97,7 +97,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      * and returning that value.
      * </p>
      *
-     * @see javax.el.ELResolver#getValue(javax.el.ELContext, Object, Object)
+     * @see jakarta.el.ELResolver#getValue(jakarta.el.ELContext, Object, Object)
      * @see com.sun.faces.el.CompositeComponentAttributesELResolver.ExpressionEvalMap
      */
     @Override
@@ -148,7 +148,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      * Readonly, so return <code>null</code>.
      * </p>
      *
-     * @see ELResolver#getType(javax.el.ELContext, Object, Object)
+     * @see ELResolver#getType(jakarta.el.ELContext, Object, Object)
      */
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) {
@@ -199,7 +199,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      * This is a no-op.
      * </p>
      *
-     * @see ELResolver#setValue(javax.el.ELContext, Object, Object, Object)
+     * @see ELResolver#setValue(jakarta.el.ELContext, Object, Object, Object)
      */
     @Override
     public void setValue(ELContext context,
@@ -217,7 +217,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      * Readonly, so return <code>true</code>
      * </p>
      *
-     * @see javax.el.ELResolver#isReadOnly(javax.el.ELContext, Object, Object)
+     * @see jakarta.el.ELResolver#isReadOnly(jakarta.el.ELContext, Object, Object)
      */
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
@@ -235,7 +235,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      * attributes Map.
      * </p>
      *
-     * @see javax.el.ELResolver#getFeatureDescriptors(javax.el.ELContext, Object)
+     * @see jakarta.el.ELResolver#getFeatureDescriptors(jakarta.el.ELContext, Object)
      */
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context,
@@ -252,7 +252,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      * <code>attrs<code> is considered a <code>String</code> property.
      * </p>
      *
-     * @see javax.el.ELResolver#getCommonPropertyType(javax.el.ELContext, Object)
+     * @see jakarta.el.ELResolver#getCommonPropertyType(jakarta.el.ELContext, Object)
      */
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {

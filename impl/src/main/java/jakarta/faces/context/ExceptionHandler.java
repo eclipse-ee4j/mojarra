@@ -171,7 +171,7 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * until the unwrapping encounters an Object whose
      * <code>getClass()</code> is not equal to
      * <code>FacesException.class</code> or
-     * <code>javax.el.ELException.class</code>.  If there is no root cause, <code>null</code> is returned.</p>
+     * <code>jakarta.el.ELException.class</code>.  If there is no root cause, <code>null</code> is returned.</p>
      *
      * @param t passed-in wrapped <code>Throwable</code>.
      *

@@ -17,8 +17,8 @@
 package jakarta.faces.component;
 
 import java.lang.reflect.Method;
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 import org.junit.Test;
 import static org.easymock.EasyMock.*;

@@ -20,8 +20,8 @@ import com.sun.faces.facelets.el.ELText;
 
 import jakarta.faces.context.FacesContext;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
 
 import java.io.IOException;
 

@@ -22,9 +22,9 @@ import static com.sun.faces.util.Util.newInstance;
 
 import java.io.Serializable;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;

@@ -18,7 +18,7 @@ package jakarta.faces.webapp;
 
 import com.sun.faces.junit.JUnitFacesTestCaseBase;
 
-import javax.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.tagext.Tag;
 import com.sun.faces.mock.MockPageContext;
 import com.sun.faces.mock.MockRenderKit;
 import com.sun.faces.mock.MockServlet;

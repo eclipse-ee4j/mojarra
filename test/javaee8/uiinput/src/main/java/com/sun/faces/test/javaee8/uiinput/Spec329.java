@@ -19,7 +19,7 @@ package com.sun.faces.test.javaee8.uiinput;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.faces.model.SelectItem;
 

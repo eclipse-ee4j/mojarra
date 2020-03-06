@@ -30,7 +30,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import javax.xml.xpath.XPathExpressionException;
 
 import static java.text.MessageFormat.format;
@@ -74,7 +74,7 @@ public class BehaviorConfigProcessor extends AbstractConfigProcessor {
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
      */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {

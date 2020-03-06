@@ -24,7 +24,7 @@ import jakarta.faces.FacesException;
  * <p>An exception reporting an error that occurred during the evaluation
  * of an expression in a {@link MethodBinding} or {@link ValueBinding}.</p>
  *
- * @deprecated This has been replaced by {@link javax.el.ELException}.
+ * @deprecated This has been replaced by {@link jakarta.el.ELException}.
  */
 
 public class EvaluationException extends FacesException {

@@ -16,8 +16,8 @@
 
 package jakarta.faces.flow.builder;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.flow.Flow;
 

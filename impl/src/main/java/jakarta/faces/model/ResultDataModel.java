@@ -18,7 +18,7 @@ package jakarta.faces.model;
 
 
 import java.util.SortedMap;
-import javax.servlet.jsp.jstl.sql.Result;
+import jakarta.servlet.jsp.jstl.sql.Result;
 
 
 /**

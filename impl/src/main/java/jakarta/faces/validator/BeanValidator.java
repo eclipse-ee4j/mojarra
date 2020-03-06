@@ -33,14 +33,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
-import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
-import javax.validation.Validation;
-import javax.validation.ValidationException;
-import javax.validation.ValidatorContext;
-import javax.validation.ValidatorFactory;
-import javax.validation.groups.Default;
+import jakarta.el.ValueExpression;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidationException;
+import jakarta.validation.ValidatorContext;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.groups.Default;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
@@ -143,7 +143,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * this validator. If the validationGroupsArray attribute is omitted or
      * is empty, the validation groups will be inherited from the branch
      * defaults or, if there are no branch defaults, the {@link
-     * javax.validation.groups.Default} group will be used.</p>
+     * jakarta.validation.groups.Default} group will be used.</p>
      *
      * @param validationGroups comma-separated list of validation groups
      * (string with only spaces and commas treated as null)
@@ -181,7 +181,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * validationGroupsArray attribute is omitted or empty, the validation
      * groups will be inherited from the branch defaults, or if there
      * are no branch defaults, the {@link
-     * javax.validation.groups.Default} group will be used.</p>
+     * jakarta.validation.groups.Default} group will be used.</p>
      * 
      * @return the value of the {@code validatinGroups} attribute.
      */
@@ -196,14 +196,14 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * <div class="changed_added_2_0">
 
      * <p>Obtain a {@link ValidatorFactory} instance by calling {@link
-     * javax.validation.Validation#buildDefaultValidatorFactory}.</p>
+     * jakarta.validation.Validation#buildDefaultValidatorFactory}.</p>
 
      * <p>Let <em>validationGroupsArray</em> be a <code>Class []</code>
      * representing validator groups set on the component by the tag
      * handler for this validator.  The first search component
      * terminates the search for the validation groups value.  If no
      * such value is found use the class name of {@link
-     * javax.validation.groups.Default} as the value of the validation
+     * jakarta.validation.groups.Default} as the value of the validation
      * groups.</p>
 
      * <p>Let <em>valueExpression</em> be the return from calling {@link
@@ -237,15 +237,15 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * <code>ValidatorContext</code> using {@link
      * ValidatorContext#messageInterpolator}.</p>
 
-     * <p>Obtain the {@link javax.validation.Validator} instance from
+     * <p>Obtain the {@link jakarta.validation.Validator} instance from
      * the <code>validatorContext</code>.</p>
 
-     * <p>Obtain a <code>javax.validation.BeanDescriptor</code> from the
-     * <code>javax.validation.Validator</code>.  If
+     * <p>Obtain a <code>jakarta.validation.BeanDescriptor</code> from the
+     * <code>jakarta.validation.Validator</code>.  If
      * <code>hasConstraints()</code> on the <code>BeanDescriptor</code>
      * returns false, take no action and return.  Otherwise proceed.</p>
 
-     * <p>Call {@link javax.validation.Validator#validateValue}, passing
+     * <p>Call {@link jakarta.validation.Validator#validateValue}, passing
      * <em>valueBaseClass</em>, <em>valueProperty</em>, the
      * <em>value</em> argument, and <em>validatorGroupsArray</em> as
      * arguments.</p>
@@ -302,7 +302,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
             return;
         }
 
-        javax.validation.Validator beanValidator = getBeanValidator(context);
+        jakarta.validation.Validator beanValidator = getBeanValidator(context);
         
         Class<?>[] validationGroupsArray = parseValidationGroups(getValidationGroups());
         
@@ -504,7 +504,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
     
     // MOJARRA IMPLEMENTATION NOTE: identical code exists in Mojarra's com.sun.faces.util.BeanValidation
     
-    private static javax.validation.Validator getBeanValidator(FacesContext context) {
+    private static jakarta.validation.Validator getBeanValidator(FacesContext context) {
         ValidatorFactory validatorFactory = getValidatorFactory(context);
         
         ValidatorContext validatorContext = validatorFactory.usingContext();

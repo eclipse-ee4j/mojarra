@@ -16,7 +16,7 @@
 
 package jakarta.faces.webapp;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;

@@ -18,7 +18,7 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -38,56 +38,56 @@ public class InputHiddenTag extends UIComponentELTag {
 
     // Setter Methods
     // PROPERTY: converter
-    private javax.el.ValueExpression converter;
-    public void setConverter(javax.el.ValueExpression converter) {
+    private jakarta.el.ValueExpression converter;
+    public void setConverter(jakarta.el.ValueExpression converter) {
         this.converter = converter;
     }
 
     // PROPERTY: converterMessage
-    private javax.el.ValueExpression converterMessage;
-    public void setConverterMessage(javax.el.ValueExpression converterMessage) {
+    private jakarta.el.ValueExpression converterMessage;
+    public void setConverterMessage(jakarta.el.ValueExpression converterMessage) {
         this.converterMessage = converterMessage;
     }
 
     // PROPERTY: immediate
-    private javax.el.ValueExpression immediate;
-    public void setImmediate(javax.el.ValueExpression immediate) {
+    private jakarta.el.ValueExpression immediate;
+    public void setImmediate(jakarta.el.ValueExpression immediate) {
         this.immediate = immediate;
     }
 
     // PROPERTY: required
-    private javax.el.ValueExpression required;
-    public void setRequired(javax.el.ValueExpression required) {
+    private jakarta.el.ValueExpression required;
+    public void setRequired(jakarta.el.ValueExpression required) {
         this.required = required;
     }
 
     // PROPERTY: requiredMessage
-    private javax.el.ValueExpression requiredMessage;
-    public void setRequiredMessage(javax.el.ValueExpression requiredMessage) {
+    private jakarta.el.ValueExpression requiredMessage;
+    public void setRequiredMessage(jakarta.el.ValueExpression requiredMessage) {
         this.requiredMessage = requiredMessage;
     }
 
     // PROPERTY: validator
-    private javax.el.MethodExpression validator;
-    public void setValidator(javax.el.MethodExpression validator) {
+    private jakarta.el.MethodExpression validator;
+    public void setValidator(jakarta.el.MethodExpression validator) {
         this.validator = validator;
     }
 
     // PROPERTY: validatorMessage
-    private javax.el.ValueExpression validatorMessage;
-    public void setValidatorMessage(javax.el.ValueExpression validatorMessage) {
+    private jakarta.el.ValueExpression validatorMessage;
+    public void setValidatorMessage(jakarta.el.ValueExpression validatorMessage) {
         this.validatorMessage = validatorMessage;
     }
 
     // PROPERTY: value
-    private javax.el.ValueExpression value;
-    public void setValue(javax.el.ValueExpression value) {
+    private jakarta.el.ValueExpression value;
+    public void setValue(jakarta.el.ValueExpression value) {
         this.value = value;
     }
 
     // PROPERTY: valueChangeListener
-    private javax.el.MethodExpression valueChangeListener;
-    public void setValueChangeListener(javax.el.MethodExpression valueChangeListener) {
+    private jakarta.el.MethodExpression valueChangeListener;
+    public void setValueChangeListener(jakarta.el.MethodExpression valueChangeListener) {
         this.valueChangeListener = valueChangeListener;
     }
 

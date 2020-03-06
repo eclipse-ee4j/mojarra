@@ -28,8 +28,8 @@ import jakarta.faces.context.FacesContext;
 
 import com.sun.faces.util.FacesLogger;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;

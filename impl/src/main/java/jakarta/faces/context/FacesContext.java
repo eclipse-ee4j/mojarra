@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -248,10 +248,10 @@ public abstract class FacesContext {
      *    <li><p>If the <code>Collection</code> returned by {@link
      *    jakarta.faces.application.Application#getELContextListeners} is
      *    non-empty, create an instance of {@link
-     *    javax.el.ELContextEvent} and pass it to each {@link
-     *    javax.el.ELContextListener} instance in the
+     *    jakarta.el.ELContextEvent} and pass it to each {@link
+     *    jakarta.el.ELContextListener} instance in the
      *    <code>Collection</code> by calling the {@link
-     *    javax.el.ELContextListener#contextCreated} method.</p></li>
+     *    jakarta.el.ELContextListener#contextCreated} method.</p></li>
      *
      * </ul>
      *

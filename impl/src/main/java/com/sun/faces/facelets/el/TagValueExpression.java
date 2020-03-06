@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
-import javax.el.ValueExpression;
-import javax.el.ValueReference;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 
 import jakarta.faces.view.facelets.TagAttribute;
 

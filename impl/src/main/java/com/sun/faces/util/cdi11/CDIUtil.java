@@ -16,8 +16,8 @@
 
 package com.sun.faces.util.cdi11;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 /*
  * This interface will only ever be loaded and accessed in CDI 1.1 or greater

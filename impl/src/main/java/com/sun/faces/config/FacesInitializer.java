@@ -27,18 +27,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.annotation.HandlesTypes;
-import javax.websocket.Endpoint;
-import javax.websocket.server.ServerApplicationConfig;
-import javax.websocket.server.ServerContainer;
-import javax.websocket.server.ServerEndpoint;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.annotation.HandlesTypes;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.server.ServerApplicationConfig;
+import jakarta.websocket.server.ServerContainer;
+import jakarta.websocket.server.ServerEndpoint;
 
 import com.sun.faces.cdi.CdiExtension;
 

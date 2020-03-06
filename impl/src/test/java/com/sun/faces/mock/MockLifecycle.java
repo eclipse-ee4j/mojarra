@@ -16,7 +16,7 @@
 
 package com.sun.faces.mock;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;

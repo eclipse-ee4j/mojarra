@@ -26,8 +26,8 @@ import jakarta.faces.view.facelets.FaceletHandler;
 
 import com.sun.faces.el.ELContextImpl;
 
-import javax.el.FunctionMapper;
-import javax.el.ELContext;
+import jakarta.el.FunctionMapper;
+import jakarta.el.ELContext;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

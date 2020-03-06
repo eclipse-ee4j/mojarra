@@ -48,7 +48,7 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;

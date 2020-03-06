@@ -27,12 +27,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ValueExpression;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.servlet.jsp.jstl.sql.Result;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.servlet.jsp.jstl.sql.Result;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
@@ -724,7 +724,7 @@ public class UIData extends UIComponentBase
      * <li>Arrays</li>
      * <li><code>java.util.List</code></li>
      * <li><code>java.sql.ResultSet</code></li>
-     * <li><code>javax.servlet.jsp.jstl.sql.Result</code>
+     * <li><code>jakarta.servlet.jsp.jstl.sql.Result</code>
      * <li class="changed_added_2_2"><code>java.util.Collection</code></li>
      * </ul>
      * <p>All other types will be adapted using the {@link ScalarDataModel}
@@ -770,7 +770,7 @@ public class UIData extends UIComponentBase
      *                                  <code>var</code>, or <code>rowIndex</code>
      * @throws NullPointerException     if <code>name</code> is <code>null</code>
      * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String,
-     *javax.el.ValueExpression)}.
+     *jakarta.el.ValueExpression)}.
      */
     @Override
     public void setValueBinding(String name, ValueBinding binding) {

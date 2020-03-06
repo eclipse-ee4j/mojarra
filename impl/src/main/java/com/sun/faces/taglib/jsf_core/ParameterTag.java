@@ -18,7 +18,7 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIParameter;

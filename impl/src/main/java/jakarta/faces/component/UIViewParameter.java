@@ -19,7 +19,7 @@ package jakarta.faces.component;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.FacesMessage;

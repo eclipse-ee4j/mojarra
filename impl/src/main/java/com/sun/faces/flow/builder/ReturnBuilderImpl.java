@@ -21,7 +21,7 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.flow.builder.ReturnBuilder;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 public class ReturnBuilderImpl extends ReturnBuilder {
     

@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 final class MockRequestMap implements Map {
 

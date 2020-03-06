@@ -16,8 +16,8 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 /**
  * @author Jacob Hookom
@@ -44,7 +44,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ValueExpression#getValue(javax.el.ELContext)
+     * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
     public Object getValue(ELContext context) {
@@ -59,7 +59,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ValueExpression#setValue(javax.el.ELContext,
+     * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext,
      *      java.lang.Object)
      */
     @Override
@@ -74,7 +74,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ValueExpression#isReadOnly(javax.el.ELContext)
+     * @see jakarta.el.ValueExpression#isReadOnly(jakarta.el.ELContext)
      */
     @Override
     public boolean isReadOnly(ELContext context) {
@@ -89,7 +89,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ValueExpression#getType(javax.el.ELContext)
+     * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
     public Class getType(ELContext context) {
@@ -104,7 +104,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ValueExpression#getExpectedType()
+     * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
     public Class getExpectedType() {
@@ -114,7 +114,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.Expression#getExpressionString()
+     * @see jakarta.el.Expression#getExpressionString()
      */
     @Override
     public String getExpressionString() {
@@ -124,7 +124,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.Expression#equals(java.lang.Object)
+     * @see jakarta.el.Expression#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
@@ -134,7 +134,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.Expression#hashCode()
+     * @see jakarta.el.Expression#hashCode()
      */
     @Override
     public int hashCode() {
@@ -144,7 +144,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.Expression#isLiteralText()
+     * @see jakarta.el.Expression#isLiteralText()
      */
     @Override
     public boolean isLiteralText() {

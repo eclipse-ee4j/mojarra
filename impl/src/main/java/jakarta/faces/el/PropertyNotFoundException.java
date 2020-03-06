@@ -22,7 +22,7 @@ package jakarta.faces.el;
  * against a base object.</p>
  *
  * @deprecated This has been replaced by {@link
- * javax.el.PropertyNotFoundException}.
+ * jakarta.el.PropertyNotFoundException}.
  */
 
 public class PropertyNotFoundException extends EvaluationException {

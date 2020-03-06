@@ -23,7 +23,7 @@ import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.AttachedObjectTarget;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.util.ArrayList;
 import java.util.List;

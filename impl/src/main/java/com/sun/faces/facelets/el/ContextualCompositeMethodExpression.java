@@ -32,12 +32,12 @@ import jakarta.faces.view.Location;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.el.MethodInfo;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.MethodNotFoundException;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.el.MethodInfo;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.MethodNotFoundException;
 
 /**
  * <p>

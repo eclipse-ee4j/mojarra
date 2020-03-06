@@ -51,13 +51,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import javax.el.ELResolver;
-import javax.el.ValueExpression;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.el.ELResolver;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParserFactory;
@@ -1040,8 +1040,8 @@ public class Util {
 
         if (mapping == null) {
          
-            // First check for javax.servlet.forward.servlet_path
-            // and javax.servlet.forward.path_info for non-null
+            // First check for jakarta.servlet.forward.servlet_path
+            // and jakarta.servlet.forward.path_info for non-null
             // values. If either is non-null, use this
             // information to generate determine the mapping.
             ExternalContext externalContext = context.getExternalContext();
@@ -1077,7 +1077,7 @@ public class Util {
      *
      * @return the appropriate mapping based on the current request
      *
-     * @see javax.servlet.http.HttpServletRequest#getServletPath()
+     * @see jakarta.servlet.http.HttpServletRequest#getServletPath()
      */
     private static String getMappingForRequest(ExternalContext externalContext, String servletPath, String pathInfo) {
 
@@ -1564,7 +1564,7 @@ public class Util {
             
             if (result == null && facesContext != null) {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-                result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.javax.enterprise.inject.spi.BeanManager");
+                result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager");
             }
             
             if (result != null && facesContext != null) {
@@ -1639,7 +1639,7 @@ public class Util {
             result = facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_1_1_OR_LATER);
         } else {
             try {
-                Class.forName("javax.enterprise.context.Initialized");
+                Class.forName("jakarta.enterprise.context.Initialized");
                 result = true;
             } catch (ClassNotFoundException ignored) {
                 if (LOGGER.isLoggable(Level.FINEST)) {

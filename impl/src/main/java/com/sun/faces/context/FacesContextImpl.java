@@ -27,10 +27,10 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELContext;
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
 
 import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.el.ELUtils;

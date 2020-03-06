@@ -16,9 +16,9 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
@@ -26,7 +26,7 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 
 public class SetPropertyActionListenerImpl implements ActionListener, StateHolder {
     

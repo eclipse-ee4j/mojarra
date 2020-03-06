@@ -20,10 +20,10 @@ import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
 
 import com.sun.faces.util.Util;
 

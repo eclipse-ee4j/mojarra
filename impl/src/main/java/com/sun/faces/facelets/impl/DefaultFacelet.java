@@ -27,7 +27,7 @@ import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletHandler;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -51,7 +51,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     private static final Logger log = FacesLogger.FACELETS_FACELET.getLogger();
 
     private final static String APPLIED_KEY = "com.sun.faces.facelets.APPLIED";
-    private static final String JAVAX_FACES_ERROR_XHTML = "jakarta.faces.error.xhtml";
+    private static final String JAKARTA_FACES_ERROR_XHTML = "jakarta.faces.error.xhtml";
 
     private final String alias;
 
@@ -295,7 +295,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     public void include(DefaultFaceletContext ctx, UIComponent parent, String path)
     throws IOException {
         URL url;
-        if (path.equals(JAVAX_FACES_ERROR_XHTML)) {
+        if (path.equals(JAKARTA_FACES_ERROR_XHTML)) {
             if (isDevelopment(ctx)) {
                 // try using this class' ClassLoader
                 url = getErrorFacelet(DefaultFacelet.class.getClassLoader());
