@@ -268,6 +268,6 @@ public class FlashIT {
 
         page = webClient.getPage(webUrl + "faces/flash14.xhtml");
         pageText = page.asText();
-        assertTrue(pageText.matches("(?s).*\\[received javax.faces.event.PreClearFlashEvent source:\\{\\}\\].*"));
+        assertTrue(pageText.matches("(?s).*\\[received jakarta.faces.event.PreClearFlashEvent source:\\{\\}\\].*"));
     }
 }

@@ -17,6 +17,12 @@
 package com.sun.faces.el;
 
 import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
+
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
+
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
@@ -26,10 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.el.ELContext;
 import javax.el.MapELResolver;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.context.FacesContext;
+
 import org.easymock.EasyMock;
 import org.junit.Test;
 import static org.junit.Assert.*;

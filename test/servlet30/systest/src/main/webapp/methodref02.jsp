@@ -17,9 +17,9 @@
 --%>
 
 <%@ page contentType="text/html"
-%><%@ page import="javax.faces.application.Application"
-%><%@ page import="javax.faces.context.FacesContext"
-%><%@ page import="javax.faces.el.MethodBinding"
+%><%@ page import="jakarta.faces.application.Application"
+%><%@ page import="jakarta.faces.context.FacesContext"
+%><%@ page import="jakarta.faces.el.MethodBinding"
 %><%@ page import="com.sun.faces.systest.model.TestBean"
 %><%@ page import="com.sun.faces.systest.model.TestBeanSubclass"
 %><%

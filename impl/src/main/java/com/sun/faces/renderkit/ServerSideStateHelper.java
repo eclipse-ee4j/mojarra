@@ -39,12 +39,6 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.FacesLogger;
@@ -52,6 +46,12 @@ import com.sun.faces.util.LRUMap;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.TypedCollections;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * <p>

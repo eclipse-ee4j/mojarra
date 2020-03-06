@@ -16,7 +16,7 @@
 
 package com.sun.faces.ext.component;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 /**
  * Component to set a focus on a given field.

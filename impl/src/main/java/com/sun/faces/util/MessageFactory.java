@@ -22,13 +22,14 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.el.ValueExpression;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
 
 /**
  * 
@@ -150,7 +151,7 @@ public class MessageFactory {
             }
         }
 
-        // no hit found in the standard javax.faces.Messages bundle.
+        // no hit found in the standard jakarta.faces.Messages bundle.
         // check the Mojarra resources
         if (summary == null) {
             // see if we have a summary in the app provided bundle

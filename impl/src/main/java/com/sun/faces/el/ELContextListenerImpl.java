@@ -16,11 +16,12 @@
 
 package com.sun.faces.el;
 
-import javax.faces.context.FacesContext;
 import javax.el.ELContext;
 import javax.el.ELContextListener;
 import javax.el.ELContextEvent;
 import javax.el.ExpressionFactory;
+
+import jakarta.faces.context.FacesContext;
 
 public class ELContextListenerImpl implements ELContextListener {
     

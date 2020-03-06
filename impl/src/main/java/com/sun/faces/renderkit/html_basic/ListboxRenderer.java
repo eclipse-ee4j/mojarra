@@ -18,7 +18,7 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * <B>ListRenderer</B> is a class that renders the current value of

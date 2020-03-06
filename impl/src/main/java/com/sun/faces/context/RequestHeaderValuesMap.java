@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.sun.faces.util.Util;
 
 /**
- * @see javax.faces.context.ExternalContext#getRequestHeaderValuesMap()
+ * @see jakarta.faces.context.ExternalContext#getRequestHeaderValuesMap()
  */
 public class RequestHeaderValuesMap extends StringArrayValuesMap {
 

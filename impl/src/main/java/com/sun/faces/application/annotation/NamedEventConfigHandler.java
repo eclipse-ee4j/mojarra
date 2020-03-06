@@ -18,15 +18,17 @@ package com.sun.faces.application.annotation;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.NamedEventManager;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.event.SystemEvent;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.context.FacesContext;
-import javax.faces.event.NamedEvent;
-import javax.faces.event.SystemEvent;
 
 /**
  * This class handles the processing the NamedEvent annotation.  For each class

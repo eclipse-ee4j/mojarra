@@ -20,13 +20,14 @@ import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
+
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.DateTimeConverter;
 import javax.servlet.jsp.JspException;
 import java.util.Arrays;
 import java.util.Locale;
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
 
 /**
  * <p>ConvertDateTimeTag is a ConverterTag implementation for
- * javax.faces.convert.DateTimeConverter</p>
+ * jakarta.faces.convert.DateTimeConverter</p>
  *
  */
 
@@ -105,7 +106,7 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
             ExpressionFactory factory = context.getApplication().
                     getExpressionFactory();
             CONVERTER_ID_EXPR = factory.createValueExpression(
-                    context.getELContext(),"javax.faces.DateTime",String.class);
+                    context.getELContext(),"jakarta.faces.DateTime",String.class);
         }
     }
 

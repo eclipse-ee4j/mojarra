@@ -17,6 +17,20 @@
 package com.sun.faces.flow;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowNode;
+import jakarta.faces.flow.MethodCallNode;
+import jakarta.faces.flow.Parameter;
+import jakarta.faces.flow.ReturnNode;
+import jakarta.faces.flow.SwitchNode;
+import jakarta.faces.flow.ViewNode;
+import jakarta.faces.lifecycle.ClientWindow;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -25,18 +39,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.el.MethodExpression;
-import javax.faces.application.NavigationCase;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowNode;
-import javax.faces.flow.MethodCallNode;
-import javax.faces.flow.Parameter;
-import javax.faces.flow.ReturnNode;
-import javax.faces.flow.SwitchNode;
-import javax.faces.flow.ViewNode;
-import javax.faces.lifecycle.ClientWindow;
 
 public class FlowImpl extends Flow implements Serializable {
 

@@ -25,7 +25,7 @@
 <body>
 
 <%@ page contentType="text/html"
-%><%@ page import="javax.faces.component.UICommand"
+%><%@ page import="jakarta.faces.component.UICommand"
 %>
 
 <%

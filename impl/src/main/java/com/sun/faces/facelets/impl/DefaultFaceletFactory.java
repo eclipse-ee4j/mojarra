@@ -19,20 +19,27 @@ package com.sun.faces.facelets.impl;
 import com.sun.faces.RIConstants;
 import com.sun.faces.context.FacesFileNotFoundException;
 import java.net.MalformedURLException;
-import javax.faces.FactoryFinder;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.Facelet;
-import javax.faces.view.facelets.FaceletCache;
+
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCacheFactory;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.ResourceResolver;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import javax.faces.view.facelets.FaceletCacheFactory;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.ResourceResolver;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,11 +55,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletException;
 
 
 /**
@@ -202,8 +204,8 @@ public class DefaultFaceletFactory {
 
     /**
      * Resolves a path based on the passed URL. If the path starts with '/', then
-     * resolve the path against {@link javax.faces.context.ExternalContext#getResource(java.lang.String)
-     * javax.faces.context.ExternalContext#getResource(java.lang.String)}.
+     * resolve the path against {@link jakarta.faces.context.ExternalContext#getResource(java.lang.String)
+     * jakarta.faces.context.ExternalContext#getResource(java.lang.String)}.
      * Otherwise create a new URL via {@link URL#URL(java.net.URL,
      * java.lang.String) URL(URL, String)}.
      *
@@ -358,7 +360,7 @@ public class DefaultFaceletFactory {
             URL fabricatedFaceletPage = tempFile.toURI().toURL();
             Facelet f = createFacelet(fabricatedFaceletPage);
             UIComponent tmp = (UIComponent)
-                    app.createComponent("javax.faces.NamingContainer");
+                    app.createComponent("jakarta.faces.NamingContainer");
             tmp.setId(context.getViewRoot().createUniqueId());
             f.apply(context, tmp);
                 result = tmp.findComponent(tempId);

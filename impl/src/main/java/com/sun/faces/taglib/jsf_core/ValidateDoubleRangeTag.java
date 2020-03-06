@@ -21,12 +21,13 @@ package com.sun.faces.taglib.jsf_core;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.DoubleRangeValidator;
-import javax.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
 
 import com.sun.faces.el.ELUtils;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.DoubleRangeValidator;
+import jakarta.faces.validator.Validator;
 
 /**
  * ValidateDoubleRangeTag is the tag handler class for
@@ -65,7 +66,7 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
                 context.getApplication().getExpressionFactory();
             VALIDATOR_ID_EXPR =
                 factory.createValueExpression(context.getELContext(), 
-                    "javax.faces.DoubleRange",String.class);
+                    "jakarta.faces.DoubleRange",String.class);
         }
     }
 

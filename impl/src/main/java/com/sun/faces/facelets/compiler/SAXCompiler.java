@@ -24,12 +24,16 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.tag.TagAttributeImpl;
 import com.sun.faces.facelets.tag.TagAttributesImpl;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.Location;
+import jakarta.faces.view.facelets.*;
+
 import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.faces.view.Location;
-import javax.faces.view.facelets.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -40,8 +44,6 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 /**
  * Compiler implementation that uses SAX

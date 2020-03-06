@@ -32,6 +32,6 @@ public class RegressionsITCase extends HtmlUnitFacesITCase {
 
     public void test04() throws Exception {
         HtmlPage page = getPage("/faces/regression/InjectUserDefJS.jsp");
-        assertTrue(page.asXml().matches("(?s).*\\s*<body>\\s*<form.*<input\\s*type=\"hidden\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<script.*jsf.js.*<a\\s*href.*Are you sure.*>\\s*Link\\s*</a>\\s*<input\\s*type=\"submit\".*value=\"Button\"\\s*onclick=\"alert.*Are you sure.*</form>\\s*</body>.*"));
+        assertTrue(page.asXml().matches("(?s).*\\s*<body>\\s*<form.*<input\\s*type=\"hidden\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<script.*jsf.js.*<a\\s*href.*Are you sure.*>\\s*Link\\s*</a>\\s*<input\\s*type=\"submit\".*value=\"Button\"\\s*onclick=\"alert.*Are you sure.*</form>\\s*</body>.*"));
     }
 }

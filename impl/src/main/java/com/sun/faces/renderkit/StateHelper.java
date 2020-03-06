@@ -29,11 +29,6 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
 import javax.servlet.http.HttpSession;
 
 import com.sun.faces.RIConstants;
@@ -43,6 +38,12 @@ import com.sun.faces.spi.SerializationProviderFactory;
 import com.sun.faces.util.ByteArrayGuardAESCTR;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 
 
 /**
@@ -161,7 +162,7 @@ public abstract class StateHelper {
      * without sending any markup to the client.
      * </p>
      *
-     * @see ResponseStateManager#writeState(javax.faces.context.FacesContext, java.lang.Object) 
+     * @see ResponseStateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object) 
      */
     public abstract void writeState(FacesContext ctx,
                                     Object state,
@@ -170,14 +171,14 @@ public abstract class StateHelper {
 
 
     /**
-     * @see javax.faces.render.ResponseStateManager#getState(javax.faces.context.FacesContext, String)
+     * @see jakarta.faces.render.ResponseStateManager#getState(jakarta.faces.context.FacesContext, String)
      */
     public abstract Object getState(FacesContext ctx, String viewId)
     throws IOException;
 
     
     /**
-     * @see javax.faces.render.ResponseStateManager#isStateless(javax.faces.context.FacesContext, String)
+     * @see jakarta.faces.render.ResponseStateManager#isStateless(jakarta.faces.context.FacesContext, String)
      */
     public abstract boolean isStateless(FacesContext ctx, String viewId) throws IllegalStateException;
 

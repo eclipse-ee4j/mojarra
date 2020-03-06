@@ -30,7 +30,7 @@
 %>
 
 
-    <c:set scope="application" var="javax.faces.VALIDATE_EMPTY_FIELDS"
+    <c:set scope="application" var="jakarta.faces.VALIDATE_EMPTY_FIELDS"
            value="false" />
 
 

@@ -18,7 +18,8 @@ package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.facelets.el.ELText;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
+
 import java.io.IOException;
 import java.util.Arrays;
 

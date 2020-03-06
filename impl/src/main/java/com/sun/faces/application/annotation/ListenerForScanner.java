@@ -18,10 +18,10 @@ package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
 
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ListenersFor;
-
 import com.sun.faces.util.Util;
+
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.ListenersFor;
 
 /**
  * <code>Scanner</code> implementation responsible for {@link ListenerFor} annotations.

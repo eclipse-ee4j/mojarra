@@ -20,7 +20,8 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.model.DataModel;
+
+import jakarta.faces.model.DataModel;
 
 /**
  * <p class="changed_added_2_3">

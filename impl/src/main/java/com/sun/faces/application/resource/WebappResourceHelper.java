@@ -19,10 +19,12 @@ package com.sun.faces.application.resource;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ResourceResolver;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -36,7 +38,6 @@ import java.util.logging.Logger;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 import com.sun.faces.facelets.impl.DefaultResourceResolver;
-import javax.faces.view.facelets.ResourceResolver;
 
 /**
  * <p>
@@ -121,7 +122,7 @@ public class WebappResourceHelper extends ResourceHelper {
     }
     
     /**
-     * @see ResourceHelper#getNonCompressedInputStream(com.sun.faces.application.resource.ResourceInfo, javax.faces.context.FacesContext) 
+     * @see ResourceHelper#getNonCompressedInputStream(com.sun.faces.application.resource.ResourceInfo, jakarta.faces.context.FacesContext) 
      */
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx)
@@ -133,7 +134,7 @@ public class WebappResourceHelper extends ResourceHelper {
 
 
     /**
-     * @see ResourceHelper#getURL(com.sun.faces.application.resource.ResourceInfo, javax.faces.context.FacesContext) 
+     * @see ResourceHelper#getURL(com.sun.faces.application.resource.ResourceInfo, jakarta.faces.context.FacesContext) 
      */
     @Override
     public URL getURL(ResourceInfo resource, FacesContext ctx) {
@@ -155,7 +156,7 @@ public class WebappResourceHelper extends ResourceHelper {
 
 
     /**
-     * @see ResourceHelper#findLibrary(String, String, String, javax.faces.context.FacesContext)
+     * @see ResourceHelper#findLibrary(String, String, String, jakarta.faces.context.FacesContext)
      */
     @Override
     public LibraryInfo findLibrary(String libraryName,
@@ -188,7 +189,7 @@ public class WebappResourceHelper extends ResourceHelper {
 
 
     /**
-     * @see ResourceHelper#findResource(LibraryInfo, String, String, boolean, javax.faces.context.FacesContext)
+     * @see ResourceHelper#findResource(LibraryInfo, String, String, boolean, jakarta.faces.context.FacesContext)
      */
     @Override
     public ResourceInfo findResource(LibraryInfo library,

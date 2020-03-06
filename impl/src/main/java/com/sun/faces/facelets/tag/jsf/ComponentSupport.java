@@ -22,18 +22,18 @@ import com.sun.faces.facelets.tag.jsf.core.FacetHandler;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
 import com.sun.faces.util.Util;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.Tag;
-import javax.faces.event.PhaseId;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,13 +78,13 @@ public final class ComponentSupport {
     
     public static boolean handlerIsResourceRelated(ComponentHandler handler){
       ComponentConfig config = handler.getComponentConfig();
-      if ( !"javax.faces.Output".equals(config.getComponentType()) ) {
+      if ( !"jakarta.faces.Output".equals(config.getComponentType()) ) {
         return false;
       }
  
       String rendererType = config.getRendererType();
-      return ("javax.faces.resource.Script".equals(rendererType) ||
-                               "javax.faces.resource.Stylesheet".equals(rendererType));
+      return ("jakarta.faces.resource.Script".equals(rendererType) ||
+                               "jakarta.faces.resource.Stylesheet".equals(rendererType));
     }
     
     public static boolean isBuildingNewComponentTree(FacesContext context){

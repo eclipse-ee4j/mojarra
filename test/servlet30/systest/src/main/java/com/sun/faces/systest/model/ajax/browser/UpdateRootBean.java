@@ -38,7 +38,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("span", null);
                 writer.writeAttribute("id","newvalue","id");
                 writer.writeText("PASSED",null);
@@ -64,7 +64,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("body",null);
                 writer.startElement("span", null);
                 writer.writeAttribute("id","newvalue","id");
@@ -92,7 +92,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("html",null);
                 writer.startElement("head",null);
                 writer.startElement("title",null);
@@ -127,7 +127,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("html",null);
                 writer.startElement("head",null);
                 writer.startElement("title",null);
@@ -161,7 +161,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("span", null);
                 writer.writeAttribute("id","newvalue","id");
                 writer.writeText("PASSED",null);
@@ -187,7 +187,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewBody");
+                writer.startUpdate("jakarta.faces.ViewBody");
                 writer.startElement("body",null);
                 writer.startElement("span", null);
                 writer.writeAttribute("id","newvalue","id");
@@ -215,7 +215,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewHead");
+                writer.startUpdate("jakarta.faces.ViewHead");
                 writer.startElement("head",null);
                 writer.startElement("title",null);
                 writer.writeText("PASSED",null);
@@ -242,7 +242,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("html",null);
                 writer.startElement("head",null);
                 writer.startElement("title",null);
@@ -279,7 +279,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("html",null);
                 writer.startElement("head",null);
                 writer.startElement("title",null);
@@ -313,7 +313,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("input", null);
                 writer.writeAttribute("id","newbutton","id");
                 writer.writeAttribute("type","button","type");
@@ -342,7 +342,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("html",null);
                 writer.startElement("head",null);
                 writer.startElement("title",null);
@@ -378,7 +378,7 @@ public class UpdateRootBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("span", null);
                 writer.writeAttribute("id","newvalue","id");
                 writer.writeAttribute("style", "background-color: green","style");

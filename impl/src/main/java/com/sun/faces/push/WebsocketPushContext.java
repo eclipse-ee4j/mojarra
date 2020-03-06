@@ -31,11 +31,12 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
 
 import com.sun.faces.cdi.CdiUtils;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.push.Push;
+import jakarta.faces.push.PushContext;
 
 /**
  * <p class="changed_added_2_3">

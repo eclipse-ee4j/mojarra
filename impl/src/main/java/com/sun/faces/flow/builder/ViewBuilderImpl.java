@@ -17,9 +17,11 @@
 package com.sun.faces.flow.builder;
 
 import com.sun.faces.flow.ViewNodeImpl;
+
+import jakarta.faces.flow.ViewNode;
+import jakarta.faces.flow.builder.ViewBuilder;
+
 import java.util.List;
-import javax.faces.flow.ViewNode;
-import javax.faces.flow.builder.ViewBuilder;
 
 public class ViewBuilderImpl extends ViewBuilder {
     

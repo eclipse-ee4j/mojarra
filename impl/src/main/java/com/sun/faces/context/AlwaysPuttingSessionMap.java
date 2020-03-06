@@ -16,9 +16,10 @@
 
 package com.sun.faces.context;
 
-import javax.faces.application.ProjectStage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import jakarta.faces.application.ProjectStage;
 
 public class AlwaysPuttingSessionMap extends SessionMap {
 

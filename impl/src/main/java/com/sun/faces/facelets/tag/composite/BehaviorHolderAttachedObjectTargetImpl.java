@@ -16,10 +16,11 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.BehaviorHolderAttachedObjectTarget;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
 
 
 public class BehaviorHolderAttachedObjectTargetImpl extends

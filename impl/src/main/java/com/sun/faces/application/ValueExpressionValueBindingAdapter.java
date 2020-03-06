@@ -25,9 +25,10 @@ import java.io.Serializable;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
 
 /**
  * <p>

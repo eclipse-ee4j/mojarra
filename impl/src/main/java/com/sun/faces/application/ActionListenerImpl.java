@@ -21,18 +21,18 @@ import static java.util.logging.Level.FINE;
 import java.text.MessageFormat;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.NavigationHandler;
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.MethodNotFoundException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.MethodNotFoundException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
 
 /**
  * This action listener implementation processes action events during the

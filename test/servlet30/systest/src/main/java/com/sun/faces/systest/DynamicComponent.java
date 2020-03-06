@@ -137,7 +137,7 @@ public class DynamicComponent extends UIComponentBase {
         } else if ("create".equals(mode)) {
             UIOutput output = new UIOutput();
             output.setId(id);
-            output.setRendererType("javax.faces.Text");
+            output.setRendererType("jakarta.faces.Text");
             output.setValue(value);
             getChildren().add(output);
         } else if ("delete".equals(mode)) {

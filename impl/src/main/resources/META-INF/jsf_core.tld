@@ -94,12 +94,12 @@
     <attribute>
       <description>
         Value binding expression that evaluates to an object that 
-        implements javax.faces.event.ActionListener.
+        implements jakarta.faces.event.ActionListener.
       </description>
       <name>binding</name>
       <required>false</required>
       <deferred-value>
-          <type>javax.faces.event.ActionListener</type>
+          <type>jakarta.faces.event.ActionListener</type>
       </deferred-value>         
 
     </attribute>
@@ -235,11 +235,11 @@
         <attribute>
             <description>
                 A ValueExpression that evaluates to an instance of
-                javax.faces.convert.DateTimeConverter.
+                jakarta.faces.convert.DateTimeConverter.
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.convert.DateTimeConverter</type>
+                <type>jakarta.faces.convert.DateTimeConverter</type>
             </deferred-value>
         </attribute>
 
@@ -396,11 +396,11 @@
         <attribute>
             <description>
                 A ValueExpression that evaluates to an instance of
-                javax.faces.convert.NumberConverter.
+                jakarta.faces.convert.NumberConverter.
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.convert.NumberConverter</type>
+                <type>jakarta.faces.convert.NumberConverter</type>
             </deferred-value>
         </attribute>
 
@@ -429,11 +429,11 @@
         <attribute>
             <description>
                 A ValueExpression that evaluates to an object that
-                implements javax.faces.convert.Converter.
+                implements jakarta.faces.convert.Converter.
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.convert.Converter</type>
+                <type>jakarta.faces.convert.Converter</type>
             </deferred-value>
         </attribute>
 
@@ -448,7 +448,7 @@
 
         ]]></description>
         <name>facet</name>
-        <tag-class>javax.faces.webapp.FacetTag</tag-class>
+        <tag-class>jakarta.faces.webapp.FacetTag</tag-class>
         <body-content>JSP</body-content>
 
         <attribute>
@@ -521,7 +521,7 @@
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.component.UIComponent</type>
+                <type>jakarta.faces.component.UIComponent</type>
             </deferred-value>
         </attribute>
 
@@ -583,7 +583,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -672,7 +672,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -735,7 +735,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -770,7 +770,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -803,12 +803,12 @@
     <attribute>
       <description>
         Value binding expression that evaluates to an object that 
-        implements javax.faces.event.PhaseListener.
+        implements jakarta.faces.event.PhaseListener.
       </description>
       <name>binding</name>
       <required>false</required>
       <deferred-value>
-          <type>javax.faces.event.PhaseListener</type>
+          <type>jakarta.faces.event.PhaseListener</type>
       </deferred-value>
 
     </attribute>
@@ -836,7 +836,7 @@
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.component.UIComponent</type>
+                <type>jakarta.faces.component.UIComponent</type>
             </deferred-value>
         </attribute>
 
@@ -915,7 +915,7 @@
             </description>
             <name>value</name>
             <deferred-value>
-                <type>javax.faces.model.SelectItem</type>
+                <type>jakarta.faces.model.SelectItem</type>
             </deferred-value>
         </attribute>
 
@@ -970,7 +970,7 @@ itemLabel, itemDescription, itemDisabled, and itemLabelEscaped.</p>
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.component.UIComponent</type>
+                <type>jakarta.faces.component.UIComponent</type>
             </deferred-value>
         </attribute>
 
@@ -1017,7 +1017,7 @@ just a regular Java Object (POJO) that conforms to JavaBeans naming
 conventions for its properties.  The <code>value</code> attribute on
 line 2 points to a <code>List&lt;HobbitBean&gt;</code>, though it could
 just as well point to a <code>Collection</code>, array, or
-<code>javax.faces.model.DataModel</code>.  The attributes on lines 3
+<code>jakarta.faces.model.DataModel</code>.  The attributes on lines 3
 through 9, inclusive, leverage the fact that the value is a collection
 of POJOs.
 </p>
@@ -1240,7 +1240,7 @@ will not pass validation.</p> ]]>
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.component.UIComponent</type>
+                <type>jakarta.faces.component.UIComponent</type>
             </deferred-value>
         </attribute>
 
@@ -1306,7 +1306,7 @@ will not pass validation.</p> ]]>
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.validator.DoubleRangeValidator</type>
+                <type>jakarta.faces.validator.DoubleRangeValidator</type>
             </deferred-value>
         </attribute>
 
@@ -1351,7 +1351,7 @@ will not pass validation.</p> ]]>
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.validator.LengthValidator</type>
+                <type>jakarta.faces.validator.LengthValidator</type>
             </deferred-value>
         </attribute>
 
@@ -1396,7 +1396,7 @@ will not pass validation.</p> ]]>
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.validator.LongRangeValidator</type>
+                <type>jakarta.faces.validator.LongRangeValidator</type>
             </deferred-value>
         </attribute>
 
@@ -1435,7 +1435,7 @@ will not pass validation.</p> ]]>
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.validator.RegexValidator</type>
+                <type>jakarta.faces.validator.RegexValidator</type>
             </deferred-value>
         </attribute>
     </tag>
@@ -1464,11 +1464,11 @@ will not pass validation.</p> ]]>
         <attribute>
             <description>
                 A ValueExpression that evaluates to an object that implements
-                the javax.faces.validator.Validator interface.
+                the jakarta.faces.validator.Validator interface.
             </description>
             <name>binding</name>
             <deferred-value>
-                <type>javax.faces.validator.Validator</type>
+                <type>jakarta.faces.validator.Validator</type>
             </deferred-value>
         </attribute>
 
@@ -1499,12 +1499,12 @@ will not pass validation.</p> ]]>
        <attribute>
          <description>
            Value binding expression that evaluates to an object that 
-           implements javax.faces.event.ValueChangeListener.
+           implements jakarta.faces.event.ValueChangeListener.
          </description>
          <name>binding</name>
          <required>false</required>
          <deferred-value>
-           <type>javax.faces.event.ValueChangeListener</type>
+           <type>jakarta.faces.event.ValueChangeListener</type>
          </deferred-value>
     </attribute>
 
@@ -1596,26 +1596,26 @@ will not pass validation.</p> ]]>
       <description>
 
           MethodBinding pointing to a method that takes a
-          javax.faces.event.PhaseEvent and returns void.  This method
+          jakarta.faces.event.PhaseEvent and returns void.  This method
           will be called before every phase except for restore view.
       </description>
       <name>beforePhase</name>
       <required>false</required>
       <deferred-method>
-           <method-signature>void beforePhase(javax.faces.event.PhaseEvent)</method-signature>
+           <method-signature>void beforePhase(jakarta.faces.event.PhaseEvent)</method-signature>
       </deferred-method>
     </attribute>
 
     <attribute>
       <description>
-        MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent 
+        MethodBinding pointing to a method that takes a jakarta.faces.event.PhaseEvent 
         and returns void. This method will be called after every phase except for 
         restore view on an initial request.
       </description>
       <name>afterPhase</name>
       <required>false</required>
       <deferred-method>
-           <method-signature>void afterPhase(javax.faces.event.PhaseEvent)</method-signature>
+           <method-signature>void afterPhase(jakarta.faces.event.PhaseEvent)</method-signature>
       </deferred-method>
     </attribute>
 

@@ -38,16 +38,17 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.util.DebugObjectOutputStream;
 import com.sun.faces.util.DebugUtil;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import java.util.Base64;
 
 /**
@@ -143,7 +144,7 @@ public class ClientSideStateHelper extends StateHelper {
      * state will be appended to the provided <code>StringBuilder</code> without any markup
      * included or any content written to the client.
      *
-     * @see StateHelper#writeState(javax.faces.context.FacesContext, java.lang.Object, java.lang.StringBuilder)
+     * @see StateHelper#writeState(jakarta.faces.context.FacesContext, java.lang.Object, java.lang.StringBuilder)
      */
     @Override
     public void writeState(FacesContext ctx,
@@ -184,7 +185,7 @@ public class ClientSideStateHelper extends StateHelper {
      * <p>The string will be Base64-decoded and the state reconstructed using standard
      * Java serialization.</p>
      *
-     * @see StateHelper#getState(javax.faces.context.FacesContext, java.lang.String)
+     * @see StateHelper#getState(jakarta.faces.context.FacesContext, java.lang.String)
      */
     @Override
     public Object getState(FacesContext ctx, String viewId) throws IOException {

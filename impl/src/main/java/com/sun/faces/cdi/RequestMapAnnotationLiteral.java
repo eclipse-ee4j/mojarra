@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.RequestMap;
+
+import jakarta.faces.annotation.RequestMap;
 
 /**
  * An annotation literal for <code>@RequestMap</code>.

@@ -16,7 +16,7 @@
 
 package com.sun.faces.application.annotation;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Implementations of this class provide basic caching and processing of
@@ -35,7 +35,7 @@ interface RuntimeAnnotationHandler {
      * should be added to {@link AnnotationManager} to clarify the contract.
      * </p>
      *
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current
      *  request
      * @param params one or more arguments to the handler instance.  The type
      *  and number may vary.

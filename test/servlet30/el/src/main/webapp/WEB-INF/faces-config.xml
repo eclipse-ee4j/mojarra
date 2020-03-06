@@ -31,7 +31,7 @@
         </locale-config>
         <system-event-listener>
             <system-event-listener-class>com.sun.faces.test.servlet30.el.ViewInitFacesListener</system-event-listener-class>
-            <system-event-class>javax.faces.event.PreRenderComponentEvent</system-event-class>
+            <system-event-class>jakarta.faces.event.PreRenderComponentEvent</system-event-class>
         </system-event-listener>
     </application>    
     <managed-bean>

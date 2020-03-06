@@ -102,7 +102,7 @@ public class ImplicitFacetITCase extends HtmlUnitFacesITCase {
             HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
             page = button.click();
             String text = page.asText();
-            assert(!text.contains("javax.faces.component.UIPanel"));
+            assert(!text.contains("jakarta.faces.component.UIPanel"));
         }
     }
 

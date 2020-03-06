@@ -30,9 +30,10 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 import javax.el.ValueExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
+
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.MethodBinding;
 
 /**
  * <p>

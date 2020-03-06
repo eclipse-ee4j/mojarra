@@ -22,9 +22,10 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.faces.application.FacesMessage;
-
 import org.junit.Test;
+
+import jakarta.faces.application.FacesMessage;
+
 import static org.junit.Assert.*;
 
 public class FacesMessageTest {

@@ -17,13 +17,6 @@
 package com.sun.faces.taglib.jsf_core;
 
 import javax.el.ValueExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionListener;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.webapp.UIComponentClassicTagBase;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -33,6 +26,15 @@ import java.io.Serializable;
 
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+
 import com.sun.faces.util.FacesLogger;
 
 
@@ -141,7 +143,7 @@ public class ActionListenerTag extends TagSupport {
                  MessageUtils.getExceptionMessageString(
                       MessageUtils.NOT_NESTED_IN_TYPE_TAG_ERROR_MESSAGE_ID,
                       "actionListener",
-                      "javax.faces.component.ActionSource"));
+                      "jakarta.faces.component.ActionSource"));
         }
 
         // If binding is null, type is set and is a literal value,
@@ -204,8 +206,8 @@ public class ActionListenerTag extends TagSupport {
         /**
          * PENDING
          *
-         * @param event The {@link javax.faces.event.ActionEvent} that has occurred
-         * @throws javax.faces.event.AbortProcessingException
+         * @param event The {@link jakarta.faces.event.ActionEvent} that has occurred
+         * @throws jakarta.faces.event.AbortProcessingException
          *          Signal the JavaServer Faces
          *          implementation that no further processing on the current event
          *          should be performed

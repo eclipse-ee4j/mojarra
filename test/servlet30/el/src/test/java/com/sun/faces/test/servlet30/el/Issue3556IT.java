@@ -45,7 +45,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "en");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource1.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource1.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource1.gif"));
         assertTrue(image.getSrcAttribute().contains("?loc=en"));
     }
 
@@ -54,7 +54,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "de");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource1.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource1.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource1.gif"));
         assertTrue(image.getSrcAttribute().contains("?loc=de"));
     }
 
@@ -63,7 +63,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "fr");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource1.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource1.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource1.gif"));
         assertTrue(image.getSrcAttribute().contains("?loc=fr"));
     }
 
@@ -72,7 +72,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "ja");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource1.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource1.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource1.gif"));
         assertTrue(image.getSrcAttribute().contains("?loc=en"));
     }
     @Test
@@ -80,7 +80,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "en");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource2.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource2.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource2.gif"));
         assertTrue(image.getSrcAttribute().contains("?ln=resource2&loc=en"));
     }
 
@@ -89,7 +89,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "de");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource2.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource2.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource2.gif"));
         assertTrue(image.getSrcAttribute().contains("?ln=resource2&loc=de"));
     }
 
@@ -98,7 +98,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "fr");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource2.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource2.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource2.gif"));
         assertTrue(image.getSrcAttribute().contains("?ln=resource2&loc=fr"));
     }
 
@@ -107,7 +107,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "ja");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource2.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource2.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource2.gif"));
         assertTrue(image.getSrcAttribute().contains("?ln=resource2&loc=en"));
     }
     
@@ -116,7 +116,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "en");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource3.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource3.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource3.gif"));
     }
     
     @Test
@@ -124,7 +124,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "de");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource3.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource3.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource3.gif"));
     }
     
     @Test
@@ -132,7 +132,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "fr");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource3.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource3.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource3.gif"));
     }
     
     @Test
@@ -140,7 +140,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "ja");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource3.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource3.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource3.gif"));
     }
     
     @Test
@@ -148,7 +148,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "en");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource4.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource4.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource4.gif"));
         assertTrue(image.getSrcAttribute().contains("ln=resource4"));
     }
     
@@ -157,7 +157,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "de");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource4.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource4.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource4.gif"));
         assertTrue(image.getSrcAttribute().contains("ln=resource4"));
     }
     
@@ -166,7 +166,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "fr");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource4.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource4.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource4.gif"));
         assertTrue(image.getSrcAttribute().contains("ln=resource4"));
     }
     
@@ -175,7 +175,7 @@ public class Issue3556IT {
         webClient.addRequestHeader("Accept-Language", "ja");
         HtmlPage page = webClient.getPage(webUrl + "faces/resource4.jsp");
         HtmlImage image = page.getHtmlElementById("image");
-        assertTrue(image.getSrcAttribute().contains("javax.faces.resource/resource4.gif"));
+        assertTrue(image.getSrcAttribute().contains("jakarta.faces.resource/resource4.gif"));
         assertTrue(image.getSrcAttribute().contains("ln=resource4"));
     }
 }

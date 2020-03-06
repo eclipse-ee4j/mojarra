@@ -16,8 +16,8 @@
 
 package com.sun.faces.util;
 
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Utility class to enable partial state saving of components that have been

@@ -17,9 +17,10 @@
 package com.sun.faces.facelets.tag.jsf.core;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.convert.Converter;
-import javax.faces.view.facelets.*;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.facelets.*;
 
 /**
  * Register a named Converter instance on the UIComponent associated with the
@@ -44,7 +45,7 @@ public final class ConvertDelegateHandler extends ConverterHandler {
     /**
      * Uses the specified "converterId" to pull an instance from the Application
      * 
-     * @see javax.faces.application.Application#createComponent(java.lang.String)
+     * @see jakarta.faces.application.Application#createComponent(java.lang.String)
      */
     protected Converter createConverter(FaceletContext ctx)
             throws FacesException, ELException, FaceletException {

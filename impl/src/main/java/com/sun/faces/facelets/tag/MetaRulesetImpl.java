@@ -19,7 +19,8 @@ package com.sun.faces.facelets.tag;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
-import javax.faces.view.facelets.*;
+import jakarta.faces.view.facelets.*;
+
 import java.beans.IntrospectionException;
 import java.util.*;
 import java.util.logging.Level;

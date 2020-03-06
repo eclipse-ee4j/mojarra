@@ -24,9 +24,9 @@ import static com.sun.faces.util.BeanValidation.getBeanValidator;
 import static com.sun.faces.util.ReflectionUtils.setProperties;
 import static com.sun.faces.util.Util.getValueExpressionNullSafe;
 import static com.sun.faces.util.copier.CopierUtils.getCopier;
-import static javax.faces.component.visit.VisitContext.createVisitContext;
-import static javax.faces.component.visit.VisitResult.ACCEPT;
-import static javax.faces.validator.BeanValidator.MESSAGE_ID;
+import static jakarta.faces.component.visit.VisitContext.createVisitContext;
+import static jakarta.faces.component.visit.VisitResult.ACCEPT;
+import static jakarta.faces.validator.BeanValidator.MESSAGE_ID;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -36,24 +36,25 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIInput;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
 import javax.validation.ConstraintViolation;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
 
 class WholeBeanValidator implements Validator<Object> {
 
     private static final Logger LOGGER
-            = Logger.getLogger("javax.faces.validator", "javax.faces.LogStrings");    
+            = Logger.getLogger("jakarta.faces.validator", "jakarta.faces.LogStrings");    
     
     private static final String ERROR_MISSING_FORM
             = "f:validateWholeBean must be nested directly in an UIForm.";

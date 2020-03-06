@@ -16,7 +16,7 @@
 
 package com.sun.faces.application.annotation;
 
-import javax.faces.component.FacesComponent;
+import jakarta.faces.component.FacesComponent;
 
 public class FacesComponentUsage {
     private Class<?> target;

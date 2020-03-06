@@ -20,9 +20,10 @@ import java.io.Serializable;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Event;
-import javax.faces.component.UIViewRoot;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.view.ViewScoped;
 
 public class ViewScopedCDIEventFireHelperImpl implements Serializable, ViewScopedCDIEventFireHelper {
     

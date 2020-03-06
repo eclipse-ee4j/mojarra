@@ -17,11 +17,11 @@
 package com.sun.faces.cdi;
 
 import static com.sun.faces.component.CompositeComponentStackManager.getManager;
-import static javax.faces.component.UIComponent.getCurrentCompositeComponent;
-import static javax.faces.context.FacesContext.getCurrentInstance;
+import static jakarta.faces.component.UIComponent.getCurrentCompositeComponent;
+import static jakarta.faces.context.FacesContext.getCurrentInstance;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">

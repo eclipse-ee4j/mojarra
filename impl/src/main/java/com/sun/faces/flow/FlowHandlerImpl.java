@@ -18,6 +18,16 @@ package com.sun.faces.flow;
 
 import com.sun.faces.application.NavigationHandlerImpl;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.Parameter;
+
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayDeque;
@@ -30,18 +40,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.Parameter;
 
 public class FlowHandlerImpl extends FlowHandler {
     
-    public static final String ABANDONED_FLOW = "javax.faces.flow.AbandonedFlow";
+    public static final String ABANDONED_FLOW = "jakarta.faces.flow.AbandonedFlow";
 
     public FlowHandlerImpl() {
         flowFeatureIsEnabled = false;

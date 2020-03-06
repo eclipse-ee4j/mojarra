@@ -16,12 +16,13 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import javax.faces.validator.RegexValidator;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
 import javax.el.ValueExpression;
 import javax.el.ExpressionFactory;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.RegexValidator;
+import jakarta.faces.validator.Validator;
 
 
 /**
@@ -45,7 +46,7 @@ public class RegexValidatorTag extends AbstractValidatorTag {
                 context.getApplication().getExpressionFactory();
             VALIDATOR_ID_EXPR =
                 factory.createValueExpression(context.getELContext(),
-                    "javax.faces.RegularExpression",String.class);
+                    "jakarta.faces.RegularExpression",String.class);
         }
     }
 

@@ -23,32 +23,38 @@ import com.sun.faces.facelets.tag.jsf.ComponentTagHandlerDelegateImpl.CreateComp
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.facelets.tag.MetadataTargetImpl;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+
 import com.sun.faces.util.FacesLogger;
 import java.beans.BeanDescriptor;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.ActionSource;
-import javax.faces.component.ValueHolder;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UISelectOne;
-import javax.faces.component.UISelectMany;
-import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.MetaRule;
+
 import java.beans.PropertyDescriptor;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -60,9 +66,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import javax.faces.FactoryFinder;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
 
 /**
  * <p>
@@ -284,7 +287,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
      * <code>List&lt;AttachedObjectHandler&gt;</code>.</p>
      */
     private static final String ATTACHED_OBJECT_HANDLERS_KEY =
-            "javax.faces.view.AttachedObjectHandlers";
+            "jakarta.faces.view.AttachedObjectHandlers";
     
 
     @SuppressWarnings({"unchecked"})
@@ -320,8 +323,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         UIPanel facetComponent;
         if (ComponentHandler.isNew(c)) {
             facetComponent = (UIPanel)
-            facesContext.getApplication().createComponent("javax.faces.Panel");
-            facetComponent.setRendererType("javax.faces.Group");
+            facesContext.getApplication().createComponent("jakarta.faces.Panel");
+            facetComponent.setRendererType("jakarta.faces.Group");
             c.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, facetComponent);
         }                                                                                 
         else {

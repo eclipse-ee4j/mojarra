@@ -56,7 +56,7 @@ public class Issue1995IT {
     @Test
     public void testScanning1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "1/faces/index.xhtml");
-        assertTrue(page.asXml().contains("javax.faces.ViewState"));
+        assertTrue(page.asXml().contains("jakarta.faces.ViewState"));
         assertTrue(page.asText().matches("(?s).*.war_1\\s+bean:\\s+war1Bean\\s+war_2\\s+bean:\\s+bean:\\s+bar..*"));
     }
 
@@ -64,7 +64,7 @@ public class Issue1995IT {
     @Test
     public void testScanning2() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "2/faces/index.xhtml");
-        assertTrue(page.asXml().contains("javax.faces.ViewState"));
+        assertTrue(page.asXml().contains("jakarta.faces.ViewState"));
         assertTrue(page.asText().matches("(?s).*.war_1\\s+bean:\\s+war_2\\s+bean:\\s+war2Bean\\s+bean:\\s+bar..*"));
     }
 }

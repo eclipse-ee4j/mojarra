@@ -18,18 +18,10 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import com.sun.faces.util.Util;
-import java.io.IOException;
-import javax.el.*;
-import javax.faces.*;
-import javax.faces.component.*;
-import javax.faces.context.*;
-import javax.faces.convert.*;
-import javax.faces.el.*;
-import javax.faces.event.*;
-import javax.faces.validator.*;
-import javax.faces.webapp.*;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /*
@@ -152,20 +144,20 @@ public class MessageTag extends UIComponentELTag {
 
     // General Methods
     public String getRendererType() {
-        return "javax.faces.Message";
+        return "jakarta.faces.Message";
     }
 
     public String getComponentType() {
-        return "javax.faces.HtmlMessage";
+        return "jakarta.faces.HtmlMessage";
     }
 
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
-        javax.faces.component.UIMessage message = null;
+        jakarta.faces.component.UIMessage message = null;
         try {
-            message = (javax.faces.component.UIMessage) component;
+            message = (jakarta.faces.component.UIMessage) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: javax.faces.component.UIMessage.  Perhaps you're missing a tag?");
+            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIMessage.  Perhaps you're missing a tag?");
         }
 
         if (_for != null) {

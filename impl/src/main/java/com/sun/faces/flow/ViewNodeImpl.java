@@ -17,7 +17,8 @@
 package com.sun.faces.flow;
 
 import java.io.Serializable;
-import javax.faces.flow.ViewNode;
+
+import jakarta.faces.flow.ViewNode;
 
 public class ViewNodeImpl extends ViewNode implements Serializable {
     

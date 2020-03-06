@@ -18,10 +18,10 @@ package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
 
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
 
 /**
  * <code>Scanner</code> implementation responsible for {@link ResourceDependency} annotations.

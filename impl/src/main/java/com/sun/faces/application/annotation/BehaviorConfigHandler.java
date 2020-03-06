@@ -21,11 +21,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.HashMap;
 
-import javax.faces.application.Application;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.FacesContext;
+
+import java.util.HashMap;
 
 /**
  * <p>
@@ -75,7 +76,7 @@ public class BehaviorConfigHandler implements ConfigAnnotationHandler {
 
 
     /**
-     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(javax.faces.context.FacesContext)
+     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)
      */
     @Override
     public void push(FacesContext ctx) {

@@ -16,10 +16,10 @@
 
 package com.sun.faces.application.applicationimpl.events;
 
-import javax.faces.event.SystemEvent;
-
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.Cache.Factory;
+
+import jakarta.faces.event.SystemEvent;
 
 /**
  * Utility class for dealing with application events.

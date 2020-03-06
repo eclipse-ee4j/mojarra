@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.ViewMap;
+
+import jakarta.faces.annotation.ViewMap;
 
 /**
  * An annotation literal for @ViewMap.

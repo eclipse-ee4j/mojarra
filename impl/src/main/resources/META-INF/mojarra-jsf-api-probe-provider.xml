@@ -20,7 +20,7 @@
 <probe-providers>
     <probe-provider moduleProviderName="glassfish" moduleName="jsf"
                     probeProviderName="faces-servlet"
-                    class="javax.faces.webapp.FacesServlet">
+                    class="jakarta.faces.webapp.FacesServlet">
         <probe name="requestStart">
             <method>requestStart</method>
             <probe-param type="java.lang.String" name="requestUri"/>

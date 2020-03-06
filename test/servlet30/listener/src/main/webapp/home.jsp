@@ -20,7 +20,7 @@
     <HEAD> <title></title> </HEAD>
     <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
     <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
-    <%@ page import="javax.faces.context.FacesContext"%>
+    <%@ page import="jakarta.faces.context.FacesContext"%>
     <%
      FacesContext facesContext = FacesContext.getCurrentInstance();
      out.println("VIEW ID IS:" + facesContext.getViewRoot().getViewId());

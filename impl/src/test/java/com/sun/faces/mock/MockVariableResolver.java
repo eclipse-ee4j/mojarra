@@ -17,9 +17,10 @@
 package com.sun.faces.mock;
 
 import java.util.Map;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.el.VariableResolver;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.VariableResolver;
 
 /**
  * <p>

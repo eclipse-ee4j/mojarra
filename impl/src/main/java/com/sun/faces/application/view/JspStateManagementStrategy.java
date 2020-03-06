@@ -28,17 +28,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.StateManagementStrategy;
-
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
 
 /**
  * A state management strategy for JSP.

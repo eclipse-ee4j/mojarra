@@ -17,6 +17,11 @@
 package com.sun.faces.application.annotation;
 
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.FacesConverter;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,10 +30,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.faces.context.FacesContext;
-import javax.faces.application.Application;
-import javax.faces.convert.FacesConverter;
 
 /**
  * <p>
@@ -97,7 +98,7 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
 
 
     /**
-     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(javax.faces.context.FacesContext)
+     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)
      */
     @Override
     public void push(FacesContext ctx) {

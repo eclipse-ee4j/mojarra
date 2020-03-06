@@ -24,15 +24,15 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 
 /**

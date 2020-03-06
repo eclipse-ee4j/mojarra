@@ -16,10 +16,15 @@
 
 package com.sun.faces.facelets.impl;
 
-import javax.faces.view.facelets.Facelet;
 import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.TemplateClient;
 import com.sun.faces.facelets.el.DefaultVariableMapper;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletContext;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -28,10 +33,7 @@ import javax.el.ExpressionFactory;
 import javax.el.FunctionMapper;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -111,7 +113,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#getFacesContext()
+     * @see jakarta.faces.view.facelets.FaceletContext#getFacesContext()
      */
     @Override
     public FacesContext getFacesContext() {
@@ -121,7 +123,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#getExpressionFactory()
+     * @see jakarta.faces.view.facelets.FaceletContext#getExpressionFactory()
      */
     @Override
     public ExpressionFactory getExpressionFactory() {
@@ -131,7 +133,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#setVariableMapper(javax.el.VariableMapper)
+     * @see jakarta.faces.view.facelets.FaceletContext#setVariableMapper(javax.el.VariableMapper)
      */
     @Override
     public void setVariableMapper(VariableMapper varMapper) {
@@ -142,7 +144,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#setFunctionMapper(javax.el.FunctionMapper)
+     * @see jakarta.faces.view.facelets.FaceletContext#setFunctionMapper(javax.el.FunctionMapper)
      */
     @Override
     public void setFunctionMapper(FunctionMapper fnMapper) {
@@ -153,7 +155,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#includeFacelet(javax.faces.component.UIComponent,
+     * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(jakarta.faces.component.UIComponent,
      *      java.lang.String)
      */
     @Override
@@ -205,7 +207,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#generateUniqueId(java.lang.String)
+     * @see jakarta.faces.view.facelets.FaceletContext#generateUniqueId(java.lang.String)
      */
     @Override
     public String generateUniqueId(String base) {
@@ -253,7 +255,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#getAttribute(java.lang.String)
+     * @see jakarta.faces.view.facelets.FaceletContext#getAttribute(java.lang.String)
      */
     @Override
     public Object getAttribute(String name) {
@@ -269,7 +271,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#setAttribute(java.lang.String,
+     * @see jakarta.faces.view.facelets.FaceletContext#setAttribute(java.lang.String,
      *      java.lang.Object)
      */
     @Override
@@ -288,7 +290,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletContext#includeFacelet(javax.faces.component.UIComponent,
+     * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(jakarta.faces.component.UIComponent,
      *      java.net.URL)
      */
     @Override

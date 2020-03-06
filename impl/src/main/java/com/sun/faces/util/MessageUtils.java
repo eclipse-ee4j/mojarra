@@ -16,9 +16,9 @@
 
 package com.sun.faces.util;
 
-import javax.faces.application.FacesMessage;
-
 import java.text.MessageFormat;
+
+import jakarta.faces.application.FacesMessage;
 
 /**
  * <p>This class contains all message constants and utility methods

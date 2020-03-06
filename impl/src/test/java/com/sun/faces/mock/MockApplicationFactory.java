@@ -16,9 +16,9 @@
 
 package com.sun.faces.mock;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
 
 public class MockApplicationFactory extends ApplicationFactory {
 

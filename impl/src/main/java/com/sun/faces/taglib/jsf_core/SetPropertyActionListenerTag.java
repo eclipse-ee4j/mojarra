@@ -17,16 +17,17 @@
 package com.sun.faces.taglib.jsf_core;
 
 import javax.el.ValueExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
-import javax.faces.event.ActionListener;
-import javax.faces.webapp.UIComponentClassicTagBase;
-import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /**
@@ -134,7 +135,7 @@ public class SetPropertyActionListenerTag extends TagSupport {
                 MessageUtils.getExceptionMessageString(MessageUtils.NULL_COMPONENT_ERROR_MESSAGE_ID));
         }
         if (!(component instanceof ActionSource)) {
-            Object params [] = {"setPropertyActionListener", "javax.faces.component.ActionSource"};
+            Object params [] = {"setPropertyActionListener", "jakarta.faces.component.ActionSource"};
             throw new JspException(
                 MessageUtils.getExceptionMessageString(
                     MessageUtils.NOT_NESTED_IN_TYPE_TAG_ERROR_MESSAGE_ID, params));

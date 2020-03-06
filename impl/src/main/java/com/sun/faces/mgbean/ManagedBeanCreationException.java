@@ -16,7 +16,7 @@
 
 package com.sun.faces.mgbean;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * <p>Indicates an error in the ManagedBean, be it a user error or runtime error.</p>

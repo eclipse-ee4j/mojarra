@@ -20,15 +20,16 @@ import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.util.Util;
 
-import javax.faces.application.StateManager;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import java.io.IOException;
 import java.io.Writer;
 
 /**
  * Custom {@link Writer} to efficiently handle the state manager replacement
- * marker written out by {@link MultiViewHandler#writeState(javax.faces.context.FacesContext)}.
+ * marker written out by {@link MultiViewHandler#writeState(jakarta.faces.context.FacesContext)}.
  */
 final class WriteBehindStateWriter extends Writer {
 

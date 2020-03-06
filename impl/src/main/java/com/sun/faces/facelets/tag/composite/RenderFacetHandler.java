@@ -16,9 +16,10 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.*;
 import java.util.Map;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.*;
 
 
 public class RenderFacetHandler extends ComponentHandler {

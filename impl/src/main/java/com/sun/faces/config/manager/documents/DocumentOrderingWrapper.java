@@ -42,7 +42,7 @@ import com.sun.faces.util.Timer;
 
 /**
  * This class is used by the config system to order <code>faces-config</code> documents found on the classpath or
- * configured explicitly via the <code>javax.faces.CONFIG_FILES</code> context init parameter.
+ * configured explicitly via the <code>jakarta.faces.CONFIG_FILES</code> context init parameter.
  */
 public class DocumentOrderingWrapper {
 

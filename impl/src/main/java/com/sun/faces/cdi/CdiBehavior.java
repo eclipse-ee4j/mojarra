@@ -16,10 +16,10 @@
 
 package com.sun.faces.cdi;
 
-import javax.faces.component.StateHolder;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.context.FacesContext;
-import javax.faces.event.BehaviorEvent;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.BehaviorEvent;
 
 /**
  * A delegate to the CDI managed behavior.

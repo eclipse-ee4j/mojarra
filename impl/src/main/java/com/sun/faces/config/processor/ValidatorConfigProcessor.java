@@ -23,11 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
 import javax.servlet.ServletContext;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -40,6 +35,12 @@ import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.config.Verifier;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
 
 /**
  * <p>

@@ -16,12 +16,13 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.BehaviorHandler;
-import javax.faces.view.facelets.TagHandler;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.BehaviorHandler;
+import jakarta.faces.view.facelets.TagHandler;
 
 
 /**
@@ -34,7 +35,7 @@ import java.util.Map;
 public class AttachedBehaviors implements Serializable {
 	
 	private Map<String, TagHandler> behaviors = new HashMap<>();
-	public static final String COMPOSITE_BEHAVIORS_KEY = "javax.faces.view.ClientBehaviors";
+	public static final String COMPOSITE_BEHAVIORS_KEY = "jakarta.faces.view.ClientBehaviors";
 	
 	public void add(String eventName, TagHandler owner){
 		behaviors.put(eventName, owner);

@@ -17,10 +17,10 @@
 --%>
 
 <%@ page contentType="text/html"
-%><%@ page import="javax.faces.FactoryFinder"
-%><%@ page import="javax.faces.application.Application"
-%><%@ page import="javax.faces.application.ApplicationFactory"
-%><%@ page import="javax.faces.convert.Converter"
+%><%@ page import="jakarta.faces.FactoryFinder"
+%><%@ page import="jakarta.faces.application.Application"
+%><%@ page import="jakarta.faces.application.ApplicationFactory"
+%><%@ page import="jakarta.faces.convert.Converter"
 %><%@ page import="com.sun.faces.systest.TestConverter"
 %><%
 

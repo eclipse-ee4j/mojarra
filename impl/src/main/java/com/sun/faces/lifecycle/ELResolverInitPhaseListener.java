@@ -18,21 +18,23 @@ package com.sun.faces.lifecycle;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+
 import com.sun.faces.el.ELUtils;
 
 import com.sun.faces.el.FacesCompositeELResolver;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.Application;
 
 /**
  * <p>This class is used to register the JSF <code>ELResolver</code>
@@ -93,7 +95,7 @@ public class ELResolverInitPhaseListener implements PhaseListener {
      * phase of the request processing lifecycle is about to begin.</p>
      *
      * <p>The implementation of this method currently calls through to
-     * {@link #populateFacesELResolverForJsp(javax.faces.context.FacesContext)}.<p/>
+     * {@link #populateFacesELResolverForJsp(jakarta.faces.context.FacesContext)}.<p/>
      */
 
     @Override
@@ -115,9 +117,9 @@ public class ELResolverInitPhaseListener implements PhaseListener {
 
     /**
      * <p>Return the identifier of the request processing phase during
-     * which this listener is interested in processing {@link javax.faces.event.PhaseEvent}
+     * which this listener is interested in processing {@link jakarta.faces.event.PhaseEvent}
      * events.  Legal values are the singleton instances defined by the
-     * {@link javax.faces.event.PhaseId} class, including <code>PhaseId.ANY_PHASE</code>
+     * {@link jakarta.faces.event.PhaseId} class, including <code>PhaseId.ANY_PHASE</code>
      * to indicate an interest in being notified for all standard phases.</p>
      *
      * <p>We return <code>PhaseId.ANY_PHASE</code>.

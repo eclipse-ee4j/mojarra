@@ -71,7 +71,7 @@
     <tag>
         <tag-name>plugin</tag-name>
         <component>
-            <component-type>javax.faces.Output</component-type>
+            <component-type>jakarta.faces.Output</component-type>
             <renderer-type>jsp.Plugin</renderer-type>
         </component>
     </tag>
@@ -94,7 +94,7 @@
     <tag>
         <tag-name>getProperty</tag-name>
         <component>
-            <component-type>javax.faces.Output</component-type>
+            <component-type>jakarta.faces.Output</component-type>
             <renderer-type>jsp.GetProperty</renderer-type>
         </component>
     </tag>

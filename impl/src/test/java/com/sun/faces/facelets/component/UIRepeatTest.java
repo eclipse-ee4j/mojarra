@@ -21,15 +21,15 @@ import static org.easymock.EasyMock.replay;
 
 import java.lang.reflect.Method;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
-import javax.faces.context.FacesContext;
-
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.Test;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.context.FacesContext;
 
 public class UIRepeatTest extends TestCase {
 

@@ -16,16 +16,16 @@
 
 package com.sun.faces.application.resource;
 
-import static javax.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
-import static javax.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
+import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
+import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
 
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p/>

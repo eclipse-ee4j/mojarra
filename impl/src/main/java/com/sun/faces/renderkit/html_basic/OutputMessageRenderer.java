@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 
 /** <B>OutputMessageRenderer</B> is a class that renderes UIOutput */

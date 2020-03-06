@@ -72,12 +72,12 @@ public class Issue2500Bean {
             Map.Entry m = (Map.Entry)it.next();
             String key = (String)m.getKey();
             String[] values = (String[])m.getValue();
-            if (key.equals("javax.faces.ViewState")) {
+            if (key.equals("jakarta.faces.ViewState")) {
                 if (null != values) {
                     if (values.length > 1) {
-                        msg = "javax.faces.ViewState Has More than One Value";
+                        msg = "jakarta.faces.ViewState Has More than One Value";
                     } else if (values.length == 1) {
-                        msg = "javax.faces.ViewState Has One Value";
+                        msg = "jakarta.faces.ViewState Has One Value";
                     }
                 } 
                break;

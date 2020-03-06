@@ -25,13 +25,16 @@ import com.sun.faces.mock.MockHttpSession;
 import com.sun.faces.mock.MockLifecycle;
 import com.sun.faces.mock.MockServletConfig;
 import com.sun.faces.mock.MockServletContext;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.LifecycleFactory;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.lifecycle.LifecycleFactory;
+
 import junit.framework.TestCase;
 
 public class JUnitFacesTestCaseBase extends TestCase {

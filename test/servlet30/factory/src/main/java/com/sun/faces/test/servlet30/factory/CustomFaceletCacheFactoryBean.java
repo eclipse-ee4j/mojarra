@@ -28,7 +28,7 @@ public class CustomFaceletCacheFactoryBean {
     public String getTestMessage() {
         String result = "FAILURE";
         FaceletCacheFactory factory = (FaceletCacheFactory) FactoryFinder.getFactory(
-                "javax.faces.view.facelets.FaceletCacheFactory");
+                "jakarta.faces.view.facelets.FaceletCacheFactory");
         if (factory instanceof CustomFaceletCacheFactory) {
             result = ((CustomFaceletCacheFactory) factory).isOneArgCtorCalled() ? "SUCCESS" : "FAILURE";
         }

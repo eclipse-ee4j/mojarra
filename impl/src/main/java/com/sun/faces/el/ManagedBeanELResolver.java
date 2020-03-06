@@ -22,18 +22,20 @@ import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
-import javax.faces.context.FacesContext;
+
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.faces.context.ExternalContext;
 
 public class ManagedBeanELResolver extends ELResolver {
 

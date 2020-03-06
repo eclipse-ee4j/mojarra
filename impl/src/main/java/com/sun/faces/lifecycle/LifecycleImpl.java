@@ -18,28 +18,28 @@ package com.sun.faces.lifecycle;
 
 import com.sun.faces.util.Util;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.lifecycle.ClientWindowFactory;
+import jakarta.faces.lifecycle.Lifecycle;
+
 import com.sun.faces.config.WebConfiguration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
-import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.lifecycle.ClientWindowFactory;
 
 /**
  * <p><b>LifecycleImpl</b> is the stock implementation of the standard

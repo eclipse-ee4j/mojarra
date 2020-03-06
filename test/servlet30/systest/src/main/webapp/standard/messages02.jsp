@@ -17,8 +17,8 @@
 --%>
 
 <%@ page contentType="text/html" %>
-<%@ page import="javax.faces.application.FacesMessage"%>
-<%@ page import="javax.faces.context.FacesContext"%>
+<%@ page import="jakarta.faces.application.FacesMessage"%>
+<%@ page import="jakarta.faces.context.FacesContext"%>
 
 <%@ taglib prefix="f" uri="http://java.sun.com/jsf/core" %>
 <%@ taglib prefix="h" uri="http://java.sun.com/jsf/html" %>

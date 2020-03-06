@@ -36,37 +36,37 @@
 <%-- Case 1: Double Converter with "converterId" attribute --%>
 
       <h:inputText id="text1" value="2.2250738585072012e-308" size="10" maxlength="50">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
 
       <h:message for="text1" />
 
       <h:inputText id="text2" value="0.00022250738585072012e-304" size="10" maxlength="50">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
 
       <h:message for="text2" />
 
       <h:inputText id="text3" value="00000000002.2250738585072012e-308" size="10" maxlength="50">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
 
       <h:message for="text3" />
 
       <h:inputText id="text4" value="2.225073858507201200000e-308" size="10" maxlength="50">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
 
       <h:message for="text4" />
 
       <h:inputText id="text5" value="2.2250738585072012e-00308" size="10" maxlength="50">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
 
       <h:message for="text5" />
 
       <h:inputText id="text6" value="2.2250738585072012997800001e-308" size="10" maxlength="50">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
 
       <h:message for="text6" />

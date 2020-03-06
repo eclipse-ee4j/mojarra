@@ -39,17 +39,18 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.context.FacesContext;
-import javax.faces.event.WebsocketEvent;
-import javax.faces.event.WebsocketEvent.Closed;
-import javax.faces.event.WebsocketEvent.Opened;
-import javax.faces.push.Push;
 import javax.inject.Inject;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
 
 import com.sun.faces.util.Json;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.WebsocketEvent;
+import jakarta.faces.event.WebsocketEvent.Closed;
+import jakarta.faces.event.WebsocketEvent.Opened;
+import jakarta.faces.push.Push;
 
 /**
  * <p class="changed_added_2_3">

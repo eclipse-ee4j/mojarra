@@ -18,9 +18,11 @@ package com.sun.faces.facelets.tag;
 
 import com.sun.faces.facelets.el.LegacyMethodBinding;
 
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.MethodExpression;
-import javax.faces.el.MethodBinding;
-import javax.faces.view.facelets.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 

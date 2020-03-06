@@ -16,9 +16,10 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import java.util.List;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 
 /*
  * The CompilationManager vends one of these

@@ -28,12 +28,13 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 
 
 
@@ -211,10 +212,10 @@ public class MockExternalContext extends ExternalContext {
 
     public String getInitParameter(String name) {
         if (name
-              .equals(javax.faces.application.StateManager.STATE_SAVING_METHOD_PARAM_NAME)) {
+              .equals(jakarta.faces.application.StateManager.STATE_SAVING_METHOD_PARAM_NAME)) {
             return null;
         }
-        if (name.equals(javax.faces.webapp.FacesServlet.LIFECYCLE_ID_ATTR)) {
+        if (name.equals(jakarta.faces.webapp.FacesServlet.LIFECYCLE_ID_ATTR)) {
             return null;
         }
         return ((initParams == null) ? null : initParams.get(name));

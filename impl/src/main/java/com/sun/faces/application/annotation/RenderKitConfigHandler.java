@@ -21,17 +21,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.HashMap;
 
-import javax.faces.context.FacesContext;
-import javax.faces.render.ClientBehaviorRenderer;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.Renderer;
-import javax.faces.FactoryFinder;
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.ClientBehaviorRenderer;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.Renderer;
+
+import java.util.HashMap;
 
 /**
  * <p> <code>ConfigAnnotationHandler</code> {@link FacesRenderer} annotated classes.</p>
@@ -79,7 +80,7 @@ public class RenderKitConfigHandler implements ConfigAnnotationHandler {
 
 
     /**
-     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(javax.faces.context.FacesContext)
+     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)
      */
     @Override
     public void push(FacesContext ctx) {

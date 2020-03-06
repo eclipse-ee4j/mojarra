@@ -28,7 +28,7 @@ public abstract class ConverterPropertyEditorBase extends PropertyEditorSupport 
 
     /**
      * Return the target class of the objects that are being edited. This is used as a key to find
-     * the appropriate {@link javax.faces.convert.Converter} from the Faces application.
+     * the appropriate {@link jakarta.faces.convert.Converter} from the Faces application.
      *
      * @return the target class.
      */

@@ -16,9 +16,6 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.faces.component.UIColumn;
-import javax.faces.component.UIComponent;
-import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.el.ValueExpression;
 
@@ -26,6 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.webapp.UIComponentELTag;
 
 public class ColumnTag extends UIComponentELTag {
 
@@ -69,7 +70,7 @@ public class ColumnTag extends UIComponentELTag {
 
     @Override
     public String getComponentType() {
-        return "javax.faces.Column";
+        return "jakarta.faces.Column";
     }
 
 

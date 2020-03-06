@@ -22,13 +22,14 @@ import java.util.Set;
 import java.util.HashSet;
 
 import javax.el.ValueExpression;
-import javax.faces.application.ResourceDependency;
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * {@link RuntimeAnnotationHandler} responsible for processing {@link ResourceDependency} annotations.
@@ -94,7 +95,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     /**
      * Adds the specified {@link UIComponent} as a component resource to the
-     * {@link javax.faces.component.UIViewRoot}
+     * {@link jakarta.faces.component.UIViewRoot}
      * @param ctx the {@link FacesContext} for the current request
      * @param c the component resource
      */
@@ -137,7 +138,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
         Expressions exprs = expressionsMap.get(dep);
         Application app = ctx.getApplication();
         String resname = exprs.getName(ctx);
-        UIComponent c = ctx.getApplication().createComponent("javax.faces.Output");
+        UIComponent c = ctx.getApplication().createComponent("jakarta.faces.Output");
         c.setRendererType(app.getResourceHandler().getRendererTypeForResourceName(resname));
         Map<String,Object> attrs = c.getAttributes();
         attrs.put("name", resname);

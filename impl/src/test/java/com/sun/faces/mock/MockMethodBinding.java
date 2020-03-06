@@ -18,15 +18,16 @@ package com.sun.faces.mock;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.MethodNotFoundException;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponentBase;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.MethodNotFoundException;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.ValueBinding;
 
 /**
  * <p>

@@ -80,7 +80,7 @@
 <%-- Case 1: Double Converter with "converterId" attribute --%>
 
       <h:inputText id="text6" value="100" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
 
       <h:message for="text6" />
@@ -98,7 +98,7 @@
 <%--         to a property on the backing bean                            --%>
 
       <h:inputText id="text8"> 
-        <f:converter converterId="javax.faces.Double"
+        <f:converter converterId="jakarta.faces.Double"
            binding="#{converterBean.doubleConverter}" />
       </h:inputText>
 

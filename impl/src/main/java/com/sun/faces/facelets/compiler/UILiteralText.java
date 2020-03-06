@@ -16,9 +16,10 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 import java.io.IOException;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 public final class UILiteralText extends UILeaf {
     

@@ -18,18 +18,10 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import com.sun.faces.util.Util;
-import java.io.IOException;
-import javax.el.*;
-import javax.faces.*;
-import javax.faces.component.*;
-import javax.faces.context.*;
-import javax.faces.convert.*;
-import javax.faces.el.*;
-import javax.faces.event.*;
-import javax.faces.validator.*;
-import javax.faces.webapp.*;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /*
@@ -266,20 +258,20 @@ public class DataTableTag extends UIComponentELTag {
 
     // General Methods
     public String getRendererType() {
-        return "javax.faces.Table";
+        return "jakarta.faces.Table";
     }
 
     public String getComponentType() {
-        return "javax.faces.HtmlDataTable";
+        return "jakarta.faces.HtmlDataTable";
     }
 
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
-        javax.faces.component.UIData data = null;
+        jakarta.faces.component.UIData data = null;
         try {
-            data = (javax.faces.component.UIData) component;
+            data = (jakarta.faces.component.UIData) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: javax.faces.component.UIData.  Perhaps you're missing a tag?");
+            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIData.  Perhaps you're missing a tag?");
         }
 
         if (first != null) {

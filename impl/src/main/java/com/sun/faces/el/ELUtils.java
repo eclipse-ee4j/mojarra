@@ -46,14 +46,6 @@ import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.VariableResolver;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
@@ -63,6 +55,15 @@ import com.sun.faces.cdi.CdiExtension;
 import com.sun.faces.context.flash.FlashELResolver;
 import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.VariableResolver;
 
 /**
  * <p>Utility class for EL related methods.</p>
@@ -334,7 +335,7 @@ public class ELUtils {
      * @param provideDefault whether or not to return a
      *  <code>DummpyPropertyResolverImpl</code>
      * @return the <code>PropertyResolver</code>s set via
-     *  {@link javax.faces.application.Application#setPropertyResolver(javax.faces.el.PropertyResolver)}
+     *  {@link jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)}
      *  or, if that is <code>null</code>, return the <code>PropertyResolver</code>
      *  chain from the parsed configuration resources.  If either of those are
      *  null, and <code>provideDefault</code> is <code>true</code>,
@@ -362,7 +363,7 @@ public class ELUtils {
      * @param provideDefault whether or not to return a
      *  <code>DummpyPropertyResolverImpl</code>
      * @return the <code>VariableResolver</code>s set via
-     *  {@link javax.faces.application.Application#setVariableResolver(javax.faces.el.VariableResolver)}
+     *  {@link jakarta.faces.application.Application#setVariableResolver(jakarta.faces.el.VariableResolver)}
      *  or, if that is <code>null</code>, return the <code>VariableResolver</code>
      *  chain from the parsed configuration resources.  If either of those are
      *  null, , and <code>provideDefault</code> is <code>true</code>,

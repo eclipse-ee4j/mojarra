@@ -27,10 +27,10 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 
 class ZipDirectoryEntryScanner {

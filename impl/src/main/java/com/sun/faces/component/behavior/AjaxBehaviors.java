@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.application.Application;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHint;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHint;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_0">An instance of the class is used to 
@@ -41,7 +41,7 @@ public class AjaxBehaviors implements Serializable {
 
     private static final long serialVersionUID = 1617682489423771119L;
 
-    private static final String AJAX_BEHAVIORS = "javax.faces.component.AjaxBehaviors";
+    private static final String AJAX_BEHAVIORS = "jakarta.faces.component.AjaxBehaviors";
 
     private ArrayDeque<BehaviorInfo> behaviorStack = null;
 

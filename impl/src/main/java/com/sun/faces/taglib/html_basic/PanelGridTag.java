@@ -18,18 +18,10 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import com.sun.faces.util.Util;
-import java.io.IOException;
-import javax.el.*;
-import javax.faces.*;
-import javax.faces.component.*;
-import javax.faces.context.*;
-import javax.faces.convert.*;
-import javax.faces.el.*;
-import javax.faces.event.*;
-import javax.faces.validator.*;
-import javax.faces.webapp.*;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /*
@@ -242,20 +234,20 @@ public class PanelGridTag extends UIComponentELTag {
 
     // General Methods
     public String getRendererType() {
-        return "javax.faces.Grid";
+        return "jakarta.faces.Grid";
     }
 
     public String getComponentType() {
-        return "javax.faces.HtmlPanelGrid";
+        return "jakarta.faces.HtmlPanelGrid";
     }
 
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
-        javax.faces.component.UIPanel panel = null;
+        jakarta.faces.component.UIPanel panel = null;
         try {
-            panel = (javax.faces.component.UIPanel) component;
+            panel = (jakarta.faces.component.UIPanel) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: javax.faces.component.UIPanel.  Perhaps you're missing a tag?");
+            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIPanel.  Perhaps you're missing a tag?");
         }
 
         if (bgcolor != null) {

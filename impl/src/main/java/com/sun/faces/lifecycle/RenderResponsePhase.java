@@ -19,22 +19,22 @@
 package com.sun.faces.lifecycle;
 
 
-import javax.faces.FacesException;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PostRenderViewEvent;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.DebugUtil;
 
-import javax.faces.event.PreRenderViewEvent;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PostRenderViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.view.ViewDeclarationLanguage;
+
+import com.sun.faces.util.DebugUtil;
 
 
 /**

@@ -18,10 +18,12 @@ package com.sun.faces.mock;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
+
 import org.apache.commons.beanutils.PropertyUtils;
+
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
 
 /**
  * <p>

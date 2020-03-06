@@ -54,21 +54,6 @@ import java.util.regex.Pattern;
 import javax.el.ELResolver;
 import javax.el.ValueExpression;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.webapp.FacesServlet;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
@@ -88,6 +73,22 @@ import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.io.FastStringWriter;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.webapp.FacesServlet;
 
 /**
  * <B>Util</B> is a class ...
@@ -1008,7 +1009,7 @@ public class Util {
 
     /**
      * <p>Returns the URL pattern of the
-     * {@link javax.faces.webapp.FacesServlet} that
+     * {@link jakarta.faces.webapp.FacesServlet} that
      * is executing the current request.  If there are multiple
      * URL patterns, the value returned by
      * <code>HttpServletRequest.getServletPath()</code> and
@@ -1016,7 +1017,7 @@ public class Util {
      * used to determine which mapping to return.</p>
      * If no mapping can be determined, it most likely means
      * that this particular request wasn't dispatched through
-     * the {@link javax.faces.webapp.FacesServlet}.
+     * the {@link jakarta.faces.webapp.FacesServlet}.
      * <p>
      * 
      * <b>NOTE:</b> This method was supposed to be replaced with the "mapping API"
@@ -1025,7 +1026,7 @@ public class Util {
      *
      * @param context the {@link FacesContext} of the current request
      *
-     * @return the URL pattern of the {@link javax.faces.webapp.FacesServlet}
+     * @return the URL pattern of the {@link jakarta.faces.webapp.FacesServlet}
      *         or <code>null</code> if no mapping can be determined
      *
      * @throws NullPointerException if <code>context</code> is null
@@ -1067,7 +1068,7 @@ public class Util {
     }
 
     /**
-     * <p>Return the appropriate {@link javax.faces.webapp.FacesServlet} mapping
+     * <p>Return the appropriate {@link jakarta.faces.webapp.FacesServlet} mapping
      * based on the servlet path of the current request.</p>
      *
      * @param externalContext the external context of the request

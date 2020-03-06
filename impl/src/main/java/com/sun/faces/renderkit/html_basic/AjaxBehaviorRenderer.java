@@ -22,27 +22,28 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.component.ActionSource;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.html.HtmlCommandScript;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.render.ClientBehaviorRenderer;
-
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandScript;
+import jakarta.faces.component.search.ComponentNotFoundException;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.render.ClientBehaviorRenderer;
+
 import java.util.EnumSet;
 import java.util.Set;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.search.ComponentNotFoundException;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
 
 /*
  *<b>AjaxBehaviorRenderer</b> renders Ajax behavior for a component.
@@ -63,7 +64,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
         if (!(behavior instanceof AjaxBehavior)) {
             // TODO: use MessageUtils for this error message?
             throw new IllegalArgumentException(
-                "Instance of javax.faces.component.behavior.AjaxBehavior required: " + behavior);
+                "Instance of jakarta.faces.component.behavior.AjaxBehavior required: " + behavior);
         }
 
         if (((AjaxBehavior)behavior).isDisabled()) {
@@ -84,7 +85,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
         if (!(behavior instanceof AjaxBehavior)) {
             // TODO: use MessageUtils for this error message?
             throw new IllegalArgumentException(
-                "Instance of javax.faces.component.behavior.AjaxBehavior required: " + behavior);
+                "Instance of jakarta.faces.component.behavior.AjaxBehavior required: " + behavior);
         }
 
         AjaxBehavior ajaxBehavior = (AjaxBehavior)behavior;

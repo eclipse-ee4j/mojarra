@@ -21,23 +21,23 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.render.Renderer;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.render.Renderer;
 
 /**
  * <p>Base class for shared behavior between Script and Stylesheet renderers.

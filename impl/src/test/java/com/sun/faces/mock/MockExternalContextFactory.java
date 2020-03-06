@@ -16,13 +16,14 @@
 
 package com.sun.faces.mock;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.context.ExternalContextFactory;
-import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContextFactory;
 
 public class MockExternalContextFactory extends ExternalContextFactory {
 

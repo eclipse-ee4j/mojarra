@@ -19,9 +19,10 @@ package com.sun.faces.facelets.tag.ui;
 import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.facelets.util.FastWriter;
 
-import javax.faces.component.UIComponentBase;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;

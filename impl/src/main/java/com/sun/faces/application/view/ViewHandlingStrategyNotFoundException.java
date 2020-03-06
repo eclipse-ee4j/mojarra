@@ -16,7 +16,7 @@
 
 package com.sun.faces.application.view;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * Indicates that no {@link com.sun.faces.application.view.ViewHandlingStrategy}

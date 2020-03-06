@@ -50,7 +50,7 @@ public class NoWebXMLIT {
         String pageAsText = page.asText();
         assertTrue(pageAsText.contains("Good Morning"));
         String pageText = page.asXml();
-        assertTrue(pageText.contains("<input type=\"hidden\" name=\"javax.faces.ViewState\" id="));
+        assertTrue(pageText.contains("<input type=\"hidden\" name=\"jakarta.faces.ViewState\" id="));
 
         page = webClient.getPage(webUrl + "hello.jsf");
 
@@ -59,7 +59,7 @@ public class NoWebXMLIT {
         pageAsText = page.asText();
         assertTrue(pageAsText.contains("Good Morning"));
         pageText = page.asXml();
-        assertTrue(pageText.contains("<input type=\"hidden\" name=\"javax.faces.ViewState\" id="));
+        assertTrue(pageText.contains("<input type=\"hidden\" name=\"jakarta.faces.ViewState\" id="));
 
         page = webClient.getPage(webUrl + "hello.faces");
 
@@ -68,6 +68,6 @@ public class NoWebXMLIT {
         pageAsText = page.asText();
         assertTrue(pageAsText.contains("Good Morning"));        
         pageText = page.asXml();
-        assertTrue(pageText.contains("<input type=\"hidden\" name=\"javax.faces.ViewState\" id="));
+        assertTrue(pageText.contains("<input type=\"hidden\" name=\"jakarta.faces.ViewState\" id="));
     }
 }

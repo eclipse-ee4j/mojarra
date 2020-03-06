@@ -16,15 +16,15 @@
 
 package com.sun.faces.component.visit;
 
-import javax.faces.component.visit.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.visit.*;
+import jakarta.faces.context.FacesContext;
 
 /**
  *

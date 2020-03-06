@@ -16,26 +16,30 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import com.sun.faces.application.NavigationHandlerImpl;
-import com.sun.faces.flow.FlowHandlerImpl;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.util.Util;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import javax.faces.application.*;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutcomeTarget;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionListener;
-import javax.faces.flow.FlowHandler;
-import javax.faces.lifecycle.ClientWindow;
+
+import com.sun.faces.application.NavigationHandlerImpl;
+import com.sun.faces.flow.FlowHandlerImpl;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.util.Util;
+
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutcomeTarget;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.lifecycle.ClientWindow;
 
 public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
 
@@ -141,7 +145,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
 
     /**
      * <p>Resolve the target view id and then delegate to
-     * {@link ViewHandler#getBookmarkableURL(javax.faces.context.FacesContext, String, java.util.Map, boolean)}
+     * {@link ViewHandler#getBookmarkableURL(jakarta.faces.context.FacesContext, String, java.util.Map, boolean)}
      * to produce a redirect URL, which will add the page parameters if necessary
      * and properly prioritizing the parameter overrides.</p>
      *

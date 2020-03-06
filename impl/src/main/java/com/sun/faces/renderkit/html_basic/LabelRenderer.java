@@ -21,19 +21,20 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.logging.Level;
 
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import java.util.EnumSet;
 import java.util.Set;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHint;
 
 /** <p><B>LabelRenderer</B> renders Label element.<p>. */
 public class LabelRenderer extends HtmlBasicInputRenderer {

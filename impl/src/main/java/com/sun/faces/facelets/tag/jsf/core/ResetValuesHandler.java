@@ -17,13 +17,6 @@
 package com.sun.faces.facelets.tag.jsf.core;
 
 
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,10 +24,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-import javax.faces.component.UIViewRoot;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
+
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
 
 public final class ResetValuesHandler extends ActionListenerHandlerBase
       implements ActionSource2AttachedObjectHandler {

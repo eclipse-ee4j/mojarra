@@ -23,14 +23,16 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+
 import com.sun.faces.util.RequestStateManager;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.webapp.UIComponentClassicTagBase;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -55,7 +57,7 @@ import java.util.logging.Logger;
 /**
  * <p>Tag action that loads the specified ResourceBundle as a Map into
  * the request scope of the current {@link
- * javax.faces.context.FacesContext}.</p>
+ * jakarta.faces.context.FacesContext}.</p>
  * <p/>
  * <p>The user is discouraged from using multiple dot syntax in their
  * resource bundle keys.  For example, for the bundle loaded under the

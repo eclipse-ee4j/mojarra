@@ -18,11 +18,12 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.NumberConverter;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.convert.Converter;
-import javax.faces.convert.NumberConverter;
-import javax.faces.view.facelets.*;
 
 /**
  * Register a NumberConverter instance on the UIComponent associated with the

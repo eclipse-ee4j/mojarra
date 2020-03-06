@@ -17,7 +17,9 @@
 package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.config.FaceletsConfiguration;
-import javax.faces.context.FacesContext;
+
+import jakarta.faces.context.FacesContext;
+
 import java.io.IOException;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;

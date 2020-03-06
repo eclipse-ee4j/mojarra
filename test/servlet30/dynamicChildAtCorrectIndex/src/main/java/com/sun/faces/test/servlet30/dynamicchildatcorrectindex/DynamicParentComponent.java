@@ -75,7 +75,7 @@ public class DynamicParentComponent extends UIComponentBase implements SystemEve
     public void processEvent(SystemEvent event)
             throws AbortProcessingException {
         FacesContext context = FacesContext.getCurrentInstance();
-        HtmlOutputText outputText = (HtmlOutputText) context.getApplication().createComponent("javax.faces.HtmlOutputText");
+        HtmlOutputText outputText = (HtmlOutputText) context.getApplication().createComponent("jakarta.faces.HtmlOutputText");
         outputText.setValue("Dynamic Text");
         outputText.setEscape(false);
         getChildren().add(1, outputText);

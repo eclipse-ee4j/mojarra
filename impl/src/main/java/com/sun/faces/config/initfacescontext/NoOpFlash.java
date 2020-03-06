@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 
 public class NoOpFlash extends Flash {
 

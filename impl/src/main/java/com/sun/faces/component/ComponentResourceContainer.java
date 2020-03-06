@@ -16,9 +16,10 @@
 
 package com.sun.faces.component;
 
-import javax.faces.component.UIPanel;
-import javax.faces.context.FacesContext;
 import java.io.IOException;
+
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
 
 public class ComponentResourceContainer extends UIPanel {
 

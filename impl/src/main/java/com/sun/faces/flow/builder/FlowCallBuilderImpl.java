@@ -19,10 +19,12 @@ package com.sun.faces.flow.builder;
 import com.sun.faces.flow.FlowCallNodeImpl;
 import com.sun.faces.flow.ParameterImpl;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.builder.FlowCallBuilder;
+
 import java.util.Map;
 import javax.el.ValueExpression;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.builder.FlowCallBuilder;
 
 public class FlowCallBuilderImpl extends FlowCallBuilder {
     

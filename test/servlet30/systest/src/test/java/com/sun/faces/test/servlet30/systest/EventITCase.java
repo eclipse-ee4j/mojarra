@@ -78,10 +78,10 @@ public class EventITCase extends HtmlUnitFacesITCase {
 
     public void testBeforeViewRender() throws Exception {
         HtmlPage page = getPage("/faces/eventTag01.xhtml");
-        assertTrue(-1 != page.asText().indexOf("class javax.faces.component.UIViewRoot pre-render"));
+        assertTrue(-1 != page.asText().indexOf("class jakarta.faces.component.UIViewRoot pre-render"));
 
         page = getPage("/faces/eventTag02.xhtml");
-        assertTrue(-1 != page.asText().indexOf("class javax.faces.component.UIViewRoot pre-render"));
+        assertTrue(-1 != page.asText().indexOf("class jakarta.faces.component.UIViewRoot pre-render"));
 
     }
 
@@ -113,23 +113,23 @@ public class EventITCase extends HtmlUnitFacesITCase {
 
         // Short name
         s = outputs.get(0);
-        assertTrue(("The 'javax.faces.event.PreRenderComponentEvent' event fired!").equals(s.asText()));
+        assertTrue(("The 'jakarta.faces.event.PreRenderComponentEvent' event fired!").equals(s.asText()));
 
         // Long name
         s = outputs.get(1);
-        assertTrue(("The 'javax.faces.event.PreRenderComponentEvent' event fired!").equals(s.asText()));
+        assertTrue(("The 'jakarta.faces.event.PreRenderComponentEvent' event fired!").equals(s.asText()));
 
         // Short Name
         s = outputs.get(2);
-        assertTrue(("The 'javax.faces.event.PostAddToViewEvent' event fired!").equals(s.asText()));
+        assertTrue(("The 'jakarta.faces.event.PostAddToViewEvent' event fired!").equals(s.asText()));
 
         // Long name
         s = outputs.get(3);
-        assertTrue(("The 'javax.faces.event.PostAddToViewEvent' event fired!").equals(s.asText()));
+        assertTrue(("The 'jakarta.faces.event.PostAddToViewEvent' event fired!").equals(s.asText()));
 
         // Fully-qualified class name
         s = outputs.get(4);
-        assertTrue(("The 'javax.faces.event.PreRenderComponentEvent' event fired!").equals(s.asText()));
+        assertTrue(("The 'jakarta.faces.event.PreRenderComponentEvent' event fired!").equals(s.asText()));
 
         // No-arg
         s = outputs.get(5);

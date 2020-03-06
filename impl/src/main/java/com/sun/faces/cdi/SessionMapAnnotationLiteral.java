@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.SessionMap;
+
+import jakarta.faces.annotation.SessionMap;
 
 /**
  * An annotation literal for <code>@SessionMap<code>.

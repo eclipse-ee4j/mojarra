@@ -18,15 +18,15 @@
 
 package com.sun.faces.lifecycle;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
 
 /**
  * <B>Lifetime And Scope</B> <P> Same lifetime and scope as

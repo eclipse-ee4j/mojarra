@@ -28,7 +28,7 @@ public class JavaBackedComponentDefaultAttrValues extends UINamingContainer {
 
     @Override
     public String getFamily() {
-        return "javax.faces.NamingContainer";
+        return "jakarta.faces.NamingContainer";
     }
 
     @Override

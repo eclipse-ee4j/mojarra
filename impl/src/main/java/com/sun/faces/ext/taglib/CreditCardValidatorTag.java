@@ -17,10 +17,11 @@
 package com.sun.faces.ext.taglib;
 
 import com.sun.faces.ext.validator.CreditCardValidator;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.webapp.ValidatorELTag;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.webapp.ValidatorELTag;
 
 
 /**

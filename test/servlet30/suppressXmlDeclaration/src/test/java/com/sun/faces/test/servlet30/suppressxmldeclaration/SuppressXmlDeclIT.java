@@ -60,6 +60,6 @@ public class SuppressXmlDeclIT {
 
         page = webClient.getPage(webUrl + "faces/index.xhtml");
         String xml = page.asXml();
-        assertTrue(xml.contains("javax.faces.ViewState"));
+        assertTrue(xml.contains("jakarta.faces.ViewState"));
     }
 }

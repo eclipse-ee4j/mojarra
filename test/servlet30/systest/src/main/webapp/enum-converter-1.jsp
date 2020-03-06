@@ -17,10 +17,10 @@
 --%>
 
 <%@ page contentType="text/html"
-%><%@ page import="javax.faces.component.UIInput" 
-%><%@ page import="javax.faces.context.FacesContext" 
-%><%@ page import="javax.faces.convert.ConverterException"
-%><%@ page import="javax.faces.convert.EnumConverter"
+%><%@ page import="jakarta.faces.component.UIInput" 
+%><%@ page import="jakarta.faces.context.FacesContext" 
+%><%@ page import="jakarta.faces.convert.ConverterException"
+%><%@ page import="jakarta.faces.convert.EnumConverter"
 %><%@ page import="com.sun.faces.systest.model.EnumBean"
 %><%
 

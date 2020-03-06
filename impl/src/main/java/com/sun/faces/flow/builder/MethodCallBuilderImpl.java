@@ -17,12 +17,14 @@
 package com.sun.faces.flow.builder;
 
 import com.sun.faces.flow.MethodCallNodeImpl;
+
+import jakarta.faces.flow.Parameter;
+import jakarta.faces.flow.builder.MethodCallBuilder;
+
 import java.util.List;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.flow.Parameter;
-import javax.faces.flow.builder.MethodCallBuilder;
 
 public class MethodCallBuilderImpl extends MethodCallBuilder {
     

@@ -22,13 +22,14 @@ import com.sun.faces.facelets.tag.jsf.FacesComponentTagLibrary;
 import com.sun.faces.facelets.tag.jsf.LazyTagLibrary;
 import com.sun.faces.util.Util;
 
-import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
+
 import java.lang.reflect.Method;
 import java.util.List;
 

@@ -21,19 +21,19 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.convert.Converter;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.model.SelectItemGroup;
 
 /**
  * <B>SelectManyCheckboxListRenderer</B> is a class that renders the

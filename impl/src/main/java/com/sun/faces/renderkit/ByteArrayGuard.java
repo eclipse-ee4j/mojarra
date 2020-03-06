@@ -21,14 +21,16 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
 
 import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+
 import com.sun.faces.RIConstants;
 
 import java.security.InvalidAlgorithmParameterException;

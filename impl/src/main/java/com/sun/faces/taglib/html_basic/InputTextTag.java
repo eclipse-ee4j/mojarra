@@ -18,18 +18,14 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import com.sun.faces.util.Util;
-import java.io.IOException;
-import javax.el.*;
-import javax.faces.*;
-import javax.faces.component.*;
-import javax.faces.context.*;
-import javax.faces.convert.*;
-import javax.faces.el.*;
-import javax.faces.event.*;
-import javax.faces.validator.*;
-import javax.faces.webapp.*;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.MethodExpressionValueChangeListener;
+import jakarta.faces.validator.MethodExpressionValidator;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /*
@@ -272,20 +268,20 @@ public class InputTextTag extends UIComponentELTag {
 
     // General Methods
     public String getRendererType() {
-        return "javax.faces.Text";
+        return "jakarta.faces.Text";
     }
 
     public String getComponentType() {
-        return "javax.faces.HtmlInputText";
+        return "jakarta.faces.HtmlInputText";
     }
 
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
-        javax.faces.component.UIInput input = null;
+        jakarta.faces.component.UIInput input = null;
         try {
-            input = (javax.faces.component.UIInput) component;
+            input = (jakarta.faces.component.UIInput) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: javax.faces.component.UIInput.  Perhaps you're missing a tag?");
+            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIInput.  Perhaps you're missing a tag?");
         }
 
         if (converter != null) {

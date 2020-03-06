@@ -18,9 +18,9 @@ package com.sun.faces.mock;
 
 import java.io.IOException;
 
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.Resource;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
 
 public class MockResourceHandler extends ResourceHandler {
 
@@ -52,9 +52,9 @@ public class MockResourceHandler extends ResourceHandler {
 
     public String getRendererTypeForResourceName(String resourceName) {
         if (resourceName.endsWith(".js")) {
-            return "javax.faces.resource.Script";
+            return "jakarta.faces.resource.Script";
         } else if (resourceName.endsWith(".css")) {
-            return "javax.faces.resource.Stylesheet";
+            return "jakarta.faces.resource.Stylesheet";
         } else {
             return null;
         }

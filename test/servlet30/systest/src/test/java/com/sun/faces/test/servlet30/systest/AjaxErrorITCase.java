@@ -89,7 +89,7 @@ public class AjaxErrorITCase extends HtmlUnitFacesITCase {
             button.click();
 
             assertEquals(1, collectedAlerts.size());
-            String serverError = "serverError:\\sclass javax.faces.el.MethodNotFoundException /ajax/ajaxError.xhtml.*action=.*evalBean.error.*: Method not fou.*";
+            String serverError = "serverError:\\sclass jakarta.faces.el.MethodNotFoundException /ajax/ajaxError.xhtml.*action=.*evalBean.error.*: Method not fou.*";
             String collectedAlertsStr = collectedAlerts.get(0).substring(0, 130);
             assertTrue(collectedAlertsStr.matches(serverError));
 

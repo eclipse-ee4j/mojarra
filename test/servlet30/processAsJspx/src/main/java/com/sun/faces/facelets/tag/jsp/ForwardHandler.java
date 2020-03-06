@@ -55,7 +55,7 @@ public class ForwardHandler extends TagHandler {
 
     private final TagAttribute page;
     private static final Logger LOGGER =
-          Logger.getLogger("javax.faces.webapp", "javax.faces.LogStrings");
+          Logger.getLogger("jakarta.faces.webapp", "jakarta.faces.LogStrings");
 
 
     public ForwardHandler(TagConfig config) {

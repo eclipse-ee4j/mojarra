@@ -38,30 +38,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.MethodExpression;
-import javax.faces.FacesException;
-import javax.faces.application.ProtectedViewException;
-import javax.faces.application.ViewExpiredException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.event.PostRestoreStateEvent;
-import javax.faces.flow.FlowHandler;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewMetadata;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
@@ -69,6 +45,32 @@ import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProtectedViewException;
+import jakarta.faces.application.ViewExpiredException;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.event.PostRestoreStateEvent;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewMetadata;
+
 import static com.sun.faces.util.Util.isOneOf;
 
 /**
@@ -87,7 +89,7 @@ public class RestoreViewPhase extends Phase {
     private WebConfiguration webConfig;
 
     private static String SKIP_ITERATION_HINT =
-        "javax.faces.visit.SKIP_ITERATION";
+        "jakarta.faces.visit.SKIP_ITERATION";
 
 
     // ---------------------------------------------------------- Public Methods
@@ -494,7 +496,7 @@ public class RestoreViewPhase extends Phase {
      *
      * If the error occurred during a post-back and a matching
      * error-page definition was found, then an attempt to restore
-     * the error view would be made as the javax.faces.ViewState
+     * the error view would be made as the jakarta.faces.ViewState
      * marker would still be in the request parameters.
      *
      * Use this method to determine if the current request is

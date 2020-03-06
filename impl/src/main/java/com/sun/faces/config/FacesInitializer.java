@@ -30,25 +30,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.annotation.FacesConfig;
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-import javax.faces.bean.ManagedBean;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ListenersFor;
-import javax.faces.event.NamedEvent;
-import javax.faces.event.PhaseListener;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.Renderer;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.view.facelets.FaceletsResourceResolver;
-import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -60,6 +41,26 @@ import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpoint;
 
 import com.sun.faces.cdi.CdiExtension;
+
+import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.ListenersFor;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.webapp.FacesServlet;
 
 /**
  * Adds mappings <em>*.xhtml</em>, <em>/faces</em>, <em>*.jsf</em>, and <em>*.faces</em> for the
@@ -201,9 +202,9 @@ public class FacesInitializer implements ServletContainerInitializer {
             return;
         }
 
-        ServletRegistration reg = servletContext.addServlet("FacesServlet", "javax.faces.webapp.FacesServlet");
+        ServletRegistration reg = servletContext.addServlet("FacesServlet", "jakarta.faces.webapp.FacesServlet");
 
-        if ("true".equalsIgnoreCase(servletContext.getInitParameter("javax.faces.DISABLE_FACESSERVLET_TO_XHTML")) ) {
+        if ("true".equalsIgnoreCase(servletContext.getInitParameter("jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML")) ) {
             reg.addMapping("/faces/*", "*.jsf", "*.faces");
         } else {
             reg.addMapping("/faces/*", "*.jsf", "*.faces", "*.xhtml");
@@ -238,7 +239,7 @@ public class FacesInitializer implements ServletContainerInitializer {
             return;
         }
 
-        if (!Boolean.valueOf(ctx.getInitParameter("javax.faces.ENABLE_WEBSOCKET_ENDPOINT"))) {
+        if (!Boolean.valueOf(ctx.getInitParameter("jakarta.faces.ENABLE_WEBSOCKET_ENDPOINT"))) {
             // Register websocket endpoint is not enabled
             return;
         }

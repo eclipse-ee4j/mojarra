@@ -19,13 +19,15 @@ package com.sun.faces.facelets.util;
 import com.sun.faces.RIConstants;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.ValueBinding;
+
 import javax.el.Expression;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;

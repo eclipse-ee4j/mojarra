@@ -28,9 +28,9 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
 
 /**
  * Factory class for creating <code>ConfigurationResourceProvider</code> instances

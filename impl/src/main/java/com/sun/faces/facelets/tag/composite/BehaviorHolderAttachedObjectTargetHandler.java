@@ -16,10 +16,10 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
 
 
 public class BehaviorHolderAttachedObjectTargetHandler extends

@@ -31,7 +31,7 @@
             <title>JSP Page</title>
         </head>
         <body>
-            Param set: <h:outputText value="#{initParam['javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER']}"/> <br/>
+            Param set: <h:outputText value="#{initParam['jakarta.faces.DISABLE_FACELET_JSF_VIEWHANDLER']}"/> <br/>
         </body>
     </html>
 </f:view>

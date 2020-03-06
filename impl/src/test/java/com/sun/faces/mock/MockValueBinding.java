@@ -19,16 +19,17 @@ package com.sun.faces.mock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.faces.application.Application;
-import javax.faces.component.StateHolder;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
 
 /**
  * <p>

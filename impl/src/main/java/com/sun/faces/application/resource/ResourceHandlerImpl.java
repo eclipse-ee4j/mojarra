@@ -25,10 +25,20 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import static com.sun.faces.util.RequestStateManager.RESOURCE_REQUEST;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+
 import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.notNegative;
 import static com.sun.faces.util.Util.notNull;
+import static jakarta.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Production;
+
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Boolean.FALSE;
@@ -45,13 +55,7 @@ import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import static javax.faces.application.ProjectStage.Development;
-import static javax.faces.application.ProjectStage.Production;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 
@@ -203,7 +207,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
     
     /**
-     * @see ResourceHandler#isResourceRequest(javax.faces.context.FacesContext)
+     * @see ResourceHandler#isResourceRequest(jakarta.faces.context.FacesContext)
      */
     @Override
     public boolean isResourceRequest(FacesContext context) {
@@ -229,10 +233,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
         if (null != contentType) {
             contentType = contentType.toLowerCase();
             if (-1 != contentType.indexOf("javascript")) {
-                rendererType = "javax.faces.resource.Script";
+                rendererType = "jakarta.faces.resource.Script";
             }
             else if (-1 != contentType.indexOf("css")) {
-                rendererType = "javax.faces.resource.Stylesheet";
+                rendererType = "jakarta.faces.resource.Stylesheet";
             }
         }
         
@@ -241,7 +245,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
 
     /**
-     * @see javax.faces.application.ResourceHandler#handleResourceRequest(javax.faces.context.FacesContext)
+     * @see jakarta.faces.application.ResourceHandler#handleResourceRequest(jakarta.faces.context.FacesContext)
      */
     @Override
     public void handleResourceRequest(FacesContext context) throws IOException {
@@ -548,7 +552,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     /**
      * @param resourceId the normalized request path as returned by
-     *  {@link #normalizeResourceRequest(javax.faces.context.FacesContext)}
+     *  {@link #normalizeResourceRequest(jakarta.faces.context.FacesContext)}
      * @return <code>true</code> if the request matces an excluded resource,
      *  otherwise <code>false</code>
      */

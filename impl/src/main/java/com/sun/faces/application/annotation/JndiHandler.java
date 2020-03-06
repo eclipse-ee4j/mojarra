@@ -21,11 +21,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
 
 /**
  * An abstract RuntimeAnnotationHandler that is capable of dealing with JNDI.

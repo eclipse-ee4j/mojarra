@@ -36,6 +36,20 @@ import static com.sun.faces.util.Util.saveDOCTYPEToFacesContextAttributes;
 import static com.sun.faces.util.Util.saveXMLDECLToFacesContextAttributes;
 import static com.sun.faces.util.Util.setViewPopulated;
 import static com.sun.faces.util.Util.split;
+import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
+import static jakarta.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
+import static jakarta.faces.application.StateManager.IS_BUILDING_INITIAL_STATE;
+import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_SERVER;
+import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
+import static jakarta.faces.application.ViewHandler.DEFAULT_FACELETS_SUFFIX;
+import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
+import static jakarta.faces.component.UIComponent.BEANINFO_KEY;
+import static jakarta.faces.component.UIComponent.COMPOSITE_FACET_NAME;
+import static jakarta.faces.component.UIComponent.VIEW_LOCATION_KEY;
+import static jakarta.faces.component.UIViewRoot.COMPONENT_TYPE;
+import static jakarta.faces.view.AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY;
+import static jakarta.faces.view.facelets.FaceletContext.FACELET_CONTEXT_KEY;
 import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
@@ -43,20 +57,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
-import static javax.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
-import static javax.faces.application.ProjectStage.Development;
-import static javax.faces.application.Resource.COMPONENT_RESOURCE_KEY;
-import static javax.faces.application.StateManager.IS_BUILDING_INITIAL_STATE;
-import static javax.faces.application.StateManager.STATE_SAVING_METHOD_SERVER;
-import static javax.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
-import static javax.faces.application.ViewHandler.DEFAULT_FACELETS_SUFFIX;
-import static javax.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
-import static javax.faces.component.UIComponent.BEANINFO_KEY;
-import static javax.faces.component.UIComponent.COMPOSITE_FACET_NAME;
-import static javax.faces.component.UIComponent.VIEW_LOCATION_KEY;
-import static javax.faces.component.UIViewRoot.COMPONENT_TYPE;
-import static javax.faces.view.AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY;
-import static javax.faces.view.facelets.FaceletContext.FACELET_CONTEXT_KEY;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 import java.beans.BeanDescriptor;
@@ -81,48 +81,6 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Resource;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.application.ViewVisitOption;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.ContextCallback;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.MethodExpressionActionListener;
-import javax.faces.event.MethodExpressionValueChangeListener;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.render.RenderKit;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.validator.MethodExpressionValidator;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
-import javax.faces.view.ActionSource2AttachedObjectTarget;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.AttachedObjectTarget;
-import javax.faces.view.BehaviorHolderAttachedObjectHandler;
-import javax.faces.view.BehaviorHolderAttachedObjectTarget;
-import javax.faces.view.EditableValueHolderAttachedObjectHandler;
-import javax.faces.view.EditableValueHolderAttachedObjectTarget;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ValueHolderAttachedObjectHandler;
-import javax.faces.view.ValueHolderAttachedObjectTarget;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
-import javax.faces.view.ViewMetadata;
-import javax.faces.view.facelets.Facelet;
-import javax.faces.view.facelets.FaceletContext;
 import javax.servlet.http.HttpSession;
 
 import com.sun.faces.application.ApplicationAssociate;
@@ -138,6 +96,50 @@ import com.sun.faces.facelets.tag.ui.UIDebug;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.Cache.Factory;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.application.ViewVisitOption;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.MethodExpressionActionListener;
+import jakarta.faces.event.MethodExpressionValueChangeListener;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.validator.MethodExpressionValidator;
+import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.ActionSource2AttachedObjectTarget;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.AttachedObjectTarget;
+import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
+import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
+import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
+import jakarta.faces.view.EditableValueHolderAttachedObjectTarget;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ValueHolderAttachedObjectHandler;
+import jakarta.faces.view.ValueHolderAttachedObjectTarget;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.view.ViewMetadata;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletContext;
+
 import com.sun.faces.util.ComponentStruct;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.HtmlUtils;
@@ -196,10 +198,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     
     /**
      * <p>
-     * If {@link UIDebug#debugRequest(javax.faces.context.FacesContext)}} is <code>true</code>,
+     * If {@link UIDebug#debugRequest(jakarta.faces.context.FacesContext)}} is <code>true</code>,
      * simply return a new UIViewRoot(), otherwise, call the default logic.
      * </p>
-     * @see ViewDeclarationLanguage#restoreView(javax.faces.context.FacesContext, java.lang.String) 
+     * @see ViewDeclarationLanguage#restoreView(jakarta.faces.context.FacesContext, java.lang.String) 
      */
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId) {
@@ -290,7 +292,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
     
     /**
-     * @see ViewDeclarationLanguage#createView(javax.faces.context.FacesContext, java.lang.String)
+     * @see ViewDeclarationLanguage#createView(jakarta.faces.context.FacesContext, java.lang.String)
      */
     @Override
     public UIViewRoot createView(FacesContext ctx, String viewId) {
@@ -386,7 +388,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
     
     /**
-     * @see javax.faces.view.ViewDeclarationLanguage#renderView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)
      */
     @Override
     public void renderView(FacesContext ctx, UIViewRoot viewToRender) throws IOException {
@@ -530,10 +532,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      *
      * The instances are
      *
-     * 1. tmp: a javax.faces.NamingContainer to serve as the temporary
+     * 1. tmp: a jakarta.faces.NamingContainer to serve as the temporary
      * top level component
      *
-     * 2. facetComponent: a javax.faces.Panel to serve as the parent
+     * 2. facetComponent: a jakarta.faces.Panel to serve as the parent
      * UIComponent that is passed to Facelets so that the <cc:interface>
      * section can be parsed and understood.
      *
@@ -565,12 +567,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         VariableMapper orig = faceletContext.getVariableMapper();
 
         // Create tmp and facetComponent
-        UIComponent tmp = context.getApplication().createComponent("javax.faces.NamingContainer");
-        UIPanel facetComponent = (UIPanel) context.getApplication().createComponent("javax.faces.Panel");
+        UIComponent tmp = context.getApplication().createComponent("jakarta.faces.NamingContainer");
+        UIPanel facetComponent = (UIPanel) context.getApplication().createComponent("jakarta.faces.Panel");
 
         // PENDING I think this can be skipped because we don't render
         // this component instance.
-        facetComponent.setRendererType("javax.faces.Group");
+        facetComponent.setRendererType("jakarta.faces.Group");
 
         // PENDING This could possibly be skipped too.  However, I think
         // this is important because other tag handlers, within
@@ -637,7 +639,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
     
     /**
-     * @see javax.faces.view.ViewDeclarationLanguage#getScriptComponentResource(javax.faces.context.FacesContext, javax.faces.application.Resource)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getScriptComponentResource(jakarta.faces.context.FacesContext, jakarta.faces.application.Resource)
      */
     @Override
     public Resource getScriptComponentResource(FacesContext context, Resource componentResource) {
@@ -648,7 +650,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
-     * @see ViewHandlingStrategy#retargetAttachedObjects(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.util.List)
+     * @see ViewHandlingStrategy#retargetAttachedObjects(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.util.List)
      */
     @SuppressWarnings({"unchecked"})
     @Override
@@ -738,7 +740,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
-     * @see ViewHandlingStrategy#retargetMethodExpressions(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+     * @see ViewHandlingStrategy#retargetMethodExpressions(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent) {
@@ -899,7 +901,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
     
     /**
-     * @see javax.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String)
      */
     @Override
     public Stream<String> getViews(FacesContext context, String path, ViewVisitOption... options) {
@@ -911,7 +913,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
     
     /**
-     * @see javax.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String, int)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String, int)
      */
     @Override
     public Stream<String> getViews(FacesContext context, String path, int maxDepth, ViewVisitOption... options) {

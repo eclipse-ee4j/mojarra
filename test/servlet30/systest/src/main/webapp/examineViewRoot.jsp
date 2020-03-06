@@ -22,7 +22,7 @@
     <title>Show that createView uses overridden ViewRoot</title>
     <%@ taglib uri="http://java.sun.com/jsf/core"  prefix="f" %>
     <%@ taglib uri="http://java.sun.com/jsf/html"  prefix="h" %>
-    <%@ page import="javax.faces.context.FacesContext" %>
+    <%@ page import="jakarta.faces.context.FacesContext" %>
   </head>
 
   <body>
@@ -32,7 +32,7 @@
 FacesContext context = FacesContext.getCurrentInstance();
 
 context.getExternalContext().getRequestMap().put("root", context.getViewRoot().getClass().getName());
-FacesContext.getCurrentInstance().getApplication().addComponent("javax.faces.ViewRoot", "javax.faces.component.UIViewRoot");
+FacesContext.getCurrentInstance().getApplication().addComponent("jakarta.faces.ViewRoot", "jakarta.faces.component.UIViewRoot");
 %>
 
 <f:view>

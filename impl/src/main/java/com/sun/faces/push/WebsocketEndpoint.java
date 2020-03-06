@@ -16,7 +16,7 @@
 
 package com.sun.faces.push;
 
-import static javax.faces.push.PushContext.URI_PREFIX;
+import static jakarta.faces.push.PushContext.URI_PREFIX;
 import static javax.websocket.CloseReason.CloseCodes.GOING_AWAY;
 import static javax.websocket.CloseReason.CloseCodes.VIOLATED_POLICY;
 
@@ -24,11 +24,12 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.push.Push;
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
+
+import jakarta.faces.push.Push;
 
 /**
  * <p class="changed_added_2_3">

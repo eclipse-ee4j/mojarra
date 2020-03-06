@@ -19,15 +19,17 @@ package com.sun.faces.config.processor;
 import com.sun.faces.config.Verifier;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.FacesContext;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 
-import javax.faces.application.Application;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.xml.xpath.XPathExpressionException;
 

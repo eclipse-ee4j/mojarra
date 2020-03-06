@@ -16,9 +16,10 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.faces.view.facelets.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import jakarta.faces.view.facelets.*;
 
 /**
  * 

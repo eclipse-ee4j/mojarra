@@ -18,17 +18,18 @@ package com.sun.faces.facelets.el;
 
 import com.sun.faces.component.CompositeComponentStackManager;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.Location;
+
 import javax.el.ValueExpression;
 import javax.el.ELContext;
-import javax.faces.view.Location;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 
 /**
  * <p>
  * This specialized <code>ValueExpression</code> enables the evaluation of
  * composite component expressions.  Instances of this expression will be
- * created when {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(javax.faces.view.facelets.FaceletContext, Class)}
+ * created when {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
  * is invoked and the expression represents a composite component expression (i.e. #{cc.[properties]}).
  * </p>
  *
@@ -76,9 +77,9 @@ import javax.faces.context.FacesContext;
  * to evaluate the expression, the {@link Location} object will be used to
  * find the composite component that 'owns' the template in which
  * the expression was defined in by comparing the path of the Location with the
- * name and library of the {@link javax.faces.application.Resource} instance associated
+ * name and library of the {@link jakarta.faces.application.Resource} instance associated
  * with each composite component.  If a matching composite component is found,
- * it will be made available to the EL by calling {@link CompositeComponentStackManager#push(javax.faces.component.UIComponent)}.
+ * it will be made available to the EL by calling {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
  * </p>
  */
 public final class ContextualCompositeValueExpression extends ValueExpression {

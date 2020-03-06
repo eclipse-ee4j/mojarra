@@ -17,12 +17,14 @@
 package com.sun.faces.facelets.el;
 
 import javax.el.*;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.VariableResolver;
+
 import java.lang.reflect.Method;
 import java.util.*;
 

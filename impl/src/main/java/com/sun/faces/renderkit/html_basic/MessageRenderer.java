@@ -22,14 +22,14 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Level;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIMessage;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIMessage;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * <p><B>MessageRenderer</B> handles rendering for the Message<p>.

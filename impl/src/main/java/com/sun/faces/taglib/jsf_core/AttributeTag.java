@@ -19,14 +19,15 @@ package com.sun.faces.taglib.jsf_core;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.webapp.UIComponentELTag;
-import javax.faces.webapp.UIComponentClassicTagBase;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /**

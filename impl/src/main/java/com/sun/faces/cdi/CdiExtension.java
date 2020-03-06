@@ -18,8 +18,8 @@ package com.sun.faces.cdi;
 
 import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 import static com.sun.faces.cdi.CdiUtils.getAnnotation;
+import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 import static java.util.Collections.unmodifiableMap;
-import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -43,15 +43,16 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.annotation.FacesConfig;
-import javax.faces.annotation.ManagedProperty;
-import javax.faces.model.DataModel;
-import javax.faces.model.FacesDataModel;
 
 import com.sun.faces.push.WebsocketChannelManager;
 import com.sun.faces.push.WebsocketSessionManager;
 import com.sun.faces.push.WebsocketUserManager;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.ManagedProperty;
+import jakarta.faces.model.DataModel;
+import jakarta.faces.model.FacesDataModel;
 
 
 /**

@@ -22,14 +22,14 @@ import static com.sun.faces.util.Util.getLastModified;
 import static com.sun.faces.util.Util.isExactMapped;
 import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.isResourceExactMappedToFacesServlet;
+import static jakarta.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Production;
+import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
+import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
+import static jakarta.faces.application.ResourceHandler.RESOURCE_IDENTIFIER;
 import static java.util.Collections.emptyMap;
 import static java.util.Locale.US;
 import static java.util.logging.Level.FINEST;
-import static javax.faces.application.ProjectStage.Development;
-import static javax.faces.application.ProjectStage.Production;
-import static javax.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
-import static javax.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
-import static javax.faces.application.ResourceHandler.RESOURCE_IDENTIFIER;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -48,18 +48,19 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+
 /**
- * Default implementation of {@link javax.faces.application.Resource}.
+ * Default implementation of {@link jakarta.faces.application.Resource}.
  * The ResourceImpl instance itself has the same lifespan as the
  * request, however, the ResourceInfo instances that back this object
  * are cached by the ResourceManager to reduce the time spent scanning
@@ -152,7 +153,7 @@ public class ResourceImpl extends Resource implements Externalizable {
 
 
     /**
-     * @see javax.faces.application.Resource#getInputStream()
+     * @see jakarta.faces.application.Resource#getInputStream()
      */
     @Override
     public InputStream getInputStream() throws IOException {
@@ -161,7 +162,7 @@ public class ResourceImpl extends Resource implements Externalizable {
     }
 
     /**
-     * @see javax.faces.application.Resource#getURL()
+     * @see jakarta.faces.application.Resource#getURL()
      */
     @Override
     public URL getURL() {
@@ -172,13 +173,13 @@ public class ResourceImpl extends Resource implements Externalizable {
      * <p>
      * Implementation note.  Any values added to getResponseHeaders()
      * will only be visible across multiple calls to this method when
-     * servicing a resource request (i.e. {@link ResourceHandler#isResourceRequest(javax.faces.context.FacesContext)}
+     * servicing a resource request (i.e. {@link ResourceHandler#isResourceRequest(jakarta.faces.context.FacesContext)}
      * returns <code>true</code>).  If we're not servicing a resource request,
      * an empty Map will be returned and the values added are effectively thrown
      * away.
      * </p>
      * 
-     * @see javax.faces.application.Resource#getResponseHeaders()
+     * @see jakarta.faces.application.Resource#getResponseHeaders()
      */
     @Override
     public Map<String, String> getResponseHeaders() {
@@ -241,7 +242,7 @@ public class ResourceImpl extends Resource implements Externalizable {
     }
 
     /**
-     * @see javax.faces.application.Resource#getRequestPath()
+     * @see jakarta.faces.application.Resource#getRequestPath()
      */
     @Override
     public String getRequestPath() {
@@ -343,7 +344,7 @@ public class ResourceImpl extends Resource implements Externalizable {
 
 
     /**
-     * @see javax.faces.application.Resource#userAgentNeedsUpdate(javax.faces.context.FacesContext)
+     * @see jakarta.faces.application.Resource#userAgentNeedsUpdate(jakarta.faces.context.FacesContext)
      */
     @Override
     public boolean userAgentNeedsUpdate(FacesContext context) {

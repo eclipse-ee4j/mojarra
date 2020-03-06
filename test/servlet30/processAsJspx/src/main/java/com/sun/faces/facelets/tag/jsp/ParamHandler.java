@@ -51,7 +51,7 @@ public class ParamHandler extends TagHandlerImpl {
      * (non-Javadoc)
      * 
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *      jakarta.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException {

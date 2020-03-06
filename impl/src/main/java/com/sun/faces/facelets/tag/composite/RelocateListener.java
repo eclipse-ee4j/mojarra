@@ -16,12 +16,12 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
-import javax.faces.application.Resource;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.view.Location;
 
 /**
  * Base class for listeners used to relocate children and facets within the context

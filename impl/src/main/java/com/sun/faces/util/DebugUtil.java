@@ -29,14 +29,16 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import javax.el.ValueExpression;
 
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -225,7 +227,7 @@ public class DebugUtil {
         indentPrintln(out, "id:" + root.getId());
         indentPrintln(out, "type:" + root.getClass().getName());
 
-        if (root instanceof javax.faces.component.UISelectOne) {
+        if (root instanceof jakarta.faces.component.UISelectOne) {
             Iterator<SelectItem> items = null;
             try {
                 items = RenderKitUtils.getSelectItems(FacesContext.getCurrentInstance(),

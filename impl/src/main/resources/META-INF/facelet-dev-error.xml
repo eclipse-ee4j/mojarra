@@ -60,7 +60,7 @@ function faceletstoggle(id) {
 </script>
 </head>
 <body>
-<div id="javax.faces.error.xhtml">
+<div id="jakarta.faces.error.xhtml">
 <h1>An Error Occurred:</h1>
 <div id="error" class="grayBox" style="border: 1px solid #900;">@@message@@</div>
 <h2><a href="#" onclick="faceletstoggle('trace'); return false;"><span id="traceOff">+</span><span id="traceOn" style="display: none;">-</span> Stack Trace</a></h2>

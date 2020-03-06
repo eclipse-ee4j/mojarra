@@ -18,7 +18,9 @@ package com.sun.faces.facelets.compiler;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
+
+import jakarta.faces.context.FacesContext;
+
 import java.io.IOException;
 
 final class LiteralCommentInstruction implements Instruction {

@@ -21,8 +21,9 @@ import static com.sun.faces.util.Util.startsWithOneOf;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 
-import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
+
+import jakarta.faces.context.ExternalContext;
 
 public class ResourcePathsIterator implements Iterator<String> {
     

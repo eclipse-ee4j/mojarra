@@ -24,7 +24,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import javax.faces.FacesException;
+
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.SortedMap;
@@ -36,6 +36,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import jakarta.faces.FacesException;
 
 /**
  * <p>This utility class is to provide both encryption and

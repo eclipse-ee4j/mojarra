@@ -19,10 +19,11 @@ package com.sun.faces.mock;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
 public class MockRenderKitFactory extends RenderKitFactory {
 

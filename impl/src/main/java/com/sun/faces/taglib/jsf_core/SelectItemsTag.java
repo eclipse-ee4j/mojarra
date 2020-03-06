@@ -17,9 +17,10 @@
 package com.sun.faces.taglib.jsf_core;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectItems;
-import javax.faces.webapp.UIComponentELTag;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectItems;
+import jakarta.faces.webapp.UIComponentELTag;
 
 /**
  * This class is the tag handler that evaluates the
@@ -77,7 +78,7 @@ public class SelectItemsTag extends UIComponentELTag {
 
 
     /**
-     * @see javax.faces.webapp.UIComponentELTag#getRendererType()
+     * @see jakarta.faces.webapp.UIComponentELTag#getRendererType()
      */
     @Override
     public String getRendererType() {
@@ -86,8 +87,8 @@ public class SelectItemsTag extends UIComponentELTag {
 
 
     /**
-     * @see javax.faces.webapp.UIComponentELTag#getComponentType()
-     * @see javax.faces.component.UISelectItems#COMPONENT_TYPE
+     * @see jakarta.faces.webapp.UIComponentELTag#getComponentType()
+     * @see jakarta.faces.component.UISelectItems#COMPONENT_TYPE
      */
     @Override
     public String getComponentType() {
@@ -99,7 +100,7 @@ public class SelectItemsTag extends UIComponentELTag {
 
 
     /**
-     * @see javax.faces.webapp.UIComponentELTag#setProperties(javax.faces.component.UIComponent)
+     * @see jakarta.faces.webapp.UIComponentELTag#setProperties(jakarta.faces.component.UIComponent)
      * @param component
      */
     @Override

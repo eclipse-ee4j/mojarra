@@ -18,8 +18,10 @@ package com.sun.faces.flow.builder;
 
 import com.sun.faces.flow.ReturnNodeImpl;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.flow.builder.ReturnBuilder;
+
 import javax.el.ValueExpression;
-import javax.faces.flow.builder.ReturnBuilder;
 
 public class ReturnBuilderImpl extends ReturnBuilder {
     

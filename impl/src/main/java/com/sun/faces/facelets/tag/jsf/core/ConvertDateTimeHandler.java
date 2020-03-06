@@ -18,11 +18,13 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.convert.Converter;
-import javax.faces.convert.DateTimeConverter;
-import javax.faces.view.facelets.*;
+
 import java.util.TimeZone;
 
 /**

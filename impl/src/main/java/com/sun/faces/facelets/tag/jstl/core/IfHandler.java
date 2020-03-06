@@ -18,12 +18,14 @@ package com.sun.faces.facelets.tag.jstl.core;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
+
 import java.io.IOException;
 
 /**

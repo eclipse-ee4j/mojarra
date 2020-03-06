@@ -57,7 +57,7 @@ public class UITestComponent
 		throws AbortProcessingException
 	{
 		FacesContext context = FacesContext.getCurrentInstance();
-		HtmlOutputText outputText = (HtmlOutputText) context.getApplication().createComponent( "javax.faces.HtmlOutputText" );
+		HtmlOutputText outputText = (HtmlOutputText) context.getApplication().createComponent( "jakarta.faces.HtmlOutputText" );
 		outputText.setValue( "Dynamically added child<br/>" );
 		outputText.setEscape( false );
 

@@ -33,117 +33,117 @@ public final class HtmlLibrary extends AbstractHtmlLibrary {
     public HtmlLibrary(String namespace) {
         super(namespace);
         
-        this.addHtmlComponent("body", "javax.faces.OutputBody",
-                "javax.faces.Body");
+        this.addHtmlComponent("body", "jakarta.faces.OutputBody",
+                "jakarta.faces.Body");
 
-        this.addHtmlComponent("button", "javax.faces.HtmlOutcomeTargetButton",
-                "javax.faces.Button");
+        this.addHtmlComponent("button", "jakarta.faces.HtmlOutcomeTargetButton",
+                "jakarta.faces.Button");
 
-        this.addHtmlComponent("column", "javax.faces.Column", null);
+        this.addHtmlComponent("column", "jakarta.faces.Column", null);
 
-        this.addHtmlComponent("commandButton", "javax.faces.HtmlCommandButton",
-                "javax.faces.Button");
+        this.addHtmlComponent("commandButton", "jakarta.faces.HtmlCommandButton",
+                "jakarta.faces.Button");
 
-        this.addHtmlComponent("commandLink", "javax.faces.HtmlCommandLink",
-                "javax.faces.Link");
+        this.addHtmlComponent("commandLink", "jakarta.faces.HtmlCommandLink",
+                "jakarta.faces.Link");
 
-        this.addHtmlComponent("commandScript", "javax.faces.HtmlCommandScript",
-                "javax.faces.Script");
+        this.addHtmlComponent("commandScript", "jakarta.faces.HtmlCommandScript",
+                "jakarta.faces.Script");
 
-        this.addHtmlComponent("dataTable", "javax.faces.HtmlDataTable",
-                "javax.faces.Table");
+        this.addHtmlComponent("dataTable", "jakarta.faces.HtmlDataTable",
+                "jakarta.faces.Table");
 
-        this.addHtmlComponent("form", "javax.faces.HtmlForm",
-                "javax.faces.Form");
+        this.addHtmlComponent("form", "jakarta.faces.HtmlForm",
+                "jakarta.faces.Form");
 
-        this.addHtmlComponent("graphicImage", "javax.faces.HtmlGraphicImage",
-                "javax.faces.Image");
+        this.addHtmlComponent("graphicImage", "jakarta.faces.HtmlGraphicImage",
+                "jakarta.faces.Image");
 
-        this.addHtmlComponent("head", "javax.faces.Output",
-                "javax.faces.Head");
+        this.addHtmlComponent("head", "jakarta.faces.Output",
+                "jakarta.faces.Head");
 
-        this.addHtmlComponent("html", "javax.faces.Output",
-                "javax.faces.Html");
+        this.addHtmlComponent("html", "jakarta.faces.Output",
+                "jakarta.faces.Html");
 
-        this.addHtmlComponent("doctype", "javax.faces.Output",
-                "javax.faces.Doctype");
+        this.addHtmlComponent("doctype", "jakarta.faces.Output",
+                "jakarta.faces.Doctype");
 
-        this.addHtmlComponent("inputFile", "javax.faces.HtmlInputFile",
-                "javax.faces.File");
+        this.addHtmlComponent("inputFile", "jakarta.faces.HtmlInputFile",
+                "jakarta.faces.File");
 
-        this.addHtmlComponent("inputHidden", "javax.faces.HtmlInputHidden",
-                "javax.faces.Hidden");
+        this.addHtmlComponent("inputHidden", "jakarta.faces.HtmlInputHidden",
+                "jakarta.faces.Hidden");
 
-        this.addHtmlComponent("inputSecret", "javax.faces.HtmlInputSecret",
-                "javax.faces.Secret");
+        this.addHtmlComponent("inputSecret", "jakarta.faces.HtmlInputSecret",
+                "jakarta.faces.Secret");
 
-        this.addHtmlComponent("inputText", "javax.faces.HtmlInputText",
-                "javax.faces.Text");
+        this.addHtmlComponent("inputText", "jakarta.faces.HtmlInputText",
+                "jakarta.faces.Text");
 
-        this.addHtmlComponent("inputTextarea", "javax.faces.HtmlInputTextarea",
-                "javax.faces.Textarea");
+        this.addHtmlComponent("inputTextarea", "jakarta.faces.HtmlInputTextarea",
+                "jakarta.faces.Textarea");
 
-        this.addHtmlComponent("link", "javax.faces.HtmlOutcomeTargetLink",
-                "javax.faces.Link");
+        this.addHtmlComponent("link", "jakarta.faces.HtmlOutcomeTargetLink",
+                "jakarta.faces.Link");
 
-        this.addHtmlComponent("message", "javax.faces.HtmlMessage",
-                "javax.faces.Message");
+        this.addHtmlComponent("message", "jakarta.faces.HtmlMessage",
+                "jakarta.faces.Message");
 
-        this.addHtmlComponent("messages", "javax.faces.HtmlMessages",
-                "javax.faces.Messages");
+        this.addHtmlComponent("messages", "jakarta.faces.HtmlMessages",
+                "jakarta.faces.Messages");
 
-        this.addHtmlComponent("outputFormat", "javax.faces.HtmlOutputFormat",
-                "javax.faces.Format");
+        this.addHtmlComponent("outputFormat", "jakarta.faces.HtmlOutputFormat",
+                "jakarta.faces.Format");
 
-        this.addHtmlComponent("outputLabel", "javax.faces.HtmlOutputLabel",
-                "javax.faces.Label");
+        this.addHtmlComponent("outputLabel", "jakarta.faces.HtmlOutputLabel",
+                "jakarta.faces.Label");
 
-        this.addHtmlComponent("outputLink", "javax.faces.HtmlOutputLink",
-                "javax.faces.Link");
+        this.addHtmlComponent("outputLink", "jakarta.faces.HtmlOutputLink",
+                "jakarta.faces.Link");
 
-        this.addHtmlComponent("outputText", "javax.faces.HtmlOutputText",
-                "javax.faces.Text");
+        this.addHtmlComponent("outputText", "jakarta.faces.HtmlOutputText",
+                "jakarta.faces.Text");
         
         this.addComponent("outputScript",
-                          "javax.faces.Output",
-                          "javax.faces.resource.Script",
+                          "jakarta.faces.Output",
+                          "jakarta.faces.resource.Script",
                           ScriptResourceHandler.class);
 
         this.addComponent("outputStylesheet",
-                          "javax.faces.Output",
-                          "javax.faces.resource.Stylesheet",
+                          "jakarta.faces.Output",
+                          "jakarta.faces.resource.Stylesheet",
                           StylesheetResourceHandler.class);
 
-        this.addHtmlComponent("panelGrid", "javax.faces.HtmlPanelGrid",
-                "javax.faces.Grid");
+        this.addHtmlComponent("panelGrid", "jakarta.faces.HtmlPanelGrid",
+                "jakarta.faces.Grid");
 
-        this.addHtmlComponent("panelGroup", "javax.faces.HtmlPanelGroup",
-                "javax.faces.Group");
+        this.addHtmlComponent("panelGroup", "jakarta.faces.HtmlPanelGroup",
+                "jakarta.faces.Group");
 
         this.addHtmlComponent("selectBooleanCheckbox",
-                              "javax.faces.HtmlSelectBooleanCheckbox",
-                              "javax.faces.Checkbox");
+                              "jakarta.faces.HtmlSelectBooleanCheckbox",
+                              "jakarta.faces.Checkbox");
 
         this.addHtmlComponent("selectManyCheckbox",
-                "javax.faces.HtmlSelectManyCheckbox", "javax.faces.Checkbox");
+                "jakarta.faces.HtmlSelectManyCheckbox", "jakarta.faces.Checkbox");
 
         this.addHtmlComponent("selectManyListbox",
-                "javax.faces.HtmlSelectManyListbox", "javax.faces.Listbox");
+                "jakarta.faces.HtmlSelectManyListbox", "jakarta.faces.Listbox");
 
         this.addHtmlComponent("selectManyMenu",
-                "javax.faces.HtmlSelectManyMenu", "javax.faces.Menu");
+                "jakarta.faces.HtmlSelectManyMenu", "jakarta.faces.Menu");
 
         this.addHtmlComponent("selectOneListbox",
-                "javax.faces.HtmlSelectOneListbox", "javax.faces.Listbox");
+                "jakarta.faces.HtmlSelectOneListbox", "jakarta.faces.Listbox");
 
-        this.addHtmlComponent("selectOneMenu", "javax.faces.HtmlSelectOneMenu",
-                "javax.faces.Menu");
+        this.addHtmlComponent("selectOneMenu", "jakarta.faces.HtmlSelectOneMenu",
+                "jakarta.faces.Menu");
 
         this.addHtmlComponent("selectOneRadio",
-                "javax.faces.HtmlSelectOneRadio", "javax.faces.Radio");
+                "jakarta.faces.HtmlSelectOneRadio", "jakarta.faces.Radio");
 
-        this.addHtmlComponent("title", "javax.faces.Output",
-                "javax.faces.Title");
+        this.addHtmlComponent("title", "jakarta.faces.Output",
+                "jakarta.faces.Title");
     }
 
 }

@@ -25,21 +25,21 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 
 import java.util.Map;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExceptionHandlerFactory;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.ExternalContextFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.lifecycle.Lifecycle;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.impl.DefaultResourceResolver;
 import com.sun.faces.util.Util;
-import javax.faces.component.UIInput;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.ExceptionHandlerFactory;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.Lifecycle;
 
 public class FacesContextFactoryImpl extends FacesContextFactory {
 

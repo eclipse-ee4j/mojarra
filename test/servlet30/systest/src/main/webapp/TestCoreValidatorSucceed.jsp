@@ -39,12 +39,12 @@
 
   <p>validator must have either a validatorId or binding attribute.</p>
   <h:inputText >
-      <f:validator validatorId="javax.faces.DoubleRange" />
+      <f:validator validatorId="jakarta.faces.DoubleRange" />
   </h:inputText>
 
   <p>converter must have either a converterId or binding attribute.</p>
   <h:inputText >
-      <f:converter converterId="javax.faces.Number" />
+      <f:converter converterId="jakarta.faces.Number" />
   </h:inputText>
 
 </f:view>

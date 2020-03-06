@@ -20,9 +20,10 @@ import java.io.Serializable;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Event;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowScoped;
 import javax.inject.Inject;
+
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowScoped;
 
 public class FlowCDIEventFireHelperImpl implements Serializable, FlowCDIEventFireHelper {
     

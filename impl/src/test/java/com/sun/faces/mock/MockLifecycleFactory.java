@@ -17,10 +17,12 @@
 package com.sun.faces.mock;
 
 import java.util.Iterator;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+
 import java.util.ArrayList;
-import javax.faces.FactoryFinder;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.lifecycle.Lifecycle;
 
 public class MockLifecycleFactory extends LifecycleFactory {
 

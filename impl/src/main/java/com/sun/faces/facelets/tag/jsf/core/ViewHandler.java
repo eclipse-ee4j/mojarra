@@ -21,21 +21,24 @@ import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+
 import javax.el.MethodExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseEvent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.ProjectStage;
-import javax.faces.view.facelets.TagAttributeException;
 
 /**
  * Container for all JavaServer Faces core and custom component actions used on

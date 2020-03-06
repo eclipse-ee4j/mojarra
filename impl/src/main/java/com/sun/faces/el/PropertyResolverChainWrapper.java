@@ -19,9 +19,10 @@ package com.sun.faces.el;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyResolver;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyResolver;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;

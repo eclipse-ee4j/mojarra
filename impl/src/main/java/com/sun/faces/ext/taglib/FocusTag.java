@@ -16,9 +16,10 @@
 
 package com.sun.faces.ext.taglib;
 
-import javax.faces.webapp.UIComponentELTag;
-import javax.faces.component.UIComponent;
 import javax.el.ValueExpression;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /**

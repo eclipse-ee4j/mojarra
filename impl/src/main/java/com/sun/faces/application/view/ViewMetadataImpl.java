@@ -28,22 +28,22 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.faces.FacesException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIImportConstants;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewMetadata;
-import javax.faces.view.facelets.Facelet;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.context.FacesFileNotFoundException;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIImportConstants;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewMetadata;
+import jakarta.faces.view.facelets.Facelet;
+
 
 /**
- * @see javax.faces.view.ViewMetadata
+ * @see jakarta.faces.view.ViewMetadata
  */
 public class ViewMetadataImpl extends ViewMetadata {
 
@@ -65,7 +65,7 @@ public class ViewMetadataImpl extends ViewMetadata {
 
 
     /**
-     * @see javax.faces.view.ViewMetadata#getViewId()
+     * @see jakarta.faces.view.ViewMetadata#getViewId()
      */
     @Override
     public String getViewId() {
@@ -75,7 +75,7 @@ public class ViewMetadataImpl extends ViewMetadata {
     }
 
     /**
-     * @see javax.faces.view.ViewMetadata#createMetadataView(javax.faces.context.FacesContext)
+     * @see jakarta.faces.view.ViewMetadata#createMetadataView(jakarta.faces.context.FacesContext)
      */
     @Override
     public UIViewRoot createMetadataView(FacesContext context) {

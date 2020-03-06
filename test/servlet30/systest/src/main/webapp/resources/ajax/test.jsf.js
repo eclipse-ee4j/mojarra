@@ -238,7 +238,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                     var url = src[1];
                     // if this is another copy of jsf.js, don't load it
                     // it's never necessary, and can make debugging difficult
-                    if (/\/javax.faces.resource\/jsf.js\?ln=javax\.faces/.test(url)) {
+                    if (/\/jakarta.faces.resource\/jsf.js\?ln=javax\.faces/.test(url)) {
                         script = false;
                     } else {
                         script = loadScript(url);
@@ -757,7 +757,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
             var scripts = []; // temp holding value for array of script nodes
 
             id = element.getAttribute('id');
-            if (id === "javax.faces.ViewState") {
+            if (id === "jakarta.faces.ViewState") {
 
                 state = element.firstChild;
 
@@ -770,11 +770,11 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                     // we're going to just return silently.
                     return;
                 }
-                var field = stateForm.elements["javax.faces.ViewState"];
+                var field = stateForm.elements["jakarta.faces.ViewState"];
                 if (typeof field == 'undefined') {
                     field = document.createElement("input");
                     field.type = "hidden";
-                    field.name = "javax.faces.ViewState";
+                    field.name = "jakarta.faces.ViewState";
                     stateForm.appendChild(field);
                 }
                 field.value = state.nodeValue;
@@ -790,11 +790,11 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                             // the form is not the one that caused the submission..
                             var f = document.forms[temp[i]];
                             if (typeof f !== 'undefined' && f !== null && f.id !== context.formid) {
-                                field = f.elements["javax.faces.ViewState"];
+                                field = f.elements["jakarta.faces.ViewState"];
                                 if (typeof field === 'undefined') {
                                     field = document.createElement("input");
                                     field.type = "hidden";
-                                    field.name = "javax.faces.ViewState";
+                                    field.name = "jakarta.faces.ViewState";
                                     f.appendChild(field);
                                 }
                                 field.value = state.nodeValue;
@@ -815,7 +815,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
             var src = markup;
 
             // If our special render all markup is present..
-            if (id === "javax.faces.ViewRoot" || id === "javax.faces.ViewBody") {
+            if (id === "jakarta.faces.ViewRoot" || id === "jakarta.faces.ViewBody") {
                 var bodyStartEx = new RegExp("< *body[^>]*>", "gi");
                 var bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
                 var newsrc;
@@ -851,8 +851,8 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                 } else {  // replace body contents with innerHTML - note, script handling happens within function
                     elementReplaceStr(docBody, "body", src);
                 }
-            } else if (id === "javax.faces.ViewHead") {
-                throw new Error("javax.faces.ViewHead not supported - browsers cannot reliably replace the head's contents");
+            } else if (id === "jakarta.faces.ViewHead") {
+                throw new Error("jakarta.faces.ViewHead not supported - browsers cannot reliably replace the head's contents");
             } else {
                 var d = $(id);
                 if (!d) {
@@ -1494,16 +1494,16 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
              * <th>value</th>
              * </tr>
              * <tr>
-             * <td><code>javax.faces.ViewState</code></td>
-             * <td><code>Contents of javax.faces.ViewState hidden field.  This is included when
+             * <td><code>jakarta.faces.ViewState</code></td>
+             * <td><code>Contents of jakarta.faces.ViewState hidden field.  This is included when
              * {@link jsf.getViewState} is used.</code></td>
              * </tr>
              * <tr>
-             * <td><code>javax.faces.partial.ajax</code></td>
+             * <td><code>jakarta.faces.partial.ajax</code></td>
              * <td><code>true</code></td>
              * </tr>
              * <tr>
-             * <td><code>javax.faces.source</code></td>
+             * <td><code>jakarta.faces.source</code></td>
              * <td><code>The identifier of the element that triggered this request.</code></td>
              * </tr>
              * </table>
@@ -1516,29 +1516,29 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
              * argument. If <code>options.execute</code> exists:
              * <ul>
              * <li>If the keyword <code>@none</code> is present, do not create and send
-             * the post data argument <code>javax.faces.partial.execute</code>.</li>
+             * the post data argument <code>jakarta.faces.partial.execute</code>.</li>
              * <li>If the keyword <code>@all</code> is present, create the post data argument with
-             * the name <code>javax.faces.partial.execute</code> and the value <code>@all</code>.</li>
+             * the name <code>jakarta.faces.partial.execute</code> and the value <code>@all</code>.</li>
              * <li>Otherwise, there are specific identifiers that need to be sent.  Create the post
-             * data argument with the name <code>javax.faces.partial.execute</code> and the value as a
+             * data argument with the name <code>jakarta.faces.partial.execute</code> and the value as a
              * space delimited <code>string</code> of client identifiers.</li>
              * </ul>
              * </li>
              * <li>If <code>options.execute</code> does not exist, create the post data argument with the
-             * name <code>javax.faces.partial.execute</code> and the value as the identifier of the
+             * name <code>jakarta.faces.partial.execute</code> and the value as the identifier of the
              * element that caused this request.</li>
              * <li>If <code>options.render</code> exists:
              * <ul>
              * <li>If the keyword <code>@none</code> is present, do not create and send
-             * the post data argument <code>javax.faces.partial.render</code>.</li>
+             * the post data argument <code>jakarta.faces.partial.render</code>.</li>
              * <li>If the keyword <code>@all</code> is present, create the post data argument with
-             * the name <code>javax.faces.partial.render</code> and the value <code>@all</code>.</li>
+             * the name <code>jakarta.faces.partial.render</code> and the value <code>@all</code>.</li>
              * <li>Otherwise, there are specific identifiers that need to be sent.  Create the post
-             * data argument with the name <code>javax.faces.partial.render</code> and the value as a
+             * data argument with the name <code>jakarta.faces.partial.render</code> and the value as a
              * space delimited <code>string</code> of client identifiers.</li>
              * </ul>
              * <li>If <code>options.render</code> does not exist do not create and send the
-             * post data argument <code>javax.faces.partial.render</code>.</li>
+             * post data argument <code>jakarta.faces.partial.render</code>.</li>
              * <li>Determine additional arguments (if any) from the <code>event</code>
              * argument.  The following name/value pairs may be used from the
              * <code>event</code> object:
@@ -1574,7 +1574,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
              * <li>Set the request header with the name: <code>Faces-Request</code> and the
              * value: <code>partial/ajax</code>.</li>
              * <li>Determine the <code>posting URL</code> as follows: If the hidden field
-             * <code>javax.faces.encodedURL</code> is present in the submitting form, use its
+             * <code>jakarta.faces.encodedURL</code> is present in the submitting form, use its
              * value as the <code>posting URL</code>.  Otherwise, use the <code>action</code>
              * property of the <code>form</code> element as the <code>URL</code>.</li>
              * <li>Send the request as an <code>asynchronous POST</code> using the
@@ -1691,7 +1691,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                 var viewState = jsf.getViewState(form);
 
                 // Set up additional arguments to be used in the request..
-                // Make sure "javax.faces.source" is set up.
+                // Make sure "jakarta.faces.source" is set up.
                 // If there were "execute" ids specified, make sure we
                 // include the identifier of the source element in the
                 // "execute" list.  If there were no "execute" ids
@@ -1699,16 +1699,16 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
 
                 var args = {};
 
-                args["javax.faces.source"] = element.id;
+                args["jakarta.faces.source"] = element.id;
 
                 if (event && !!event.type) {
-                    args["javax.faces.partial.event"] = event.type;
+                    args["jakarta.faces.partial.event"] = event.type;
                 }
 
                 // If we have 'execute' identifiers:
                 // Handle any keywords that may be present.
                 // If @none present anywhere, do not send the
-                // "javax.faces.partial.execute" parameter.
+                // "jakarta.faces.partial.execute" parameter.
                 // The 'execute' and 'render' lists must be space
                 // delimited.
 
@@ -1726,11 +1726,11 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                         } else {
                             options.execute = "@all";
                         }
-                        args["javax.faces.partial.execute"] = options.execute;
+                        args["jakarta.faces.partial.execute"] = options.execute;
                     }
                 } else {
                     options.execute = element.name + " " + element.id;
-                    args["javax.faces.partial.execute"] = options.execute;
+                    args["jakarta.faces.partial.execute"] = options.execute;
                 }
 
                 if (options.render) {
@@ -1743,7 +1743,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                         } else {
                             options.render = "@all";
                         }
-                        args["javax.faces.partial.render"] = options.render;
+                        args["jakarta.faces.partial.render"] = options.render;
                     }
                 }
 
@@ -1759,12 +1759,12 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                     }
                 }
 
-                args["javax.faces.partial.ajax"] = "true";
+                args["jakarta.faces.partial.ajax"] = "true";
                 args["method"] = "POST";
 
                 // Determine the posting url
 
-                var encodedUrlField = form.elements["javax.faces.encodedURL"];
+                var encodedUrlField = form.elements["jakarta.faces.encodedURL"];
                 if (typeof encodedUrlField == 'undefined') {
                     args["url"] = form.action;
                 } else {
@@ -1778,7 +1778,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                 ajaxEngine.context.onerror = onerror;
                 ajaxEngine.context.sourceid = element.id;
                 ajaxEngine.context.formid = form.id;
-                ajaxEngine.context.render = args["javax.faces.partial.render"];
+                ajaxEngine.context.render = args["jakarta.faces.partial.render"];
                 ajaxEngine.sendRequest();
 
                 // null out element variables to protect against IE memory leak
@@ -1816,31 +1816,31 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
              * will be used when updating the contents of the DOM element as specified by the
              * <code>&lt;update&gt;</code> element identifier.
              * <li>If an <code>update</code> element is found in the response
-             * with the identifier <code>javax.faces.ViewRoot</code>:
-             * <pre><code>&lt;update id="javax.faces.ViewRoot"&gt;
+             * with the identifier <code>jakarta.faces.ViewRoot</code>:
+             * <pre><code>&lt;update id="jakarta.faces.ViewRoot"&gt;
              *    &lt;![CDATA[...]]&gt;
              * &lt;/update&gt;</code></pre>
              * Update the entire DOM replacing the appropriate <code>head</code> and/or
              * <code>body</code> sections with the content from the response.</li>
              * <li>If an <code>update</code> element is found in the response with the identifier
-             * <code>javax.faces.ViewState</code>:
-             * <pre><code>&lt;update id="javax.faces.ViewState"&gt;
+             * <code>jakarta.faces.ViewState</code>:
+             * <pre><code>&lt;update id="jakarta.faces.ViewState"&gt;
              *    &lt;![CDATA[...]]&gt;
              * &lt;/update&gt;</code></pre>
-             * locate and update the submitting form's <code>javax.faces.ViewState</code> value
+             * locate and update the submitting form's <code>jakarta.faces.ViewState</code> value
              * with the <code>CDATA</code> contents from the response.  Locate and update the 
-             * <code>javax.faces.ViewState</code> value for all forms specified in the 
+             * <code>jakarta.faces.ViewState</code> value for all forms specified in the 
              * <code>render</code> target list.</li>
              * <li>If an <code>update</code> element is found in the response with the identifier
-             * <code>javax.faces.ViewHead</code>:
-             * <pre><code>&lt;update id="javax.faces.ViewHead"&gt;
+             * <code>jakarta.faces.ViewHead</code>:
+             * <pre><code>&lt;update id="jakarta.faces.ViewHead"&gt;
              *    &lt;![CDATA[...]]&gt;
              * &lt;/update&gt;</code></pre>
              * update the document's <code>head</code> section with the <code>CDATA</code>
              * contents from the response.</li>
              * <li>If an <code>update</code> element is found in the response with the identifier
-             * <code>javax.faces.ViewBody</code>:
-             * <pre><code>&lt;update id="javax.faces.ViewBody"&gt;
+             * <code>jakarta.faces.ViewBody</code>:
+             * <pre><code>&lt;update id="jakarta.faces.ViewBody"&gt;
              *    &lt;![CDATA[...]]&gt;
              * &lt;/update&gt;</code></pre>
              * update the document's <code>body</code> section with the <code>CDATA</code>
@@ -2056,8 +2056,8 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
      *
      * @returns String <code>String</code> representing the current state of the
      * running application in a typical product development lifecycle.  Refer
-     * to <code>javax.faces.application.Application.getProjectStage</code> and
-     * <code>javax.faces.application.ProjectStage</code>.
+     * to <code>jakarta.faces.application.Application.getProjectStage</code> and
+     * <code>jakarta.faces.application.ProjectStage</code>.
      * @function jsf.getProjectStage
      */
     jsf.getProjectStage = function() {

@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
 import com.sun.faces.RIConstants;
@@ -43,6 +42,8 @@ import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 import com.sun.faces.vendor.WebContainerInjectionProvider;
+
+import jakarta.faces.context.ExternalContext;
 
 
 /**

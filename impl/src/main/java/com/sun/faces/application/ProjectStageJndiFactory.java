@@ -16,8 +16,8 @@
 
 package com.sun.faces.application;
 
+import static jakarta.faces.application.ProjectStage.Production;
 import static java.util.logging.Level.WARNING;
-import static javax.faces.application.ProjectStage.Production;
 
 import java.util.Hashtable;
 import java.util.logging.Logger;
@@ -42,7 +42,7 @@ public class ProjectStageJndiFactory implements ObjectFactory {
     /**
      * Lookup the configured stage by looking for the parameter <code>stage<code>.
      * If the value of <code>stage</code> cannot be determined, the default
-     * {@link javax.faces.application.ProjectStage#Production} is returned.
+     * {@link jakarta.faces.application.ProjectStage#Production} is returned.
      *
      * @see ObjectFactory#getObjectInstance(Object, javax.naming.Name, javax.naming.Context,
      *      java.util.Hashtable)

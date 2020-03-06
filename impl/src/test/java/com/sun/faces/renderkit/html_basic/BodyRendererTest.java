@@ -18,17 +18,19 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.StringWriter;
 import java.util.Collections;
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlBody;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.easymock.EasyMock.expect;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlBody;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * The JUnit tests for the BodyRenderer class.

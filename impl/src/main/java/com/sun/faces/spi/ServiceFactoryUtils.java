@@ -17,9 +17,11 @@
 package com.sun.faces.spi;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.FacesException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;

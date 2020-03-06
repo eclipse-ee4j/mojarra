@@ -49,11 +49,11 @@ public class Spec790WithNamespacedViewIT {
         HtmlPage page = webClient.getPage(webUrl + "spec790WithNamespacedView.xhtml");
         String namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         HtmlForm form1 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form1");
-        HtmlInput form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        HtmlInput form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         HtmlForm form2 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form2");
-        HtmlInput form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        HtmlInput form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         HtmlForm form3 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form3");
-        HtmlInput form3ViewState = (HtmlInput) form3.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        HtmlInput form3ViewState = (HtmlInput) form3.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
         assertTrue(!form3ViewState.getValueAttribute().isEmpty());
@@ -63,11 +63,11 @@ public class Spec790WithNamespacedViewIT {
         webClient.waitForBackgroundJavaScript(60000);
         namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         form1 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form1");
-        form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         form2 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form2");
-        form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         form3 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form3");
-        form3ViewState = (HtmlInput) form3.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form3ViewState = (HtmlInput) form3.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
         assertTrue(!form3ViewState.getValueAttribute().isEmpty());
@@ -77,11 +77,11 @@ public class Spec790WithNamespacedViewIT {
         webClient.waitForBackgroundJavaScript(60000);
         namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         form1 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form1");
-        form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         form2 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form2");
-        form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         form3 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form3");
-        form3ViewState = (HtmlInput) form3.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form3ViewState = (HtmlInput) form3.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
         assertTrue(!form3ViewState.getValueAttribute().isEmpty());
@@ -91,11 +91,11 @@ public class Spec790WithNamespacedViewIT {
         webClient.waitForBackgroundJavaScript(60000);
         namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         form1 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form1");
-        form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         form2 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form2");
-        form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         form3 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form3");
-        form3ViewState = (HtmlInput) form3.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        form3ViewState = (HtmlInput) form3.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
         assertTrue(!form3ViewState.getValueAttribute().isEmpty());
@@ -109,7 +109,7 @@ public class Spec790WithNamespacedViewIT {
         HtmlPage page = webClient.getPage(webUrl + "spec790WithNamespacedViewAjaxNavigation.xhtml");
         String namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         HtmlForm form = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form");
-        HtmlInput formViewState = (HtmlInput) form.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        HtmlInput formViewState = (HtmlInput) form.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         assertTrue(!formViewState.getValueAttribute().isEmpty());
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById(namingContainerPrefix + "form:button");
@@ -117,9 +117,9 @@ public class Spec790WithNamespacedViewIT {
         webClient.waitForBackgroundJavaScript(60000);
         namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         HtmlForm form1 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form1");
-        HtmlInput form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        HtmlInput form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         HtmlForm form2 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form2");
-        HtmlInput form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "javax.faces.ViewState");
+        HtmlInput form2ViewState = (HtmlInput) form2.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
     }

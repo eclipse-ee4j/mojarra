@@ -19,6 +19,9 @@ package com.sun.faces.flow;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 import com.sun.faces.util.cdi11.CDIUtil;
+
+import jakarta.faces.flow.FlowScoped;
+
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,7 +36,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBean;
-import javax.faces.flow.FlowScoped;
 
 public class FlowCDIExtension implements Extension {
 

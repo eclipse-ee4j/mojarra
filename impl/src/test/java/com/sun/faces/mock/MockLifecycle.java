@@ -16,12 +16,13 @@
 
 package com.sun.faces.mock;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
 import javax.servlet.http.HttpServletResponse;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.Lifecycle;
 
 public class MockLifecycle extends Lifecycle {
 

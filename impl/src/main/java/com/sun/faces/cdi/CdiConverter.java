@@ -16,10 +16,10 @@
 
 package com.sun.faces.cdi;
 
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
 
 /**
  * A delegate to the CDI managed converter.

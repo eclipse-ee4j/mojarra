@@ -115,7 +115,7 @@ public class TestLifecycleImpl extends JspFacesTestCase {
 
     protected void initWebRequest(WebRequest theRequest) {
 //        theRequest.setURL(localHostPath, "/test", "/faces", TEST_URI, null);
-//	theRequest.addParameter("javax.faces.ViewState",
+//	theRequest.addParameter("jakarta.faces.ViewState",
 //				"H4sIAAAAAAAAAFvzloG1hIElPjPFsAAAhLx/NgwAAAA=");
     }
 

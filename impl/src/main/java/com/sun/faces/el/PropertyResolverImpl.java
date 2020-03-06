@@ -17,15 +17,16 @@
 package com.sun.faces.el;
 
 import javax.el.ELException;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
 
 import java.lang.reflect.Array;
 import java.util.List;
 
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
 
 /**
  * <p>
@@ -42,7 +43,7 @@ public class PropertyResolverImpl extends PropertyResolver {
     // ------------------------------------------- Methods from PropertyResolver
 
 
-    // Specified by javax.faces.el.PropertyResolver.getType(Object,int)
+    // Specified by jakarta.faces.el.PropertyResolver.getType(Object,int)
     @Override
     public Class getType(Object base, int index)
         throws EvaluationException, PropertyNotFoundException{
@@ -82,7 +83,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         }
     }
 
-    // Specified by javax.faces.el.PropertyResolver.getType(Object,String)
+    // Specified by jakarta.faces.el.PropertyResolver.getType(Object,String)
     @Override
     public Class getType(Object base, Object property) {
 
@@ -102,7 +103,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         }
     }
 
-    // Specified by javax.faces.el.PropertyResolver.getValue(Object,int)
+    // Specified by jakarta.faces.el.PropertyResolver.getValue(Object,int)
     @Override
     public Object getValue(Object base, int index) {
 
@@ -135,7 +136,7 @@ public class PropertyResolverImpl extends PropertyResolver {
 
     }
 
-    // Specified by javax.faces.el.PropertyResolver.getValue(Object,String)
+    // Specified by jakarta.faces.el.PropertyResolver.getValue(Object,String)
     @Override
     public Object getValue(Object base, Object property) {
 
@@ -153,7 +154,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         }
     }
 
-    // Specified by javax.faces.el.PropertyResolver.isReadOnly(Object,int)
+    // Specified by jakarta.faces.el.PropertyResolver.isReadOnly(Object,int)
     @Override
     public boolean isReadOnly(Object base, int index) {
 
@@ -173,7 +174,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         }
     }
 
-    // Specified by javax.faces.el.PropertyResolver.isReadOnly(Object,String)
+    // Specified by jakarta.faces.el.PropertyResolver.isReadOnly(Object,String)
     @Override
     public boolean isReadOnly(Object base, Object property) {
 
@@ -189,7 +190,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         }
     }
 
-    // Specified by javax.faces.el.PropertyResolver.setValue(Object,int,Object)
+    // Specified by jakarta.faces.el.PropertyResolver.setValue(Object,int,Object)
     @Override
     public void setValue(Object base, int index, Object value) {
 
@@ -236,7 +237,7 @@ public class PropertyResolverImpl extends PropertyResolver {
     }
 
     // Specified by
-    // javax.faces.el.PropertyResolver.setValue(Object,String,Object)
+    // jakarta.faces.el.PropertyResolver.setValue(Object,String,Object)
     @Override
     public void setValue(Object base, Object property, Object value) {
 

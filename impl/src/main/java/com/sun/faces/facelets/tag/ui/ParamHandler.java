@@ -18,11 +18,13 @@ package com.sun.faces.facelets.tag.ui;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
+
 import java.io.IOException;
 
 /**
@@ -47,7 +49,7 @@ public class ParamHandler extends TagHandlerImpl {
      * (non-Javadoc)
      * 
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *      jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)

@@ -21,13 +21,14 @@ import com.sun.faces.facelets.tag.composite.CompositeLibrary;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;

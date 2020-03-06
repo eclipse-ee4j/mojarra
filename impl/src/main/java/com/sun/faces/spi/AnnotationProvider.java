@@ -45,7 +45,7 @@ import javax.servlet.ServletContext;
  * <p>
  * The <code>AnnotationProvider</code> instance will be wrapped as a {@link java.util.concurrent.Future} and executed
  * during the environment initialization. The result of the future can be obtained by calling
- * {@link com.sun.faces.config.ConfigManager#getAnnotatedClasses(javax.faces.context.FacesContext)}.
+ * {@link com.sun.faces.config.ConfigManager#getAnnotatedClasses(jakarta.faces.context.FacesContext)}.
  * </p>
  *
  * <p>

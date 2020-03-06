@@ -17,15 +17,17 @@
 package com.sun.faces.application;
 
 import com.sun.faces.application.view.JspStateManagementStrategy;
+
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewDeclarationLanguage;
+
 import java.io.IOException;
 import java.util.Map;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.render.RenderKit;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ViewDeclarationLanguage;
 
 /**
  * <p>
@@ -95,7 +97,7 @@ public class StateManagerImpl extends StateManager {
      * @param viewId the view id.
      * @param renderKitId the render kit id.
      * @return the view root.
-     * @see StateManager#restoreView(javax.faces.context.FacesContext, java.lang.String,
+     * @see StateManager#restoreView(jakarta.faces.context.FacesContext, java.lang.String,
      *      java.lang.String)
      */
     @Override

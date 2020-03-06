@@ -29,7 +29,7 @@
     <tag>
         <tag-name>naming</tag-name>
         <component>
-            <component-type>javax.faces.NamingContainer</component-type>
+            <component-type>jakarta.faces.NamingContainer</component-type>
         </component>
     </tag>
 

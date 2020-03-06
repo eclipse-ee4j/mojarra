@@ -24,21 +24,21 @@ import java.util.logging.Logger;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.NumberConverter;
+
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ExpressionFactory;
-
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.NumberConverter;
 import javax.servlet.jsp.JspException;
 
 import com.sun.faces.el.ELUtils;
 
 /**
  * <p>ConvertNumberTag is a ConverterTag implementation for
- * javax.faces.convert.NumberConverter</p>
+ * jakarta.faces.convert.NumberConverter</p>
  *
  */
 
@@ -136,7 +136,7 @@ public class ConvertNumberTag extends AbstractConverterTag {
                 context.getApplication().getExpressionFactory();
             CONVERTER_ID_EXPR =
                 factory.createValueExpression(context.getELContext(), 
-                    "javax.faces.Number", String.class);
+                    "jakarta.faces.Number", String.class);
         }
     }
 

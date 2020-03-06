@@ -19,11 +19,11 @@
 <%@ page contentType="text/html"
 %><%@ page import="java.util.Iterator"
 %><%@ page import="java.util.Map"
-%><%@ page import="javax.faces.FactoryFinder"
-%><%@ page import="javax.faces.context.FacesContext"
-%><%@ page import="javax.faces.render.RenderKit"
-%><%@ page import="javax.faces.render.RenderKitFactory"
-%><%@ page import="javax.faces.render.Renderer"
+%><%@ page import="jakarta.faces.FactoryFinder"
+%><%@ page import="jakarta.faces.context.FacesContext"
+%><%@ page import="jakarta.faces.render.RenderKit"
+%><%@ page import="jakarta.faces.render.RenderKitFactory"
+%><%@ page import="jakarta.faces.render.Renderer"
 %><%
 
 // This test goes through the config system to test the loading of 
@@ -33,57 +33,57 @@
     // Initialize list of Renderer types
     //
     String families[] = {
-      "javax.faces.Command",
-      "javax.faces.Command",
-      "javax.faces.Data",
-      "javax.faces.Form",
-      "javax.faces.Graphic",
-      "javax.faces.Input",
-      "javax.faces.Input",
-      "javax.faces.Input",
-      "javax.faces.Input",
-      "javax.faces.Message",
-      "javax.faces.Messages",
-      "javax.faces.Output",
-      "javax.faces.Output",
-      "javax.faces.Output",
-      "javax.faces.Output",
-      "javax.faces.Panel",
-      "javax.faces.Panel",
-      "javax.faces.SelectBoolean",
-      "javax.faces.SelectMany",
-      "javax.faces.SelectMany",
-      "javax.faces.SelectMany",
-      "javax.faces.SelectOne",
-      "javax.faces.SelectOne",
-      "javax.faces.SelectOne"
+      "jakarta.faces.Command",
+      "jakarta.faces.Command",
+      "jakarta.faces.Data",
+      "jakarta.faces.Form",
+      "jakarta.faces.Graphic",
+      "jakarta.faces.Input",
+      "jakarta.faces.Input",
+      "jakarta.faces.Input",
+      "jakarta.faces.Input",
+      "jakarta.faces.Message",
+      "jakarta.faces.Messages",
+      "jakarta.faces.Output",
+      "jakarta.faces.Output",
+      "jakarta.faces.Output",
+      "jakarta.faces.Output",
+      "jakarta.faces.Panel",
+      "jakarta.faces.Panel",
+      "jakarta.faces.SelectBoolean",
+      "jakarta.faces.SelectMany",
+      "jakarta.faces.SelectMany",
+      "jakarta.faces.SelectMany",
+      "jakarta.faces.SelectOne",
+      "jakarta.faces.SelectOne",
+      "jakarta.faces.SelectOne"
     };
 
     String defaultList[] = {
-      "javax.faces.Button",
-      "javax.faces.Link",
-      "javax.faces.Table",
-      "javax.faces.Form",
-      "javax.faces.Image",
-      "javax.faces.Hidden",
-      "javax.faces.Secret",
-      "javax.faces.Text",
-      "javax.faces.Textarea",
-      "javax.faces.Message",
-      "javax.faces.Messages",
-      "javax.faces.Format",
-      "javax.faces.Label",
-      "javax.faces.Link",
-      "javax.faces.Text",
-      "javax.faces.Grid",
-      "javax.faces.Group",
-      "javax.faces.Checkbox",
-      "javax.faces.Checkbox",
-      "javax.faces.Listbox",
-      "javax.faces.Menu",
-      "javax.faces.Listbox",
-      "javax.faces.Menu",
-      "javax.faces.Radio"
+      "jakarta.faces.Button",
+      "jakarta.faces.Link",
+      "jakarta.faces.Table",
+      "jakarta.faces.Form",
+      "jakarta.faces.Image",
+      "jakarta.faces.Hidden",
+      "jakarta.faces.Secret",
+      "jakarta.faces.Text",
+      "jakarta.faces.Textarea",
+      "jakarta.faces.Message",
+      "jakarta.faces.Messages",
+      "jakarta.faces.Format",
+      "jakarta.faces.Label",
+      "jakarta.faces.Link",
+      "jakarta.faces.Text",
+      "jakarta.faces.Grid",
+      "jakarta.faces.Group",
+      "jakarta.faces.Checkbox",
+      "jakarta.faces.Checkbox",
+      "jakarta.faces.Listbox",
+      "jakarta.faces.Menu",
+      "jakarta.faces.Listbox",
+      "jakarta.faces.Menu",
+      "jakarta.faces.Radio"
       };
 
     String customFamilies[] = {"SysTest"};

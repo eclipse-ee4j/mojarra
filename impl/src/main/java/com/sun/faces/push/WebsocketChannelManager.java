@@ -34,10 +34,11 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.push.Push;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.push.Push;
+import jakarta.faces.view.ViewScoped;
 
 /**
  * <p class="changed_added_2_3">

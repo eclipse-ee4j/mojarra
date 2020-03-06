@@ -17,12 +17,14 @@
 package com.sun.faces.taglib.jsf_core;
 
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.webapp.ValidatorELTag;
+
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.webapp.ValidatorELTag;
-import javax.faces.validator.Validator;
-import javax.faces.context.FacesContext;
-import javax.faces.FacesException;
 import javax.servlet.jsp.JspException;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
@@ -41,13 +43,13 @@ public class AbstractValidatorTag extends ValidatorELTag {
 
     /**
      * <p>The {@link javax.el.ValueExpression} that evaluates to an object that
-     * implements {@link javax.faces.convert.Converter}.</p>
+     * implements {@link jakarta.faces.convert.Converter}.</p>
      */
     protected ValueExpression binding = null;
 
 
     /**
-     * <p>The identifier of the {@link javax.faces.validator.Validator}
+     * <p>The identifier of the {@link jakarta.faces.validator.Validator}
      * instance to be created.</p>
      */
     protected ValueExpression validatorId = null;    
@@ -59,7 +61,7 @@ public class AbstractValidatorTag extends ValidatorELTag {
     /**
      * <p>Set the expression that will be used to create a
      * {@link javax.el.ValueExpression} that references a backing bean property
-     * of the {@link javax.faces.validator.Validator} instance to be created.</p>
+     * of the {@link jakarta.faces.validator.Validator} instance to be created.</p>
      *
      * @param binding The new expression
      */
@@ -71,7 +73,7 @@ public class AbstractValidatorTag extends ValidatorELTag {
 
 
     /**
-     * <p>Set the identifer of the {@link javax.faces.validator.Validator}
+     * <p>Set the identifer of the {@link jakarta.faces.validator.Validator}
      * instance to be created.
      *
      * @param validatorId The identifier of the converter instance to be

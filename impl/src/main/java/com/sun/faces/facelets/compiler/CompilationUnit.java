@@ -16,13 +16,14 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.CompositeFaceletHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 /**
  * 

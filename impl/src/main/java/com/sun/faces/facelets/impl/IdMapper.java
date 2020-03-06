@@ -19,7 +19,8 @@ package com.sun.faces.facelets.impl;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.Util;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

@@ -20,10 +20,12 @@ import com.sun.faces.facelets.el.ELText;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.facelets.util.FastWriter;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.view.facelets.FaceletContext;
+
 import javax.el.ELException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.view.facelets.FaceletContext;
+
 import java.io.IOException;
 import java.io.Writer;
 

@@ -16,13 +16,14 @@
 
 package com.sun.faces.facelets.component;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.Renderer;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
 
 
 public class RepeatRenderer extends Renderer {

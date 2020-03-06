@@ -28,11 +28,13 @@ import javax.el.ELResolver;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.MethodExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.CompositeComponentExpressionHolder;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.CompositeComponentExpressionHolder;
+
 import com.sun.faces.component.CompositeComponentStackManager;
 import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
 import static com.sun.faces.component.CompositeComponentStackManager.StackType.Evaluation;
@@ -91,7 +93,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      * If <code>base</code> is a composite component and <code>property</code>
      * is <code>parent</code> attempt to resolve the composite componet parent
      * of the current composite component by calling
-     * {@link UIComponent#getCompositeComponentParent(javax.faces.component.UIComponent)})
+     * {@link UIComponent#getCompositeComponentParent(jakarta.faces.component.UIComponent)})
      * and returning that value.
      * </p>
      *

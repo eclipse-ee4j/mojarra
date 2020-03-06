@@ -16,9 +16,9 @@
 
 package com.sun.faces.facelets.tag.jsf.html;
 
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * <code>ComponentResourceDelegate</code> for script references.

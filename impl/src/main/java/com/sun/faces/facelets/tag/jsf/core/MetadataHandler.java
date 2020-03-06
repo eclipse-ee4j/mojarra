@@ -20,12 +20,13 @@ import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagConfig;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

@@ -38,7 +38,7 @@ public class CustomComponentHandler extends ComponentHandler {
 
             @Override
             public String getRendererType() {
-                return "javax.faces.Text";
+                return "jakarta.faces.Text";
             }
 
             @Override

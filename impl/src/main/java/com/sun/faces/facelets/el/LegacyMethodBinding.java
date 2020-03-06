@@ -18,10 +18,12 @@ package com.sun.faces.facelets.el;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.MethodNotFoundException;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.MethodNotFoundException;
+
 import java.io.Serializable;
 
 /**
@@ -45,7 +47,7 @@ public final class LegacyMethodBinding extends
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.MethodBinding#getType(javax.faces.context.FacesContext)
+     * @see jakarta.faces.el.MethodBinding#getType(jakarta.faces.context.FacesContext)
      */
     @Override
     public Class getType(FacesContext context)
@@ -62,7 +64,7 @@ public final class LegacyMethodBinding extends
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.MethodBinding#invoke(javax.faces.context.FacesContext,
+     * @see jakarta.faces.el.MethodBinding#invoke(jakarta.faces.context.FacesContext,
      *      java.lang.Object[])
      */
     @Override

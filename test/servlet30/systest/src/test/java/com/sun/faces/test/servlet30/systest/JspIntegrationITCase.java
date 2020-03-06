@@ -81,13 +81,13 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
 //        checkJspDynamic00();
 //        checkJspDynamic01("",
 //                "[A]{ } [Z]");
-//        checkJspDynamic01("?mode=create&id=C1&value=[1]&javax.faces.ViewState=j_id2:j_id3",
+//        checkJspDynamic01("?mode=create&id=C1&value=[1]&jakarta.faces.ViewState=j_id2:j_id3",
 //                "[A]{ [1] } [Z]");
-//        checkJspDynamic01("?mode=create&id=C2&value=[2]&javax.faces.ViewState=j_id2:j_id4",
+//        checkJspDynamic01("?mode=create&id=C2&value=[2]&jakarta.faces.ViewState=j_id2:j_id4",
 //                "[A]{ [1] [2] } [Z]");
-//        checkJspDynamic01("?mode=create&id=C3&value=[3]&javax.faces.ViewState=j_id2:j_id5",
+//        checkJspDynamic01("?mode=create&id=C3&value=[3]&jakarta.faces.ViewState=j_id2:j_id5",
 //                "[A]{ [1] [2] [3] } [Z]");
-//        checkJspDynamic01("?mode=delete&id=C2&javax.faces.ViewState=j_id2:j_id6",
+//        checkJspDynamic01("?mode=delete&id=C2&jakarta.faces.ViewState=j_id2:j_id6",
 //                "[A]{ [1] [3] } [Z]");
 //
 //        checkJspDynamic00();
@@ -306,7 +306,7 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
     // Check selective imports with simple components (explicit ids)
     private void checkJspInclude03a() throws Exception {
 
-        HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=a&javax.faces.ViewState=j_id2:j_id3");
+        HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=a&jakarta.faces.ViewState=j_id2:j_id3");
         assertEquals("Correct page title",
                 "jsp-include-03", page.getTitleText());
         assertEquals("Correct body element",
@@ -318,7 +318,7 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
     // Check selective imports with simple components (explicit ids)
     private void checkJspInclude03b() throws Exception {
 
-        HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=b&javax.faces.ViewState=j_id2:j_id3");
+        HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=b&jakarta.faces.ViewState=j_id2:j_id3");
         assertEquals("Correct page title",
                 "jsp-include-03", page.getTitleText());
         assertEquals("Correct body element",
@@ -330,7 +330,7 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
     // Check selective imports with simple components (explicit ids)
     private void checkJspInclude03c() throws Exception {
 
-        HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=c&javax.faces.ViewState=j_id2:j_id3");
+        HtmlPage page = getPage("/faces/jsp/jsp-include-03.jsp?choose=c&jakarta.faces.ViewState=j_id2:j_id3");
         assertEquals("Correct page title",
                 "jsp-include-03", page.getTitleText());
         assertEquals("Correct body element",
@@ -352,7 +352,7 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
     // Check selective imports with simple components (naming container)
     private void checkJspInclude04a() throws Exception {
 
-        HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=a&javax.faces.ViewState=j_id2:j_id3");
+        HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=a&jakarta.faces.ViewState=j_id2:j_id3");
         assertEquals("Correct page title",
                 "jsp-include-04", page.getTitleText());
         assertEquals("Correct body element",
@@ -364,7 +364,7 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
     // Check selective imports with simple components (naming container)
     private void checkJspInclude04b() throws Exception {
 
-        HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=b&javax.faces.ViewState=j_id2:j_id3");
+        HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=b&jakarta.faces.ViewState=j_id2:j_id3");
         assertEquals("Correct page title",
                 "jsp-include-04", page.getTitleText());
         assertEquals("Correct body element",
@@ -376,7 +376,7 @@ public class JspIntegrationITCase extends HtmlUnitFacesITCase {
     // Check selective imports with simple components (naming container)
     private void checkJspInclude04c() throws Exception {
 
-        HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=c&javax.faces.ViewState=j_id2:j_id3");
+        HtmlPage page = getPage("/faces/jsp/jsp-include-04.jsp?choose=c&jakarta.faces.ViewState=j_id2:j_id3");
         assertEquals("Correct page title",
                 "jsp-include-04", page.getTitleText());
         assertEquals("Correct body element",

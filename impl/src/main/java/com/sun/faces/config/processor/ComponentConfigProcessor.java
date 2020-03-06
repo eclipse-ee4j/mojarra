@@ -23,10 +23,6 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -38,6 +34,11 @@ import org.w3c.dom.NodeList;
 import com.sun.faces.config.Verifier;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

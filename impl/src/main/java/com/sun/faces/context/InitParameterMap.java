@@ -27,7 +27,7 @@ import javax.servlet.ServletContext;
 import com.sun.faces.util.Util;
 
 /**
- * @see javax.faces.context.ExternalContext#getInitParameterMap()  
+ * @see jakarta.faces.context.ExternalContext#getInitParameterMap()  
  */
 public class InitParameterMap extends BaseContextMap<String> {
 

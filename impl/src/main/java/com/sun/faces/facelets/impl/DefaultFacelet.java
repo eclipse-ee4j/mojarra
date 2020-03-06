@@ -16,17 +16,19 @@
 
 package com.sun.faces.facelets.impl;
 
-import javax.faces.view.facelets.Facelet;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
+
 import javax.el.ExpressionFactory;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -49,7 +51,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     private static final Logger log = FacesLogger.FACELETS_FACELET.getLogger();
 
     private final static String APPLIED_KEY = "com.sun.faces.facelets.APPLIED";
-    private static final String JAVAX_FACES_ERROR_XHTML = "javax.faces.error.xhtml";
+    private static final String JAVAX_FACES_ERROR_XHTML = "jakarta.faces.error.xhtml";
 
     private final String alias;
 
@@ -101,7 +103,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * @see com.sun.faces.facelets.Facelet#apply(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+     * @see com.sun.faces.facelets.Facelet#apply(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FacesContext facesContext, UIComponent parent)
@@ -276,7 +278,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * Used for delegation by the DefaultFaceletContext. First pulls the URL
      * from {@link #getRelativePath(String) getRelativePath(String)}, then
      * calls
-     * {@link #include(DefaultFaceletContext, javax.faces.component.UIComponent, String)}.
+     * {@link #include(DefaultFaceletContext, jakarta.faces.component.UIComponent, String)}.
      * 
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx

@@ -27,7 +27,7 @@ import javax.servlet.ServletRequest;
 import com.sun.faces.util.Util;
 
 /**
- * @see javax.faces.context.ExternalContext#getRequestParameterValuesMap()  
+ * @see jakarta.faces.context.ExternalContext#getRequestParameterValuesMap()  
  */
 public class RequestParameterValuesMap extends StringArrayValuesMap {
 

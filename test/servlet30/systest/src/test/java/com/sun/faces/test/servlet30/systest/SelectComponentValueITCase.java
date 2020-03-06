@@ -153,8 +153,8 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
 //        //options.fakeSelectedAttribute(chosen);
 //        page = (HtmlPage) button.click();
 //        ResourceBundle messages = ResourceBundle.getBundle(
-//                "javax.faces.Messages");
-//        String message = messages.getString("javax.faces.component.UISelectMany.INVALID");
+//                "jakarta.faces.Messages");
+//        String message = messages.getString("jakarta.faces.component.UISelectMany.INVALID");
 //        // it does have a validation message
 //        assertTrue(-1 != page.asText().indexOf("Validation Error"));
 //        // it does not have a value change message
@@ -177,8 +177,8 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
         HtmlRadioButtonInput radio = (HtmlRadioButtonInput) list.get(0);
         radio.setChecked(true);
         page = (HtmlPage) button.click();
-        ResourceBundle messages = ResourceBundle.getBundle("javax.faces.Messages");
-        String message = messages.getString("javax.faces.component.UIInput.REQUIRED");
+        ResourceBundle messages = ResourceBundle.getBundle("jakarta.faces.Messages");
+        String message = messages.getString("jakarta.faces.component.UIInput.REQUIRED");
         // it does not have a validation error
         assertTrue(-1 == page.asText().indexOf(message));
     }
@@ -196,8 +196,8 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
         //options.fakeSelectedAttribute(chosen);
         page = (HtmlPage) button.click();
         ResourceBundle messages = ResourceBundle.getBundle(
-                "javax.faces.Messages");
-        String message = messages.getString("javax.faces.component.UISelectMany.INVALID");
+                "jakarta.faces.Messages");
+        String message = messages.getString("jakarta.faces.component.UISelectMany.INVALID");
         // it does not have a validation message
         assertTrue(-1 == page.asText().indexOf("Validation Error"));
     }
@@ -297,8 +297,8 @@ public class SelectComponentValueITCase extends HtmlUnitFacesITCase {
         //options.fakeSelectedAttribute(chosen);
         page = (HtmlPage) button.click();
         ResourceBundle messages = ResourceBundle.getBundle(
-                "javax.faces.Messages");
-        String message = messages.getString("javax.faces.component.UISelectMany.INVALID");
+                "jakarta.faces.Messages");
+        String message = messages.getString("jakarta.faces.component.UISelectMany.INVALID");
         // it does not have a validation message
         assertTrue(-1 == page.asText().indexOf("Validation Error"));
     }

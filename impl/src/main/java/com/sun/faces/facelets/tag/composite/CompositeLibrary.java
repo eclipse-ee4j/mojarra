@@ -54,7 +54,7 @@ public final class CompositeLibrary extends AbstractTagLibrary {
         // Things that go inside of the implementation section
         this.addTagHandler("insertChildren", InsertChildrenHandler.class);
         this.addTagHandler("insertFacet", InsertFacetHandler.class);
-        this.addComponent("renderFacet", "javax.faces.Output",
-                "javax.faces.CompositeFacet", RenderFacetHandler.class);
+        this.addComponent("renderFacet", "jakarta.faces.Output",
+                "jakarta.faces.CompositeFacet", RenderFacetHandler.class);
     }
 }

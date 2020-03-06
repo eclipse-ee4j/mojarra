@@ -19,7 +19,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 
-<%@ page import="javax.faces.context.FacesContext"%>
+<%@ page import="jakarta.faces.context.FacesContext"%>
 <%
   String textToEscape = "This text <b>has angle brackets</b>.";
   FacesContext.getCurrentInstance().getExternalContext().

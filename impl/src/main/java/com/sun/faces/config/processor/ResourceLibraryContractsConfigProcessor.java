@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -40,6 +39,8 @@ import org.w3c.dom.NodeList;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.context.FacesContext;
 
 public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProcessor {
 

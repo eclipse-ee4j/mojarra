@@ -19,16 +19,18 @@ package com.sun.faces.taglib.jsf_core;
 
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.event.ValueChangeListener;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+
 import com.sun.faces.util.FacesLogger;
 
 import javax.el.ValueExpression;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.event.ValueChangeListener;
-import javax.faces.webapp.UIComponentClassicTagBase;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.Serializable;
@@ -139,7 +141,7 @@ public class ValueChangeListenerTag extends TagSupport {
                  MessageUtils.getExceptionMessageString(MessageUtils.NULL_COMPONENT_ERROR_MESSAGE_ID));
         }
         if (!(component instanceof EditableValueHolder)) {
-            Object[] params = {"valueChangeListener", "javax.faces.component.EditableValueHolder"};
+            Object[] params = {"valueChangeListener", "jakarta.faces.component.EditableValueHolder"};
             throw new JspException(
                  MessageUtils.getExceptionMessageString(
                       MessageUtils.NOT_NESTED_IN_TYPE_TAG_ERROR_MESSAGE_ID, params));
@@ -204,10 +206,10 @@ public class ValueChangeListenerTag extends TagSupport {
 
         /**
          * <p>Invoked when the value change described by the specified
-         * {@link javax.faces.event.ValueChangeEvent} occurs.</p>
+         * {@link jakarta.faces.event.ValueChangeEvent} occurs.</p>
          *
-         * @param event The {@link javax.faces.event.ValueChangeEvent} that has occurred
-         * @throws javax.faces.event.AbortProcessingException
+         * @param event The {@link jakarta.faces.event.ValueChangeEvent} that has occurred
+         * @throws jakarta.faces.event.AbortProcessingException
          *          Signal the JavaServer Faces
          *          implementation that no further processing on the current event
          *          should be performed

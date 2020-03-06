@@ -27,14 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.render.ClientBehaviorRenderer;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.Renderer;
 import javax.servlet.ServletContext;
 
 import org.w3c.dom.Document;
@@ -45,6 +37,15 @@ import org.w3c.dom.NodeList;
 import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.ClientBehaviorRenderer;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.Renderer;
 
 /**
  * This <code>ConfigProcessor</code> handles all elements defined under

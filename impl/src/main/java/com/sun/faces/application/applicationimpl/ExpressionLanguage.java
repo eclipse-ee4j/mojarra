@@ -38,12 +38,6 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
@@ -55,6 +49,13 @@ import com.sun.faces.el.PropertyResolverImpl;
 import com.sun.faces.el.VariableResolverImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
 
 public class ExpressionLanguage {
     
@@ -83,7 +84,7 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see javax.faces.application.Application#addELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#addELContextListener(javax.el.ELContextListener)
      */
     public void addELContextListener(ELContextListener listener) {
         if (listener != null) {
@@ -92,7 +93,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#removeELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#removeELContextListener(javax.el.ELContextListener)
      */
     public void removeELContextListener(ELContextListener listener) {
         if (listener != null) {
@@ -101,7 +102,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#getELContextListeners()
+     * @see jakarta.faces.application.Application#getELContextListeners()
      */
     public ELContextListener[] getELContextListeners() {
         if (!elContextListeners.isEmpty()) {
@@ -112,7 +113,7 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see javax.faces.application.Application#getELResolver()
+     * @see jakarta.faces.application.Application#getELResolver()
      */
     public ELResolver getELResolver() {
 
@@ -128,7 +129,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#addELResolver(javax.el.ELResolver)
+     * @see jakarta.faces.application.Application#addELResolver(javax.el.ELResolver)
      */
     public void addELResolver(ELResolver resolver) {
 
@@ -150,14 +151,14 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see javax.faces.application.Application#getExpressionFactory()
+     * @see jakarta.faces.application.Application#getExpressionFactory()
      */
     public ExpressionFactory getExpressionFactory() {
         return associate.getExpressionFactory();
     }
     
     /**
-     * @see javax.faces.application.Application#evaluateExpressionGet(javax.faces.context.FacesContext,
+     * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext,
      *      String, Class)
      */
     @SuppressWarnings("unchecked")
@@ -196,7 +197,7 @@ public class ExpressionLanguage {
     
     
     /**
-     * @see javax.faces.application.Application#setPropertyResolver(javax.faces.el.PropertyResolver)
+     * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
      */
     @Deprecated
     public PropertyResolver getPropertyResolver() {
@@ -208,7 +209,7 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see javax.faces.application.Application#setPropertyResolver(javax.faces.el.PropertyResolver)
+     * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
      */
     @Deprecated
     public void setPropertyResolver(PropertyResolver resolver) {
@@ -234,7 +235,7 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see javax.faces.application.Application#createMethodBinding(String, Class[])
+     * @see jakarta.faces.application.Application#createMethodBinding(String, Class[])
      */
     @Deprecated
     public MethodBinding createMethodBinding(String ref, Class<?> params[]) {
@@ -263,7 +264,7 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see javax.faces.application.Application#createValueBinding(String)
+     * @see jakarta.faces.application.Application#createValueBinding(String)
      */
     @Deprecated
     public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException {
@@ -282,7 +283,7 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see javax.faces.application.Application#getVariableResolver()
+     * @see jakarta.faces.application.Application#getVariableResolver()
      */
     @Deprecated
     public VariableResolver getVariableResolver() {
@@ -294,7 +295,7 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see javax.faces.application.Application#setVariableResolver(javax.faces.el.VariableResolver)
+     * @see jakarta.faces.application.Application#setVariableResolver(jakarta.faces.el.VariableResolver)
      */
     @Deprecated
     public void setVariableResolver(VariableResolver resolver) {

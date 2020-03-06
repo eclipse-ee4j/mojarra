@@ -23,9 +23,6 @@ import static java.util.logging.Level.FINE;
 import java.text.MessageFormat;
 import java.util.logging.Logger;
 
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.component.search.CompositeSearchKeywordResolver;
 import com.sun.faces.component.search.SearchKeywordResolverImplAll;
@@ -42,6 +39,9 @@ import com.sun.faces.component.search.SearchKeywordResolverImplRoot;
 import com.sun.faces.component.search.SearchKeywordResolverImplThis;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
 
 public class SearchExpression {
     

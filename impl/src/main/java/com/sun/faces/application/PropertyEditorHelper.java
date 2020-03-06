@@ -16,17 +16,17 @@
 
 package com.sun.faces.application;
 
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-
 import com.sun.faces.util.MessageFactory;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
 
 /**
  * Helper class to aid the ConverterPropertyEditorBase in converting properties.
@@ -84,7 +84,7 @@ public class PropertyEditorHelper {
     }
 
     /**
-     * Return the {@link javax.faces.component.UIComponent} that is currently being processed.
+     * Return the {@link jakarta.faces.component.UIComponent} that is currently being processed.
      *
      * @return the current component, or null.
      */

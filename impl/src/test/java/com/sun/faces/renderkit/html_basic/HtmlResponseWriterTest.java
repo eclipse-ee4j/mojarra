@@ -20,10 +20,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
+
 import org.junit.Test;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
+
 import static org.junit.Assert.*;
 
 public class HtmlResponseWriterTest {

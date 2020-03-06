@@ -21,18 +21,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UIWebsocket;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.push.Push;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UIWebsocket;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.push.Push;
 
 /**
  * <p class="changed_added_2_3">
@@ -109,7 +109,7 @@ public class WebsocketFacesListener implements SystemEventListener {
                 }
                 else {
                     UIOutput outputScript = new UIOutput();
-                    outputScript.setRendererType("javax.faces.resource.Script");
+                    outputScript.setRendererType("jakarta.faces.resource.Script");
                     UIOutput content = new UIOutput();
                     content.setValue(script);
                     outputScript.getChildren().add(content);

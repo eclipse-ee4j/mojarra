@@ -16,14 +16,15 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import javax.faces.component.UIInput;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRule;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
 import java.util.Map;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 public final class RenderPropertyRule extends MetaRule {
 

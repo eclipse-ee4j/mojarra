@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.InitParameterMap;
+
+import jakarta.faces.annotation.InitParameterMap;
 
 /**
  * An annotation literal for @InitParameterMap.

@@ -18,26 +18,28 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.application.ApplicationAssociate;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.PostRenderViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
+
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.PostRenderViewEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+
 import java.io.IOException;
 import java.io.Serializable;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PreRenderViewEvent;
 
 /**
  * This is the TagHandler for the f:event tag.

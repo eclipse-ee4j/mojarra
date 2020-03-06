@@ -32,12 +32,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.Flash;
 import javax.servlet.ServletContext;
 
 import com.sun.faces.context.ApplicationMap;
 import com.sun.faces.context.InitParameterMap;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.Flash;
 
 public class ServletContextAdapter extends ExternalContext {
 

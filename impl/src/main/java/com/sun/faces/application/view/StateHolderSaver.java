@@ -18,9 +18,9 @@ package com.sun.faces.application.view;
 
 import java.io.Serializable;
 
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

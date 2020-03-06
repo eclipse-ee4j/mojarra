@@ -18,10 +18,12 @@ package com.sun.faces.facelets.tag.composite;
 
 import com.sun.faces.facelets.el.TagValueExpression;
 import com.sun.faces.util.Util;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.component.UIComponent;
-import javax.faces.application.ProjectStage;
+
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+
 import javax.el.ValueExpression;
 import java.util.Map;
 import java.util.HashMap;

@@ -20,21 +20,24 @@ import com.sun.faces.facelets.el.LegacyValueBinding;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
+
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-import javax.faces.view.facelets.*;
+
 import java.io.IOException;
 import java.io.Serializable;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
 
 public class SetPropertyActionListenerHandler extends TagHandlerImpl implements ActionSource2AttachedObjectHandler {
 

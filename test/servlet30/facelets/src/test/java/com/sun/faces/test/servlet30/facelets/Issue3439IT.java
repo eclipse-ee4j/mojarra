@@ -51,6 +51,6 @@ public class Issue3439IT {
         HtmlPage page = webClient.getPage(webUrl + "faces/inputTextCurrentComponent.xhtml");
         HtmlElement submit = page.getHtmlElementById("form:submit");
         page = submit.click();
-        assertTrue(page.asXml().contains("javax.faces.component.html.HtmlInputText"));
+        assertTrue(page.asXml().contains("jakarta.faces.component.html.HtmlInputText"));
     }
 }

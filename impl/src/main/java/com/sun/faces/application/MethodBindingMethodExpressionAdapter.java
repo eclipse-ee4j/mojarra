@@ -31,11 +31,12 @@ import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.MethodNotFoundException;
+
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.MethodNotFoundException;
 
 /**
  * <p>

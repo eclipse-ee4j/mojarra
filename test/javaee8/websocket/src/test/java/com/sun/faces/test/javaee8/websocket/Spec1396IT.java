@@ -65,9 +65,9 @@ public class Spec1396IT {
         HtmlPage page = webClient.getPage(webUrl + "spec1396.xhtml");
         String pageSource = page.getWebResponse().getContentAsString();
         assertTrue(pageSource.contains(">jsf.push.init("));
-        assertTrue(pageSource.contains("/javax.faces.push/push?"));
-        assertTrue(pageSource.contains("/javax.faces.push/user?"));
-        assertTrue(pageSource.contains("/javax.faces.push/view?"));
+        assertTrue(pageSource.contains("/jakarta.faces.push/push?"));
+        assertTrue(pageSource.contains("/jakarta.faces.push/user?"));
+        assertTrue(pageSource.contains("/jakarta.faces.push/view?"));
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
         assertTrue(button.asText().equals("push"));

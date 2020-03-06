@@ -16,12 +16,13 @@
 
 package com.sun.faces.el;
 
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
 import javax.el.ELException;
 
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
 
 /**
  * <p>
@@ -35,7 +36,7 @@ public class VariableResolverImpl extends VariableResolver {
 
     // ------------------------------------------- Methods from VariableResolver
 
-    // Specified by javax.faces.el.VariableResolver.resolveVariable()
+    // Specified by jakarta.faces.el.VariableResolver.resolveVariable()
     @Override
     public Object resolveVariable(FacesContext context, String name)
             throws EvaluationException {

@@ -18,12 +18,13 @@ package com.sun.faces.taglib.jsf_core;
 
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
+
 import javax.el.ValueExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
 import javax.servlet.jsp.JspException;
 
 /**
@@ -127,15 +128,15 @@ public class ValidatorTag extends AbstractValidatorTag {
 
         /**
          * <p>Perform the correctness checks implemented by this
-         * {@link javax.faces.validator.Validator} against the specified {@link javax.faces.component.UIComponent}.
-         * If any violations are found, a {@link javax.faces.validator.ValidatorException}
-         * will be thrown containing the {@link javax.faces.application.FacesMessage} describing
+         * {@link jakarta.faces.validator.Validator} against the specified {@link jakarta.faces.component.UIComponent}.
+         * If any violations are found, a {@link jakarta.faces.validator.ValidatorException}
+         * will be thrown containing the {@link jakarta.faces.application.FacesMessage} describing
          * the failure.
          *
          * @param context   FacesContext for the request we are processing
          * @param component UIComponent we are checking for correctness
          * @param value     the value to validate
-         * @throws javax.faces.validator.ValidatorException
+         * @throws jakarta.faces.validator.ValidatorException
          *                              if validation fails
          * @throws NullPointerException if <code>context</code>
          *                              or <code>component</code> is <code>null</code>

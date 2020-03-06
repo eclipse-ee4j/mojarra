@@ -26,13 +26,14 @@ import java.io.Serializable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.faces.application.ProjectStage;
 
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.application.ProjectStage;
+
 /**
- * @see javax.faces.context.ExternalContext#getSessionMap()  
+ * @see jakarta.faces.context.ExternalContext#getSessionMap()  
  */
 public class SessionMap extends BaseContextMap<Object> {
 

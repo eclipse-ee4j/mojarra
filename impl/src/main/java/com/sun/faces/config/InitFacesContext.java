@@ -28,13 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELContext;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import com.sun.faces.RIConstants;
@@ -44,6 +37,14 @@ import com.sun.faces.config.initfacescontext.ServletContextAdapter;
 import com.sun.faces.context.ApplicationMap;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A special, minimal implementation of FacesContext used at application initialization time. The ExternalContext

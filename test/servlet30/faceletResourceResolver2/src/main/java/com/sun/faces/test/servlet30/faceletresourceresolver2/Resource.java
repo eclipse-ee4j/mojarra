@@ -38,7 +38,7 @@ public final class Resource {
 
     /**
      * Get an URL of an internal resource. First,
-     * {@link javax.faces.context.ExternalContext#getResource(String)} is
+     * {@link jakarta.faces.context.ExternalContext#getResource(String)} is
      * checked for an non-null URL return value. In the case of a null return
      * value (as it is the case for Weblogic 8.1 for a packed war), a URL with a
      * special URL handler is constructed, which can be used for

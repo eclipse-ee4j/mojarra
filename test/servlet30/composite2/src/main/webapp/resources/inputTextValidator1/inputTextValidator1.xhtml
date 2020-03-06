@@ -31,7 +31,7 @@
     <body>
         <cc:interface>
             <cc:attribute name="value"/>
-            <cc:attribute name="validator" method-signature="void Action(javax.faces.context.FacesContext, javax.faces.component.UIComponent,Object)"/>
+            <cc:attribute name="validator" method-signature="void Action(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent,Object)"/>
         </cc:interface>
         <cc:implementation>
             <inputTextValidator1:inputTextValidator1b id="level2" value="#{cc.attrs.value}" validator="#{cc.attrs.validator}"/>

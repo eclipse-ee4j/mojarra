@@ -18,10 +18,12 @@ package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.facelets.el.ELText;
 
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+
 import java.io.IOException;
 
 public class XMLInstruction implements Instruction {

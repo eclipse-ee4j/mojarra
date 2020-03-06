@@ -17,12 +17,14 @@
 package com.sun.faces.taglib.jsf_core;
 
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.webapp.ConverterELTag;
+
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.webapp.ConverterELTag;
-import javax.faces.convert.Converter;
-import javax.faces.context.FacesContext;
-import javax.faces.FacesException;
 import javax.el.ValueExpression;
 import javax.el.ELContext;
 import javax.servlet.jsp.JspException;
@@ -41,13 +43,13 @@ public class AbstractConverterTag extends ConverterELTag {
 
     /**
      * <p>The {@link javax.el.ValueExpression} that evaluates to an object that
-     * implements {@link javax.faces.convert.Converter}.</p>
+     * implements {@link jakarta.faces.convert.Converter}.</p>
      */
     protected ValueExpression binding = null;
 
 
     /**
-     * <p>The identifier of the {@link javax.faces.convert.Converter}
+     * <p>The identifier of the {@link jakarta.faces.convert.Converter}
      * instance to be created.</p>
      */
     protected ValueExpression converterId = null;
@@ -58,7 +60,7 @@ public class AbstractConverterTag extends ConverterELTag {
     /**
      * <p>Set the expression that will be used to create a
      * {@link javax.el.ValueExpression} that references a backing bean property
-     * of the {@link javax.faces.convert.Converter} instance to be created.</p>
+     * of the {@link jakarta.faces.convert.Converter} instance to be created.</p>
      *
      * @param binding The new expression
      */
@@ -70,7 +72,7 @@ public class AbstractConverterTag extends ConverterELTag {
 
 
     /**
-     * <p>Set the identifer of the {@link javax.faces.convert.Converter}
+     * <p>Set the identifer of the {@link jakarta.faces.convert.Converter}
      * instance to be created.
      *
      * @param converterId The identifier of the converter instance to be

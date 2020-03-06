@@ -50,7 +50,7 @@
     </table>
 
 
-<INPUT TYPE="HIDDEN" NAME="javax.faces.REQUEST_TOKEN" VALUE="a474bbe613e392826241822dd28c3ce">
+<INPUT TYPE="HIDDEN" NAME="jakarta.faces.REQUEST_TOKEN" VALUE="a474bbe613e392826241822dd28c3ce">
 
 <INPUT TYPE="HIDDEN" NAME="faces.formId" VALUE="basicForm">
 </FORM>

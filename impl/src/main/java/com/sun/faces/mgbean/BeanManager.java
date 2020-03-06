@@ -19,26 +19,31 @@ package com.sun.faces.mgbean;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
-import javax.faces.event.*;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
 import javax.el.FunctionMapper;
+import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PreDestroyCustomScopeEvent;
+import jakarta.faces.event.ScopeContext;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
 
 /**
  * <p>Main interface for dealing with JSF managed beans</p>

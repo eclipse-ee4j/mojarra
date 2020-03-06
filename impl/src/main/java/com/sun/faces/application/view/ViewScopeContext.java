@@ -24,9 +24,10 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
+
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 
 /**
  * The CDI context for CDI ViewScoped beans.

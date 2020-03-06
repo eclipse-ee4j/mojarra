@@ -20,9 +20,9 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Resp
 import static com.sun.faces.util.RequestStateManager.AFTER_VIEW_CONTENT;
 import static com.sun.faces.util.Util.isViewPopulated;
 import static com.sun.faces.util.Util.setViewPopulated;
+import static jakarta.faces.FactoryFinder.RENDER_KIT_FACTORY;
 import static java.lang.Integer.parseInt;
 import static java.util.logging.Level.FINE;
-import static javax.faces.FactoryFinder.RENDER_KIT_FACTORY;
 
 import java.beans.BeanInfo;
 import java.io.IOException;
@@ -30,19 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Resource;
-import javax.faces.application.ViewVisitOption;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ViewMetadata;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.jstl.core.Config;
@@ -51,6 +38,20 @@ import com.sun.faces.application.ViewHandlerResponseWrapper;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ViewVisitOption;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewMetadata;
 
 /**
  * This {@link ViewHandlingStrategy} handles JSP-based views.
@@ -82,7 +83,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
      * Not supported in JSP-based views.
      * </p>
      *
-     * @see javax.faces.view.ViewDeclarationLanguage#getViewMetadata(javax.faces.context.FacesContext, String)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getViewMetadata(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public ViewMetadata getViewMetadata(FacesContext context, String viewId) {
@@ -90,7 +91,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
-     * @see javax.faces.view.ViewDeclarationLanguage#buildView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#buildView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)
      * @param context
      * @param view
      * @throws IOException
@@ -124,7 +125,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
-     * @see javax.faces.view.ViewDeclarationLanguage#renderView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)
      */
     @Override
     public void renderView(FacesContext context, UIViewRoot view) throws IOException {
@@ -223,7 +224,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
      * Not supported in JSP-based views.
      * </p>
      *
-     * @see javax.faces.view.ViewDeclarationLanguage#getComponentMetadata(javax.faces.context.FacesContext, javax.faces.application.Resource)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getComponentMetadata(jakarta.faces.context.FacesContext, jakarta.faces.application.Resource)
      */
     @Override
     public BeanInfo getComponentMetadata(FacesContext context, Resource componentResource) {
@@ -235,7 +236,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
      * Not supported in JSP-based views.
      * </p>
      *
-     * @see javax.faces.view.ViewDeclarationLanguage#getScriptComponentResource(javax.faces.context.FacesContext, javax.faces.application.Resource)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getScriptComponentResource(jakarta.faces.context.FacesContext, jakarta.faces.application.Resource)
      */
     @Override
     public Resource getScriptComponentResource(FacesContext context, Resource componentResource) {
@@ -247,7 +248,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
      * Not supported in JSP-based views.
      * </p>
      *
-     * @see javax.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String, ViewVisitOption...)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String, ViewVisitOption...)
      */
     @Override
     public Stream<String> getViews(FacesContext context, String path, ViewVisitOption... options) {
@@ -259,7 +260,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
      * Not supported in JSP-based views.
      * </p>
      *
-     * @see javax.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String, int, ViewVisitOption...)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String, int, ViewVisitOption...)
      */
     @Override
     public Stream<String> getViews(FacesContext context, String path, int maxDepth, ViewVisitOption... options) {
@@ -406,7 +407,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
      * @param context the <code>FacesContext</code> for the current request
      * @param viewToRender the view to render
      * @throws java.io.IOException if an error occurs rendering the view to the client
-     * @throws javax.faces.FacesException if some error occurs within the framework
+     * @throws jakarta.faces.FacesException if some error occurs within the framework
      *  processing
      */
     private void doRenderView(FacesContext context, UIViewRoot viewToRender) throws IOException {

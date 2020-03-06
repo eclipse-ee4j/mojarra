@@ -64,7 +64,7 @@ public class ViewScopedComponentBindingBean {
         if (null == button) {
             FacesContext context = FacesContext.getCurrentInstance();
             Application app = context.getApplication();
-            button = (UICommand) app.createComponent(context, "javax.faces.Command", "javax.faces.Button");
+            button = (UICommand) app.createComponent(context, "jakarta.faces.Command", "jakarta.faces.Button");
         }
         return button;
     }

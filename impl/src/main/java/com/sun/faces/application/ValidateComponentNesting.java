@@ -18,26 +18,26 @@ package com.sun.faces.application;
 
 import java.util.EnumSet;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIViewAction;
-import javax.faces.component.UIViewParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIViewAction;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
 
 /**
  * <p>

@@ -16,37 +16,49 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
+import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.el.ValueExpression;
+
+import com.sun.faces.component.CompositeComponentStackManager;
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.component.validator.ComponentValidators;
-import com.sun.faces.component.CompositeComponentStackManager;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.impl.IdMapper;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.facelets.tag.jsf.core.FacetHandler;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.*;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandlerDelegate;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
-import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
-import java.util.Collection;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandlerDelegate;
 
 public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     
@@ -80,10 +92,10 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * spec.
      * <ol>
      * <li>First determines this UIComponent's id by calling
-     * {@link javax.faces.view.facelets.ComponentHandler#getTagId()}.</li>
+     * {@link jakarta.faces.view.facelets.ComponentHandler#getTagId()}.</li>
      * <li>Search the parent for an existing UIComponent of the id we just
      * grabbed</li>
-     * <li>If found, {@link com.sun.faces.facelets.tag.jsf.ComponentSupport#markForDeletion(javax.faces.component.UIComponent) mark}
+     * <li>If found, {@link com.sun.faces.facelets.tag.jsf.ComponentSupport#markForDeletion(jakarta.faces.component.UIComponent) mark}
      * its children for deletion.</li>
      * <li>If <i>not</i> found, call
      * {@link #createComponent(FaceletContext) createComponent}.
@@ -536,8 +548,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * If the binding was used, then set the ValueExpression "binding" on the
      * created UIComponent.
      * 
-     * @see Application#createComponent(javax.faces.el.ValueBinding,
-     *      javax.faces.context.FacesContext, java.lang.String)
+     * @see Application#createComponent(jakarta.faces.el.ValueBinding,
+     *      jakarta.faces.context.FacesContext, java.lang.String)
      * @see Application#createComponent(java.lang.String)
      * @param ctx
      *            FaceletContext to use in creating a component

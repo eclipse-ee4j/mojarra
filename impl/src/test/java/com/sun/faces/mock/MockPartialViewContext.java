@@ -18,11 +18,13 @@ package com.sun.faces.mock;
 
 import java.util.Collection;
 import java.util.Map;
+
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.event.PhaseId;
+
 import java.util.List;
 import java.util.HashMap;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.PartialViewContext;
-import javax.faces.event.PhaseId;
 
 /**
  * MockPartialViewContext implementation.

@@ -32,15 +32,15 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Stream;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * This class is used to lookup {@link ResourceInfo} instances
@@ -139,7 +139,7 @@ public class ResourceManager {
      * @param resourceName the name of the resource
      * @param contentType the content type of the resource.  This will be
      *  used to determine if the resource is compressable
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current
      *  request
      *  
      * @return a {@link ResourceInfo} if a resource if found matching the
@@ -247,7 +247,7 @@ public class ResourceManager {
      * @param compressable if this resource can be compressed
      * @param isViewResource 
      * @param contracts the contracts to consider
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current
      *  request
      *
      * @return a {@link ResourceInfo} if a resource if found matching the
@@ -431,7 +431,7 @@ public class ResourceManager {
      * @param libraryName the library to find
      * @param localePrefix the prefix for the desired locale
      * @param contract the contract to use
-     *@param ctx         the {@link javax.faces.context.FacesContext} for the current request
+     *@param ctx         the {@link jakarta.faces.context.FacesContext} for the current request
      *  @return the Library instance for the specified library
      */
      LibraryInfo findLibrary(String libraryName, String localePrefix, String contract, FacesContext ctx) {
@@ -473,7 +473,7 @@ public class ResourceManager {
      * @param resourceName the name of the resource
      * @param localePrefix the prefix for the desired locale
      * @param compressable <code>true</code> if the resource can be compressed
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      *
      * @return the Library instance for the specified library
      */
@@ -544,13 +544,13 @@ public class ResourceManager {
      * <p>
      * Obtains the application configured message resources for the current
      * request locale.  If a ResourceBundle is found and contains the key
-     * <code>javax.faces.resource.localePrefix</code>, use the value associated
+     * <code>jakarta.faces.resource.localePrefix</code>, use the value associated
      * with that key as the prefix for locale specific resources.
      * </p>
      *
      * <p>
      * For example, say the request locale is en_US, and
-     * <code>javax.faces.resourceLocalePrefix</code> is found with a value of
+     * <code>jakarta.faces.resourceLocalePrefix</code> is found with a value of
      * <code>en</code>, a resource path within a web application might look like
      * <code>/resources/en/corp/images/greetings.jpg</code>
      * </p>

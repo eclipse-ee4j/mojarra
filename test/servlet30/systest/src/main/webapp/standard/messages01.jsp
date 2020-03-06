@@ -21,12 +21,12 @@
   <head>
     <title>messages01.jsp</title>
 
-<%@ page import="javax.faces.FactoryFinder"
-%><%@ page import="javax.faces.application.Application"
-%><%@ page import="javax.faces.application.FacesMessage"
+<%@ page import="jakarta.faces.FactoryFinder"
+%><%@ page import="jakarta.faces.application.Application"
+%><%@ page import="jakarta.faces.application.FacesMessage"
 %><%@ page import="com.sun.faces.util.MessageFactory"
-%><%@ page import="javax.faces.application.ApplicationFactory"
-%><%@ page import="javax.faces.context.FacesContext"
+%><%@ page import="jakarta.faces.application.ApplicationFactory"
+%><%@ page import="jakarta.faces.context.FacesContext"
 %><%
 
   // Acquire the FacesContext instance for this request
@@ -43,7 +43,7 @@
 
   // get a message
   FacesMessage message = MessageFactory.getMessage(facesContext, 
-        "javax.faces.component.UIInput.REQUIRED");
+        "jakarta.faces.component.UIInput.REQUIRED");
   if (message == null) {
     out.println("/messages01.jsp FAILED - No message returned");
     return;

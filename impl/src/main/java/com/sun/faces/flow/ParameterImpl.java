@@ -18,7 +18,8 @@ package com.sun.faces.flow;
 
 import java.io.Serializable;
 import javax.el.ValueExpression;
-import javax.faces.flow.Parameter;
+
+import jakarta.faces.flow.Parameter;
 
 public class ParameterImpl extends Parameter implements Serializable {
     

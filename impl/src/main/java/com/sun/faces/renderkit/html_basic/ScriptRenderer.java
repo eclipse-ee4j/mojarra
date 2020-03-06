@@ -18,8 +18,8 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * <p>This <code>Renderer</code> handles the rendering of <code>script</code> references.</p>

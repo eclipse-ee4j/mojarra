@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 public class CopierUtils {
     

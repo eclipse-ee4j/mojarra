@@ -16,10 +16,10 @@
 
 package com.sun.faces.facelets.impl;
 
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletCacheFactory;
-
 import com.sun.faces.config.WebConfiguration;
+
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCacheFactory;
 
 /**
  * Default implementation of {@link FaceletCacheFactory}.

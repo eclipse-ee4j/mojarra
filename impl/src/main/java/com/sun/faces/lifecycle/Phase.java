@@ -20,23 +20,23 @@ import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Timer;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.Lifecycle;
 
 
 /**
  * <p>A <strong>Phase</strong> is a single step in the processing of a
- * JavaServer Faces request throughout its entire {@link javax.faces.lifecycle.Lifecycle}.
+ * JavaServer Faces request throughout its entire {@link jakarta.faces.lifecycle.Lifecycle}.
  * Each <code>Phase</code> performs the required transitions on the state
  * information in the {@link FacesContext} associated with this request.
  */
@@ -99,7 +99,7 @@ public abstract class Phase {
 
      /**
      * <p>Perform all state transitions required by the current phase of the
-     * request processing {@link javax.faces.lifecycle.Lifecycle} for a
+     * request processing {@link jakarta.faces.lifecycle.Lifecycle} for a
      * particular request. </p>
      *
      * @param context FacesContext for the current request being processed
@@ -110,7 +110,7 @@ public abstract class Phase {
 
 
     /**
-     * @return the current {@link javax.faces.lifecycle.Lifecycle}
+     * @return the current {@link jakarta.faces.lifecycle.Lifecycle}
      * <strong>Phase</strong> identifier.
      */
     public abstract PhaseId getId();

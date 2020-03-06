@@ -17,14 +17,15 @@
 package com.sun.faces.context;
 
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.ExternalContextFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContextFactory;
 
 public class ExternalContextFactoryImpl extends ExternalContextFactory {
 

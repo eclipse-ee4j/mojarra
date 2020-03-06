@@ -21,11 +21,13 @@ import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import java.io.IOException;
-import javax.faces.application.NavigationCase;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 

@@ -22,22 +22,23 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.el.ValueExpression;
-import javax.faces.context.ExternalContext;
-import javax.faces.render.Renderer;
 
 
 /**
@@ -204,7 +205,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @param contentType the content type.
      * @param encoding    the character encoding.
      *
-     * @throws javax.faces.FacesException the encoding is not recognized.
+     * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
     public HtmlResponseWriter(Writer writer,
                               String contentType,
@@ -227,7 +228,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @param contentType the content type.
      * @param encoding    the character encoding.
      *
-     * @throws javax.faces.FacesException the encoding is not recognized.
+     * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
     public HtmlResponseWriter(Writer writer,
                               String contentType,

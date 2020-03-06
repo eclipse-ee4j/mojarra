@@ -21,8 +21,6 @@ import static com.sun.faces.test.junit.JsfVersion.JSF_2_3_0_M03;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import javax.faces.context.Flash;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +31,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_2_1;
 import com.sun.faces.test.junit.JsfTest;
 import com.sun.faces.test.junit.JsfTestRunner;
+
+import jakarta.faces.context.Flash;
 
 /**
  * Tests the availability of The Flash via injection of a {@link Flash}

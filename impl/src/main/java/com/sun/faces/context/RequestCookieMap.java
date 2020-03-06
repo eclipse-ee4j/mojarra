@@ -30,7 +30,7 @@ import javax.servlet.http.Cookie;
 import com.sun.faces.util.Util;
 
 /**
- * @see javax.faces.context.ExternalContext#getRequestCookieMap()  
+ * @see jakarta.faces.context.ExternalContext#getRequestCookieMap()  
  */
 public class RequestCookieMap extends BaseContextMap<Object> {
 

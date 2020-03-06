@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.HeaderMap;
+
+import jakarta.faces.annotation.HeaderMap;
 
 /**
  * An annotation literal for @HeaderMap.

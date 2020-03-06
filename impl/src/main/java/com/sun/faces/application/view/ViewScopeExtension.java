@@ -19,6 +19,9 @@ package com.sun.faces.application.view;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 import com.sun.faces.util.cdi11.CDIUtil;
+
+import jakarta.faces.view.ViewScoped;
+
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +32,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBean;
-import javax.faces.view.ViewScoped;
 
 /**
  * The CDI extension that makes ViewScoped beans work in a CDI context.

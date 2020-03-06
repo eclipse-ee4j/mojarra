@@ -124,7 +124,7 @@ public class Spec1260IT {
         
         // Runtime must have found out the mappings of the FacesServlet and used one of the prefix or suffix
         // mappings to render the reference to "jsf.js", which is not exactly mapped.
-        assertTrue(content.contains("javax.faces.resource/jsf.js.jsf") || content.contains("javax.faces.resource/faces/jsf.js") );
+        assertTrue(content.contains("jakarta.faces.resource/jsf.js.jsf") || content.contains("jakarta.faces.resource/faces/jsf.js") );
     }
     
     @Test

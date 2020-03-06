@@ -17,10 +17,10 @@
 --%>
 
 <%@ page contentType="text/html"
-%><%@ page import="javax.faces.FactoryFinder"
-%><%@ page import="javax.faces.application.Application"
-%><%@ page import="javax.faces.application.ApplicationFactory"
-%><%@ page import="javax.faces.component.UIComponent"
+%><%@ page import="jakarta.faces.FactoryFinder"
+%><%@ page import="jakarta.faces.application.Application"
+%><%@ page import="jakarta.faces.application.ApplicationFactory"
+%><%@ page import="jakarta.faces.component.UIComponent"
 %><%@ page import="com.sun.faces.systest.TestComponent"
 %><%
 
@@ -31,11 +31,11 @@
 
   // replace mappings provided by the JSF implementation in order to 
   // customize the behavior of standard JSF features.
-  UIComponent oldForm = appl.createComponent("javax.faces.Form");
-  appl.addComponent("javax.faces.Form", "com.sun.faces.systest.TestComponent");
+  UIComponent oldForm = appl.createComponent("jakarta.faces.Form");
+  appl.addComponent("jakarta.faces.Form", "com.sun.faces.systest.TestComponent");
 
   // try to retrieve our component from Application
-  UIComponent result = appl.createComponent("javax.faces.Form");
+  UIComponent result = appl.createComponent("jakarta.faces.Form");
   // report the result
   if (result == null || 
       !(result instanceof com.sun.faces.systest.TestComponent)) {
@@ -46,6 +46,6 @@
   }
 
   // restore the old mapping
-  appl.addComponent("javax.faces.Form", oldForm.getClass().getName());
+  appl.addComponent("jakarta.faces.Form", oldForm.getClass().getName());
   
 %>

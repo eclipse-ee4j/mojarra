@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.FacesConfig;
+
+import jakarta.faces.annotation.FacesConfig;
 
 /**
  * An annotation literal for <code>@FacesConfig.</code>

@@ -205,7 +205,7 @@ public class TestStateManagerImpl extends ServletFacesTestCase {
 
     
     public void beginMultiWindowSaveServer(WebRequest theRequest) {
-        theRequest.addParameter("javax.faces.ViewState", "j_id1:j_id2");
+        theRequest.addParameter("jakarta.faces.ViewState", "j_id1:j_id2");
     }
 
     public void testMultiWindowSaveServer() throws Exception {

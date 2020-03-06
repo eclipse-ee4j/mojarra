@@ -243,7 +243,7 @@
           configuration resource file located at "WEB-INF/faces-config.xml".
           The presence of this attribute on any application configuration
           resource other than the one located at "WEB-INF/faces-config.xml",
-          including any files named using the javax.faces.CONFIG_FILES
+          including any files named using the jakarta.faces.CONFIG_FILES
           attribute, must be ignored.
           
           If metadata-complete is set to "true", the JavaServer Faces

@@ -16,11 +16,11 @@
 
 package com.sun.faces.component.search;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHint;
-import javax.faces.component.search.SearchKeywordContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.component.search.SearchKeywordContext;
 
 public class SearchKeywordResolverImplForm extends AbstractSearchKeywordResolverImpl {
 

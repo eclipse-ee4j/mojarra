@@ -66,6 +66,6 @@ public class Issue2500IT {
         webClient.waitForBackgroundJavaScript(60000);
         page = button2.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.asXml().contains("javax.faces.ViewState Has One Value"));
+        assertTrue(page.asXml().contains("jakarta.faces.ViewState Has One Value"));
     }
 }

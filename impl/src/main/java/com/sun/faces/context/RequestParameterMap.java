@@ -22,13 +22,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletRequest;
 
 import com.sun.faces.util.Util;
 
+import jakarta.faces.context.FacesContext;
+
 /**
- * @see javax.faces.context.ExternalContext#getRequestParameterMap() 
+ * @see jakarta.faces.context.ExternalContext#getRequestParameterMap() 
  */
 public class RequestParameterMap extends BaseContextMap<String> {
 

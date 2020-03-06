@@ -54,7 +54,7 @@
             attribute, and convert it to lower case.  If the result is equal
             to the String "reset" (without the quotes), return from
             <code>decode()</code>.  Otherwise, create a
-            <code>javax.faces.event.ActionEvent</code> around the component,
+            <code>jakarta.faces.event.ActionEvent</code> around the component,
             and pass it to the <code>queueEvent()</code> method of the
             component, which must be an instance of
             <code>UICommand</code>.</p>
@@ -90,9 +90,9 @@
             <p class="changed_added_2_0">If the component being rendered by
             this renderer has any <code>UIParameter</code> children, each one
             of them must be rendered using the renderer for component-family:
-            "javax.faces.Input" and renderer-type: "javax.faces.Hidden".  For
+            "jakarta.faces.Input" and renderer-type: "jakarta.faces.Hidden".  For
             discussion, this is called the hiddenRenderer.  A component with
-            component-type "javax.faces.Input" must be created for local use
+            component-type "jakarta.faces.Input" must be created for local use
             in rendering each <code>UIParameter</code> child.  The "id"
             property of the temporary component must be set to the "name" of
             the <code>UIParameter</code>.  The "value" property of the
@@ -114,7 +114,7 @@
             document id and a flow id, add a component attribute to this
             component whose name is given by the value of the symbolic
             constant
-            <code>javax.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
+            <code>jakarta.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
             and whose value is the defining document id.  For example, when
             using this component in a facelet page, the following markup
             would cause such an attribute to be added.</p>
@@ -182,7 +182,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void actionListener(javax.faces.event.ActionEvent)
+                    void actionListener(jakarta.faces.event.ActionEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -777,7 +777,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -826,7 +826,7 @@
             empty String, or the entry is not equal to the value of the
             "clientId" property, return immediately.  If there is an entry,
             and its value is equal to the value of the "clientId" property,
-            create a new <code>javax.faces.event.ActionEvent</code> instance
+            create a new <code>jakarta.faces.event.ActionEvent</code> instance
             around the component and call <code>queueActionEvent()</code> on
             the component, passing the event.</p>
             
@@ -917,7 +917,7 @@
             document id and a flow id, add a component attribute to this
             component whose name is given by the value of the symbolic
             constant
-            <code>javax.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
+            <code>jakarta.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
             and whose value is the defining document id.  For example, when
             using this component in a facelet page, the following markup
             would cause such an attribute to be added.</p>
@@ -983,7 +983,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void actionListener(javax.faces.event.ActionEvent)
+                    void actionListener(jakarta.faces.event.ActionEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -1583,7 +1583,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -2462,7 +2462,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -2509,7 +2509,7 @@
             <code>ExternalContext.encodePartialActionURL</code> using <code>action URL</code> as the argument.
             Compare the result from <code>ExternalContext.encodePartialActionURL</code> with the
             value from <code>ExternalContext.encodeActionURL()</code>.  If they are different,
-            render a hidden field with the name <code>javax.faces.encodedURL</code> and the value
+            render a hidden field with the name <code>jakarta.faces.encodedURL</code> and the value
             of this hidden field as the value from <code>ExternalContext.encodePartialActionURL</code>.</p>
             Call <code>ViewHandler.writeState()</code>
             before the the close of the "form" element.
@@ -2992,7 +2992,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -3011,7 +3011,7 @@
             <ul>
             
             <p>If the "name" attribute is present, execute algorithm <a
-            href="javax.faces.Outputjavax.faces.resource.Script.html#ResourceCommonGetResource">Common Algorithm for Obtaining A Resource to Render</a> to obtain a <code>Resource</code> instance.  Call
+            href="jakarta.faces.Outputjavax.faces.resource.Script.html#ResourceCommonGetResource">Common Algorithm for Obtaining A Resource to Render</a> to obtain a <code>Resource</code> instance.  Call
             <code>Resource.getRequestPath()</code> and output the result as the
             value of the "src" attribute on the rendered markup.</p>
             
@@ -3544,7 +3544,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -3638,7 +3638,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -3767,7 +3767,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -3830,7 +3830,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -4360,7 +4360,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -4375,7 +4375,7 @@
             <ul>
             
             <p>See the decode description for the <a
-            href="javax.faces.Inputjavax.faces.Text.html#encode">Input
+            href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
             Text</a> renderer.</p>
             
             </ul>
@@ -4414,7 +4414,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -4543,7 +4543,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -4606,7 +4606,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -4622,7 +4622,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -4636,7 +4636,7 @@
             <ul>
             
             <p>See the decode description for the <a
-            href="javax.faces.Inputjavax.faces.Text.html#encode">Input
+            href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
             Text</a> renderer.</p>
             
             </ul>
@@ -4679,7 +4679,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -4808,7 +4808,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -4871,7 +4871,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -5421,7 +5421,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -5486,7 +5486,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -5615,7 +5615,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -5678,7 +5678,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -6208,7 +6208,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -6222,7 +6222,7 @@
             <ul>
             
             <p>See the encode description for the <a
-            href="javax.faces.Inputjavax.faces.Text.html#encode">Input
+            href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
             Text</a> renderer.</p>
             
             </ul>
@@ -6260,7 +6260,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -6389,7 +6389,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -6452,7 +6452,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -6942,7 +6942,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -7382,7 +7382,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -7828,7 +7828,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -7877,7 +7877,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -8077,7 +8077,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -8122,7 +8122,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -8576,7 +8576,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -8640,7 +8640,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -9221,7 +9221,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -9269,7 +9269,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -9469,7 +9469,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -10165,7 +10165,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -10463,7 +10463,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -10520,7 +10520,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -10649,7 +10649,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -10712,7 +10712,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -11170,7 +11170,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -11186,7 +11186,7 @@
             <ul>
             
             <p>See the <a
-            href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
             Behavior for UISelectMany Components"</a> section.</p>
             
             </ul>
@@ -11250,7 +11250,7 @@
             Expression Language coercion rules, before comparing the values.
             If the value of the enclosing UISelectMany matches the current
             value, render "checked" as the value of the "checked" attribute.
-            See the <a href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+            See the <a href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
             elements" </a> specification for <code>ListboxRenderer</code> for
             more detail on how to render the "option" elements in this
             renderer.  <span class="changed_modified_2_0_rev_a">Note that this
@@ -11285,7 +11285,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -11414,7 +11414,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -11477,7 +11477,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -12079,7 +12079,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -12100,7 +12100,7 @@
             
             <p>If the collection type of the collection that provides the
             value of this component is not one of the types handled by a
-            converter in the package <code>javax.faces.convert</code>, a
+            converter in the package <code>jakarta.faces.convert</code>, a
             converter must explicitly be specified using the appropriate code
             in the VDL.  For example, use <code>&lt;f:converter&gt;</code> in
             JSP or Facelet pages.</p>
@@ -12171,7 +12171,7 @@
             <p>The only valid children of this component are
             <code>UISelectItem</code> or <code>UISelectItems</code>
             instances. Iterate over the children of this component, and accrue
-            a list of <code>javax.faces.model.SelectItem</code> instances.
+            a list of <code>jakarta.faces.model.SelectItem</code> instances.
             <span class="changed_added_2_0">If the current child is a
             <code>SelectItem</code> whose <code>noSelctionProperty</code> is
             <code>true</code>, <b>and</b> the <code>UISelectOne</code> or
@@ -12274,7 +12274,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -12403,7 +12403,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -12466,7 +12466,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -13014,7 +13014,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -13030,7 +13030,7 @@
             <ul>
             
             <p>See the <a
-            href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
             Behavior for UISelectMany Components"</a> section.</p>
             
             </ul>
@@ -13046,7 +13046,7 @@
             to be rendered is a UISelectMany, render "multiple" as the value of
             the "multiple" attribute.  Render "1" as the value of the "size"
             attribute.  See the <a
-            href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
             elements" </a> specification for <code>ListboxRenderer</code> for
             more detail on how to render the "option" elements in this
             renderer.</p>
@@ -13077,7 +13077,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -13206,7 +13206,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -13269,7 +13269,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -13800,7 +13800,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -13814,7 +13814,7 @@
             <ul>
             
             <p>See the <a
-            href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
             Behavior for UISelectOne Components"</a> section.</p>
             
             </ul>
@@ -13830,7 +13830,7 @@
             the "multiple" attribute.  If the "size" attribute is specified,
             render its value as the value of the "size" attribute.  Otherwise
             use the number of items as the value of the "size" attribute.  See
-            the <a href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+            the <a href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
             elements" </a> specification for <code>ListboxRenderer</code> for
             more detail on how to render the "option" elements in this
             renderer.</p>
@@ -13861,7 +13861,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -13990,7 +13990,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -14053,7 +14053,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -14580,7 +14580,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -14594,7 +14594,7 @@
             <ul>
             
             <p>See the <a
-            href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
             Behavior for UISelectOne Components"</a> section.</p>
             
             </ul>
@@ -14610,7 +14610,7 @@
             to be rendered is a UISelectMany, render "true" as the value of
             the "multiple" attribute.  Use the number of items as the value of
             the "size" attribute.  See the <a
-            href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering
+            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering
             the option elements" </a> specification for
             <code>ListboxRenderer</code> for more detail on how to render the
             "option" elements in this renderer.</p>
@@ -14641,7 +14641,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -14770,7 +14770,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -14833,7 +14833,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -15343,7 +15343,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -15359,7 +15359,7 @@
             <ul>
             
             <p>See the <a
-            href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
             Behavior for UISelectOne Components"</a> section.</p>
             
             </ul>
@@ -15401,7 +15401,7 @@
             child is equal to the value of the parent UISelectOne, render an
             appropriate HTML boolean value indicating "checked" for the
             enclosing "input".  See the <a
-            href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option elements" </a>
+            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option elements" </a>
             specification for <code>ListboxRenderer</code> for more detail on
             how to render the "option" elements in this renderer.  <span
             class="changed_modified_2_0_rev_a">Note that this renderer does
@@ -15435,7 +15435,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.convert.Converter
+                    jakarta.faces.convert.Converter
                 </type>
             </deferred-value>
         </attribute>
@@ -15564,7 +15564,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                    void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -15627,7 +15627,7 @@
             </required>
             <deferred-method>
                 <method-signature>
-                    void valueChange(javax.faces.event.ValueChangeEvent)
+                    void valueChange(jakarta.faces.event.ValueChangeEvent)
                 </method-signature>
             </deferred-method>
         </attribute>
@@ -16202,7 +16202,7 @@
             </required>
             <deferred-value>
                 <type>
-                    javax.faces.component.UIComponent
+                    jakarta.faces.component.UIComponent
                 </type>
             </deferred-value>
         </attribute>
@@ -16280,7 +16280,7 @@
                 false
             </required>
             <deferred-value>
-                <type>javax.faces.component.UIComponent</type>
+                <type>jakarta.faces.component.UIComponent</type>
             </deferred-value>
         </attribute>
         <attribute>

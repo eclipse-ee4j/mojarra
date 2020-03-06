@@ -16,7 +16,7 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-import javax.faces.view.facelets.*;
+import jakarta.faces.view.facelets.*;
 
 /**
  * Register a named Validator instance on the UIComponent associated with the
@@ -40,7 +40,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler {
      * Resolve the validator id from the attribute "validatorId", which is then used to create a new
      * Validator instance from the Application.
      * 
-     * @see javax.faces.application.Application#createValidator(java.lang.String)
+     * @see jakarta.faces.application.Application#createValidator(java.lang.String)
      */
     protected String getValidator(FaceletContext ctx) {
         return ((validatorId != null) ? this.validatorId.getValue(ctx) : null);

@@ -16,7 +16,7 @@
 
 package com.sun.faces.config;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * <p>

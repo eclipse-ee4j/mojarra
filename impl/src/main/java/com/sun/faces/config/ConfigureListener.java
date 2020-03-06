@@ -55,12 +55,6 @@ import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PreDestroyApplicationEvent;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextAttributeListener;
@@ -105,6 +99,13 @@ import com.sun.faces.util.MojarraThreadFactory;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Timer;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PreDestroyApplicationEvent;
 
 /**
  * <p>Parse all relevant JavaServer Faces configuration resources, and
@@ -784,7 +785,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     /**
      * <p>Processes a web application's deployment descriptor looking
-     * for a reference to <code>javax.faces.webapp.FacesServlet</code>.</p>
+     * for a reference to <code>jakarta.faces.webapp.FacesServlet</code>.</p>
      */
     private static class WebXmlProcessor {
 
@@ -960,7 +961,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             private static final String ERROR_PAGE = "error-page";
             private static final String SERVLET_CLASS = "servlet-class";
             private static final String FACES_SERVLET =
-                    "javax.faces.webapp.FacesServlet";
+                    "jakarta.faces.webapp.FacesServlet";
 
             private boolean servletClassFound;
             @SuppressWarnings({"StringBufferField"})

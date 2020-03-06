@@ -117,7 +117,7 @@ public class Verifier {
 
         // temporary hack until we can fix the stylesheets that create
         // the runtime xml
-        if ("javax.faces.component.html.HtmlHead".equals(className) || "javax.faces.component.html.HtmlBody".equals(className)) {
+        if ("jakarta.faces.component.html.HtmlHead".equals(className) || "jakarta.faces.component.html.HtmlBody".equals(className)) {
             return;
         }
         

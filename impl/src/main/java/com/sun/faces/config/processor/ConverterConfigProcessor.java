@@ -21,10 +21,6 @@ import static java.util.logging.Level.FINE;
 
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
 import javax.servlet.ServletContext;
 
 import org.w3c.dom.Document;
@@ -37,6 +33,11 @@ import com.sun.faces.config.Verifier;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
 
 /**
  * <p>

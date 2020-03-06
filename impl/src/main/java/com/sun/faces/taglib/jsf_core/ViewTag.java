@@ -23,15 +23,6 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.webapp.UIComponentClassicTagBase;
-import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
@@ -46,6 +37,17 @@ import java.lang.reflect.Method;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.ReflectionUtils;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+import jakarta.faces.webapp.UIComponentELTag;
+
 import com.sun.faces.RIConstants;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -206,7 +208,7 @@ public class ViewTag extends UIComponentELTag {
     /**
      * <p>Examine the body content of this tag.  If it is
      * non-<code>null</code>, non-zero length, and not an HTML comment,
-     * call {@link javax.faces.webapp.UIComponentClassicTagBase#createVerbatimComponent()}.</p>
+     * call {@link jakarta.faces.webapp.UIComponentClassicTagBase#createVerbatimComponent()}.</p>
      *
      * <p>Set the value of the verbatim component to be
      * <code>content</code>.</p>
@@ -346,7 +348,7 @@ public class ViewTag extends UIComponentELTag {
         if (null != beforePhase) {
         if (beforePhase.isLiteralText()) {
             Object params [] = {beforePhase};
-            throw new javax.faces.FacesException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, params));
+            throw new jakarta.faces.FacesException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, params));
         }
         else {
             viewRoot.setBeforePhaseListener(beforePhase);
@@ -356,7 +358,7 @@ public class ViewTag extends UIComponentELTag {
         if (null != afterPhase) {
         if (afterPhase.isLiteralText()) {
             Object params [] = {afterPhase};
-            throw new javax.faces.FacesException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, params));
+            throw new jakarta.faces.FacesException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, params));
         }
         else {
             viewRoot.setAfterPhaseListener(afterPhase);

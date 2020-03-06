@@ -24,11 +24,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.ServletContext;
 
 import org.w3c.dom.Document;
@@ -38,6 +33,12 @@ import org.w3c.dom.NodeList;
 
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
  * <p>
