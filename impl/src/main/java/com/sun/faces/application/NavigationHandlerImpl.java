@@ -32,7 +32,6 @@ import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -1421,12 +1420,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     private static final class NavigationMap extends AbstractMap<String, Set<NavigationCase>> {
 
         private HashMap<String, Set<NavigationCase>> mapToLookForNavCase = new HashMap<>();
-        private TreeSet<String> wildcardMatchList = new TreeSet<>(new Comparator<String>() {
-            @Override
-            public int compare(String fromViewId1, String fromViewId2) {
-                return -fromViewId1.compareTo(fromViewId2);
-            }
-        });
+        private TreeSet<String> wildcardMatchList = new TreeSet<>((fromViewId1, fromViewId2) -> -fromViewId1.compareTo(fromViewId2));
 
         // ---------------------------------------------------- Methods from Map
 

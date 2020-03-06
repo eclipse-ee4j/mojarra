@@ -19,7 +19,6 @@ package com.sun.faces.application.applicationimpl.events;
 import static com.sun.faces.util.Util.coalesce;
 
 import com.sun.faces.util.Cache;
-import com.sun.faces.util.Cache.Factory;
 
 import jakarta.faces.event.SystemEvent;
 
@@ -29,13 +28,8 @@ import jakarta.faces.event.SystemEvent;
  */
 public class SystemEventInfo {
 
-    private Cache<Class<?>, EventInfo> cache = new Cache<>(new Factory<Class<?>, EventInfo>() {
-        @Override
-        public EventInfo newInstance(Class<?> arg) throws InterruptedException {
-            return new EventInfo(systemEvent, arg);
-        }
-    });
     private Class<? extends SystemEvent> systemEvent;
+    private Cache<Class<?>, EventInfo> cache = new Cache<>(arg -> new EventInfo(systemEvent, arg));
 
     // -------------------------------------------------------- Constructors
 

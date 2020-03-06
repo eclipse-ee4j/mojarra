@@ -703,12 +703,7 @@ public class DocumentOrderingWrapper {
 
     public static <K, V extends Comparable<? super V>> Map<K, V> descendingByValue(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            @Override
-            public int compare(Map.Entry<K, V> a, Map.Entry<K, V> b) {
-                return b.getValue().compareTo(a.getValue());
-            }
-        });
+        Collections.sort(list, (a, b) -> b.getValue().compareTo(a.getValue()));
 
         Map<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {

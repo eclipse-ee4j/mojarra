@@ -276,12 +276,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
                     final String finalRemainingExpression = remainingExpression;
 
-                    invokeKeywordResolvers(searchExpressionContext, previous, keyword, remainingExpression, new ContextCallback() {
-                        @Override
-                        public void invokeContextCallback(FacesContext facesContext, UIComponent target) {
-                            handler.invokeOnComponent(searchExpressionContext, target, finalRemainingExpression, callback);
-                        }
-                    });
+                    invokeKeywordResolvers(searchExpressionContext, previous, keyword, remainingExpression, (facesContext1, target) -> handler.invokeOnComponent(searchExpressionContext, target, finalRemainingExpression, callback));
                 }
             } else {
                 String id = command;

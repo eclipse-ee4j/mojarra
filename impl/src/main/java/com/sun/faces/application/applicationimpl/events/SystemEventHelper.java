@@ -17,7 +17,6 @@
 package com.sun.faces.application.applicationimpl.events;
 
 import com.sun.faces.util.Cache;
-import com.sun.faces.util.Cache.Factory;
 
 import jakarta.faces.event.SystemEvent;
 
@@ -32,12 +31,7 @@ public class SystemEventHelper {
 
     public SystemEventHelper() {
 
-        systemEventInfoCache = new Cache<>(new Factory<Class<? extends SystemEvent>, SystemEventInfo>() {
-            @Override
-            public SystemEventInfo newInstance(final Class<? extends SystemEvent> arg) throws InterruptedException {
-                return new SystemEventInfo(arg);
-            }
-        });
+        systemEventInfoCache = new Cache<>(arg -> new SystemEventInfo(arg));
 
     }
 

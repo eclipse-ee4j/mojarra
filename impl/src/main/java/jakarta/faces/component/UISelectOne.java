@@ -17,7 +17,6 @@
 package jakarta.faces.component;
 
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
@@ -151,20 +150,17 @@ public class UISelectOne extends UIInput {
             final UIComponent groupContainer = getGroupContainer(context, this);
             final boolean[] alreadySubmittedOrValidatedAsGroup = new boolean[1];
 
-            groupContainer.visitTree(VisitContext.createVisitContext(context), new VisitCallback() {
-                @Override
-                public VisitResult visit(VisitContext visitContext, UIComponent target) {
-                    if (target instanceof UISelectOne) {
-                        UISelectOne radio = (UISelectOne) target;
+            groupContainer.visitTree(VisitContext.createVisitContext(context), (visitContext, target) -> {
+                if (target instanceof UISelectOne) {
+                    UISelectOne radio = (UISelectOne) target;
 
-                        if (isOtherMemberOfSameGroup(context, group, clientId, radio) && isAlreadySubmittedOrValidated(radio)) {
-                            alreadySubmittedOrValidatedAsGroup[0] = true;
-                            return VisitResult.COMPLETE;
-                        }
+                    if (isOtherMemberOfSameGroup(context, group, clientId, radio) && isAlreadySubmittedOrValidated(radio)) {
+                        alreadySubmittedOrValidatedAsGroup[0] = true;
+                        return VisitResult.COMPLETE;
                     }
-
-                    return VisitResult.ACCEPT;
                 }
+
+                return VisitResult.ACCEPT;
             });
 
             if (alreadySubmittedOrValidatedAsGroup[0]) {

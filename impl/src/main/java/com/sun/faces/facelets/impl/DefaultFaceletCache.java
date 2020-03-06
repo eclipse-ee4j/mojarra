@@ -53,24 +53,18 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
 
         final boolean checkExpiry = refreshPeriod > 0;
 
-        ConcurrentCache.Factory<URL, Record> faceletFactory = new ConcurrentCache.Factory<URL, Record>() {
-            @Override
-            public Record newInstance(final URL key) throws IOException {
-                // Make sure that the expensive timestamp retrieval is not done
-                // if no expiry check is going to be performed
-                long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
-                return new Record(System.currentTimeMillis(), lastModified, getMemberFactory().newInstance(key), refreshPeriod);
-            }
+        ConcurrentCache.Factory<URL, Record> faceletFactory = key -> {
+            // Make sure that the expensive timestamp retrieval is not done
+            // if no expiry check is going to be performed
+            long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
+            return new Record(System.currentTimeMillis(), lastModified, getMemberFactory().newInstance(key), refreshPeriod);
         };
 
-        ConcurrentCache.Factory<URL, Record> metadataFaceletFactory = new ConcurrentCache.Factory<URL, Record>() {
-            @Override
-            public Record newInstance(final URL key) throws IOException {
-                // Make sure that the expensive timestamp retrieval is not done
-                // if no expiry check is going to be performed
-                long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
-                return new Record(System.currentTimeMillis(), lastModified, getMetadataMemberFactory().newInstance(key), refreshPeriod);
-            }
+        ConcurrentCache.Factory<URL, Record> metadataFaceletFactory = key -> {
+            // Make sure that the expensive timestamp retrieval is not done
+            // if no expiry check is going to be performed
+            long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
+            return new Record(System.currentTimeMillis(), lastModified, getMetadataMemberFactory().newInstance(key), refreshPeriod);
         };
 
         // No caching if refreshPeriod is 0

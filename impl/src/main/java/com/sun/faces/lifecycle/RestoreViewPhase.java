@@ -50,9 +50,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.application.ProtectedViewException;
 import jakarta.faces.application.ViewExpiredException;
 import jakarta.faces.application.ViewHandler;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
@@ -416,15 +414,11 @@ public class RestoreViewPhase extends Phase {
 
             Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
             VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, hints);
-            root.visitTree(visitContext, new VisitCallback() {
-
-                @Override
-                public VisitResult visit(VisitContext context, UIComponent target) {
-                    postRestoreStateEvent.setComponent(target);
-                    target.processEvent(postRestoreStateEvent);
-                    // noinspection ReturnInsideFinallyBlock
-                    return VisitResult.ACCEPT;
-                }
+            root.visitTree(visitContext, (context, target) -> {
+                postRestoreStateEvent.setComponent(target);
+                target.processEvent(postRestoreStateEvent);
+                // noinspection ReturnInsideFinallyBlock
+                return VisitResult.ACCEPT;
             });
         } catch (AbortProcessingException e) {
             facesContext.getApplication().publishEvent(facesContext, ExceptionQueuedEvent.class,

@@ -72,12 +72,7 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
 
             Future<V> f = _cache.get(key);
             if (f == null) {
-                Callable<V> callable = new Callable<V>() {
-                    @Override
-                    public V call() throws Exception {
-                        return getFactory().newInstance(key);
-                    }
-                };
+                Callable<V> callable = () -> getFactory().newInstance(key);
                 FutureTask<V> ft = new FutureTask<>(callable);
                 // here is the real beauty of the concurrent utilities.
                 // 1. putIfAbsent() is atomic

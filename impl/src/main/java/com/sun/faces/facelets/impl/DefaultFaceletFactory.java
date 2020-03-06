@@ -138,18 +138,8 @@ public class DefaultFaceletFactory {
 
         // Create instance factories for the cache, so that the cache can
         // create Facelets and Metadata Facelets
-        FaceletCache.MemberFactory<DefaultFacelet> faceletFactory = new FaceletCache.MemberFactory<DefaultFacelet>() {
-            @Override
-            public DefaultFacelet newInstance(final URL key) throws IOException {
-                return createFacelet(key);
-            }
-        };
-        FaceletCache.MemberFactory<DefaultFacelet> metadataFaceletFactory = new FaceletCache.MemberFactory<DefaultFacelet>() {
-            @Override
-            public DefaultFacelet newInstance(final URL key) throws IOException {
-                return createMetadataFacelet(key);
-            }
-        };
+        FaceletCache.MemberFactory<DefaultFacelet> faceletFactory = key -> createFacelet(key);
+        FaceletCache.MemberFactory<DefaultFacelet> metadataFaceletFactory = key -> createMetadataFacelet(key);
 
         cache.setCacheFactories(faceletFactory, metadataFaceletFactory);
         return cache;

@@ -25,7 +25,6 @@ import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
@@ -67,19 +66,15 @@ class FormOmittedChecker {
                 Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
 
                 VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
-                child.visitTree(visitContext, new VisitCallback() {
+                child.visitTree(visitContext, (visitContext1, component) -> {
+                    VisitResult result = VisitResult.ACCEPT;
 
-                    @Override
-                    public VisitResult visit(VisitContext visitContext, UIComponent component) {
-                        VisitResult result = VisitResult.ACCEPT;
-
-                        if (isForm(component)) {
-                            result = VisitResult.REJECT;
-                        } else if (isInNeedOfForm(component)) {
-                            addFormOmittedMessage(finalContext, component);
-                        }
-                        return result;
+                    if (isForm(component)) {
+                        result = VisitResult.REJECT;
+                    } else if (isInNeedOfForm(component)) {
+                        addFormOmittedMessage(finalContext, component);
                     }
+                    return result;
                 });
             } finally {
                 context.getAttributes().remove(SKIP_ITERATION_HINT);

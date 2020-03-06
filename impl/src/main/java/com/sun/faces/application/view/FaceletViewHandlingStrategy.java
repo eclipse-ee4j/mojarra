@@ -95,7 +95,6 @@ import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import com.sun.faces.facelets.tag.ui.UIDebug;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Cache;
-import com.sun.faces.util.Cache.Factory;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -104,12 +103,10 @@ import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.ActionSource2;
-import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.ExternalContext;
@@ -966,13 +963,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         initializeMappings();
 
-        metadataCache = new Cache<>(new Factory<Resource, BeanInfo>() {
-
-            @Override
-            public BeanInfo newInstance(Resource ccResource) throws InterruptedException {
-                FacesContext context = FacesContext.getCurrentInstance();
-                return FaceletViewHandlingStrategy.this.createComponentMetadata(context, ccResource);
-            }
+        metadataCache = new Cache<>(ccResource -> {
+            FacesContext context = FacesContext.getCurrentInstance();
+            return FaceletViewHandlingStrategy.this.createComponentMetadata(context, ccResource);
         });
 
         try {
@@ -1819,13 +1812,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         final List<UIComponent> found = new ArrayList<>();
         UIComponent result = null;
 
-        parent.invokeOnComponent(context, clientId, new ContextCallback() {
-
-            @Override
-            public void invokeContextCallback(FacesContext context, UIComponent target) {
-                found.add(target);
-            }
-        });
+        parent.invokeOnComponent(context, clientId, (context1, target) -> found.add(target));
 
         /*
          * Since we did not find it the cheaper way we need to assume there is a UINamingContainer that does not prepend its ID.
@@ -1833,17 +1820,13 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          */
         if (found.isEmpty()) {
             VisitContext visitContext = VisitContext.createVisitContext(context);
-            parent.visitTree(visitContext, new VisitCallback() {
-
-                @Override
-                public VisitResult visit(VisitContext visitContext, UIComponent component) {
-                    VisitResult result = VisitResult.ACCEPT;
-                    if (component.getClientId(visitContext.getFacesContext()).equals(clientId)) {
-                        found.add(component);
-                        result = VisitResult.COMPLETE;
-                    }
-                    return result;
+            parent.visitTree(visitContext, (visitContext1, component) -> {
+                VisitResult result1 = VisitResult.ACCEPT;
+                if (component.getClientId(visitContext1.getFacesContext()).equals(clientId)) {
+                    found.add(component);
+                    result1 = VisitResult.COMPLETE;
                 }
+                return result1;
             });
         }
         if (!found.isEmpty()) {
