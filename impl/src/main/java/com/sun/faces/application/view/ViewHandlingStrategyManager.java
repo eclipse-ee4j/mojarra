@@ -89,7 +89,7 @@ public class ViewHandlingStrategyManager {
      * @param stratagies the new view handling strategies
      */
     public synchronized void setViewHandlingStrategies(ViewHandlingStrategy[] stratagies) {
-        this.strategies = stratagies.clone();
+        strategies = stratagies.clone();
     }
 
 }

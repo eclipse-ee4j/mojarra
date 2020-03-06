@@ -32,7 +32,7 @@ final class StartElementInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-        context.getResponseWriter().startElement(this.element, null);
+        context.getResponseWriter().startElement(element, null);
     }
 
     @Override

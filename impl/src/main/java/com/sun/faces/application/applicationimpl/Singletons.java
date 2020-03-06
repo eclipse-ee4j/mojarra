@@ -63,7 +63,7 @@ public class Singletons {
     private String defaultRenderKitId;
 
     public Singletons(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
     }
 
     /**

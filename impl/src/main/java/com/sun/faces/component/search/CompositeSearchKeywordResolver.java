@@ -31,7 +31,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver {
     private final List<SearchKeywordResolver> resolvers;
 
     public CompositeSearchKeywordResolver() {
-        this.resolvers = new ArrayList<>(NUMBER_OF_DEFAULT_IMPLEMENTATIONS);
+        resolvers = new ArrayList<>(NUMBER_OF_DEFAULT_IMPLEMENTATIONS);
     }
 
     public void add(SearchKeywordResolver searchKeywordResolver) {

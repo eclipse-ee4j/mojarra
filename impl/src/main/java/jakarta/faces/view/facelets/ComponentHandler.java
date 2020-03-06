@@ -170,7 +170,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
      */
     public ComponentHandler(ComponentConfig config) {
         super(config);
-        this.componentConfig = config;
+        componentConfig = config;
     }
 
     @Override
@@ -182,7 +182,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
     }
 
     public ComponentConfig getComponentConfig() {
-        return this.componentConfig;
+        return componentConfig;
     }
 
     /**

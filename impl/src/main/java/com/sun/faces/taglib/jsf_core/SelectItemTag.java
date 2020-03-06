@@ -69,11 +69,11 @@ public class SelectItemTag extends UIComponentELTag {
     //
 
     public void setItemValue(ValueExpression value) {
-        this.itemValue = value;
+        itemValue = value;
     }
 
     public void setItemLabel(ValueExpression label) {
-        this.itemLabel = label;
+        itemLabel = label;
     }
 
     public void setItemDescription(ValueExpression itemDescription) {
@@ -178,7 +178,7 @@ public class SelectItemTag extends UIComponentELTag {
      * @return Value of property escape.
      */
     public ValueExpression getEscape() {
-        return this.escape;
+        return escape;
     }
 
     /**

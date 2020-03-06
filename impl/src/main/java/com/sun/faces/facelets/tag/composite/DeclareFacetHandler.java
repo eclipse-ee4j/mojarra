@@ -40,7 +40,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
 
     public DeclareFacetHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
+        name = getRequiredAttribute("name");
 
     }
 
@@ -76,7 +76,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
         }
         facetDescriptors.put(strValue, propertyDescriptor);
 
-        for (TagAttribute tagAttribute : this.tag.getAttributes().getAll()) {
+        for (TagAttribute tagAttribute : tag.getAttributes().getAll()) {
             String attributeName = tagAttribute.getLocalName();
             PropertyHandler handler = ATTRIBUTE_MANAGER.getHandler(ctx, attributeName);
             if (handler != null) {
@@ -85,7 +85,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
 
         }
 
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
 
     }
 

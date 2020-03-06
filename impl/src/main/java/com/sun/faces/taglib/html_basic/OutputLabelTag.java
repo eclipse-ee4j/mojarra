@@ -335,36 +335,36 @@ public class OutputLabelTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this.converter = null;
-        this.value = null;
+        converter = null;
+        value = null;
 
         // rendered attributes
-        this.accesskey = null;
-        this.dir = null;
-        this.escape = null;
-        this._for = null;
-        this.lang = null;
-        this.onblur = null;
-        this.onclick = null;
-        this.ondblclick = null;
-        this.onfocus = null;
-        this.onkeydown = null;
-        this.onkeypress = null;
-        this.onkeyup = null;
-        this.onmousedown = null;
-        this.onmousemove = null;
-        this.onmouseout = null;
-        this.onmouseover = null;
-        this.onmouseup = null;
-        this.role = null;
-        this.style = null;
-        this.styleClass = null;
-        this.tabindex = null;
-        this.title = null;
+        accesskey = null;
+        dir = null;
+        escape = null;
+        _for = null;
+        lang = null;
+        onblur = null;
+        onclick = null;
+        ondblclick = null;
+        onfocus = null;
+        onkeydown = null;
+        onkeypress = null;
+        onkeyup = null;
+        onmousedown = null;
+        onmousemove = null;
+        onmouseout = null;
+        onmouseover = null;
+        onmouseup = null;
+        role = null;
+        style = null;
+        styleClass = null;
+        tabindex = null;
+        title = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

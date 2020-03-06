@@ -45,16 +45,16 @@ final class TextInstruction implements Instruction {
             txt.writeText(out, elContext);
             // out.writeText(txt.toString(elContext), null);
         } catch (ELException e) {
-            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+            throw new ELException(alias + ": " + e.getMessage(), e.getCause());
         } catch (IOException e) {
-            throw new ELException(this.alias + ": " + e.getMessage(), e);
+            throw new ELException(alias + ": " + e.getMessage(), e);
         }
     }
 
     @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx) {
-        ELText nt = this.txt.apply(factory, ctx);
-        if (nt == this.txt) {
+        ELText nt = txt.apply(factory, ctx);
+        if (nt == txt) {
             return this;
         }
 

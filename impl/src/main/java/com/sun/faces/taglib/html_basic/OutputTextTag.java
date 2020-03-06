@@ -185,21 +185,21 @@ public class OutputTextTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this.converter = null;
-        this.value = null;
+        converter = null;
+        value = null;
 
         // rendered attributes
-        this.dir = null;
-        this.escape = null;
-        this.lang = null;
-        this.role = null;
-        this.style = null;
-        this.styleClass = null;
-        this.title = null;
+        dir = null;
+        escape = null;
+        lang = null;
+        role = null;
+        style = null;
+        styleClass = null;
+        title = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

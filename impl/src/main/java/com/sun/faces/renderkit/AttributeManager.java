@@ -174,7 +174,7 @@ public class AttributeManager {
         }
 
         public String value() {
-            return this.key;
+            return key;
         }
     }
 

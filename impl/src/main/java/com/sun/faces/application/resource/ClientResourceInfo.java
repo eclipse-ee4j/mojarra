@@ -96,23 +96,23 @@ public class ClientResourceInfo extends ResourceInfo {
 
     ClientResourceInfo(ClientResourceInfo other, boolean copyLocalePrefix) {
         super(other, copyLocalePrefix);
-        this.cacheTimestamp = other.cacheTimestamp;
-        this.compressedPath = other.compressedPath;
-        this.compressible = other.compressible;
-        this.isDevStage = other.isDevStage;
-        this.lastModified = other.lastModified;
-        this.supportsEL = other.supportsEL;
+        cacheTimestamp = other.cacheTimestamp;
+        compressedPath = other.compressedPath;
+        compressible = other.compressible;
+        isDevStage = other.isDevStage;
+        lastModified = other.lastModified;
+        supportsEL = other.supportsEL;
         initPath(isDevStage);
     }
 
     public void copy(ClientResourceInfo other) {
         super.copy(other);
-        this.cacheTimestamp = other.cacheTimestamp;
-        this.compressedPath = other.compressedPath;
-        this.compressible = other.compressible;
-        this.isDevStage = other.isDevStage;
-        this.lastModified = other.lastModified;
-        this.supportsEL = other.supportsEL;
+        cacheTimestamp = other.cacheTimestamp;
+        compressedPath = other.compressedPath;
+        compressible = other.compressible;
+        isDevStage = other.isDevStage;
+        lastModified = other.lastModified;
+        supportsEL = other.supportsEL;
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -144,7 +144,7 @@ public class ClientResourceInfo extends ResourceInfo {
      * Disables EL evaluation for this resource.
      */
     public void disableEL() {
-        this.supportsEL = false;
+        supportsEL = false;
     }
 
     /**

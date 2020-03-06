@@ -149,7 +149,7 @@ public class InstanceFactory {
     private BeanManager beanManager;
 
     public InstanceFactory(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
         version = new Version();
 
         componentMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
@@ -709,7 +709,7 @@ public class InstanceFactory {
                 c = this.createComponentApplyAnnotations(ctx, componentType, rendererType, applyAnnotations);
                 componentExpression.setValue(ctx.getELContext(), c);
             } else if (applyAnnotations) {
-                this.applyAnnotations(ctx, rendererType, c);
+                applyAnnotations(ctx, rendererType, c);
             }
         } catch (Exception ex) {
             throw new FacesException(ex);

@@ -68,7 +68,7 @@ class MethodBindingValidator extends MethodBindingAdapterBase implements Validat
         try {
             methodBinding.invoke(context, new Object[] { context, component, value });
         } catch (EvaluationException ee) {
-            Throwable cause = this.getExpectedCause(ValidatorException.class, ee);
+            Throwable cause = getExpectedCause(ValidatorException.class, ee);
             if (cause instanceof ValidatorException) {
                 throw ((ValidatorException) cause);
             }

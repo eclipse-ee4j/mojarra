@@ -304,7 +304,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
         private MapIterator(Map map, UIComponent parent) {
 
-            this.iterator = map.entrySet().iterator();
+            iterator = map.entrySet().iterator();
             this.parent = parent;
         }
 
@@ -566,7 +566,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
             super(sourceComponent);
             this.ctx = ctx;
-            this.iterator = iterable.iterator();
+            iterator = iterable.iterator();
 
         }
 

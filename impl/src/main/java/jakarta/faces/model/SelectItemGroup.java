@@ -106,7 +106,7 @@ public class SelectItemGroup extends SelectItem {
      */
     public SelectItem[] getSelectItems() {
 
-        return (this.selectItems);
+        return (selectItems);
 
     }
 

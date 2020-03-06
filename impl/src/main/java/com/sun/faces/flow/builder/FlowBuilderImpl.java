@@ -47,10 +47,10 @@ public class FlowBuilderImpl extends FlowBuilder {
     public FlowBuilderImpl(FacesContext context) {
         flow = new FlowImpl();
         this.context = context;
-        this.expressionFactory = context.getApplication().getExpressionFactory();
-        this.elContext = context.getELContext();
-        this.didInit = false;
-        this.hasId = false;
+        expressionFactory = context.getApplication().getExpressionFactory();
+        elContext = context.getELContext();
+        didInit = false;
+        hasId = false;
 
     }
 
@@ -101,7 +101,7 @@ public class FlowBuilderImpl extends FlowBuilder {
         Util.notNull("definingDocumentId", definingDocumentId);
         Util.notNull("flowId", flowId);
         flow.setId(definingDocumentId, flowId);
-        this.hasId = true;
+        hasId = true;
         return this;
     }
 
@@ -160,7 +160,7 @@ public class FlowBuilderImpl extends FlowBuilder {
             String startNodeId = flow.getStartNodeId();
             if (null == startNodeId) {
                 String flowId = flow.getId();
-                this.viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml").markAsStartNode();
+                viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml").markAsStartNode();
             }
             didInit = true;
         }

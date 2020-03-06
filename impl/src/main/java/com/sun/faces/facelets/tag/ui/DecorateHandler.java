@@ -54,14 +54,14 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
      */
     public DecorateHandler(TagConfig config) {
         super(config);
-        this.template = this.getRequiredAttribute("template");
-        this.handlers = new HashMap();
+        template = getRequiredAttribute("template");
+        handlers = new HashMap();
 
         Iterator itr = this.findNextByType(DefineHandler.class);
         DefineHandler d = null;
         while (itr.hasNext()) {
             d = (DefineHandler) itr.next();
-            this.handlers.put(d.getName(), d);
+            handlers.put(d.getName(), d);
             if (log.isLoggable(Level.FINE)) {
                 log.fine(tag + " found Define[" + d.getName() + "]");
             }
@@ -72,12 +72,12 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
             paramC.add(itr.next());
         }
         if (paramC.size() > 0) {
-            this.params = new ParamHandler[paramC.size()];
-            for (int i = 0; i < this.params.length; i++) {
-                this.params[i] = (ParamHandler) paramC.get(i);
+            params = new ParamHandler[paramC.size()];
+            for (int i = 0; i < params.length; i++) {
+                params[i] = (ParamHandler) paramC.get(i);
             }
         } else {
-            this.params = null;
+            params = null;
         }
     }
 
@@ -90,31 +90,31 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
     public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
         VariableMapper orig = ctx.getVariableMapper();
-        if (this.params != null) {
+        if (params != null) {
             VariableMapper vm = new VariableMapperWrapper(orig);
             ctx.setVariableMapper(vm);
-            for (int i = 0; i < this.params.length; i++) {
-                this.params[i].apply(ctx, parent);
+            for (int i = 0; i < params.length; i++) {
+                params[i].apply(ctx, parent);
             }
         }
 
         ctx.pushClient(this);
         String path = null;
         try {
-            path = this.template.getValue(ctx);
+            path = template.getValue(ctx);
             if (path.trim().length() == 0) {
-                throw new TagAttributeException(this.tag, this.template, "Invalid path : " + path);
+                throw new TagAttributeException(tag, template, "Invalid path : " + path);
             }
             WebConfiguration webConfig = WebConfiguration.getInstance();
             if (path.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
-                throw new TagAttributeException(this.tag, this.template, "Invalid path, contract resources cannot be accessed this way : " + path);
+                throw new TagAttributeException(tag, template, "Invalid path, contract resources cannot be accessed this way : " + path);
             }
             ctx.includeFacelet(parent, path);
         } catch (IOException e) {
             if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, e.toString(), e);
             }
-            throw new TagAttributeException(this.tag, this.template, "Invalid path : " + path);
+            throw new TagAttributeException(tag, template, "Invalid path : " + path);
         } finally {
             ctx.setVariableMapper(orig);
             ctx.popClient(this);
@@ -124,7 +124,7 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
     @Override
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
         if (name != null) {
-            DefineHandler handler = (DefineHandler) this.handlers.get(name);
+            DefineHandler handler = (DefineHandler) handlers.get(name);
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;
@@ -132,7 +132,7 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
                 return false;
             }
         } else {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
             return true;
         }
     }

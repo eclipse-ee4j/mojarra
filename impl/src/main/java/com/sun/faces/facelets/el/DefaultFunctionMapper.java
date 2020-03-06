@@ -49,20 +49,20 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      */
     @Override
     public Method resolveFunction(String prefix, String localName) {
-        if (this.functions != null) {
-            Function f = (Function) this.functions.get(prefix + ":" + localName);
+        if (functions != null) {
+            Function f = (Function) functions.get(prefix + ":" + localName);
             return f.getMethod();
         }
         return null;
     }
 
     public void addFunction(String prefix, String localName, Method m) {
-        if (this.functions == null) {
-            this.functions = new HashMap();
+        if (functions == null) {
+            functions = new HashMap();
         }
         Function f = new Function(prefix, localName, m);
         synchronized (this) {
-            this.functions.put(prefix + ":" + localName, f);
+            functions.put(prefix + ":" + localName, f);
         }
     }
 
@@ -73,7 +73,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      */
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(this.functions);
+        out.writeObject(functions);
     }
 
     /*
@@ -83,14 +83,14 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      */
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.functions = (Map) in.readObject();
+        functions = (Map) in.readObject();
     }
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(128);
         sb.append("FunctionMapper[\n");
-        for (Iterator itr = this.functions.values().iterator(); itr.hasNext();) {
+        for (Iterator itr = functions.values().iterator(); itr.hasNext();) {
             sb.append(itr.next()).append('\n');
         }
         sb.append(']');
@@ -139,11 +139,11 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          */
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeUTF((this.prefix != null) ? this.prefix : "");
-            out.writeUTF(this.localName);
-            out.writeUTF(this.m.getDeclaringClass().getName());
-            out.writeUTF(this.m.getName());
-            out.writeObject(ReflectionUtil.toTypeNameArray(this.m.getParameterTypes()));
+            out.writeUTF((prefix != null) ? prefix : "");
+            out.writeUTF(localName);
+            out.writeUTF(m.getDeclaringClass().getName());
+            out.writeUTF(m.getName());
+            out.writeObject(ReflectionUtil.toTypeNameArray(m.getParameterTypes()));
         }
 
         /*
@@ -154,27 +154,27 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
-            this.prefix = in.readUTF();
-            if ("".equals(this.prefix)) {
-                this.prefix = null;
+            prefix = in.readUTF();
+            if ("".equals(prefix)) {
+                prefix = null;
             }
-            this.localName = in.readUTF();
-            this.owner = in.readUTF();
-            this.name = in.readUTF();
-            this.types = (String[]) in.readObject();
+            localName = in.readUTF();
+            owner = in.readUTF();
+            name = in.readUTF();
+            types = (String[]) in.readObject();
         }
 
         public Method getMethod() {
-            if (this.m == null) {
+            if (m == null) {
                 try {
-                    Class t = ReflectionUtil.forName(this.owner);
-                    Class[] p = ReflectionUtil.toTypeArray(this.types);
-                    this.m = t.getMethod(this.name, p);
+                    Class t = ReflectionUtil.forName(owner);
+                    Class[] p = ReflectionUtil.toTypeArray(types);
+                    m = t.getMethod(name, p);
                 } catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
                     e.printStackTrace();
                 }
             }
-            return this.m;
+            return m;
         }
 
         public boolean matches(String prefix, String localName) {
@@ -197,7 +197,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof Function) {
-                return this.hashCode() == obj.hashCode();
+                return hashCode() == obj.hashCode();
             }
             return false;
         }
@@ -209,18 +209,18 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          */
         @Override
         public int hashCode() {
-            return (this.prefix + this.localName).hashCode();
+            return (prefix + localName).hashCode();
         }
 
         @Override
         public String toString() {
             StringBuffer sb = new StringBuffer(32);
             sb.append("Function[");
-            if (this.prefix != null) {
-                sb.append(this.prefix).append(':');
+            if (prefix != null) {
+                sb.append(prefix).append(':');
             }
-            sb.append(this.name).append("] ");
-            sb.append(this.m);
+            sb.append(name).append("] ");
+            sb.append(m);
             return sb.toString();
         }
     }

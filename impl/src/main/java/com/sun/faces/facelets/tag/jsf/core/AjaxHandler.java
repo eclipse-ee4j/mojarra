@@ -109,18 +109,18 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
      */
     public AjaxHandler(TagConfig config) {
         super(config);
-        this.event = this.getAttribute("event");
-        this.execute = this.getAttribute("execute");
-        this.render = this.getAttribute("render");
-        this.onevent = this.getAttribute("onevent");
-        this.onerror = this.getAttribute("onerror");
-        this.disabled = this.getAttribute("disabled");
-        this.immediate = this.getAttribute("immediate");
-        this.resetValues = this.getAttribute("resetValues");
-        this.listener = this.getAttribute("listener");
-        this.delay = this.getAttribute("delay");
+        event = getAttribute("event");
+        execute = getAttribute("execute");
+        render = getAttribute("render");
+        onevent = getAttribute("onevent");
+        onerror = getAttribute("onerror");
+        disabled = getAttribute("disabled");
+        immediate = getAttribute("immediate");
+        resetValues = getAttribute("resetValues");
+        listener = getAttribute("listener");
+        delay = getAttribute("delay");
 
-        this.wrapping = isWrapping();
+        wrapping = isWrapping();
     }
 
     /*
@@ -133,7 +133,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         String eventName = getEventName();
 
-        if (this.wrapping) {
+        if (wrapping) {
             applyWrapping(ctx, parent, eventName);
         } else {
             applyNested(ctx, parent, eventName);
@@ -165,7 +165,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
     public String getEventName() {
         FacesContext context = FacesContext.getCurrentInstance();
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-        return (this.event != null) ? this.event.getValue(ctx) : null;
+        return (event != null) ? event.getValue(ctx) : null;
     }
 
     // Tests whether the <f:ajax> is wrapping other tags.
@@ -176,7 +176,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         // non-null nextHandler - the CompilationUnit.LEAF instance.
         // We assume that if we've got a TagHandler or CompositeFaceletHandler
         // as our nextHandler, we are not a leaf.
-        return ((this.nextHandler instanceof TagHandler) || (this.nextHandler instanceof CompositeFaceletHandler));
+        return ((nextHandler instanceof TagHandler) || (nextHandler instanceof CompositeFaceletHandler));
     }
 
     // Applies a wrapping AjaxHandler by pushing/popping the AjaxBehavior
@@ -249,7 +249,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         } else if (parent instanceof ClientBehaviorHolder) {
             applyAttachedObject(ctx, parent, eventName);
         } else {
-            throw new TagException(this.tag, "Unable to attach <f:ajax> to non-ClientBehaviorHolder parent");
+            throw new TagException(tag, "Unable to attach <f:ajax> to non-ClientBehaviorHolder parent");
         }
 
     }
@@ -268,12 +268,12 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         if (null == eventName) {
             eventName = bHolder.getDefaultEventName();
             if (null == eventName) {
-                throw new TagException(this.tag, "Event attribute could not be determined: " + eventName);
+                throw new TagException(tag, "Event attribute could not be determined: " + eventName);
             }
         } else {
             Collection<String> eventNames = bHolder.getEventNames();
             if (!eventNames.contains(eventName)) {
-                throw new TagException(this.tag, getUnsupportedEventMessage(eventName, eventNames, parent));
+                throw new TagException(tag, getUnsupportedEventMessage(eventName, eventNames, parent));
             }
         }
 
@@ -287,19 +287,19 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         Application application = ctx.getFacesContext().getApplication();
         AjaxBehavior behavior = (AjaxBehavior) application.createBehavior(AjaxBehavior.BEHAVIOR_ID);
 
-        setBehaviorAttribute(ctx, behavior, this.onevent, String.class);
-        setBehaviorAttribute(ctx, behavior, this.onerror, String.class);
-        setBehaviorAttribute(ctx, behavior, this.disabled, Boolean.class);
-        setBehaviorAttribute(ctx, behavior, this.immediate, Boolean.class);
-        setBehaviorAttribute(ctx, behavior, this.resetValues, Boolean.class);
-        setBehaviorAttribute(ctx, behavior, this.execute, Object.class);
-        setBehaviorAttribute(ctx, behavior, this.render, Object.class);
-        setBehaviorAttribute(ctx, behavior, this.delay, String.class);
+        setBehaviorAttribute(ctx, behavior, onevent, String.class);
+        setBehaviorAttribute(ctx, behavior, onerror, String.class);
+        setBehaviorAttribute(ctx, behavior, disabled, Boolean.class);
+        setBehaviorAttribute(ctx, behavior, immediate, Boolean.class);
+        setBehaviorAttribute(ctx, behavior, resetValues, Boolean.class);
+        setBehaviorAttribute(ctx, behavior, execute, Object.class);
+        setBehaviorAttribute(ctx, behavior, render, Object.class);
+        setBehaviorAttribute(ctx, behavior, delay, String.class);
 
         if (null != listener) {
             behavior.addAjaxBehaviorListener(
-                    new AjaxBehaviorListenerImpl(this.listener.getMethodExpression(ctx, Object.class, new Class[] { AjaxBehaviorEvent.class }),
-                            this.listener.getMethodExpression(ctx, Object.class, new Class[] {})));
+                    new AjaxBehaviorListenerImpl(listener.getMethodExpression(ctx, Object.class, new Class[] { AjaxBehaviorEvent.class }),
+                            listener.getMethodExpression(ctx, Object.class, new Class[] {})));
         }
 
         return behavior;
@@ -355,8 +355,8 @@ class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, Serializable {
     }
 
     public AjaxBehaviorListenerImpl(MethodExpression oneArg, MethodExpression noArg) {
-        this.oneArgListener = oneArg;
-        this.noArgListener = noArg;
+        oneArgListener = oneArg;
+        noArgListener = noArg;
     }
 
     @Override

@@ -35,7 +35,7 @@ final class UILiteralTextHandler extends AbstractUIHandler {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
-            UIComponent c = new UILiteralText(this.txtString);
+            UIComponent c = new UILiteralText(txtString);
             String uid;
             UIComponent ancestorNamingContainer = parent.getNamingContainer();
             if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
@@ -44,17 +44,17 @@ final class UILiteralTextHandler extends AbstractUIHandler {
                 uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId();
             }
             c.setId(uid);
-            this.addComponent(ctx, parent, c);
+            addComponent(ctx, parent, c);
         }
     }
 
     @Override
     public String getText() {
-        return this.txtString;
+        return txtString;
     }
 
     @Override
     public String getText(FaceletContext ctx) {
-        return this.txtString;
+        return txtString;
     }
 }

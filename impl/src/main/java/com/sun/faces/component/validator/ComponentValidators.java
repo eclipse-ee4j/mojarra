@@ -254,8 +254,8 @@ public class ComponentValidators {
 
             this.owner = owner;
             this.ctx = ctx;
-            this.validatorId = owner.getValidatorId(ctx);
-            this.enabled = !owner.isDisabled(ctx);
+            validatorId = owner.getValidatorId(ctx);
+            enabled = !owner.isDisabled(ctx);
 
         }
 

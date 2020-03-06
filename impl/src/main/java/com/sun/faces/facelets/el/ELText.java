@@ -68,7 +68,7 @@ public class ELText {
 
         @Override
         public String getExpressionString() {
-            return this.text;
+            return text;
         }
 
         @Override
@@ -112,23 +112,23 @@ public class ELText {
 
         @Override
         public void write(Writer out, ELContext ctx) throws ELException, IOException {
-            for (int i = 0; i < this.txt.length; i++) {
-                this.txt[i].write(out, ctx);
+            for (int i = 0; i < txt.length; i++) {
+                txt[i].write(out, ctx);
             }
         }
 
         @Override
         public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
-            for (int i = 0; i < this.txt.length; i++) {
-                this.txt[i].writeText(out, ctx);
+            for (int i = 0; i < txt.length; i++) {
+                txt[i].writeText(out, ctx);
             }
         }
 
         @Override
         public String toString(ELContext ctx) {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < this.txt.length; i++) {
-                sb.append(this.txt[i].toString(ctx));
+            for (int i = 0; i < txt.length; i++) {
+                sb.append(txt[i].toString(ctx));
             }
             return sb.toString();
         }
@@ -141,8 +141,8 @@ public class ELText {
         @Override
         public String toString() {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < this.txt.length; i++) {
-                sb.append(this.txt[i].toString());
+            for (int i = 0; i < txt.length; i++) {
+                sb.append(txt[i].toString());
             }
             return sb.toString();
         }
@@ -154,10 +154,10 @@ public class ELText {
 
         @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx) {
-            int len = this.txt.length;
+            int len = txt.length;
             ELText[] nt = new ELText[len];
             for (int i = 0; i < len; i++) {
-                nt[i] = this.txt[i].apply(factory, ctx);
+                nt[i] = txt[i].apply(factory, ctx);
             }
             return new ELTextComposite(nt);
         }
@@ -179,10 +179,10 @@ public class ELText {
         @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx) {
             ELText result = null;
-            if (this.ve instanceof ContextualCompositeValueExpression) {
+            if (ve instanceof ContextualCompositeValueExpression) {
                 result = new ELTextVariable(ve);
             } else {
-                result = new ELTextVariable(factory.createValueExpression(ctx, this.ve.getExpressionString(), String.class));
+                result = new ELTextVariable(factory.createValueExpression(ctx, ve.getExpressionString(), String.class));
             }
 
             return result;
@@ -190,7 +190,7 @@ public class ELText {
 
         @Override
         public void write(Writer out, ELContext ctx) throws ELException, IOException {
-            Object v = this.ve.getValue(ctx);
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 char[] buffer = new char[1028];
                 HtmlUtils.writeTextForXML(out, v.toString(), buffer);
@@ -199,7 +199,7 @@ public class ELText {
 
         @Override
         public String toString(ELContext ctx) throws ELException {
-            Object v = this.ve.getValue(ctx);
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 return v.toString();
             }
@@ -209,7 +209,7 @@ public class ELText {
 
         @Override
         public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
-            Object v = this.ve.getValue(ctx);
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 out.writeText(v.toString(), null);
             }
@@ -251,11 +251,11 @@ public class ELText {
      * @throws IOException
      */
     public void write(Writer out, ELContext ctx) throws ELException, IOException {
-        out.write(this.literal);
+        out.write(literal);
     }
 
     public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
-        out.writeText(this.literal, null);
+        out.writeText(literal, null);
     }
 
     /**
@@ -266,12 +266,12 @@ public class ELText {
      * @return the evaluated String
      */
     public String toString(ELContext ctx) throws ELException {
-        return this.literal;
+        return literal;
     }
 
     @Override
     public String toString() {
-        return this.literal;
+        return literal;
     }
 
     /**

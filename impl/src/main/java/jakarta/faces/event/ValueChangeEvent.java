@@ -95,7 +95,7 @@ public class ValueChangeEvent extends FacesEvent {
      */
     public Object getOldValue() {
 
-        return (this.oldValue);
+        return (oldValue);
 
     }
 
@@ -115,7 +115,7 @@ public class ValueChangeEvent extends FacesEvent {
      */
     public Object getNewValue() {
 
-        return (this.newValue);
+        return (newValue);
 
     }
 

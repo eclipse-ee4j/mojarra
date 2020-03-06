@@ -408,44 +408,44 @@ public class CommandButtonTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this.action = null;
-        this.actionListener = null;
-        this.immediate = null;
-        this.value = null;
+        action = null;
+        actionListener = null;
+        immediate = null;
+        value = null;
 
         // rendered attributes
-        this.accesskey = null;
-        this.alt = null;
-        this.dir = null;
-        this.disabled = null;
-        this.image = null;
-        this.label = null;
-        this.lang = null;
-        this.onblur = null;
-        this.onchange = null;
-        this.onclick = null;
-        this.ondblclick = null;
-        this.onfocus = null;
-        this.onkeydown = null;
-        this.onkeypress = null;
-        this.onkeyup = null;
-        this.onmousedown = null;
-        this.onmousemove = null;
-        this.onmouseout = null;
-        this.onmouseover = null;
-        this.onmouseup = null;
-        this.onselect = null;
-        this.readonly = null;
-        this.role = null;
-        this.style = null;
-        this.styleClass = null;
-        this.tabindex = null;
-        this.title = null;
-        this.type = null;
+        accesskey = null;
+        alt = null;
+        dir = null;
+        disabled = null;
+        image = null;
+        label = null;
+        lang = null;
+        onblur = null;
+        onchange = null;
+        onclick = null;
+        ondblclick = null;
+        onfocus = null;
+        onkeydown = null;
+        onkeypress = null;
+        onkeyup = null;
+        onmousedown = null;
+        onmousemove = null;
+        onmouseout = null;
+        onmouseover = null;
+        onmouseup = null;
+        onselect = null;
+        readonly = null;
+        role = null;
+        style = null;
+        styleClass = null;
+        tabindex = null;
+        title = null;
+        type = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

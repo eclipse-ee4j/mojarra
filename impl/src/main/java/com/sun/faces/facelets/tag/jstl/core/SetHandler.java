@@ -46,11 +46,11 @@ public class SetHandler extends TagHandlerImpl {
 
     public SetHandler(TagConfig config) {
         super(config);
-        this.value = this.getAttribute("value");
-        this.var = this.getAttribute("var");
-        this.target = this.getAttribute("target");
-        this.property = this.getAttribute("property");
-        this.scope = this.getAttribute("scope");
+        value = getAttribute("value");
+        var = getAttribute("var");
+        target = getAttribute("target");
+        property = getAttribute("property");
+        scope = getAttribute("scope");
 
     }
 
@@ -59,7 +59,7 @@ public class SetHandler extends TagHandlerImpl {
 
         StringBuilder bodyValue = new StringBuilder();
 
-        Iterator iter = TagHandlerImpl.findNextByType(this.nextHandler, TextHandler.class);
+        Iterator iter = TagHandlerImpl.findNextByType(nextHandler, TextHandler.class);
         while (iter.hasNext()) {
             TextHandler text = (TextHandler) iter.next();
             bodyValue.append(text.getText(ctx));
@@ -76,27 +76,27 @@ public class SetHandler extends TagHandlerImpl {
         ValueExpression lhs;
         String expr;
 
-        if (this.value != null) {
-            veObj = this.value.getValueExpression(ctx, Object.class);
+        if (value != null) {
+            veObj = value.getValueExpression(ctx, Object.class);
         } else {
 
             veObj = ctx.getExpressionFactory().createValueExpression(ctx.getFacesContext().getELContext(), bodyValue.toString(), Object.class);
         }
 
         // Otherwise, if var is set, ignore the other attributes
-        if (this.var != null) {
-            String scopeStr, varStr = this.var.getValue(ctx);
+        if (var != null) {
+            String scopeStr, varStr = var.getValue(ctx);
 
             // If scope is set, check for validity
-            if (null != this.scope) {
-                if (0 == this.scope.getValue().length()) {
+            if (null != scope) {
+                if (0 == scope.getValue().length()) {
                     throw new TagException(tag, "zero length scope attribute set");
                 }
 
-                if (this.scope.isLiteral()) {
-                    scopeStr = this.scope.getValue();
+                if (scope.isLiteral()) {
+                    scopeStr = scope.getValue();
                 } else {
-                    scopeStr = this.scope.getValue(ctx);
+                    scopeStr = scope.getValue(ctx);
                 }
                 if (scopeStr.equals("page")) {
                     throw new TagException(tag, "page scope does not exist in JSF, consider using view scope instead.");
@@ -116,23 +116,23 @@ public class SetHandler extends TagHandlerImpl {
         } else {
 
             // Otherwise, target, property and value must be set
-            if ((null == this.target || null == this.target.getValue() || this.target.getValue().length() <= 0)
-                    || (null == this.property || null == this.property.getValue() || this.property.getValue().length() <= 0) || !valSet) {
+            if ((null == target || null == target.getValue() || target.getValue().length() <= 0)
+                    || (null == property || null == property.getValue() || property.getValue().length() <= 0) || !valSet) {
 
                 throw new TagException(tag, "when using this tag either one of var and value, or (target, property, value) must be set.");
             }
             // Ensure that target is an expression
-            if (this.target.isLiteral()) {
+            if (target.isLiteral()) {
                 throw new TagException(tag, "value of target attribute must be an expression");
             }
             // Get the value of property
             String propertyStr = null;
-            if (this.property.isLiteral()) {
-                propertyStr = this.property.getValue();
+            if (property.isLiteral()) {
+                propertyStr = property.getValue();
             } else {
-                propertyStr = this.property.getValue(ctx);
+                propertyStr = property.getValue(ctx);
             }
-            ValueExpression targetVe = this.target.getValueExpression(ctx, Object.class);
+            ValueExpression targetVe = target.getValueExpression(ctx, Object.class);
             Object targetValue = targetVe.getValue(ctx);
             ctx.getFacesContext().getELContext().getELResolver().setValue(ctx, targetValue, propertyStr, veObj.getValue(ctx));
 

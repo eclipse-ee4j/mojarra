@@ -34,7 +34,7 @@ final class NamespaceManager {
 
         public NS(String prefix, String ns) {
             this.prefix = prefix;
-            this.namespace = ns;
+            namespace = ns;
         }
     }
 
@@ -44,22 +44,22 @@ final class NamespaceManager {
      *
      */
     public NamespaceManager() {
-        this.namespaces = new ArrayList();
+        namespaces = new ArrayList();
     }
 
     public void reset() {
-        this.namespaces.clear();
+        namespaces.clear();
     }
 
     public void pushNamespace(String prefix, String namespace) {
         NS ns = new NS(prefix, namespace);
-        this.namespaces.add(0, ns);
+        namespaces.add(0, ns);
     }
 
     public String getNamespace(String prefix) {
         NS ns = null;
-        for (int i = 0; i < this.namespaces.size(); i++) {
-            ns = (NS) this.namespaces.get(i);
+        for (int i = 0; i < namespaces.size(); i++) {
+            ns = (NS) namespaces.get(i);
             if (ns.prefix.equals(prefix)) {
                 return ns.namespace;
             }
@@ -69,10 +69,10 @@ final class NamespaceManager {
 
     public void popNamespace(String prefix) {
         NS ns = null;
-        for (int i = 0; i < this.namespaces.size(); i++) {
-            ns = (NS) this.namespaces.get(i);
+        for (int i = 0; i < namespaces.size(); i++) {
+            ns = (NS) namespaces.get(i);
             if (ns.prefix.equals(prefix)) {
-                this.namespaces.remove(i);
+                namespaces.remove(i);
                 return;
             }
         }
@@ -80,10 +80,10 @@ final class NamespaceManager {
 
     public NamespaceUnit toNamespaceUnit(TagLibrary library) {
         NamespaceUnit unit = new NamespaceUnit(library);
-        if (this.namespaces.size() > 0) {
+        if (namespaces.size() > 0) {
             NS ns = null;
-            for (int i = this.namespaces.size() - 1; i >= 0; i--) {
-                ns = (NS) this.namespaces.get(i);
+            for (int i = namespaces.size() - 1; i >= 0; i--) {
+                ns = (NS) namespaces.get(i);
                 unit.setNamespace(ns.prefix, ns.namespace);
             }
         }

@@ -44,7 +44,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).getAttributes().put(this.name, this.value);
+            ((UIComponent) instance).getAttributes().put(name, value);
         }
     }
 
@@ -64,7 +64,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueExpression(this.name, this.attr.getValueExpression(ctx, this.type));
+            ((UIComponent) instance).setValueExpression(name, attr.getValueExpression(ctx, type));
         }
 
     }
@@ -85,7 +85,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueBinding(this.name, new LegacyValueBinding(this.attr.getValueExpression(ctx, this.type)));
+            ((UIComponent) instance).setValueBinding(name, new LegacyValueBinding(attr.getValueExpression(ctx, type)));
         }
 
     }

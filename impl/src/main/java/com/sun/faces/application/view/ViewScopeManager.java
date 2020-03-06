@@ -182,7 +182,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @return the CDI context manager.
      */
     ViewScopeContextManager getContextManager() {
-        return this.contextManager;
+        return contextManager;
     }
 
     /**

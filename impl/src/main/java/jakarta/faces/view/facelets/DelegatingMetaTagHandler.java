@@ -42,8 +42,8 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
 
     public DelegatingMetaTagHandler(TagConfig config) {
         super(config);
-        this.binding = this.getAttribute("binding");
-        this.disabled = this.getAttribute("disabled");
+        binding = getAttribute("binding");
+        disabled = getAttribute("disabled");
         delegateFactory = (TagHandlerDelegateFactory) FactoryFinder.getFactory(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY);
     }
 
@@ -69,15 +69,15 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
     }
 
     public TagAttribute getBinding() {
-        return this.binding;
+        return binding;
     }
 
     public Tag getTag() {
-        return this.tag;
+        return tag;
     }
 
     public String getTagId() {
-        return this.tagId;
+        return tagId;
     }
 
     public TagAttribute getTagAttribute(String localName) {
@@ -129,7 +129,7 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
 
     public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException, FacesException, ELException {
         // first allow c to get populated
-        this.nextHandler.apply(ctx, c);
+        nextHandler.apply(ctx, c);
     }
 
     /**

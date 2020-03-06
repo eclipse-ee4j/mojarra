@@ -126,7 +126,7 @@ public class AjaxBehaviors implements Serializable {
 
         public void addBehavior(FacesContext context, ClientBehaviorHolder behaviorHolder) {
 
-            String myEventName = this.eventName;
+            String myEventName = eventName;
             if (myEventName == null) {
                 myEventName = behaviorHolder.getDefaultEventName();
 

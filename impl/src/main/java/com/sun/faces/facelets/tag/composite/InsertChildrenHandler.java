@@ -66,7 +66,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
         UIComponent compositeParent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
         if (compositeParent != null) {
             int count = parent.getChildCount();
-            compositeParent.subscribeToEvent(PostAddToViewEvent.class, new RelocateChildrenListener(ctx, parent, count, this.tag.getLocation()));
+            compositeParent.subscribeToEvent(PostAddToViewEvent.class, new RelocateChildrenListener(ctx, parent, count, tag.getLocation()));
         }
 
     }

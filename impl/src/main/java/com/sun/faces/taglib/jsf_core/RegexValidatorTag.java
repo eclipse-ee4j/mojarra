@@ -52,7 +52,7 @@ public class RegexValidatorTag extends AbstractValidatorTag {
      * @param pattern A regular expression - needs to be escaped, @see java.util.regex .
      */
     public void setPattern(ValueExpression pattern) {
-        this.regex = pattern;
+        regex = pattern;
     }
 
     @Override

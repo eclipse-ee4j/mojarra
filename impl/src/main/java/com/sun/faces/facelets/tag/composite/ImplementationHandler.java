@@ -37,7 +37,7 @@ public class ImplementationHandler extends TagHandlerImpl {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (!FaceletViewHandlingStrategy.isBuildingMetadata(ctx.getFacesContext())) {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         }
     }
 

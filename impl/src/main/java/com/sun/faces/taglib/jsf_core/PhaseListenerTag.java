@@ -154,7 +154,7 @@ public class PhaseListenerTag extends TagSupport {
     @Override
     public void release() {
 
-        this.type = null;
+        type = null;
 
     }
 

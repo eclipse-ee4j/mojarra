@@ -329,7 +329,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public void resetValue() {
         super.resetValue();
-        this.setSubmittedValue(null);
+        setSubmittedValue(null);
         getStateHelper().remove(PropertyKeys.localValueSet);
         getStateHelper().remove(PropertyKeys.valid);
     }

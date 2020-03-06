@@ -102,7 +102,7 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
             c = (Converter) ve.getValue(ctx);
         }
         if (c == null) {
-            c = this.createConverter(ctx);
+            c = createConverter(ctx);
             if (ve != null) {
                 ve.setValue(ctx, c);
             }

@@ -79,7 +79,7 @@ public class DataModelEvent extends EventObject {
      */
     public Object getRowData() {
 
-        return (this.data);
+        return (data);
 
     }
 
@@ -92,7 +92,7 @@ public class DataModelEvent extends EventObject {
      */
     public int getRowIndex() {
 
-        return (this.index);
+        return (index);
 
     }
 

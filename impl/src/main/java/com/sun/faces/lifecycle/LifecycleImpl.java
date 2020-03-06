@@ -90,7 +90,7 @@ public class LifecycleImpl extends Lifecycle {
 
         @Override
         public void processEvent(SystemEvent event) throws AbortProcessingException {
-            LifecycleImpl.this.postConstructApplicationInitialization();
+            postConstructApplicationInitialization();
         }
 
     }

@@ -169,7 +169,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
             }
         }
 
-        if (!this.hasMessages()) {
+        if (!hasMessages()) {
             // all clear - create the BakedMapProperty and add it to the properties
             // map
             BakedMapProperty baked = new BakedMapProperty(mapEntries, pd);
@@ -234,7 +234,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
 
         }
 
-        if (!this.hasMessages()) {
+        if (!hasMessages()) {
             BakedListProperty baked = new BakedListProperty(listEntry, pd);
             properties.add(baked);
         }
@@ -290,7 +290,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
             }
         }
 
-        if (!this.hasMessages()) {
+        if (!hasMessages()) {
             BakedBeanProperty baked = new BakedBeanProperty(property.getPropertyName(), pd, value);
             properties.add(baked);
         }

@@ -37,7 +37,7 @@ public final class CompositeTagDecorator implements TagDecorator {
     public CompositeTagDecorator(TagDecorator[] decorators) {
         Util.notNull("decorators", decorators);
         this.decorators = decorators;
-        this.defaultTagDecorator = new DefaultTagDecorator();
+        defaultTagDecorator = new DefaultTagDecorator();
     }
 
     /**
@@ -54,8 +54,8 @@ public final class CompositeTagDecorator implements TagDecorator {
         }
 
         Tag t = null;
-        for (int i = 0; i < this.decorators.length; i++) {
-            t = this.decorators[i].decorate(tag);
+        for (int i = 0; i < decorators.length; i++) {
+            t = decorators[i].decorate(tag);
             if (t != null) {
                 return t;
             }

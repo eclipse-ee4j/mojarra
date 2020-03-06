@@ -38,11 +38,11 @@ public class VariableResolverChainWrapper extends ELResolver {
 
     @SuppressWarnings("deprecation")
     public VariableResolverChainWrapper(VariableResolver variableResolver) {
-        this.legacyVR = variableResolver;
+        legacyVR = variableResolver;
     }
 
     public void setWrapped(VariableResolver newVR) {
-        this.legacyVR = newVR;
+        legacyVR = newVR;
     }
 
     @Override

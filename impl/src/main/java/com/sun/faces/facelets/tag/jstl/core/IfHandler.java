@@ -42,18 +42,18 @@ public final class IfHandler extends TagHandlerImpl {
      */
     public IfHandler(TagConfig config) {
         super(config);
-        this.test = this.getRequiredAttribute("test");
-        this.var = this.getAttribute("var");
+        test = getRequiredAttribute("test");
+        var = getAttribute("var");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException {
-        boolean b = this.test.getBoolean(ctx);
-        if (this.var != null) {
+        boolean b = test.getBoolean(ctx);
+        if (var != null) {
             ctx.setAttribute(var.getValue(ctx), b);
         }
         if (b) {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         }
     }
 

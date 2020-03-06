@@ -232,8 +232,8 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         }
 
         public void clear() {
-            this.definingDocumentURI = null;
-            this.flowDefinitions = null;
+            definingDocumentURI = null;
+            flowDefinitions = null;
         }
 
     }
@@ -249,16 +249,16 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         public void processEvent(SystemEvent event) throws AbortProcessingException {
             FacesContext facesContext = event.getFacesContext();
 
-            for (FlowDefinitionDocument flowDefinition : FacesFlowDefinitionConfigProcessor.this.getSavedFlowDefinitions(facesContext)) {
+            for (FlowDefinitionDocument flowDefinition : getSavedFlowDefinitions(facesContext)) {
                 try {
-                    FacesFlowDefinitionConfigProcessor.this.processFacesFlowDefinitions(facesContext, flowDefinition.definingDocumentURI,
+                    processFacesFlowDefinitions(facesContext, flowDefinition.definingDocumentURI,
                             flowDefinition.flowDefinitions);
                 } catch (XPathExpressionException ex) {
                     throw new FacesException(ex);
                 }
             }
 
-            FacesFlowDefinitionConfigProcessor.this.clearSavedFlowDefinitions(facesContext);
+            clearSavedFlowDefinitions(facesContext);
         }
     }
 

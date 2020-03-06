@@ -437,46 +437,46 @@ public class SelectBooleanCheckboxTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this.converter = null;
-        this.converterMessage = null;
-        this.immediate = null;
-        this.required = null;
-        this.requiredMessage = null;
-        this.validator = null;
-        this.validatorMessage = null;
-        this.value = null;
-        this.valueChangeListener = null;
+        converter = null;
+        converterMessage = null;
+        immediate = null;
+        required = null;
+        requiredMessage = null;
+        validator = null;
+        validatorMessage = null;
+        value = null;
+        valueChangeListener = null;
 
         // rendered attributes
-        this.accesskey = null;
-        this.dir = null;
-        this.disabled = null;
-        this.label = null;
-        this.lang = null;
-        this.onblur = null;
-        this.onchange = null;
-        this.onclick = null;
-        this.ondblclick = null;
-        this.onfocus = null;
-        this.onkeydown = null;
-        this.onkeypress = null;
-        this.onkeyup = null;
-        this.onmousedown = null;
-        this.onmousemove = null;
-        this.onmouseout = null;
-        this.onmouseover = null;
-        this.onmouseup = null;
-        this.onselect = null;
-        this.readonly = null;
-        this.role = null;
-        this.style = null;
-        this.styleClass = null;
-        this.tabindex = null;
-        this.title = null;
+        accesskey = null;
+        dir = null;
+        disabled = null;
+        label = null;
+        lang = null;
+        onblur = null;
+        onchange = null;
+        onclick = null;
+        ondblclick = null;
+        onfocus = null;
+        onkeydown = null;
+        onkeypress = null;
+        onkeyup = null;
+        onmousedown = null;
+        onmousemove = null;
+        onmouseout = null;
+        onmouseover = null;
+        onmouseup = null;
+        onselect = null;
+        readonly = null;
+        role = null;
+        style = null;
+        styleClass = null;
+        tabindex = null;
+        title = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

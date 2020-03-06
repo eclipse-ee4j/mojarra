@@ -220,13 +220,13 @@ public class PartialVisitContext extends VisitContext {
         // perhaps we could pick more intelligent defaults.
 
         // Initialize unvisitedClientIds collection
-        this.unvisitedClientIds = new HashSet<>();
+        unvisitedClientIds = new HashSet<>();
 
         // Initialize ids collection
-        this.ids = new HashSet<>();
+        ids = new HashSet<>();
 
         // Intialize subtreeClientIds collection
-        this.subtreeClientIds = new HashMap<>();
+        subtreeClientIds = new HashMap<>();
 
         // Initialize the clientIds collection. Note that we proxy
         // this collection so that we can trap adds/removes and sync

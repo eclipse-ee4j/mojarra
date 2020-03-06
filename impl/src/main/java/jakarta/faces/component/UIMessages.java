@@ -68,7 +68,7 @@ public class UIMessages extends UIComponentBase {
 
         @Override
         public String toString() {
-            return ((this.toString != null) ? this.toString : super.toString());
+            return ((toString != null) ? toString : super.toString());
         }
     }
 

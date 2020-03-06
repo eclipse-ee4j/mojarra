@@ -53,7 +53,7 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
         @Override
         public void processEvent(SystemEvent event) throws AbortProcessingException {
-            ClientWindowFactoryImpl.this.postConstructApplicationInitialization();
+            postConstructApplicationInitialization();
         }
 
     }

@@ -72,10 +72,10 @@ public class FlowCDIContext implements Context, Serializable {
                 return false;
             }
             final FlowBeanInfo other = (FlowBeanInfo) obj;
-            if ((this.definingDocumentId == null) ? (other.definingDocumentId != null) : !this.definingDocumentId.equals(other.definingDocumentId)) {
+            if ((definingDocumentId == null) ? (other.definingDocumentId != null) : !definingDocumentId.equals(other.definingDocumentId)) {
                 return false;
             }
-            if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+            if ((id == null) ? (other.id != null) : !id.equals(other.id)) {
                 return false;
             }
             return true;
@@ -84,8 +84,8 @@ public class FlowCDIContext implements Context, Serializable {
         @Override
         public int hashCode() {
             int hash = 7;
-            hash = 79 * hash + (this.definingDocumentId != null ? this.definingDocumentId.hashCode() : 0);
-            hash = 79 * hash + (this.id != null ? this.id.hashCode() : 0);
+            hash = 79 * hash + (definingDocumentId != null ? definingDocumentId.hashCode() : 0);
+            hash = 79 * hash + (id != null ? id.hashCode() : 0);
             return hash;
         }
 
@@ -121,7 +121,7 @@ public class FlowCDIContext implements Context, Serializable {
 
         private FlowScopeMapHelper(FacesContext facesContext) {
             ExternalContext extContext = facesContext.getExternalContext();
-            this.sessionMap = extContext.getSessionMap();
+            sessionMap = extContext.getSessionMap();
 
             Flow currentFlow = getCurrentFlow(facesContext);
             int currentFlowDepth = FlowHandlerImpl.getFlowStack(facesContext).getCurrentFlowDepth();
@@ -131,7 +131,7 @@ public class FlowCDIContext implements Context, Serializable {
 
         private FlowScopeMapHelper(FacesContext facesContext, Flow flow, int flowDepth) {
             ExternalContext extContext = facesContext.getExternalContext();
-            this.sessionMap = extContext.getSessionMap();
+            sessionMap = extContext.getSessionMap();
 
             generateKeyForCDIBeansBelongToAFlow(facesContext, flow, flowDepth);
         }

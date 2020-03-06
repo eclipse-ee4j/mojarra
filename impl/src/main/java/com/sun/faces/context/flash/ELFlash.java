@@ -353,9 +353,9 @@ public class ELFlash extends Flash {
         FacesContext context = FacesContext.getCurrentInstance();
         if (null != key) {
             if (key.equals("keepMessages")) {
-                result = this.isKeepMessages();
+                result = isKeepMessages();
             } else if (key.equals("redirect")) {
-                result = this.isRedirect();
+                result = isRedirect();
             } else {
                 if (isKeepFlagSet(context)) {
                     result = getPhaseMapForReading().get(key);
@@ -392,11 +392,11 @@ public class ELFlash extends Flash {
 
         if (null != key) {
             if (key.equals("keepMessages")) {
-                this.setKeepMessages(b = Boolean.parseBoolean((String) value));
+                setKeepMessages(b = Boolean.parseBoolean((String) value));
                 wasSpecialPut = true;
             }
             if (key.equals("redirect")) {
-                this.setRedirect(b = Boolean.parseBoolean((String) value));
+                setRedirect(b = Boolean.parseBoolean((String) value));
                 wasSpecialPut = true;
             }
         }
@@ -574,8 +574,8 @@ public class ELFlash extends Flash {
                 getCurrentFlashManager(context, contextMap, cookie);
             }
 
-            if (this.isKeepMessages()) {
-                this.restoreAllMessages(context);
+            if (isKeepMessages()) {
+                restoreAllMessages(context);
             }
         } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE) && contextMap.containsKey(ForceAlwaysWriteFlashCookie)
                 && (Boolean) contextMap.get(ForceAlwaysWriteFlashCookie)) {
@@ -648,8 +648,8 @@ public class ELFlash extends Flash {
         if (null == flashManager) {
             return;
         }
-        if (this.isKeepMessages()) {
-            this.saveAllMessages(context);
+        if (isKeepMessages()) {
+            saveAllMessages(context);
         }
         releaseCurrentFlashManager(contextMap);
 
@@ -691,7 +691,7 @@ public class ELFlash extends Flash {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[\n");
-        for (Map.Entry<String, Object> entry : this.entrySet()) {
+        for (Map.Entry<String, Object> entry : entrySet()) {
             builder.append("{").append(entry.getKey()).append(", ").append(entry.getValue()).append("}\n");
         }
         builder.append("]\n");
@@ -1191,12 +1191,12 @@ public class ELFlash extends Flash {
             PreviousNextFlashInfoManager result = new PreviousNextFlashInfoManager(guard);
             result.innerMap = Collections.emptyMap();
             if (null != previousRequestFlashInfo) {
-                result.previousRequestFlashInfo = this.previousRequestFlashInfo.copyWithoutInnerMap();
+                result.previousRequestFlashInfo = previousRequestFlashInfo.copyWithoutInnerMap();
             }
             if (null != nextRequestFlashInfo) {
-                result.nextRequestFlashInfo = this.nextRequestFlashInfo.copyWithoutInnerMap();
+                result.nextRequestFlashInfo = nextRequestFlashInfo.copyWithoutInnerMap();
             }
-            result.incomingCookieCameFromRedirect = this.incomingCookieCameFromRedirect;
+            result.incomingCookieCameFromRedirect = incomingCookieCameFromRedirect;
 
             return result;
         }
@@ -1333,7 +1333,7 @@ public class ELFlash extends Flash {
 
                 // handle the consequences of action taken on doLastPhaseActions
                 if (previousRequestFlashInfo.isIsRedirect()) {
-                    this.setIncomingCookieCameFromRedirect(true);
+                    setIncomingCookieCameFromRedirect(true);
                     previousRequestFlashInfo.setIsRedirect(false);
                 } else {
                     // Don't make the flash older on debug requests
@@ -1409,7 +1409,7 @@ public class ELFlash extends Flash {
         }
 
         void setPreviousRequestFlashInfo(FlashInfo thisRequestFlashInfo) {
-            this.previousRequestFlashInfo = thisRequestFlashInfo;
+            previousRequestFlashInfo = thisRequestFlashInfo;
         }
 
         FlashInfo getNextRequestFlashInfo() {
@@ -1492,7 +1492,7 @@ public class ELFlash extends Flash {
         }
 
         FlashInfo copyWithoutInnerMap() {
-            FlashInfo result = new FlashInfo(this.sequenceNumber, this.lifetimeMarker, this.isRedirect);
+            FlashInfo result = new FlashInfo(sequenceNumber, lifetimeMarker, isRedirect);
 
             return result;
         }
@@ -1506,13 +1506,13 @@ public class ELFlash extends Flash {
                 return false;
             }
             final FlashInfo other = (FlashInfo) obj;
-            if (this.isRedirect != other.isRedirect) {
+            if (isRedirect != other.isRedirect) {
                 return false;
             }
-            if (this.lifetimeMarker != other.lifetimeMarker && (this.lifetimeMarker == null || !this.lifetimeMarker.equals(other.lifetimeMarker))) {
+            if (lifetimeMarker != other.lifetimeMarker && (lifetimeMarker == null || !lifetimeMarker.equals(other.lifetimeMarker))) {
                 return false;
             }
-            if (this.sequenceNumber != other.sequenceNumber) {
+            if (sequenceNumber != other.sequenceNumber) {
                 return false;
             }
             return true;
@@ -1521,9 +1521,9 @@ public class ELFlash extends Flash {
         @Override
         public int hashCode() {
             int hash = 7;
-            hash = 71 * hash + (this.isRedirect ? 1 : 0);
-            hash = 71 * hash + (this.lifetimeMarker != null ? this.lifetimeMarker.hashCode() : 0);
-            hash = 71 * hash + (int) (this.sequenceNumber ^ (this.sequenceNumber >>> 32));
+            hash = 71 * hash + (isRedirect ? 1 : 0);
+            hash = 71 * hash + (lifetimeMarker != null ? lifetimeMarker.hashCode() : 0);
+            hash = 71 * hash + (int) (sequenceNumber ^ (sequenceNumber >>> 32));
             return hash;
         }
 

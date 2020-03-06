@@ -267,30 +267,30 @@ public class MessageTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this._for = null;
-        this.showDetail = null;
-        this.showSummary = null;
+        _for = null;
+        showDetail = null;
+        showSummary = null;
 
         // rendered attributes
-        this.dir = null;
-        this.errorClass = null;
-        this.errorStyle = null;
-        this.fatalClass = null;
-        this.fatalStyle = null;
-        this.infoClass = null;
-        this.infoStyle = null;
-        this.lang = null;
-        this.role = null;
-        this.style = null;
-        this.styleClass = null;
-        this.title = null;
-        this.tooltip = null;
-        this.warnClass = null;
-        this.warnStyle = null;
+        dir = null;
+        errorClass = null;
+        errorStyle = null;
+        fatalClass = null;
+        fatalStyle = null;
+        infoClass = null;
+        infoStyle = null;
+        lang = null;
+        role = null;
+        style = null;
+        styleClass = null;
+        title = null;
+        tooltip = null;
+        warnClass = null;
+        warnStyle = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

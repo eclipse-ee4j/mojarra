@@ -142,7 +142,7 @@ public class TableRenderer extends BaseTableRenderer {
 
         // fill an empty tbody, if no row has been rendered
         if (!renderedRow) {
-            this.renderEmptyTableRow(writer, data);
+            renderEmptyTableRow(writer, data);
         }
         renderTableBodyEnd(context, component, writer);
 
@@ -368,7 +368,7 @@ public class TableRenderer extends BaseTableRenderer {
     private void renderEmptyTableBody(final ResponseWriter writer, final UIComponent component) throws IOException {
 
         writer.startElement("tbody", component);
-        this.renderEmptyTableRow(writer, component);
+        renderEmptyTableRow(writer, component);
         writer.endElement("tbody");
 
     }

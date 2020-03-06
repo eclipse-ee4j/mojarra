@@ -322,7 +322,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
     UIComponentClassicTagBase(PageContext pageContext, FacesContext facesContext) {
         this.pageContext = pageContext;
-        this.context = facesContext;
+        context = facesContext;
     }
 
     // --------------------------------------------- Support Methods for Tag
@@ -442,7 +442,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @Override
     public Tag getParent() {
 
-        return (this.parent);
+        return (parent);
 
     }
 
@@ -663,8 +663,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
                     throw e;
                 }
 
-                if (null != this.id) {
-                    parentComponent.setId(this.id);
+                if (null != id) {
+                    parentComponent.setId(id);
                 } else {
                     assert (null != getFacesJspId());
                     parentComponent.setId(getFacesJspId());
@@ -780,14 +780,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      */
 
     void addChildToComponentAndTag(UIComponent child) {
-        UIComponent myComponent = this.getComponentInstance();
+        UIComponent myComponent = getComponentInstance();
 
-        int indexOfNextChildTag = this.getIndexOfNextChildTag();
+        int indexOfNextChildTag = getIndexOfNextChildTag();
         if (indexOfNextChildTag > myComponent.getChildCount()) {
             indexOfNextChildTag = myComponent.getChildCount();
         }
         myComponent.getChildren().add(indexOfNextChildTag, child);
-        this.addChild(child);
+        addChild(child);
     }
 
     @Override
@@ -1231,7 +1231,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         // rendersChildren==true component, stuff any template text or
         // custom tag output into a transient component.
         if (null == getFacetName() && null != parentTag) {
-            Tag p = this.getParent();
+            Tag p = getParent();
             // If we're not inside a Jakarta Server Pages tag or we're not inside
             // a UIComponentTag flush the buffer
             if (null == p || !(p instanceof UIComponentTagBase)) {
@@ -1263,7 +1263,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             namingContainerChildIds = new HashMap<>();
         }
 
-        if (this.id != null) {
+        if (id != null) {
             clientId = getId();
 
             UIComponentClassicTagBase temp = (UIComponentClassicTagBase) getParentNamingContainerTag().getNamingContainerChildIds().get(clientId);
@@ -1278,9 +1278,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             // if they aren't, then we're dealing with EVAL_BODY_AGAIN (see
             // below)
             // noinspection ObjectEquality
-            if (temp == this && !this.getJspId().equals(temp.getJspId())) {
+            if (temp == this && !getJspId().equals(temp.getJspId())) {
                 tagInstance = this;
-            } else if (temp != null && temp != this && this.getJspId().equals(temp.getJspId())) {
+            } else if (temp != null && temp != this && getJspId().equals(temp.getJspId())) {
                 // new instance, same Jakarta Server Pages ID - this is the EVAL_BODY_AGAIN case.
                 tagInstance = temp;
             }
@@ -1294,7 +1294,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
             // only check for id uniqueness if the author has manually given
             // us an id.
-            if (null != this.id) {
+            if (null != id) {
 
                 // assert component ID uniqueness
                 if (clientId != null) {
@@ -1387,7 +1387,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             UIComponent verbatim;
             UIComponentClassicTagBase parentTag = _getParentUIComponentClassicTagBase(context.getAttributes());
 
-            if (null != (verbatim = this.createVerbatimComponentFromBodyContent())) {
+            if (null != (verbatim = createVerbatimComponentFromBodyContent())) {
                 component.getChildren().add(verbatim);
                 if (null != parentTag) {
                     parentTag.addChild(verbatim);
@@ -1404,7 +1404,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             context = null;
         }
 
-        this.release();
+        release();
         return (getDoEndValue());
 
     }
@@ -1417,13 +1417,13 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @Override
     public void release() {
 
-        this.parent = null;
+        parent = null;
 
-        this.id = null;
-        this.facesJspId = null;
-        this.created = false;
-        this.bodyContent = null;
-        this.isNestedInIterator = false;
+        id = null;
+        facesJspId = null;
+        created = false;
+        bodyContent = null;
+        isNestedInIterator = false;
         _nextChildIndex = 0;
     }
 
@@ -1475,13 +1475,13 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      */
     public JspWriter getPreviousOut() {
 
-        return (this.bodyContent.getEnclosingWriter());
+        return (bodyContent.getEnclosingWriter());
 
     }
 
     public BodyContent getBodyContent() {
 
-        return (this.bodyContent);
+        return (bodyContent);
 
     }
 
@@ -1526,7 +1526,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         if (this == parentTag || (null != parentTag && parentTag.getComponentInstance().getRendersChildren())) {
             // stuff the template text or custom tag output into a
             // transient component
-            if (null != (verbatim = this.createVerbatimComponentFromBodyContent())) {
+            if (null != (verbatim = createVerbatimComponentFromBodyContent())) {
                 // EDGE CASE:
                 // Consider CASE 4 where the component is provided via a
                 // component binding in session or application scope.
@@ -1690,7 +1690,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      */
     private String createId(FacesContext context) throws JspException {
 
-        if (this.id == null) {
+        if (id == null) {
             return getFacesJspId();
         } else {
             // if this tag happens to be nested within <c:forEach>, jspId
@@ -1698,20 +1698,20 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             // transformed into a unique "id" by appending a counter which gets
             // stored in request scope with jspId as the key for use during next
             // iteration.
-            if (isDuplicateId(this.id)) {
-                if (!isSpecifiedIdUnique(this.id)) {
+            if (isDuplicateId(id)) {
+                if (!isSpecifiedIdUnique(id)) {
                     if (isNestedInIterator) {
-                        this.id = generateIncrementedId(this.id);
+                        id = generateIncrementedId(id);
                     } else {
                         StringWriter writer = new StringWriter(128);
-                        printTree(context.getViewRoot(), this.id, writer, 0);
-                        String msg = "Component ID '" + this.id + "' has already been used" + " in the view.\n" + "See below for the view up to the point of"
+                        printTree(context.getViewRoot(), id, writer, 0);
+                        String msg = "Component ID '" + id + "' has already been used" + " in the view.\n" + "See below for the view up to the point of"
                                 + " the detected error.\n" + writer.toString();
                         throw new JspException(msg);
                     }
                 }
             }
-            return (this.id);
+            return (id);
         }
 
     }
@@ -1728,11 +1728,11 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             return true;
         } else {
             UIComponent parent = c.getParent();
-            if (parent.equals(this.parentTag.component)) {
+            if (parent.equals(parentTag.component)) {
                 // the component we found has the same parent, If we find
                 // a sibling with the same ID, return true so that the
                 // id is incremented, otherwise, return false.
-                List<String> created = this.parentTag.createdComponents;
+                List<String> created = parentTag.createdComponents;
                 return !(created != null && created.contains(id));
             } else {
                 return false;
@@ -1745,10 +1745,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * @return the parent tag that represents the closest NamingContainer component.
      */
     private UIComponentClassicTagBase getParentNamingContainerTag() {
-        if (this.parentTag == null) {
+        if (parentTag == null) {
             return this;
         }
-        UIComponentClassicTagBase parent = this.parentTag;
+        UIComponentClassicTagBase parent = parentTag;
         while (parent != null) {
             if (parent.component instanceof NamingContainer || parent.parentTag == null && parent.component instanceof UIViewRoot) {
                 return parent;
@@ -1780,7 +1780,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     public void setJspId(String id) {
         // reset Jakarta Server Pages ID here instead of release as we may need
         // to check the ID after the tag has been used
-        this.jspId = null;
+        jspId = null;
 
         Integer pcId = (Integer) pageContext.getAttribute(JAKARTA_FACES_PAGECONTEXT_MARKER, PageContext.PAGE_SCOPE);
         if (pcId == null) {
@@ -1938,7 +1938,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @Override
     public UIComponent getComponentInstance() {
 
-        return (this.component);
+        return (component);
 
     }
 
@@ -1952,12 +1952,12 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @Override
     public boolean getCreated() { // NOPMD
 
-        return (this.created);
+        return (created);
 
     }
 
     private Map getNamingContainerChildIds() {
-        return (this.namingContainerChildIds);
+        return (namingContainerChildIds);
     }
 
     @Override

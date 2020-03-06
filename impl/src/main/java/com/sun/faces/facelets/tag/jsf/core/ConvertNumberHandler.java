@@ -43,7 +43,7 @@ public final class ConvertNumberHandler extends ConverterHandler {
      */
     public ConvertNumberHandler(ConverterConfig config) {
         super(config);
-        this.locale = this.getAttribute("locale");
+        locale = getAttribute("locale");
     }
 
     /**
@@ -64,8 +64,8 @@ public final class ConvertNumberHandler extends ConverterHandler {
     public void setAttributes(FaceletContext ctx, Object obj) {
         super.setAttributes(ctx, obj);
         NumberConverter c = (NumberConverter) obj;
-        if (this.locale != null) {
-            c.setLocale(ComponentSupport.getLocale(ctx, this.locale));
+        if (locale != null) {
+            c.setLocale(ComponentSupport.getLocale(ctx, locale));
         }
     }
 

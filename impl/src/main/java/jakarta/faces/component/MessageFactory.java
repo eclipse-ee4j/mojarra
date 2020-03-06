@@ -255,7 +255,7 @@ class MessageFactory {
      */
     static class BindingFacesMessage extends FacesMessage {
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -124099152627362643L;
         BindingFacesMessage(Locale locale, String messageFormat, String detailMessageFormat,

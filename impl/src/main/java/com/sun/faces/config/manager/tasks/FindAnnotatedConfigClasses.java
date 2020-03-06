@@ -49,9 +49,9 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
     @SuppressWarnings("unchecked")
     public FindAnnotatedConfigClasses(ServletContext servletContext, InitFacesContext facesContext, ProvideMetadataToAnnotationScanTask metadataGetter) {
         this.facesContext = facesContext;
-        this.provider = AnnotationProviderFactory.createAnnotationProvider(servletContext);
+        provider = AnnotationProviderFactory.createAnnotationProvider(servletContext);
         this.metadataGetter = metadataGetter;
-        this.annotatedSet = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);
+        annotatedSet = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);
     }
 
     // ----------------------------------------------- Methods from Callable

@@ -784,12 +784,12 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
         public OptionComponentInfo(UIComponent component) {
             Map<String, Object> attributes = component.getAttributes();
-            this.disabledClass = (String) attributes.get("disabledClass");
-            this.enabledClass = (String) attributes.get("enabledClass");
-            this.selectedClass = (String) attributes.get("selectedClass");
-            this.unselectedClass = (String) attributes.get("unselectedClass");
-            this.disabled = Util.componentIsDisabled(component);
-            this.hideNoSelection = MenuRenderer.isHideNoSelection(component);
+            disabledClass = (String) attributes.get("disabledClass");
+            enabledClass = (String) attributes.get("enabledClass");
+            selectedClass = (String) attributes.get("selectedClass");
+            unselectedClass = (String) attributes.get("unselectedClass");
+            disabled = Util.componentIsDisabled(component);
+            hideNoSelection = MenuRenderer.isHideNoSelection(component);
         }
 
         public String getDisabledClass() {

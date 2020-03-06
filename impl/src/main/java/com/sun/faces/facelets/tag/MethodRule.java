@@ -48,18 +48,18 @@ public final class MethodRule extends MetaRule {
 
     @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
-        if (!name.equals(this.methodName))
+        if (!name.equals(methodName))
             return null;
 
         if (MethodBinding.class.equals(meta.getPropertyType(name))) {
             Method method = meta.getWriteMethod(name);
             if (method != null) {
-                return new MethodBindingMetadata(method, attribute, this.returnTypeClass, this.params);
+                return new MethodBindingMetadata(method, attribute, returnTypeClass, params);
             }
         } else if (MethodExpression.class.equals(meta.getPropertyType(name))) {
             Method method = meta.getWriteMethod(name);
             if (method != null) {
-                return new MethodExpressionMetadata(method, attribute, this.returnTypeClass, this.params);
+                return new MethodExpressionMetadata(method, attribute, returnTypeClass, params);
             }
         }
 

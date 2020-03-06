@@ -1031,7 +1031,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             Monitor(URI uri) throws IOException {
 
                 this.uri = uri;
-                this.timestamp = getLastModified();
+                timestamp = getLastModified();
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.log(Level.INFO, "Monitoring {0} for modifications", uri.toURL().toExternalForm());
                 }

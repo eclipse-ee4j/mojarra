@@ -53,22 +53,22 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         @Override
         public String getValidatorId() {
-            return this.validatorId;
+            return validatorId;
         }
 
         @Override
         public FaceletHandler getNextHandler() {
-            return this.parent.getNextHandler();
+            return parent.getNextHandler();
         }
 
         @Override
         public Tag getTag() {
-            return this.parent.getTag();
+            return parent.getTag();
         }
 
         @Override
         public String getTagId() {
-            return this.parent.getTagId();
+            return parent.getTagId();
         }
     }
 
@@ -83,22 +83,22 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         @Override
         public String getConverterId() {
-            return this.converterId;
+            return converterId;
         }
 
         @Override
         public FaceletHandler getNextHandler() {
-            return this.parent.getNextHandler();
+            return parent.getNextHandler();
         }
 
         @Override
         public Tag getTag() {
-            return this.parent.getTag();
+            return parent.getTag();
         }
 
         @Override
         public String getTagId() {
-            return this.parent.getTagId();
+            return parent.getTagId();
         }
     }
 
@@ -179,7 +179,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                return (TagHandler) this.handlerType.getConstructor(CONSTRUCTOR_SIG).newInstance(cfg);
+                return (TagHandler) handlerType.getConstructor(CONSTRUCTOR_SIG).newInstance(cfg);
             } catch (InvocationTargetException ite) {
                 Throwable t = ite.getCause();
                 if (t instanceof FacesException) {
@@ -187,10 +187,10 @@ public abstract class AbstractTagLibrary implements TagLibrary {
                 } else if (t instanceof ELException) {
                     throw (ELException) t;
                 } else {
-                    throw new FacesException("Error Instantiating: " + this.handlerType.getName(), t);
+                    throw new FacesException("Error Instantiating: " + handlerType.getName(), t);
                 }
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-                throw new FacesException("Error Instantiating: " + this.handlerType.getName(), e);
+                throw new FacesException("Error Instantiating: " + handlerType.getName(), e);
             }
         }
     }
@@ -211,27 +211,27 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         @Override
         public String getComponentType() {
-            return this.componentType;
+            return componentType;
         }
 
         @Override
         public String getRendererType() {
-            return this.rendererType;
+            return rendererType;
         }
 
         @Override
         public FaceletHandler getNextHandler() {
-            return this.parent.getNextHandler();
+            return parent.getNextHandler();
         }
 
         @Override
         public Tag getTag() {
-            return this.parent.getTag();
+            return parent.getTag();
         }
 
         @Override
         public String getTagId() {
-            return this.parent.getTagId();
+            return parent.getTagId();
         }
     }
 
@@ -244,7 +244,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
-            return new UserTagHandler(cfg, this.location);
+            return new UserTagHandler(cfg, location);
         }
     }
 
@@ -287,7 +287,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
-            ComponentConfig ccfg = new ComponentConfigWrapper(cfg, this.componentType, this.renderType);
+            ComponentConfig ccfg = new ComponentConfigWrapper(cfg, componentType, renderType);
             return new ComponentHandler(ccfg);
         }
     }
@@ -309,7 +309,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
             this.renderType = renderType;
             this.type = type;
             try {
-                this.constructor = this.type.getConstructor(CONS_SIG);
+                constructor = this.type.getConstructor(CONS_SIG);
             } catch (NoSuchMethodException | SecurityException e) {
                 throw new FaceletException("Must have a Constructor that takes in a ComponentConfig", e);
             }
@@ -318,12 +318,12 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                ComponentConfig ccfg = new ComponentConfigWrapper(cfg, this.componentType, this.renderType);
-                return (TagHandler) this.constructor.newInstance(ccfg);
+                ComponentConfig ccfg = new ComponentConfigWrapper(cfg, componentType, renderType);
+                return (TagHandler) constructor.newInstance(ccfg);
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-                throw new FaceletException("Error Instantiating ComponentHandler: " + this.type.getName(), e);
+                throw new FaceletException("Error Instantiating ComponentHandler: " + type.getName(), e);
             }
         }
     }
@@ -338,7 +338,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
-            return new ValidatorHandler(new ValidatorConfigWrapper(cfg, this.validatorId));
+            return new ValidatorHandler(new ValidatorConfigWrapper(cfg, validatorId));
         }
     }
 
@@ -352,7 +352,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
-            return new ConverterHandler(new ConverterConfigWrapper(cfg, this.converterId));
+            return new ConverterHandler(new ConverterConfigWrapper(cfg, converterId));
         }
     }
 
@@ -388,7 +388,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
             this.converterId = converterId;
             this.type = type;
             try {
-                this.constructor = this.type.getConstructor(CONS_SIG);
+                constructor = this.type.getConstructor(CONS_SIG);
             } catch (NoSuchMethodException | SecurityException e) {
                 throw new FaceletException("Must have a Constructor that takes in a ConverterConfig", e);
             }
@@ -397,12 +397,12 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                ConverterConfig ccfg = new ConverterConfigWrapper(cfg, this.converterId);
-                return (TagHandler) this.constructor.newInstance(ccfg);
+                ConverterConfig ccfg = new ConverterConfigWrapper(cfg, converterId);
+                return (TagHandler) constructor.newInstance(ccfg);
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-                throw new FaceletException("Error Instantiating ConverterHandler: " + this.type.getName(), e);
+                throw new FaceletException("Error Instantiating ConverterHandler: " + type.getName(), e);
             }
         }
     }
@@ -420,7 +420,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
             this.validatorId = validatorId;
             this.type = type;
             try {
-                this.constructor = this.type.getConstructor(CONS_SIG);
+                constructor = this.type.getConstructor(CONS_SIG);
             } catch (NoSuchMethodException | SecurityException e) {
                 throw new FaceletException("Must have a Constructor that takes in a ValidatorConfig", e);
             }
@@ -429,12 +429,12 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                ValidatorConfig ccfg = new ValidatorConfigWrapper(cfg, this.validatorId);
-                return (TagHandler) this.constructor.newInstance(ccfg);
+                ValidatorConfig ccfg = new ValidatorConfigWrapper(cfg, validatorId);
+                return (TagHandler) constructor.newInstance(ccfg);
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-                throw new FaceletException("Error Instantiating ValidatorHandler: " + this.type.getName(), e);
+                throw new FaceletException("Error Instantiating ValidatorHandler: " + type.getName(), e);
             }
         }
     }
@@ -452,7 +452,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
             this.behaviorId = behaviorId;
             this.type = type;
             try {
-                this.constructor = this.type.getConstructor(CONS_SIG);
+                constructor = this.type.getConstructor(CONS_SIG);
             } catch (NoSuchMethodException | SecurityException e) {
                 throw new FaceletException("Must have a Constructor that takes in a BehaviorConfig", e);
             }
@@ -461,12 +461,12 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                BehaviorConfig ccfg = new BehaviorConfigWrapper(cfg, this.behaviorId);
-                return (TagHandler) this.constructor.newInstance(ccfg);
+                BehaviorConfig ccfg = new BehaviorConfigWrapper(cfg, behaviorId);
+                return (TagHandler) constructor.newInstance(ccfg);
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-                throw new FaceletException("Error Instantiating BehaviorHandler: " + this.type.getName(), e);
+                throw new FaceletException("Error Instantiating BehaviorHandler: " + type.getName(), e);
             }
         }
     }
@@ -479,8 +479,8 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     public AbstractTagLibrary(String namespace) {
         this.namespace = namespace;
-        this.factories = new HashMap();
-        this.functions = new HashMap();
+        factories = new HashMap();
+        functions = new HashMap();
     }
 
     /**
@@ -492,7 +492,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param rendererType rendererType to use
      */
     protected final void addComponent(String name, String componentType, String rendererType) {
-        this.factories.put(name, new ComponentHandlerFactory(componentType, rendererType));
+        factories.put(name, new ComponentHandlerFactory(componentType, rendererType));
     }
 
     /**
@@ -505,7 +505,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param handlerType a Class that extends ComponentHandler
      */
     protected final void addComponent(String name, String componentType, String rendererType, Class handlerType) {
-        this.factories.put(name, new UserComponentHandlerFactory(componentType, rendererType, handlerType));
+        factories.put(name, new UserComponentHandlerFactory(componentType, rendererType, handlerType));
     }
 
     /**
@@ -517,7 +517,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param converterId id to pass to Application instance
      */
     protected final void addConverter(String name, String converterId) {
-        this.factories.put(name, new ConverterHandlerFactory(converterId));
+        factories.put(name, new ConverterHandlerFactory(converterId));
     }
 
     /**
@@ -531,7 +531,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param type TagHandler type that takes in a ConverterConfig
      */
     protected final void addConverter(String name, String converterId, Class type) {
-        this.factories.put(name, new UserConverterHandlerFactory(converterId, type));
+        factories.put(name, new UserConverterHandlerFactory(converterId, type));
     }
 
     /**
@@ -543,7 +543,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param validatorId id to pass to Application instance
      */
     protected final void addValidator(String name, String validatorId) {
-        this.factories.put(name, new ValidatorHandlerFactory(validatorId));
+        factories.put(name, new ValidatorHandlerFactory(validatorId));
     }
 
     /**
@@ -557,7 +557,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param type TagHandler type that takes in a ValidatorConfig
      */
     protected final void addValidator(String name, String validatorId, Class type) {
-        this.factories.put(name, new UserValidatorHandlerFactory(validatorId, type));
+        factories.put(name, new UserValidatorHandlerFactory(validatorId, type));
     }
 
     /**
@@ -568,11 +568,11 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param behaviorId
      */
     protected final void addBehavior(String name, String behaviorId) {
-        this.factories.put(name, new BehaviorHandlerFactory(behaviorId));
+        factories.put(name, new BehaviorHandlerFactory(behaviorId));
     }
 
     protected final void addBehavior(String name, String behaviorId, Class type) {
-        this.factories.put(name, new UserBehaviorHandlerFactory(behaviorId, type));
+        factories.put(name, new UserBehaviorHandlerFactory(behaviorId, type));
     }
 
     /**
@@ -583,7 +583,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param handlerType must extend TagHandler
      */
     protected final void addTagHandler(String name, Class handlerType) {
-        this.factories.put(name, new HandlerFactory(handlerType));
+        factories.put(name, new HandlerFactory(handlerType));
     }
 
     /**
@@ -594,7 +594,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param source source where the Facelet (Tag) source is
      */
     protected final void addUserTag(String name, URL source) {
-        this.factories.put(name, new UserTagFactory(source));
+        factories.put(name, new UserTagFactory(source));
     }
 
     /**
@@ -605,7 +605,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param resourceId source where the Facelet (Tag) source is
      */
     protected final void addCompositeComponentTag(String name, String resourceId) {
-        this.factories.put(name, new CompositeComponentTagFactory(resourceId));
+        factories.put(name, new CompositeComponentTagFactory(resourceId));
     }
 
     /**
@@ -617,7 +617,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param method method instance
      */
     protected final void addFunction(String name, Method method) {
-        this.functions.put(name, method);
+        functions.put(name, method);
     }
 
     /*
@@ -627,7 +627,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      */
     @Override
     public boolean containsNamespace(String ns, Tag t) {
-        return this.namespace.equals(ns);
+        return namespace.equals(ns);
     }
 
     /*
@@ -637,8 +637,8 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      */
     @Override
     public boolean containsTagHandler(String ns, String localName) {
-        if (this.namespace.equals(ns)) {
-            if (this.factories.containsKey(localName)) {
+        if (namespace.equals(ns)) {
+            if (factories.containsKey(localName)) {
                 return true;
             }
         }
@@ -652,8 +652,8 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      */
     @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
-        if (this.namespace.equals(ns)) {
-            TagHandlerFactory f = (TagHandlerFactory) this.factories.get(localName);
+        if (namespace.equals(ns)) {
+            TagHandlerFactory f = (TagHandlerFactory) factories.get(localName);
             if (f != null) {
                 return f.createHandler(tag);
             }
@@ -668,8 +668,8 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      */
     @Override
     public boolean containsFunction(String ns, String name) {
-        if (this.namespace.equals(ns)) {
-            return this.functions.containsKey(name);
+        if (namespace.equals(ns)) {
+            return functions.containsKey(name);
         }
         return false;
     }
@@ -681,8 +681,8 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      */
     @Override
     public Method createFunction(String ns, String name) {
-        if (this.namespace.equals(ns)) {
-            return (Method) this.functions.get(name);
+        if (namespace.equals(ns)) {
+            return (Method) functions.get(name);
         }
         return null;
     }
@@ -694,7 +694,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      */
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof TagLibrary && obj.hashCode() == this.hashCode());
+        return (obj instanceof TagLibrary && obj.hashCode() == hashCode());
     }
 
     /*
@@ -704,7 +704,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      */
     @Override
     public int hashCode() {
-        return this.namespace.hashCode();
+        return namespace.hashCode();
     }
 
     public String getNamespace() {

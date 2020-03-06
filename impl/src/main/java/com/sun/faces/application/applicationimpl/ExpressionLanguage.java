@@ -75,7 +75,7 @@ public class ExpressionLanguage {
     private Version version = new Version();
 
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
 
         propertyResolver = new PropertyResolverImpl();
         variableResolver = new VariableResolverImpl();

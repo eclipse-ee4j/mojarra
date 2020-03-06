@@ -48,7 +48,7 @@ public final class IndexedValueExpression extends ValueExpression {
      */
     @Override
     public Object getValue(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().getValue(context, base, i);
@@ -63,7 +63,7 @@ public final class IndexedValueExpression extends ValueExpression {
      */
     @Override
     public void setValue(ELContext context, Object value) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             context.getELResolver().setValue(context, base, i, value);
@@ -77,7 +77,7 @@ public final class IndexedValueExpression extends ValueExpression {
      */
     @Override
     public boolean isReadOnly(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().isReadOnly(context, base, i);
@@ -92,7 +92,7 @@ public final class IndexedValueExpression extends ValueExpression {
      */
     @Override
     public Class getType(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().getType(context, base, i);
@@ -117,7 +117,7 @@ public final class IndexedValueExpression extends ValueExpression {
      */
     @Override
     public String getExpressionString() {
-        return this.orig.getExpressionString();
+        return orig.getExpressionString();
     }
 
     /*
@@ -127,7 +127,7 @@ public final class IndexedValueExpression extends ValueExpression {
      */
     @Override
     public boolean equals(Object obj) {
-        return this.orig.equals(obj);
+        return orig.equals(obj);
     }
 
     /*
@@ -137,7 +137,7 @@ public final class IndexedValueExpression extends ValueExpression {
      */
     @Override
     public int hashCode() {
-        return this.orig.hashCode();
+        return orig.hashCode();
     }
 
     /*

@@ -50,15 +50,15 @@ public class LibraryInfo {
     }
 
     LibraryInfo(LibraryInfo other, boolean copyLocalePrefix) {
-        this.name = other.name;
-        this.version = other.version;
+        name = other.name;
+        version = other.version;
         if (copyLocalePrefix) {
-            this.contract = other.contract;
+            contract = other.contract;
 
             // http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-548 http://java.net/jira/browse/JAVASERVERFACES-2348
-            this.localePrefix = other.localePrefix;
+            localePrefix = other.localePrefix;
         }
-        this.helper = other.helper;
+        helper = other.helper;
         initPath();
     }
 
@@ -74,19 +74,19 @@ public class LibraryInfo {
             return true;
         }
         final LibraryInfo other = (LibraryInfo) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+        if ((name == null) ? (other.name != null) : !name.equals(other.name)) {
             return false;
         }
-        if (this.version != other.version && (this.version == null || !this.version.equals(other.version))) {
+        if (version != other.version && (version == null || !version.equals(other.version))) {
             return false;
         }
-        if ((this.localePrefix == null) ? (other.localePrefix != null) : !this.localePrefix.equals(other.localePrefix)) {
+        if ((localePrefix == null) ? (other.localePrefix != null) : !localePrefix.equals(other.localePrefix)) {
             return false;
         }
-        if ((this.contract == null) ? (other.contract != null) : !this.contract.equals(other.contract)) {
+        if ((contract == null) ? (other.contract != null) : !contract.equals(other.contract)) {
             return false;
         }
-        if ((this.path == null) ? (other.path != null) : !this.path.equals(other.path)) {
+        if ((path == null) ? (other.path != null) : !path.equals(other.path)) {
             return false;
         }
         return true;
@@ -95,11 +95,11 @@ public class LibraryInfo {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 37 * hash + (this.version != null ? this.version.hashCode() : 0);
-        hash = 37 * hash + (this.localePrefix != null ? this.localePrefix.hashCode() : 0);
-        hash = 37 * hash + (this.contract != null ? this.contract.hashCode() : 0);
-        hash = 37 * hash + (this.path != null ? this.path.hashCode() : 0);
+        hash = 37 * hash + (name != null ? name.hashCode() : 0);
+        hash = 37 * hash + (version != null ? version.hashCode() : 0);
+        hash = 37 * hash + (localePrefix != null ? localePrefix.hashCode() : 0);
+        hash = 37 * hash + (contract != null ? contract.hashCode() : 0);
+        hash = 37 * hash + (path != null ? path.hashCode() : 0);
         return hash;
     }
 

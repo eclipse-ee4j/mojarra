@@ -101,7 +101,7 @@ public class FacesException extends RuntimeException {
     @Override
     public Throwable getCause() {
 
-        return (this.cause);
+        return (cause);
 
     }
 

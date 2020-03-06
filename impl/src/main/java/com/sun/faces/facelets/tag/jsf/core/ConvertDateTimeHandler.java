@@ -56,12 +56,12 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
      */
     public ConvertDateTimeHandler(ConverterConfig config) {
         super(config);
-        this.dateStyle = this.getAttribute("dateStyle");
-        this.locale = this.getAttribute("locale");
-        this.pattern = this.getAttribute("pattern");
-        this.timeStyle = this.getAttribute("timeStyle");
-        this.timeZone = this.getAttribute("timeZone");
-        this.type = this.getAttribute("type");
+        dateStyle = getAttribute("dateStyle");
+        locale = getAttribute("locale");
+        pattern = getAttribute("pattern");
+        timeStyle = getAttribute("timeStyle");
+        timeZone = getAttribute("timeZone");
+        type = getAttribute("type");
     }
 
     /**
@@ -80,34 +80,34 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
     @Override
     public void setAttributes(FaceletContext ctx, Object obj) {
         DateTimeConverter c = (DateTimeConverter) obj;
-        if (this.locale != null) {
-            c.setLocale(ComponentSupport.getLocale(ctx, this.locale));
+        if (locale != null) {
+            c.setLocale(ComponentSupport.getLocale(ctx, locale));
         }
-        if (this.pattern != null) {
-            c.setPattern(this.pattern.getValue(ctx));
+        if (pattern != null) {
+            c.setPattern(pattern.getValue(ctx));
             // JAVASERVERFACES_SPEC_PUBLIC-1370 Allow pattern and type to co-exist
             // for java.time values
-            if (this.type != null) {
-                String typeStr = this.type.getValue(ctx);
+            if (type != null) {
+                String typeStr = type.getValue(ctx);
                 if (isJavaTimeType(typeStr)) {
                     c.setType(typeStr);
                 }
             }
 
         } else {
-            if (this.type != null) {
-                c.setType(this.type.getValue(ctx));
+            if (type != null) {
+                c.setType(type.getValue(ctx));
             }
-            if (this.dateStyle != null) {
-                c.setDateStyle(this.dateStyle.getValue(ctx));
+            if (dateStyle != null) {
+                c.setDateStyle(dateStyle.getValue(ctx));
             }
-            if (this.timeStyle != null) {
-                c.setTimeStyle(this.timeStyle.getValue(ctx));
+            if (timeStyle != null) {
+                c.setTimeStyle(timeStyle.getValue(ctx));
             }
         }
 
-        if (this.timeZone != null) {
-            Object t = this.timeZone.getObject(ctx);
+        if (timeZone != null) {
+            Object t = timeZone.getObject(ctx);
             if (t != null) {
                 if (t instanceof TimeZone) {
                     c.setTimeZone((TimeZone) t);
@@ -115,7 +115,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
                     TimeZone tz = TimeZone.getTimeZone((String) t);
                     c.setTimeZone(tz);
                 } else {
-                    throw new TagAttributeException(this.tag, this.timeZone,
+                    throw new TagAttributeException(tag, timeZone,
                             "Illegal TimeZone, must evaluate to either a java.util.TimeZone or String, is type: " + t.getClass());
                 }
             }

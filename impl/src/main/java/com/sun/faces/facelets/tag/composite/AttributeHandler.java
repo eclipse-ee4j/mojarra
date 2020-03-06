@@ -52,7 +52,7 @@ public class AttributeHandler extends TagHandlerImpl {
 
     public AttributeHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
+        name = getRequiredAttribute("name");
     }
 
     @Override
@@ -91,7 +91,7 @@ public class AttributeHandler extends TagHandlerImpl {
 
         TagAttribute defaultTagAttribute = null;
         PropertyHandler defaultHandler = null;
-        for (TagAttribute tagAttribute : this.tag.getAttributes().getAll()) {
+        for (TagAttribute tagAttribute : tag.getAttributes().getAll()) {
             String attributeName = tagAttribute.getLocalName();
             if ("default".equals(attributeName)) {
                 // store the TagAttribute and the PropertyHandler for later
@@ -123,7 +123,7 @@ public class AttributeHandler extends TagHandlerImpl {
             }
         }
 
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
 
     }
 
@@ -145,14 +145,14 @@ public class AttributeHandler extends TagHandlerImpl {
                         try {
                             result = ReflectionUtil.forName(classStr);
 
-                            this.setValue(attributeName, result);
+                            setValue(attributeName, result);
                         } catch (ClassNotFoundException ex) {
                             classStr = "java.lang." + classStr;
                             boolean throwException = false;
                             try {
                                 result = ReflectionUtil.forName(classStr);
 
-                                this.setValue(attributeName, result);
+                                setValue(attributeName, result);
                             } catch (ClassNotFoundException ex2) {
                                 throwException = true;
                             }

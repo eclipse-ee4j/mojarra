@@ -124,7 +124,7 @@ public class AttributeTag extends TagSupport {
 
     @Override
     public int doEndTag() throws JspException {
-        this.release();
+        release();
         return (EVAL_PAGE);
     }
 
@@ -135,8 +135,8 @@ public class AttributeTag extends TagSupport {
     @Override
     public void release() {
 
-        this.name = null;
-        this.value = null;
+        name = null;
+        value = null;
     }
 
 }

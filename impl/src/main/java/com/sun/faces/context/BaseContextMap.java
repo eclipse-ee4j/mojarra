@@ -149,7 +149,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         @Override
         public boolean contains(Object o) {
-            return BaseContextMap.this.containsKey(o);
+            return containsKey(o);
         }
 
         @Override

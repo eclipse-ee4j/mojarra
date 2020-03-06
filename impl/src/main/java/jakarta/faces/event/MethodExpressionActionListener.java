@@ -73,7 +73,7 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
         this.methodExpressionOneArg = methodExpressionOneArg;
         FacesContext context = FacesContext.getCurrentInstance();
         ELContext elContext = context.getELContext();
-        this.methodExpressionZeroArg = context.getApplication().getExpressionFactory().createMethodExpression(elContext,
+        methodExpressionZeroArg = context.getApplication().getExpressionFactory().createMethodExpression(elContext,
                 methodExpressionOneArg.getExpressionString(), Void.class, ACTION_LISTENER_ZEROARG_SIG);
 
     }

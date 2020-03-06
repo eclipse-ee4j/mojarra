@@ -378,7 +378,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
         public Group(FacesContext context, String clientName) {
             this.clientName = clientName;
-            this.clientIds = new ArrayList<>();
+            clientIds = new ArrayList<>();
         }
 
         public String getClientName() {

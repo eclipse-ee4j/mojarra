@@ -40,17 +40,17 @@ public final class InsertHandler extends TagHandlerImpl implements TemplateClien
      */
     public InsertHandler(TagConfig config) {
         super(config);
-        TagAttribute attr = this.getAttribute("name");
+        TagAttribute attr = getAttribute("name");
         if (attr != null) {
             if (!attr.isLiteral()) {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                this.name = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
+                name = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
             } else {
-                this.name = attr.getValue();
+                name = attr.getValue();
             }
         } else {
-            this.name = null;
+            name = null;
         }
     }
 
@@ -66,19 +66,19 @@ public final class InsertHandler extends TagHandlerImpl implements TemplateClien
         ctx.extendClient(this);
         boolean found = false;
         try {
-            found = ctx.includeDefinition(parent, this.name);
+            found = ctx.includeDefinition(parent, name);
         } finally {
             ctx.popClient(this);
         }
         if (!found) {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         }
     }
 
     @Override
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
         if (this.name != null && this.name.equals(name)) {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
             return true;
         }
         return false;

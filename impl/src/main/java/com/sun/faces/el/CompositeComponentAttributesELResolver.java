@@ -291,11 +291,11 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         ExpressionEvalMap(FacesContext ctx, UIComponent cc) {
 
             this.cc = cc;
-            this.attributesMap = cc.getAttributes();
-            BeanInfo metadata = (BeanInfo) this.attributesMap.get(UIComponent.BEANINFO_KEY);
+            attributesMap = cc.getAttributes();
+            BeanInfo metadata = (BeanInfo) attributesMap.get(UIComponent.BEANINFO_KEY);
             if (null != metadata) {
-                this.declaredAttributes = metadata.getPropertyDescriptors();
-                this.declaredDefaultValues = new HashMap<>(5);
+                declaredAttributes = metadata.getPropertyDescriptors();
+                declaredDefaultValues = new HashMap<>(5);
             }
             this.ctx = ctx;
 

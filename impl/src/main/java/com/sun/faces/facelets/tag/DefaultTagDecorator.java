@@ -62,9 +62,9 @@ class DefaultTagDecorator implements TagDecorator {
 
         private Mapper(final ElementConverter... elementConverters) {
             if (elementConverters.length == 1) {
-                this.elementConverter = elementConverters[0];
+                elementConverter = elementConverters[0];
             } else {
-                this.elementConverter = new ElementConverter() {
+                elementConverter = new ElementConverter() {
                     @Override
                     public Tag decorate(Tag tag) {
                         for (ElementConverter converter : elementConverters) {
@@ -145,13 +145,13 @@ class DefaultTagDecorator implements TagDecorator {
 
         private ElementConverter(String faceletsTag, String arbiterAttributeName) {
             String[] strings = faceletsTag.split(":");
-            this.namespace = Namespace.valueOf(strings[0]);
-            this.localName = strings[1];
+            namespace = Namespace.valueOf(strings[0]);
+            localName = strings[1];
             this.arbiterAttributeName = arbiterAttributeName;
 
             if (arbiterAttributeName != null && arbiterAttributeName.indexOf(':') > 0) {
                 strings = arbiterAttributeName.split(":");
-                this.arbiterAttributeNamespace = Namespace.valueOf(strings[0]).uri;
+                arbiterAttributeNamespace = Namespace.valueOf(strings[0]).uri;
                 this.arbiterAttributeName = strings[1];
             }
         }
@@ -188,7 +188,7 @@ class DefaultTagDecorator implements TagDecorator {
             String myLocalName = additionalMappings.get(arbiterAttribute.getValue());
 
             if (myLocalName == null) {
-                myLocalName = this.localName;
+                myLocalName = localName;
             }
 
             return convertTag(tag, namespace, myLocalName);

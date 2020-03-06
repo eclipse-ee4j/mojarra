@@ -151,8 +151,8 @@ public class SetPropertyActionListenerTag extends TagSupport {
     @Override
     public void release() {
 
-        this.value = null;
-        this.target = null;
+        value = null;
+        target = null;
 
     }
 

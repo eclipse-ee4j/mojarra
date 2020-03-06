@@ -70,7 +70,7 @@ public class UpdateModelException extends FacesException {
 
     public FacesMessage getFacesMessage() {
 
-        return this.facesMessage;
+        return facesMessage;
 
     }
 

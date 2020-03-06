@@ -56,12 +56,12 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
             @Override
             public Object getKey() {
-                return this.key;
+                return key;
             }
 
             @Override
             public Object getValue() {
-                return this.value;
+                return value;
             }
 
             @Override
@@ -71,12 +71,12 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
             @Override
             public int hashCode() {
-                return this.key.hashCode();
+                return key.hashCode();
             }
 
             @Override
             public boolean equals(Object obj) {
-                return (obj instanceof ResourceEntry && this.hashCode() == obj.hashCode());
+                return (obj instanceof ResourceEntry && hashCode() == obj.hashCode());
             }
         }
 
@@ -108,12 +108,12 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public Set entrySet() {
-            Enumeration e = this.bundle.getKeys();
+            Enumeration e = bundle.getKeys();
             Set s = new HashSet();
             String k;
             while (e.hasMoreElements()) {
                 k = (String) e.nextElement();
-                s.add(new ResourceEntry(k, this.bundle.getString(k)));
+                s.add(new ResourceEntry(k, bundle.getString(k)));
             }
             return s;
         }
@@ -121,7 +121,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         @Override
         public Object get(Object key) {
             try {
-                return this.bundle.getObject((String) key);
+                return bundle.getObject((String) key);
             } catch (java.util.MissingResourceException mre) {
                 return "???" + key + "???";
             }
@@ -134,7 +134,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public Set keySet() {
-            Enumeration e = this.bundle.getKeys();
+            Enumeration e = bundle.getKeys();
             Set s = new HashSet();
             while (e.hasMoreElements()) {
                 s.add(e.nextElement());
@@ -159,15 +159,15 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public int size() {
-            return this.keySet().size();
+            return keySet().size();
         }
 
         @Override
         public Collection values() {
-            Enumeration e = this.bundle.getKeys();
+            Enumeration e = bundle.getKeys();
             Set s = new HashSet();
             while (e.hasMoreElements()) {
-                s.add(this.bundle.getObject((String) e.nextElement()));
+                s.add(bundle.getObject((String) e.nextElement()));
             }
             return s;
         }
@@ -182,8 +182,8 @@ public final class LoadBundleHandler extends TagHandlerImpl {
      */
     public LoadBundleHandler(TagConfig config) {
         super(config);
-        this.basename = this.getRequiredAttribute("basename");
-        this.var = this.getRequiredAttribute("var");
+        basename = getRequiredAttribute("basename");
+        var = getRequiredAttribute("var");
     }
 
     /**
@@ -194,7 +194,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
         ResourceBundle bundle = null;
         try {
-            String name = this.basename.getValue(ctx);
+            String name = basename.getValue(ctx);
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             if (root != null && root.getLocale() != null) {
                 bundle = ResourceBundle.getBundle(name, root.getLocale(), cl);
@@ -202,10 +202,10 @@ public final class LoadBundleHandler extends TagHandlerImpl {
                 bundle = ResourceBundle.getBundle(name, Locale.getDefault(), cl);
             }
         } catch (Exception e) {
-            throw new TagAttributeException(this.tag, this.basename, e);
+            throw new TagAttributeException(tag, basename, e);
         }
         ResourceBundleMap map = new ResourceBundleMap(bundle);
         FacesContext faces = ctx.getFacesContext();
-        faces.getExternalContext().getRequestMap().put(this.var.getValue(ctx), map);
+        faces.getExternalContext().getRequestMap().put(var.getValue(ctx), map);
     }
 }

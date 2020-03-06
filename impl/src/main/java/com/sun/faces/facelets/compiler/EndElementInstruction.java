@@ -43,14 +43,14 @@ final class EndElementInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-        if (HEAD_ELEMENT.equalsIgnoreCase(this.element)) {
+        if (HEAD_ELEMENT.equalsIgnoreCase(element)) {
             warnUnhandledResources(context, HEAD_ELEMENT);
         }
-        if (BODY_ELEMENT.equalsIgnoreCase(this.element)) {
+        if (BODY_ELEMENT.equalsIgnoreCase(element)) {
             warnUnhandledResources(context, BODY_ELEMENT);
             RenderKitUtils.renderUnhandledMessages(context);
         }
-        context.getResponseWriter().endElement(this.element);
+        context.getResponseWriter().endElement(element);
     }
 
     @Override

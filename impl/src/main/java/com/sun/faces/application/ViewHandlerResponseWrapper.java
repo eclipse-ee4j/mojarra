@@ -110,7 +110,7 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public void flushContentToWrappedResponse() throws IOException {
-        ServletResponse wrapped = this.getResponse();
+        ServletResponse wrapped = getResponse();
         if (null != caw) {
             pw.flush();
             caw.writeTo(wrapped.getWriter());

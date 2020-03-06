@@ -75,7 +75,7 @@ class MethodBindingValueChangeListener extends MethodBindingAdapterBase implemen
             FacesContext context = FacesContext.getCurrentInstance();
             methodBinding.invoke(context, new Object[] { actionEvent });
         } catch (EvaluationException ee) {
-            Throwable cause = this.getExpectedCause(AbortProcessingException.class, ee);
+            Throwable cause = getExpectedCause(AbortProcessingException.class, ee);
             if (cause instanceof AbortProcessingException) {
                 throw ((AbortProcessingException) cause);
             }

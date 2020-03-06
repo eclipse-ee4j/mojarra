@@ -312,7 +312,7 @@ public class UIViewParameter extends UIInput {
                     // if they are not submitted. I'm not sure if that's
                     // correct, but let's put this in and see how
                     // the community responds.
-                    this.setSubmittedValue("");
+                    setSubmittedValue("");
                 }
                 break;
             }
@@ -498,7 +498,7 @@ public class UIViewParameter extends UIInput {
          * @since 2.0
          */
         public Reference(FacesContext context, UIViewParameter param, int indexInParent, String viewIdAtTimeOfConstruction) {
-            this.saver = new StateHolderSaver(context, param);
+            saver = new StateHolderSaver(context, param);
             this.indexInParent = indexInParent;
             this.viewIdAtTimeOfConstruction = viewIdAtTimeOfConstruction;
         }
@@ -520,13 +520,13 @@ public class UIViewParameter extends UIInput {
             UIViewParameter result = null;
             UIViewRoot root = context.getViewRoot();
             // If the view root is the same as when we were constructed...
-            if (this.viewIdAtTimeOfConstruction.equals(root.getViewId())) {
+            if (viewIdAtTimeOfConstruction.equals(root.getViewId())) {
                 // get the actual view parameter from the tree...
                 UIComponent metadataFacet = root.getFacet(UIViewRoot.METADATA_FACET_NAME);
                 result = (UIViewParameter) metadataFacet.getChildren().get(indexInParent);
             } else {
                 // otherwise, use the saved one
-                result = (UIViewParameter) this.saver.restore(context);
+                result = (UIViewParameter) saver.restore(context);
             }
 
             return result;

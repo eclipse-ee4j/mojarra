@@ -65,7 +65,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
      */
     public ResetValuesHandler(TagConfig config) {
         super(config);
-        this.render = this.getAttribute("render");
+        render = getAttribute("render");
     }
 
     @Override

@@ -70,7 +70,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
     public ExceptionHandlerImpl() {
 
-        this.errorPagePresent = true;
+        errorPagePresent = true;
 
     }
 

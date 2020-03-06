@@ -99,8 +99,8 @@ public class ValidatorTag extends AbstractValidatorTag {
             }
             this.state = (Object[]) state;
             if (this.state != null) {
-                this.validatorId = (ValueExpression) this.state[0];
-                this.binding = (ValueExpression) this.state[1];
+                validatorId = (ValueExpression) this.state[0];
+                binding = (ValueExpression) this.state[1];
             }
 
         }

@@ -68,9 +68,9 @@ public abstract class TagHandler implements FaceletHandler {
      */
 
     public TagHandler(TagConfig config) {
-        this.tagId = config.getTagId();
-        this.tag = config.getTag();
-        this.nextHandler = config.getNextHandler();
+        tagId = config.getTagId();
+        tag = config.getTag();
+        nextHandler = config.getNextHandler();
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class TagHandler implements FaceletHandler {
      * @return TagAttribute if found, otherwise null
      */
     protected final TagAttribute getAttribute(String localName) {
-        return this.tag.getAttributes().get(localName);
+        return tag.getAttributes().get(localName);
     }
 
     /**
@@ -91,15 +91,15 @@ public abstract class TagHandler implements FaceletHandler {
      * @throws TagException if the attribute was not found
      */
     protected final TagAttribute getRequiredAttribute(String localName) throws TagException {
-        TagAttribute attr = this.getAttribute(localName);
+        TagAttribute attr = getAttribute(localName);
         if (attr == null) {
-            throw new TagException(this.tag, "Attribute '" + localName + "' is required");
+            throw new TagException(tag, "Attribute '" + localName + "' is required");
         }
         return attr;
     }
 
     @Override
     public String toString() {
-        return this.tag.toString();
+        return tag.toString();
     }
 }

@@ -79,10 +79,10 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     public ComponentTagHandlerDelegateImpl(ComponentHandler owner) {
         this.owner = owner;
         ComponentConfig config = owner.getComponentConfig();
-        this.componentType = config.getComponentType();
-        this.rendererType = config.getRendererType();
-        this.id = owner.getTagAttribute("id");
-        this.binding = owner.getTagAttribute("binding");
+        componentType = config.getComponentType();
+        rendererType = config.getRendererType();
+        id = owner.getTagAttribute("id");
+        binding = owner.getTagAttribute("binding");
 
     }
 
@@ -149,7 +149,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             // hook method
             c = owner.createComponent(ctx);
             if (c == null) {
-                c = this.createComponent(ctx);
+                c = createComponent(ctx);
             }
 
             doNewComponentActions(ctx, id, c);
@@ -163,7 +163,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         boolean compcompPushed = pushComponentToEL(ctx, c, ccStackManager);
 
         if (ProjectStage.Development == context.getApplication().getProjectStage()) {
-            ComponentSupport.setTagForComponent(context, c, this.owner.getTag());
+            ComponentSupport.setTagForComponent(context, c, owner.getTag());
         }
 
         // If this this a naming container, stop generating unique Ids
@@ -188,7 +188,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             doOrphanedChildCleanup(ctx, parent, c, parentModified);
         }
 
-        this.privateOnComponentPopulated(ctx, c);
+        privateOnComponentPopulated(ctx, c);
         owner.onComponentPopulated(ctx, c, parent);
         // add to the tree afterwards
         // this allows children to determine if it's
@@ -399,8 +399,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         }
 
-        if (this.rendererType != null) {
-            c.setRendererType(this.rendererType);
+        if (rendererType != null) {
+            c.setRendererType(rendererType);
         }
 
     }
@@ -473,7 +473,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     // ------------------------------------------------- Package Private Methods
 
     void setCreateCompositeComponentDelegate(CreateComponentDelegate createComponentDelegate) {
-        this.createCompositeComponentDelegate = createComponentDelegate;
+        createCompositeComponentDelegate = createComponentDelegate;
     }
 
     /**
@@ -496,15 +496,15 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         UIComponent c;
         FacesContext faces = ctx.getFacesContext();
         Application app = faces.getApplication();
-        if (this.binding != null) {
-            ValueExpression ve = this.binding.getValueExpression(ctx, Object.class);
-            c = app.createComponent(ve, faces, this.componentType, this.rendererType);
+        if (binding != null) {
+            ValueExpression ve = binding.getValueExpression(ctx, Object.class);
+            c = app.createComponent(ve, faces, componentType, rendererType);
             if (c != null) {
                 // Make sure the component supports 1.2
                 c.setValueExpression("binding", ve);
             }
         } else {
-            c = app.createComponent(faces, this.componentType, this.rendererType);
+            c = app.createComponent(faces, componentType, rendererType);
         }
         return c;
     }

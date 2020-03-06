@@ -165,7 +165,7 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     @Override
     public void setPartialRequest(boolean isPartialRequest) {
-        this.partialRequest = isPartialRequest;
+        partialRequest = isPartialRequest;
     }
 
     /**
@@ -310,9 +310,9 @@ public class PartialViewContextImpl extends PartialViewContext {
 
                 writer.endDocument();
             } catch (IOException ex) {
-                this.cleanupAfterView();
+                cleanupAfterView();
             } catch (RuntimeException ex) {
-                this.cleanupAfterView();
+                cleanupAfterView();
                 // Throw the exception
                 throw ex;
             }

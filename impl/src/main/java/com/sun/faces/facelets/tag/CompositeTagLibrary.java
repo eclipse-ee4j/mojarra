@@ -48,7 +48,7 @@ public final class CompositeTagLibrary implements TagLibrary {
     public CompositeTagLibrary(TagLibrary[] libraries, CompilationMessageHolder unit) {
         Util.notNull("libraries", libraries);
         this.libraries = libraries;
-        this.messageHolder = unit;
+        messageHolder = unit;
     }
 
     public CompositeTagLibrary(TagLibrary[] libraries) {
@@ -63,8 +63,8 @@ public final class CompositeTagLibrary implements TagLibrary {
     @Override
     public boolean containsNamespace(String ns, Tag t) {
         boolean result = true;
-        for (int i = 0; i < this.libraries.length; i++) {
-            if (this.libraries[i].containsNamespace(ns, null)) {
+        for (int i = 0; i < libraries.length; i++) {
+            if (libraries[i].containsNamespace(ns, null)) {
                 return true;
             }
         }
@@ -81,9 +81,9 @@ public final class CompositeTagLibrary implements TagLibrary {
         }
         if (null != toTest) {
             TagLibrary[] librariesPlusOne = new TagLibrary[libraries.length + 1];
-            System.arraycopy(this.libraries, 0, librariesPlusOne, 0, libraries.length);
+            System.arraycopy(libraries, 0, librariesPlusOne, 0, libraries.length);
             librariesPlusOne[libraries.length] = toTest;
-            for (int i = 0; i < this.libraries.length; i++) {
+            for (int i = 0; i < libraries.length; i++) {
                 libraries[i] = null;
             }
             libraries = librariesPlusOne;
@@ -96,10 +96,10 @@ public final class CompositeTagLibrary implements TagLibrary {
                     // EMPTY_LIBRARY class variable of the Compiler class.
                     // This code will never be called on that CompositeTagLibrary
                     // instance.
-                    assert (null != this.messageHolder);
+                    assert (null != messageHolder);
                     String prefix = getPrefixFromTag(t);
                     if (null != prefix) {
-                        List<FacesMessage> prefixMessages = this.messageHolder.getNamespacePrefixMessages(context, prefix);
+                        List<FacesMessage> prefixMessages = messageHolder.getNamespacePrefixMessages(context, prefix);
                         prefixMessages.add(new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning: This page calls for XML namespace " + ns
                                 + " declared with prefix " + prefix + " but no taglibrary exists for that namespace.", ""));
                     }
@@ -127,8 +127,8 @@ public final class CompositeTagLibrary implements TagLibrary {
      */
     @Override
     public boolean containsTagHandler(String ns, String localName) {
-        for (int i = 0; i < this.libraries.length; i++) {
-            if (this.libraries[i].containsTagHandler(ns, localName)) {
+        for (int i = 0; i < libraries.length; i++) {
+            if (libraries[i].containsTagHandler(ns, localName)) {
                 return true;
             }
         }
@@ -143,9 +143,9 @@ public final class CompositeTagLibrary implements TagLibrary {
      */
     @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
-        for (int i = 0; i < this.libraries.length; i++) {
-            if (this.libraries[i].containsTagHandler(ns, localName)) {
-                return this.libraries[i].createTagHandler(ns, localName, tag);
+        for (int i = 0; i < libraries.length; i++) {
+            if (libraries[i].containsTagHandler(ns, localName)) {
+                return libraries[i].createTagHandler(ns, localName, tag);
             }
         }
         return null;
@@ -158,8 +158,8 @@ public final class CompositeTagLibrary implements TagLibrary {
      */
     @Override
     public boolean containsFunction(String ns, String name) {
-        for (int i = 0; i < this.libraries.length; i++) {
-            if (this.libraries[i].containsFunction(ns, name)) {
+        for (int i = 0; i < libraries.length; i++) {
+            if (libraries[i].containsFunction(ns, name)) {
                 return true;
             }
         }
@@ -173,9 +173,9 @@ public final class CompositeTagLibrary implements TagLibrary {
      */
     @Override
     public Method createFunction(String ns, String name) {
-        for (int i = 0; i < this.libraries.length; i++) {
-            if (this.libraries[i].containsFunction(ns, name)) {
-                return this.libraries[i].createFunction(ns, name);
+        for (int i = 0; i < libraries.length; i++) {
+            if (libraries[i].containsFunction(ns, name)) {
+                return libraries[i].createFunction(ns, name);
             }
         }
         return null;

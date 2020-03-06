@@ -192,7 +192,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public String getDateStyle() {
 
-        return (this.dateStyle);
+        return (dateStyle);
 
     }
 
@@ -222,10 +222,10 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public Locale getLocale() {
 
-        if (this.locale == null) {
-            this.locale = getLocale(FacesContext.getCurrentInstance());
+        if (locale == null) {
+            locale = getLocale(FacesContext.getCurrentInstance());
         }
-        return (this.locale);
+        return (locale);
 
     }
 
@@ -254,7 +254,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public String getPattern() {
 
-        return (this.pattern);
+        return (pattern);
 
     }
 
@@ -284,7 +284,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public String getTimeStyle() {
 
-        return (this.timeStyle);
+        return (timeStyle);
 
     }
 
@@ -314,7 +314,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public TimeZone getTimeZone() {
 
-        return (this.timeZone);
+        return (timeZone);
 
     }
 
@@ -342,7 +342,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public String getType() {
 
-        return (this.type);
+        return (type);
 
     }
 
@@ -437,13 +437,13 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         private final TemporalQuery from;
 
         private FormatWrapper(DateFormat wrapped) {
-            this.df = wrapped;
-            this.dtf = null;
-            this.from = null;
+            df = wrapped;
+            dtf = null;
+            from = null;
         }
 
         private FormatWrapper(DateTimeFormatter dtf, TemporalQuery from) {
-            this.df = null;
+            df = null;
             this.dtf = dtf;
             this.from = from;
         }

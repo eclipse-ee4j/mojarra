@@ -41,7 +41,7 @@ public class SetPropertyActionListenerImpl implements ActionListener, StateHolde
     public SetPropertyActionListenerImpl(ValueExpression target, ValueExpression value) {
 
         this.target = target;
-        this.source = value;
+        source = value;
 
     }
 

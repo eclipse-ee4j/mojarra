@@ -411,7 +411,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     }
 
     private DocumentBuilder getBuilderForSchema(Schema schema) throws Exception {
-        this.factory = DbfFactory.getFactory();
+        factory = DbfFactory.getFactory();
 
         try {
             factory.setSchema(schema);

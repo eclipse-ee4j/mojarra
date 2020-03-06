@@ -49,8 +49,8 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
      */
     public PassThroughAttributeHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.value = this.getRequiredAttribute("value");
+        name = getRequiredAttribute("name");
+        value = getRequiredAttribute("value");
     }
 
     /*
@@ -61,7 +61,7 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
-            throw new TagException(this.tag, "Parent UIComponent was null");
+            throw new TagException(tag, "Parent UIComponent was null");
         }
 
         // only process if the parent is new to the tree
@@ -69,8 +69,8 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
             Map<String, Object> passThroughAttrs = parent.getPassThroughAttributes(true);
             String attrName;
             Object attrValue;
-            attrName = this.name.getValue(ctx);
-            attrValue = (this.value.isLiteral()) ? this.value.getValue(ctx) : this.value.getValueExpression(ctx, Object.class);
+            attrName = name.getValue(ctx);
+            attrValue = (value.isLiteral()) ? value.getValue(ctx) : value.getValueExpression(ctx, Object.class);
             passThroughAttrs.put(attrName, attrValue);
         }
     }
@@ -79,6 +79,6 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
     // implementation.
     @Override
     public String getAttributeName(FaceletContext ctxt) {
-        return this.name.getValue(ctxt);
+        return name.getValue(ctxt);
     }
 }

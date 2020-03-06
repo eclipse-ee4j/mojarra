@@ -347,38 +347,38 @@ public class GraphicImageTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this.url = null;
-        this.value = null;
+        url = null;
+        value = null;
 
         // rendered attributes
-        this.alt = null;
-        this.dir = null;
-        this.height = null;
-        this.ismap = null;
-        this.lang = null;
-        this.library = null;
-        this.longdesc = null;
-        this.name = null;
-        this.onclick = null;
-        this.ondblclick = null;
-        this.onkeydown = null;
-        this.onkeypress = null;
-        this.onkeyup = null;
-        this.onmousedown = null;
-        this.onmousemove = null;
-        this.onmouseout = null;
-        this.onmouseover = null;
-        this.onmouseup = null;
-        this.role = null;
-        this.style = null;
-        this.styleClass = null;
-        this.title = null;
-        this.usemap = null;
-        this.width = null;
+        alt = null;
+        dir = null;
+        height = null;
+        ismap = null;
+        lang = null;
+        library = null;
+        longdesc = null;
+        name = null;
+        onclick = null;
+        ondblclick = null;
+        onkeydown = null;
+        onkeypress = null;
+        onkeyup = null;
+        onmousedown = null;
+        onmousemove = null;
+        onmouseout = null;
+        onmouseover = null;
+        onmouseup = null;
+        role = null;
+        style = null;
+        styleClass = null;
+        title = null;
+        usemap = null;
+        width = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

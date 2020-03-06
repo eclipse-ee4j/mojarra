@@ -36,17 +36,17 @@ public final class UIInstructions extends UILeaf {
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        if (this.isRendered()) {
-            int size = this.instructions.length;
+        if (isRendered()) {
+            int size = instructions.length;
             for (int i = 0; i < size; i++) {
-                this.instructions[i].write(context);
+                instructions[i].write(context);
             }
         }
     }
 
     @Override
     public String toString() {
-        return (this.txt != null) ? this.txt.toString() : "UIInstructions[" + Arrays.asList(instructions) + "]";
+        return (txt != null) ? txt.toString() : "UIInstructions[" + Arrays.asList(instructions) + "]";
     }
 
 }

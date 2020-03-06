@@ -215,7 +215,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         @Override
         public Record get(final URL key) throws ExecutionException {
             try {
-                return this.getFactory().newInstance(key);
+                return getFactory().newInstance(key);
             } catch (Exception e) {
                 throw new ExecutionException(e);
             }

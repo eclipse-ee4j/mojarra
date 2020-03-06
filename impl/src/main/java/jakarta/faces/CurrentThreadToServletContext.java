@@ -342,11 +342,11 @@ final class CurrentThreadToServletContext {
             }
 
             final FactoryFinderCacheKey other = (FactoryFinderCacheKey) obj;
-            if (this.classLoader != other.classLoader && (this.classLoader == null || !this.classLoader.equals(other.classLoader))) {
+            if (classLoader != other.classLoader && (classLoader == null || !classLoader.equals(other.classLoader))) {
                 return false;
             }
 
-            if (this.marker != other.marker && (this.marker == null || !this.marker.equals(other.marker))) {
+            if (marker != other.marker && (marker == null || !marker.equals(other.marker))) {
                 return false;
             }
 
@@ -356,7 +356,7 @@ final class CurrentThreadToServletContext {
         @Override
         public int hashCode() {
             int hash = 7;
-            hash = 97 * hash + (classLoader != null ? this.classLoader.hashCode() : 0);
+            hash = 97 * hash + (classLoader != null ? classLoader.hashCode() : 0);
             return 97 * hash + (marker != null ? marker.hashCode() : 0);
         }
 

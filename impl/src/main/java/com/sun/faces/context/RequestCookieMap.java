@@ -39,7 +39,7 @@ public class RequestCookieMap extends BaseContextMap<Object> {
     // ------------------------------------------------------------ Constructors
 
     public RequestCookieMap(HttpServletRequest newRequest) {
-        this.request = newRequest;
+        request = newRequest;
     }
 
     // -------------------------------------------------------- Methods from Map

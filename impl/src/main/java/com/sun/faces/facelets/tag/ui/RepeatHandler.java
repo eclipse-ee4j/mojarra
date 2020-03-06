@@ -45,7 +45,7 @@ public class RepeatHandler extends ComponentHandler {
     @Override
     protected MetaRuleset createMetaRuleset(Class type) {
         MetaRuleset meta = super.createMetaRuleset(type);
-        String myNamespace = this.tag.getNamespace();
+        String myNamespace = tag.getNamespace();
 
         if ((!UILibrary.Namespace.equals(myNamespace)) && (!UILibrary.XMLNSNamespace.equals(myNamespace))) {
             meta.add(new TagMetaData(type));
@@ -82,7 +82,7 @@ public class RepeatHandler extends ComponentHandler {
                     log.log(Level.FINEST, "Unable to get bean info", e);
                 }
             }
-            this.attrs = (String[]) s.toArray(new String[s.size()]);
+            attrs = (String[]) s.toArray(new String[s.size()]);
         }
 
         @Override
@@ -90,8 +90,8 @@ public class RepeatHandler extends ComponentHandler {
             UIComponent c = (UIComponent) instance;
             Map localAttrs = c.getAttributes();
             localAttrs.put("alias.element", tag.getQName());
-            if (this.attrs.length > 0) {
-                localAttrs.put("alias.attributes", this.attrs);
+            if (attrs.length > 0) {
+                localAttrs.put("alias.attributes", attrs);
             }
         }
 

@@ -44,15 +44,15 @@ final class BeanPropertyTagRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             if (value == null) {
-                String str = this.attribute.getValue();
+                String str = attribute.getValue();
                 value = new Object[] { ctx.getExpressionFactory().coerceToType(str, method.getParameterTypes()[0]) };
             }
             try {
-                method.invoke(instance, this.value);
+                method.invoke(instance, value);
             } catch (InvocationTargetException e) {
-                throw new TagAttributeException(this.attribute, e.getCause());
+                throw new TagAttributeException(attribute, e.getCause());
             } catch (IllegalAccessException | IllegalArgumentException e) {
-                throw new TagAttributeException(this.attribute, e);
+                throw new TagAttributeException(attribute, e);
             }
         }
 
@@ -68,18 +68,18 @@ final class BeanPropertyTagRule extends MetaRule {
 
         public DynamicPropertyMetadata(Method method, TagAttribute attribute) {
             this.method = method;
-            this.type = method.getParameterTypes()[0];
+            type = method.getParameterTypes()[0];
             this.attribute = attribute;
         }
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             try {
-                this.method.invoke(instance, this.attribute.getObject(ctx, this.type));
+                method.invoke(instance, attribute.getObject(ctx, type));
             } catch (InvocationTargetException e) {
-                throw new TagAttributeException(this.attribute, e.getCause());
+                throw new TagAttributeException(attribute, e.getCause());
             } catch (IllegalAccessException | IllegalArgumentException e) {
-                throw new TagAttributeException(this.attribute, e);
+                throw new TagAttributeException(attribute, e);
             }
         }
     }

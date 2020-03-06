@@ -131,24 +131,24 @@ public class FlowImpl extends Flow implements Serializable {
             return false;
         }
         final Flow other = (Flow) obj;
-        if ((this.id == null) ? (other.getId() != null) : !this.id.equals(other.getId())) {
+        if ((id == null) ? (other.getId() != null) : !id.equals(other.getId())) {
             return false;
         }
-        if ((this.startNodeId == null) ? (other.getStartNodeId() != null) : !this.startNodeId.equals(other.getStartNodeId())) {
+        if ((startNodeId == null) ? (other.getStartNodeId() != null) : !startNodeId.equals(other.getStartNodeId())) {
             return false;
         }
-        if (this._views != other.getViews() && (this._views == null || !this._views.equals(other.getViews()))) {
+        if (_views != other.getViews() && (_views == null || !_views.equals(other.getViews()))) {
             return false;
         }
         FacesContext context = FacesContext.getCurrentInstance();
         if (null != context) {
-            if (this._returns != other.getReturns() && (this._returns == null || !this._returns.equals(other.getReturns()))) {
+            if (_returns != other.getReturns() && (_returns == null || !_returns.equals(other.getReturns()))) {
                 return false;
             }
-            if (this.initializer != other.getInitializer() && (this.initializer == null || !this.initializer.equals(other.getInitializer()))) {
+            if (initializer != other.getInitializer() && (initializer == null || !initializer.equals(other.getInitializer()))) {
                 return false;
             }
-            if (this.finalizer != other.getFinalizer() && (this.finalizer == null || !this.finalizer.equals(other.getFinalizer()))) {
+            if (finalizer != other.getFinalizer() && (finalizer == null || !finalizer.equals(other.getFinalizer()))) {
                 return false;
             }
         }
@@ -158,12 +158,12 @@ public class FlowImpl extends Flow implements Serializable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 59 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 59 * hash + (this.startNodeId != null ? this.startNodeId.hashCode() : 0);
-        hash = 59 * hash + (this._views != null ? this._views.hashCode() : 0);
-        hash = 59 * hash + (this._returns != null ? this._returns.hashCode() : 0);
-        hash = 59 * hash + (this.initializer != null ? this.initializer.hashCode() : 0);
-        hash = 59 * hash + (this.finalizer != null ? this.finalizer.hashCode() : 0);
+        hash = 59 * hash + (id != null ? id.hashCode() : 0);
+        hash = 59 * hash + (startNodeId != null ? startNodeId.hashCode() : 0);
+        hash = 59 * hash + (_views != null ? _views.hashCode() : 0);
+        hash = 59 * hash + (_returns != null ? _returns.hashCode() : 0);
+        hash = 59 * hash + (initializer != null ? initializer.hashCode() : 0);
+        hash = 59 * hash + (finalizer != null ? finalizer.hashCode() : 0);
         return hash;
     }
 
@@ -194,7 +194,7 @@ public class FlowImpl extends Flow implements Serializable {
     }
 
     public void setStartNodeId(String defaultNodeId) {
-        this.startNodeId = defaultNodeId;
+        startNodeId = defaultNodeId;
     }
 
     @Override
@@ -278,7 +278,7 @@ public class FlowImpl extends Flow implements Serializable {
         String targetFlowId = targetFlow.getId();
         if (!hasBeenInitialized) {
             FacesContext context = FacesContext.getCurrentInstance();
-            this.init(context);
+            init(context);
         }
         FlowCallNode result = _facesFlowCallsByTargetFlowId.get(targetFlowId);
 

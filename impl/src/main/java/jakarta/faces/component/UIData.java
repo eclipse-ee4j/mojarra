@@ -791,7 +791,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         if (null != name) {
             switch (name) {
             case "value":
-                this.model = null;
+                model = null;
                 break;
             case "var":
             case "rowIndex":
@@ -911,19 +911,19 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         boolean found = false;
         if (clientId.equals(myId)) {
             try {
-                this.pushComponentToEL(context, compositeParent);
+                pushComponentToEL(context, compositeParent);
                 callback.invokeContextCallback(context, this);
                 return true;
             } catch (Exception e) {
                 throw new FacesException(e);
             } finally {
-                this.popComponentFromEL(context);
+                popComponentFromEL(context);
             }
         }
 
         // check the facets, if any, of UIData
-        if (this.getFacetCount() > 0) {
-            for (UIComponent c : this.getFacets().values()) {
+        if (getFacetCount() > 0) {
+            for (UIComponent c : getFacets().values()) {
                 if (clientId.equals(c.getClientId(context))) {
                     callback.invokeContextCallback(context, c);
                     return true;
@@ -932,8 +932,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
         // check column level facets, if any
-        if (this.getChildCount() > 0) {
-            for (UIComponent column : this.getChildren()) {
+        if (getChildCount() > 0) {
+            for (UIComponent column : getChildren()) {
                 if (column instanceof UIColumn) {
                     if (column.getFacetCount() > 0) {
                         for (UIComponent facet : column.getFacets().values()) {
@@ -949,8 +949,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         /*
          * Check if we are looking for a component that is part of the actual skeleton.
          */
-        if (this.getChildCount() > 0) {
-            for (UIComponent column : this.getChildren()) {
+        if (getChildCount() > 0) {
+            for (UIComponent column : getChildren()) {
                 if (column instanceof UIColumn) {
                     if (column.invokeOnComponent(context, clientId, callback)) {
                         return true;
@@ -959,7 +959,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
 
-        int lastSep, newRow, savedRowIndex = this.getRowIndex();
+        int lastSep, newRow, savedRowIndex = getRowIndex();
         char sepChar = UINamingContainer.getSeparatorChar(context);
         // If we need to strip out the rowIndex from our id
         // PENDING(edburns): is this safe with respect to I18N?
@@ -989,8 +989,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                 String message = "Trying to extract rowIndex from clientId \'" + clientId + "\' " + ex.getMessage();
                                 throw new NumberFormatException(message);
                             }
-                            this.setRowIndex(newRow);
-                            if (this.isRowAvailable()) {
+                            setRowIndex(newRow);
+                            if (isRowAvailable()) {
                                 found = super.invokeOnComponent(context, clientId, callback);
                             }
                         }
@@ -1001,7 +1001,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             } catch (NumberFormatException e) {
                 throw new FacesException(e);
             } finally {
-                this.setRowIndex(savedRowIndex);
+                setRowIndex(savedRowIndex);
             }
         }
         return found;
@@ -1727,7 +1727,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     protected DataModel getDataModel() {
 
         // Return any previously cached DataModel instance
-        if (this.model != null) {
+        if (model != null) {
             return (model);
         }
 
@@ -1830,7 +1830,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
 
     protected void setDataModel(DataModel dataModel) {
-        this.model = dataModel;
+        model = dataModel;
     }
 
     // ---------------------------------------------------- Private Methods
@@ -2355,7 +2355,7 @@ class SavedState implements Serializable {
     private boolean submitted;
 
     Object getSubmittedValue() {
-        return (this.submittedValue);
+        return (submittedValue);
     }
 
     void setSubmittedValue(Object submittedValue) {
@@ -2365,7 +2365,7 @@ class SavedState implements Serializable {
     private boolean valid = true;
 
     boolean isValid() {
-        return (this.valid);
+        return (valid);
     }
 
     void setValid(boolean valid) {
@@ -2375,7 +2375,7 @@ class SavedState implements Serializable {
     private Object value;
 
     Object getValue() {
-        return (this.value);
+        return (value);
     }
 
     public void setValue(Object value) {
@@ -2385,7 +2385,7 @@ class SavedState implements Serializable {
     private boolean localValueSet;
 
     boolean isLocalValueSet() {
-        return (this.localValueSet);
+        return (localValueSet);
     }
 
     public void setLocalValueSet(boolean localValueSet) {
@@ -2393,7 +2393,7 @@ class SavedState implements Serializable {
     }
 
     public boolean getSubmitted() {
-        return this.submitted;
+        return submitted;
     }
 
     public void setSubmitted(boolean submitted) {
@@ -2426,21 +2426,21 @@ class WrapperEvent extends FacesEvent {
     private int rowIndex = -1;
 
     public FacesEvent getFacesEvent() {
-        return (this.event);
+        return (event);
     }
 
     public int getRowIndex() {
-        return (this.rowIndex);
+        return (rowIndex);
     }
 
     @Override
     public PhaseId getPhaseId() {
-        return (this.event.getPhaseId());
+        return (event.getPhaseId());
     }
 
     @Override
     public void setPhaseId(PhaseId phaseId) {
-        this.event.setPhaseId(phaseId);
+        event.setPhaseId(phaseId);
     }
 
     @Override

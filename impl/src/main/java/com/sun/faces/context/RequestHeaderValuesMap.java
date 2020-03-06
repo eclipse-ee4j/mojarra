@@ -54,7 +54,7 @@ public class RequestHeaderValuesMap extends StringArrayValuesMap {
         Util.notNull("key", key);
 
         List<String> valuesList = new ArrayList<>();
-        Enumeration valuesEnum = this.request.getHeaders(key.toString());
+        Enumeration valuesEnum = request.getHeaders(key.toString());
         while (valuesEnum.hasMoreElements()) {
             valuesList.add((String) valuesEnum.nextElement());
         }

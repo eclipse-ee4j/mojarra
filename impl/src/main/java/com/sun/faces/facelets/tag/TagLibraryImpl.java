@@ -71,7 +71,7 @@ public class TagLibraryImpl extends AbstractTagLibrary {
     public void putTagHandler(String name, Class type) {
         Util.notNull("name", name);
         Util.notNull("type", type);
-        this.addTagHandler(name, type);
+        addTagHandler(name, type);
     }
 
     public void putComponent(String name, String componentType, String rendererType) {
@@ -89,18 +89,18 @@ public class TagLibraryImpl extends AbstractTagLibrary {
     public void putUserTag(String name, URL source) {
         Util.notNull("name", name);
         Util.notNull("source", source);
-        this.addUserTag(name, source);
+        addUserTag(name, source);
     }
 
     public void putCompositeComponentTag(String name, String resourceId) {
         Util.notNull("name", name);
         Util.notNull("resourceId", resourceId);
-        this.addCompositeComponentTag(name, resourceId);
+        addCompositeComponentTag(name, resourceId);
     }
 
     public void putFunction(String name, Method method) {
         Util.notNull("name", name);
         Util.notNull("method", method);
-        this.addFunction(name, method);
+        addFunction(name, method);
     }
 }

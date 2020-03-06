@@ -34,7 +34,7 @@ public class ReturnNodeImpl extends ReturnNode implements Serializable {
 
     public ReturnNodeImpl(String id) {
         this.id = id;
-        this.fromOutcome = null;
+        fromOutcome = null;
     }
 
     @Override

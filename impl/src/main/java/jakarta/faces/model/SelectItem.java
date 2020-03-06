@@ -172,7 +172,7 @@ public class SelectItem implements Serializable {
      */
     public String getDescription() {
 
-        return (this.description);
+        return (description);
 
     }
 
@@ -199,7 +199,7 @@ public class SelectItem implements Serializable {
      */
     public boolean isDisabled() {
 
-        return (this.disabled);
+        return (disabled);
 
     }
 
@@ -225,7 +225,7 @@ public class SelectItem implements Serializable {
      */
     public String getLabel() {
 
-        return (this.label);
+        return (label);
 
     }
 
@@ -249,7 +249,7 @@ public class SelectItem implements Serializable {
      */
     public Object getValue() {
 
-        return (this.value);
+        return (value);
 
     }
 
@@ -278,7 +278,7 @@ public class SelectItem implements Serializable {
      * @since 2.0
      */
     public boolean isEscape() {
-        return this.escape;
+        return escape;
     }
 
     /**

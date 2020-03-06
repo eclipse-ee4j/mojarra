@@ -58,7 +58,7 @@ public class CollectionsUtils {
     public static class ConstMap<T, V> extends HashMap<T, V> {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 7233295794116070299L;
 

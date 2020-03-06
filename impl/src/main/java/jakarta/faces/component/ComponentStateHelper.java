@@ -57,9 +57,9 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
     public ComponentStateHelper(UIComponent component) {
         this.component = component;
-        this.deltaMap = new HashMap<>();
-        this.defaultMap = new HashMap<>();
-        this.transientState = null;
+        deltaMap = new HashMap<>();
+        defaultMap = new HashMap<>();
+        transientState = null;
     }
 
     // ------------------------------------------------ Methods from StateHelper

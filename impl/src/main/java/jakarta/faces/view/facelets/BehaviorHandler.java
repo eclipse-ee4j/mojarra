@@ -38,15 +38,15 @@ public class BehaviorHandler extends FaceletsAttachedObjectHandler implements Be
 
     public BehaviorHandler(BehaviorConfig config) {
         super(config);
-        this.behaviorId = config.getBehaviorId();
-        this.event = this.getAttribute("event");
+        behaviorId = config.getBehaviorId();
+        event = getAttribute("event");
         if (null != event && !event.isLiteral()) {
-            throw new TagException(this.tag, "The 'event' attribute for behavior tag must be a literal");
+            throw new TagException(tag, "The 'event' attribute for behavior tag must be a literal");
         }
     }
 
     public TagAttribute getEvent() {
-        return this.event;
+        return event;
     }
 
     @Override

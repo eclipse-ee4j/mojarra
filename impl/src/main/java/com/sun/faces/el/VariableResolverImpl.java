@@ -73,6 +73,6 @@ public class VariableResolverImpl extends VariableResolver {
     }
 
     public VariableResolver getDelegate() {
-        return this.delegate;
+        return delegate;
     }
 }

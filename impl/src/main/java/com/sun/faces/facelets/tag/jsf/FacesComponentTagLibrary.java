@@ -50,7 +50,7 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
         Util.notNull("namespace", ns);
         Util.notNull("tagName", localName);
 
-        if (!ns.equals(this.getNamespace())) {
+        if (!ns.equals(getNamespace())) {
             return false;
         }
 
@@ -70,7 +70,7 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
         Util.notNull("namespace", ns);
         Util.notNull("tagName", localName);
 
-        if (!ns.equals(this.getNamespace())) {
+        if (!ns.equals(getNamespace())) {
             return result;
         }
         List<FacesComponentUsage> componentsForNamespace = appAss.getComponentsForNamespace(ns);

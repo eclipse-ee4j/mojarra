@@ -344,7 +344,7 @@ public abstract class BeanBuilder {
 
             if (!hasMessages()) {
                 // class is ok, scan for annotations
-                this.isInjectible = Util.classHasAnnotations(clazz);
+                isInjectible = Util.classHasAnnotations(clazz);
             }
             return clazz;
         }
@@ -421,11 +421,11 @@ public abstract class BeanBuilder {
         // ------------------------------------------------------ Public Methods
 
         public Object evaluate(ELContext context) {
-            if (this.expressionString == null) {
+            if (expressionString == null) {
                 return null;
             }
             if (validateLifespanRuntime) {
-                ELUtils.Scope expScope = ELUtils.getScope(this.expressionString, segment);
+                ELUtils.Scope expScope = ELUtils.getScope(expressionString, segment);
                 validateLifespan(expScope, true);
             }
             if (ve == null) {
@@ -445,7 +445,7 @@ public abstract class BeanBuilder {
         private void validateLifespan(ELUtils.Scope expressionScope, boolean runtime) {
             if (ELUtils.isScopeValid(beanInfo.getScope())) {
                 if (!ELUtils.hasValidLifespan(expressionScope, ELUtils.getScope(beanInfo.getScope()))) {
-                    String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_SCOPE_LIFESPAN_ERROR_MESSAGE_ID, this.expressionString,
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_SCOPE_LIFESPAN_ERROR_MESSAGE_ID, expressionString,
                             expressionScope, beanInfo.getName(), beanInfo.getScope());
                     if (runtime) {
                         throw new ManagedBeanCreationException(message);

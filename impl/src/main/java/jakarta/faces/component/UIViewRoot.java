@@ -1013,7 +1013,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      */
 
     public void resetValues(FacesContext context, Collection<String> clientIds) {
-        this.visitTree(VisitContext.createVisitContext(context, clientIds, null), new DoResetValues());
+        visitTree(VisitContext.createVisitContext(context, clientIds, null), new DoResetValues());
     }
 
     private static class DoResetValues implements VisitCallback {
@@ -1871,7 +1871,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             for (Map.Entry<? extends String, ?> entry : m.entrySet()) {
                 String k = entry.getKey();
                 Object v = entry.getValue();
-                this.put(k, v);
+                put(k, v);
             }
 
         }

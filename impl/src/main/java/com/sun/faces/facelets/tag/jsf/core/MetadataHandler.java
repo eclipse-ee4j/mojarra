@@ -73,7 +73,7 @@ public class MetadataHandler extends TagHandlerImpl {
         if (facetComponent == null) {
             root.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
             try {
-                this.nextHandler.apply(ctx, root);
+                nextHandler.apply(ctx, root);
             } finally {
                 root.getAttributes().remove(FacetHandler.KEY);
             }

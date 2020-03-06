@@ -65,7 +65,7 @@ public class InterfaceHandler extends TagHandlerImpl {
         // Do not process if we're simply building metadata
         if (FaceletViewHandlingStrategy.isBuildingMetadata(context)) {
             imbueComponentWithMetadata(ctx, parent);
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         } else {
             if (ProjectStage.Development == context.getApplication().getProjectStage()) {
                 validateComponent(context, parent);
@@ -194,7 +194,7 @@ public class InterfaceHandler extends TagHandlerImpl {
             // per the javadocs for ViewDeclarationLanguage.getComponentMetadata()
             componentBeanInfo.setBeanDescriptor(componentDescriptor);
 
-            for (TagAttribute tagAttribute : this.tag.getAttributes().getAll()) {
+            for (TagAttribute tagAttribute : tag.getAttributes().getAll()) {
                 String attributeName = tagAttribute.getLocalName();
                 PropertyHandler handler = INTERFACE_HANDLERS.getHandler(ctx, attributeName);
                 if (handler != null) {

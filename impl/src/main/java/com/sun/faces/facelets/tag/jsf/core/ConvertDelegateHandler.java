@@ -39,7 +39,7 @@ public final class ConvertDelegateHandler extends ConverterHandler {
      */
     public ConvertDelegateHandler(ConverterConfig config) {
         super(config);
-        this.converterId = this.getAttribute("converterId");
+        converterId = getAttribute("converterId");
     }
 
     /**
@@ -48,7 +48,7 @@ public final class ConvertDelegateHandler extends ConverterHandler {
      * @see jakarta.faces.application.Application#createComponent(java.lang.String)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
-        return ctx.getFacesContext().getApplication().createConverter(this.converterId.getValue(ctx));
+        return ctx.getFacesContext().getApplication().createConverter(converterId.getValue(ctx));
     }
 
     @Override

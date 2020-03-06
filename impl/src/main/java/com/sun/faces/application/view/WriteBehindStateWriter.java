@@ -57,10 +57,10 @@ final class WriteBehindStateWriter extends Writer {
      */
     public WriteBehindStateWriter(Writer out, FacesContext context, int bufSize) {
         this.out = out;
-        this.orig = out;
+        orig = out;
         this.context = context;
         this.bufSize = bufSize;
-        this.buf = new char[bufSize];
+        buf = new char[bufSize];
         CUR_WRITER.set(this);
 
     }
@@ -155,7 +155,7 @@ final class WriteBehindStateWriter extends Writer {
      */
     public void writingState() {
         if (!stateWritten) {
-            this.stateWritten = true;
+            stateWritten = true;
             out = fWriter = new FastStringWriter(1024);
         }
     }

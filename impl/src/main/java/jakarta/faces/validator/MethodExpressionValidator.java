@@ -126,7 +126,7 @@ public class MethodExpressionValidator implements Validator, StateHolder {
     @Override
     public boolean isTransient() {
 
-        return (this.transientValue);
+        return (transientValue);
 
     }
 

@@ -41,8 +41,8 @@ public class ParamHandler extends TagHandlerImpl {
      */
     public ParamHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.value = this.getRequiredAttribute("value");
+        name = getRequiredAttribute("name");
+        value = getRequiredAttribute("value");
     }
 
     /*
@@ -52,8 +52,8 @@ public class ParamHandler extends TagHandlerImpl {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        String nameStr = this.name.getValue(ctx);
-        ValueExpression valueVE = this.value.getValueExpression(ctx, Object.class);
+        String nameStr = name.getValue(ctx);
+        ValueExpression valueVE = value.getValueExpression(ctx, Object.class);
         ctx.getVariableMapper().setVariable(nameStr, valueVE);
     }
 

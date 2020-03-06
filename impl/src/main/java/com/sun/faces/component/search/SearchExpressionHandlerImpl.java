@@ -171,7 +171,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
         public ResolveComponentCallback(ContextCallback callback) {
             this.callback = callback;
-            this.invoked = false;
+            invoked = false;
         }
 
         @Override
@@ -217,7 +217,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
         public ResolveComponentsCallback(ContextCallback callback) {
             this.callback = callback;
-            this.invoked = false;
+            invoked = false;
         }
 
         @Override

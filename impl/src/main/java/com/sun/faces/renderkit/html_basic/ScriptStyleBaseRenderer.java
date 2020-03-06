@@ -192,7 +192,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         String resourceUrl = "RES_NOT_FOUND";
 
         ResponseWriter writer = context.getResponseWriter();
-        this.startExternalElement(writer, component);
+        startExternalElement(writer, component);
 
         WebConfiguration webConfig = WebConfiguration.getInstance();
 
@@ -217,7 +217,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
             resourceUrl = context.getExternalContext().encodeResourceURL(resourceUrl);
         }
 
-        this.endExternalElement(writer, component, resourceUrl);
+        endExternalElement(writer, component, resourceUrl);
         resourceHandler.markResourceRendered(context, name, library);
 
         // Remove the key to prevent issues with state saving.

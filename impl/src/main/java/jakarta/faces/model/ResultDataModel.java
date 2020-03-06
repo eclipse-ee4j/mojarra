@@ -184,7 +184,7 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>> {
     @Override
     public Object getWrappedData() {
 
-        return (this.result);
+        return (result);
 
     }
 

@@ -174,7 +174,7 @@ public class EnumConverter implements Converter, PartialStateHolder {
             throw new NullPointerException();
         }
         if (object != null) {
-            this.targetClass = (Class<? extends Enum>) object;
+            targetClass = (Class<? extends Enum>) object;
         }
     }
 
@@ -184,7 +184,7 @@ public class EnumConverter implements Converter, PartialStateHolder {
             throw new NullPointerException();
         }
         if (!initialStateMarked()) {
-            return this.targetClass;
+            return targetClass;
         }
         return null;
     }

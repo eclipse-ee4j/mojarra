@@ -51,8 +51,8 @@ public class EventInfo {
 
         this.systemEvent = systemEvent;
         this.sourceClass = sourceClass;
-        this.listeners = new CopyOnWriteArraySet<>();
-        this.constructorMap = new HashMap<>();
+        listeners = new CopyOnWriteArraySet<>();
+        constructorMap = new HashMap<>();
         if (!sourceClass.equals(Void.class)) {
             eventConstructor = getEventConstructor(sourceClass);
         }

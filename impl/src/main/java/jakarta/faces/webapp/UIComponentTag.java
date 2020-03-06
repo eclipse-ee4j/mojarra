@@ -147,9 +147,9 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
     @Override
     public void release() {
 
-        this.suppressed = false;
-        this.binding = null;
-        this.rendered = null;
+        suppressed = false;
+        binding = null;
+        rendered = null;
         super.release();
     }
 

@@ -33,19 +33,19 @@ public final class PassThroughAttributesHandler extends TagHandlerImpl implement
 
     public PassThroughAttributesHandler(TagConfig config) {
         super(config);
-        this.value = this.getRequiredAttribute("value");
+        value = getRequiredAttribute("value");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
-            throw new TagException(this.tag, "Parent UIComponent was null");
+            throw new TagException(tag, "Parent UIComponent was null");
         }
 
         // only process if the parent is new to the tree
         if (parent.getParent() == null) {
             Map<String, Object> componentPassThroughAttrs = parent.getPassThroughAttributes(true);
-            Map<String, Object> tagPassThroughAttrs = (Map<String, Object>) this.value.getObject(ctx, Map.class);
+            Map<String, Object> tagPassThroughAttrs = (Map<String, Object>) value.getObject(ctx, Map.class);
             for (Map.Entry<String, Object> cur : tagPassThroughAttrs.entrySet()) {
                 componentPassThroughAttrs.put(cur.getKey(), cur.getValue());
             }

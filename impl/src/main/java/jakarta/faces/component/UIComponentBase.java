@@ -266,7 +266,7 @@ public abstract class UIComponentBase extends UIComponent {
             this.id = id;
         }
 
-        this.clientId = null; // Erase any cached value
+        clientId = null; // Erase any cached value
     }
 
     @Override
@@ -297,7 +297,7 @@ public abstract class UIComponentBase extends UIComponent {
 
                 // Remove the attribute once we've returned from the event
                 // processing.
-                this.getAttributes().remove(ADDED);
+                getAttributes().remove(ADDED);
             }
         }
     }
@@ -659,7 +659,7 @@ public abstract class UIComponentBase extends UIComponent {
             throw new IllegalArgumentException();
         }
 
-        if (this.listeners == null) {
+        if (listeners == null) {
             return (FacesListener[]) Array.newInstance(clazz, 0);
         }
 
@@ -1900,7 +1900,7 @@ public abstract class UIComponentBase extends UIComponent {
         private AttributesMap(UIComponent component) {
 
             this.component = component;
-            this.pdMap = ((UIComponentBase) component).getDescriptorMap();
+            pdMap = ((UIComponentBase) component).getDescriptorMap();
         }
 
         @Override
@@ -2037,7 +2037,7 @@ public abstract class UIComponentBase extends UIComponent {
             }
 
             for (Map.Entry<? extends String, ?> entry : map.entrySet()) {
-                this.put(entry.getKey(), entry.getValue());
+                put(entry.getKey(), entry.getValue());
             }
         }
 
@@ -2211,7 +2211,7 @@ public abstract class UIComponentBase extends UIComponent {
     private static class ChildrenList extends ArrayList<UIComponent> {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 8926987612679576963L;
         private UIComponent component;
@@ -2378,7 +2378,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         public ChildrenListIterator(ChildrenList list) {
             this.list = list;
-            this.index = 0;
+            index = 0;
         }
 
         public ChildrenListIterator(ChildrenList list, int index) {
@@ -2479,38 +2479,38 @@ public abstract class UIComponentBase extends UIComponent {
 
         public FacetsAndChildrenIterator(UIComponent c) {
             this.c = c;
-            this.childMode = false;
+            childMode = false;
         }
 
         private void update() {
-            if (this.iterator == null) {
+            if (iterator == null) {
                 // we must guarantee that 'iterator' is never null
-                if (this.c.getFacetCount() != 0) {
-                    this.iterator = this.c.getFacets().values().iterator();
-                    this.childMode = false;
-                } else if (this.c.getChildCount() != 0) {
-                    this.iterator = this.c.getChildren().iterator();
-                    this.childMode = true;
+                if (c.getFacetCount() != 0) {
+                    iterator = c.getFacets().values().iterator();
+                    childMode = false;
+                } else if (c.getChildCount() != 0) {
+                    iterator = c.getChildren().iterator();
+                    childMode = true;
                 } else {
-                    this.iterator = EMPTY_ITERATOR;
-                    this.childMode = true;
+                    iterator = EMPTY_ITERATOR;
+                    childMode = true;
                 }
-            } else if (!this.childMode && !this.iterator.hasNext() && this.c.getChildCount() != 0) {
-                this.iterator = this.c.getChildren().iterator();
-                this.childMode = true;
+            } else if (!childMode && !iterator.hasNext() && c.getChildCount() != 0) {
+                iterator = c.getChildren().iterator();
+                childMode = true;
             }
         }
 
         @Override
         public boolean hasNext() {
-            this.update();
-            return this.iterator.hasNext();
+            update();
+            return iterator.hasNext();
         }
 
         @Override
         public UIComponent next() {
-            this.update();
-            return this.iterator.next();
+            update();
+            return iterator.next();
         }
 
         @Override
@@ -2525,7 +2525,7 @@ public abstract class UIComponentBase extends UIComponent {
     private static class FacetsMap extends HashMap<String, UIComponent> {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -1444791615672259097L;
         private UIComponent component;
@@ -2780,7 +2780,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         public FacetsMapEntrySetIterator(FacetsMap map) {
             this.map = map;
-            this.iterator = map.keySetIterator();
+            iterator = map.keySetIterator();
         }
 
         private FacetsMap map = null;
@@ -2905,7 +2905,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         public FacetsMapKeySetIterator(FacetsMap map) {
             this.map = map;
-            this.iterator = map.keySetIterator();
+            iterator = map.keySetIterator();
         }
 
         private FacetsMap map = null;
@@ -2980,7 +2980,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         public FacetsMapValuesIterator(FacetsMap map) {
             this.map = map;
-            this.iterator = map.keySetIterator();
+            iterator = map.keySetIterator();
         }
 
         private FacetsMap map = null;
@@ -3021,7 +3021,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         private BehaviorsMap(Map<String, List<ClientBehavior>> modifiableMap) {
             this.modifiableMap = modifiableMap;
-            this.unmodifiableMap = Collections.unmodifiableMap(modifiableMap);
+            unmodifiableMap = Collections.unmodifiableMap(modifiableMap);
         }
 
         @Override

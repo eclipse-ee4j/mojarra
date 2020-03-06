@@ -33,10 +33,10 @@ public class SwitchBuilderImpl extends SwitchBuilder {
 
     SwitchBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;
-        this.switchId = id;
-        this.switchNode = new SwitchNodeImpl(id);
+        switchId = id;
+        switchNode = new SwitchNodeImpl(id);
         root._getFlow()._getSwitches().put(id, switchNode);
-        this.switchCaseBuilder = new SwitchCaseBuilderImpl(this);
+        switchCaseBuilder = new SwitchCaseBuilderImpl(this);
     }
 
     @Override

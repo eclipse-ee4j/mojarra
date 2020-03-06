@@ -59,9 +59,9 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
 
     @Override
     public Method resolveFunction(String prefix, String localName) {
-        String uri = (String) this.ns.get(prefix);
+        String uri = (String) ns.get(prefix);
         if (uri != null) {
-            return this.library.createFunction(uri, localName);
+            return library.createFunction(uri, localName);
         }
         return null;
     }

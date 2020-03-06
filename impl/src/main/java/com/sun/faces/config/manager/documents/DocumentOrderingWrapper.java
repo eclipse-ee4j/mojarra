@@ -128,7 +128,7 @@ public class DocumentOrderingWrapper {
      * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document<code>.
      */
     public DocumentOrderingWrapper(DocumentInfo document) {
-        this.documentInfo = document;
+        documentInfo = document;
         init();
     }
 
@@ -765,7 +765,7 @@ public class DocumentOrderingWrapper {
         // -------------------------------------------------------- Constructors
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 739253127985795440L;
 

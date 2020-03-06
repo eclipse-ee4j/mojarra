@@ -62,16 +62,16 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase imple
             if (faces == null) {
                 return;
             }
-            if (this.binding != null) {
+            if (binding != null) {
                 instance = (ActionListener) binding.getValue(faces.getELContext());
             }
-            if (instance == null && this.type != null) {
+            if (instance == null && type != null) {
                 try {
-                    instance = (ActionListener) ReflectionUtil.forName(this.type).newInstance();
+                    instance = (ActionListener) ReflectionUtil.forName(type).newInstance();
                 } catch (Exception e) {
                     throw new AbortProcessingException("Couldn't Lazily instantiate ValueChangeListener", e);
                 }
-                if (this.binding != null) {
+                if (binding != null) {
                     binding.setValue(faces.getELContext(), instance);
                 }
             }
@@ -92,21 +92,21 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase imple
      */
     public ActionListenerHandler(TagConfig config) {
         super(config);
-        this.binding = this.getAttribute("binding");
-        this.typeAttribute = this.getAttribute("type");
-        if (null != this.typeAttribute) {
+        binding = getAttribute("binding");
+        typeAttribute = getAttribute("type");
+        if (null != typeAttribute) {
             String stringType = null;
-            if (!this.typeAttribute.isLiteral()) {
+            if (!typeAttribute.isLiteral()) {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                stringType = (String) this.typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
+                stringType = (String) typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
             } else {
-                stringType = this.typeAttribute.getValue();
+                stringType = typeAttribute.getValue();
             }
             checkType(stringType);
-            this.listenerType = stringType;
+            listenerType = stringType;
         } else {
-            this.listenerType = null;
+            listenerType = null;
         }
     }
 
@@ -115,10 +115,10 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase imple
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
         ActionSource as = (ActionSource) parent;
         ValueExpression b = null;
-        if (this.binding != null) {
-            b = this.binding.getValueExpression(ctx, ActionListener.class);
+        if (binding != null) {
+            b = binding.getValueExpression(ctx, ActionListener.class);
         }
-        ActionListener listener = new LazyActionListener(this.listenerType, b);
+        ActionListener listener = new LazyActionListener(listenerType, b);
         as.addActionListener(listener);
     }
 

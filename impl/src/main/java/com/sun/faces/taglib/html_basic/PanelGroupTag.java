@@ -219,23 +219,23 @@ public class PanelGroupTag extends UIComponentELTag {
         // component properties
 
         // rendered attributes
-        this.layout = null;
-        this.onclick = null;
-        this.ondblclick = null;
-        this.onkeydown = null;
-        this.onkeypress = null;
-        this.onkeyup = null;
-        this.onmousedown = null;
-        this.onmousemove = null;
-        this.onmouseout = null;
-        this.onmouseover = null;
-        this.onmouseup = null;
-        this.style = null;
-        this.styleClass = null;
+        layout = null;
+        onclick = null;
+        ondblclick = null;
+        onkeydown = null;
+        onkeypress = null;
+        onkeyup = null;
+        onmousedown = null;
+        onmousemove = null;
+        onmouseout = null;
+        onmouseover = null;
+        onmouseup = null;
+        style = null;
+        styleClass = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

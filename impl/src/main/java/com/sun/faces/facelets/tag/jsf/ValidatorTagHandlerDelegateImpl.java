@@ -99,7 +99,7 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
             v = (Validator) ve.getValue(ctx);
         }
         if (v == null) {
-            v = this.createValidator(ctx);
+            v = createValidator(ctx);
             if (ve != null) {
                 ve.setValue(ctx, v);
             }

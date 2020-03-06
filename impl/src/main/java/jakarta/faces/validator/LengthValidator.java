@@ -143,7 +143,7 @@ public class LengthValidator implements Validator, PartialStateHolder {
      */
     public int getMaximum() {
 
-        return (this.maximum != null ? this.maximum : 0);
+        return (maximum != null ? maximum : 0);
 
     }
 
@@ -173,7 +173,7 @@ public class LengthValidator implements Validator, PartialStateHolder {
      */
     public int getMinimum() {
 
-        return (this.minimum != null ? this.minimum : 0);
+        return (minimum != null ? minimum : 0);
 
     }
 
@@ -224,8 +224,8 @@ public class LengthValidator implements Validator, PartialStateHolder {
             return false;
         }
         LengthValidator other = (LengthValidator) otherObj;
-        return ((this.getMaximum() == other.getMaximum()) && (this.getMinimum() == other.getMinimum()) && (this.isMinimumSet() == other.isMinimumSet())
-                && (this.isMaximumSet() == other.isMaximumSet()));
+        return ((getMaximum() == other.getMaximum()) && (getMinimum() == other.getMinimum()) && (isMinimumSet() == other.isMinimumSet())
+                && (isMaximumSet() == other.isMaximumSet()));
 
     }
 
@@ -315,7 +315,7 @@ public class LengthValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (this.transientValue);
+        return (transientValue);
 
     }
 

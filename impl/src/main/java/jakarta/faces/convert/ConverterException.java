@@ -97,7 +97,7 @@ public class ConverterException extends FacesException {
     public ConverterException(FacesMessage message) {
 
         super(message.getSummary());
-        this.facesMessage = message;
+        facesMessage = message;
     }
 
     /**
@@ -111,7 +111,7 @@ public class ConverterException extends FacesException {
     public ConverterException(FacesMessage message, Throwable cause) {
 
         super(message.getSummary(), cause);
-        this.facesMessage = message;
+        facesMessage = message;
 
     }
 

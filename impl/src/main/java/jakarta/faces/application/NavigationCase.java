@@ -81,7 +81,7 @@ public class NavigationCase {
         this.fromOutcome = fromOutcome;
         this.condition = condition;
         this.toViewId = toViewId;
-        this.toFlowDocumentId = null;
+        toFlowDocumentId = null;
         this.parameters = parameters;
         this.redirect = redirect;
         this.includeViewParams = includeViewParams;

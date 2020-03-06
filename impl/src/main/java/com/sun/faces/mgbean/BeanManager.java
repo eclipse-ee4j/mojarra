@@ -200,7 +200,7 @@ public class BeanManager implements SystemEventListener {
 
     public Object getBeanFromScope(String name, FacesContext context) {
 
-        String scope = this.getBuilder(name).getScope();
+        String scope = getBuilder(name).getScope();
         return ScopeManager.getFromScope(name, scope, context);
 
     }

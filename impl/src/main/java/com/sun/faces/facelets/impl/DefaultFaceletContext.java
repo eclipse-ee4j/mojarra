@@ -74,33 +74,33 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     public DefaultFaceletContext(DefaultFaceletContext ctx, DefaultFacelet facelet) {
         this.ctx = ctx.ctx;
-        this.clients = ctx.clients;
-        this.faces = ctx.faces;
-        this.fnMapper = ctx.fnMapper;
-        this.ids = ctx.ids;
-        this.prefixes = ctx.prefixes;
-        this.varMapper = ctx.varMapper;
-        this.faceletHierarchy = new ArrayList<>(ctx.faceletHierarchy.size() + 1);
-        this.faceletHierarchy.addAll(ctx.faceletHierarchy);
-        this.faceletHierarchy.add(facelet);
+        clients = ctx.clients;
+        faces = ctx.faces;
+        fnMapper = ctx.fnMapper;
+        ids = ctx.ids;
+        prefixes = ctx.prefixes;
+        varMapper = ctx.varMapper;
+        faceletHierarchy = new ArrayList<>(ctx.faceletHierarchy.size() + 1);
+        faceletHierarchy.addAll(ctx.faceletHierarchy);
+        faceletHierarchy.add(facelet);
         this.facelet = facelet;
-        this.faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
+        faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
     public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet) {
-        this.ctx = faces.getELContext();
-        this.ids = new HashMap<>();
-        this.prefixes = new HashMap<>();
-        this.clients = new ArrayList<>(5);
+        ctx = faces.getELContext();
+        ids = new HashMap<>();
+        prefixes = new HashMap<>();
+        clients = new ArrayList<>(5);
         this.faces = faces;
-        this.faceletHierarchy = new ArrayList<>(1);
-        this.faceletHierarchy.add(facelet);
+        faceletHierarchy = new ArrayList<>(1);
+        faceletHierarchy.add(facelet);
         this.facelet = facelet;
-        this.varMapper = this.ctx.getVariableMapper();
-        if (this.varMapper == null) {
-            this.varMapper = new DefaultVariableMapper();
+        varMapper = ctx.getVariableMapper();
+        if (varMapper == null) {
+            varMapper = new DefaultVariableMapper();
         }
-        this.fnMapper = this.ctx.getFunctionMapper();
+        fnMapper = ctx.getFunctionMapper();
         this.faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
@@ -111,7 +111,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public FacesContext getFacesContext() {
-        return this.faces;
+        return faces;
     }
 
     /*
@@ -121,7 +121,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public ExpressionFactory getExpressionFactory() {
-        return this.facelet.getExpressionFactory();
+        return facelet.getExpressionFactory();
     }
 
     /*
@@ -153,7 +153,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public void includeFacelet(UIComponent parent, String relativePath) throws IOException, FacesException, ELException {
-        this.facelet.include(this, parent, relativePath);
+        facelet.include(this, parent, relativePath);
     }
 
     /*
@@ -163,7 +163,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public FunctionMapper getFunctionMapper() {
-        return this.fnMapper;
+        return fnMapper;
     }
 
     /*
@@ -173,7 +173,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public VariableMapper getVariableMapper() {
-        return this.varMapper;
+        return varMapper;
     }
 
     /*
@@ -183,7 +183,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public Object getContext(Class key) {
-        return this.ctx.getContext(key);
+        return ctx.getContext(key);
     }
 
     /*
@@ -193,7 +193,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public void putContext(Class key, Object contextObject) {
-        this.ctx.putContext(key, contextObject);
+        ctx.putContext(key, contextObject);
     }
 
     /*
@@ -214,18 +214,18 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
             Integer cnt = prefixes.get(prefixInt);
             if (cnt == null) {
-                this.prefixes.put(prefixInt, 0);
+                prefixes.put(prefixInt, 0);
                 prefix = prefixInt.toString();
             } else {
                 int i = cnt.intValue() + 1;
-                this.prefixes.put(prefixInt, i);
+                prefixes.put(prefixInt, i);
                 prefix = prefixInt + "_" + i;
             }
         }
 
-        Integer cnt = this.ids.get(base);
+        Integer cnt = ids.get(base);
         if (cnt == null) {
-            this.ids.put(base, 0);
+            ids.put(base, 0);
             uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
             uniqueIdBuilder.append(prefix);
             uniqueIdBuilder.append("_");
@@ -233,7 +233,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             return uniqueIdBuilder.toString();
         } else {
             int i = cnt.intValue() + 1;
-            this.ids.put(base, i);
+            ids.put(base, i);
             uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
             uniqueIdBuilder.append(prefix);
             uniqueIdBuilder.append("_");
@@ -251,8 +251,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public Object getAttribute(String name) {
-        if (this.varMapper != null) {
-            ValueExpression ve = this.varMapper.resolveVariable(name);
+        if (varMapper != null) {
+            ValueExpression ve = varMapper.resolveVariable(name);
             if (ve != null) {
                 return ve.getValue(this);
             }
@@ -267,11 +267,11 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public void setAttribute(String name, Object value) {
-        if (this.varMapper != null) {
+        if (varMapper != null) {
             if (value == null) {
-                this.varMapper.setVariable(name, null);
+                varMapper.setVariable(name, null);
             } else {
-                this.varMapper.setVariable(name, this.facelet.getExpressionFactory().createValueExpression(value, Object.class));
+                varMapper.setVariable(name, facelet.getExpressionFactory().createValueExpression(value, Object.class));
             }
         }
     }
@@ -283,20 +283,20 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     @Override
     public void includeFacelet(UIComponent parent, URL absolutePath) throws IOException, FacesException, ELException {
-        this.facelet.include(this, parent, absolutePath);
+        facelet.include(this, parent, absolutePath);
     }
 
     @Override
     public ELResolver getELResolver() {
-        return this.ctx.getELResolver();
+        return ctx.getELResolver();
     }
 
     private final List<TemplateManager> clients;
 
     @Override
     public void popClient(TemplateClient client) {
-        if (!this.clients.isEmpty()) {
-            Iterator itr = this.clients.iterator();
+        if (!clients.isEmpty()) {
+            Iterator itr = clients.iterator();
             while (itr.hasNext()) {
                 if (itr.next().equals(client)) {
                     itr.remove();
@@ -309,12 +309,12 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     @Override
     public void pushClient(final TemplateClient client) {
-        this.clients.add(0, new TemplateManager(this.facelet, client, true));
+        clients.add(0, new TemplateManager(facelet, client, true));
     }
 
     @Override
     public void extendClient(final TemplateClient client) {
-        this.clients.add(new TemplateManager(this.facelet, client, false));
+        clients.add(new TemplateManager(facelet, client, false));
     }
 
     @Override
@@ -322,10 +322,10 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         boolean found = false;
         TemplateManager client;
 
-        for (int i = 0, size = this.clients.size(); i < size && !found; i++) {
-            client = this.clients.get(i);
+        for (int i = 0, size = clients.size(); i < size && !found; i++) {
+            client = clients.get(i);
             // noinspection EqualsBetweenInconvertibleTypes
-            if (client.equals(this.facelet))
+            if (client.equals(facelet))
                 continue;
             found = client.apply(this, parent, name);
         }
@@ -352,12 +352,12 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
 
             String testName = (name != null) ? name : "facelets._NULL_DEF_";
-            if (this.names.contains(testName)) {
+            if (names.contains(testName)) {
                 return false;
             } else {
-                this.names.add(testName);
-                boolean found = this.target.apply(new DefaultFaceletContext((DefaultFaceletContext) ctx, this.owner), parent, name);
-                this.names.remove(testName);
+                names.add(testName);
+                boolean found = target.apply(new DefaultFaceletContext((DefaultFaceletContext) ctx, owner), parent, name);
+                names.remove(testName);
                 return found;
             }
         }
@@ -366,21 +366,21 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         public boolean equals(Object o) {
             // System.out.println(this.owner.getAlias() + " == " +
             // ((DefaultFacelet) o).getAlias());
-            return this.owner == o || this.target == o;
+            return owner == o || target == o;
         }
 
         public boolean isRoot() {
-            return this.root;
+            return root;
         }
     }
 
     @Override
     public boolean isPropertyResolved() {
-        return this.ctx.isPropertyResolved();
+        return ctx.isPropertyResolved();
     }
 
     @Override
     public void setPropertyResolved(boolean resolved) {
-        this.ctx.setPropertyResolved(resolved);
+        ctx.setPropertyResolved(resolved);
     }
 }

@@ -83,7 +83,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
 
     @Override
     public UIComponent getParent() {
-        return this.parent;
+        return parent;
     }
 
     @Override
@@ -168,7 +168,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
 
     @Override
     public void encodeAll(FacesContext faces) throws IOException {
-        this.encodeBegin(faces);
+        encodeBegin(faces);
     }
 
     @Override

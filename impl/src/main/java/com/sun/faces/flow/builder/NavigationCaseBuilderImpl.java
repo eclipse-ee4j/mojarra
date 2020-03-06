@@ -109,7 +109,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
         public RedirectBuilder parameter(String name, String value) {
             Util.notNull("name", name);
             Util.notNull("value", value);
-            Map<String, List<String>> redirectParams = NavigationCaseBuilderImpl.this.navCase.getParameters();
+            Map<String, List<String>> redirectParams = navCase.getParameters();
             List<String> values = redirectParams.get(name);
             if (null == values) {
                 values = new CopyOnWriteArrayList<>();
@@ -121,7 +121,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
 
         @Override
         public RedirectBuilder includeViewParams() {
-            NavigationCaseBuilderImpl.this.navCase.isIncludeViewParams();
+            navCase.isIncludeViewParams();
             return this;
         }
 

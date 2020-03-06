@@ -50,8 +50,8 @@ public class EventHandler extends TagHandler {
 
     public EventHandler(TagConfig config) {
         super(config);
-        this.type = this.getRequiredAttribute("type");
-        this.listener = this.getRequiredAttribute("listener");
+        type = getRequiredAttribute("type");
+        listener = getRequiredAttribute("listener");
     }
 
     @Override
@@ -73,7 +73,7 @@ public class EventHandler extends TagHandler {
     }
 
     protected Class<? extends SystemEvent> getEventClass(FaceletContext ctx) {
-        String eventType = (String) this.type.getValueExpression(ctx, String.class).getValue(ctx);
+        String eventType = (String) type.getValueExpression(ctx, String.class).getValue(ctx);
         if (eventType == null) {
             throw new FacesException("Attribute 'type' can not be null");
         }
@@ -95,8 +95,8 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
     }
 
     public DeclarativeSystemEventListener(MethodExpression oneArg, MethodExpression noArg) {
-        this.oneArgListener = oneArg;
-        this.noArgListener = noArg;
+        oneArgListener = oneArg;
+        noArgListener = noArg;
     }
 
     @Override

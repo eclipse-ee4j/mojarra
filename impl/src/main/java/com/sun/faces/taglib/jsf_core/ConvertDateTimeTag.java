@@ -114,27 +114,27 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
     //
 
     public void setDateStyle(ValueExpression dateStyle) {
-        this.dateStyleExpression = dateStyle;
+        dateStyleExpression = dateStyle;
     }
 
     public void setLocale(ValueExpression locale) {
-        this.localeExpression = locale;
+        localeExpression = locale;
     }
 
     public void setPattern(ValueExpression pattern) {
-        this.patternExpression = pattern;
+        patternExpression = pattern;
     }
 
     public void setTimeStyle(ValueExpression timeStyle) {
-        this.timeStyleExpression = timeStyle;
+        timeStyleExpression = timeStyle;
     }
 
     public void setTimeZone(ValueExpression timeZone) {
-        this.timeZoneExpression = timeZone;
+        timeZoneExpression = timeZone;
     }
 
     public void setType(ValueExpression type) {
-        this.typeExpression = type;
+        typeExpression = type;
     }
 
     @Override

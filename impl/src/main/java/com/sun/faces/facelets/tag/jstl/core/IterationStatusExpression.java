@@ -48,7 +48,7 @@ public final class IterationStatusExpression extends ValueExpression {
      */
     @Override
     public Object getValue(ELContext context) {
-        return this.status;
+        return status;
     }
 
     /*
@@ -98,7 +98,7 @@ public final class IterationStatusExpression extends ValueExpression {
      */
     @Override
     public String getExpressionString() {
-        return this.toString();
+        return toString();
     }
 
     @Override
@@ -110,7 +110,7 @@ public final class IterationStatusExpression extends ValueExpression {
             return false;
         }
         final IterationStatusExpression other = (IterationStatusExpression) obj;
-        if (this.status != other.status && (this.status == null || !this.status.equals(other.status))) {
+        if (status != other.status && (status == null || !status.equals(other.status))) {
             return false;
         }
         return true;
@@ -123,7 +123,7 @@ public final class IterationStatusExpression extends ValueExpression {
      */
     @Override
     public int hashCode() {
-        return this.status.hashCode();
+        return status.hashCode();
     }
 
     /*
@@ -138,7 +138,7 @@ public final class IterationStatusExpression extends ValueExpression {
 
     @Override
     public String toString() {
-        return this.status.toString();
+        return status.toString();
     }
 
 }

@@ -37,8 +37,8 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
 
     public AttachedObjectTargetHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.targets = this.getAttribute("targets");
+        name = getRequiredAttribute("name");
+        targets = getAttribute("targets");
     }
 
     abstract AttachedObjectTargetImpl newAttachedObjectTargetImpl();
@@ -55,11 +55,11 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
 
         BeanInfo componentBeanInfo = (BeanInfo) parent.getAttributes().get(UIComponent.BEANINFO_KEY);
         if (null == componentBeanInfo) {
-            throw new TagException(this.tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
+            throw new TagException(tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
         }
         BeanDescriptor componentDescriptor = componentBeanInfo.getBeanDescriptor();
         if (null == componentDescriptor) {
-            throw new TagException(this.tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
+            throw new TagException(tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
         }
 
         List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>) componentDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
@@ -77,7 +77,7 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
             target.setTargetsList(ve);
         }
 
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
 
     }
 

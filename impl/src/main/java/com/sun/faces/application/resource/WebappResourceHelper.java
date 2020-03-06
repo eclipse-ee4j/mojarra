@@ -77,13 +77,13 @@ public class WebappResourceHelper extends ResourceHelper {
             return false;
         }
         final WebappResourceHelper other = (WebappResourceHelper) obj;
-        if ((this.BASE_RESOURCE_PATH == null) ? (other.BASE_RESOURCE_PATH != null) : !this.BASE_RESOURCE_PATH.equals(other.BASE_RESOURCE_PATH)) {
+        if ((BASE_RESOURCE_PATH == null) ? (other.BASE_RESOURCE_PATH != null) : !BASE_RESOURCE_PATH.equals(other.BASE_RESOURCE_PATH)) {
             return false;
         }
-        if ((this.BASE_CONTRACTS_PATH == null) ? (other.BASE_CONTRACTS_PATH != null) : !this.BASE_CONTRACTS_PATH.equals(other.BASE_CONTRACTS_PATH)) {
+        if ((BASE_CONTRACTS_PATH == null) ? (other.BASE_CONTRACTS_PATH != null) : !BASE_CONTRACTS_PATH.equals(other.BASE_CONTRACTS_PATH)) {
             return false;
         }
-        if (this.cacheTimestamp != other.cacheTimestamp) {
+        if (cacheTimestamp != other.cacheTimestamp) {
             return false;
         }
         return true;
@@ -92,9 +92,9 @@ public class WebappResourceHelper extends ResourceHelper {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 37 * hash + (this.BASE_RESOURCE_PATH != null ? this.BASE_RESOURCE_PATH.hashCode() : 0);
-        hash = 37 * hash + (this.BASE_CONTRACTS_PATH != null ? this.BASE_CONTRACTS_PATH.hashCode() : 0);
-        hash = 37 * hash + (this.cacheTimestamp ? 1 : 0);
+        hash = 37 * hash + (BASE_RESOURCE_PATH != null ? BASE_RESOURCE_PATH.hashCode() : 0);
+        hash = 37 * hash + (BASE_CONTRACTS_PATH != null ? BASE_CONTRACTS_PATH.hashCode() : 0);
+        hash = 37 * hash + (cacheTimestamp ? 1 : 0);
         return hash;
     }
 

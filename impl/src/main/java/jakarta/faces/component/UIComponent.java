@@ -1098,7 +1098,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             } catch (Exception e) {
                 throw new FacesException(e);
             } finally {
-                this.popComponentFromEL(context);
+                popComponentFromEL(context);
             }
         } else {
             Iterator<UIComponent> facetsAndChildrenIterator = getFacetsAndChildren();
@@ -1341,7 +1341,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         // Check for both of these and if set, verify that we comply.
         Set<VisitHint> hints = context.getHints();
 
-        if ((hints.contains(SKIP_UNRENDERED) && !this.isRendered()) || (hints.contains(SKIP_TRANSIENT) && this.isTransient())) {
+        if ((hints.contains(SKIP_UNRENDERED) && !isRendered()) || (hints.contains(SKIP_TRANSIENT) && isTransient())) {
             return false;
         }
 
@@ -2065,7 +2065,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
         ComponentSystemEventListenerAdapter(ComponentSystemEventListener wrapped, UIComponent component) {
             this.wrapped = wrapped;
-            this.instanceClass = component.getClass();
+            instanceClass = component.getClass();
         }
 
         // ------------------------------------ Methods from SystemEventListener
@@ -2224,7 +2224,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             @Override
             public String toString() {
                 StringBuffer sb = new StringBuffer();
-                Iterator<Map.Entry<String, String>> entries = this.entrySet().iterator();
+                Iterator<Map.Entry<String, String>> entries = entrySet().iterator();
                 Map.Entry<String, String> cur;
                 while (entries.hasNext()) {
                     cur = entries.next();
@@ -2389,7 +2389,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     private ResourceBundle findResourceBundleAsResource(FacesContext context) {
 
         if (getAttributes().containsKey(COMPONENT_RESOURCE_KEY)) {
-            Resource ccResource = (Resource) this.getAttributes().get(COMPONENT_RESOURCE_KEY);
+            Resource ccResource = (Resource) getAttributes().get(COMPONENT_RESOURCE_KEY);
 
             if (ccResource != null) {
 

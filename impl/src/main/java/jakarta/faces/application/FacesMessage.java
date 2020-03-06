@@ -318,7 +318,7 @@ public class FacesMessage implements Serializable {
      * @since 2.0
      */
     public void rendered() {
-        this.rendered = true;
+        rendered = true;
     }
 
     /**
@@ -418,7 +418,7 @@ public class FacesMessage implements Serializable {
          */
         @Override
         public int compareTo(Object other) {
-            return this.ordinal - ((Severity) other).ordinal;
+            return ordinal - ((Severity) other).ordinal;
         }
 
         /**

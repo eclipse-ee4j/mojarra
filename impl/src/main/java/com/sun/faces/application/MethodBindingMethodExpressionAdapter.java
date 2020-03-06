@@ -163,7 +163,7 @@ public class MethodBindingMethodExpressionAdapter extends MethodBinding implemen
 
     @Override
     public boolean isTransient() {
-        return this.tranzient;
+        return tranzient;
     }
 
     @Override

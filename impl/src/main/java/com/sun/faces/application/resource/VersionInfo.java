@@ -82,12 +82,12 @@ public class VersionInfo implements Comparable {
             return true;
         }
         VersionInfo passed = (VersionInfo) obj;
-        boolean versionsEqual = this.version.equals(passed.version);
+        boolean versionsEqual = version.equals(passed.version);
         boolean extensionEqual;
-        if (this.extension == null) {
+        if (extension == null) {
             extensionEqual = (passed.extension == null);
         } else {
-            extensionEqual = this.extension.equals(passed.extension);
+            extensionEqual = extension.equals(passed.extension);
         }
         return (versionsEqual && extensionEqual);
 
@@ -99,6 +99,6 @@ public class VersionInfo implements Comparable {
     public int compareTo(Object o) {
         assert (o instanceof VersionInfo);
         VersionInfo c = (VersionInfo) o;
-        return (this.version.compareTo(c.version));
+        return (version.compareTo(c.version));
     }
 }

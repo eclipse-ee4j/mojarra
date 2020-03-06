@@ -58,17 +58,17 @@ public final class CoreLibrary extends AbstractTagLibrary {
     public CoreLibrary(String namespace) {
         super(namespace);
 
-        this.addTagHandler("actionListener", ActionListenerHandler.class);
+        addTagHandler("actionListener", ActionListenerHandler.class);
 
-        this.addTagHandler("ajax", AjaxHandler.class);
+        addTagHandler("ajax", AjaxHandler.class);
 
-        this.addTagHandler("attribute", AttributeHandler.class);
+        addTagHandler("attribute", AttributeHandler.class);
 
-        this.addTagHandler("attributes", AttributesHandler.class);
+        addTagHandler("attributes", AttributesHandler.class);
 
-        this.addTagHandler("passThroughAttribute", PassThroughAttributeHandler.class);
+        addTagHandler("passThroughAttribute", PassThroughAttributeHandler.class);
 
-        this.addTagHandler("passThroughAttributes", PassThroughAttributesHandler.class);
+        addTagHandler("passThroughAttributes", PassThroughAttributesHandler.class);
 
         this.addConverter("convertDateTime", DateTimeConverter.CONVERTER_ID, ConvertDateTimeHandler.class);
 
@@ -76,17 +76,17 @@ public final class CoreLibrary extends AbstractTagLibrary {
 
         this.addConverter("converter", null, ConvertDelegateHandler.class);
 
-        this.addTagHandler("event", EventHandler.class);
+        addTagHandler("event", EventHandler.class);
 
-        this.addTagHandler("facet", FacetHandler.class);
+        addTagHandler("facet", FacetHandler.class);
 
-        this.addTagHandler("metadata", MetadataHandler.class);
+        addTagHandler("metadata", MetadataHandler.class);
 
         this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, null);
 
-        this.addTagHandler("loadBundle", LoadBundleHandler.class);
+        addTagHandler("loadBundle", LoadBundleHandler.class);
 
-        this.addTagHandler("resetValues", ResetValuesHandler.class);
+        addTagHandler("resetValues", ResetValuesHandler.class);
 
         this.addComponent("viewParam", UIViewParameter.COMPONENT_TYPE, null);
 
@@ -94,13 +94,13 @@ public final class CoreLibrary extends AbstractTagLibrary {
 
         this.addComponent("param", UIParameter.COMPONENT_TYPE, null);
 
-        this.addTagHandler("phaseListener", PhaseListenerHandler.class);
+        addTagHandler("phaseListener", PhaseListenerHandler.class);
 
         this.addComponent("selectItem", UISelectItem.COMPONENT_TYPE, null);
 
         this.addComponent("selectItems", UISelectItems.COMPONENT_TYPE, null);
 
-        this.addTagHandler("setPropertyActionListener", SetPropertyActionListenerHandler.class);
+        addTagHandler("setPropertyActionListener", SetPropertyActionListenerHandler.class);
 
         this.addComponent("subview", "jakarta.faces.NamingContainer", null);
 
@@ -120,9 +120,9 @@ public final class CoreLibrary extends AbstractTagLibrary {
 
         this.addValidator("validator", null, ValidateDelegateHandler.class);
 
-        this.addTagHandler("valueChangeListener", ValueChangeListenerHandler.class);
+        addTagHandler("valueChangeListener", ValueChangeListenerHandler.class);
 
-        this.addTagHandler("view", ViewHandler.class);
+        addTagHandler("view", ViewHandler.class);
 
         this.addComponent("verbatim", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text", VerbatimHandler.class);
 

@@ -254,7 +254,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     @Override
     public Object getWrappedData() {
 
-        return (this.resultSet);
+        return (resultSet);
 
     }
 
@@ -306,7 +306,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
      */
     private void updated() {
 
-        this.updated = true;
+        updated = true;
 
     }
 
@@ -531,7 +531,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         public ResultSetEntriesIterator(ResultSetMap map) {
             this.map = map;
-            this.keys = map.keySet().iterator();
+            keys = map.keySet().iterator();
         }
 
         private ResultSetMap map;
@@ -697,7 +697,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     private static class ResultSetKeysIterator implements Iterator<String> {
 
         public ResultSetKeysIterator(ResultSetMap map) {
-            this.keys = map.realKeys();
+            keys = map.realKeys();
         }
 
         private Iterator<String> keys;
@@ -783,7 +783,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         public ResultSetValuesIterator(ResultSetMap map) {
             this.map = map;
-            this.keys = map.keySet().iterator();
+            keys = map.keySet().iterator();
         }
 
         private ResultSetMap map;

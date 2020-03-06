@@ -73,11 +73,11 @@ public class ComponentStruct implements StateHolder {
         }
 
         Object s[] = (Object[]) state;
-        this.action = (String) s[0];
-        this.parentClientId = (String) s[1];
-        this.clientId = (String) s[2];
-        this.id = (String) s[3];
-        this.facetName = (String) s[4];
+        action = (String) s[0];
+        parentClientId = (String) s[1];
+        clientId = (String) s[2];
+        id = (String) s[3];
+        facetName = (String) s[4];
     }
 
     @Override
@@ -87,11 +87,11 @@ public class ComponentStruct implements StateHolder {
         }
 
         Object state[] = new Object[5];
-        state[0] = this.action;
-        state[1] = this.parentClientId;
-        state[2] = this.clientId;
-        state[3] = this.id;
-        state[4] = this.facetName;
+        state[0] = action;
+        state[1] = parentClientId;
+        state[2] = clientId;
+        state[3] = id;
+        state[4] = facetName;
 
         return state;
     }
@@ -106,7 +106,7 @@ public class ComponentStruct implements StateHolder {
 
         if (obj instanceof ComponentStruct) {
             ComponentStruct struct = (ComponentStruct) obj;
-            result = struct.clientId.equals(this.clientId);
+            result = struct.clientId.equals(clientId);
         }
 
         return result;
@@ -120,7 +120,7 @@ public class ComponentStruct implements StateHolder {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 89 * hash + (this.clientId != null ? this.clientId.hashCode() : 0);
+        hash = 89 * hash + (clientId != null ? clientId.hashCode() : 0);
         return hash;
     }
 

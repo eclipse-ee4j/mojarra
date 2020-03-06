@@ -39,12 +39,12 @@ final class NamespaceUnit extends CompilationUnit {
 
     @Override
     public FaceletHandler createFaceletHandler() {
-        FaceletHandler next = this.getNextFaceletHandler();
-        return new NamespaceHandler(next, this.library, this.ns);
+        FaceletHandler next = getNextFaceletHandler();
+        return new NamespaceHandler(next, library, ns);
     }
 
     public void setNamespace(String prefix, String uri) {
-        this.ns.put(prefix, uri);
+        ns.put(prefix, uri);
     }
 
     @Override

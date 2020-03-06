@@ -239,7 +239,7 @@ public abstract class FacesValidator extends TagLibraryValidator {
             result = vmFromString(ex.toString());
         }
         // Make sure all resources are released
-        this.release();
+        release();
         return result;
     }
 

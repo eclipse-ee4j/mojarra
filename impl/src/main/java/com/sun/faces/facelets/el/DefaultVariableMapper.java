@@ -44,8 +44,8 @@ public final class DefaultVariableMapper extends VariableMapper {
      */
     @Override
     public ValueExpression resolveVariable(String name) {
-        if (this.vars != null) {
-            return (ValueExpression) this.vars.get(name);
+        if (vars != null) {
+            return (ValueExpression) vars.get(name);
         }
         return null;
     }
@@ -55,10 +55,10 @@ public final class DefaultVariableMapper extends VariableMapper {
      */
     @Override
     public ValueExpression setVariable(String name, ValueExpression expression) {
-        if (this.vars == null) {
-            this.vars = new HashMap();
+        if (vars == null) {
+            vars = new HashMap();
         }
-        return (ValueExpression) this.vars.put(name, expression);
+        return (ValueExpression) vars.put(name, expression);
     }
 
 }

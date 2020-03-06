@@ -47,8 +47,8 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
 
     public SetPropertyActionListenerHandler(TagConfig config) {
         super(config);
-        this.value = this.getRequiredAttribute("value");
-        this.target = this.getRequiredAttribute("target");
+        value = getRequiredAttribute("value");
+        target = getRequiredAttribute("target");
     }
 
     @Override
@@ -62,14 +62,14 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         } else if (UIComponent.isCompositeComponent(parent)) {
             if (null == getFor()) {
                 // PENDING(): I18N
-                throw new TagException(this.tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
+                throw new TagException(tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
             }
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
 
         } else {
-            throw new TagException(this.tag, "Parent is not of type ActionSource, type is: " + parent);
+            throw new TagException(tag, "Parent is not of type ActionSource, type is: " + parent);
         }
 
     }
@@ -79,8 +79,8 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
 
         ActionSource src = (ActionSource) parent;
-        ValueExpression valueExpr = this.value.getValueExpression(ctx, Object.class);
-        ValueExpression targetExpr = this.target.getValueExpression(ctx, Object.class);
+        ValueExpression valueExpr = value.getValueExpression(ctx, Object.class);
+        ValueExpression targetExpr = target.getValueExpression(ctx, Object.class);
 
         ActionListener listener;
 
@@ -96,7 +96,7 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
     @Override
     public String getFor() {
         String result = null;
-        TagAttribute attr = this.getAttribute("for");
+        TagAttribute attr = getAttribute("for");
 
         if (null != attr) {
             if (attr.isLiteral()) {
@@ -129,8 +129,8 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         @Override
         public void processAction(ActionEvent evt) throws AbortProcessingException {
             FacesContext faces = FacesContext.getCurrentInstance();
-            Object valueObj = this.value.getValue(faces);
-            this.target.setValue(faces, valueObj);
+            Object valueObj = value.getValue(faces);
+            target.setValue(faces, valueObj);
         }
 
     }
@@ -155,12 +155,12 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         public void processAction(ActionEvent evt) throws AbortProcessingException {
             FacesContext faces = FacesContext.getCurrentInstance();
             ELContext el = faces.getELContext();
-            Object valueObj = this.value.getValue(el);
+            Object valueObj = value.getValue(el);
             if (valueObj != null) {
                 ExpressionFactory factory = faces.getApplication().getExpressionFactory();
                 valueObj = factory.coerceToType(valueObj, target.getType(el));
             }
-            this.target.setValue(el, valueObj);
+            target.setValue(el, valueObj);
         }
 
     }

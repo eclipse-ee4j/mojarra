@@ -102,13 +102,13 @@ public class WebappLifecycleListener {
     // ------------------------------------------------------------ Constructors
 
     public WebappLifecycleListener() {
-        this.activeSessions = new ActiveSessions();
+        activeSessions = new ActiveSessions();
     }
 
     public WebappLifecycleListener(ServletContext servletContext) {
 
         this.servletContext = servletContext;
-        this.activeSessions = new ActiveSessions();
+        activeSessions = new ActiveSessions();
 
     }
 
@@ -334,8 +334,8 @@ public class WebappLifecycleListener {
      * @param event the notification event
      */
     public void contextInitialized(ServletContextEvent event) {
-        if (this.servletContext == null) {
-            this.servletContext = event.getServletContext();
+        if (servletContext == null) {
+            servletContext = event.getServletContext();
         }
     }
 
@@ -351,7 +351,7 @@ public class WebappLifecycleListener {
             String beanName = (String) e.nextElement();
             handleAttributeEvent(beanName, servletContext.getAttribute(beanName), ELUtils.Scope.APPLICATION);
         }
-        this.applicationAssociate = null;
+        applicationAssociate = null;
 
     }
 

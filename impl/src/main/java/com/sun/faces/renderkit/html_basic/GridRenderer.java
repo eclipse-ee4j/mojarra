@@ -101,7 +101,7 @@ public class GridRenderer extends BaseTableRenderer {
             renderRowEnd(context, component, writer);
         }
         if (!rowRendered) {
-            this.renderEmptyTableRow(writer, component);
+            renderEmptyTableRow(writer, component);
         }
         renderTableBodyEnd(context, component, writer);
     }

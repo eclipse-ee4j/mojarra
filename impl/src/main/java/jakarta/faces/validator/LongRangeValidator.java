@@ -170,7 +170,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
      */
     public long getMaximum() {
 
-        return (this.maximum != null ? this.maximum : 0);
+        return (maximum != null ? maximum : 0);
 
     }
 
@@ -199,7 +199,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
      */
     public long getMinimum() {
 
-        return (this.minimum != null ? this.minimum : 0);
+        return (minimum != null ? minimum : 0);
 
     }
 
@@ -266,8 +266,8 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
             return false;
         }
         LongRangeValidator other = (LongRangeValidator) otherObj;
-        return ((this.getMaximum() == other.getMaximum()) && (this.getMinimum() == other.getMinimum()) && (this.isMaximumSet() == other.isMaximumSet())
-                && (this.isMinimumSet() == other.isMinimumSet()));
+        return ((getMaximum() == other.getMaximum()) && (getMinimum() == other.getMinimum()) && (isMaximumSet() == other.isMaximumSet())
+                && (isMinimumSet() == other.isMinimumSet()));
 
     }
 
@@ -356,7 +356,7 @@ public class LongRangeValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (this.transientValue);
+        return (transientValue);
 
     }
 

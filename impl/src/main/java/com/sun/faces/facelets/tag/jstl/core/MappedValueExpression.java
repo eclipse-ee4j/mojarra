@@ -69,7 +69,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     public MappedValueExpression(ValueExpression orig, Map.Entry entry) {
         this.orig = orig;
-        this.key = entry.getKey();
+        key = entry.getKey();
     }
 
     /*
@@ -79,7 +79,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public Object getValue(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(true);
             return new Entry((Map) base, key);
@@ -95,7 +95,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public void setValue(ELContext context, Object value) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             context.getELResolver().setValue(context, base, key, value);
@@ -109,7 +109,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public boolean isReadOnly(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().isReadOnly(context, base, key);
@@ -124,7 +124,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public Class getType(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().getType(context, base, key);
@@ -149,7 +149,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public String getExpressionString() {
-        return this.orig.getExpressionString();
+        return orig.getExpressionString();
     }
 
     /*
@@ -159,7 +159,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public boolean equals(Object obj) {
-        return this.orig.equals(obj);
+        return orig.equals(obj);
     }
 
     /*

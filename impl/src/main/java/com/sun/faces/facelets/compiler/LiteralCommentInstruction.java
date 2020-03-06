@@ -32,7 +32,7 @@ final class LiteralCommentInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-        context.getResponseWriter().writeComment(this.text);
+        context.getResponseWriter().writeComment(text);
     }
 
     @Override

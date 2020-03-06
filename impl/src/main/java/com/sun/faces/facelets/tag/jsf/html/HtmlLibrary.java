@@ -33,77 +33,77 @@ public final class HtmlLibrary extends AbstractHtmlLibrary {
     public HtmlLibrary(String namespace) {
         super(namespace);
 
-        this.addHtmlComponent("body", "jakarta.faces.OutputBody", "jakarta.faces.Body");
+        addHtmlComponent("body", "jakarta.faces.OutputBody", "jakarta.faces.Body");
 
-        this.addHtmlComponent("button", "jakarta.faces.HtmlOutcomeTargetButton", "jakarta.faces.Button");
+        addHtmlComponent("button", "jakarta.faces.HtmlOutcomeTargetButton", "jakarta.faces.Button");
 
-        this.addHtmlComponent("column", "jakarta.faces.Column", null);
+        addHtmlComponent("column", "jakarta.faces.Column", null);
 
-        this.addHtmlComponent("commandButton", "jakarta.faces.HtmlCommandButton", "jakarta.faces.Button");
+        addHtmlComponent("commandButton", "jakarta.faces.HtmlCommandButton", "jakarta.faces.Button");
 
-        this.addHtmlComponent("commandLink", "jakarta.faces.HtmlCommandLink", "jakarta.faces.Link");
+        addHtmlComponent("commandLink", "jakarta.faces.HtmlCommandLink", "jakarta.faces.Link");
 
-        this.addHtmlComponent("commandScript", "jakarta.faces.HtmlCommandScript", "jakarta.faces.Script");
+        addHtmlComponent("commandScript", "jakarta.faces.HtmlCommandScript", "jakarta.faces.Script");
 
-        this.addHtmlComponent("dataTable", "jakarta.faces.HtmlDataTable", "jakarta.faces.Table");
+        addHtmlComponent("dataTable", "jakarta.faces.HtmlDataTable", "jakarta.faces.Table");
 
-        this.addHtmlComponent("form", "jakarta.faces.HtmlForm", "jakarta.faces.Form");
+        addHtmlComponent("form", "jakarta.faces.HtmlForm", "jakarta.faces.Form");
 
-        this.addHtmlComponent("graphicImage", "jakarta.faces.HtmlGraphicImage", "jakarta.faces.Image");
+        addHtmlComponent("graphicImage", "jakarta.faces.HtmlGraphicImage", "jakarta.faces.Image");
 
-        this.addHtmlComponent("head", "jakarta.faces.Output", "jakarta.faces.Head");
+        addHtmlComponent("head", "jakarta.faces.Output", "jakarta.faces.Head");
 
-        this.addHtmlComponent("html", "jakarta.faces.Output", "jakarta.faces.Html");
+        addHtmlComponent("html", "jakarta.faces.Output", "jakarta.faces.Html");
 
-        this.addHtmlComponent("doctype", "jakarta.faces.Output", "jakarta.faces.Doctype");
+        addHtmlComponent("doctype", "jakarta.faces.Output", "jakarta.faces.Doctype");
 
-        this.addHtmlComponent("inputFile", "jakarta.faces.HtmlInputFile", "jakarta.faces.File");
+        addHtmlComponent("inputFile", "jakarta.faces.HtmlInputFile", "jakarta.faces.File");
 
-        this.addHtmlComponent("inputHidden", "jakarta.faces.HtmlInputHidden", "jakarta.faces.Hidden");
+        addHtmlComponent("inputHidden", "jakarta.faces.HtmlInputHidden", "jakarta.faces.Hidden");
 
-        this.addHtmlComponent("inputSecret", "jakarta.faces.HtmlInputSecret", "jakarta.faces.Secret");
+        addHtmlComponent("inputSecret", "jakarta.faces.HtmlInputSecret", "jakarta.faces.Secret");
 
-        this.addHtmlComponent("inputText", "jakarta.faces.HtmlInputText", "jakarta.faces.Text");
+        addHtmlComponent("inputText", "jakarta.faces.HtmlInputText", "jakarta.faces.Text");
 
-        this.addHtmlComponent("inputTextarea", "jakarta.faces.HtmlInputTextarea", "jakarta.faces.Textarea");
+        addHtmlComponent("inputTextarea", "jakarta.faces.HtmlInputTextarea", "jakarta.faces.Textarea");
 
-        this.addHtmlComponent("link", "jakarta.faces.HtmlOutcomeTargetLink", "jakarta.faces.Link");
+        addHtmlComponent("link", "jakarta.faces.HtmlOutcomeTargetLink", "jakarta.faces.Link");
 
-        this.addHtmlComponent("message", "jakarta.faces.HtmlMessage", "jakarta.faces.Message");
+        addHtmlComponent("message", "jakarta.faces.HtmlMessage", "jakarta.faces.Message");
 
-        this.addHtmlComponent("messages", "jakarta.faces.HtmlMessages", "jakarta.faces.Messages");
+        addHtmlComponent("messages", "jakarta.faces.HtmlMessages", "jakarta.faces.Messages");
 
-        this.addHtmlComponent("outputFormat", "jakarta.faces.HtmlOutputFormat", "jakarta.faces.Format");
+        addHtmlComponent("outputFormat", "jakarta.faces.HtmlOutputFormat", "jakarta.faces.Format");
 
-        this.addHtmlComponent("outputLabel", "jakarta.faces.HtmlOutputLabel", "jakarta.faces.Label");
+        addHtmlComponent("outputLabel", "jakarta.faces.HtmlOutputLabel", "jakarta.faces.Label");
 
-        this.addHtmlComponent("outputLink", "jakarta.faces.HtmlOutputLink", "jakarta.faces.Link");
+        addHtmlComponent("outputLink", "jakarta.faces.HtmlOutputLink", "jakarta.faces.Link");
 
-        this.addHtmlComponent("outputText", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text");
+        addHtmlComponent("outputText", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text");
 
         this.addComponent("outputScript", "jakarta.faces.Output", "jakarta.faces.resource.Script", ScriptResourceHandler.class);
 
         this.addComponent("outputStylesheet", "jakarta.faces.Output", "jakarta.faces.resource.Stylesheet", StylesheetResourceHandler.class);
 
-        this.addHtmlComponent("panelGrid", "jakarta.faces.HtmlPanelGrid", "jakarta.faces.Grid");
+        addHtmlComponent("panelGrid", "jakarta.faces.HtmlPanelGrid", "jakarta.faces.Grid");
 
-        this.addHtmlComponent("panelGroup", "jakarta.faces.HtmlPanelGroup", "jakarta.faces.Group");
+        addHtmlComponent("panelGroup", "jakarta.faces.HtmlPanelGroup", "jakarta.faces.Group");
 
-        this.addHtmlComponent("selectBooleanCheckbox", "jakarta.faces.HtmlSelectBooleanCheckbox", "jakarta.faces.Checkbox");
+        addHtmlComponent("selectBooleanCheckbox", "jakarta.faces.HtmlSelectBooleanCheckbox", "jakarta.faces.Checkbox");
 
-        this.addHtmlComponent("selectManyCheckbox", "jakarta.faces.HtmlSelectManyCheckbox", "jakarta.faces.Checkbox");
+        addHtmlComponent("selectManyCheckbox", "jakarta.faces.HtmlSelectManyCheckbox", "jakarta.faces.Checkbox");
 
-        this.addHtmlComponent("selectManyListbox", "jakarta.faces.HtmlSelectManyListbox", "jakarta.faces.Listbox");
+        addHtmlComponent("selectManyListbox", "jakarta.faces.HtmlSelectManyListbox", "jakarta.faces.Listbox");
 
-        this.addHtmlComponent("selectManyMenu", "jakarta.faces.HtmlSelectManyMenu", "jakarta.faces.Menu");
+        addHtmlComponent("selectManyMenu", "jakarta.faces.HtmlSelectManyMenu", "jakarta.faces.Menu");
 
-        this.addHtmlComponent("selectOneListbox", "jakarta.faces.HtmlSelectOneListbox", "jakarta.faces.Listbox");
+        addHtmlComponent("selectOneListbox", "jakarta.faces.HtmlSelectOneListbox", "jakarta.faces.Listbox");
 
-        this.addHtmlComponent("selectOneMenu", "jakarta.faces.HtmlSelectOneMenu", "jakarta.faces.Menu");
+        addHtmlComponent("selectOneMenu", "jakarta.faces.HtmlSelectOneMenu", "jakarta.faces.Menu");
 
-        this.addHtmlComponent("selectOneRadio", "jakarta.faces.HtmlSelectOneRadio", "jakarta.faces.Radio");
+        addHtmlComponent("selectOneRadio", "jakarta.faces.HtmlSelectOneRadio", "jakarta.faces.Radio");
 
-        this.addHtmlComponent("title", "jakarta.faces.Output", "jakarta.faces.Title");
+        addHtmlComponent("title", "jakarta.faces.Output", "jakarta.faces.Title");
     }
 
 }

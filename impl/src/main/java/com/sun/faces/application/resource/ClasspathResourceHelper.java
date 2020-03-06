@@ -71,10 +71,10 @@ public class ClasspathResourceHelper extends ResourceHelper {
             return false;
         }
         final ClasspathResourceHelper other = (ClasspathResourceHelper) obj;
-        if (this.cacheTimestamp != other.cacheTimestamp) {
+        if (cacheTimestamp != other.cacheTimestamp) {
             return false;
         }
-        if (this.enableMissingResourceLibraryDetection != other.enableMissingResourceLibraryDetection) {
+        if (enableMissingResourceLibraryDetection != other.enableMissingResourceLibraryDetection) {
             return false;
         }
         return true;
@@ -83,8 +83,8 @@ public class ClasspathResourceHelper extends ResourceHelper {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 67 * hash + (this.cacheTimestamp ? 1 : 0);
-        hash = 67 * hash + (this.enableMissingResourceLibraryDetection ? 1 : 0);
+        hash = 67 * hash + (cacheTimestamp ? 1 : 0);
+        hash = 67 * hash + (enableMissingResourceLibraryDetection ? 1 : 0);
         return hash;
     }
 

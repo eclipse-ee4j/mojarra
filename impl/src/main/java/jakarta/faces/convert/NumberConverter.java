@@ -203,7 +203,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getCurrencyCode() {
 
-        return (this.currencyCode);
+        return (currencyCode);
 
     }
 
@@ -231,7 +231,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getCurrencySymbol() {
 
-        return (this.currencySymbol);
+        return (currencySymbol);
 
     }
 
@@ -259,7 +259,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public boolean isGroupingUsed() {
 
-        return (this.groupingUsed != null ? this.groupingUsed : true);
+        return (groupingUsed != null ? groupingUsed : true);
 
     }
 
@@ -287,7 +287,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public boolean isIntegerOnly() {
 
-        return (this.integerOnly != null ? this.integerOnly : false);
+        return (integerOnly != null ? integerOnly : false);
 
     }
 
@@ -315,7 +315,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMaxFractionDigits() {
 
-        return (this.maxFractionDigits != null ? this.maxFractionDigits : 0);
+        return (maxFractionDigits != null ? maxFractionDigits : 0);
 
     }
 
@@ -343,7 +343,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMaxIntegerDigits() {
 
-        return (this.maxIntegerDigits != null ? this.maxIntegerDigits : 0);
+        return (maxIntegerDigits != null ? maxIntegerDigits : 0);
 
     }
 
@@ -371,7 +371,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMinFractionDigits() {
 
-        return (this.minFractionDigits != null ? this.minFractionDigits : 0);
+        return (minFractionDigits != null ? minFractionDigits : 0);
 
     }
 
@@ -399,7 +399,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMinIntegerDigits() {
 
-        return (this.minIntegerDigits != null ? this.minIntegerDigits : 0);
+        return (minIntegerDigits != null ? minIntegerDigits : 0);
 
     }
 
@@ -429,10 +429,10 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public Locale getLocale() {
 
-        if (this.locale == null) {
-            this.locale = getLocale(FacesContext.getCurrentInstance());
+        if (locale == null) {
+            locale = getLocale(FacesContext.getCurrentInstance());
         }
-        return (this.locale);
+        return (locale);
 
     }
 
@@ -460,7 +460,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getPattern() {
 
-        return (this.pattern);
+        return (pattern);
 
     }
 
@@ -490,7 +490,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getType() {
 
-        return (this.type);
+        return (type);
 
     }
 

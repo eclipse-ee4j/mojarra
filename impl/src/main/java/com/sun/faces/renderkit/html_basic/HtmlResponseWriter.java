@@ -268,7 +268,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         this.isScriptInAttributeValueEnabled = isScriptInAttributeValueEnabled;
         this.disableUnicodeEscaping = disableUnicodeEscaping;
 
-        this.attributesBuffer = new FastStringWriter(128);
+        attributesBuffer = new FastStringWriter(128);
 
         // Check the character encoding
         if (!HtmlUtils.validateEncoding(encoding)) {
@@ -367,8 +367,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         try {
             HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(), isScriptHidingEnabled,
                     isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
-            responseWriter.dontEscape = this.dontEscape;
-            responseWriter.writingCdata = this.writingCdata;
+            responseWriter.dontEscape = dontEscape;
+            responseWriter.writingCdata = writingCdata;
             return responseWriter;
 
         } catch (FacesException e) {

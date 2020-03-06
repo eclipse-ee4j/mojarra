@@ -45,7 +45,7 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
     public ComponentResourceDelegate(ComponentHandler owner) {
 
         super(owner);
-        this.attributes = owner.getTag().getAttributes();
+        attributes = owner.getTag().getAttributes();
 
     }
 

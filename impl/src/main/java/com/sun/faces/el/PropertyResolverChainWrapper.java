@@ -35,7 +35,7 @@ public class PropertyResolverChainWrapper extends ELResolver {
 
     @SuppressWarnings("deprecation")
     public PropertyResolverChainWrapper(PropertyResolver propertyResolver) {
-        this.legacyPR = propertyResolver;
+        legacyPR = propertyResolver;
     }
 
     @Override

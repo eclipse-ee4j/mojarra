@@ -187,21 +187,21 @@ public class InputHiddenTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this.converter = null;
-        this.converterMessage = null;
-        this.immediate = null;
-        this.required = null;
-        this.requiredMessage = null;
-        this.validator = null;
-        this.validatorMessage = null;
-        this.value = null;
-        this.valueChangeListener = null;
+        converter = null;
+        converterMessage = null;
+        immediate = null;
+        required = null;
+        requiredMessage = null;
+        validator = null;
+        validatorMessage = null;
+        value = null;
+        valueChangeListener = null;
 
         // rendered attributes
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

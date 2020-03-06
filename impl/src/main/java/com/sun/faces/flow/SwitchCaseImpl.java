@@ -52,7 +52,7 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
     }
 
     public void setConditionExpression(ValueExpression conditionExpression) {
-        this.conditionExpr = conditionExpression;
+        conditionExpr = conditionExpression;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
     }
 
     public void setEnclosingId(String returnId) {
-        this.enclosingId = returnId;
+        enclosingId = returnId;
     }
 
 }

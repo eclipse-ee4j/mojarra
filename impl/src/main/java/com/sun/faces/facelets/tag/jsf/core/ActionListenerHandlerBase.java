@@ -63,14 +63,14 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
         } else if (parent.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY)) {
             if (null == getFor()) {
                 // PENDING(): I18N
-                throw new TagException(this.tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
+                throw new TagException(tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
             }
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
 
         } else {
-            throw new TagException(this.tag, "Parent is not of type ActionSource, type is: " + parent);
+            throw new TagException(tag, "Parent is not of type ActionSource, type is: " + parent);
         }
     }
 
@@ -80,7 +80,7 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
     @Override
     public String getFor() {
         String result = null;
-        TagAttribute attr = this.getAttribute("for");
+        TagAttribute attr = getAttribute("for");
 
         if (null != attr) {
             if (attr.isLiteral()) {

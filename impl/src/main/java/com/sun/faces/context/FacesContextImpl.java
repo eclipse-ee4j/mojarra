@@ -99,7 +99,7 @@ public class FacesContextImpl extends FacesContext {
     public FacesContextImpl(ExternalContext ec, Lifecycle lifecycle) {
         Util.notNull("ec", ec);
         Util.notNull("lifecycle", lifecycle);
-        this.externalContext = ec;
+        externalContext = ec;
         setCurrentInstance(this);
         DEFAULT_FACES_CONTEXT.set(this);
         rkFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
@@ -169,18 +169,18 @@ public class FacesContextImpl extends FacesContext {
     public boolean isPostback() {
 
         assertNotReleased();
-        Boolean postback = (Boolean) this.getAttributes().get(POST_BACK_MARKER);
+        Boolean postback = (Boolean) getAttributes().get(POST_BACK_MARKER);
         if (postback == null) {
-            RenderKit rk = this.getRenderKit();
+            RenderKit rk = getRenderKit();
             if (rk != null) {
                 postback = rk.getResponseStateManager().isPostback(this);
             } else {
                 // ViewRoot hasn't been set yet, so calculate the RK
-                ViewHandler vh = this.getApplication().getViewHandler();
+                ViewHandler vh = getApplication().getViewHandler();
                 String rkId = vh.calculateRenderKitId(this);
                 postback = RenderKitUtils.getResponseStateManager(this, rkId).isPostback(this);
             }
-            this.getAttributes().put(POST_BACK_MARKER, postback);
+            getAttributes().put(POST_BACK_MARKER, postback);
         }
 
         return postback;
@@ -224,7 +224,7 @@ public class FacesContextImpl extends FacesContext {
             if (null != exFactory) {
                 elContext.putContext(ExpressionFactory.class, exFactory);
             }
-            UIViewRoot root = this.getViewRoot();
+            UIViewRoot root = getViewRoot();
             if (null != root) {
                 elContext.setLocale(root.getLocale());
             }
@@ -693,7 +693,7 @@ public class FacesContextImpl extends FacesContext {
                 return inner.next();
             } else {
                 // call this.hasNext() to properly initialize/position 'inner'
-                if (!this.hasNext()) {
+                if (!hasNext()) {
                     throw new NoSuchElementException();
                 } else {
                     return inner.next();

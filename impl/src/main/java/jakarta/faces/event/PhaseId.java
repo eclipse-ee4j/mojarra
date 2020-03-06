@@ -74,7 +74,7 @@ public class PhaseId implements Comparable {
     @Override
     public int compareTo(Object other) {
 
-        return this.ordinal - ((PhaseId) other).ordinal;
+        return ordinal - ((PhaseId) other).ordinal;
 
     }
 
@@ -87,7 +87,7 @@ public class PhaseId implements Comparable {
      */
     public int getOrdinal() {
 
-        return (this.ordinal);
+        return (ordinal);
 
     }
 
@@ -99,10 +99,10 @@ public class PhaseId implements Comparable {
     @Override
     public String toString() {
         if (null == phaseName) {
-            return (String.valueOf(this.ordinal));
+            return (String.valueOf(ordinal));
         }
 
-        return (String.valueOf(this.phaseName) + ' ' + this.ordinal);
+        return (String.valueOf(phaseName) + ' ' + ordinal);
     }
 
     /**
@@ -116,7 +116,7 @@ public class PhaseId implements Comparable {
      */
 
     public String getName() {
-        return this.phaseName;
+        return phaseName;
     }
 
     /**

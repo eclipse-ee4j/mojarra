@@ -964,7 +964,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             LOGGER.fine("Initializing FaceletViewHandlingStrategy");
         }
 
-        this.initializeMappings();
+        initializeMappings();
 
         metadataCache = new Cache<>(new Factory<Resource, BeanInfo>() {
 

@@ -308,7 +308,7 @@ public class CompositeComponentStackManager {
         @Override
         public boolean push(UIComponent compositeComponent) {
 
-            Stack<UIComponent> tstack = CompositeComponentStackManager.this.treeCreation.getStack(false);
+            Stack<UIComponent> tstack = treeCreation.getStack(false);
             Stack<UIComponent> stack = getStack(false);
             UIComponent ccp;
             if (tstack != null) {

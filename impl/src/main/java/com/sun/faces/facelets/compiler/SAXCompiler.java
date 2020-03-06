@@ -73,16 +73,16 @@ public final class SAXCompiler extends Compiler {
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
-            if (this.inDocument) {
-                this.unit.writeText(new String(ch, start, length));
+            if (inDocument) {
+                unit.writeText(new String(ch, start, length));
             }
         }
 
         @Override
         public void comment(char[] ch, int start, int length) throws SAXException {
-            if (this.inDocument) {
+            if (inDocument) {
                 if (!unit.getWebConfiguration().getFaceletsConfiguration().isConsumeComments(alias)) {
-                    this.unit.writeComment(new String(ch, start, length));
+                    unit.writeComment(new String(ch, start, length));
                 }
             }
         }
@@ -91,7 +91,7 @@ public final class SAXCompiler extends Compiler {
             int len = attrs.getLength();
             TagAttributeImpl[] ta = new TagAttributeImpl[len];
             for (int i = 0; i < len; i++) {
-                ta[i] = new TagAttributeImpl(this.createLocation(), attrs.getURI(i), attrs.getLocalName(i), attrs.getQName(i), attrs.getValue(i));
+                ta[i] = new TagAttributeImpl(createLocation(), attrs.getURI(i), attrs.getLocalName(i), attrs.getQName(i), attrs.getValue(i));
             }
             return new TagAttributesImpl(ta);
         }
@@ -99,7 +99,7 @@ public final class SAXCompiler extends Compiler {
         protected Location createLocation() {
             Location result = null;
             if (null != locator) {
-                result = new Location(this.alias, this.locator.getLineNumber(), this.locator.getColumnNumber());
+                result = new Location(alias, locator.getLineNumber(), locator.getColumnNumber());
             } else {
                 if (log.isLoggable(Level.SEVERE)) {
                     log.log(Level.SEVERE, "Unable to create Location due to null locator instance variable.");
@@ -110,9 +110,9 @@ public final class SAXCompiler extends Compiler {
 
         @Override
         public void endCDATA() throws SAXException {
-            if (this.inDocument) {
+            if (inDocument) {
                 if (!unit.getWebConfiguration().getFaceletsConfiguration().isConsumeCDATA(alias)) {
-                    this.unit.writeInstruction("]]>");
+                    unit.writeInstruction("]]>");
                 }
             }
         }
@@ -124,13 +124,13 @@ public final class SAXCompiler extends Compiler {
 
         @Override
         public void endDTD() throws SAXException {
-            this.inDocument = true;
+            inDocument = true;
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
 
-            this.unit.popTag();
+            unit.popTag();
         }
 
         @Override
@@ -139,13 +139,13 @@ public final class SAXCompiler extends Compiler {
 
         @Override
         public void endPrefixMapping(String prefix) throws SAXException {
-            this.unit.popNamespace(prefix);
+            unit.popNamespace(prefix);
         }
 
         @Override
         public void fatalError(SAXParseException e) throws SAXException {
-            if (this.locator != null) {
-                throw new SAXException("Error Traced[line: " + this.locator.getLineNumber() + "] " + e.getMessage());
+            if (locator != null) {
+                throw new SAXException("Error Traced[line: " + locator.getLineNumber() + "] " + e.getMessage());
             } else {
                 throw e;
             }
@@ -153,8 +153,8 @@ public final class SAXCompiler extends Compiler {
 
         @Override
         public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-            if (this.inDocument) {
-                this.unit.writeWhitespace(new String(ch, start, length));
+            if (inDocument) {
+                unit.writeWhitespace(new String(ch, start, length));
             }
         }
 
@@ -176,26 +176,26 @@ public final class SAXCompiler extends Compiler {
 
         @Override
         public void startCDATA() throws SAXException {
-            if (this.inDocument) {
+            if (inDocument) {
                 if (!unit.getWebConfiguration().getFaceletsConfiguration().isConsumeCDATA(alias)) {
-                    this.unit.writeInstruction("<![CDATA[");
+                    unit.writeInstruction("<![CDATA[");
                 }
             }
         }
 
         @Override
         public void startDocument() throws SAXException {
-            this.inDocument = true;
+            inDocument = true;
         }
 
         @Override
         public void startDTD(String name, String publicId, String systemId) throws SAXException {
             // If there is a process-as value for the extension, only allow
             // the PI to be written if its value is xhtml
-            FaceletsConfiguration facelets = this.unit.getWebConfiguration().getFaceletsConfiguration();
+            FaceletsConfiguration facelets = unit.getWebConfiguration().getFaceletsConfiguration();
             boolean processAsXhtml = facelets.isProcessCurrentDocumentAsFaceletsXhtml(alias);
 
-            if (this.inDocument && (processAsXhtml || facelets.isOutputHtml5Doctype(alias))) {
+            if (inDocument && (processAsXhtml || facelets.isOutputHtml5Doctype(alias))) {
                 boolean isHtml5 = facelets.isOutputHtml5Doctype(alias);
                 // If we're in an ajax request, this is unnecessary and bugged
                 // RELEASE_PENDING - this is a hack, and should probably not be here -
@@ -217,16 +217,16 @@ public final class SAXCompiler extends Compiler {
                 // *only* time we will have access to it.
                 Util.saveDOCTYPEToFacesContextAttributes(sb.toString());
             }
-            this.inDocument = false;
+            inDocument = false;
         }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
-            TagAttributes tagAttrs = this.createAttributes(attributes);
-            Tag tag = new Tag(this.createLocation(), uri, localName, qName, tagAttrs);
+            TagAttributes tagAttrs = createAttributes(attributes);
+            Tag tag = new Tag(createLocation(), uri, localName, qName, tagAttrs);
             tagAttrs.setTag(tag);
-            this.unit.pushTag(tag);
+            unit.pushTag(tag);
 
         }
 
@@ -236,21 +236,21 @@ public final class SAXCompiler extends Compiler {
 
         @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException {
-            this.unit.pushNamespace(prefix, uri);
+            unit.pushNamespace(prefix, uri);
         }
 
         @Override
         public void processingInstruction(String target, String data) throws SAXException {
-            if (this.inDocument) {
+            if (inDocument) {
 
                 // If there is a process-as value for the extension, only allow
                 // the PI to be written if its value is xhtml
-                boolean processAsXhtml = this.unit.getWebConfiguration().getFaceletsConfiguration().isProcessCurrentDocumentAsFaceletsXhtml(alias);
+                boolean processAsXhtml = unit.getWebConfiguration().getFaceletsConfiguration().isProcessCurrentDocumentAsFaceletsXhtml(alias);
 
                 if (processAsXhtml) {
                     StringBuffer sb = new StringBuffer(64);
                     sb.append("<?").append(target).append(' ').append(data).append("?>\n");
-                    this.unit.writeInstruction(sb.toString());
+                    unit.writeInstruction(sb.toString());
                 }
             }
         }
@@ -287,7 +287,7 @@ public final class SAXCompiler extends Compiler {
                     // PENDING consider optimizing this to be a no-op
                     // on whitespace, but don't instantiate the String
                     // just to test that.
-                    this.unit.writeText(new String(ch, start, length));
+                    unit.writeText(new String(ch, start, length));
                 }
             }
 
@@ -394,7 +394,7 @@ public final class SAXCompiler extends Compiler {
         try (InputStream is = new BufferedInputStream(src.openStream(), 1024);) {
 
             writeXmlDecl(is, encoding, mngr);
-            SAXParser parser = this.createSAXParser(handler);
+            SAXParser parser = createSAXParser(handler);
             parser.parse(is, handler);
         } catch (SAXException e) {
             throw new FaceletException("Error Parsing " + alias + ": " + e.getMessage(), e.getCause());
@@ -452,8 +452,8 @@ public final class SAXCompiler extends Compiler {
         SAXParserFactory factory = Util.createSAXParserFactory();
         factory.setNamespaceAware(true);
         factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-        factory.setFeature("http://xml.org/sax/features/validation", this.isValidating());
-        factory.setValidating(this.isValidating());
+        factory.setFeature("http://xml.org/sax/features/validation", isValidating());
+        factory.setValidating(isValidating());
         if (handler.isDisallowDoctypeDeclSet()) {
             factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", handler.isDisallowDoctypeDecl());
         }

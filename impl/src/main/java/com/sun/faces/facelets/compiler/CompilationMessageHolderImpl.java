@@ -73,7 +73,7 @@ public class CompilationMessageHolderImpl implements CompilerPackageCompilationM
 
     @Override
     public void setCurrentCompositeComponentCompilationManager(CompilationManager manager) {
-        this.compilationManager = manager;
+        compilationManager = manager;
     }
 
 }

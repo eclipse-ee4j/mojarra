@@ -82,7 +82,7 @@ public class FacetTag extends TagSupport {
     public void release() {
 
         super.release();
-        this.name = null;
+        name = null;
 
     }
 

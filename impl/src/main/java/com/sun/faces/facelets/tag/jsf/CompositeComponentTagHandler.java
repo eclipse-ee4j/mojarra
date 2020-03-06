@@ -84,8 +84,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
     public CompositeComponentTagHandler(Resource ccResource, ComponentConfig config) {
         super(config);
         this.ccResource = ccResource;
-        this.binding = config.getTag().getAttributes().get("binding");
-        ((ComponentTagHandlerDelegateImpl) this.getTagHandlerDelegate()).setCreateCompositeComponentDelegate(this);
+        binding = config.getTag().getAttributes().get("binding");
+        ((ComponentTagHandlerDelegateImpl) getTagHandlerDelegate()).setCreateCompositeComponentDelegate(this);
     }
 
     // ------------------------------------ Methods from CreateComponentDelegate
@@ -165,7 +165,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
     @Override
     public void setCompositeComponent(FacesContext context, UIComponent cc) {
         Map contextMap = context.getAttributes();
-        String key = ccInstanceVariableStandinKey + this.tagId;
+        String key = ccInstanceVariableStandinKey + tagId;
         if (!contextMap.containsKey(key)) {
             contextMap.put(key, cc);
         }
@@ -174,7 +174,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
     @Override
     public UIComponent getCompositeComponent(FacesContext context) {
         Map contextMap = context.getAttributes();
-        String key = ccInstanceVariableStandinKey + this.tagId;
+        String key = ccInstanceVariableStandinKey + tagId;
         UIComponent result = (UIComponent) contextMap.get(key);
 
         return result;

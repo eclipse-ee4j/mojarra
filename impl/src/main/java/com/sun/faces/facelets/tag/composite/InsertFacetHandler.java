@@ -77,7 +77,7 @@ public class InsertFacetHandler extends TagHandlerImpl {
         UIComponent compositeParent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
 
         if (compositeParent != null) {
-            compositeParent.subscribeToEvent(PostAddToViewEvent.class, new RelocateFacetListener(ctx, parent, this.tag.getLocation()));
+            compositeParent.subscribeToEvent(PostAddToViewEvent.class, new RelocateFacetListener(ctx, parent, tag.getLocation()));
         }
 
     }

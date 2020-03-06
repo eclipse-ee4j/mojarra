@@ -180,7 +180,7 @@ public class ValidatorTag extends TagSupport {
     @Override
     public void release() {
 
-        this.id = null;
+        id = null;
 
     }
 

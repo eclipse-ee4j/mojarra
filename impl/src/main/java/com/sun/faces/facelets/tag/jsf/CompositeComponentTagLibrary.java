@@ -44,7 +44,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
             throw new NullPointerException();
         }
         this.ns = ns;
-        this.init();
+        init();
     }
 
     public CompositeComponentTagLibrary(String ns, String compositeLibraryName) {
@@ -57,7 +57,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
             throw new NullPointerException();
         }
         this.compositeLibraryName = compositeLibraryName;
-        this.init();
+        init();
 
     }
 

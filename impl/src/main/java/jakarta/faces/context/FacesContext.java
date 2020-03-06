@@ -750,7 +750,7 @@ public abstract class FacesContext {
             return defaultFacesContext.getCurrentPhaseId();
         }
         if (!isCreatedFromValidFactory) {
-            return this.currentPhaseIdForInvalidFactoryConstruction;
+            return currentPhaseIdForInvalidFactoryConstruction;
         }
         throw new UnsupportedOperationException();
 
@@ -773,7 +773,7 @@ public abstract class FacesContext {
         if (defaultFacesContext != null) {
             defaultFacesContext.setCurrentPhaseId(currentPhaseId);
         } else if (!isCreatedFromValidFactory) {
-            this.currentPhaseIdForInvalidFactoryConstruction = currentPhaseId;
+            currentPhaseIdForInvalidFactoryConstruction = currentPhaseId;
         } else {
             throw new UnsupportedOperationException();
         }
@@ -803,7 +803,7 @@ public abstract class FacesContext {
      * @return <code>true</code> if events should be published, otherwise <code>false</code>
      */
     public boolean isProcessingEvents() {
-        return this.processingEvents;
+        return processingEvents;
     }
 
     /**

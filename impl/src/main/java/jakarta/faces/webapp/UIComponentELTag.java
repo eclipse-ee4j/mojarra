@@ -117,8 +117,8 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase impleme
     @Override
     public void release() {
 
-        this.binding = null;
-        this.rendered = null;
+        binding = null;
+        rendered = null;
         super.release();
     }
 

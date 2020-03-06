@@ -53,7 +53,7 @@ class ValueExpressionAnalyzer {
             if (base instanceof CompositeComponentExpressionHolder) {
                 ValueExpression ve = ((CompositeComponentExpressionHolder) base).getExpression(reference.getProperty());
                 if (ve != null) {
-                    this.expression = ve;
+                    expression = ve;
                     reference = getReference(elContext);
                 }
             }

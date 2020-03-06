@@ -383,7 +383,7 @@ public class WebConfiguration {
         }
 
         // add the HttpMethodRestrictionPhaseListener if the parameter is enabled.
-        boolean enabled = this.isOptionEnabled(BooleanWebContextInitParameter.EnableHttpMethodRestrictionPhaseListener);
+        boolean enabled = isOptionEnabled(BooleanWebContextInitParameter.EnableHttpMethodRestrictionPhaseListener);
         if (enabled) {
             LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
             Iterator<String> ids = factory.getLifecycleIds();

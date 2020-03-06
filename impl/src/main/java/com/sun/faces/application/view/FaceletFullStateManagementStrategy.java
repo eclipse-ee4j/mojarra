@@ -737,7 +737,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         public FacetNode(int parent, String name, UIComponent c) {
 
             super(parent, c);
-            this.facetName = name;
+            facetName = name;
         }
 
         /**
@@ -751,7 +751,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
             super.readExternal(in);
-            this.facetName = in.readUTF();
+            facetName = in.readUTF();
 
         }
 
@@ -814,8 +814,8 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
          */
         public TreeNode(int parent, UIComponent c) {
             this.parent = parent;
-            this.id = c.getId();
-            this.componentType = c.getClass().getName();
+            id = c.getId();
+            componentType = c.getClass().getName();
         }
 
         /**
@@ -828,9 +828,9 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
-            this.parent = in.readInt();
-            this.componentType = in.readUTF();
-            this.id = in.readUTF();
+            parent = in.readInt();
+            componentType = in.readUTF();
+            id = in.readUTF();
             if (id.length() == 0) {
                 id = null;
             }
@@ -845,10 +845,10 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
 
-            out.writeInt(this.parent);
-            out.writeUTF(this.componentType);
-            if (this.id != null) {
-                out.writeUTF(this.id);
+            out.writeInt(parent);
+            out.writeUTF(componentType);
+            if (id != null) {
+                out.writeUTF(id);
             } else {
                 out.writeUTF(NULL_ID);
             }

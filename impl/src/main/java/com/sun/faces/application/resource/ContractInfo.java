@@ -35,7 +35,7 @@ public final class ContractInfo {
             return false;
         }
         final ContractInfo other = (ContractInfo) obj;
-        if ((this.contract == null) ? (other.contract != null) : !this.contract.equals(other.contract)) {
+        if ((contract == null) ? (other.contract != null) : !contract.equals(other.contract)) {
             return false;
         }
         return true;
@@ -44,7 +44,7 @@ public final class ContractInfo {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 29 * hash + (this.contract != null ? this.contract.hashCode() : 0);
+        hash = 29 * hash + (contract != null ? contract.hashCode() : 0);
         return hash;
     }
 

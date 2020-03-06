@@ -82,7 +82,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
      */
     public void setPattern(String pattern) {
         clearInitialState();
-        this.regex = pattern;
+        regex = pattern;
     }
 
     /**
@@ -94,7 +94,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
      */
 
     public String getPattern() {
-        return this.regex;
+        return regex;
     }
 
     /**
@@ -185,7 +185,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (this.transientValue);
+        return (transientValue);
 
     }
 

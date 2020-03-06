@@ -50,7 +50,7 @@ public class FunctionLibrary implements TagLibrary {
         Util.notNull("functionsClass", functionsClass);
         Util.notNull("namespace", namespace);
 
-        this._namespace = namespace;
+        _namespace = namespace;
 
         try {
             Method[] methods = functionsClass.getMethods();
@@ -85,13 +85,13 @@ public class FunctionLibrary implements TagLibrary {
 
     @Override
     public boolean containsFunction(String ns, String name) {
-        return _namespace.equals(ns) && this.functions.containsKey(name);
+        return _namespace.equals(ns) && functions.containsKey(name);
     }
 
     @Override
     public Method createFunction(String ns, String name) {
         if (_namespace.equals(ns)) {
-            return this.functions.get(name);
+            return functions.get(name);
         }
         return null;
     }

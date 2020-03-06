@@ -34,9 +34,9 @@ final class LiteralTextInstruction implements Instruction {
     @Override
     public void write(FacesContext context) throws IOException {
         if (FaceletsConfiguration.getInstance(context).isEscapeInlineText(context)) {
-            context.getResponseWriter().writeText(this.text, null);
+            context.getResponseWriter().writeText(text, null);
         } else {
-            context.getResponseWriter().write(this.text);
+            context.getResponseWriter().write(text);
         }
     }
 

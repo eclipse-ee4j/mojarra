@@ -86,7 +86,7 @@ public class LoadBundleTag extends TagSupport {
      * @param basename the ValueExpression which will resolve the basename
      */
     public void setBasename(ValueExpression basename) {
-        this.basenameExpression = basename;
+        basenameExpression = basename;
     }
 
     private String var;
@@ -144,7 +144,7 @@ public class LoadBundleTag extends TagSupport {
             @Override
             public String toString() {
                 StringBuffer sb = new StringBuffer();
-                Iterator<Map.Entry<String, Object>> entries = this.entrySet().iterator();
+                Iterator<Map.Entry<String, Object>> entries = entrySet().iterator();
                 Map.Entry<String, Object> cur;
                 while (entries.hasNext()) {
                     cur = entries.next();
@@ -346,9 +346,9 @@ public class LoadBundleTag extends TagSupport {
      * component should be added as a child
      */
     private UIComponentClassicTagBase getParentUIComponentTag() {
-        Tag parent = this.getParent();
+        Tag parent = getParent();
         while (null != parent && (!(parent instanceof UIComponentClassicTagBase))) {
-            parent = this.getParent();
+            parent = getParent();
         }
         UIComponentClassicTagBase result = (UIComponentClassicTagBase) parent;
 
@@ -372,8 +372,8 @@ public class LoadBundleTag extends TagSupport {
     @Override
     public void release() {
 
-        this.basenameExpression = null;
-        this.var = null;
+        basenameExpression = null;
+        var = null;
 
     }
 

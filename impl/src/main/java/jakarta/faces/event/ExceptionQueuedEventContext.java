@@ -165,7 +165,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      */
     public UIComponent getComponent() {
 
-        return this.component;
+        return component;
 
     }
 
@@ -179,7 +179,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      */
     public PhaseId getPhaseId() {
 
-        return this.phaseId;
+        return phaseId;
 
     }
 

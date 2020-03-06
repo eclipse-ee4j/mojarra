@@ -36,7 +36,7 @@ public class ExtensionHandler extends TagHandler {
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // extract a prefix from the child content
         if (null != nextHandler) {
-            String content = this.nextHandler.toString().trim();
+            String content = nextHandler.toString().trim();
             if (content.startsWith("<")) {
                 int i;
                 if (-1 != (i = content.indexOf(":"))) {

@@ -474,7 +474,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
     @Override
     public boolean isTransient() {
-        return this.transientValue;
+        return transientValue;
     }
 
     @Override

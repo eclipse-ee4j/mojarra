@@ -40,7 +40,7 @@ public class ConverterHandler extends FaceletsAttachedObjectHandler implements V
 
     public ConverterHandler(ConverterConfig config) {
         super(config);
-        this.converterId = config.getConverterId();
+        converterId = config.getConverterId();
     }
 
     @Override

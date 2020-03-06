@@ -100,8 +100,8 @@ public class ValidatorException extends FacesException {
      * @return the message
      */
     public FacesMessage getFacesMessage() {
-        FacesMessage result = this.message;
-        if (null == result && null != this.messages && !this.messages.isEmpty()) {
+        FacesMessage result = message;
+        if (null == result && null != messages && !messages.isEmpty()) {
             result = messages.iterator().next();
         }
         return result;
@@ -119,7 +119,7 @@ public class ValidatorException extends FacesException {
      */
 
     public Collection<FacesMessage> getFacesMessages() {
-        return this.messages;
+        return messages;
     }
 
     private FacesMessage message;

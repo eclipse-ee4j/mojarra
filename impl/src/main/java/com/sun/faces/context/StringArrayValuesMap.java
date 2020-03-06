@@ -55,10 +55,10 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
         }
         Map objMap = (Map) obj;
 
-        if (this.size() != objMap.size()) {
+        if (size() != objMap.size()) {
             return false;
         }
-        String[] thisKeys = keySet().toArray(new String[this.size()]);
+        String[] thisKeys = keySet().toArray(new String[size()]);
         Object[] objKeys = objMap.keySet().toArray();
 
         Arrays.sort(thisKeys);
@@ -68,7 +68,7 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
             return false;
         } else {
             for (Object key : thisKeys) {
-                Object[] thisVal = this.get(key);
+                Object[] thisVal = get(key);
                 Object[] objVal = (Object[]) objMap.get(key);
                 if (!(Arrays.equals(thisVal, objVal))) {
                     return false;

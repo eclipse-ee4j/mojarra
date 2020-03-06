@@ -89,7 +89,7 @@ public class PhaseEvent extends EventObject {
      */
     public PhaseId getPhaseId() {
 
-        return (this.phaseId);
+        return (phaseId);
 
     }
 

@@ -124,8 +124,8 @@ public class ConverterTag extends AbstractConverterTag {
 
             this.state = (Object[]) state;
             if (this.state != null) {
-                this.converterId = (ValueExpression) this.state[0];
-                this.binding = (ValueExpression) this.state[1];
+                converterId = (ValueExpression) this.state[0];
+                binding = (ValueExpression) this.state[1];
             }
 
         }

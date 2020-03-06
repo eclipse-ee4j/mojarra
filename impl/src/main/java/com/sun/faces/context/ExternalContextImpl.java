@@ -116,7 +116,7 @@ public class ExternalContextImpl extends ExternalContext {
         Util.notNull("response", response);
 
         // Save references to our context, request, and response
-        this.servletContext = sc;
+        servletContext = sc;
         this.request = request;
         this.response = response;
 
@@ -162,7 +162,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Object getContext() {
-        return this.servletContext;
+        return servletContext;
     }
 
     /**
@@ -172,7 +172,7 @@ public class ExternalContextImpl extends ExternalContext {
     public String getContextName() {
 
         if (servletContext.getMajorVersion() >= 3 || (servletContext.getMajorVersion() == 2 && servletContext.getMinorVersion() == 5)) {
-            return this.servletContext.getServletContextName();
+            return servletContext.getServletContextName();
         } else {
             // for servlet 2.4 support
             return servletContext.getServletContextName();
@@ -185,7 +185,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Object getRequest() {
-        return this.request;
+        return request;
     }
 
     /**
@@ -217,7 +217,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Object getResponse() {
-        return this.response;
+        return response;
     }
 
     /**
@@ -237,7 +237,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     @Override
     public void setClientWindow(ClientWindow window) {
-        this.clientWindow = window;
+        clientWindow = window;
     }
 
     /**
@@ -261,7 +261,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     @Override
     public String getApplicationContextPath() {
-        return this.servletContext.getContextPath();
+        return servletContext.getContextPath();
     }
 
     /**
@@ -285,7 +285,7 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public Map<String, Object> getRequestMap() {
         if (requestMap == null) {
-            requestMap = new RequestMap(this.request);
+            requestMap = new RequestMap(request);
         }
         return requestMap;
     }
@@ -621,7 +621,7 @@ public class ExternalContextImpl extends ExternalContext {
             return;
         }
         try {
-            requestDispatcher.forward(this.request, this.response);
+            requestDispatcher.forward(request, response);
         } catch (ServletException se) {
             throw new FacesException(se);
         }

@@ -37,16 +37,16 @@ public final class CatchHandler extends TagHandlerImpl {
      */
     public CatchHandler(TagConfig config) {
         super(config);
-        this.var = this.getAttribute("var");
+        var = getAttribute("var");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         try {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         } catch (Exception e) {
-            if (this.var != null) {
-                ctx.setAttribute(this.var.getValue(ctx), e);
+            if (var != null) {
+                ctx.setAttribute(var.getValue(ctx), e);
             }
         }
     }

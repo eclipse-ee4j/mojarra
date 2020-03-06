@@ -37,13 +37,13 @@ public final class JstlCoreLibrary extends AbstractTagLibrary {
      */
     public JstlCoreLibrary() {
         super(Namespace);
-        this.addTagHandler("if", IfHandler.class);
-        this.addTagHandler("forEach", ForEachHandler.class);
-        this.addTagHandler("catch", CatchHandler.class);
-        this.addTagHandler("choose", ChooseHandler.class);
-        this.addTagHandler("when", ChooseWhenHandler.class);
-        this.addTagHandler("otherwise", ChooseOtherwiseHandler.class);
-        this.addTagHandler("set", SetHandler.class);
+        addTagHandler("if", IfHandler.class);
+        addTagHandler("forEach", ForEachHandler.class);
+        addTagHandler("catch", CatchHandler.class);
+        addTagHandler("choose", ChooseHandler.class);
+        addTagHandler("when", ChooseWhenHandler.class);
+        addTagHandler("otherwise", ChooseOtherwiseHandler.class);
+        addTagHandler("set", SetHandler.class);
     }
 
     /**
@@ -58,12 +58,12 @@ public final class JstlCoreLibrary extends AbstractTagLibrary {
      */
     public JstlCoreLibrary(String namespace) {
         super(namespace);
-        this.addTagHandler("if", IfHandler.class);
-        this.addTagHandler("forEach", ForEachHandler.class);
-        this.addTagHandler("catch", CatchHandler.class);
-        this.addTagHandler("choose", ChooseHandler.class);
-        this.addTagHandler("when", ChooseWhenHandler.class);
-        this.addTagHandler("otherwise", ChooseOtherwiseHandler.class);
-        this.addTagHandler("set", SetHandler.class);
+        addTagHandler("if", IfHandler.class);
+        addTagHandler("forEach", ForEachHandler.class);
+        addTagHandler("catch", CatchHandler.class);
+        addTagHandler("choose", ChooseHandler.class);
+        addTagHandler("when", ChooseWhenHandler.class);
+        addTagHandler("otherwise", ChooseOtherwiseHandler.class);
+        addTagHandler("set", SetHandler.class);
     }
 }

@@ -48,8 +48,8 @@ public final class AttributeHandler extends TagHandlerImpl implements jakarta.fa
      */
     public AttributeHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.value = this.getRequiredAttribute("value");
+        name = getRequiredAttribute("name");
+        value = getRequiredAttribute("value");
     }
 
     /*
@@ -60,17 +60,17 @@ public final class AttributeHandler extends TagHandlerImpl implements jakarta.fa
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
-            throw new TagException(this.tag, "Parent UIComponent was null");
+            throw new TagException(tag, "Parent UIComponent was null");
         }
 
         // only process if the parent is new to the tree
         if (parent.getParent() == null) {
             String n = getAttributeName(ctx);
             if (!parent.getAttributes().containsKey(n)) {
-                if (this.value.isLiteral()) {
-                    parent.getAttributes().put(n, this.value.getValue());
+                if (value.isLiteral()) {
+                    parent.getAttributes().put(n, value.getValue());
                 } else {
-                    parent.setValueExpression(n, this.value.getValueExpression(ctx, Object.class));
+                    parent.setValueExpression(n, value.getValueExpression(ctx, Object.class));
                 }
             }
         }
@@ -80,6 +80,6 @@ public final class AttributeHandler extends TagHandlerImpl implements jakarta.fa
     // implementation.
     @Override
     public String getAttributeName(FaceletContext ctxt) {
-        return this.name.getValue(ctxt);
+        return name.getValue(ctxt);
     }
 }

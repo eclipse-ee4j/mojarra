@@ -52,7 +52,7 @@ public class SearchExpression {
     private CompositeSearchKeywordResolver searchKeywordResolvers;
 
     public SearchExpression(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
 
         searchKeywordResolvers = new CompositeSearchKeywordResolver();
 

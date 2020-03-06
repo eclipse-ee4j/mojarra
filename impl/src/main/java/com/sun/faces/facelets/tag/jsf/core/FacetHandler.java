@@ -43,7 +43,7 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
 
     public FacetHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
+        name = getRequiredAttribute("name");
     }
 
     /*
@@ -54,11 +54,11 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
-            throw new TagException(this.tag, "Parent UIComponent was null");
+            throw new TagException(tag, "Parent UIComponent was null");
         }
         parent.getAttributes().put(KEY, getFacetName(ctx));
         try {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         } finally {
             parent.getAttributes().remove(KEY);
         }
@@ -68,6 +68,6 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
     // implementation
     @Override
     public String getFacetName(FaceletContext ctxt) {
-        return this.name.getValue(ctxt);
+        return name.getValue(ctxt);
     }
 }

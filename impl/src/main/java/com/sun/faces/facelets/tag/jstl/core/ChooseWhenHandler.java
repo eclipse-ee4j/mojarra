@@ -34,15 +34,15 @@ public final class ChooseWhenHandler extends TagHandlerImpl {
 
     public ChooseWhenHandler(TagConfig config) {
         super(config);
-        this.test = this.getRequiredAttribute("test");
+        test = getRequiredAttribute("test");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
     }
 
     public boolean isTestTrue(FaceletContext ctx) {
-        return this.test.getBoolean(ctx);
+        return test.getBoolean(ctx);
     }
 }

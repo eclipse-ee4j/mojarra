@@ -45,9 +45,9 @@ public final class CompositeFunctionMapper extends FunctionMapper {
      */
     @Override
     public Method resolveFunction(String prefix, String name) {
-        Method m = this.fn0.resolveFunction(prefix, name);
+        Method m = fn0.resolveFunction(prefix, name);
         if (m == null) {
-            return this.fn1.resolveFunction(prefix, name);
+            return fn1.resolveFunction(prefix, name);
         }
         return m;
     }

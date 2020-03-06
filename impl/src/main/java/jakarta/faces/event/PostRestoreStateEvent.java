@@ -70,7 +70,7 @@ public class PostRestoreStateEvent extends ComponentSystemEvent {
     }
 
     public void setComponent(UIComponent newComponent) {
-        this.source = newComponent;
+        source = newComponent;
     }
 
 }

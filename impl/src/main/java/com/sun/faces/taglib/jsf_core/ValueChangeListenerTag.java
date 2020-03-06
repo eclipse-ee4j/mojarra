@@ -168,7 +168,7 @@ public class ValueChangeListenerTag extends TagSupport {
     @Override
     public void release() {
 
-        this.type = null;
+        type = null;
 
     }
 

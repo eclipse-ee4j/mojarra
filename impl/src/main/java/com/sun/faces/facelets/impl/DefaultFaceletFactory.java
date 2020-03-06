@@ -86,11 +86,11 @@ public class DefaultFaceletFactory {
     // ------------------------------------------------------------ Constructors
 
     public DefaultFaceletFactory() {
-        this.compiler = null;
-        this.resolver = null;
-        this.refreshPeriod = -1;
-        this.cache = null;
-        this.baseUrl = null;
+        compiler = null;
+        resolver = null;
+        refreshPeriod = -1;
+        cache = null;
+        baseUrl = null;
     }
 
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver) throws IOException {
@@ -104,17 +104,17 @@ public class DefaultFaceletFactory {
     }
 
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
-        this.init(compiler, resolver, refreshPeriod, cache);
+        init(compiler, resolver, refreshPeriod, cache);
     }
 
     public final void init(Compiler compiler, ResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
         Util.notNull("compiler", compiler);
         Util.notNull("resolver", resolver);
         this.compiler = compiler;
-        this.cachePerContract = new ConcurrentHashMap<>();
+        cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
-        this.baseUrl = resolver.resolveUrl("/");
-        this.idMappers = new Cache<>(new IdMapperFactory());
+        baseUrl = resolver.resolveUrl("/");
+        idMappers = new Cache<>(new IdMapperFactory());
         // this.location = url;
         refreshPeriod = (refreshPeriod >= 0) ? refreshPeriod * 1000 : -1;
         this.refreshPeriod = refreshPeriod;
@@ -197,7 +197,7 @@ public class DefaultFaceletFactory {
     public URL resolveURL(URL source, String path) throws IOException {
         // PENDING(FCAPUTO): always go to the resolver to make resource libary contracts work with relative urls
         if (path.startsWith("/")) {
-            URL url = this.resolver.resolveUrl(path);
+            URL url = resolver.resolveUrl(path);
             if (url == null) {
                 throw new FacesFileNotFoundException(path + " Not Found in ExternalContext as a Resource");
             }
@@ -283,14 +283,14 @@ public class DefaultFaceletFactory {
             }
             return faceletCache;
         }
-        return this.cache;
+        return cache;
     }
 
     private URL resolveURL(String uri) throws IOException {
         // PENDING(FCAPUTO) Deactivated caching for resource library contracts. If we still want to cache it, we need a cache
         // per contract libraries list.
         // But the ResourceHandler caches on his own (using ResourceManager).
-        URL url = this.resolveURL(this.baseUrl, uri);
+        URL url = this.resolveURL(baseUrl, uri);
         if (url == null) {
             throw new IOException("'" + uri + "' not found.");
         }
@@ -400,11 +400,11 @@ public class DefaultFaceletFactory {
         if (log.isLoggable(Level.FINE)) {
             log.fine("Creating Facelet for: " + url);
         }
-        String escapedBaseURL = Pattern.quote(this.baseUrl.getFile());
+        String escapedBaseURL = Pattern.quote(baseUrl.getFile());
         String alias = '/' + url.getFile().replaceFirst(escapedBaseURL, "");
         try {
-            FaceletHandler h = this.compiler.compile(url, alias);
-            return new DefaultFacelet(this, this.compiler.createExpressionFactory(), url, alias, h);
+            FaceletHandler h = compiler.compile(url, alias);
+            return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h);
         } catch (FileNotFoundException fnfe) {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
@@ -415,11 +415,11 @@ public class DefaultFaceletFactory {
         if (log.isLoggable(Level.FINE)) {
             log.fine("Creating Metadata Facelet for: " + url);
         }
-        String escapedBaseURL = Pattern.quote(this.baseUrl.getFile());
+        String escapedBaseURL = Pattern.quote(baseUrl.getFile());
         String alias = '/' + url.getFile().replaceFirst(escapedBaseURL, "");
         try {
-            FaceletHandler h = this.compiler.metadataCompile(url, alias);
-            return new DefaultFacelet(this, this.compiler.createExpressionFactory(), url, alias, h);
+            FaceletHandler h = compiler.metadataCompile(url, alias);
+            return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h);
         } catch (FileNotFoundException fnfe) {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
@@ -427,7 +427,7 @@ public class DefaultFaceletFactory {
     }
 
     public long getRefreshPeriod() {
-        return this.refreshPeriod;
+        return refreshPeriod;
     }
 
     // ---------------------------------------------------------- Nested Classes

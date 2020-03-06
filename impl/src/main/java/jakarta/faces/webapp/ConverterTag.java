@@ -197,7 +197,7 @@ public class ConverterTag extends TagSupport {
     @Override
     public void release() {
 
-        this.converterId = null;
+        converterId = null;
 
     }
 

@@ -35,7 +35,7 @@ final class LiteralAttributeInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-        context.getResponseWriter().writeAttribute(this.attr, this.text, null);
+        context.getResponseWriter().writeAttribute(attr, text, null);
     }
 
     @Override

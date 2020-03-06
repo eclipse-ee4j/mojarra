@@ -33,7 +33,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler {
 
     public ValidateDelegateHandler(ValidatorConfig config) {
         super(config);
-        this.validatorId = this.getAttribute("validatorId");
+        validatorId = getAttribute("validatorId");
     }
 
     /**
@@ -43,7 +43,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler {
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
      */
     protected String getValidator(FaceletContext ctx) {
-        return ((validatorId != null) ? this.validatorId.getValue(ctx) : null);
+        return ((validatorId != null) ? validatorId.getValue(ctx) : null);
     }
 
     @Override

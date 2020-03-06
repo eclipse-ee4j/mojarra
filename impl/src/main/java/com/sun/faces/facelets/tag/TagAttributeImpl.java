@@ -65,24 +65,24 @@ public class TagAttributeImpl extends TagAttribute {
     private Tag tag;
 
     public TagAttributeImpl() {
-        this.literal = false;
-        this.localName = null;
-        this.location = null;
-        this.namespace = null;
-        this.qName = null;
-        this.value = null;
-        this.string = null;
-        this.tag = null;
+        literal = false;
+        localName = null;
+        location = null;
+        namespace = null;
+        qName = null;
+        value = null;
+        string = null;
+        tag = null;
     }
 
     public TagAttributeImpl(Location location, String ns, String localName, String qName, String value) {
         this.location = location;
-        this.namespace = ns;
+        namespace = ns;
         this.localName = (null == localName || 0 == localName.length()) ? qName : localName;
         this.qName = qName;
         this.value = value;
         try {
-            this.literal = ELText.isLiteral(this.value);
+            literal = ELText.isLiteral(this.value);
         } catch (ELException e) {
             throw new TagAttributeException(this, e);
         }
@@ -101,8 +101,8 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public boolean getBoolean(FaceletContext ctx) {
-        if (this.literal) {
-            return Boolean.valueOf(this.value);
+        if (literal) {
+            return Boolean.valueOf(value);
         } else {
             Boolean bool = (Boolean) this.getObject(ctx, Boolean.class);
             if (bool == null) {
@@ -123,8 +123,8 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public int getInt(FaceletContext ctx) {
-        if (this.literal) {
-            return Integer.parseInt(this.value);
+        if (literal) {
+            return Integer.parseInt(value);
         } else {
             return ((Number) this.getObject(ctx, Integer.class)).intValue();
         }
@@ -137,7 +137,7 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public String getLocalName() {
-        return this.localName;
+        return localName;
     }
 
     /**
@@ -147,7 +147,7 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public Location getLocation() {
-        return this.location;
+        return location;
     }
 
     /**
@@ -168,19 +168,19 @@ public class TagAttributeImpl extends TagAttribute {
 
         try {
             ExpressionFactory f = ctx.getExpressionFactory();
-            if (ELUtils.isCompositeComponentLookupWithArgs(this.value)) {
+            if (ELUtils.isCompositeComponentLookupWithArgs(value)) {
                 String message = MessageUtils.getExceptionMessageString(ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
                 throw new TagAttributeException(this, message);
             }
             // Determine if this is a composite component attribute lookup.
             // If so, look for a MethodExpression under the attribute key
-            if (ELUtils.isCompositeComponentMethodExprLookup(this.value)) {
+            if (ELUtils.isCompositeComponentMethodExprLookup(value)) {
                 result = new AttributeLookupMethodExpression(getValueExpression(ctx, MethodExpression.class));
-            } else if (ELUtils.isCompositeComponentExpr(this.value)) {
-                MethodExpression delegate = new TagMethodExpression(this, f.createMethodExpression(ctx, this.value, type, paramTypes));
+            } else if (ELUtils.isCompositeComponentExpr(value)) {
+                MethodExpression delegate = new TagMethodExpression(this, f.createMethodExpression(ctx, value, type, paramTypes));
                 result = new ContextualCompositeMethodExpression(getLocation(), delegate);
             } else {
-                result = new TagMethodExpression(this, f.createMethodExpression(ctx, this.value, type, paramTypes));
+                result = new TagMethodExpression(this, f.createMethodExpression(ctx, value, type, paramTypes));
             }
         } catch (Exception e) {
             if (e instanceof TagAttributeException) {
@@ -199,7 +199,7 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public String getNamespace() {
-        return this.namespace;
+        return namespace;
     }
 
     /**
@@ -221,12 +221,12 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public String getQName() {
-        return this.qName;
+        return qName;
     }
 
     @Override
     public Tag getTag() {
-        return this.tag;
+        return tag;
     }
 
     @Override
@@ -241,7 +241,7 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public String getValue() {
-        return this.value;
+        return value;
     }
 
     /**
@@ -253,8 +253,8 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public String getValue(FaceletContext ctx) {
-        if (this.literal) {
-            return this.value;
+        if (literal) {
+            return value;
         } else {
             return (String) this.getObject(ctx, String.class);
         }
@@ -273,12 +273,12 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public Object getObject(FaceletContext ctx, Class type) {
-        if (this.literal) {
+        if (literal) {
             if (String.class.equals(type)) {
-                return this.value;
+                return value;
             } else {
                 try {
-                    return ctx.getExpressionFactory().coerceToType(this.value, type);
+                    return ctx.getExpressionFactory().coerceToType(value, type);
                 } catch (Exception e) {
                     throw new TagAttributeException(this, e);
                 }
@@ -304,7 +304,7 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public ValueExpression getValueExpression(FaceletContext ctx, Class type) {
-        return getValueExpression(ctx, this.value, type);
+        return getValueExpression(ctx, value, type);
     }
 
     /**
@@ -314,7 +314,7 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public boolean isLiteral() {
-        return this.literal;
+        return literal;
     }
 
     /*
@@ -324,10 +324,10 @@ public class TagAttributeImpl extends TagAttribute {
      */
     @Override
     public String toString() {
-        if (this.string == null) {
-            this.string = this.location + " " + this.qName + "=\"" + this.value + "\"";
+        if (string == null) {
+            string = location + " " + qName + "=\"" + value + "\"";
         }
-        return this.string;
+        return string;
     }
 
     // --------------------------------------------------------- Private Methods

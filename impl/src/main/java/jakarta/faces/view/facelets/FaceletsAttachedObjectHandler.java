@@ -47,7 +47,7 @@ public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHan
      * @return the handler instance
      */
     protected final AttachedObjectHandler getAttachedObjectHandlerHelper() {
-        return (AttachedObjectHandler) this.getTagHandlerDelegate();
+        return (AttachedObjectHandler) getTagHandlerDelegate();
     }
 
     /**

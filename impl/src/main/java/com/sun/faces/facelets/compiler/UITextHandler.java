@@ -44,15 +44,15 @@ final class UITextHandler extends AbstractUIHandler {
     public UITextHandler(String alias, ELText txt) {
         this.alias = alias;
         this.txt = txt;
-        this.length = txt.toString().length();
+        length = txt.toString().length();
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
             try {
-                ELText nt = this.txt.apply(ctx.getExpressionFactory(), ctx);
-                UIComponent c = new UIText(this.alias, nt);
+                ELText nt = txt.apply(ctx.getExpressionFactory(), ctx);
+                UIComponent c = new UIText(alias, nt);
                 String uid;
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
                 if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
@@ -62,30 +62,30 @@ final class UITextHandler extends AbstractUIHandler {
                 }
 
                 c.setId(uid);
-                this.addComponent(ctx, parent, c);
+                addComponent(ctx, parent, c);
             } catch (Exception e) {
-                throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+                throw new ELException(alias + ": " + e.getMessage(), e.getCause());
             }
         }
     }
 
     @Override
     public String toString() {
-        return this.txt.toString();
+        return txt.toString();
     }
 
     @Override
     public String getText() {
-        return this.txt.toString();
+        return txt.toString();
     }
 
     @Override
     public String getText(FaceletContext ctx) {
-        Writer writer = new FastWriter(this.length);
+        Writer writer = new FastWriter(length);
         try {
-            this.txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
+            txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
         } catch (IOException e) {
-            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+            throw new ELException(alias + ": " + e.getMessage(), e.getCause());
         }
         return writer.toString();
     }

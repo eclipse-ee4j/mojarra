@@ -111,7 +111,7 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
         this.delegate = delegate;
         this.source = source;
-        this.location = null;
+        location = null;
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent cc = UIComponent.getCurrentCompositeComponent(ctx);
         cc.subscribeToEvent(PostAddToViewEvent.class, new SetClientIdListener(this));
@@ -121,7 +121,7 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
         this.delegate = delegate;
         this.location = location;
-        this.source = null;
+        source = null;
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent cc = UIComponent.getCurrentCompositeComponent(ctx);
         cc.subscribeToEvent(PostAddToViewEvent.class, new SetClientIdListener(this));

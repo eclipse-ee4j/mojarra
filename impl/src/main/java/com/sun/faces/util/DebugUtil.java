@@ -85,7 +85,7 @@ public class DebugUtil {
     public DebugUtil() {
         super();
         // Util.parameterNonNull();
-        this.init();
+        init();
     }
 
     protected void init() {

@@ -220,7 +220,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
 
     @Override
     public boolean isTransient() {
-        return this.transientValue;
+        return transientValue;
     }
 
     @Override

@@ -137,12 +137,12 @@ public class ColumnTag extends UIComponentELTag {
     @Override
     public void release() {
         super.release();
-        this.headerClass = null;
-        this.footerClass = null;
+        headerClass = null;
+        footerClass = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

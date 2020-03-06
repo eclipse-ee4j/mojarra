@@ -150,7 +150,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     @Override
     public boolean isTransient() {
-        return this.tranzient;
+        return tranzient;
     }
 
     @Override

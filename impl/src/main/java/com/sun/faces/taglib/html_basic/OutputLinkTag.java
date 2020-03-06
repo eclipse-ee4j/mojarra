@@ -405,43 +405,43 @@ public class OutputLinkTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this.converter = null;
-        this.value = null;
+        converter = null;
+        value = null;
 
         // rendered attributes
-        this.accesskey = null;
-        this.charset = null;
-        this.coords = null;
-        this.dir = null;
-        this.disabled = null;
-        this.hreflang = null;
-        this.lang = null;
-        this.onblur = null;
-        this.onclick = null;
-        this.ondblclick = null;
-        this.onfocus = null;
-        this.onkeydown = null;
-        this.onkeypress = null;
-        this.onkeyup = null;
-        this.onmousedown = null;
-        this.onmousemove = null;
-        this.onmouseout = null;
-        this.onmouseover = null;
-        this.onmouseup = null;
-        this.rel = null;
-        this.rev = null;
-        this.role = null;
-        this.shape = null;
-        this.style = null;
-        this.styleClass = null;
-        this.tabindex = null;
-        this.target = null;
-        this.title = null;
-        this.type = null;
+        accesskey = null;
+        charset = null;
+        coords = null;
+        dir = null;
+        disabled = null;
+        hreflang = null;
+        lang = null;
+        onblur = null;
+        onclick = null;
+        ondblclick = null;
+        onfocus = null;
+        onkeydown = null;
+        onkeypress = null;
+        onkeyup = null;
+        onmousedown = null;
+        onmousemove = null;
+        onmouseout = null;
+        onmouseover = null;
+        onmouseup = null;
+        rel = null;
+        rev = null;
+        role = null;
+        shape = null;
+        style = null;
+        styleClass = null;
+        tabindex = null;
+        target = null;
+        title = null;
+        type = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

@@ -283,7 +283,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
         private MapIterator(Map map) {
 
-            this.iterator = map.entrySet().iterator();
+            iterator = map.entrySet().iterator();
 
         }
 
@@ -557,7 +557,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
             super(sourceComponent);
             this.ctx = ctx;
-            this.iterator = iterable.iterator();
+            iterator = iterable.iterator();
 
         }
 

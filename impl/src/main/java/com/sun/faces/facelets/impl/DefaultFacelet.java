@@ -76,24 +76,24 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias, FaceletHandler root) {
 
         this.factory = factory;
-        this.elFactory = el;
+        elFactory = el;
         this.src = src;
         this.root = root;
         this.alias = alias;
-        this.mapper = factory.idMappers.get(alias);
-        this.createTime = System.currentTimeMillis();
-        this.refreshPeriod = this.factory.getRefreshPeriod();
+        mapper = factory.idMappers.get(alias);
+        createTime = System.currentTimeMillis();
+        refreshPeriod = this.factory.getRefreshPeriod();
 
         String DOCTYPE = Util.getDOCTYPEFromFacesContextAttributes(FacesContext.getCurrentInstance());
         if (null != DOCTYPE) {
             // This will happen on the request that causes the facelets to be compiled
-            this.setSavedDoctype(DOCTYPE);
+            setSavedDoctype(DOCTYPE);
         }
 
         String XMLDECL = Util.getXMLDECLFromFacesContextAttributes(FacesContext.getCurrentInstance());
         if (null != XMLDECL) {
             // This will happen on the request that causes the facelets to be compiled
-            this.setSavedXMLDecl(XMLDECL);
+            setSavedXMLDecl(XMLDECL);
         }
 
     }
@@ -107,16 +107,16 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         IdMapper idMapper = IdMapper.getMapper(facesContext);
         boolean mapperSet = false;
         if (idMapper == null) {
-            IdMapper.setMapper(facesContext, this.mapper);
+            IdMapper.setMapper(facesContext, mapper);
             mapperSet = true;
         }
 
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this);
-        this.refresh(parent);
+        refresh(parent);
         ComponentSupport.markForDeletion(parent);
-        this.root.apply(ctx, parent);
+        root.apply(ctx, parent);
         ComponentSupport.finalizeForDeletion(parent);
-        this.markApplied(parent);
+        markApplied(parent);
 
         if (mapperSet) {
             IdMapper.setMapper(facesContext, null);
@@ -125,7 +125,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     private void refresh(UIComponent c) {
-        if (this.refreshPeriod > 0) {
+        if (refreshPeriod > 0) {
 
             // finally remove any children marked as deleted
             int sz = c.getChildCount();
@@ -136,10 +136,10 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                     UIComponent cc = (UIComponent) cl.get(sz);
                     if (!cc.isTransient()) {
                         token = (ApplyToken) cc.getAttributes().get(APPLIED_KEY);
-                        if (token != null && token.time < this.createTime && token.alias.equals(this.alias)) {
+                        if (token != null && token.time < createTime && token.alias.equals(alias)) {
                             if (log.isLoggable(Level.INFO)) {
                                 DateFormat df = SimpleDateFormat.getTimeInstance();
-                                log.info("Facelet[" + this.alias + "] was modified @ " + df.format(new Date(this.createTime))
+                                log.info("Facelet[" + alias + "] was modified @ " + df.format(new Date(createTime))
                                         + ", flushing component applied @ " + df.format(new Date(token.time)));
                             }
                             cl.remove(sz);
@@ -157,10 +157,10 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                     fc = (UIComponent) itr.next();
                     if (!fc.isTransient()) {
                         token = (ApplyToken) fc.getAttributes().get(APPLIED_KEY);
-                        if (token != null && token.time < this.createTime && token.alias.equals(this.alias)) {
+                        if (token != null && token.time < createTime && token.alias.equals(alias)) {
                             if (log.isLoggable(Level.INFO)) {
                                 DateFormat df = SimpleDateFormat.getTimeInstance();
-                                log.info("Facelet[" + this.alias + "] was modified @ " + df.format(new Date(this.createTime))
+                                log.info("Facelet[" + alias + "] was modified @ " + df.format(new Date(createTime))
                                         + ", flushing component applied @ " + df.format(new Date(token.time)));
                             }
                             itr.remove();
@@ -172,9 +172,9 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     private void markApplied(UIComponent parent) {
-        if (this.refreshPeriod > 0) {
+        if (refreshPeriod > 0) {
             Iterator itr = parent.getFacetsAndChildren();
-            ApplyToken token = new ApplyToken(this.alias, System.currentTimeMillis() + this.refreshPeriod);
+            ApplyToken token = new ApplyToken(alias, System.currentTimeMillis() + refreshPeriod);
             while (itr.hasNext()) {
                 UIComponent c = (UIComponent) itr.next();
                 if (!c.isTransient()) {
@@ -193,7 +193,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @return alias name
      */
     public String getAlias() {
-        return this.alias;
+        return alias;
     }
 
     /**
@@ -202,7 +202,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @return internal ExpressionFactory instance
      */
     public ExpressionFactory getExpressionFactory() {
-        return this.elFactory;
+        return elFactory;
     }
 
     /**
@@ -211,7 +211,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @return final timestamp of when this Facelet was created
      */
     public long getCreateTime() {
-        return this.createTime;
+        return createTime;
     }
 
     /**
@@ -222,7 +222,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @throws IOException if there is a problem creating the URL for the path specified
      */
     private URL getRelativePath(String path) throws IOException {
-        return this.factory.resolveURL(this.src, path);
+        return factory.resolveURL(src, path);
     }
 
     /**
@@ -231,7 +231,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @return the URL this Facelet was created from
      */
     public URL getSource() {
-        return this.src;
+        return src;
     }
 
     /**
@@ -246,9 +246,9 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @throws ELException
      */
     private void include(DefaultFaceletContext ctx, UIComponent parent) throws IOException {
-        this.refresh(parent);
-        this.root.apply(new DefaultFaceletContext(ctx, this), parent);
-        this.markApplied(parent);
+        refresh(parent);
+        root.apply(new DefaultFaceletContext(ctx, this), parent);
+        markApplied(parent);
     }
 
     /**
@@ -278,7 +278,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                 return;
             }
         } else {
-            url = this.getRelativePath(path);
+            url = getRelativePath(path);
         }
         this.include(ctx, parent, url);
     }
@@ -296,7 +296,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @throws ELException
      */
     public void include(DefaultFaceletContext ctx, UIComponent parent, URL url) throws IOException {
-        DefaultFacelet f = (DefaultFacelet) this.factory.getFacelet(ctx.getFacesContext(), url);
+        DefaultFacelet f = (DefaultFacelet) factory.getFacelet(ctx.getFacesContext(), url);
         f.include(ctx, parent);
     }
 
@@ -316,20 +316,20 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            this.alias = in.readUTF();
-            this.time = in.readLong();
+            alias = in.readUTF();
+            time = in.readLong();
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeUTF(this.alias);
-            out.writeLong(this.time);
+            out.writeUTF(alias);
+            out.writeLong(time);
         }
     }
 
     @Override
     public String toString() {
-        return this.alias;
+        return alias;
     }
 
     // ---------------------------------------------------------- Helper Methods

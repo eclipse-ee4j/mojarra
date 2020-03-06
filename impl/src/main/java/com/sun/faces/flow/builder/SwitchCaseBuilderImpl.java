@@ -30,7 +30,7 @@ public class SwitchCaseBuilderImpl extends SwitchCaseBuilder {
 
     public SwitchCaseBuilderImpl(SwitchBuilderImpl root) {
         this.root = root;
-        this.myCase = null;
+        myCase = null;
     }
 
     public SwitchCaseImpl getNavigationCase() {

@@ -368,7 +368,7 @@ public class ConverterPropertyEditorFactory {
         public DisposableClassLoader(ClassLoader targetLoader) {
             super(targetLoader);
             this.targetLoader = targetLoader;
-            this.myLoader = ConverterPropertyEditorBase.class.getClassLoader();
+            myLoader = ConverterPropertyEditorBase.class.getClassLoader();
         }
 
         /**

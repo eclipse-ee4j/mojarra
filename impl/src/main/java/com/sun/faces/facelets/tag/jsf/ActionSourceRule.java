@@ -49,7 +49,7 @@ final class ActionSourceRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource) instance).setAction(new LegacyMethodBinding(this.attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG)));
+            ((ActionSource) instance).setAction(new LegacyMethodBinding(attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG)));
         }
     }
 
@@ -63,7 +63,7 @@ final class ActionSourceRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource2) instance).setActionExpression(this.attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG));
+            ((ActionSource2) instance).setActionExpression(attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG));
         }
 
     }
@@ -79,7 +79,7 @@ final class ActionSourceRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ActionSource) instance)
-                    .setActionListener(new LegacyMethodBinding(this.attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG)));
+                    .setActionListener(new LegacyMethodBinding(attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG)));
         }
 
     }

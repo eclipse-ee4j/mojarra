@@ -41,7 +41,7 @@ final class ValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ValueHolder) instance).setConverter(ctx.getFacesContext().getApplication().createConverter(this.converterId));
+            ((ValueHolder) instance).setConverter(ctx.getFacesContext().getApplication().createConverter(converterId));
         }
     }
 

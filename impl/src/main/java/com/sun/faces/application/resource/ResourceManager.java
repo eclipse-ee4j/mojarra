@@ -488,7 +488,7 @@ public class ResourceManager {
             }
         }
         FacesContext context = FacesContext.getCurrentInstance();
-        LibraryInfo info = this.findLibrary(libraryName, null, null, context);
+        LibraryInfo info = findLibrary(libraryName, null, null, context);
         ResourceInfo resourceInfo = this.findResource(info, resourceName, libraryName, true, false, context);
 
         return resourceInfo;

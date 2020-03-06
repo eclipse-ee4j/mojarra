@@ -122,7 +122,7 @@ public class StateContext {
         UIViewRoot refRoot = viewRootRef.get();
         if (root != refRoot) {
             // set weak reference to current viewRoot
-            this.viewRootRef = new WeakReference<>(root);
+            viewRootRef = new WeakReference<>(root);
 
             // On first call in restore phase, viewRoot is null, so we treat the first
             // change to not null not as a changing viewRoot.

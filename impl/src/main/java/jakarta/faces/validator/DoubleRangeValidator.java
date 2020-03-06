@@ -172,7 +172,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
      */
     public double getMaximum() {
 
-        return (this.maximum != null ? this.maximum : Double.MAX_VALUE);
+        return (maximum != null ? maximum : Double.MAX_VALUE);
 
     }
 
@@ -202,7 +202,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
      */
     public double getMinimum() {
 
-        return (this.minimum != null ? this.minimum : Double.MIN_VALUE);
+        return (minimum != null ? minimum : Double.MIN_VALUE);
 
     }
 
@@ -277,8 +277,8 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
             return false;
         }
         DoubleRangeValidator other = (DoubleRangeValidator) otherObj;
-        return ((this.getMaximum() == other.getMaximum()) && (this.getMinimum() == other.getMinimum()) && (this.isMaximumSet() == other.isMaximumSet())
-                && (this.isMinimumSet() == other.isMinimumSet()));
+        return ((getMaximum() == other.getMaximum()) && (getMinimum() == other.getMinimum()) && (isMaximumSet() == other.isMaximumSet())
+                && (isMinimumSet() == other.isMinimumSet()));
 
     }
 
@@ -292,7 +292,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
     @Override
     public int hashCode() {
 
-        int hashCode = (Double.valueOf(this.getMinimum()).hashCode() + Double.valueOf(this.getMaximum()).hashCode() + Boolean.valueOf(isMinimumSet()).hashCode()
+        int hashCode = (Double.valueOf(getMinimum()).hashCode() + Double.valueOf(getMaximum()).hashCode() + Boolean.valueOf(isMinimumSet()).hashCode()
                 + Boolean.valueOf(isMaximumSet()).hashCode());
         return (hashCode);
 
@@ -374,7 +374,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (this.transientValue);
+        return (transientValue);
 
     }
 

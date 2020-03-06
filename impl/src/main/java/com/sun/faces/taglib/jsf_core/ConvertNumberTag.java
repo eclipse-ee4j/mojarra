@@ -144,50 +144,50 @@ public class ConvertNumberTag extends AbstractConverterTag {
     //
 
     public void setCurrencyCode(ValueExpression currencyCode) {
-        this.currencyCodeExpression = currencyCode;
+        currencyCodeExpression = currencyCode;
     }
 
     public void setCurrencySymbol(ValueExpression currencySymbol) {
-        this.currencySymbolExpression = currencySymbol;
+        currencySymbolExpression = currencySymbol;
     }
 
     public void setGroupingUsed(ValueExpression groupingUsed) {
-        this.groupingUsedExpression = groupingUsed;
+        groupingUsedExpression = groupingUsed;
     }
 
     public void setIntegerOnly(ValueExpression integerOnly) {
-        this.integerOnlyExpression = integerOnly;
+        integerOnlyExpression = integerOnly;
     }
 
     public void setMaxFractionDigits(ValueExpression maxFractionDigits) {
-        this.maxFractionDigitsExpression = maxFractionDigits;
-        this.maxFractionDigitsSpecified = true;
+        maxFractionDigitsExpression = maxFractionDigits;
+        maxFractionDigitsSpecified = true;
     }
 
     public void setMaxIntegerDigits(ValueExpression maxIntegerDigits) {
-        this.maxIntegerDigitsExpression = maxIntegerDigits;
-        this.maxIntegerDigitsSpecified = true;
+        maxIntegerDigitsExpression = maxIntegerDigits;
+        maxIntegerDigitsSpecified = true;
     }
 
     public void setMinFractionDigits(ValueExpression minFractionDigits) {
-        this.minFractionDigitsExpression = minFractionDigits;
-        this.minFractionDigitsSpecified = true;
+        minFractionDigitsExpression = minFractionDigits;
+        minFractionDigitsSpecified = true;
     }
 
     public void setMinIntegerDigits(ValueExpression minIntegerDigits) {
-        this.minIntegerDigitsExpression = minIntegerDigits;
+        minIntegerDigitsExpression = minIntegerDigits;
     }
 
     public void setLocale(ValueExpression locale) {
-        this.localeExpression = locale;
+        localeExpression = locale;
     }
 
     public void setPattern(ValueExpression pattern) {
-        this.patternExpression = pattern;
+        patternExpression = pattern;
     }
 
     public void setType(ValueExpression type) {
-        this.typeExpression = type;
+        typeExpression = type;
     }
 
     @Override

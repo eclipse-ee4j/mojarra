@@ -51,7 +51,7 @@ public class ValidatorHandler extends FaceletsAttachedObjectHandler implements E
     public ValidatorHandler(ValidatorConfig config) {
         super(config);
         this.config = config;
-        this.validatorId = config.getValidatorId();
+        validatorId = config.getValidatorId();
     }
 
     /**

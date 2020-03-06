@@ -35,7 +35,7 @@ public class FlowCallBuilderImpl extends FlowCallBuilder {
 
     public FlowCallBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;
-        this.flowCallNodeId = id;
+        flowCallNodeId = id;
     }
 
     @Override

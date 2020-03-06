@@ -40,7 +40,7 @@ public class XMLInstruction implements Instruction {
     public void write(FacesContext context) throws IOException {
         ResponseWriter rw = context.getResponseWriter();
         rw.writeText(STOP, 0, 0); // hack to get closing elements
-        this.text.write(rw, context.getELContext());
+        text.write(rw, context.getELContext());
     }
 
     @Override

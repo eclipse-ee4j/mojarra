@@ -57,7 +57,7 @@ public abstract class Phase {
         context.setCurrentPhaseId(getId());
         PhaseEvent event = null;
         if (listeners.hasNext()) {
-            event = new PhaseEvent(context, this.getId(), lifecycle);
+            event = new PhaseEvent(context, getId(), lifecycle);
         }
 
         // start timing - include before and after phase processing
@@ -82,7 +82,7 @@ public abstract class Phase {
             // stop timing
             if (timer != null) {
                 timer.stopTiming();
-                timer.logResult("Execution time for phase (including any PhaseListeners) -> " + this.getId().toString());
+                timer.logResult("Execution time for phase (including any PhaseListeners) -> " + getId().toString());
             }
 
             context.getExceptionHandler().handle();
@@ -143,7 +143,7 @@ public abstract class Phase {
         }
         while (listenersIterator.hasPrevious()) {
             PhaseListener listener = listenersIterator.previous();
-            if (this.getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
+            if (getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
                 try {
                     listener.afterPhase(event);
                 } catch (Exception e) {
@@ -174,7 +174,7 @@ public abstract class Phase {
         }
         while (listenersIterator.hasNext()) {
             PhaseListener listener = listenersIterator.next();
-            if (this.getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
+            if (getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
                 try {
                     listener.beforePhase(event);
                 } catch (Exception e) {
@@ -201,7 +201,7 @@ public abstract class Phase {
 
         if (context.getResponseComplete()) {
             return (true);
-        } else if (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(this.getId())) {
+        } else if (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(getId())) {
             return (true);
         } else {
             return (false);

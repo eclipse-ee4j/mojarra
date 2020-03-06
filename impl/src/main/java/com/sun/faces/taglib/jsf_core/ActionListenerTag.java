@@ -167,7 +167,7 @@ public class ActionListenerTag extends TagSupport {
     @Override
     public void release() {
 
-        this.type = null;
+        type = null;
 
     }
 

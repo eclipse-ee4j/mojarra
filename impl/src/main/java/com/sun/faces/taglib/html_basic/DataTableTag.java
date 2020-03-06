@@ -457,49 +457,49 @@ public class DataTableTag extends UIComponentELTag {
         super.release();
 
         // component properties
-        this.first = null;
-        this.rowStatePreserved = null;
-        this.rows = null;
-        this.value = null;
-        this._var = null;
+        first = null;
+        rowStatePreserved = null;
+        rows = null;
+        value = null;
+        _var = null;
 
         // rendered attributes
-        this.bgcolor = null;
-        this.bodyrows = null;
-        this.border = null;
-        this.captionClass = null;
-        this.captionStyle = null;
-        this.cellpadding = null;
-        this.cellspacing = null;
-        this.columnClasses = null;
-        this.dir = null;
-        this.footerClass = null;
-        this.frame = null;
-        this.headerClass = null;
-        this.lang = null;
-        this.onclick = null;
-        this.ondblclick = null;
-        this.onkeydown = null;
-        this.onkeypress = null;
-        this.onkeyup = null;
-        this.onmousedown = null;
-        this.onmousemove = null;
-        this.onmouseout = null;
-        this.onmouseover = null;
-        this.onmouseup = null;
-        this.role = null;
-        this.rowClass = null;
-        this.rowClasses = null;
-        this.rules = null;
-        this.style = null;
-        this.styleClass = null;
-        this.summary = null;
-        this.title = null;
-        this.width = null;
+        bgcolor = null;
+        bodyrows = null;
+        border = null;
+        captionClass = null;
+        captionStyle = null;
+        cellpadding = null;
+        cellspacing = null;
+        columnClasses = null;
+        dir = null;
+        footerClass = null;
+        frame = null;
+        headerClass = null;
+        lang = null;
+        onclick = null;
+        ondblclick = null;
+        onkeydown = null;
+        onkeypress = null;
+        onkeyup = null;
+        onmousedown = null;
+        onmousemove = null;
+        onmouseout = null;
+        onmouseover = null;
+        onmouseup = null;
+        role = null;
+        rowClass = null;
+        rowClasses = null;
+        rules = null;
+        style = null;
+        styleClass = null;
+        summary = null;
+        title = null;
+        width = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

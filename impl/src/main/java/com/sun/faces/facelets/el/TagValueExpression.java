@@ -75,7 +75,7 @@ public final class TagValueExpression extends ValueExpression implements Externa
         } catch (PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(tagAttribute + ": " + pnfe.getMessage(), pnfe);
         } catch (ELException e) {
-            throw new ELException(this.tagAttribute + ": " + e.getMessage(), e);
+            throw new ELException(tagAttribute + ": " + e.getMessage(), e);
         }
     }
 
@@ -84,9 +84,9 @@ public final class TagValueExpression extends ValueExpression implements Externa
         try {
             return wrapped.isReadOnly(context);
         } catch (PropertyNotFoundException pnfe) {
-            throw new PropertyNotFoundException(this.tagAttribute + ": " + pnfe.getMessage(), pnfe);
+            throw new PropertyNotFoundException(tagAttribute + ": " + pnfe.getMessage(), pnfe);
         } catch (ELException e) {
-            throw new ELException(this.tagAttribute + ": " + e.getMessage(), e);
+            throw new ELException(tagAttribute + ": " + e.getMessage(), e);
         }
     }
 
