@@ -40,19 +40,22 @@ import javax.naming.NamingException;
 import jakarta.faces.FacesException;
 
 /**
- * <p>This utility class is to provide both encryption and
- * decryption <code>Ciphers</code> to <code>ResponseStateManager</code>
- * implementations wishing to provide encryption support.</p>
+ * <p>
+ * This utility class is to provide both encryption and decryption <code>Ciphers</code> to
+ * <code>ResponseStateManager</code> implementations wishing to provide encryption support.
+ * </p>
  * 
- * <p>The algorithm used to encrypt byte array is AES with CBC.</p>
- *  
- * <p>Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit JSF
- * needs.</p> 
+ * <p>
+ * The algorithm used to encrypt byte array is AES with CBC.
+ * </p>
+ * 
+ * <p>
+ * Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit JSF needs.
+ * </p>
  */
 public final class ByteArrayGuardAESCTR {
 
-
-     // Log instance for this class
+    // Log instance for this class
     private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
     private static final int KEY_LENGTH = 128;
@@ -60,9 +63,9 @@ public final class ByteArrayGuardAESCTR {
 
     private static final String KEY_ALGORITHM = "AES";
     private static final String CIPHER_CODE = "AES/CTR/NoPadding";
-    
+
     private SecretKey sk;
-    
+
     private Charset utf8;
 
     // ------------------------------------------------------------ Constructors
@@ -72,26 +75,20 @@ public final class ByteArrayGuardAESCTR {
         try {
             setupKeyAndCharset();
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) { 
-                LOGGER.log(Level.SEVERE,
-                           "Unexpected exception initializing encryption."
-                           + "  No encryption will be performed.",
-                           e);
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
             System.err.println("ERROR: Initializing Ciphers");
         }
     }
 
-    // ---------------------------------------------------------- Public Methods    
-
+    // ---------------------------------------------------------- Public Methods
 
     /**
-     * This method:
-     *    Encrypts bytes using a cipher.  
-     *    Generates MAC for intialization vector of the cipher
-     *    Generates MAC for encrypted data
-     *    Returns a byte array consisting of the following concatenated together:
-     *       |MAC for cnrypted Data | MAC for Init Vector | Encrypted Data |
+     * This method: Encrypts bytes using a cipher. Generates MAC for intialization vector of the cipher Generates MAC for
+     * encrypted data Returns a byte array consisting of the following concatenated together: |MAC for cnrypted Data | MAC
+     * for Init Vector | Encrypted Data |
+     * 
      * @param bytes The byte array to be encrypted.
      * @return the encrypted byte array.
      */
@@ -114,12 +111,10 @@ public final class ByteArrayGuardAESCTR {
 
             // Base64 encode the encrypted bytes
             securedata = Base64.getEncoder().encodeToString(temp);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
+                | BadPaddingException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                           "Unexpected exception initializing encryption."
-                           + "  No encryption will be performed.",
-                           e);
+                LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
             return null;
         }
@@ -127,9 +122,9 @@ public final class ByteArrayGuardAESCTR {
     }
 
     public String decrypt(String value) throws InvalidKeyException {
-        
-        byte[] bytes = Base64.getDecoder().decode(value); 
-        
+
+        byte[] bytes = Base64.getDecoder().decode(value);
+
         try {
             byte[] iv = new byte[16];
 
@@ -155,11 +150,12 @@ public final class ByteArrayGuardAESCTR {
                 }
             }
             return new String(plaindata, utf8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException nsae) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException
+                | BadPaddingException nsae) {
             throw new InvalidKeyException(nsae);
         }
     }
-    
+
     // --------------------------------------------------------- Private Methods
 
     private void setupKeyAndCharset() {
@@ -174,26 +170,25 @@ public final class ByteArrayGuardAESCTR {
                 }
                 sk = new SecretKeySpec(keyArray, KEY_ALGORITHM);
             }
-        } catch(NamingException exception) {
-            if (LOGGER.isLoggable(Level.FINEST)) { 
+        } catch (NamingException exception) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "Unable to find the encoded key.", exception);
             }
         } catch (FacesException e) {
             throw new FacesException(e);
         }
-        
+
         if (null == sk) {
             try {
                 KeyGenerator kg = KeyGenerator.getInstance(KEY_ALGORITHM);
-                kg.init(KEY_LENGTH);   // 256 if you're using the Unlimited Policy Files
-                sk = kg.generateKey(); 
+                kg.init(KEY_LENGTH); // 256 if you're using the Unlimited Policy Files
+                sk = kg.generateKey();
             } catch (Exception e) {
                 throw new FacesException(e);
             }
         }
-        
-            
-        SortedMap<String,Charset> availableCharsets = Charset.availableCharsets();
+
+        SortedMap<String, Charset> availableCharsets = Charset.availableCharsets();
         if (availableCharsets.containsKey("UTF-8")) {
             utf8 = availableCharsets.get("UTF-8");
         } else if (availableCharsets.containsKey("UTF8")) {
@@ -201,11 +196,12 @@ public final class ByteArrayGuardAESCTR {
         } else {
             throw new FacesException("Unable to get UTF-8 Charset.");
         }
-        
+
     }
 
     /**
      * This method concatenates two byte arrays
+     * 
      * @return a byte array of array1||array2
      * @param array1 first byte array to be concatenated
      * @param array2 second byte array to be concatenated
@@ -215,7 +211,7 @@ public final class ByteArrayGuardAESCTR {
         try {
             System.arraycopy(array1, 0, cBytes, 0, array1.length);
             System.arraycopy(array2, 0, cBytes, array1.length, array2.length);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new FacesException(e);
         }
         return cBytes;

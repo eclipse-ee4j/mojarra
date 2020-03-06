@@ -37,8 +37,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * A Tag that is specified in a FaceletFile. Takes all attributes specified and
- * sets them on the FaceletContext before including the targeted Facelet file.
+ * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before
+ * including the targeted Facelet file.
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -58,7 +58,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         super(config);
         this.vars = this.tag.getAttributes().getAll();
         this.location = location;
-                Iterator itr = this.findNextByType(DefineHandler.class);
+        Iterator itr = this.findNextByType(DefineHandler.class);
         if (itr.hasNext()) {
             handlers = new HashMap();
 
@@ -73,30 +73,28 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
     }
 
     /**
-     * Iterate over all TagAttributes and set them on the FaceletContext's
-     * VariableMapper, then include the target Facelet. Finally, replace the old
-     * VariableMapper.
+     * Iterate over all TagAttributes and set them on the FaceletContext's VariableMapper, then include the target Facelet.
+     * Finally, replace the old VariableMapper.
      * 
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
      * @see VariableMapper
-     * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext, jakarta.faces.component.UIComponent)
+     * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     * jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctxObj, UIComponent parent)
-    throws IOException {
+    public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
         VariableMapper orig = ctx.getVariableMapper();
-        
+
         // setup a variable map
         if (this.vars.length > 0) {
             VariableMapper varMapper = new VariableMapperWrapper(orig);
             for (int i = 0; i < this.vars.length; i++) {
-                varMapper.setVariable(this.vars[i].getLocalName(), this.vars[i]
-                        .getValueExpression(ctx, Object.class));
+                varMapper.setVariable(this.vars[i].getLocalName(), this.vars[i].getValueExpression(ctx, Object.class));
             }
             ctx.setVariableMapper(varMapper);
         }
-        
+
         // eval include
         try {
             ctx.pushClient(this);
@@ -104,7 +102,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         } catch (FileNotFoundException e) {
             throw new TagException(this.tag, e.getMessage());
         } finally {
-            
+
             // make sure we undo our changes
             ctx.popClient(this);
             ctx.setVariableMapper(orig);
@@ -112,8 +110,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
     }
 
     @Override
-    public boolean apply(FaceletContext ctx, UIComponent parent, String name)
-    throws IOException {
+    public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
         if (name != null) {
             if (this.handlers == null) {
                 return false;
@@ -126,9 +123,9 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
                 return false;
             }
         } else {
-             this.nextHandler.apply(ctx, parent);
-             return true;
-         }
+            this.nextHandler.apply(ctx, parent);
+            return true;
+        }
     }
 
 }

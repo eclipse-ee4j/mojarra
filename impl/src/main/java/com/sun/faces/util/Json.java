@@ -50,18 +50,17 @@ import jakarta.json.stream.JsonGenerator;
  * Generic JSON encoder using jakarta.json API.
  * <p>
  * This supports the standard types {@link Boolean}, {@link Number}, {@link Character}, {@link CharSequence},
- * {@link Date}, {@link LocalDate} and {@link Instant}.
- * If the given object type does not match any of them, then it will attempt to inspect the object as a JavaBean
- * using the {@link Introspector}, whereby the public properties (public getters) will be encoded as a JS object.
- * It also supports arrays, {@link Collection}s and {@link Map}s of them, even nested ones.
- * The dates are formatted as ISO8601 instant via {@link DateTimeFormatter#ISO_INSTANT}, so you can if necessary
- * just pass the value straight to <code>new Date(value)</code> in JavaScript.
+ * {@link Date}, {@link LocalDate} and {@link Instant}. If the given object type does not match any of them, then it
+ * will attempt to inspect the object as a JavaBean using the {@link Introspector}, whereby the public properties
+ * (public getters) will be encoded as a JS object. It also supports arrays, {@link Collection}s and {@link Map}s of
+ * them, even nested ones. The dates are formatted as ISO8601 instant via {@link DateTimeFormatter#ISO_INSTANT}, so you
+ * can if necessary just pass the value straight to <code>new Date(value)</code> in JavaScript.
  * <p>
  * Below encoding options are available:
- * <li>{@link Option#SKIP_NULL_VALUES}: skip null values in arrays, collections, maps and beans.
- * This may reduce an unnecessarily bloated JSON object.
- * <li>{@link Option#USE_RFC1123_DATE}: format dates as RFC1123 via {@link DateTimeFormatter#RFC_1123_DATE_TIME}.
- * This may improve compatibility with older web browsers.
+ * <li>{@link Option#SKIP_NULL_VALUES}: skip null values in arrays, collections, maps and beans. This may reduce an
+ * unnecessarily bloated JSON object.
+ * <li>{@link Option#USE_RFC1123_DATE}: format dates as RFC1123 via {@link DateTimeFormatter#RFC_1123_DATE_TIME}. This
+ * may improve compatibility with older web browsers.
  *
  * @author Bauke Scholtz
  * @since 2.3
@@ -74,22 +73,21 @@ public class Json {
     public enum Option {
 
         /**
-         * Skip null values in arrays, collections, maps and beans.
-         * This may reduce an unnecessarily bloated JSON object.
+         * Skip null values in arrays, collections, maps and beans. This may reduce an unnecessarily bloated JSON object.
          */
         SKIP_NULL_VALUES,
 
         /**
-         * Format dates as RFC1123 via {@link DateTimeFormatter#RFC_1123_DATE_TIME}.
-         * This may improve compatibility with older web browsers.
+         * Format dates as RFC1123 via {@link DateTimeFormatter#RFC_1123_DATE_TIME}. This may improve compatibility with older
+         * web browsers.
          */
         USE_RFC1123_DATE;
 
     }
 
     /**
-     * Encodes the given object as JSON and returns a string in JSON format.
-     * The encoded object will be available as <code>data</code> property of the JS object in the returned JSON string.
+     * Encodes the given object as JSON and returns a string in JSON format. The encoded object will be available as
+     * <code>data</code> property of the JS object in the returned JSON string.
      *
      * @param object The object to be encoded as JSON.
      * @param options The encoding options.
@@ -103,8 +101,8 @@ public class Json {
     }
 
     /**
-     * Encodes the given object as JSON while streaming the string in JSON format to the given writer.
-     * The encoded object will be available as <code>data</code> property of the JS object in the returned JSON string.
+     * Encodes the given object as JSON while streaming the string in JSON format to the given writer. The encoded object
+     * will be available as <code>data</code> property of the JS object in the returned JSON string.
      *
      * @param object The object to be encoded as JSON.
      * @param writer The writer to stream the encoded output to.
@@ -122,50 +120,35 @@ public class Json {
     private static void encode(String name, Object object, JsonGenerator generator, EnumSet<Option> options) {
         if (object == null) {
             encodeNull(name, generator);
-        }
-        else if (object instanceof Boolean) {
+        } else if (object instanceof Boolean) {
             encodeBoolean(name, (Boolean) object, generator);
-        }
-        else if (object instanceof BigDecimal) {
+        } else if (object instanceof BigDecimal) {
             encodeBigDecimal(name, (BigDecimal) object, generator);
-        }
-        else if (object instanceof Double) {
+        } else if (object instanceof Double) {
             encodeDouble(name, (Double) object, generator);
-        }
-        else if (object instanceof BigInteger) {
+        } else if (object instanceof BigInteger) {
             encodeBigInteger(name, (BigInteger) object, generator);
-        }
-        else if (object instanceof Integer) {
+        } else if (object instanceof Integer) {
             encodeInteger(name, (Integer) object, generator);
-        }
-        else if (object instanceof Number) {
+        } else if (object instanceof Number) {
             encodeLong(name, ((Number) object).longValue(), generator);
-        }
-        else if (object instanceof Character) {
+        } else if (object instanceof Character) {
             encodeString(name, ((Character) object).toString(), generator);
-        }
-        else if (object instanceof CharSequence) {
+        } else if (object instanceof CharSequence) {
             encodeString(name, ((CharSequence) object).toString(), generator);
-        }
-        else if (object instanceof Date) {
+        } else if (object instanceof Date) {
             encodeInstant(name, ((Date) object).toInstant().atZone(UTC).toInstant(), generator, options);
-        }
-        else if (object instanceof LocalDate) {
+        } else if (object instanceof LocalDate) {
             encodeInstant(name, ((LocalDate) object).atStartOfDay(UTC).toInstant(), generator, options);
-        }
-        else if (object instanceof Instant) {
+        } else if (object instanceof Instant) {
             encodeInstant(name, (Instant) object, generator, options);
-        }
-        else if (object.getClass().isArray()) {
+        } else if (object.getClass().isArray()) {
             encodeArray(name, object, generator, options);
-        }
-        else if (object instanceof Collection<?>) {
+        } else if (object instanceof Collection<?>) {
             encodeCollection(name, (Collection<?>) object, generator, options);
-        }
-        else if (object instanceof Map<?, ?>) {
+        } else if (object instanceof Map<?, ?>) {
             encodeMap(name, (Map<?, ?>) object, generator, options);
-        }
-        else {
+        } else {
             encodeBean(name, object, generator, options);
         }
     }
@@ -173,8 +156,7 @@ public class Json {
     private static void encodeNull(String name, JsonGenerator generator) {
         if (name == null) {
             generator.writeNull();
-        }
-        else {
+        } else {
             generator.writeNull(name);
         }
     }
@@ -182,8 +164,7 @@ public class Json {
     private static void encodeBoolean(String name, Boolean value, JsonGenerator generator) {
         if (name == null) {
             generator.write(value);
-        }
-        else {
+        } else {
             generator.write(name, value);
         }
     }
@@ -191,8 +172,7 @@ public class Json {
     private static void encodeBigDecimal(String name, BigDecimal value, JsonGenerator generator) {
         if (name == null) {
             generator.write(value);
-        }
-        else {
+        } else {
             generator.write(name, value);
         }
     }
@@ -200,8 +180,7 @@ public class Json {
     private static void encodeDouble(String name, double value, JsonGenerator generator) {
         if (name == null) {
             generator.write(value);
-        }
-        else {
+        } else {
             generator.write(name, value);
         }
     }
@@ -209,8 +188,7 @@ public class Json {
     private static void encodeBigInteger(String name, BigInteger value, JsonGenerator generator) {
         if (name == null) {
             generator.write(value);
-        }
-        else {
+        } else {
             generator.write(name, value);
         }
     }
@@ -218,8 +196,7 @@ public class Json {
     private static void encodeInteger(String name, int value, JsonGenerator generator) {
         if (name == null) {
             generator.write(value);
-        }
-        else {
+        } else {
             generator.write(name, value);
         }
     }
@@ -227,8 +204,7 @@ public class Json {
     private static void encodeLong(String name, long value, JsonGenerator generator) {
         if (name == null) {
             generator.write(value);
-        }
-        else {
+        } else {
             generator.write(name, value);
         }
     }
@@ -236,8 +212,7 @@ public class Json {
     private static void encodeString(String name, String value, JsonGenerator generator) {
         if (name == null) {
             generator.write(value);
-        }
-        else {
+        } else {
             generator.write(name, value);
         }
     }
@@ -249,8 +224,7 @@ public class Json {
     private static void encodeArray(String name, Object array, JsonGenerator generator, EnumSet<Option> options) {
         if (name == null) {
             generator.writeStartArray();
-        }
-        else {
+        } else {
             generator.writeStartArray(name);
         }
 
@@ -270,8 +244,7 @@ public class Json {
     private static void encodeCollection(String name, Collection<?> collection, JsonGenerator generator, EnumSet<Option> options) {
         if (name == null) {
             generator.writeStartArray();
-        }
-        else {
+        } else {
             generator.writeStartArray(name);
         }
 
@@ -289,8 +262,7 @@ public class Json {
     private static void encodeMap(String name, Map<?, ?> map, JsonGenerator generator, EnumSet<Option> options) {
         if (name == null) {
             generator.writeStartObject();
-        }
-        else {
+        } else {
             generator.writeStartObject(name);
         }
 
@@ -312,15 +284,13 @@ public class Json {
 
         try {
             beanInfo = Introspector.getBeanInfo(bean.getClass());
-        }
-        catch (IntrospectionException e) {
+        } catch (IntrospectionException e) {
             throw new IllegalArgumentException(String.format(ERROR_INVALID_BEAN, bean.getClass()), e);
         }
 
         if (name == null) {
             generator.writeStartObject();
-        }
-        else {
+        } else {
             generator.writeStartObject(name);
         }
 
@@ -335,8 +305,7 @@ public class Json {
 
             try {
                 value = property.getReadMethod().invoke(bean);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new IllegalArgumentException(String.format(ERROR_INVALID_GETTER, property.getName(), bean.getClass()), e);
             }
 

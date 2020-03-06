@@ -27,7 +27,7 @@ import jakarta.faces.component.search.SearchKeywordResolver;
 public class CompositeSearchKeywordResolver extends SearchKeywordResolver {
 
     private static final int NUMBER_OF_DEFAULT_IMPLEMENTATIONS = 12;
-    
+
     private final List<SearchKeywordResolver> resolvers;
 
     public CompositeSearchKeywordResolver() {

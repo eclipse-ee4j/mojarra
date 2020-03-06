@@ -43,8 +43,7 @@ import jakarta.faces.event.SystemEventListener;
  * <p>
  * ValidateFormComponentNesting performs component tree validation to assure {@link ActionSource} ,
  * {@link ActionSource2} and {@link EditableValueHolder} components are placed inside a form.
- * ValidateFormComponentNesting is installed automatically if {@link ProjectStage#Development} is
- * active.
+ * ValidateFormComponentNesting is installed automatically if {@link ProjectStage#Development} is active.
  * </p>
  * 
  * @author dueni

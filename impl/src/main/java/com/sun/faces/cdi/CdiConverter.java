@@ -30,23 +30,23 @@ public class CdiConverter implements Converter, StateHolder {
      * Stores the converter-id (if any).
      */
     private String converterId;
-    
+
     /**
      * Stores a transient reference to the CDI managed converter.
      */
     private transient Converter delegate;
-    
+
     /**
      * Stores the for-class (if any).
      */
     private Class forClass;
-    
+
     /**
-     * Constructor. 
+     * Constructor.
      */
     public CdiConverter() {
     }
-    
+
     /**
      * Constructor.
      * 
@@ -59,7 +59,7 @@ public class CdiConverter implements Converter, StateHolder {
         this.forClass = forClass;
         this.delegate = delegate;
     }
-    
+
     /**
      * Get the object.
      * 
@@ -94,10 +94,7 @@ public class CdiConverter implements Converter, StateHolder {
      */
     @Override
     public Object saveState(FacesContext facesContext) {
-        return new Object[] {
-            converterId,
-            forClass
-        };
+        return new Object[] { converterId, forClass };
     }
 
     /**
@@ -127,10 +124,10 @@ public class CdiConverter implements Converter, StateHolder {
      * Set the converter to transient.
      * 
      * <p>
-     *  We ignore the call as our proxy is always non-transient.
+     * We ignore the call as our proxy is always non-transient.
      * </p>
      * 
-     * @param transientValue 
+     * @param transientValue
      */
     @Override
     public void setTransient(boolean transientValue) {

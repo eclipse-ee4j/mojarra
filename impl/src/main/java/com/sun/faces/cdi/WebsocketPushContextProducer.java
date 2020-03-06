@@ -30,7 +30,6 @@ import com.sun.faces.push.WebsocketUserManager;
 import jakarta.faces.push.Push;
 import jakarta.faces.push.PushContext;
 
-
 /**
  * <p class="changed_added_2_3">
  * This producer prepares the {@link WebsocketPushContext} instance for injection by <code>&#64;</code>{@link Push}.

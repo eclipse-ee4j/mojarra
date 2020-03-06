@@ -18,24 +18,27 @@
 package jakarta.faces.view.facelets;
 
 /**
- * <p class="changed_added_2_0">An interface that allows other code 
- * to identify FaceletHandlers that may provide text (String) content.</p>
+ * <p class="changed_added_2_0">
+ * An interface that allows other code to identify FaceletHandlers that may provide text (String) content.
+ * </p>
  *
  * @since 2.0
  */
 public interface TextHandler {
 
     /**
-     * <p class="changed_added_2_0">Returns the literal String value of the 
-     * contained text.</p>
+     * <p class="changed_added_2_0">
+     * Returns the literal String value of the contained text.
+     * </p>
      * 
      * @return the literal String value of the contained text
      */
     public String getText();
-    
+
     /**
-     * <p class="changed_added_2_0">Returns the resolved literal String value 
-     * of the contained text after evaluating EL.</p>
+     * <p class="changed_added_2_0">
+     * Returns the resolved literal String value of the contained text after evaluating EL.
+     * </p>
      *
      * @param ctx the <code>FaceletContext</code> for this view execution
      * 

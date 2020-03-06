@@ -23,238 +23,271 @@ import jakarta.servlet.jsp.JspException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
 
-
 /*
  * ******* GENERATED CODE - DO NOT EDIT *******
  */
 
-
 public class DataTableTag extends UIComponentELTag {
-
 
     // Setter Methods
     // PROPERTY: first
     private jakarta.el.ValueExpression first;
+
     public void setFirst(jakarta.el.ValueExpression first) {
         this.first = first;
     }
 
     // PROPERTY: rowStatePreserved
     private jakarta.el.ValueExpression rowStatePreserved;
+
     public void setRowStatePreserved(jakarta.el.ValueExpression rowStatePreserved) {
         this.rowStatePreserved = rowStatePreserved;
     }
 
     // PROPERTY: rows
     private jakarta.el.ValueExpression rows;
+
     public void setRows(jakarta.el.ValueExpression rows) {
         this.rows = rows;
     }
 
     // PROPERTY: value
     private jakarta.el.ValueExpression value;
+
     public void setValue(jakarta.el.ValueExpression value) {
         this.value = value;
     }
 
     // PROPERTY: var
     private java.lang.String _var;
+
     public void setVar(java.lang.String _var) {
         this._var = _var;
     }
 
     // PROPERTY: bgcolor
     private jakarta.el.ValueExpression bgcolor;
+
     public void setBgcolor(jakarta.el.ValueExpression bgcolor) {
         this.bgcolor = bgcolor;
     }
 
     // PROPERTY: bodyrows
     private jakarta.el.ValueExpression bodyrows;
+
     public void setBodyrows(jakarta.el.ValueExpression bodyrows) {
         this.bodyrows = bodyrows;
     }
 
     // PROPERTY: border
     private jakarta.el.ValueExpression border;
+
     public void setBorder(jakarta.el.ValueExpression border) {
         this.border = border;
     }
 
     // PROPERTY: captionClass
     private jakarta.el.ValueExpression captionClass;
+
     public void setCaptionClass(jakarta.el.ValueExpression captionClass) {
         this.captionClass = captionClass;
     }
 
     // PROPERTY: captionStyle
     private jakarta.el.ValueExpression captionStyle;
+
     public void setCaptionStyle(jakarta.el.ValueExpression captionStyle) {
         this.captionStyle = captionStyle;
     }
 
     // PROPERTY: cellpadding
     private jakarta.el.ValueExpression cellpadding;
+
     public void setCellpadding(jakarta.el.ValueExpression cellpadding) {
         this.cellpadding = cellpadding;
     }
 
     // PROPERTY: cellspacing
     private jakarta.el.ValueExpression cellspacing;
+
     public void setCellspacing(jakarta.el.ValueExpression cellspacing) {
         this.cellspacing = cellspacing;
     }
 
     // PROPERTY: columnClasses
     private jakarta.el.ValueExpression columnClasses;
+
     public void setColumnClasses(jakarta.el.ValueExpression columnClasses) {
         this.columnClasses = columnClasses;
     }
 
     // PROPERTY: dir
     private jakarta.el.ValueExpression dir;
+
     public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: footerClass
     private jakarta.el.ValueExpression footerClass;
+
     public void setFooterClass(jakarta.el.ValueExpression footerClass) {
         this.footerClass = footerClass;
     }
 
     // PROPERTY: frame
     private jakarta.el.ValueExpression frame;
+
     public void setFrame(jakarta.el.ValueExpression frame) {
         this.frame = frame;
     }
 
     // PROPERTY: headerClass
     private jakarta.el.ValueExpression headerClass;
+
     public void setHeaderClass(jakarta.el.ValueExpression headerClass) {
         this.headerClass = headerClass;
     }
 
     // PROPERTY: lang
     private jakarta.el.ValueExpression lang;
+
     public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: onclick
     private jakarta.el.ValueExpression onclick;
+
     public void setOnclick(jakarta.el.ValueExpression onclick) {
         this.onclick = onclick;
     }
 
     // PROPERTY: ondblclick
     private jakarta.el.ValueExpression ondblclick;
+
     public void setOndblclick(jakarta.el.ValueExpression ondblclick) {
         this.ondblclick = ondblclick;
     }
 
     // PROPERTY: onkeydown
     private jakarta.el.ValueExpression onkeydown;
+
     public void setOnkeydown(jakarta.el.ValueExpression onkeydown) {
         this.onkeydown = onkeydown;
     }
 
     // PROPERTY: onkeypress
     private jakarta.el.ValueExpression onkeypress;
+
     public void setOnkeypress(jakarta.el.ValueExpression onkeypress) {
         this.onkeypress = onkeypress;
     }
 
     // PROPERTY: onkeyup
     private jakarta.el.ValueExpression onkeyup;
+
     public void setOnkeyup(jakarta.el.ValueExpression onkeyup) {
         this.onkeyup = onkeyup;
     }
 
     // PROPERTY: onmousedown
     private jakarta.el.ValueExpression onmousedown;
+
     public void setOnmousedown(jakarta.el.ValueExpression onmousedown) {
         this.onmousedown = onmousedown;
     }
 
     // PROPERTY: onmousemove
     private jakarta.el.ValueExpression onmousemove;
+
     public void setOnmousemove(jakarta.el.ValueExpression onmousemove) {
         this.onmousemove = onmousemove;
     }
 
     // PROPERTY: onmouseout
     private jakarta.el.ValueExpression onmouseout;
+
     public void setOnmouseout(jakarta.el.ValueExpression onmouseout) {
         this.onmouseout = onmouseout;
     }
 
     // PROPERTY: onmouseover
     private jakarta.el.ValueExpression onmouseover;
+
     public void setOnmouseover(jakarta.el.ValueExpression onmouseover) {
         this.onmouseover = onmouseover;
     }
 
     // PROPERTY: onmouseup
     private jakarta.el.ValueExpression onmouseup;
+
     public void setOnmouseup(jakarta.el.ValueExpression onmouseup) {
         this.onmouseup = onmouseup;
     }
 
     // PROPERTY: role
     private jakarta.el.ValueExpression role;
+
     public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: rowClass
     private jakarta.el.ValueExpression rowClass;
+
     public void setRowClass(jakarta.el.ValueExpression rowClass) {
         this.rowClass = rowClass;
     }
 
     // PROPERTY: rowClasses
     private jakarta.el.ValueExpression rowClasses;
+
     public void setRowClasses(jakarta.el.ValueExpression rowClasses) {
         this.rowClasses = rowClasses;
     }
 
     // PROPERTY: rules
     private jakarta.el.ValueExpression rules;
+
     public void setRules(jakarta.el.ValueExpression rules) {
         this.rules = rules;
     }
 
     // PROPERTY: style
     private jakarta.el.ValueExpression style;
+
     public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
     private jakarta.el.ValueExpression styleClass;
+
     public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: summary
     private jakarta.el.ValueExpression summary;
+
     public void setSummary(jakarta.el.ValueExpression summary) {
         this.summary = summary;
     }
 
     // PROPERTY: title
     private jakarta.el.ValueExpression title;
+
     public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
 
     // PROPERTY: width
     private jakarta.el.ValueExpression width;
+
     public void setWidth(jakarta.el.ValueExpression width) {
         this.width = width;
     }
-
 
     // General Methods
     public String getRendererType() {
@@ -271,7 +304,8 @@ public class DataTableTag extends UIComponentELTag {
         try {
             data = (jakarta.faces.component.UIData) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIData.  Perhaps you're missing a tag?");
+            throw new IllegalStateException(
+                    "Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIData.  Perhaps you're missing a tag?");
         }
 
         if (first != null) {
@@ -386,6 +420,7 @@ public class DataTableTag extends UIComponentELTag {
             data.setValueExpression("width", width);
         }
     }
+
     // Methods From TagSupport
     public int doStartTag() throws JspException {
         try {

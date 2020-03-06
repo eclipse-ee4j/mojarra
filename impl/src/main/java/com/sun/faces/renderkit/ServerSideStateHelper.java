@@ -55,8 +55,8 @@ import jakarta.faces.context.ResponseWriter;
 
 /**
  * <p>
- * This <code>StateHelper</code> provides the functionality associated with server-side state saving,
- * though in actuallity, it is a hybrid between client and server.
+ * This <code>StateHelper</code> provides the functionality associated with server-side state saving, though in
+ * actuallity, it is a hybrid between client and server.
  * </p>
  */
 public class ServerSideStateHelper extends StateHelper {
@@ -64,45 +64,36 @@ public class ServerSideStateHelper extends StateHelper {
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     /**
-     * Key to store the <code>AtomicInteger</code> used to generate
-     * unique state map keys.
+     * Key to store the <code>AtomicInteger</code> used to generate unique state map keys.
      */
-    public static final String STATEMANAGED_SERIAL_ID_KEY =
-          ServerSideStateHelper.class.getName() + ".SerialId";
+    public static final String STATEMANAGED_SERIAL_ID_KEY = ServerSideStateHelper.class.getName() + ".SerialId";
 
     /**
-     * The top level attribute name for storing the state structures within
-     * the session.
+     * The top level attribute name for storing the state structures within the session.
      */
-    public static final String LOGICAL_VIEW_MAP =
-          ServerSideStateHelper.class.getName() + ".LogicalViewMap";
+    public static final String LOGICAL_VIEW_MAP = ServerSideStateHelper.class.getName() + ".LogicalViewMap";
 
     /**
      * The number of logical views as configured by the user.
      */
     protected final Integer numberOfLogicalViews;
 
-
     /**
      * The number of views as configured by the user.
      */
     protected final Integer numberOfViews;
-
 
     /**
      * Flag determining how server state IDs are generated.
      */
     protected boolean generateUniqueStateIds;
 
-
     /**
      * Used to generate unique server state IDs.
      */
     protected final SecureRandom random;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Construct a new <code>ServerSideStateHelper</code> instance.
@@ -112,13 +103,12 @@ public class ServerSideStateHelper extends StateHelper {
         numberOfLogicalViews = getIntegerConfigValue(NumberOfLogicalViews);
         numberOfViews = getIntegerConfigValue(NumberOfViews);
         WebConfiguration webConfig = WebConfiguration.getInstance();
-        generateUniqueStateIds =
-              webConfig.isOptionEnabled(GenerateUniqueServerStateIds);
+        generateUniqueStateIds = webConfig.isOptionEnabled(GenerateUniqueServerStateIds);
         if (generateUniqueStateIds) {
             // Construct secure RNG.
             random = new SecureRandom();
 
-            // Make sure SecureRandom will seed itself safely by generating a random byte. This assures that an 
+            // Make sure SecureRandom will seed itself safely by generating a random byte. This assures that an
             // accidental invocation of setSeed will not break security.
             random.nextBytes(new byte[1]);
         } else {
@@ -127,35 +117,30 @@ public class ServerSideStateHelper extends StateHelper {
 
     }
 
-
     // ------------------------------------------------ Methods from StateHelper
-
 
     /**
      * <p>
-     * Stores the provided state within the session obtained from the provided
-     * <code>FacesContext</code>
+     * Stores the provided state within the session obtained from the provided <code>FacesContext</code>
      * </p>
      *
-     * <p>If <code>stateCapture</code> is <code>null</code>, the composite
-     * key used to look up the actual and logical views will be written to
-     * the client as a hidden field using the <code>ResponseWriter</code>
-     * from the provided <code>FacesContext</code>.</p>
+     * <p>
+     * If <code>stateCapture</code> is <code>null</code>, the composite key used to look up the actual and logical views
+     * will be written to the client as a hidden field using the <code>ResponseWriter</code> from the provided
+     * <code>FacesContext</code>.
+     * </p>
      *
-     * <p>If <code>stateCapture</code> is not <code>null</code>, the composite
-     * key will be appended to the <code>StringBuilder<code> without any markup
-     * included or any content written to the client.
+     * <p>
+     * If <code>stateCapture</code> is not <code>null</code>, the composite key will be appended to the
+     * <code>StringBuilder<code> without any markup included or any content written to the client.
      */
     @Override
-    public void writeState(FacesContext ctx,
-                           Object state,
-                           StringBuilder stateCapture)
-    throws IOException {
+    public void writeState(FacesContext ctx, Object state, StringBuilder stateCapture) throws IOException {
 
         Util.notNull("context", ctx);
 
         String id;
-        
+
         UIViewRoot viewRoot = ctx.getViewRoot();
 
         if (!viewRoot.isTransient()) {
@@ -166,11 +151,9 @@ public class ServerSideStateHelper extends StateHelper {
                 Object sessionObj = externalContext.getSession(true);
                 Map<String, Object> sessionMap = externalContext.getSessionMap();
 
-                //noinspection SynchronizationOnLocalVariableOrMethodParameter
+                // noinspection SynchronizationOnLocalVariableOrMethodParameter
                 synchronized (sessionObj) {
-                    Map<String, Map> logicalMap = TypedCollections.dynamicallyCastMap(
-                          (Map) sessionMap
-                                .get(LOGICAL_VIEW_MAP), String.class, Map.class);
+                    Map<String, Map> logicalMap = TypedCollections.dynamicallyCastMap((Map) sessionMap.get(LOGICAL_VIEW_MAP), String.class, Map.class);
                     if (logicalMap == null) {
                         logicalMap = Collections.synchronizedMap(new LRUMap<String, Map>(numberOfLogicalViews));
                         sessionMap.put(LOGICAL_VIEW_MAP, logicalMap);
@@ -179,26 +162,20 @@ public class ServerSideStateHelper extends StateHelper {
                     Object structure = stateToWrite[0];
                     Object savedState = handleSaveState(stateToWrite[1]);
 
-                    String idInLogicalMap = (String)
-                              RequestStateManager.get(ctx, RequestStateManager.LOGICAL_VIEW_MAP);
+                    String idInLogicalMap = (String) RequestStateManager.get(ctx, RequestStateManager.LOGICAL_VIEW_MAP);
                     if (idInLogicalMap == null) {
-                        idInLogicalMap = ((generateUniqueStateIds)
-                                              ? createRandomId()
-                                              : createIncrementalRequestId(ctx));
+                        idInLogicalMap = ((generateUniqueStateIds) ? createRandomId() : createIncrementalRequestId(ctx));
                     }
                     String idInActualMap = null;
-                    if(ctx.getPartialViewContext().isPartialRequest()){
+                    if (ctx.getPartialViewContext().isPartialRequest()) {
                         // If partial request, do not change actual view Id, because page not actually changed.
                         // Otherwise partial requests will soon overflow cache with values that would be never used.
                         idInActualMap = (String) RequestStateManager.get(ctx, RequestStateManager.ACTUAL_VIEW_MAP);
                     }
                     if (null == idInActualMap) {
-                            idInActualMap = ((generateUniqueStateIds) ? createRandomId()
-                                                        : createIncrementalRequestId(ctx));
+                        idInActualMap = ((generateUniqueStateIds) ? createRandomId() : createIncrementalRequestId(ctx));
                     }
-                    Map<String, Object[]> actualMap =
-                          TypedCollections.dynamicallyCastMap(
-                                logicalMap.get(idInLogicalMap), String.class, Object[].class);
+                    Map<String, Object[]> actualMap = TypedCollections.dynamicallyCastMap(logicalMap.get(idInLogicalMap), String.class, Object[].class);
                     if (actualMap == null) {
                         actualMap = new LRUMap<>(numberOfViews);
                         logicalMap.put(idInLogicalMap, actualMap);
@@ -212,7 +189,7 @@ public class ServerSideStateHelper extends StateHelper {
                         stateArray[0] = structure;
                         stateArray[1] = savedState;
                     } else {
-                        actualMap.put(idInActualMap, new Object[]{ structure, savedState });
+                        actualMap.put(idInActualMap, new Object[] { structure, savedState });
                     }
 
                     // always call put/setAttribute as we may be in a clustered environment.
@@ -225,7 +202,7 @@ public class ServerSideStateHelper extends StateHelper {
         } else {
             id = "stateless";
         }
-        
+
         if (stateCapture != null) {
             stateCapture.append(id);
         } else {
@@ -244,29 +221,30 @@ public class ServerSideStateHelper extends StateHelper {
             }
             writer.endElement("input");
 
-            writeClientWindowField(ctx, writer); 
+            writeClientWindowField(ctx, writer);
             writeRenderKitIdField(ctx, writer);
         }
     }
 
-
     /**
-     * <p>Inspects the incoming request parameters for the standardized state
-     * parameter name.  In this case, the parameter value will be the composite
-     * ID generated by ServerSideStateHelper#writeState(FacesContext, Object, StringBuilder).</p>
+     * <p>
+     * Inspects the incoming request parameters for the standardized state parameter name. In this case, the parameter value
+     * will be the composite ID generated by ServerSideStateHelper#writeState(FacesContext, Object, StringBuilder).
+     * </p>
      *
-     * <p>The composite key will be used to find the appropriate view within the
-     * session obtained from the provided <code>FacesContext</code>
+     * <p>
+     * The composite key will be used to find the appropriate view within the session obtained from the provided
+     * <code>FacesContext</code>
      */
     @Override
     public Object getState(FacesContext ctx, String viewId) {
 
         String compoundId = getStateParamValue(ctx);
-        
+
         if (compoundId == null) {
             return null;
         }
-        
+
         if ("stateless".equals(compoundId)) {
             return "stateless";
         }
@@ -284,32 +262,26 @@ public class ServerSideStateHelper extends StateHelper {
         // stop evaluating if the session is not available
         if (sessionObj == null) {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE,
-                           "Unable to restore server side state for view ID {0} as no session is available",
-                           viewId);
+                LOGGER.log(Level.FINE, "Unable to restore server side state for view ID {0} as no session is available", viewId);
             }
             return null;
         }
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        // noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (sessionObj) {
-            Map logicalMap = (Map) externalCtx.getSessionMap() .get(LOGICAL_VIEW_MAP);
+            Map logicalMap = (Map) externalCtx.getSessionMap().get(LOGICAL_VIEW_MAP);
             if (logicalMap != null) {
                 Map actualMap = (Map) logicalMap.get(idInLogicalMap);
                 if (actualMap != null) {
-                    RequestStateManager.set(ctx,
-                                            RequestStateManager.LOGICAL_VIEW_MAP,
-                                            idInLogicalMap);
-                    
+                    RequestStateManager.set(ctx, RequestStateManager.LOGICAL_VIEW_MAP, idInLogicalMap);
+
                     Object[] restoredState = new Object[2];
                     Object[] state = (Object[]) actualMap.get(idInActualMap);
-                    if(state != null){
+                    if (state != null) {
                         restoredState[0] = state[0];
                         restoredState[1] = state[1];
-                        
-                        RequestStateManager.set(ctx,
-                                                RequestStateManager.ACTUAL_VIEW_MAP,
-                                                idInActualMap);
+
+                        RequestStateManager.set(ctx, RequestStateManager.ACTUAL_VIEW_MAP, idInActualMap);
                         if (state.length == 2 && state[1] != null) {
                             restoredState[1] = handleRestoreState(state[1]);
                         }
@@ -321,16 +293,16 @@ public class ServerSideStateHelper extends StateHelper {
         }
 
         return null;
-        
+
     }
 
-   
     // ------------------------------------------------------- Protected Methods
 
-
     /**
-     * <p>Utility method for obtaining the <code>Integer</code> based configuration
-     * values used to change the behavior of the <code>ServerSideStateHelper</code>.
+     * <p>
+     * Utility method for obtaining the <code>Integer</code> based configuration values used to change the behavior of the
+     * <code>ServerSideStateHelper</code>.
+     * 
      * @param param the paramter to parse
      * @return the Integer representation of the parameter value
      */
@@ -343,10 +315,7 @@ public class ServerSideStateHelper extends StateHelper {
         } catch (NumberFormatException nfe) {
             String defaultValue = param.getDefaultValue();
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING,
-                           "jsf.state.server.cannot.parse.int.option",
-                           new Object[] { param.getQualifiedName(),
-                                          defaultValue} );
+                LOGGER.log(Level.WARNING, "jsf.state.server.cannot.parse.int.option", new Object[] { param.getQualifiedName(), defaultValue });
             }
             try {
                 value = Integer.valueOf(defaultValue);
@@ -361,12 +330,11 @@ public class ServerSideStateHelper extends StateHelper {
 
     }
 
-
     /**
      * @param state the object returned from <code>UIView.processSaveState</code>
-     * @return If {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#SerializeServerStateDeprecated} is
-     *  <code>true</code>, serialize and return the state, otherwise, return
-     *  <code>state</code> unchanged.
+     * @return If
+     * {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#SerializeServerStateDeprecated} is
+     * <code>true</code>, serialize and return the state, otherwise, return <code>state</code> unchanged.
      */
     protected Object handleSaveState(Object state) {
 
@@ -374,11 +342,8 @@ public class ServerSideStateHelper extends StateHelper {
             ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
             ObjectOutputStream oas = null;
             try {
-                oas = serialProvider
-                      .createObjectOutputStream(((compressViewState)
-                                                 ? new GZIPOutputStream(baos, 1024)
-                                                 : baos));
-                //noinspection NonSerializableObjectPassedToObjectStream
+                oas = serialProvider.createObjectOutputStream(((compressViewState) ? new GZIPOutputStream(baos, 1024) : baos));
+                // noinspection NonSerializableObjectPassedToObjectStream
                 oas.writeObject(state);
                 oas.flush();
             } catch (Exception e) {
@@ -387,7 +352,7 @@ public class ServerSideStateHelper extends StateHelper {
                 if (oas != null) {
                     try {
                         oas.close();
-                    } catch (IOException ioe) { 
+                    } catch (IOException ioe) {
                         if (LOGGER.isLoggable(Level.FINEST)) {
                             LOGGER.log(Level.FINEST, "Closing stream", ioe);
                         }
@@ -401,21 +366,17 @@ public class ServerSideStateHelper extends StateHelper {
 
     }
 
-
     /**
      * @param state the state as it was stored in the session
-     * @return an object that can be passed to <code>UIViewRoot.processRestoreState</code>.
-     *  If {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#SerializeServerStateDeprecated} de-serialize the
-     *  state prior to returning it, otherwise return <code>state</code> as is.
+     * @return an object that can be passed to <code>UIViewRoot.processRestoreState</code>. If
+     * {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#SerializeServerStateDeprecated}
+     * de-serialize the state prior to returning it, otherwise return <code>state</code> as is.
      */
     protected Object handleRestoreState(Object state) {
 
         if (webConfig.isOptionEnabled(SerializeServerStateDeprecated) || webConfig.isOptionEnabled(SerializeServerState)) {
             try (ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
-                 ObjectInputStream ois = serialProvider
-                      .createObjectInputStream(((compressViewState)
-                                                ? new GZIPInputStream(bais, 1024)
-                                                : bais));) {
+                    ObjectInputStream ois = serialProvider.createObjectInputStream(((compressViewState) ? new GZIPInputStream(bais, 1024) : bais));) {
                 return ois.readObject();
             } catch (Exception e) {
                 throw new FacesException(e);
@@ -426,17 +387,14 @@ public class ServerSideStateHelper extends StateHelper {
 
     }
 
-
-     /**
+    /**
      * @param ctx the <code>FacesContext</code> for the current request
-     * @return a unique ID for building the keys used to store
-     *  views within a session
+     * @return a unique ID for building the keys used to store views within a session
      */
     private String createIncrementalRequestId(FacesContext ctx) {
 
         Map<String, Object> sm = ctx.getExternalContext().getSessionMap();
-        AtomicInteger idgen =
-              (AtomicInteger) sm.get(STATEMANAGED_SERIAL_ID_KEY);
+        AtomicInteger idgen = (AtomicInteger) sm.get(STATEMANAGED_SERIAL_ID_KEY);
         if (idgen == null) {
             idgen = new AtomicInteger(1);
         }
@@ -446,7 +404,6 @@ public class ServerSideStateHelper extends StateHelper {
         return (UIViewRoot.UNIQUE_ID_PREFIX + idgen.getAndIncrement());
 
     }
-
 
     private String createRandomId() {
 
@@ -472,7 +429,7 @@ public class ServerSideStateHelper extends StateHelper {
 
             return false;
         }
-        
+
         throw new IllegalStateException("Cannot determine whether or not the request is stateless");
     }
 }

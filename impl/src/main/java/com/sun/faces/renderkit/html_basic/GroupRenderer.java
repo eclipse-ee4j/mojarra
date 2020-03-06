@@ -28,20 +28,16 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * Arbitrary grouping "renderer" that simply renders its children
- * recursively in the <code>encodeEnd()</code> method.
+ * Arbitrary grouping "renderer" that simply renders its children recursively in the <code>encodeEnd()</code> method.
  *
  */
 public class GroupRenderer extends HtmlBasicRenderer {
 
-private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -66,18 +62,13 @@ private static final Attribute[] ATTRIBUTES =
             // JAVASERVERFACES-3270: do not manually render "style" as it is handled
             // in renderPassThruAttributes().
         }
-        
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
+
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
     }
 
-
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -93,10 +84,8 @@ private static final Attribute[] ATTRIBUTES =
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -116,7 +105,6 @@ private static final Attribute[] ATTRIBUTES =
 
     }
 
-
     @Override
     public boolean getRendersChildren() {
 
@@ -126,18 +114,14 @@ private static final Attribute[] ATTRIBUTES =
 
     // --------------------------------------------------------- Private Methods
 
-
     /**
      * @param component <code>UIComponent</code> for this group
      *
-     * @return <code>true</code> if we need to render a div or span element
-     *  around this group.
+     * @return <code>true</code> if we need to render a div or span element around this group.
      */
     private boolean divOrSpan(UIComponent component) {
 
-        return (shouldWriteIdAttribute(component) ||
-            (component.getAttributes().get("style") != null) ||
-            (component.getAttributes().get("styleClass") != null));
+        return (shouldWriteIdAttribute(component) || (component.getAttributes().get("style") != null) || (component.getAttributes().get("styleClass") != null));
 
     }
 

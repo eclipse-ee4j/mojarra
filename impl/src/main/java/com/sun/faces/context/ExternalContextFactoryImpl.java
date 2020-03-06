@@ -16,7 +16,6 @@
 
 package com.sun.faces.context;
 
-
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -29,8 +28,7 @@ import jakarta.faces.context.ExternalContextFactory;
 
 public class ExternalContextFactoryImpl extends ExternalContextFactory {
 
-    public static final String DEFAULT_EXTERNAL_CONTEXT_KEY =
-          ExternalContextFactoryImpl.class.getName() + "_KEY";
+    public static final String DEFAULT_EXTERNAL_CONTEXT_KEY = ExternalContextFactoryImpl.class.getName() + "_KEY";
 
     public ExternalContextFactoryImpl() {
         super(null);
@@ -38,22 +36,16 @@ public class ExternalContextFactoryImpl extends ExternalContextFactory {
 
     // ---------------------------------------- Methods from ExternalContextFactory
 
-
     @Override
-    public ExternalContext getExternalContext(Object servletContext,
-                                        Object request,
-                                        Object response)
+    public ExternalContext getExternalContext(Object servletContext, Object request, Object response)
 
-    throws FacesException {
+            throws FacesException {
 
         Util.notNull("servletContext", servletContext);
         Util.notNull("request", request);
         Util.notNull("response", response);
 
-        ExternalContext extContext = 
-              new ExternalContextImpl((ServletContext) servletContext,
-                                      (ServletRequest) request,
-                                      (ServletResponse) response);
+        ExternalContext extContext = new ExternalContextImpl((ServletContext) servletContext, (ServletRequest) request, (ServletResponse) response);
 
         if (request instanceof ServletRequest) {
             ((ServletRequest) request).setAttribute(DEFAULT_EXTERNAL_CONTEXT_KEY, extContext);

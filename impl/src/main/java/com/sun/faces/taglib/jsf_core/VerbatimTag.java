@@ -24,24 +24,21 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.webapp.UIComponentELTag;
 
 /**
- * <p>Tag implementation that creates a {@link UIOutput} instance
- * and allows the user to write raw markup.</p>
+ * <p>
+ * Tag implementation that creates a {@link UIOutput} instance and allows the user to write raw markup.
+ * </p>
  */
 
 public class VerbatimTag extends UIComponentELTag {
 
-
     // ------------------------------------------------------------- Attributes
 
-
     private ValueExpression escape = null;
-
 
     public void setEscape(ValueExpression escape) {
         this.escape = escape;
     }
 
-    
     /**
      * Holds value of property rendered.
      */
@@ -49,6 +46,7 @@ public class VerbatimTag extends UIComponentELTag {
 
     /**
      * Setter for property rendered.
+     * 
      * @param rendered New value of property rendered.
      */
     @Override
@@ -56,22 +54,18 @@ public class VerbatimTag extends UIComponentELTag {
 
         this.rendered = rendered;
     }
-    
 
     // --------------------------------------------------------- Public Methods
-
 
     @Override
     public String getRendererType() {
         return "jakarta.faces.Text";
     }
 
-
     @Override
     public String getComponentType() {
         return "jakarta.faces.Output";
     }
-
 
     @Override
     protected void setProperties(UIComponent component) {
@@ -89,10 +83,10 @@ public class VerbatimTag extends UIComponentELTag {
 
     }
 
-
     /**
-     * <p>Set the local value of this component to reflect the nested
-     * body content of this JSP tag.</p>
+     * <p>
+     * Set the local value of this component to reflect the nested body content of this JSP tag.
+     * </p>
      */
     @Override
     public int doAfterBody() throws JspException {
@@ -102,7 +96,7 @@ public class VerbatimTag extends UIComponentELTag {
             if (value != null) {
                 UIOutput output = (UIOutput) getComponentInstance();
                 output.setValue(value);
-		getBodyContent().clearBody();
+                getBodyContent().clearBody();
             }
         }
         return (getDoAfterBodyValue());

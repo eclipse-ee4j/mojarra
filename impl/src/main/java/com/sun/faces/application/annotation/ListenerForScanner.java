@@ -28,9 +28,7 @@ import jakarta.faces.event.ListenersFor;
  */
 class ListenerForScanner implements Scanner {
 
-
     // ---------------------------------------------------- Methods from Scanner
-
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
@@ -38,7 +36,6 @@ class ListenerForScanner implements Scanner {
         return ListenerFor.class;
 
     }
-
 
     @Override
     public RuntimeAnnotationHandler scan(Class<?> clazz) {
@@ -59,5 +56,5 @@ class ListenerForScanner implements Scanner {
         return handler;
 
     }
-    
+
 }

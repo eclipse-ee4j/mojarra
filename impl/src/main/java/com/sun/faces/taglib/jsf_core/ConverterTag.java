@@ -34,16 +34,13 @@ public class ConverterTag extends AbstractConverterTag {
 
     // --------------------------------------------- Methods from ConverterELTag
 
-
     private static final long serialVersionUID = -7044710401705704550L;
 
     @Override
     protected Converter createConverter() throws JspException {
 
         if (converterId != null && converterId.isLiteralText()) {
-            return createConverter(converterId,
-                                   binding,
-                                   FacesContext.getCurrentInstance());
+            return createConverter(converterId, binding, FacesContext.getCurrentInstance());
         } else {
             return new BindingConverter(converterId, binding);
         }
@@ -52,24 +49,22 @@ public class ConverterTag extends AbstractConverterTag {
 
     // ----------------------------------------------------------- Inner Classes
 
-
     public static class BindingConverter implements Converter, StateHolder {
 
         ValueExpression converterId;
-        ValueExpression binding;       
+        ValueExpression binding;
 
         // -------------------------------------------------------- Constructors
 
-
         /**
-         * <p>This is only used during state restoration.</p>
+         * <p>
+         * This is only used during state restoration.
+         * </p>
          */
         public BindingConverter() {
         }
 
-
-        public BindingConverter(ValueExpression converterId,
-                                ValueExpression binding) {
+        public BindingConverter(ValueExpression converterId, ValueExpression binding) {
 
             this.converterId = converterId;
             this.binding = binding;
@@ -78,18 +73,14 @@ public class ConverterTag extends AbstractConverterTag {
 
         // ---------------------------------------------- Methods From Converter
 
-
         @Override
         public Object getAsObject(FacesContext context, UIComponent component, String value) {
             Converter delegate = getDelegate(context);
             if (delegate != null) {
                 return delegate.getAsObject(context, component, value);
             } else {
-                throw new ConverterException(
-                     MessageUtils.getExceptionMessage(
-                          MessageUtils.CANNOT_CONVERT_ID,
-                          converterId != null ? converterId.getExpressionString() : "",
-                          binding != null ? binding.getExpressionString() : ""));
+                throw new ConverterException(MessageUtils.getExceptionMessage(MessageUtils.CANNOT_CONVERT_ID,
+                        converterId != null ? converterId.getExpressionString() : "", binding != null ? binding.getExpressionString() : ""));
             }
         }
 
@@ -99,18 +90,15 @@ public class ConverterTag extends AbstractConverterTag {
             if (delegate != null) {
                 return delegate.getAsString(context, component, value);
             } else {
-                throw new ConverterException(
-                     MessageUtils.getExceptionMessage(
-                          MessageUtils.CANNOT_CONVERT_ID,
-                          converterId != null ? converterId.getExpressionString() : "",
-                          binding != null ? binding.getExpressionString() : "")); 
+                throw new ConverterException(MessageUtils.getExceptionMessage(MessageUtils.CANNOT_CONVERT_ID,
+                        converterId != null ? converterId.getExpressionString() : "", binding != null ? binding.getExpressionString() : ""));
             }
         }
 
         // -------------------------------------------- Methods from StateHolder
 
-
         private Object[] state;
+
         @Override
         public Object saveState(FacesContext context) {
 
@@ -151,11 +139,10 @@ public class ConverterTag extends AbstractConverterTag {
 
         @Override
         public void setTransient(boolean newTransientValue) {
-            //no-op
+            // no-op
         }
 
         // ----------------------------------------------------- Private Methods
-
 
         private Converter getDelegate(FacesContext context) {
 
@@ -164,8 +151,5 @@ public class ConverterTag extends AbstractConverterTag {
         }
 
     }
-    
+
 }
-
-
-

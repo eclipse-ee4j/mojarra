@@ -23,8 +23,8 @@ import jakarta.faces.component.UIData;
 
 /**
  * <p>
- * <strong>UIColumn</strong> is a {@link UIComponent} that represents a single column of data within
- * a parent {@link UIData} component.
+ * <strong>UIColumn</strong> is a {@link UIComponent} that represents a single column of data within a parent
+ * {@link UIData} component.
  * </p>
  */
 public class UIColumn extends UIComponentBase {
@@ -45,7 +45,6 @@ public class UIColumn extends UIComponentBase {
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Column";
 
-    
     // ----------------------------------------------------------- Constructors
 
     /**
@@ -57,7 +56,6 @@ public class UIColumn extends UIComponentBase {
         super();
         setRendererType(null);
     }
-    
 
     // -------------------------------------------------------------- Properties
 
@@ -73,8 +71,7 @@ public class UIColumn extends UIComponentBase {
 
     /**
      * <p>
-     * Return the footer facet of the column (if any). A convenience method for
-     * <code>getFacet("footer")</code>.
+     * Return the footer facet of the column (if any). A convenience method for <code>getFacet("footer")</code>.
      * </p>
      * 
      * @return the footer component.
@@ -85,8 +82,7 @@ public class UIColumn extends UIComponentBase {
 
     /**
      * <p>
-     * Set the footer facet of the column. A convenience method for
-     * <code>getFacets().put("footer", footer)</code>.
+     * Set the footer facet of the column. A convenience method for <code>getFacets().put("footer", footer)</code>.
      * </p>
      * 
      * @param footer the new footer facet
@@ -99,8 +95,7 @@ public class UIColumn extends UIComponentBase {
 
     /**
      * <p>
-     * Return the header facet of the column (if any). A convenience method for
-     * <code>getFacet("header")</code>.
+     * Return the header facet of the column (if any). A convenience method for <code>getFacet("header")</code>.
      * </p>
      * 
      * @return the header component.
@@ -111,8 +106,7 @@ public class UIColumn extends UIComponentBase {
 
     /**
      * <p>
-     * Set the header facet of the column. A convenience method for
-     * <code>getFacets().put("header", header)</code>.
+     * Set the header facet of the column. A convenience method for <code>getFacets().put("header", header)</code>.
      * </p>
      * 
      * @param header the new header facet

@@ -18,37 +18,38 @@
 package jakarta.faces.view.facelets;
 
 /**
- * <p class="changed_added_2_0">Every kind of markup element in Facelets VDL
- * that has attributes that need to take action on a Jakarta Server Faces Java API artifact is
- * associated with an instance of this class. This class is an abstraction to
- * enable a rule based method for directing how different kinds of elements take
- * different kinds of actions in the Jakarta Server Faces Java API. For example, consider this
- * markup:</p>
+ * <p class="changed_added_2_0">
+ * Every kind of markup element in Facelets VDL that has attributes that need to take action on a Jakarta Server Faces
+ * Java API artifact is associated with an instance of this class. This class is an abstraction to enable a rule based
+ * method for directing how different kinds of elements take different kinds of actions in the Jakarta Server Faces Java
+ * API. For example, consider this markup:
+ * </p>
  *
  * <div class="changed_added_2_0">
- * <pre><code>&lt;h:inputText value="#{user.userid}"
- * valueChangeListener="#{user.newUserId}" /&gt;</code></pre>
+ * 
+ * <pre>
+ * <code>&lt;h:inputText value="#{user.userid}"
+ * valueChangeListener="#{user.newUserId}" /&gt;</code>
+ * </pre>
  *
  * <p>
- * This markup element corresponds to an instance of {@link
- * jakarta.faces.component.html.HtmlInputText} in the view.
- * <code>HtmlImputText</code> has a number of attributes that are to be exposed
- * to the page author.  <code>HtmlInputText</code> also implements
- * {@link jakarta.faces.component.EditableValueHolder}, which extends
- * {@link jakarta.faces.component.ValueHolder}. Each of these interfaces also
- * expose a number of attributes to the page author.</p>
+ * This markup element corresponds to an instance of {@link jakarta.faces.component.html.HtmlInputText} in the view.
+ * <code>HtmlImputText</code> has a number of attributes that are to be exposed to the page author.
+ * <code>HtmlInputText</code> also implements {@link jakarta.faces.component.EditableValueHolder}, which extends
+ * {@link jakarta.faces.component.ValueHolder}. Each of these interfaces also expose a number of attributes to the page
+ * author.
+ * </p>
  *
  * <p>
- * Facelets employes the strategy pattern to allow the manner in which all
- * possible attributes are handled based on the nature of the Jakarta Server Faces Java API
- * artifact associated with the markup element.</p>
+ * Facelets employes the strategy pattern to allow the manner in which all possible attributes are handled based on the
+ * nature of the Jakarta Server Faces Java API artifact associated with the markup element.
+ * </p>
  *
  * <p>
- * Subclasses override the {@link #createMetaRuleset} method to return a
- * {@link MetaRuleset} instance encapsulating all the strategies for all the
- * attributes that make sense for this particular markup element. The runtime
- * calls the {@link #setAttributes(FaceletContext, Object)} method to cause
- * those rules to be executed and applied.</p>
+ * Subclasses override the {@link #createMetaRuleset} method to return a {@link MetaRuleset} instance encapsulating all
+ * the strategies for all the attributes that make sense for this particular markup element. The runtime calls the
+ * {@link #setAttributes(FaceletContext, Object)} method to cause those rules to be executed and applied.
+ * </p>
  *
  * </div>
  *
@@ -84,8 +85,8 @@ public abstract class MetaTagHandler extends TagHandler {
     protected abstract MetaRuleset createMetaRuleset(Class type);
 
     /**
-     * Invoking/extending this method will cause the results of the created
-     * MetaRuleset to auto-wire state to the passed instance.
+     * Invoking/extending this method will cause the results of the created MetaRuleset to auto-wire state to the passed
+     * instance.
      *
      * @param ctx the Facelet context.
      * @param instance the instance.

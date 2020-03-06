@@ -26,15 +26,14 @@ public class SearchKeywordResolverImplForm extends AbstractSearchKeywordResolver
 
     @Override
     public void resolve(SearchKeywordContext searchKeywordContext, UIComponent current, String keyword) {
-        searchKeywordContext.invokeContextCallback(
-                closest(UIForm.class, current));
+        searchKeywordContext.invokeContextCallback(closest(UIForm.class, current));
     }
 
     @Override
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "form".equals(keyword);
     }
-    
+
     @Override
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword) {
         return isHintSet(searchExpressionContext, SearchExpressionHint.RESOLVE_CLIENT_SIDE);

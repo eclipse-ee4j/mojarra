@@ -41,110 +41,91 @@ import java.util.List;
  * @author edburns
  */
 class BehaviorTagHandlerDelegateImpl extends TagHandlerDelegate implements AttachedObjectHandler {
-    
+
     private BehaviorHandler owner;
 
     public BehaviorTagHandlerDelegateImpl(BehaviorHandler owner) {
         this.owner = owner;
     }
-    
+
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-        throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
         if (parent == null || !(parent.getParent() == null)) {
             return;
         }
         ComponentSupport.copyPassthroughAttributes(ctx, parent, owner.getTag());
-        
+
         if (UIComponent.isCompositeComponent(parent)) {
             // Check composite component event name:
-            BeanInfo componentBeanInfo = (BeanInfo) parent.getAttributes().get(
-                  UIComponent.BEANINFO_KEY);
+            BeanInfo componentBeanInfo = (BeanInfo) parent.getAttributes().get(UIComponent.BEANINFO_KEY);
             if (null == componentBeanInfo) {
-                throw new TagException(
-                      owner.getTag(),
-                      "Error: enclosing composite component does not have BeanInfo attribute");
+                throw new TagException(owner.getTag(), "Error: enclosing composite component does not have BeanInfo attribute");
             }
-            BeanDescriptor componentDescriptor = componentBeanInfo
-                  .getBeanDescriptor();
+            BeanDescriptor componentDescriptor = componentBeanInfo.getBeanDescriptor();
             if (null == componentDescriptor) {
-                throw new TagException(
-                      owner.getTag(),
-                      "Error: enclosing composite component BeanInfo does not have BeanDescriptor");
+                throw new TagException(owner.getTag(), "Error: enclosing composite component BeanInfo does not have BeanDescriptor");
             }
-            List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>)
-                  componentDescriptor
-                        .getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
+            List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>) componentDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
             if (null == targetList) {
-                throw new TagException(
-                      owner.getTag(),
-                      "Error: enclosing composite component does not support behavior events");
+                throw new TagException(owner.getTag(), "Error: enclosing composite component does not support behavior events");
             }
             String eventName = owner.getEventName();
             boolean supportedEvent = false;
             for (AttachedObjectTarget target : targetList) {
                 if (target instanceof BehaviorHolderAttachedObjectTarget) {
                     BehaviorHolderAttachedObjectTarget behaviorTarget = (BehaviorHolderAttachedObjectTarget) target;
-                    if ((null != eventName && eventName.equals(behaviorTarget.getName()))
-                        || (null == eventName && behaviorTarget.isDefaultEvent())) {
+                    if ((null != eventName && eventName.equals(behaviorTarget.getName())) || (null == eventName && behaviorTarget.isDefaultEvent())) {
                         supportedEvent = true;
                         break;
                     }
                 }
             }
             if (supportedEvent) {
-                CompositeComponentTagHandler.getAttachedObjectHandlers(parent)
-                      .add(owner);
+                CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(owner);
             } else {
-                throw new TagException(
-                      owner.getTag(),
-                      "Error: enclosing composite component does not support event "
-                      + eventName);
+                throw new TagException(owner.getTag(), "Error: enclosing composite component does not support event " + eventName);
             }
 
         } else if (parent instanceof ClientBehaviorHolder) {
             owner.applyAttachedObject(ctx.getFacesContext(), parent);
-        }  else {
+        } else {
             throw new TagException(owner.getTag(), "Parent not an instance of ClientBehaviorHolder: " + parent);
         }
 
     }
-    
+
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent) {
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
         // cast to the ClientBehaviorHolder.
         ClientBehaviorHolder behaviorHolder = (ClientBehaviorHolder) parent;
-        ValueExpression bindingExpr=null;
-        Behavior behavior=null;
-        if (null != owner.getBinding()){
+        ValueExpression bindingExpr = null;
+        Behavior behavior = null;
+        if (null != owner.getBinding()) {
             bindingExpr = owner.getBinding().getValueExpression(ctx, Behavior.class);
             behavior = (Behavior) bindingExpr.getValue(ctx);
         }
-        if (null == behavior){
-            if (null != owner.getBehaviorId()){
+        if (null == behavior) {
+            if (null != owner.getBehaviorId()) {
                 behavior = ctx.getFacesContext().getApplication().createBehavior(owner.getBehaviorId());
-                if (null == behavior){
-                    throw new TagException(owner.getTag(),
-                            "No Faces behavior defined for Id "+owner.getBehaviorId());
+                if (null == behavior) {
+                    throw new TagException(owner.getTag(), "No Faces behavior defined for Id " + owner.getBehaviorId());
                 }
-                if (null != bindingExpr){
+                if (null != bindingExpr) {
                     bindingExpr.setValue(ctx, behavior);
                 }
             } else {
-                throw new TagException(owner.getTag(),"No behaviorId defined");
+                throw new TagException(owner.getTag(), "No behaviorId defined");
             }
         }
         owner.setAttributes(ctx, behavior);
 
         if (behavior instanceof ClientBehavior) {
-            behaviorHolder.addClientBehavior(getEventName(behaviorHolder), (ClientBehavior)behavior);
+            behaviorHolder.addClientBehavior(getEventName(behaviorHolder), (ClientBehavior) behavior);
         }
     }
 
-    
-	
     @Override
     public MetaRuleset createMetaRuleset(Class type) {
         Util.notNull("type", type);
@@ -152,30 +133,30 @@ class BehaviorTagHandlerDelegateImpl extends TagHandlerDelegate implements Attac
         m = m.ignore("event");
         return m.ignore("binding").ignore("for");
     }
-    
+
     @Override
     public String getFor() {
         String result = null;
         TagAttribute attr = owner.getTagAttribute("for");
-        
+
         if (null != attr) {
             result = attr.getValue();
         }
         return result;
-        
+
     }
-    
-    private String getEventName(ClientBehaviorHolder holder){
+
+    private String getEventName(ClientBehaviorHolder holder) {
         String eventName;
-        if (null != owner.getEvent()){
+        if (null != owner.getEvent()) {
             eventName = owner.getEvent().getValue();
         } else {
             eventName = holder.getDefaultEventName();
         }
-        if (null == eventName){
+        if (null == eventName) {
             throw new TagException(owner.getTag(), "The event name is not defined");
         }
         return eventName;
     }
-    
+
 }

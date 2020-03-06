@@ -25,12 +25,13 @@ import jakarta.faces.event.ListenerFor;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 
-
 /**
- * <p class="changed_added_2_0">Container annotation to specify multiple
- * {@link ListenerFor} annotations on a single class.  Example:</p>
-
- * <pre><code>
+ * <p class="changed_added_2_0">
+ * Container annotation to specify multiple {@link ListenerFor} annotations on a single class. Example:
+ * </p>
+ * 
+ * <pre>
+ * <code>
 
     &#0064;ListenersFor({
         &#0064;ListenerFor(systemEventClass=PostAddToViewEvent.class),
@@ -38,23 +39,25 @@ import java.lang.annotation.Inherited;
                      sourceClass=CustomOutput.class)
     })
 
- * </code></pre>
-
+ * </code>
+ * </pre>
+ * 
  * <div class="changed_added_2_0">
-
- * <p>The action described in {@link ListenerFor} must be taken for each
- * <code>&#0064;ListenerFor</code> present in the container
- * annotation. </p>
-
+ * 
+ * <p>
+ * The action described in {@link ListenerFor} must be taken for each <code>&#0064;ListenerFor</code> present in the
+ * container annotation.
+ * </p>
+ * 
  * </div>
-
+ * 
  * @since 2.0
  */
-@Retention(value= RetentionPolicy.RUNTIME)
-@Target(value= ElementType.TYPE)
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(value = ElementType.TYPE)
 @Inherited
 public @interface ListenersFor {
 
     ListenerFor[] value();
-    
+
 }

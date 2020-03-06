@@ -19,13 +19,13 @@ package com.sun.faces.mgbean;
 import jakarta.faces.FacesException;
 
 /**
- * <p>Indicates an error in the ManagedBean, be it a user error or runtime error.</p>
+ * <p>
+ * Indicates an error in the ManagedBean, be it a user error or runtime error.
+ * </p>
  */
 public class ManagedBeanCreationException extends FacesException {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     private static final long serialVersionUID = -641675334387524657L;
 
@@ -33,20 +33,16 @@ public class ManagedBeanCreationException extends FacesException {
         super();
     }
 
-
     public ManagedBeanCreationException(String message) {
         super(message);
     }
-
 
     public ManagedBeanCreationException(Throwable t) {
         super(t);
     }
 
-
     public ManagedBeanCreationException(String message, Throwable t) {
-        super(message, t);  
+        super(message, t);
     }
-
 
 }

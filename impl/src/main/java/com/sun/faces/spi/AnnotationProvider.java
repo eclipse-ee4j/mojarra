@@ -87,18 +87,17 @@ public abstract class AnnotationProvider {
     protected ServletContext servletContext;
 
     /**
-     * The wrapped annotation provider. May be null if this class is not loaded via {@link ServiceLoader} (from a file
-     * named com.sun.faces.spi.AnnotationProvider) and is instead loaded via Mojarra's {@link ServiceFactory} (from a
-     * file named com.sun.faces.spi.annotationprovider).
+     * The wrapped annotation provider. May be null if this class is not loaded via {@link ServiceLoader} (from a file named
+     * com.sun.faces.spi.AnnotationProvider) and is instead loaded via Mojarra's {@link ServiceFactory} (from a file named
+     * com.sun.faces.spi.annotationprovider).
      */
     protected AnnotationProvider wrappedAnnotationProvider;
-    
+
     // ------------------------------------------------------------ Constructors
 
     public AnnotationProvider(ServletContext servletContext) {
         initialize(servletContext, null);
     }
-
 
     public AnnotationProvider() {
     }
@@ -119,12 +118,10 @@ public abstract class AnnotationProvider {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * @param urls
-     *            a <code>Set</code> of URLs that refer to specific faces-config.xml documents on the classpath. The
-     *            information returned by the map may return annotation information from sources outside of those defined by
-     *            the urls.
+     * @param urls a <code>Set</code> of URLs that refer to specific faces-config.xml documents on the classpath. The
+     * information returned by the map may return annotation information from sources outside of those defined by the urls.
      * @return a <code>Map</code> of classes mapped to a specific annotation type. If no annotations are present, this
-     *         method returns an empty <code>Map</code>.
+     * method returns an empty <code>Map</code>.
      */
     public abstract Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(Set<URI> urls);
 

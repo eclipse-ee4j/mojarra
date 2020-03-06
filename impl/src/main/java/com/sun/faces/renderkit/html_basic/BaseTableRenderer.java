@@ -37,69 +37,50 @@ import jakarta.faces.context.ResponseWriter;
  */
 public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
-
     // ------------------------------------------------------- Protected Methods
 
     /**
-     * Called to render the opening/closing <code>thead</code> elements
-     * and any content nested between.
+     * Called to render the opening/closing <code>thead</code> elements and any content nested between.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    protected abstract void renderHeader(FacesContext context,
-                                         UIComponent table,
-                                         ResponseWriter writer)
-    throws IOException;
-
+    protected abstract void renderHeader(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException;
 
     /**
-     * Called to render the opening/closing <code>tfoot</code> elements
-     * and any content nested between.
+     * Called to render the opening/closing <code>tfoot</code> elements and any content nested between.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    protected abstract void renderFooter(FacesContext context,
-                                         UIComponent table,
-                                         ResponseWriter writer)
-    throws IOException;
-
+    protected abstract void renderFooter(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException;
 
     /**
-     * Call to render the content that should be included between opening
-     * and closing <code>tr</code> elements.
+     * Call to render the content that should be included between opening and closing <code>tr</code> elements.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param row the current row (if any - an implmenetation may not need this)
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    protected abstract void renderRow(FacesContext context,
-                                      UIComponent table,
-                                      UIComponent row,
-                                      ResponseWriter writer)
-    throws IOException;
-
+    protected abstract void renderRow(FacesContext context, UIComponent table, UIComponent row, ResponseWriter writer) throws IOException;
 
     /**
-     * Renders the start of a table and applies the value of
-     * <code>styleClass</code> if available and renders any
-     * pass through attributes that may be specified.
+     * Renders the start of a table and applies the value of <code>styleClass</code> if available and renders any pass
+     * through attributes that may be specified.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
-     * @param attributes pass-through attributes that the component
-     *  supports
+     * @param attributes pass-through attributes that the component supports
      * @throws IOException if content cannot be written
      */
-    protected void renderTableStart(FacesContext context,
-                                    UIComponent table,
-                                    ResponseWriter writer,
-                                    Attribute[] attributes)
-    throws IOException {
+    protected void renderTableStart(FacesContext context, UIComponent table, ResponseWriter writer, Attribute[] attributes) throws IOException {
 
         writer.startElement("table", table);
         writeIdAttributeIfNecessary(context, writer, table);
@@ -107,53 +88,42 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         if (styleClass != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                table,
-                                                attributes);
+        RenderKitUtils.renderPassThruAttributes(context, writer, table, attributes);
         writer.writeText("\n", table, null);
 
     }
 
-
     /**
      * Renders the closing <code>table</code> element.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    @SuppressWarnings({"UnusedDeclaration"})
-    protected void renderTableEnd(FacesContext context,
-                                  UIComponent table,
-                                  ResponseWriter writer)
-    throws IOException {
+    @SuppressWarnings({ "UnusedDeclaration" })
+    protected void renderTableEnd(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         writer.endElement("table");
         writer.writeText("\n", table, null);
 
     }
 
-
     /**
-     * Renders the caption of the table applying the values of
-     * <code>captionClass</code> as the class and <code>captionStyle</code>
-     * as the style if either are present.
+     * Renders the caption of the table applying the values of <code>captionClass</code> as the class and
+     * <code>captionStyle</code> as the style if either are present.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    protected void renderCaption(FacesContext context,
-                                 UIComponent table,
-                                 ResponseWriter writer) throws IOException {
+    protected void renderCaption(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         UIComponent caption = getFacet(table, "caption");
         if (caption != null) {
-            String captionClass =
-                  (String) table.getAttributes().get("captionClass");
-            String captionStyle = (String)
-                  table.getAttributes().get("captionStyle");
+            String captionClass = (String) table.getAttributes().get("captionClass");
+            String captionStyle = (String) table.getAttributes().get("captionStyle");
             writer.startElement("caption", table);
             if (captionClass != null) {
                 writer.writeAttribute("class", captionClass, "captionClass");
@@ -164,120 +134,104 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             encodeRecursive(context, caption);
             writer.endElement("caption");
         }
-        
-    }
 
+    }
 
     /**
      * Renders the starting <code>tbody</code> element.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    @SuppressWarnings({"UnusedDeclaration"})
-    protected void renderTableBodyStart(FacesContext context,
-                                        UIComponent table,
-                                        ResponseWriter writer)
-    throws IOException {
+    @SuppressWarnings({ "UnusedDeclaration" })
+    protected void renderTableBodyStart(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
-            writer.startElement("tbody", table);
-            writer.writeText("\n", table, null);
+        writer.startElement("tbody", table);
+        writer.writeText("\n", table, null);
 
     }
 
-
     /**
      * Renders the closing <code>tbody</code> element.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    @SuppressWarnings({"UnusedDeclaration"})
-    protected void renderTableBodyEnd(FacesContext context,
-                                      UIComponent table,
-                                      ResponseWriter writer)
-    throws IOException {
+    @SuppressWarnings({ "UnusedDeclaration" })
+    protected void renderTableBodyEnd(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         writer.endElement("tbody");
         writer.writeText("\n", table, null);
 
     }
 
-
     /**
-     * Renders the starting <code>tr</code> element applying any values
-     * from the <code>rowClasses</code> attribute.
+     * Renders the starting <code>tr</code> element applying any values from the <code>rowClasses</code> attribute.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    protected void renderRowStart(FacesContext context,
-                                  UIComponent table,
-                                  ResponseWriter writer)
-          throws IOException {
+    protected void renderRowStart(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         TableMetaInfo info = getMetaInfo(context, table);
         writer.startElement("tr", table);
 
         final String tableRowClass = info.rowClasses.length > 0 ? info.getCurrentRowClass() : null;
         final String rowClass = (String) table.getAttributes().get("rowClass");
-        
-        if(tableRowClass != null) {
-            if(rowClass != null) {
+
+        if (tableRowClass != null) {
+            if (rowClass != null) {
                 throw new IOException("Cannot define both rowClasses on a table and rowClass");
             }
             writer.writeAttribute("class", tableRowClass, "rowClasses");
         }
-        
-        if(rowClass != null){
-            if(tableRowClass != null) {
+
+        if (rowClass != null) {
+            if (tableRowClass != null) {
                 throw new IOException("Cannot define both rowClasses on a table and rowClass");
             }
             writer.writeAttribute("class", rowClass, "rowClass");
         }
-        
+
         writer.writeText("\n", table, null);
 
     }
 
-
     /**
      * Renders the closing <code>rt</code> element.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    @SuppressWarnings({"UnusedDeclaration"})
-    protected void renderRowEnd(FacesContext context,
-                                UIComponent table,
-                                ResponseWriter writer)
-    throws IOException {
+    @SuppressWarnings({ "UnusedDeclaration" })
+    protected void renderRowEnd(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         writer.endElement("tr");
         writer.writeText("\n", table, null);
 
     }
 
-
     /**
-     * Returns a <code>TableMetaInfo</code> object containing details such
-     * as row and column classes, columns, and a mechanism for scrolling through
-     * the row/column classes.
+     * Returns a <code>TableMetaInfo</code> object containing details such as row and column classes, columns, and a
+     * mechanism for scrolling through the row/column classes.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @return the <code>TableMetaInfo</code> for provided table
      */
-    protected TableRenderer.TableMetaInfo getMetaInfo(FacesContext context,
-                                                      UIComponent table) {
+    protected TableRenderer.TableMetaInfo getMetaInfo(FacesContext context, UIComponent table) {
 
         String key = createKey(table);
-        Map<Object,Object> attributes = context.getAttributes();
-        TableRenderer.TableMetaInfo info = (TableRenderer.TableMetaInfo)
-              attributes.get(key);
+        Map<Object, Object> attributes = context.getAttributes();
+        TableRenderer.TableMetaInfo info = (TableRenderer.TableMetaInfo) attributes.get(key);
         if (info == null) {
             info = new TableRenderer.TableMetaInfo(table);
             attributes.put(key, info);
@@ -286,9 +240,9 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     }
 
-
     /**
      * Removes the cached TableMetaInfo from the specified component.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table from which the TableMetaInfo will be removed
      */
@@ -298,14 +252,11 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     }
 
-
     /**
-     * Creates a unique key based on the provided <code>UIComponent</code> with
-     *  which the TableMetaInfo can be looked up.
+     * Creates a unique key based on the provided <code>UIComponent</code> with which the TableMetaInfo can be looked up.
      *
      * @param table the table that's being rendered
-     * @return a unique key to store the metadata in the request and still have
-     *  it associated with a specific component.
+     * @return a unique key to store the metadata in the request and still have it associated with a specific component.
      */
     protected String createKey(UIComponent table) {
 
@@ -313,9 +264,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     }
 
-
     // ----------------------------------------------------------- Inner Classes
-
 
     protected static class TableMetaInfo {
 
@@ -331,9 +280,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         public int columnStyleCounter;
         public int rowStyleCounter;
 
-
         // -------------------------------------------------------- Constructors
-
 
         public TableMetaInfo(UIComponent table) {
             rowClasses = getRowClasses(table);
@@ -344,9 +291,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             hasFooterFacets = hasFacet("footer", columns);
         }
 
-
         // ------------------------------------------------------ Public Methods
-
 
         /**
          * Reset the counter used to apply column styles.
@@ -357,31 +302,26 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         }
 
-
         /**
-         * Obtain the column class based on the current counter.  Calling this
-         * method automatically moves the pointer to the next style.  If the
-         * counter is larger than the number of total classes, the counter will
-         * be reset.
+         * Obtain the column class based on the current counter. Calling this method automatically moves the pointer to the next
+         * style. If the counter is larger than the number of total classes, the counter will be reset.
+         * 
          * @return the current style
          */
         public String getCurrentColumnClass() {
 
             String style = null;
-            if (columnStyleCounter < columnClasses.length
-                 && columnStyleCounter <= columnCount) {
+            if (columnStyleCounter < columnClasses.length && columnStyleCounter <= columnCount) {
                 style = columnClasses[columnStyleCounter++];
             }
             return ((style != null && style.length() > 0) ? style : null);
 
         }
 
-
         /**
-         * Obtain the row class based on the current counter.  Calling this
-         * method automatically moves the pointer to the next style.  If the
-         * counter is larger than the number of total classes, the counter will
-         * be reset.
+         * Obtain the row class based on the current counter. Calling this method automatically moves the pointer to the next
+         * style. If the counter is larger than the number of total classes, the counter will be reset.
+         * 
          * @return the current style
          */
         public String getCurrentRowClass() {
@@ -392,14 +332,13 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             return style;
         }
 
-
         // ----------------------------------------------------- Private Methods
 
-
         /**
-         * <p>Return an array of stylesheet classes to be applied to each column in
-         * the table in the order specified. Every column may or may not have a
-         * stylesheet.</p>
+         * <p>
+         * Return an array of stylesheet classes to be applied to each column in the table in the order specified. Every column
+         * may or may not have a stylesheet.
+         * </p>
          *
          * @param table {@link jakarta.faces.component.UIComponent} component being rendered
          *
@@ -416,11 +355,11 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         }
 
-
         /**
-         * <p>Return an Iterator over the <code>UIColumn</code> children of the
-         * specified <code>UIData</code> that have a <code>rendered</code> property
-         * of <code>true</code>.</p>
+         * <p>
+         * Return an Iterator over the <code>UIColumn</code> children of the specified <code>UIData</code> that have a
+         * <code>rendered</code> property of <code>true</code>.
+         * </p>
          *
          * @param table the table from which to extract children
          *
@@ -431,8 +370,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             if (table instanceof UIData) {
                 int childCount = table.getChildCount();
                 if (childCount > 0) {
-                    List<UIColumn> results =
-                          new ArrayList<>(childCount);
+                    List<UIColumn> results = new ArrayList<>(childCount);
                     for (UIComponent kid : table.getChildren()) {
                         if ((kid instanceof UIColumn) && kid.isRendered()) {
                             results.add((UIColumn) kid);
@@ -462,13 +400,13 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         }
 
-
         /**
-         * <p>Return the number of child <code>UIColumn</code> components nested in
-         * the specified <code>UIData</code> that have a facet with the specified
-         * name.</p>
+         * <p>
+         * Return the number of child <code>UIColumn</code> components nested in the specified <code>UIData</code> that have a
+         * facet with the specified name.
+         * </p>
          *
-         * @param name    Name of the facet being analyzed
+         * @param name Name of the facet being analyzed
          * @param columns the columns to search
          *
          * @return the number of columns associated with the specified Facet name
@@ -488,11 +426,11 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         }
 
-
         /**
-         * <p>Return an array of stylesheet classes to be applied to each row in the
-         * table, in the order specified.  Every row may or may not have a
-         * stylesheet.</p>
+         * <p>
+         * Return an array of stylesheet classes to be applied to each row in the table, in the order specified. Every row may
+         * or may not have a stylesheet.
+         * </p>
          *
          * @param table {@link jakarta.faces.component.UIComponent} component being rendered
          *

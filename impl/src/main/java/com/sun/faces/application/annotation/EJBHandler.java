@@ -34,16 +34,14 @@ class EJBHandler extends JndiHandler implements RuntimeAnnotationHandler {
     private Method[] methods;
     private EJB[] methodAnnotations;
 
-    public EJBHandler(
-            Field[] fields, EJB[] fieldAnnotations,
-            Method[] methods, EJB[] methodAnnotations) {
+    public EJBHandler(Field[] fields, EJB[] fieldAnnotations, Method[] methods, EJB[] methodAnnotations) {
         this.fields = fields;
         this.fieldAnnotations = fieldAnnotations;
         this.methods = methods;
         this.methodAnnotations = methodAnnotations;
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];

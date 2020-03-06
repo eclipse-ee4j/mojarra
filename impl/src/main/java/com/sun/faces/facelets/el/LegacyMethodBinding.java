@@ -33,8 +33,7 @@ import java.io.Serializable;
  * @version $Id$
  * @deprecated
  */
-public final class LegacyMethodBinding extends
-        MethodBinding implements Serializable {
+public final class LegacyMethodBinding extends MethodBinding implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,8 +49,7 @@ public final class LegacyMethodBinding extends
      * @see jakarta.faces.el.MethodBinding#getType(jakarta.faces.context.FacesContext)
      */
     @Override
-    public Class getType(FacesContext context)
-            throws MethodNotFoundException {
+    public Class getType(FacesContext context) throws MethodNotFoundException {
         try {
             return m.getMethodInfo(context.getELContext()).getReturnType();
         } catch (jakarta.el.MethodNotFoundException e) {
@@ -64,12 +62,10 @@ public final class LegacyMethodBinding extends
     /*
      * (non-Javadoc)
      * 
-     * @see jakarta.faces.el.MethodBinding#invoke(jakarta.faces.context.FacesContext,
-     *      java.lang.Object[])
+     * @see jakarta.faces.el.MethodBinding#invoke(jakarta.faces.context.FacesContext, java.lang.Object[])
      */
     @Override
-    public Object invoke(FacesContext context, Object[] params)
-            throws EvaluationException, MethodNotFoundException {
+    public Object invoke(FacesContext context, Object[] params) throws EvaluationException, MethodNotFoundException {
         try {
             return m.invoke(context.getELContext(), params);
         } catch (jakarta.el.MethodNotFoundException e) {

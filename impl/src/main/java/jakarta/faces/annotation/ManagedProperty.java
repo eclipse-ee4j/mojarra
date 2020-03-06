@@ -26,24 +26,25 @@ import jakarta.enterprise.util.Nonbinding;
 import jakarta.inject.Qualifier;
 
 /**
- * <p class="changed_added_2_3">The presence of this annotation (along
- * with {@code @Inject}) on a field of any type causes the value returned from
- * evaluating an expression language expression to be
- * injected as the value of that field. </p>
+ * <p class="changed_added_2_3">
+ * The presence of this annotation (along with {@code @Inject}) on a field of any type causes the value returned from
+ * evaluating an expression language expression to be injected as the value of that field.
+ * </p>
  */
 
 @Qualifier
 @Target(FIELD)
 @Retention(RUNTIME)
 public @interface ManagedProperty {
-    
+
     /**
-     * <p class="changed_added_2_3">Taken to be the value that is injected into
-     * the field. </p>
+     * <p class="changed_added_2_3">
+     * Taken to be the value that is injected into the field.
+     * </p>
      *
      * @return the value.
      */
     @Nonbinding
     String value();
-    
+
 }

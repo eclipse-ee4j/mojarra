@@ -20,15 +20,16 @@ import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.FacesListener;
 
 /**
- * <p class="changed_added_2_0">A generic base interface for event 
- * listeners for various types of {@link BehaviorEvent}s.  All listener 
- * interfaces for specific {@link BehaviorEvent} event types must 
- * extend this interface.</p>
+ * <p class="changed_added_2_0">
+ * A generic base interface for event listeners for various types of {@link BehaviorEvent}s. All listener interfaces for
+ * specific {@link BehaviorEvent} event types must extend this interface.
+ * </p>
  *
- * <p>Implementations of this interface must have a zero-args public
- * constructor.  If the class that implements this interface has state
- * that needs to be saved and restored between requests, the class must
- * also implement {@link jakarta.faces.component.StateHolder}.</p>
+ * <p>
+ * Implementations of this interface must have a zero-args public constructor. If the class that implements this
+ * interface has state that needs to be saved and restored between requests, the class must also implement
+ * {@link jakarta.faces.component.StateHolder}.
+ * </p>
  *
  * @since 2.0
  */

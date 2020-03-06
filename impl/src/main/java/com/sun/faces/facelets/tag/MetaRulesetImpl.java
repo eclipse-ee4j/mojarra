@@ -35,18 +35,15 @@ import java.lang.ref.WeakReference;
 public class MetaRulesetImpl extends MetaRuleset {
 
     private final static Logger LOGGER = FacesLogger.FACELETS_META.getLogger();
-    private final static Map<Class, WeakReference<MetadataTarget>> metadata =
-          Collections.synchronizedMap(new WeakHashMap<>());
+    private final static Map<Class, WeakReference<MetadataTarget>> metadata = Collections.synchronizedMap(new WeakHashMap<>());
 
     private final Tag tag;
     private final Class type;
-    private final Map<String,TagAttribute> attributes;
+    private final Map<String, TagAttribute> attributes;
     private final List<Metadata> mappers;
     private final List<MetaRule> rules;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public MetaRulesetImpl(Tag tag, Class<?> type) {
 
@@ -71,9 +68,7 @@ public class MetaRulesetImpl extends MetaRuleset {
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public MetaRuleset ignore(String attribute) {
@@ -83,7 +78,6 @@ public class MetaRulesetImpl extends MetaRuleset {
         return this;
 
     }
-
 
     @Override
     public MetaRuleset alias(String attribute, String property) {
@@ -118,22 +112,21 @@ public class MetaRulesetImpl extends MetaRuleset {
 
     }
 
-
     @Override
-     public Metadata finish() {
+    public Metadata finish() {
 
         if (!this.attributes.isEmpty()) {
             if (this.rules.isEmpty()) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    for (Iterator<TagAttribute> itr = this.attributes.values().iterator(); itr.hasNext(); ) {
-                        LOGGER.severe(itr.next() + " Unhandled by MetaTagHandler for type "+this.type.getName());
+                    for (Iterator<TagAttribute> itr = this.attributes.values().iterator(); itr.hasNext();) {
+                        LOGGER.severe(itr.next() + " Unhandled by MetaTagHandler for type " + this.type.getName());
                     }
                 }
             } else {
                 MetadataTarget target = this.getMetadataTarget();
                 // now iterate over attributes
                 int ruleEnd = this.rules.size() - 1;
-                for (Map.Entry<String,TagAttribute> entry : attributes.entrySet()) {
+                for (Map.Entry<String, TagAttribute> entry : attributes.entrySet()) {
                     Metadata data = null;
                     int i = ruleEnd;
                     while (data == null && i >= 0) {
@@ -143,7 +136,7 @@ public class MetaRulesetImpl extends MetaRuleset {
                     }
                     if (data == null) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe(entry.getValue() + " Unhandled by MetaTagHandler for type "+this.type.getName());
+                            LOGGER.severe(entry.getValue() + " Unhandled by MetaTagHandler for type " + this.type.getName());
                         }
                     } else {
                         this.mappers.add(data);
@@ -168,9 +161,7 @@ public class MetaRulesetImpl extends MetaRuleset {
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected MetadataTarget getMetadataTarget() {
         WeakReference<MetadataTarget> metaRef = metadata.get(type);
@@ -179,8 +170,7 @@ public class MetaRulesetImpl extends MetaRuleset {
             try {
                 meta = new MetadataTargetImpl(type);
             } catch (IntrospectionException e) {
-                throw new TagException(this.tag,
-                        "Error Creating TargetMetadata", e);
+                throw new TagException(this.tag, "Error Creating TargetMetadata", e);
             }
             metadata.put(type, new WeakReference<>(meta));
         }
@@ -188,11 +178,8 @@ public class MetaRulesetImpl extends MetaRuleset {
 
     }
 
-
-
     // --------------------------------------------------------- Private Methods
 
-    
     private final static Metadata NONE = new Metadata() {
 
         @Override

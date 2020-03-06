@@ -90,10 +90,11 @@ class FormOmittedChecker {
     /**
      * Is the component a form.
      *
-     * <p> Note normally a form inherits from UIForm, but there might be some
-     * component libraries out there that might not honor that. So we check the
-     * component family to avoid warning in cases where 3rd party form component
-     * that does not extend UIForm (eg. tr:form) is used. </p>
+     * <p>
+     * Note normally a form inherits from UIForm, but there might be some component libraries out there that might not honor
+     * that. So we check the component family to avoid warning in cases where 3rd party form component that does not extend
+     * UIForm (eg. tr:form) is used.
+     * </p>
      *
      * @param component the UI component.
      * @return true if it is a form, false otherwise.
@@ -109,9 +110,7 @@ class FormOmittedChecker {
      * @return true if the component is in need of a form, false otherwise.
      */
     private static boolean isInNeedOfForm(UIComponent component) {
-        return (component instanceof ActionSource
-                || component instanceof ActionSource2
-                || component instanceof EditableValueHolder);
+        return (component instanceof ActionSource || component instanceof ActionSource2 || component instanceof EditableValueHolder);
     }
 
     /**
@@ -122,7 +121,7 @@ class FormOmittedChecker {
      */
     private static void addFormOmittedMessage(FacesContext context, UIComponent component) {
         String key = MessageUtils.MISSING_FORM_ERROR;
-        Object[] parameters = new Object[]{component.getClientId(context)};
+        Object[] parameters = new Object[] { component.getClientId(context) };
         boolean missingFormReported = false;
 
         FacesMessage message = MessageUtils.getExceptionMessage(key, parameters);

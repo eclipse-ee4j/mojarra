@@ -23,21 +23,20 @@ import jakarta.faces.validator.Validator;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 
-
 /**
- * <p>A <strong class="changed_modified_2_0">ValidatorException</strong> is an exception
- * thrown by the <code>validate()</code> method of a
- * {@link Validator} to indicate that validation failed.
+ * <p>
+ * A <strong class="changed_modified_2_0">ValidatorException</strong> is an exception thrown by the
+ * <code>validate()</code> method of a {@link Validator} to indicate that validation failed.
  */
 public class ValidatorException extends FacesException {
     // ----------------------------------------------------------- Constructors
 
-
     private static final long serialVersionUID = 6459492016772012827L;
 
     /**
-     * <p>Construct a new exception with the specified message and
-     * no root cause.</p>
+     * <p>
+     * Construct a new exception with the specified message and no root cause.
+     * </p>
      *
      * @param message The message for this exception
      */
@@ -46,10 +45,11 @@ public class ValidatorException extends FacesException {
         super(message.getSummary());
         this.message = message;
     }
-    
+
     /**
-     * <p class="changed_added_2_0">Allow this one exception to contain
-     * multiple messages.</p>
+     * <p class="changed_added_2_0">
+     * Allow this one exception to contain multiple messages.
+     * </p>
      *
      * @param messages the list of messages for this exception
      * 
@@ -61,11 +61,12 @@ public class ValidatorException extends FacesException {
     }
 
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and root cause.
+     * </p>
      *
      * @param message The detail message for this exception
-     * @param cause   The root cause for this exception
+     * @param cause The root cause for this exception
      */
     public ValidatorException(FacesMessage message, Throwable cause) {
 
@@ -74,8 +75,10 @@ public class ValidatorException extends FacesException {
     }
 
     /**
-     * <p class="changed_added_2_0">Allow this one exception to contain
-     * multiple messages, while passing on the root cause to the superclass</p>
+     * <p class="changed_added_2_0">
+     * Allow this one exception to contain multiple messages, while passing on the root cause to the superclass
+     * </p>
+     * 
      * @param messages the detail messages for this exception
      * @param cause the root cause for this exception
      * 
@@ -83,18 +86,16 @@ public class ValidatorException extends FacesException {
      */
 
     public ValidatorException(Collection<FacesMessage> messages, Throwable cause) {
-        super(messages.isEmpty() ? "" : messages.iterator().next().getSummary(),
-              cause);
+        super(messages.isEmpty() ? "" : messages.iterator().next().getSummary(), cause);
         this.messages = messages;
     }
 
     /**
-     * <p class="changed_modified_2_0">Returns the <code>FacesMessage</code>
-     * associated with 
-     * the exception.  If this instance
-     * was created with a constructor that takes 
-     * <code>Collection&lt;FacesMessage&gt;</code>, this method returns the first
-     * message in the <code>Collection</code></p>
+     * <p class="changed_modified_2_0">
+     * Returns the <code>FacesMessage</code> associated with the exception. If this instance was created with a constructor
+     * that takes <code>Collection&lt;FacesMessage&gt;</code>, this method returns the first message in the
+     * <code>Collection</code>
+     * </p>
      *
      * @return the message
      */
@@ -105,13 +106,12 @@ public class ValidatorException extends FacesException {
         }
         return result;
     }
-    
-    
+
     /**
-     * <p class="changed_modified_2_0">If this instance was created with a 
-     * constructor that takes 
-     * <code>Collection&lt;FacesMessage&gt;</code>, this method returns the passed
-     * collection, otherwise this method returns <code>null</code>.</p>
+     * <p class="changed_modified_2_0">
+     * If this instance was created with a constructor that takes <code>Collection&lt;FacesMessage&gt;</code>, this method
+     * returns the passed collection, otherwise this method returns <code>null</code>.
+     * </p>
      * 
      * @since 2.0
      *

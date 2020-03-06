@@ -26,8 +26,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The SessionProducer is the CDI producer that allows injection of the session
- * map using @Inject.
+ * The SessionProducer is the CDI producer that allows injection of the session map using @Inject.
  * </p>
  *
  * @since 2.3
@@ -39,17 +38,11 @@ public class SessionMapProducer extends CdiProducer<Map<String, Object>> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public SessionMapProducer() {
-        super.name("sessionScope")
-             .scope(RequestScoped.class)
-             .qualifiers(new SessionMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, Object.class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getSessionMap());
+        super.name("sessionScope").scope(RequestScoped.class).qualifiers(new SessionMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getSessionMap());
     }
-    
+
 }

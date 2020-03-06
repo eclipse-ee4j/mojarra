@@ -27,19 +27,15 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
 
 /**
- * ApplyRequestValuesPhase executes <code>processDecodes</code> on each
- * component in the tree so that it may update it's current value from the
- * information included in the current request (parameters, headers, c
- * cookies and so on.)
+ * ApplyRequestValuesPhase executes <code>processDecodes</code> on each component in the tree so that it may update it's
+ * current value from the information included in the current request (parameters, headers, c cookies and so on.)
  */
 public class ApplyRequestValuesPhase extends Phase {
 
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void execute(FacesContext facesContext) throws FacesException {
@@ -57,7 +53,7 @@ public class ApplyRequestValuesPhase extends Phase {
             String exceptionMessage = re.getMessage();
             if (null != exceptionMessage) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,exceptionMessage, re);
+                    LOGGER.log(Level.WARNING, exceptionMessage, re);
                 }
             }
             throw new FacesException(exceptionMessage, re);
@@ -68,14 +64,12 @@ public class ApplyRequestValuesPhase extends Phase {
 
     }
 
-
     @Override
     public PhaseId getId() {
 
         return PhaseId.APPLY_REQUEST_VALUES;
 
     }
-
 
     // The testcase for this class is TestApplyRequestValuesPhase.java
 

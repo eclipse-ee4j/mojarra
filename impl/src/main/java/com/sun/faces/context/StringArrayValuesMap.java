@@ -22,15 +22,12 @@ import java.util.Set;
 
 /**
  * <p>
- * This is the base Map for those Maps that need to return <code>String[]</code>
- * values.
+ * This is the base Map for those Maps that need to return <code>String[]</code> values.
  * <p>
  */
 abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public boolean containsValue(Object value) {
@@ -50,12 +47,10 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
         return false;
     }
 
-
     @Override
     public boolean equals(Object obj) {
 
-        if (obj == null ||
-            !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) {
+        if (obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) {
             return false;
         }
         Map objMap = (Map) obj;
@@ -85,26 +80,21 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
 
     }
 
-
     @Override
     public int hashCode() {
         return this.hashCode(this);
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected int hashCode(Object someObject) {
         int hashCode = 7 * someObject.hashCode();
-         for (Object o : entrySet()) {
-             Map.Entry entry = (Map.Entry) o;
-             hashCode += entry.getKey().hashCode();
-             hashCode +=
-                   (Arrays.hashCode((Object[]) entry.getValue()));
-         }
+        for (Object o : entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            hashCode += entry.getKey().hashCode();
+            hashCode += (Arrays.hashCode((Object[]) entry.getValue()));
+        }
         return hashCode;
     }
-
 
 }

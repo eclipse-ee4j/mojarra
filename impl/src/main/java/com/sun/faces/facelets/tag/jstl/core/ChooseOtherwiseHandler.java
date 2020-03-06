@@ -34,8 +34,7 @@ public final class ChooseOtherwiseHandler extends TagHandlerImpl {
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         this.nextHandler.apply(ctx, parent);
     }
 

@@ -21,12 +21,8 @@ import java.beans.FeatureDescriptor;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 
-
 interface PropertyHandler {
 
-    void apply(FaceletContext ctx,
-               String propName,
-               FeatureDescriptor target,
-               TagAttribute attribute);
+    void apply(FaceletContext ctx, String propName, FeatureDescriptor target, TagAttribute attribute);
 
 }

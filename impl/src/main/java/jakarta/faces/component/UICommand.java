@@ -35,32 +35,30 @@ import jakarta.faces.render.Renderer;
 
 /**
  * <p>
- * <strong>UICommand</strong> is a {@link UIComponent} that represents a user interface component
- * which, when activated by the user, triggers an application specific "command" or "action". Such a
- * component is typically rendered as a push button, a menu item, or a hyperlink.
+ * <strong>UICommand</strong> is a {@link UIComponent} that represents a user interface component which, when activated
+ * by the user, triggers an application specific "command" or "action". Such a component is typically rendered as a push
+ * button, a menu item, or a hyperlink.
  * </p>
  *
  * <p>
- * When the <code>decode()</code> method of this {@link UICommand}, or its corresponding
- * {@link Renderer}, detects that this control has been activated, it will queue an
- * {@link ActionEvent}. Later on, the <code>broadcast()</code> method will ensure that this event is
- * broadcast to all interested listeners.
+ * When the <code>decode()</code> method of this {@link UICommand}, or its corresponding {@link Renderer}, detects that
+ * this control has been activated, it will queue an {@link ActionEvent}. Later on, the <code>broadcast()</code> method
+ * will ensure that this event is broadcast to all interested listeners.
  * </p>
  * 
  * <p>
  * Listeners will be invoked in the following order:
  * <ol>
  * <li>{@link ActionListener}s, in the order in which they were registered.
- * <li>The "actionListener" {@link MethodExpression} (which will cover the "actionListener" that was
- * set as a <code>MethodBinding</code>).
- * <li>The default {@link ActionListener}, retrieved from the {@link Application} - and therefore,
- * any attached "action" {@link MethodExpression}.
+ * <li>The "actionListener" {@link MethodExpression} (which will cover the "actionListener" that was set as a
+ * <code>MethodBinding</code>).
+ * <li>The default {@link ActionListener}, retrieved from the {@link Application} - and therefore, any attached "action"
+ * {@link MethodExpression}.
  * </ol>
  * 
  * <p>
- * By default, the <code>rendererType</code> property must be set to
- * "<code>jakarta.faces.Button</code>". This value can be changed by calling the
- * <code>setRendererType()</code> method.
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Button</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
 
@@ -108,9 +106,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         return COMPONENT_FAMILY;
     }
 
-    
     // ------------------------------------------------- ActionSource/ActionSource2 Properties
-
 
     /**
      * <p>
@@ -129,8 +125,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
 
     /**
      * <p>
-     * Returns the <code>value</code> property of the <code>UICommand</code>. This is most often
-     * rendered as a label.
+     * Returns the <code>value</code> property of the <code>UICommand</code>. This is most often rendered as a label.
      * </p>
      * 
      * @return The object representing the value of this component.
@@ -141,8 +136,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
 
     /**
      * <p>
-     * Sets the <code>value</code> property of the <code>UICommand</code>. This is most often
-     * rendered as a label.
+     * Sets the <code>value</code> property of the <code>UICommand</code>. This is most often rendered as a label.
      * </p>
      *
      * @param value the new value
@@ -151,7 +145,6 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         getStateHelper().put(PropertyKeys.value, value);
     }
 
-    
     // ---------------------------------------------------- ActionSource / ActionSource2 Methods
 
     @Override
@@ -185,23 +178,21 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         removeFacesListener(listener);
     }
 
-    
     // ----------------------------------------------------- UIComponent Methods
 
     /**
      * <p>
-     * In addition to to the default {@link UIComponent#broadcast} processing, pass the
-     * {@link ActionEvent} being broadcast to the method referenced by <code>actionListener</code>
-     * (if any), and to the default {@link ActionListener} registered on the
-     * {@link jakarta.faces.application.Application}.
+     * In addition to to the default {@link UIComponent#broadcast} processing, pass the {@link ActionEvent} being broadcast
+     * to the method referenced by <code>actionListener</code> (if any), and to the default {@link ActionListener}
+     * registered on the {@link jakarta.faces.application.Application}.
      * </p>
      *
      * @param event {@link FacesEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further
-     *             processing on the current event should be performed
-     * @throws IllegalArgumentException if the implementation class of this {@link FacesEvent} is
-     *             not supported by this component
+     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * current event should be performed
+     * @throws IllegalArgumentException if the implementation class of this {@link FacesEvent} is not supported by this
+     * component
      * @throws NullPointerException if <code>event</code> is <code>null</code>
      */
     @Override
@@ -228,20 +219,18 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
     /**
      * 
      * <p>
-     * Intercept <code>queueEvent</code> and take the following action. If the event is an
-     * <code>{@link ActionEvent}</code>, obtain the <code>UIComponent</code> instance from the
-     * event. If the component is an <code>{@link ActionSource}</code> obtain the value of its
-     * "immediate" property. If it is true, mark the phaseId for the event to be
-     * <code>PhaseId.APPLY_REQUEST_VALUES</code> otherwise, mark the phaseId to be
-     * <code>PhaseId.INVOKE_APPLICATION</code>. The event must be passed on to
-     * <code>super.queueEvent()</code> before returning from this method.
+     * Intercept <code>queueEvent</code> and take the following action. If the event is an <code>{@link ActionEvent}</code>,
+     * obtain the <code>UIComponent</code> instance from the event. If the component is an <code>{@link ActionSource}</code>
+     * obtain the value of its "immediate" property. If it is true, mark the phaseId for the event to be
+     * <code>PhaseId.APPLY_REQUEST_VALUES</code> otherwise, mark the phaseId to be <code>PhaseId.INVOKE_APPLICATION</code>.
+     * The event must be passed on to <code>super.queueEvent()</code> before returning from this method.
      * </p>
      * 
      */
     @Override
     public void queueEvent(FacesEvent event) {
         UIComponent component = event.getComponent();
-        
+
         if (event instanceof ActionEvent && component instanceof ActionSource) {
             if (((ActionSource) component).isImmediate()) {
                 event.setPhaseId(APPLY_REQUEST_VALUES);
@@ -249,21 +238,12 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
                 event.setPhaseId(INVOKE_APPLICATION);
             }
         }
-        
+
         super.queueEvent(event);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     // ---------------------------------------------------------- Deprecated code
-    
+
     /**
      * {@inheritDoc}
      *
@@ -292,8 +272,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
     /**
      * {@inheritDoc}
      *
-     * @deprecated This has been replaced by
-     *             {@link #setActionExpression(jakarta.el.MethodExpression)}.
+     * @deprecated This has been replaced by {@link #setActionExpression(jakarta.el.MethodExpression)}.
      */
     @Override
     public void setAction(MethodBinding action) {
@@ -319,8 +298,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
     /**
      * {@inheritDoc}
      * 
-     * @deprecated This has been replaced by
-     *             {@link #addActionListener(jakarta.faces.event.ActionListener)}.
+     * @deprecated This has been replaced by {@link #addActionListener(jakarta.faces.event.ActionListener)}.
      */
     @Override
     public void setActionListener(MethodBinding actionListener) {
@@ -333,5 +311,5 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
             mb.invoke(context, new Object[] { event });
         }
     }
-    
+
 }

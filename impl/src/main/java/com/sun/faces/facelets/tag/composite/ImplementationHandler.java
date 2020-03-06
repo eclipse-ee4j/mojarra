@@ -26,16 +26,14 @@ import com.sun.faces.application.view.FaceletViewHandlingStrategy;
 
 import java.io.IOException;
 
-
 public class ImplementationHandler extends TagHandlerImpl {
 
     public final static String Name = "implementation";
 
-    
     public ImplementationHandler(TagConfig config) {
         super(config);
     }
-    
+
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (!FaceletViewHandlingStrategy.isBuildingMetadata(ctx.getFacesContext())) {

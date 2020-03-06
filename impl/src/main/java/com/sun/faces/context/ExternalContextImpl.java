@@ -73,13 +73,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * <p>This implementation of {@link ExternalContext} is specific to the
- * servlet implementation.
+ * <p>
+ * This implementation of {@link ExternalContext} is specific to the servlet implementation.
  */
 public class ExternalContextImpl extends ExternalContext {
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
-    
+
     private static final String PUSH_SUPPORTED_ATTRIBUTE_NAME = FACES_PREFIX + "ExternalContextImpl.PUSH_SUPPORTED";
 
     private ServletContext servletContext = null;
@@ -87,38 +87,28 @@ public class ExternalContextImpl extends ExternalContext {
     private ServletResponse response = null;
     private ClientWindow clientWindow = null;
 
-    private Map<String,Object> applicationMap = null;
-    private Map<String,Object> sessionMap = null;
-    private Map<String,Object> requestMap = null;
-    private Map<String,String> requestParameterMap = null;
-    private Map<String,String[]> requestParameterValuesMap = null;
-    private Map<String,String> requestHeaderMap = null;
-    private Map<String,String[]> requestHeaderValuesMap = null;
-    private Map<String,Object> cookieMap = null;
-    private Map<String,String> initParameterMap = null;
-    private Map<String,String> fallbackContentTypeMap = null;
+    private Map<String, Object> applicationMap = null;
+    private Map<String, Object> sessionMap = null;
+    private Map<String, Object> requestMap = null;
+    private Map<String, String> requestParameterMap = null;
+    private Map<String, String[]> requestParameterValuesMap = null;
+    private Map<String, String> requestHeaderMap = null;
+    private Map<String, String[]> requestHeaderValuesMap = null;
+    private Map<String, Object> cookieMap = null;
+    private Map<String, String> initParameterMap = null;
+    private Map<String, String> fallbackContentTypeMap = null;
     private Flash flash;
     private boolean distributable;
-   
 
     private enum ALLOWABLE_COOKIE_PROPERTIES {
-        domain,
-        maxAge,
-        path,
-        secure,
-        httpOnly
+        domain, maxAge, path, secure, httpOnly
     }
 
-    static final Class theUnmodifiableMapClass =
-        Collections.unmodifiableMap(new HashMap<Object,Object>()).getClass();
-
+    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(new HashMap<Object, Object>()).getClass();
 
     // ------------------------------------------------------------ Constructors
 
-    
-    public ExternalContextImpl(ServletContext sc,
-                               ServletRequest request,
-                               ServletResponse response) {
+    public ExternalContextImpl(ServletContext sc, ServletRequest request, ServletResponse response) {
 
         // Validate the incoming parameters
         Util.notNull("sc", sc);
@@ -127,7 +117,7 @@ public class ExternalContextImpl extends ExternalContext {
 
         // Save references to our context, request, and response
         this.servletContext = sc;
-        this.request = request;        
+        this.request = request;
         this.response = response;
 
         boolean enabled = ContextParamUtils.getValue(servletContext, SendPoweredByHeader, Boolean.class);
@@ -141,11 +131,10 @@ public class ExternalContextImpl extends ExternalContext {
         fallbackContentTypeMap.put("js", "text/javascript");
         fallbackContentTypeMap.put("css", "text/css");
         fallbackContentTypeMap.put("properties", "text/plain");
-        
+
     }
 
     // -------------------------------------------- Methods from ExternalContext
-
 
     /**
      * @see ExternalContext#getSession(boolean)
@@ -159,12 +148,12 @@ public class ExternalContextImpl extends ExternalContext {
     public String getSessionId(boolean create) {
         HttpSession session = null;
         String id = null;
-        
-        session = (HttpSession)getSession(create);
+
+        session = (HttpSession) getSession(create);
         if (session != null) {
             id = session.getId();
         }
-        
+
         return id;
     }
 
@@ -176,24 +165,20 @@ public class ExternalContextImpl extends ExternalContext {
         return this.servletContext;
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getContextName()
      */
     @Override
     public String getContextName() {
 
-        if (servletContext.getMajorVersion() >= 3
-            || (servletContext.getMajorVersion() == 2
-                && servletContext.getMinorVersion() == 5)) {
+        if (servletContext.getMajorVersion() >= 3 || (servletContext.getMajorVersion() == 2 && servletContext.getMinorVersion() == 5)) {
             return this.servletContext.getServletContextName();
         } else {
             // for servlet 2.4 support
             return servletContext.getServletContextName();
         }
-        
-    }
 
+    }
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequest()
@@ -202,7 +187,7 @@ public class ExternalContextImpl extends ExternalContext {
     public Object getRequest() {
         return this.request;
     }
-    
+
     /**
      * @see ExternalContext#setRequest(Object)
      */
@@ -219,7 +204,6 @@ public class ExternalContextImpl extends ExternalContext {
         }
     }
 
-
     /**
      * @see ExternalContext#setRequestCharacterEncoding(String)
      */
@@ -228,7 +212,6 @@ public class ExternalContextImpl extends ExternalContext {
         request.setCharacterEncoding(encoding);
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getResponse()
      */
@@ -236,7 +219,6 @@ public class ExternalContextImpl extends ExternalContext {
     public Object getResponse() {
         return this.response;
     }
-
 
     /**
      * @see ExternalContext#setResponse(Object)
@@ -266,12 +248,11 @@ public class ExternalContextImpl extends ExternalContext {
         response.setCharacterEncoding(encoding);
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getApplicationMap()
      */
     @Override
-    public Map<String,Object> getApplicationMap() {
+    public Map<String, Object> getApplicationMap() {
         if (applicationMap == null) {
             applicationMap = new ApplicationMap(servletContext);
         }
@@ -282,122 +263,98 @@ public class ExternalContextImpl extends ExternalContext {
     public String getApplicationContextPath() {
         return this.servletContext.getContextPath();
     }
-    
+
     /**
      * @see jakarta.faces.context.ExternalContext#getSessionMap()
      */
     @Override
-    public Map<String,Object> getSessionMap() {
+    public Map<String, Object> getSessionMap() {
         if (sessionMap == null) {
             if (distributable) {
-                sessionMap = new AlwaysPuttingSessionMap((HttpServletRequest) request,
-                        FacesContext.getCurrentInstance()
-                        .getApplication().getProjectStage());
+                sessionMap = new AlwaysPuttingSessionMap((HttpServletRequest) request, FacesContext.getCurrentInstance().getApplication().getProjectStage());
             } else {
-                sessionMap = new SessionMap((HttpServletRequest) request,
-                        FacesContext.getCurrentInstance()
-                        .getApplication().getProjectStage());
+                sessionMap = new SessionMap((HttpServletRequest) request, FacesContext.getCurrentInstance().getApplication().getProjectStage());
             }
         }
         return sessionMap;
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestMap()
      */
     @Override
-    public Map<String,Object> getRequestMap() {
+    public Map<String, Object> getRequestMap() {
         if (requestMap == null) {
             requestMap = new RequestMap(this.request);
         }
         return requestMap;
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestHeaderMap()
      */
     @Override
-    public Map<String,String> getRequestHeaderMap() {
+    public Map<String, String> getRequestHeaderMap() {
         if (null == requestHeaderMap) {
-            requestHeaderMap = 
-                Collections.unmodifiableMap(
-                    new RequestHeaderMap((HttpServletRequest) request));
+            requestHeaderMap = Collections.unmodifiableMap(new RequestHeaderMap((HttpServletRequest) request));
         }
         return requestHeaderMap;
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestHeaderValuesMap()
      */
     @Override
-    public Map<String,String[]> getRequestHeaderValuesMap() {
+    public Map<String, String[]> getRequestHeaderValuesMap() {
         if (null == requestHeaderValuesMap) {
-            requestHeaderValuesMap = 
-                Collections.unmodifiableMap(
-                    new RequestHeaderValuesMap((HttpServletRequest) request));
+            requestHeaderValuesMap = Collections.unmodifiableMap(new RequestHeaderValuesMap((HttpServletRequest) request));
         }
         return requestHeaderValuesMap;
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestCookieMap()
      */
     @Override
-    public Map<String,Object> getRequestCookieMap() {
+    public Map<String, Object> getRequestCookieMap() {
         if (null == cookieMap) {
-            cookieMap =
-                Collections.unmodifiableMap(
-                    new RequestCookieMap((HttpServletRequest) request));
+            cookieMap = Collections.unmodifiableMap(new RequestCookieMap((HttpServletRequest) request));
         }
         return cookieMap;
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getInitParameterMap()
      */
     @Override
-    public Map<String,String> getInitParameterMap() {
+    public Map<String, String> getInitParameterMap() {
         if (null == initParameterMap) {
-            initParameterMap = 
-                Collections.unmodifiableMap(
-                    new InitParameterMap(servletContext));
+            initParameterMap = Collections.unmodifiableMap(new InitParameterMap(servletContext));
         }
         return initParameterMap;
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestParameterMap()
      */
     @Override
-    public Map<String,String> getRequestParameterMap() {
+    public Map<String, String> getRequestParameterMap() {
         if (null == requestParameterMap) {
-            requestParameterMap = 
-                Collections.unmodifiableMap(
-                    new RequestParameterMap(request));
+            requestParameterMap = Collections.unmodifiableMap(new RequestParameterMap(request));
         }
         return requestParameterMap;
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestParameterValuesMap()
      */
     @Override
-    public Map<String,String[]> getRequestParameterValuesMap() {
+    public Map<String, String[]> getRequestParameterValuesMap() {
         if (null == requestParameterValuesMap) {
-            requestParameterValuesMap = 
-                Collections.unmodifiableMap(
-                    new RequestParameterValuesMap(request));
+            requestParameterValuesMap = Collections.unmodifiableMap(new RequestParameterValuesMap(request));
         }
         return requestParameterValuesMap;
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestParameterNames()
@@ -412,12 +369,10 @@ public class ExternalContextImpl extends ExternalContext {
                 return namEnum.hasMoreElements();
             }
 
-
             @Override
             public String next() {
                 return (String) namEnum.nextElement();
             }
-
 
             @Override
             public void remove() {
@@ -425,7 +380,6 @@ public class ExternalContextImpl extends ExternalContext {
             }
         };
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestLocale()
@@ -435,7 +389,6 @@ public class ExternalContextImpl extends ExternalContext {
         return request.getLocale();
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestLocales()
      */
@@ -443,7 +396,6 @@ public class ExternalContextImpl extends ExternalContext {
     public Iterator<Locale> getRequestLocales() {
         return (new LocalesIterator(request.getLocales()));
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestPathInfo()
@@ -453,7 +405,6 @@ public class ExternalContextImpl extends ExternalContext {
         return (((HttpServletRequest) request).getPathInfo());
     }
 
-
     /**
      * @see ExternalContext#getRealPath(String)
      */
@@ -461,7 +412,6 @@ public class ExternalContextImpl extends ExternalContext {
     public String getRealPath(String path) {
         return servletContext.getRealPath(path);
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestContextPath()
@@ -471,7 +421,6 @@ public class ExternalContextImpl extends ExternalContext {
         return (((HttpServletRequest) request).getContextPath());
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestServletPath()
      */
@@ -479,7 +428,6 @@ public class ExternalContextImpl extends ExternalContext {
     public String getRequestServletPath() {
         return (((HttpServletRequest) request).getServletPath());
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestCharacterEncoding()
@@ -489,7 +437,6 @@ public class ExternalContextImpl extends ExternalContext {
         return (request.getCharacterEncoding());
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestContentType()
      */
@@ -497,7 +444,6 @@ public class ExternalContextImpl extends ExternalContext {
     public String getRequestContentType() {
         return (request.getContentType());
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestContentLength()
@@ -507,7 +453,6 @@ public class ExternalContextImpl extends ExternalContext {
         return (request.getContentLength());
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getResponseCharacterEncoding()
      */
@@ -516,7 +461,6 @@ public class ExternalContextImpl extends ExternalContext {
         return (response.getCharacterEncoding());
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getResponseContentType()
      */
@@ -524,7 +468,6 @@ public class ExternalContextImpl extends ExternalContext {
     public String getResponseContentType() {
         return (response.getContentType());
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getInitParameter(String)
@@ -537,20 +480,17 @@ public class ExternalContextImpl extends ExternalContext {
         return servletContext.getInitParameter(name);
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getResourcePaths(String)
      */
     @Override
     public Set<String> getResourcePaths(String path) {
         if (null == path) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "path");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "path");
             throw new NullPointerException(message);
         }
         return TypedCollections.dynamicallyCastSet(servletContext.getResourcePaths(path), String.class);
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getResourceAsStream(String)
@@ -558,13 +498,11 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public InputStream getResourceAsStream(String path) {
         if (null == path) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "path");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "path");
             throw new NullPointerException(message);
         }
         return servletContext.getResourceAsStream(path);
     }
-
 
     /**
      * @see ExternalContext#getResource(String)
@@ -572,8 +510,7 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public URL getResource(String path) {
         if (null == path) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "path");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "path");
             throw new NullPointerException(message);
         }
         URL url;
@@ -585,7 +522,6 @@ public class ExternalContextImpl extends ExternalContext {
         return url;
     }
 
-
     /**
      * @see ExternalContext#encodeActionURL(String)
      */
@@ -593,7 +529,7 @@ public class ExternalContextImpl extends ExternalContext {
     public String encodeActionURL(String url) {
         Util.notNull("url", url);
         FacesContext context = FacesContext.getCurrentInstance();
-        ClientWindow  cw = context.getExternalContext().getClientWindow();
+        ClientWindow cw = context.getExternalContext().getClientWindow();
         boolean appendClientWindow = false;
         if (null != cw) {
             appendClientWindow = cw.isClientWindowRenderModeEnabled(context);
@@ -609,14 +545,12 @@ public class ExternalContextImpl extends ExternalContext {
                     builder.append(UrlBuilder.PARAMETER_PAIR_SEPARATOR);
                 }
                 builder.append(ResponseStateManager.CLIENT_WINDOW_URL_PARAM).append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).append(clientWindowId);
-    
+
                 Map<String, String> additionalParams = cw.getQueryURLParameters(context);
                 if (null != additionalParams) {
                     for (Map.Entry<String, String> cur : additionalParams.entrySet()) {
                         builder.append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR);
-                        builder.append(cur.getKey()).
-                                append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).
-                                append(cur.getValue());                        
+                        builder.append(cur.getKey()).append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).append(cur.getValue());
                     }
                 }
                 url = builder.toString();
@@ -626,24 +560,21 @@ public class ExternalContextImpl extends ExternalContext {
         return ((HttpServletResponse) response).encodeURL(url);
     }
 
-
     /**
      * @see ExternalContext#encodeResourceURL(String)
      */
     @Override
     public String encodeResourceURL(String url) {
         if (null == url) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "url");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "url");
             throw new NullPointerException(message);
         }
 
         String result = ((HttpServletResponse) response).encodeURL(url);
         pushIfPossibleAndNecessary(result);
-        
+
         return result;
     }
-    
 
     /**
      * @see ExternalContext#encodeWebsocketURL(String)
@@ -666,12 +597,10 @@ public class ExternalContextImpl extends ExternalContext {
 
             String websocketURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
             return encodeResourceURL(websocketURL.replaceFirst("http", "ws"));
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             return url;
         }
     }
-
 
     /**
      * @see ExternalContext#encodeNamespace(String)
@@ -681,17 +610,14 @@ public class ExternalContextImpl extends ExternalContext {
         return name; // Do nothing for servlets
     }
 
-
     /**
      * @see ExternalContext#dispatch(String)
      */
     @Override
     public void dispatch(String requestURI) throws IOException, FacesException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher(
-            requestURI);
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher(requestURI);
         if (requestDispatcher == null) {
-            ((HttpServletResponse) response).
-                    sendError(HttpServletResponse.SC_NOT_FOUND);
+            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         try {
@@ -700,7 +626,6 @@ public class ExternalContextImpl extends ExternalContext {
             throw new FacesException(se);
         }
     }
-
 
     /**
      * @see ExternalContext#redirect(String)
@@ -712,8 +637,7 @@ public class ExternalContextImpl extends ExternalContext {
         doLastPhaseActions(ctx, true);
 
         if (ctx.getPartialViewContext().isPartialRequest()) {
-            if (getSession(true) instanceof HttpSession &&
-                ctx.getResponseComplete()) {
+            if (getSession(true) instanceof HttpSession && ctx.getResponseComplete()) {
                 throw new IllegalStateException();
             }
             PartialResponseWriter pwriter;
@@ -734,9 +658,8 @@ public class ExternalContextImpl extends ExternalContext {
             ((HttpServletResponse) response).sendRedirect(requestURI);
         }
         ctx.responseComplete();
-        
-    }
 
+    }
 
     /**
      * @see ExternalContext#log(String)
@@ -744,13 +667,11 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public void log(String message) {
         if (null == message) {
-            String msg = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "message");
+            String msg = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "message");
             throw new NullPointerException(msg);
         }
         servletContext.log(message);
     }
-
 
     /**
      * @see ExternalContext#log(String, Throwable)
@@ -758,18 +679,15 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public void log(String message, Throwable throwable) {
         if (null == message) {
-            String msg = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "message");
+            String msg = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "message");
             throw new NullPointerException(msg);
         }
         if (null == throwable) {
-            String msg = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "throwable");
+            String msg = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "throwable");
             throw new NullPointerException(msg);
         }
         servletContext.log(message, throwable);
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getAuthType()
@@ -789,18 +707,14 @@ public class ExternalContextImpl extends ExternalContext {
         if (mimeType == null) {
             mimeType = getFallbackMimeType(file);
         }
-        
+
         FacesContext ctx = FacesContext.getCurrentInstance();
-        if (mimeType == null && LOGGER.isLoggable(Level.WARNING) 
-            && ctx.isProjectStage(ProjectStage.Development) ) {
-            LOGGER.log(Level.WARNING,
-                       "jsf.externalcontext.no.mime.type.found",
-                       new Object[] { file });
+        if (mimeType == null && LOGGER.isLoggable(Level.WARNING) && ctx.isProjectStage(ProjectStage.Development)) {
+            LOGGER.log(Level.WARNING, "jsf.externalcontext.no.mime.type.found", new Object[] { file });
         }
         return mimeType;
-        
-    }
 
+    }
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRemoteUser()
@@ -810,7 +724,6 @@ public class ExternalContextImpl extends ExternalContext {
         return ((HttpServletRequest) request).getRemoteUser();
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getUserPrincipal()
      */
@@ -819,20 +732,17 @@ public class ExternalContextImpl extends ExternalContext {
         return ((HttpServletRequest) request).getUserPrincipal();
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#isUserInRole(String)
      */
     @Override
     public boolean isUserInRole(String role) {
         if (null == role) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "role");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "role");
             throw new NullPointerException(message);
         }
         return ((HttpServletRequest) request).isUserInRole(role);
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#invalidateSession()
@@ -847,7 +757,6 @@ public class ExternalContextImpl extends ExternalContext {
 
     }
 
-
     /**
      * @see ExternalContext#addResponseCookie(String, String, java.util.Map)
      * @param name
@@ -855,43 +764,40 @@ public class ExternalContextImpl extends ExternalContext {
      * @param properties
      */
     @Override
-    public void addResponseCookie(String name,
-                                  String value,
-                                  Map<String,Object> properties) {
+    public void addResponseCookie(String name, String value, Map<String, Object> properties) {
 
         HttpServletResponse res = (HttpServletResponse) response;
 
         Cookie cookie = new Cookie(name, value);
         if (properties != null && properties.size() != 0) {
-            for (Map.Entry<String,Object> entry : properties.entrySet()) {
+            for (Map.Entry<String, Object> entry : properties.entrySet()) {
                 String key = entry.getKey();
                 ALLOWABLE_COOKIE_PROPERTIES p = ALLOWABLE_COOKIE_PROPERTIES.valueOf(key);
                 Object v = entry.getValue();
                 switch (p) {
-                    case domain:
-                        cookie.setDomain((String) v);
-                        break;
-                    case maxAge:
-                        cookie.setMaxAge((Integer) v);
-                        break;
-                    case path:
-                        cookie.setPath((String) v);
-                        break;
-                    case secure:
-                        cookie.setSecure((Boolean) v);
-                        break;
-                    case httpOnly:
-                        cookie.setHttpOnly((Boolean) v);
-                        break;
-                    default:
-                        throw new IllegalStateException(); // shouldn't happen
+                case domain:
+                    cookie.setDomain((String) v);
+                    break;
+                case maxAge:
+                    cookie.setMaxAge((Integer) v);
+                    break;
+                case path:
+                    cookie.setPath((String) v);
+                    break;
+                case secure:
+                    cookie.setSecure((Boolean) v);
+                    break;
+                case httpOnly:
+                    cookie.setHttpOnly((Boolean) v);
+                    break;
+                default:
+                    throw new IllegalStateException(); // shouldn't happen
                 }
             }
         }
         res.addCookie(cookie);
 
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getResponseOutputStream()
@@ -900,7 +806,6 @@ public class ExternalContextImpl extends ExternalContext {
     public OutputStream getResponseOutputStream() throws IOException {
         return response.getOutputStream();
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getResponseOutputWriter()
@@ -918,7 +823,6 @@ public class ExternalContextImpl extends ExternalContext {
         return request.getScheme();
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestServerName()
      */
@@ -926,7 +830,6 @@ public class ExternalContextImpl extends ExternalContext {
     public String getRequestServerName() {
         return request.getServerName();
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#getRequestServerPort()
@@ -936,7 +839,6 @@ public class ExternalContextImpl extends ExternalContext {
         return request.getServerPort();
     }
 
-
     /**
      * @see ExternalContext#setResponseContentType(String)
      */
@@ -944,7 +846,6 @@ public class ExternalContextImpl extends ExternalContext {
     public void setResponseContentType(String contentType) {
         response.setContentType(contentType);
     }
-
 
     /**
      * @see ExternalContext#setResponseHeader(String, String)
@@ -954,7 +855,6 @@ public class ExternalContextImpl extends ExternalContext {
         ((HttpServletResponse) response).setHeader(name, value);
     }
 
-
     /**
      * @see ExternalContext#addResponseHeader(String, String)
      */
@@ -962,7 +862,6 @@ public class ExternalContextImpl extends ExternalContext {
     public void addResponseHeader(String name, String value) {
         ((HttpServletResponse) response).addHeader(name, value);
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#setResponseBufferSize(int)
@@ -972,7 +871,6 @@ public class ExternalContextImpl extends ExternalContext {
         response.setBufferSize(size);
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#isResponseCommitted()
      */
@@ -981,7 +879,6 @@ public class ExternalContextImpl extends ExternalContext {
         return response.isCommitted();
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#responseReset()
      */
@@ -989,7 +886,6 @@ public class ExternalContextImpl extends ExternalContext {
     public void responseReset() {
         response.reset();
     }
-
 
     /**
      * @see jakarta.faces.context.ExternalContext#responseSendError(int, String)
@@ -1003,7 +899,6 @@ public class ExternalContextImpl extends ExternalContext {
         }
     }
 
-
     /**
      * @see jakarta.faces.context.ExternalContext#setResponseStatus(int)
      */
@@ -1012,7 +907,6 @@ public class ExternalContextImpl extends ExternalContext {
         ((HttpServletResponse) response).setStatus(statusCode);
     }
 
-    
     /**
      * @see jakarta.faces.context.ExternalContext#responseFlushBuffer()
      */
@@ -1053,13 +947,13 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see jakarta.faces.context.ExternalContext#getSessionMaxInactiveInterval()
-\     */
+     * @see jakarta.faces.context.ExternalContext#getSessionMaxInactiveInterval() \
+     */
     @Override
     public int getSessionMaxInactiveInterval() {
 
         HttpSession session = ((HttpServletRequest) request).getSession();
-	return session.getMaxInactiveInterval();
+        return session.getMaxInactiveInterval();
 
     }
 
@@ -1073,16 +967,13 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     @Override
-    public String encodeBookmarkableURL(String baseUrl,
-                                        Map<String, List<String>> parameters) {
+    public String encodeBookmarkableURL(String baseUrl, Map<String, List<String>> parameters) {
         FacesContext context = FacesContext.getCurrentInstance();
-        String encodingFromContext =
-              (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
+        String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         if (null == encodingFromContext) {
-            encodingFromContext = (String) context.getViewRoot().getAttributes().
-                    get(RIConstants.FACELETS_ENCODING_KEY);
+            encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
-        
+
         String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
 
         UrlBuilder builder = new UrlBuilder(baseUrl, currentResponseEncoding);
@@ -1092,22 +983,19 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     @Override
-    public String encodeRedirectURL(String baseUrl,
-                                    Map<String, List<String>> parameters) {
+    public String encodeRedirectURL(String baseUrl, Map<String, List<String>> parameters) {
         FacesContext context = FacesContext.getCurrentInstance();
-        String encodingFromContext =
-              (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
+        String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         if (null == encodingFromContext) {
-            encodingFromContext = (String) context.getViewRoot().getAttributes().
-                    get(RIConstants.FACELETS_ENCODING_KEY);
+            encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
-        
+
         String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
 
         UrlBuilder builder = new UrlBuilder(baseUrl, currentResponseEncoding);
         builder.addParameters(parameters);
         return builder.createUrl();
-        
+
     }
 
     /**
@@ -1116,20 +1004,17 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public String encodePartialActionURL(String url) {
         if (null == url) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "url");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "url");
             throw new NullPointerException(message);
         }
         FacesContext context = FacesContext.getCurrentInstance();
-        String encodingFromContext =
-              (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
+        String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         if (null == encodingFromContext) {
-            encodingFromContext = (String) context.getViewRoot().getAttributes().
-                    get(RIConstants.FACELETS_ENCODING_KEY);
+            encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
-        
+
         String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
-        
+
         UrlBuilder builder = new UrlBuilder(url, currentResponseEncoding);
         return ((HttpServletResponse) response).encodeURL(builder.createUrl());
     }
@@ -1142,20 +1027,20 @@ public class ExternalContextImpl extends ExternalContext {
         }
         return flash;
     }
-    
+
     private void pushIfPossibleAndNecessary(String result) {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = context.getExternalContext();
         Map<Object, Object> attrs = context.getAttributes();
         Object val;
-        
+
         // 1. check the request cache
         if (null != (val = attrs.get(PUSH_SUPPORTED_ATTRIBUTE_NAME))) {
             if (!(Boolean) val) {
                 return;
             }
         }
-        
+
         // 2. Not in the request cache, see if PushBuilder is available in the container
         ApplicationAssociate associate = ApplicationAssociate.getInstance(extContext);
         if (!associate.isPushBuilderSupported()) {
@@ -1163,61 +1048,57 @@ public class ExternalContextImpl extends ExternalContext {
             attrs.putIfAbsent(PUSH_SUPPORTED_ATTRIBUTE_NAME, FALSE);
             return;
         }
-        
+
         // 3. Don't bother trying to push if we've already pushed this URL for this request
         @SuppressWarnings("unchecked")
-        Set<String> resourceUrls = (Set<String>)
-             FacesContext.getCurrentInstance()
-                         .getAttributes()
-                         .computeIfAbsent(PUSH_RESOURCE_URLS_KEY_NAME, k -> new HashSet<>());
-        
+        Set<String> resourceUrls = (Set<String>) FacesContext.getCurrentInstance().getAttributes().computeIfAbsent(PUSH_RESOURCE_URLS_KEY_NAME,
+                k -> new HashSet<>());
+
         if (resourceUrls.contains(result)) {
             return;
         }
         resourceUrls.add(result);
-        
-        // 4. At this point we know 
+
+        // 4. At this point we know
         // a) the container has PushBuilder
         // b) we haven't pushed this URL for this request before
         Object pbObj = getPushBuilder(context, extContext);
         if (pbObj != null) {
             // and now we also know c) there was no If-Modified-Since header
-            ((jakarta.servlet.http.PushBuilder)pbObj).path(result).push();
+            ((jakarta.servlet.http.PushBuilder) pbObj).path(result).push();
         }
-        
+
     }
-    
+
     private Object getPushBuilder(FacesContext context, ExternalContext extContext) {
         jakarta.servlet.http.PushBuilder result = null;
-        
+
         Object requestObj = extContext.getRequest();
         if (requestObj instanceof HttpServletRequest) {
             Map<Object, Object> attrs = context.getAttributes();
             HttpServletRequest hreq = (HttpServletRequest) requestObj;
             Object val;
             boolean isPushSupported = false;
-            
+
             // Try to pull value from the request cache
             if ((val = attrs.get(PUSH_SUPPORTED_ATTRIBUTE_NAME)) != null) {
                 isPushSupported = (Boolean) val;
             } else {
-                // If the request has an If-Modified-Since header, do not push, since it's 
+                // If the request has an If-Modified-Since header, do not push, since it's
                 // possible the resources are already in the cache.
                 isPushSupported = isEmpty(extContext.getRequestHeaderMap().get("If-Modified-Since"));
             }
-            
+
             if (isPushSupported) {
                 isPushSupported = (result = hreq.newPushBuilder()) != null;
             }
             attrs.putIfAbsent(PUSH_SUPPORTED_ATTRIBUTE_NAME, isPushSupported);
         }
-        
+
         return result;
     }
 
-
-    private void doLastPhaseActions(FacesContext context, 
-            boolean outgoingResponseIsRedirect) {
+    private void doLastPhaseActions(FacesContext context, boolean outgoingResponseIsRedirect) {
         Map<Object, Object> attrs = context.getAttributes();
         try {
             attrs.put(ELFlash.ACT_AS_DO_LAST_PHASE_ACTIONS, outgoingResponseIsRedirect);
@@ -1228,9 +1109,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     public String getFallbackMimeType(String file) {
 
@@ -1249,9 +1128,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     }
 
-
     // ----------------------------------------------------------- Inner Classes
-
 
     private static class LocalesIterator implements Iterator<Locale> {
 
@@ -1259,21 +1136,17 @@ public class ExternalContextImpl extends ExternalContext {
             this.locales = locales;
         }
 
-
         private Enumeration locales;
-
 
         @Override
         public boolean hasNext() {
             return locales.hasMoreElements();
         }
 
-
         @Override
         public Locale next() {
             return (Locale) locales.nextElement();
         }
-
 
         @Override
         public void remove() {
@@ -1283,4 +1156,3 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
 }
-

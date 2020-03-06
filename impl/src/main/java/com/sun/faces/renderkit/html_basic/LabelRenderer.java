@@ -36,25 +36,25 @@ import jakarta.faces.context.ResponseWriter;
 import java.util.EnumSet;
 import java.util.Set;
 
-/** <p><B>LabelRenderer</B> renders Label element.<p>. */
+/**
+ * <p>
+ * <B>LabelRenderer</B> renders Label element.
+ * <p>
+ * .
+ */
 public class LabelRenderer extends HtmlBasicInputRenderer {
 
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLABEL);
 
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLABEL);
-
-
-    private static final String RENDER_END_ELEMENT =
-          "com.sun.faces.RENDER_END_ELEMENT";
+    private static final String RENDER_END_ELEMENT = "com.sun.faces.RENDER_END_ELEMENT";
 
     // ---------------------------------------------------------- Public Methods
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT, SearchExpressionHint.IGNORE_NO_RESULT);
-    
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT,
+            SearchExpressionHint.IGNORE_NO_RESULT);
+
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -63,17 +63,14 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
 
         String forClientId = null;
         String forValue = (String) component.getAttributes().get("for");
         if (forValue != null) {
-            SearchExpressionContext searchExpressionContext =
-                    SearchExpressionContext.createSearchExpressionContext(context, component,
-                            EXPRESSION_HINTS, null);
-        
-            forClientId = context.getApplication().getSearchExpressionHandler().resolveClientId(
-                searchExpressionContext, forValue);
+            SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(context, component, EXPRESSION_HINTS, null);
+
+            forClientId = context.getApplication().getSearchExpressionHandler().resolveClientId(searchExpressionContext, forValue);
 
             if (forClientId == null) {
                 // it could that the component hasn't been created yet. So
@@ -91,12 +88,8 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("for", forClientId, "for");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
-        String styleClass = (String)
-            component.getAttributes().get("styleClass");
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
+        String styleClass = (String) component.getAttributes().get("styleClass");
         if (null != styleClass) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
@@ -120,10 +113,8 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -132,12 +123,11 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
 
         // render label end element if RENDER_END_ELEMENT is set.
-        String render = (String) component.getAttributes().get(
-              RENDER_END_ELEMENT);
+        String render = (String) component.getAttributes().get(RENDER_END_ELEMENT);
         if ("yes".equals(render)) {
             component.getAttributes().remove(RENDER_END_ELEMENT);
             ResponseWriter writer = context.getResponseWriter();
-            assert(writer != null);
+            assert (writer != null);
             writer.endElement("label");
         }
 
@@ -145,22 +135,17 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
 
     // ------------------------------------------------------- Private Methods
 
-
     /**
-     * Builds and returns the clientId of the component that is
-     * represented by the forValue. Since the component has not been created
-     * yet, invoking <code>getClientId(context)</code> is not possible.
+     * Builds and returns the clientId of the component that is represented by the forValue. Since the component has not
+     * been created yet, invoking <code>getClientId(context)</code> is not possible.
      *
      * @param component UIComponent that represents the label
-     * @param context   FacesContext for this request
-     * @param forValue  String representing the "id" of the component
-     *                  that this label represents.
+     * @param context FacesContext for this request
+     * @param forValue String representing the "id" of the component that this label represents.
      *
      * @return String clientId of the component represented by the forValue.
      */
-    protected String getForComponentClientId(UIComponent component,
-                                             FacesContext context,
-                                             String forValue) {
+    protected String getForComponentClientId(UIComponent component, FacesContext context, String forValue) {
 
         String result = null;
         // ASSUMPTION: The component for which this acts as the label

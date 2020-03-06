@@ -25,7 +25,7 @@ import java.util.Map;
 import com.sun.faces.util.MetadataWrapperMap;
 
 public class ApplicationInstanceFactoryMetadataMap<K, V> extends MetadataWrapperMap<String, Object> {
-    
+
     public enum METADATA {
         hasAnnotations
     };
@@ -36,7 +36,7 @@ public class ApplicationInstanceFactoryMetadataMap<K, V> extends MetadataWrapper
 
     public boolean hasAnnotations(String key) {
         Object objResult = getMetadata().get(key).get(hasAnnotations);
-        
+
         if (objResult != null) {
             return (Boolean) objResult;
         }
@@ -51,10 +51,9 @@ public class ApplicationInstanceFactoryMetadataMap<K, V> extends MetadataWrapper
     @Override
     protected Object onPut(String key, Object value) {
         if (value instanceof Class) {
-            getMetadata().computeIfAbsent(key, e -> new HashMap<>())
-                         .put(hasAnnotations, classHasAnnotations((Class<?>) value));
+            getMetadata().computeIfAbsent(key, e -> new HashMap<>()).put(hasAnnotations, classHasAnnotations((Class<?>) value));
         }
-        
+
         return null;
     }
 

@@ -42,7 +42,7 @@ import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
 
 public class FlowHandlerImpl extends FlowHandler {
-    
+
     public static final String ABANDONED_FLOW = "jakarta.faces.flow.AbandonedFlow";
 
     public FlowHandlerImpl() {
@@ -50,12 +50,12 @@ public class FlowHandlerImpl extends FlowHandler {
         flows = new ConcurrentHashMap<>();
         flowsByFlowId = new ConcurrentHashMap<>();
     }
-    
+
     private boolean flowFeatureIsEnabled;
 
     // key: definingDocumentId, value: Map<flowId, Flow>
     private final Map<String, Map<String, Flow>> flows;
-    
+
     // key: flowId, List<Flow>
     private final Map<String, List<Flow>> flowsByFlowId;
 
@@ -63,7 +63,7 @@ public class FlowHandlerImpl extends FlowHandler {
     public Map<Object, Object> getCurrentFlowScope() {
         return FlowCDIContext.getCurrentFlowScopeAndUpdateSession();
     }
-    
+
     @Override
     public Flow getFlow(FacesContext context, String definingDocumentId, String id) {
         Util.notNull("context", context);
@@ -71,11 +71,11 @@ public class FlowHandlerImpl extends FlowHandler {
         Util.notNull("id", id);
         Flow result = null;
         Map<String, Flow> mapsForDefiningDocument = flows.get(definingDocumentId);
-        
+
         if (null != mapsForDefiningDocument) {
             result = mapsForDefiningDocument.get(id);
         }
-        
+
         return result;
     }
 
@@ -97,11 +97,10 @@ public class FlowHandlerImpl extends FlowHandler {
             mapsForDefiningDocument = new ConcurrentHashMap<>();
             flows.put(toAdd.getDefiningDocumentId(), mapsForDefiningDocument);
         }
-        
+
         Flow oldFlow = mapsForDefiningDocument.put(id, toAdd);
         if (null != oldFlow) {
-            String message = MessageFormat.format("Flow with id \"{0}\" and definingDocumentId \"{1}\" already exists.", 
-                    id, definingDocumentId);
+            String message = MessageFormat.format("Flow with id \"{0}\" and definingDocumentId \"{1}\" already exists.", id, definingDocumentId);
             throw new IllegalStateException(message);
         }
 
@@ -113,40 +112,35 @@ public class FlowHandlerImpl extends FlowHandler {
             flowsByFlowId.put(id, flowsWithId);
         }
         flowsWithId.add(toAdd);
-        
+
         NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
         if (navigationHandler instanceof ConfigurableNavigationHandler) {
-            ((ConfigurableNavigationHandler)navigationHandler).inspectFlow(context, toAdd);
+            ((ConfigurableNavigationHandler) navigationHandler).inspectFlow(context, toAdd);
         }
         flowFeatureIsEnabled = true;
     }
 
     @Override
-    public boolean isActive(FacesContext context, String definingDocumentId, 
-                            String id) {
+    public boolean isActive(FacesContext context, String definingDocumentId, String id) {
         Util.notNull("context", context);
         Util.notNull("definingDocumentId", definingDocumentId);
         Util.notNull("id", id);
         boolean result = false;
         FlowDeque<Flow> flowStack = getFlowStack(context);
         for (Flow cur : flowStack) {
-            if (id.equals(cur.getId()) &&
-                definingDocumentId.equals(cur.getDefiningDocumentId())) {
+            if (id.equals(cur.getId()) && definingDocumentId.equals(cur.getDefiningDocumentId())) {
                 result = true;
                 break;
             }
         }
-        
+
         return result;
     }
-    
-    
-    
-    
+
     @Override
     public Flow getCurrentFlow(FacesContext context) {
         Util.notNull("context", context);
-        
+
         if (!flowFeatureIsEnabled) {
             return null;
         }
@@ -156,7 +150,7 @@ public class FlowHandlerImpl extends FlowHandler {
         if (null == context.getExternalContext().getSession(false)) {
             return null;
         }
-        
+
         FlowDeque<Flow> flowStack = getFlowStack(context);
         int returnDepth = flowStack.getReturnDepth();
         if (flowStack.size() <= returnDepth) {
@@ -186,14 +180,14 @@ public class FlowHandlerImpl extends FlowHandler {
         result = flowStack.peekLastDisplayedViewId();
         return result;
     }
-    
+
     public static final String FLOW_RETURN_DEPTH_PARAM_NAME = "jffrd";
-    
+
     public int getAndClearReturnModeDepth(FacesContext context) {
         int result = 0;
         FlowDeque<Flow> flowStack = getFlowStack(context);
         result = flowStack.getAndClearMaxReturnDepth(context);
-        
+
         return result;
     }
 
@@ -212,18 +206,16 @@ public class FlowHandlerImpl extends FlowHandler {
     }
     // We need a method that takes a view id of a view that is in a flow
     // and makes the system "enter" the flow.
-    
+
     @Override
-    @SuppressWarnings(value="")
-    public void transition(FacesContext context, Flow sourceFlow, 
-                           Flow targetFlow, FlowCallNode outboundCallNode,
-                           String toViewId) {
+    @SuppressWarnings(value = "")
+    public void transition(FacesContext context, Flow sourceFlow, Flow targetFlow, FlowCallNode outboundCallNode, String toViewId) {
         Util.notNull("context", context);
         Util.notNull("toViewId", toViewId);
         if (!flowFeatureIsEnabled) {
-           return;
+            return;
         }
-        
+
         // there has to be a better way to structure this logic
         if (!flowsEqual(sourceFlow, targetFlow)) {
             // Do we have an outboundCallNode?
@@ -232,9 +224,8 @@ public class FlowHandlerImpl extends FlowHandler {
                 Map<String, Parameter> outboundParameters = outboundCallNode.getOutboundParameters();
                 Map<String, Parameter> inboundParameters = targetFlow.getInboundParameters();
                 // Are we passing parameters?
-                if (null != outboundParameters && !outboundParameters.isEmpty() &&
-                        null != inboundParameters && !inboundParameters.isEmpty()) {
-                    
+                if (null != outboundParameters && !outboundParameters.isEmpty() && null != inboundParameters && !inboundParameters.isEmpty()) {
+
                     ELContext elContext = context.getELContext();
                     String curName;
                     // for each outbound parameter...
@@ -253,32 +244,31 @@ public class FlowHandlerImpl extends FlowHandler {
                     }
                 }
             }
-            
+
             performPops(context, sourceFlow, targetFlow);
             if (null != targetFlow && !targetFlow.equals(FlowImpl.ABANDONED_FLOW)) {
                 pushFlow(context, targetFlow, toViewId, evaluatedParams);
             } else {
                 assignInboundParameters(context, targetFlow, evaluatedParams);
             }
-        } 
+        }
     }
 
-    private void assignInboundParameters(FacesContext context, Flow calledFlow,
-                                                                Map<String, Object> evaluatedParams) {
-      // Now the new flow is active, it's time to evaluate the inbound
-      // parameters.
-      if (null != evaluatedParams) {
-          Map<String, Parameter> inboundParameters = calledFlow.getInboundParameters();
-          ELContext elContext = context.getELContext();
-          String curName;
-          ValueExpression toSet;
-          for (Map.Entry<String, Object> curOutbound : evaluatedParams.entrySet()) {
-              curName = curOutbound.getKey();
-              assert(inboundParameters.containsKey(curName));
-              toSet = inboundParameters.get(curName).getValue();
-              toSet.setValue(elContext, curOutbound.getValue());
-          }
-      }
+    private void assignInboundParameters(FacesContext context, Flow calledFlow, Map<String, Object> evaluatedParams) {
+        // Now the new flow is active, it's time to evaluate the inbound
+        // parameters.
+        if (null != evaluatedParams) {
+            Map<String, Parameter> inboundParameters = calledFlow.getInboundParameters();
+            ELContext elContext = context.getELContext();
+            String curName;
+            ValueExpression toSet;
+            for (Map.Entry<String, Object> curOutbound : evaluatedParams.entrySet()) {
+                curName = curOutbound.getKey();
+                assert (inboundParameters.containsKey(curName));
+                toSet = inboundParameters.get(curName).getValue();
+                toSet.setValue(elContext, curOutbound.getValue());
+            }
+        }
     }
 
     @Override
@@ -290,7 +280,7 @@ public class FlowHandlerImpl extends FlowHandler {
             // don't use *this*, due to decoration
             FlowHandler fh = context.getApplication().getFlowHandler();
             Flow sourceFlow = fh.getCurrentFlow(context);
-            Flow targetFlow = null;            
+            Flow targetFlow = null;
             FlowCallNode flowCallNode = null;
             // if this is not a return...
             if (null != flowId && !FlowHandler.NULL_FLOW.equals(toFlowDocumentId)) {
@@ -304,49 +294,49 @@ public class FlowHandlerImpl extends FlowHandler {
                 FlowDeque<Flow> flowStack = getFlowStack(context);
                 flowStack.setMaxReturnDepth(context, maxReturnDepth);
             }
-            
+
             fh.transition(context, sourceFlow, targetFlow, flowCallNode, context.getViewRoot().getViewId());
-            
+
         }
     }
-    
+
     private void performPops(FacesContext context, Flow sourceFlow, Flow targetFlow) {
-        // case 0: sourceFlow is null.  There must be nothing to pop.
+        // case 0: sourceFlow is null. There must be nothing to pop.
         if (null == sourceFlow) {
-            assert(null == peekFlow(context));
+            assert (null == peekFlow(context));
             return;
         }
-                
+
         // case 1: target is null
         if (null == targetFlow) {
             FlowDeque<Flow> flowStack = getFlowStack(context);
             int maxReturns = flowStack.getAndClearMaxReturnDepth(context);
-            for (int i=0; i < maxReturns; i++) {
+            for (int i = 0; i < maxReturns; i++) {
                 popFlow(context);
             }
             return;
-        } 
-        
+        }
+
         if (FlowImpl.ABANDONED_FLOW.equals(targetFlow)) {
             FlowDeque<Flow> flowStack = getFlowStack(context);
             int depth = flowStack.size();
-            for (int i=0; i<depth; i++) {
+            for (int i = 0; i < depth; i++) {
                 popFlow(context);
             }
             return;
         }
-        
-        // case 3: neither source nor target are null.  If source does not
+
+        // case 3: neither source nor target are null. If source does not
         // have a call that calls target, we must pop source.
         if (null == sourceFlow.getFlowCall(targetFlow)) {
-            popFlow(context);            
+            popFlow(context);
         }
 
     }
-    
+
     /*
-     * The Flow.equals() method alone is insufficient because we need to account
-     * for the case where one or the other or both operands may be null.
+     * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both
+     * operands may be null.
      * 
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
@@ -360,30 +350,28 @@ public class FlowHandlerImpl extends FlowHandler {
         }
         return result;
     }
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="Helper Methods">
-    
-    private void pushFlow(FacesContext context, Flow toPush, String lastDisplayedViewId, 
-                                    Map<String, Object> evaluatedParams) {
+
+    private void pushFlow(FacesContext context, Flow toPush, String lastDisplayedViewId, Map<String, Object> evaluatedParams) {
         FlowDeque<Flow> flowStack = getFlowStack(context);
         flowStack.addFirst(toPush, lastDisplayedViewId);
         FlowCDIContext.flowEntered();
-        
+
         assignInboundParameters(context, toPush, evaluatedParams);
-        
-        MethodExpression me  = toPush.getInitializer();
+
+        MethodExpression me = toPush.getInitializer();
         if (null != me) {
             me.invoke(context.getELContext(), null);
         }
         forceSessionUpdateForFlowStack(context, flowStack);
     }
-    
+
     private Flow peekFlow(FacesContext context) {
         FlowDeque<Flow> flowStack = getFlowStack(context);
         return flowStack.peekFirst();
     }
-    
+
     private Flow popFlow(FacesContext context) {
         FlowDeque<Flow> flowStack = getFlowStack(context);
         Flow currentFlow = peekFlow(context);
@@ -393,17 +381,17 @@ public class FlowHandlerImpl extends FlowHandler {
         Flow result = flowStack.pollFirst();
         forceSessionUpdateForFlowStack(context, flowStack);
         return result;
-        
+
     }
-    
+
     private void callFinalizer(FacesContext context, Flow currentFlow, int depth) {
-        MethodExpression me  = currentFlow.getFinalizer();
+        MethodExpression me = currentFlow.getFinalizer();
         if (null != me) {
             me.invoke(context.getELContext(), null);
         }
         FlowCDIContext.flowExited(currentFlow, depth);
     }
-    
+
     static FlowDeque<Flow> getFlowStack(FacesContext context) {
         FlowDeque<Flow> result = null;
         ExternalContext extContext = context.getExternalContext();
@@ -414,22 +402,23 @@ public class FlowHandlerImpl extends FlowHandler {
             result = new FlowDeque<>(sessionKey);
             sessionMap.put(sessionKey, result);
         }
-        
+
         return result;
     }
-    
+
     private void forceSessionUpdateForFlowStack(FacesContext context, FlowDeque<Flow> stack) {
         ExternalContext extContext = context.getExternalContext();
         Map<String, Object> sessionMap = extContext.getSessionMap();
         sessionMap.put(stack.getSessionKey(), stack);
     }
-   
+
     static class FlowDeque<E> implements Iterable<E>, Serializable {
-        
+
         private static final long serialVersionUID = 7915803727932706270L;
-        
+
         private int returnDepth;
         private ArrayDeque<E> data;
+
         private static class RideAlong implements Serializable {
             private static final long serialVersionUID = -1899365746835118058L;
             String lastDisplayedViewId;
@@ -437,8 +426,9 @@ public class FlowHandlerImpl extends FlowHandler {
             public RideAlong(String lastDisplayedViewId) {
                 this.lastDisplayedViewId = lastDisplayedViewId;
             }
-            
+
         }
+
         private ArrayDeque<RideAlong> rideAlong;
         private final String sessionKey;
 
@@ -447,11 +437,11 @@ public class FlowHandlerImpl extends FlowHandler {
             rideAlong = new ArrayDeque<>();
             this.sessionKey = sessionKey;
         }
-        
+
         public String getSessionKey() {
             return sessionKey;
         }
-        
+
         public int size() {
             return data.size();
         }
@@ -460,41 +450,41 @@ public class FlowHandlerImpl extends FlowHandler {
         public Iterator<E> iterator() {
             return data.iterator();
         }
-        
+
         public void addFirst(E e, String lastDisplayedViewId) {
             rideAlong.addFirst(new RideAlong(lastDisplayedViewId));
             data.addFirst(e);
         }
-        
+
         public E pollFirst() {
             rideAlong.pollFirst();
             return data.pollFirst();
         }
-        
-        public int getCurrentFlowDepth( ) {
+
+        public int getCurrentFlowDepth() {
             int returnDepth = this.returnDepth;
             if (data.size() <= returnDepth) {
                 return 0;
             }
-            
+
             int result = data.size();
             if (0 < returnDepth) {
                 Iterator<E> stackIter = data.iterator();
                 int i = 0;
-                while ( stackIter.hasNext() && i < returnDepth ) {
+                while (stackIter.hasNext() && i < returnDepth) {
                     stackIter.next();
                     result--;
                     i++;
-                } 
+                }
             }
-            
+
             return result;
         }
-        
+
         public E peekFirst() {
             return data.peekFirst();
         }
-        
+
         public String peekLastDisplayedViewId() {
             String result = null;
             RideAlong helper = null;
@@ -512,32 +502,32 @@ public class FlowHandlerImpl extends FlowHandler {
             } else {
                 helper = rideAlong.peekFirst();
             }
-            
+
             if (null != helper) {
                 result = helper.lastDisplayedViewId;
             }
-            
+
             return result;
         }
-        
+
         public int getReturnDepth() {
             return returnDepth;
         }
-        
+
         private void setMaxReturnDepth(FacesContext context, int value) {
             Map<Object, Object> attrs = context.getAttributes();
             attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, value);
         }
-        
+
         private int getAndClearMaxReturnDepth(FacesContext context) {
             Map<Object, Object> attrs = context.getAttributes();
             int result = 0;
             if (attrs.containsKey(FLOW_RETURN_DEPTH_PARAM_NAME)) {
-              result = ((Integer)attrs.remove(FLOW_RETURN_DEPTH_PARAM_NAME)).intValue();
-            } 
+                result = ((Integer) attrs.remove(FLOW_RETURN_DEPTH_PARAM_NAME)).intValue();
+            }
             return result;
         }
-        
+
         private void incrementMaxReturnDepth() {
             FacesContext context = FacesContext.getCurrentInstance();
             Map<Object, Object> attrs = context.getAttributes();
@@ -547,7 +537,7 @@ public class FlowHandlerImpl extends FlowHandler {
                 Integer cur = (Integer) attrs.get(FLOW_RETURN_DEPTH_PARAM_NAME);
                 attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, (Integer) cur + 1);
             }
-            
+
         }
 
         private void decrementMaxReturnDepth() {
@@ -559,19 +549,18 @@ public class FlowHandlerImpl extends FlowHandler {
 
                 if (cur > 1) {
                     attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, (Integer) cur - 1);
-                }
-                else {
+                } else {
                     attrs.remove(FLOW_RETURN_DEPTH_PARAM_NAME);
                 }
             }
 
         }
-        
+
         public void pushReturnMode() {
             this.incrementMaxReturnDepth();
             this.returnDepth++;
         }
-        
+
         public void popReturnMode() {
 
             // Mojarra #4279 If ConfigureableNavigationHandler is attempting to obtain a NavigationCase outside of
@@ -585,10 +574,8 @@ public class FlowHandlerImpl extends FlowHandler {
             this.returnDepth--;
         }
 
-
-        
     }
-        
+
     // </editor-fold>
-    
+
 }

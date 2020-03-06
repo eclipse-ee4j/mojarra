@@ -50,7 +50,7 @@ public final class IteratedValueExpression extends ValueExpression {
         Object result = null;
         int i = start;
         if (i != 0) {
-            while(i != 0) {
+            while (i != 0) {
                 result = iterator.next();
                 if (!iterator.hasNext()) {
                     throw new ELException("Unable to position start");
@@ -60,7 +60,7 @@ public final class IteratedValueExpression extends ValueExpression {
         } else {
             result = iterator.next();
         }
-        while(i < index) {
+        while (i < index) {
             if (!iterator.hasNext()) {
                 throw new ELException("Unable to get given value");
             }
@@ -73,8 +73,7 @@ public final class IteratedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      *
-     * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext,
-     *      java.lang.Object)
+     * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object value) {

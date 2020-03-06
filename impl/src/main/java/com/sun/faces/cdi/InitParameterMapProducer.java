@@ -26,8 +26,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The init parameter map producer is the CDI producer that allows injection of the init
- * parameter map using @Inject.
+ * The init parameter map producer is the CDI producer that allows injection of the init parameter map using @Inject.
  * </p>
  *
  * @since 2.3
@@ -39,17 +38,11 @@ public class InitParameterMapProducer extends CdiProducer<Map<String, String>> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public InitParameterMapProducer() {
-        super.name("initParam")
-             .scope(RequestScoped.class)
-             .qualifiers(new InitParameterMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, String.class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap());
+        super.name("initParam").scope(RequestScoped.class).qualifiers(new InitParameterMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap());
     }
-    
+
 }

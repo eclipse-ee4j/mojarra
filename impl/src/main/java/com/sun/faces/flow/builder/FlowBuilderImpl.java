@@ -36,14 +36,14 @@ import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
 
 public class FlowBuilderImpl extends FlowBuilder {
-    
+
     private FlowImpl flow;
     private ExpressionFactory expressionFactory;
     private ELContext elContext;
     private FacesContext context;
     private boolean didInit;
     private boolean hasId;
-    
+
     public FlowBuilderImpl(FacesContext context) {
         flow = new FlowImpl();
         this.context = context;
@@ -53,8 +53,8 @@ public class FlowBuilderImpl extends FlowBuilder {
         this.hasId = false;
 
     }
-    
-    // <editor-fold defaultstate="collapsed" desc="Create Flow Nodes">   
+
+    // <editor-fold defaultstate="collapsed" desc="Create Flow Nodes">
 
     @Override
     public NavigationCaseBuilder navigationCase() {
@@ -74,19 +74,19 @@ public class FlowBuilderImpl extends FlowBuilder {
         Util.notNull("switchNodeId", switchNodeId);
         return new SwitchBuilderImpl(this, switchNodeId);
     }
-    
+
     @Override
     public ReturnBuilder returnNode(String returnNodeId) {
         Util.notNull("returnNodeId", returnNodeId);
         return new ReturnBuilderImpl(this, returnNodeId);
     }
-    
+
     @Override
     public MethodCallBuilder methodCallNode(String methodCallNodeId) {
         Util.notNull("methodCallNodeId", methodCallNodeId);
         return new MethodCallBuilderImpl(this, methodCallNodeId);
     }
-    
+
     @Override
     public FlowCallBuilder flowCallNode(String flowCallNodeId) {
         return new FlowCallBuilderImpl(this, flowCallNodeId);
@@ -94,8 +94,8 @@ public class FlowBuilderImpl extends FlowBuilder {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Flow-wide Settings">     
-    
+    // <editor-fold defaultstate="collapsed" desc="Flow-wide Settings">
+
     @Override
     public FlowBuilder id(String definingDocumentId, String flowId) {
         Util.notNull("definingDocumentId", definingDocumentId);
@@ -104,7 +104,7 @@ public class FlowBuilderImpl extends FlowBuilder {
         this.hasId = true;
         return this;
     }
-    
+
     @Override
     public FlowBuilder initializer(MethodExpression methodExpression) {
         Util.notNull("methodExpression", methodExpression);
@@ -119,7 +119,7 @@ public class FlowBuilderImpl extends FlowBuilder {
         flow.setInitializer(me);
         return this;
     }
-    
+
     @Override
     public FlowBuilder finalizer(MethodExpression methodExpression) {
         flow.setFinalizer(methodExpression);
@@ -132,12 +132,12 @@ public class FlowBuilderImpl extends FlowBuilder {
         flow.setFinalizer(me);
         return this;
     }
-    
+
     @Override
     public FlowBuilder inboundParameter(String name, ValueExpression value) {
         ParameterImpl param = new ParameterImpl(name, value);
         flow._getInboundParameters().put(name, param);
-        
+
         return this;
     }
 
@@ -149,7 +149,7 @@ public class FlowBuilderImpl extends FlowBuilder {
     }
 
     // </editor-fold>
-        
+
     @Override
     public Flow getFlow() {
         if (!hasId) {
@@ -166,22 +166,21 @@ public class FlowBuilderImpl extends FlowBuilder {
         }
         return flow;
     }
-    
+
     public FlowImpl _getFlow() {
         return flow;
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="Package private helpers">
-    
+
     ExpressionFactory getExpressionFactory() {
         return expressionFactory;
     }
-    
+
     ELContext getELContext() {
         return elContext;
     }
-    
+
     // </editor-fold>
 
-    
 }

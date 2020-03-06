@@ -16,22 +16,22 @@
 
 package jakarta.faces.el;
 
-
 /**
- * <p>An exception caused by a property name that cannot be resolved
- * against a base object.</p>
+ * <p>
+ * An exception caused by a property name that cannot be resolved against a base object.
+ * </p>
  *
- * @deprecated This has been replaced by {@link
- * jakarta.el.PropertyNotFoundException}.
+ * @deprecated This has been replaced by {@link jakarta.el.PropertyNotFoundException}.
  */
 
 public class PropertyNotFoundException extends EvaluationException {
 
-
     private static final long serialVersionUID = 1148221214550785387L;
 
     /**
-     * <p>Construct a new exception with no detail message or root cause.</p>
+     * <p>
+     * Construct a new exception with no detail message or root cause.
+     * </p>
      */
     public PropertyNotFoundException() {
 
@@ -39,10 +39,10 @@ public class PropertyNotFoundException extends EvaluationException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * no root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and no root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      */
@@ -52,10 +52,10 @@ public class PropertyNotFoundException extends EvaluationException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified root cause.  The detail
-     * message will be set to <code>(cause == null ? null :
+     * <p>
+     * Construct a new exception with the specified root cause. The detail message will be set to
+     * <code>(cause == null ? null :
      * cause.toString()</code>
      *
      * @param cause The root cause for this exception
@@ -66,10 +66,10 @@ public class PropertyNotFoundException extends EvaluationException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      * @param cause The root cause for this exception
@@ -79,7 +79,5 @@ public class PropertyNotFoundException extends EvaluationException {
         super(message, cause);
 
     }
-
-
 
 }

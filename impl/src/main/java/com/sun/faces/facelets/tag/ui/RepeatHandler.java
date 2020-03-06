@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 public class RepeatHandler extends ComponentHandler {
 
     private static final Logger log = FacesLogger.FACELETS_COMPOSITION.getLogger();
-    
+
     public RepeatHandler(ComponentConfig config) {
         super(config);
     }
@@ -47,11 +47,10 @@ public class RepeatHandler extends ComponentHandler {
         MetaRuleset meta = super.createMetaRuleset(type);
         String myNamespace = this.tag.getNamespace();
 
-        if ((!UILibrary.Namespace.equals(myNamespace)) &&
-            (!UILibrary.XMLNSNamespace.equals(myNamespace))) {
+        if ((!UILibrary.Namespace.equals(myNamespace)) && (!UILibrary.XMLNSNamespace.equals(myNamespace))) {
             meta.add(new TagMetaData(type));
         }
-        
+
         meta.alias("class", "styleClass");
 
         return meta;
@@ -72,8 +71,7 @@ public class RepeatHandler extends ComponentHandler {
                 }
             }
             try {
-                PropertyDescriptor[] pd = Introspector.getBeanInfo(type)
-                        .getPropertyDescriptors();
+                PropertyDescriptor[] pd = Introspector.getBeanInfo(type).getPropertyDescriptors();
                 for (int i = 0; i < pd.length; i++) {
                     if (pd[i].getWriteMethod() != null) {
                         s.remove(pd[i].getName());

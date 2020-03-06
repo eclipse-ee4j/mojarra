@@ -45,11 +45,10 @@ import jakarta.faces.component.UIComponent;
 
 /**
  * <p>
- * <span class="changed_modified_2_2">The</span> presence of this annotation on a class that extends
- * {@link UIComponent} must cause the runtime to register this class as a component suitable for
- * inclusion in a view. <span class="changed_added_2_2">If the <code>createTag</code> attribute is
- * <code>true</code>, the runtime must create a corresponding Facelet tag handler according to the
- * rules specified in the attributes of this annotation.</span>
+ * <span class="changed_modified_2_2">The</span> presence of this annotation on a class that extends {@link UIComponent}
+ * must cause the runtime to register this class as a component suitable for inclusion in a view.
+ * <span class="changed_added_2_2">If the <code>createTag</code> attribute is <code>true</code>, the runtime must create
+ * a corresponding Facelet tag handler according to the rules specified in the attributes of this annotation.</span>
  * </p>
  * 
  */
@@ -60,22 +59,20 @@ public @interface FacesComponent {
 
     /**
      * <p class="changed_added_2_2">
-     * Components that declare a <code>createTag = true</code> attribute will be placed into this
-     * tag namespace if the namespace attribute is omitted.
+     * Components that declare a <code>createTag = true</code> attribute will be placed into this tag namespace if the
+     * namespace attribute is omitted.
      * </p>
      */
     public static final String NAMESPACE = "http://xmlns.jcp.org/jsf/component";
 
     /**
      * <p class="changed_added_2_0">
-     * <span class="changed_modified_2_2">The</span> value of this annotation attribute is taken to
-     * be the <em>component-type</em> with which instances of this class of component can be
-     * instantiated by calling
-     * {@link jakarta.faces.application.Application#createComponent(java.lang.String)}.
-     * <span class="changed_added_2_2">If no value is specified, or the value is <code>null</code>,
-     * the value is taken to be the return of calling <code>getSimpleName</code> on the class to
-     * which this annotation is attached and lowercasing the first character. If more than one
-     * component with this derived name is found, the results are undefined.</span>
+     * <span class="changed_modified_2_2">The</span> value of this annotation attribute is taken to be the
+     * <em>component-type</em> with which instances of this class of component can be instantiated by calling
+     * {@link jakarta.faces.application.Application#createComponent(java.lang.String)}. <span class="changed_added_2_2">If
+     * no value is specified, or the value is <code>null</code>, the value is taken to be the return of calling
+     * <code>getSimpleName</code> on the class to which this annotation is attached and lowercasing the first character. If
+     * more than one component with this derived name is found, the results are undefined.</span>
      * </p>
      * 
      * @return the component type.
@@ -84,10 +81,9 @@ public @interface FacesComponent {
 
     /**
      * <p class="changed_added_2_2">
-     * If the value of this attribute is <code>true</code>, the runtime must create a Facelet tag
-     * handler, that extends from {@link jakarta.faces.view.facelets.ComponentHandler}, suitable for
-     * use in pages under the tag library with namespace given by the value of the
-     * {@link #namespace} attribute.
+     * If the value of this attribute is <code>true</code>, the runtime must create a Facelet tag handler, that extends from
+     * {@link jakarta.faces.view.facelets.ComponentHandler}, suitable for use in pages under the tag library with namespace
+     * given by the value of the {@link #namespace} attribute.
      * </p>
      * 
      * @return <code>true</code> to create the Facelet tag handler, <code>false</code> otherwise.
@@ -96,11 +92,10 @@ public @interface FacesComponent {
 
     /**
      * <p class="changed_added_2_2">
-     * If the value of the {@link #createTag} attribute is <code>true</code>, the runtime must use
-     * this value as the tag name for including an instance of the component annotated with this
-     * annotation in a view. If this attribute is not specified on a usage of this annotation, the
-     * simple name of the class on which this annotation is declared, with the first character
-     * lowercased, is taken to be the value.
+     * If the value of the {@link #createTag} attribute is <code>true</code>, the runtime must use this value as the tag
+     * name for including an instance of the component annotated with this annotation in a view. If this attribute is not
+     * specified on a usage of this annotation, the simple name of the class on which this annotation is declared, with the
+     * first character lowercased, is taken to be the value.
      * </p>
      * 
      * @return the tag name.
@@ -109,8 +104,8 @@ public @interface FacesComponent {
 
     /**
      * <p class="changed_added_2_2">
-     * If the value of the {@link #createTag} attribute is <code>true</code>, the value of this
-     * attribute is taken to be the tag library namespace into which this component is placed.
+     * If the value of the {@link #createTag} attribute is <code>true</code>, the value of this attribute is taken to be the
+     * tag library namespace into which this component is placed.
      * </p>
      * 
      * @return the namespace.

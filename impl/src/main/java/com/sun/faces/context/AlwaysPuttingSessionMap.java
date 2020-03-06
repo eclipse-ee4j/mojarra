@@ -32,11 +32,8 @@ public class AlwaysPuttingSessionMap extends SessionMap {
         HttpSession session = getSession(true);
         Object result = session.getAttribute(key);
         session.setAttribute(key, value);
-        
+
         return result;
     }
-    
-    
-    
-    
+
 }

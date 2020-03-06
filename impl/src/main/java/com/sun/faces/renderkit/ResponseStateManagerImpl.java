@@ -29,10 +29,9 @@ import jakarta.faces.application.StateManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 
-
 /**
- * <p>A <code>ResonseStateManager</code> implementation
- * for the default HTML render kit.
+ * <p>
+ * A <code>ResonseStateManager</code> implementation for the default HTML render kit.
  */
 public class ResponseStateManagerImpl extends ResponseStateManager {
 
@@ -41,26 +40,20 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
     public ResponseStateManagerImpl() {
 
         WebConfiguration webConfig = WebConfiguration.getInstance();
-        String stateMode =
-              webConfig.getOptionValue(StateSavingMethod);
-        helper = ((StateManager.STATE_SAVING_METHOD_CLIENT.equalsIgnoreCase(stateMode)
-                   ? new ClientSideStateHelper()
-                   : new ServerSideStateHelper()));
+        String stateMode = webConfig.getOptionValue(StateSavingMethod);
+        helper = ((StateManager.STATE_SAVING_METHOD_CLIENT.equalsIgnoreCase(stateMode) ? new ClientSideStateHelper() : new ServerSideStateHelper()));
 
     }
 
-
     // --------------------------------------- Methods from ResponseStateManager
 
-
     /**
-     * @see ResponseStateManager#isPostback(jakarta.faces.context.FacesContext) 
+     * @see ResponseStateManager#isPostback(jakarta.faces.context.FacesContext)
      */
     @Override
     public boolean isPostback(FacesContext context) {
 
-        return context.getExternalContext().getRequestParameterMap().
-              containsKey(PredefinedPostbackParameter.VIEW_STATE_PARAM.getName(context));
+        return context.getExternalContext().getRequestParameterMap().containsKey(PredefinedPostbackParameter.VIEW_STATE_PARAM.getName(context));
 
     }
 
@@ -70,20 +63,17 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
     }
 
     /**
-     * @see ResponseStateManager#getState(jakarta.faces.context.FacesContext, java.lang.String) 
+     * @see ResponseStateManager#getState(jakarta.faces.context.FacesContext, java.lang.String)
      */
     @Override
     public Object getState(FacesContext context, String viewId) {
 
-        Object state =
-              RequestStateManager.get(context, RequestStateManager.FACES_VIEW_STATE);
+        Object state = RequestStateManager.get(context, RequestStateManager.FACES_VIEW_STATE);
         if (state == null) {
             try {
                 state = helper.getState(context, viewId);
                 if (state != null) {
-                    RequestStateManager.set(context,
-                                            RequestStateManager.FACES_VIEW_STATE,
-                                            state);
+                    RequestStateManager.set(context, RequestStateManager.FACES_VIEW_STATE, state);
                 }
             } catch (IOException e) {
                 throw new FacesException(e);
@@ -93,21 +83,18 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
     }
 
-
     /**
-     * @see ResponseStateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object) 
+     * @see ResponseStateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object)
      */
     @Override
-    public void writeState(FacesContext context, Object state)
-          throws IOException {
+    public void writeState(FacesContext context, Object state) throws IOException {
 
         helper.writeState(context, state, null);
 
     }
 
-
     /**
-     * @see ResponseStateManager#getViewState(jakarta.faces.context.FacesContext, java.lang.Object) 
+     * @see ResponseStateManager#getViewState(jakarta.faces.context.FacesContext, java.lang.Object)
      */
     @Override
     public String getViewState(FacesContext context, Object state) {
@@ -122,8 +109,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
     }
 
-
-    @SuppressWarnings({"deprecation"})
+    @SuppressWarnings({ "deprecation" })
     @Override
     public Object getTreeStructureToRestore(FacesContext context, String viewId) {
 
@@ -145,4 +131,4 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
     public boolean isStateless(FacesContext facesContext, String viewId) {
         return helper.isStateless(facesContext, viewId);
     }
-} 
+}

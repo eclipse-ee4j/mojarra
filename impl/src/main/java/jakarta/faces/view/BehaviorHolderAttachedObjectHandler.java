@@ -17,17 +17,19 @@
 package jakarta.faces.view;
 
 /**
- * <p class="changed_added_2_0">Represent an attached object that is a
- * <code>BehaviorHolder</code> in a VDL page.</p>
+ * <p class="changed_added_2_0">
+ * Represent an attached object that is a <code>BehaviorHolder</code> in a VDL page.
+ * </p>
  */
 public interface BehaviorHolderAttachedObjectHandler extends AttachedObjectHandler {
 
     /**
-     * <p class="changed_added_2_0">Return the client event name to
-     * which this behavior applies.</p>
+     * <p class="changed_added_2_0">
+     * Return the client event name to which this behavior applies.
+     * </p>
      *
      * @since 2.0
-
+     * 
      * @return the client event name for this behavior
      */
     public String getEventName();

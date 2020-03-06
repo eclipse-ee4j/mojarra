@@ -40,11 +40,9 @@ import java.util.logging.Logger;
 /**
  * @author Jacob Hookom
  */
-public final class CompositionHandler extends TagHandlerImpl implements
-        TemplateClient {
+public final class CompositionHandler extends TagHandlerImpl implements TemplateClient {
 
     private static final Logger log = FacesLogger.FACELETS_COMPOSITION.getLogger();
-
 
     public final static String Name = "composition";
 
@@ -93,12 +91,10 @@ public final class CompositionHandler extends TagHandlerImpl implements
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctxObj, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
 
         if (this.template != null) {
@@ -111,7 +107,7 @@ public final class CompositionHandler extends TagHandlerImpl implements
                 compositionCount++;
             }
             facesContext.getAttributes().put("com.sun.faces.uiCompositionCount", compositionCount);
-            
+
             VariableMapper orig = ctx.getVariableMapper();
             if (this.params != null) {
                 VariableMapper vm = new VariableMapperWrapper(orig);
@@ -128,7 +124,7 @@ public final class CompositionHandler extends TagHandlerImpl implements
                 if (path.trim().length() == 0) {
                     throw new TagAttributeException(this.tag, this.template, "Invalid path : " + path);
                 }
-                WebConfiguration webConfig = WebConfiguration.getInstance(); 
+                WebConfiguration webConfig = WebConfiguration.getInstance();
                 if (path.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
                     throw new TagAttributeException(this.tag, this.template, "Invalid path, contract resources cannot be accessed this way : " + path);
                 }
@@ -141,10 +137,10 @@ public final class CompositionHandler extends TagHandlerImpl implements
             } finally {
                 ctx.popClient(this);
                 ctx.setVariableMapper(orig);
-                
+
                 compositionCount = (Integer) facesContext.getAttributes().get("com.sun.faces.uiCompositionCount");
                 compositionCount--;
-                
+
                 if (compositionCount == 0) {
                     facesContext.getAttributes().remove("com.sun.faces.uiCompositionCount");
                 } else {
@@ -157,8 +153,7 @@ public final class CompositionHandler extends TagHandlerImpl implements
     }
 
     @Override
-    public boolean apply(FaceletContext ctx, UIComponent parent, String name)
-          throws IOException {
+    public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
         if (name != null) {
             if (this.handlers == null) {
                 return false;

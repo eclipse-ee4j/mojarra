@@ -76,10 +76,10 @@ public class WebsocketFacesListener implements SystemEventListener {
     }
 
     /**
-     * If the websocket has just switched its <code>rendered</code> or <code>connected</code> attribute, then
-     * render either the <code>open()</code> script or the <code>close()</code> script. During an ajax request with
-     * partial rendering, it's added as <code>&lt;eval&gt;</code> by partial response writer, else it's just added
-     * as a script component with <code>target="body"</code>.
+     * If the websocket has just switched its <code>rendered</code> or <code>connected</code> attribute, then render either
+     * the <code>open()</code> script or the <code>close()</code> script. During an ajax request with partial rendering,
+     * it's added as <code>&lt;eval&gt;</code> by partial response writer, else it's just added as a script component with
+     * <code>target="body"</code>.
      */
     @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
@@ -91,7 +91,7 @@ public class WebsocketFacesListener implements SystemEventListener {
         Map<String, Boolean> initializedWebsockets = getInitializedWebsockets(context);
 
         if (!context.getPartialViewContext().isAjaxRequest()) {
-        	initializedWebsockets.clear();
+            initializedWebsockets.clear();
         }
 
         for (Entry<String, Boolean> initializedWebsocket : initializedWebsockets.entrySet()) {
@@ -106,8 +106,7 @@ public class WebsocketFacesListener implements SystemEventListener {
 
                 if (pvc.isAjaxRequest() && !pvc.isRenderAll()) {
                     context.getPartialViewContext().getEvalScripts().add(script);
-                }
-                else {
+                } else {
                     UIOutput outputScript = new UIOutput();
                     outputScript.setRendererType("jakarta.faces.resource.Script");
                     UIOutput content = new UIOutput();

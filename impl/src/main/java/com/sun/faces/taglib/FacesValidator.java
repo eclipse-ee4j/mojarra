@@ -31,65 +31,57 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * <p>Base class for all faces TLVs</p>
+ * <p>
+ * Base class for all faces TLVs
+ * </p>
  *
  * @author Justyna Horwat
  * @author Ed Burns
  */
 public abstract class FacesValidator extends TagLibraryValidator {
 
-    //*********************************************************************
+    // *********************************************************************
     // Constants
 
-    //*********************************************************************
+    // *********************************************************************
     // Validation and configuration state (protected)
 
-    protected boolean failed;			// did the page fail?
+    protected boolean failed; // did the page fail?
 
-
-    //*********************************************************************
+    // *********************************************************************
     // Constants
 
     private static final String JSF_CORE_URI = "http://java.sun.com/jsf/core";
 
     private static final String JSF_HTML_URI = "http://java.sun.com/jsf/html";
 
-    private static final String JSTL_OLD_CORE_URI =
-        "http://java.sun.com/jstl/core";
+    private static final String JSTL_OLD_CORE_URI = "http://java.sun.com/jstl/core";
 
-    private static final String JSTL_NEW_CORE_URI =
-        "http://java.sun.com/jsp/jstl/core";
+    private static final String JSTL_NEW_CORE_URI = "http://java.sun.com/jsp/jstl/core";
 
     // Prefix for JSF HTML tags
     protected String JSF_HTML_PRE = null;
-
 
     public String getJSF_HTML_PRE() {
         return JSF_HTML_PRE;
     }
 
-
     // Prefix for JSF CORE tags
     protected String JSF_CORE_PRE = null;
-
 
     public String getJSF_CORE_PRE() {
         return JSF_CORE_PRE;
     }
 
-
     // Prefix for JSTL CORE tags
     protected String JSTL_CORE_PRE = null;
-
 
     public String getJSTL_CORE_PRE() {
         return JSTL_CORE_PRE;
     }
 
-
     // QName for JSTL conditional tag
     protected String JSTL_IF_QN = ":if";
-
 
     public String getJSTL_IF_QN() {
         return JSTL_IF_QN;
@@ -98,14 +90,12 @@ public abstract class FacesValidator extends TagLibraryValidator {
     // Local Name for JSTL conditional tag
     protected String JSTL_IF_LN = "if";
 
-
     public String getJSTL_IF_LN() {
         return JSTL_IF_LN;
     }
 
     // QName for JSTL conditional tag
     protected String JSTL_CHOOSE_QN = ":choose";
-
 
     public String getJSTL_CHOOSE_QN() {
         return JSTL_CHOOSE_QN;
@@ -114,14 +104,12 @@ public abstract class FacesValidator extends TagLibraryValidator {
     // Local Name for JSTL conditional tag
     protected String JSTL_CHOOSE_LN = "choose";
 
-
     public String getJSTL_CHOOSE_LN() {
         return JSTL_CHOOSE_LN;
     }
 
     // QName for JSTL iterator tag
     protected String JSTL_FOREACH_QN = ":forEach";
-
 
     public String getJSTL_FOREACH_QN() {
         return JSTL_FOREACH_QN;
@@ -130,14 +118,12 @@ public abstract class FacesValidator extends TagLibraryValidator {
     // Local Name for JSTL iterator tag
     protected String JSTL_FOREACH_LN = "forEach";
 
-
     public String getJSTL_FOREACH_LN() {
         return JSTL_FOREACH_LN;
     }
 
     // QName for JSTL iterator tag
     protected String JSTL_FORTOKENS_QN = ":forTokens";
-
 
     public String getJSTL_FORTOKENS_QN() {
         return JSTL_FORTOKENS_QN;
@@ -146,14 +132,12 @@ public abstract class FacesValidator extends TagLibraryValidator {
     // Local Name for JSTL iterator tag
     protected String JSTL_FORTOKENS_LN = "forTokens";
 
-
     public String getJSTL_FORTOKENS_LN() {
         return JSTL_FORTOKENS_LN;
     }
 
     // QName for JSF Form tag
     protected String JSF_FORM_QN = ":form";
-
 
     public String getJSF_FORM_QN() {
         return JSF_FORM_QN;
@@ -162,7 +146,6 @@ public abstract class FacesValidator extends TagLibraryValidator {
     // Local Name for JSF Form tag
     protected String JSF_FORM_LN = "form";
 
-
     public String getJSF_FORM_LN() {
         return JSF_FORM_LN;
     }
@@ -170,23 +153,18 @@ public abstract class FacesValidator extends TagLibraryValidator {
     // QName for JSF subview tag
     protected String JSF_SUBVIEW_QN = ":subview";
 
-
     public String getJSF_SUBVIEW_QN() {
         return JSF_SUBVIEW_QN;
     }
-    
+
     // Local Name for JSF subview tag
     protected String JSF_SUBVIEW_LN = "subview";
-
 
     public String getJSF_SUBVIEW_LN() {
         return JSF_SUBVIEW_LN;
     }
-    
 
-
-
-    //*********************************************************************
+    // *********************************************************************
     // Constructor and lifecycle management
 
     public FacesValidator() {
@@ -194,11 +172,9 @@ public abstract class FacesValidator extends TagLibraryValidator {
         init();
     }
 
-
     protected void init() {
         failed = false;
     }
-
 
     @Override
     public void release() {
@@ -207,27 +183,25 @@ public abstract class FacesValidator extends TagLibraryValidator {
     }
 
     /**
-     * <p>Subclass override.  If it returns null, the subclass is
-     * telling us: do not validate.</p>
+     * <p>
+     * Subclass override. If it returns null, the subclass is telling us: do not validate.
+     * </p>
      */
-
 
     protected abstract DefaultHandler getSAXHandler();
 
-
     protected abstract String getFailureMessage(String prefix, String uri);
 
-    //*********************************************************************
+    // *********************************************************************
     // Validation entry point
 
     /**
-     * Validate a JSP page. Return an an array of Validation
-     * Messages if a validation failure occurs. Return null
-     * on success.
+     * Validate a JSP page. Return an an array of Validation Messages if a validation failure occurs. Return null on
+     * success.
      *
      * @param prefix Value of directive prefix argument.
-     * @param uri    Value of directive uri argument.
-     * @param page   JspData page object.
+     * @param uri Value of directive uri argument.
+     * @param page JspData page object.
      * @return ValidationMessage[] An array of Validation messages.
      */
     @Override
@@ -238,11 +212,11 @@ public abstract class FacesValidator extends TagLibraryValidator {
 // get a handler
             DefaultHandler h = getSAXHandler();
 
-	    // if the subclass doesn't want validation to ocurr
-	    if (null == h) {
-		// don't validate
-		return result;
-	    }
+            // if the subclass doesn't want validation to ocurr
+            if (null == h) {
+                // don't validate
+                return result;
+            }
 
             // parse the page
             SAXParserFactory f = Util.createSAXParserFactory();
@@ -269,8 +243,7 @@ public abstract class FacesValidator extends TagLibraryValidator {
         return result;
     }
 
-
-    //*********************************************************************
+    // *********************************************************************
     // Utility functions
 
     /**
@@ -280,19 +253,12 @@ public abstract class FacesValidator extends TagLibraryValidator {
      * @return ValidationMessage[] An array of Validation Messages.
      */
     private ValidationMessage[] vmFromString(String message) {
-        return new ValidationMessage[]{
-            new ValidationMessage(null, message)
-        };
+        return new ValidationMessage[] { new ValidationMessage(null, message) };
     }
 
-
-    protected void debugPrintTagData(String ns, String ln, String qn,
-                                     Attributes attrs) {
-        int
-            i = 0,
-            len = attrs.getLength();
-        System.out.println("nameSpace: " + ns + " localName: " + ln +
-                           " QName: " + qn);
+    protected void debugPrintTagData(String ns, String ln, String qn, Attributes attrs) {
+        int i = 0, len = attrs.getLength();
+        System.out.println("nameSpace: " + ns + " localName: " + ln + " QName: " + qn);
         for (i = 0; i < len; i++) {
             System.out.println("\tlocalName: " + attrs.getLocalName(i));
             System.out.println("\tQName: " + attrs.getQName(i));
@@ -300,10 +266,9 @@ public abstract class FacesValidator extends TagLibraryValidator {
         }
     }
 
-
     /**
-     * This method provides for the ability of the TLV to use whatever
-     * user defined tag lib prefix is in the page to recognize tags.
+     * This method provides for the ability of the TLV to use whatever user defined tag lib prefix is in the page to
+     * recognize tags.
      */
 
     protected void maybeSnagTLPrefixes(String qName, Attributes attrs) {
@@ -311,35 +276,29 @@ public abstract class FacesValidator extends TagLibraryValidator {
         if (!qName.equals("jsp:root")) {
             return;
         }
-        int
-            colon,
-            i = 0,
-            len = attrs.getLength();
-        String
-            prefix = null,
-            value = null;
+        int colon, i = 0, len = attrs.getLength();
+        String prefix = null, value = null;
         for (i = 0; i < len; i++) {
-            if (null != (value = attrs.getValue(i)) &&
-                null != (qName = attrs.getQName(i))) {
+            if (null != (value = attrs.getValue(i)) && null != (qName = attrs.getQName(i))) {
                 if (qName.startsWith("xmlns:") && 7 <= qName.length()) {
                     prefix = qName.substring(6);
                     switch (value) {
-                        case JSF_CORE_URI:
-                            JSF_CORE_PRE = prefix;
-                            JSF_SUBVIEW_QN = JSF_CORE_PRE + JSF_SUBVIEW_QN;
-                            break;
-                        case JSF_HTML_URI:
-                            JSF_HTML_PRE = prefix;
-                            JSF_FORM_QN = JSF_HTML_PRE + JSF_FORM_QN;
-                            break;
-                        case JSTL_OLD_CORE_URI:
-                        case JSTL_NEW_CORE_URI:
-                            JSTL_CORE_PRE = prefix;
-                            JSTL_IF_QN = JSTL_CORE_PRE + JSTL_IF_QN;
-                            JSTL_CHOOSE_QN = JSTL_CORE_PRE + JSTL_CHOOSE_QN;
-                            JSTL_FOREACH_QN = JSTL_CORE_PRE + JSTL_FOREACH_QN;
-                            JSTL_FORTOKENS_QN = JSTL_CORE_PRE + JSTL_FORTOKENS_QN;
-                            break;
+                    case JSF_CORE_URI:
+                        JSF_CORE_PRE = prefix;
+                        JSF_SUBVIEW_QN = JSF_CORE_PRE + JSF_SUBVIEW_QN;
+                        break;
+                    case JSF_HTML_URI:
+                        JSF_HTML_PRE = prefix;
+                        JSF_FORM_QN = JSF_HTML_PRE + JSF_FORM_QN;
+                        break;
+                    case JSTL_OLD_CORE_URI:
+                    case JSTL_NEW_CORE_URI:
+                        JSTL_CORE_PRE = prefix;
+                        JSTL_IF_QN = JSTL_CORE_PRE + JSTL_IF_QN;
+                        JSTL_CHOOSE_QN = JSTL_CORE_PRE + JSTL_CHOOSE_QN;
+                        JSTL_FOREACH_QN = JSTL_CORE_PRE + JSTL_FOREACH_QN;
+                        JSTL_FORTOKENS_QN = JSTL_CORE_PRE + JSTL_FORTOKENS_QN;
+                        break;
                     }
                 }
             }

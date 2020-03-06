@@ -26,9 +26,10 @@ import jakarta.enterprise.util.Nonbinding;
 import jakarta.inject.Qualifier;
 
 /**
- * <p class="changed_added_2_3">The presence of this annotation on a managed
- * bean deployed within an application causes version specific features
- * to be enabled as specified in the enum {@link Version}</p>
+ * <p class="changed_added_2_3">
+ * The presence of this annotation on a managed bean deployed within an application causes version specific features to
+ * be enabled as specified in the enum {@link Version}
+ * </p>
  */
 @Qualifier
 @Target(TYPE)
@@ -38,19 +39,24 @@ public @interface FacesConfig {
     public static enum Version {
 
         /**
-         * <p class="changed_added_2_3">This value indicates CDI should be used
-         * for Jakarta Expression Language resolution as well as enabling Jakarta Server Faces CDI injection, as specified
-         * in Section 5.6.3 "CDI for EL Resolution" and Section 5.9 "CDI Integration".</p>
+         * <p class="changed_added_2_3">
+         * This value indicates CDI should be used for Jakarta Expression Language resolution as well as enabling Jakarta Server
+         * Faces CDI injection, as specified in Section 5.6.3 "CDI for EL Resolution" and Section 5.9 "CDI Integration".
+         * </p>
          */
         JSF_2_3
 
     }
 
     /**
-     * <p class="changed_added_2_3">The value of this attribute indicates that
-     * features corresponding to this version must be enabled for this application.</p>
+     * <p class="changed_added_2_3">
+     * The value of this attribute indicates that features corresponding to this version must be enabled for this
+     * application.
+     * </p>
+     * 
      * @return the spec version for which the features must be enabled.
      */
-    @Nonbinding Version version() default Version.JSF_2_3;
+    @Nonbinding
+    Version version() default Version.JSF_2_3;
 
 }

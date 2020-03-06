@@ -25,13 +25,12 @@ public class SearchKeywordResolverImplNamingContainer extends AbstractSearchKeyw
 
     @Override
     public void resolve(SearchKeywordContext searchKeywordContext, UIComponent current, String keyword) {
-        searchKeywordContext.invokeContextCallback(
-                (UIComponent) closest(NamingContainer.class, current));
+        searchKeywordContext.invokeContextCallback((UIComponent) closest(NamingContainer.class, current));
     }
 
     @Override
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "namingcontainer".equals(keyword);
     }
-    
+
 }

@@ -25,7 +25,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
-
 public class RepeatRenderer extends Renderer {
 
     public RepeatRenderer() {
@@ -34,7 +33,7 @@ public class RepeatRenderer extends Renderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-        
+
     }
 
     @Override
@@ -57,14 +56,14 @@ public class RepeatRenderer extends Renderer {
                     }
                 }
             }
-            
+
             Iterator itr = component.getChildren().iterator();
             UIComponent c;
             while (itr.hasNext()) {
                 c = (UIComponent) itr.next();
                 c.encodeAll(context);
             }
-            
+
             if (tag != null) {
                 context.getResponseWriter().endElement(tag);
             }
@@ -73,9 +72,9 @@ public class RepeatRenderer extends Renderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-      
+
     }
-    
+
     @Override
     public boolean getRendersChildren() {
         return true;

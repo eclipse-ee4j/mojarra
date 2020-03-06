@@ -39,9 +39,7 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
     private static final String[] EXCLUDES = { WEB_INF_RESOURCE };
     private static final String SEPARATORS = ",|;";
 
-
     // ------------------------------ Methods from ConfigurationResourceProvider
-
 
     /**
      * @see com.sun.faces.spi.ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
@@ -64,15 +62,13 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
         return urls;
     }
 
-
     // ------------------------------ Methods from BaseWebConfigResourceProvider
-
 
     @Override
     protected WebContextInitParameter getParameter() {
         return JakartaFacesConfigFiles;
     }
-    
+
     @Override
     protected String[] getExcludedResources() {
         return EXCLUDES;

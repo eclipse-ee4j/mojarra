@@ -30,70 +30,52 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class DeclareFacetHandler extends TagHandlerImpl {
 
-    private static final String[] ATTRIBUTES = {
-          "required",
-          "displayName",
-          "expert",
-          "hidden",
-          "preferred",
-          "shortDescription",
-          "default"
-    };
+    private static final String[] ATTRIBUTES = { "required", "displayName", "expert", "hidden", "preferred", "shortDescription", "default" };
 
-    private static final PropertyHandlerManager ATTRIBUTE_MANAGER =
-          PropertyHandlerManager.getInstance(ATTRIBUTES);
+    private static final PropertyHandlerManager ATTRIBUTE_MANAGER = PropertyHandlerManager.getInstance(ATTRIBUTES);
 
     private TagAttribute name = null;
-
-
 
     public DeclareFacetHandler(TagConfig config) {
         super(config);
         this.name = this.getRequiredAttribute("name");
 
-        
     }
-    
-    @SuppressWarnings({"unchecked"})
+
+    @SuppressWarnings({ "unchecked" })
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
-        if (null == parent || 
-            (null == (parent = parent.getParent())) ||
-            !(ComponentHandler.isNew(parent))) {
+        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
             return;
         }
-        
+
         Map<String, Object> componentAttrs = parent.getAttributes();
 
-        CompositeComponentBeanInfo componentBeanInfo = (CompositeComponentBeanInfo)
-                componentAttrs.get(UIComponent.BEANINFO_KEY);
+        CompositeComponentBeanInfo componentBeanInfo = (CompositeComponentBeanInfo) componentAttrs.get(UIComponent.BEANINFO_KEY);
 
         // Get the value of required the name propertyDescriptor
         ValueExpression ve = name.getValueExpression(ctx, String.class);
         String strValue = (String) ve.getValue(ctx);
         BeanDescriptor componentBeanDescriptor = componentBeanInfo.getBeanDescriptor();
-        
-        Map<String, PropertyDescriptor> facetDescriptors = (Map<String, PropertyDescriptor>) 
-                   componentBeanDescriptor.getValue(UIComponent.FACETS_KEY);
-        
+
+        Map<String, PropertyDescriptor> facetDescriptors = (Map<String, PropertyDescriptor>) componentBeanDescriptor.getValue(UIComponent.FACETS_KEY);
+
         if (facetDescriptors == null) {
             facetDescriptors = new HashMap<>();
-            componentBeanDescriptor.setValue(UIComponent.FACETS_KEY, 
-                    facetDescriptors);
+            componentBeanDescriptor.setValue(UIComponent.FACETS_KEY, facetDescriptors);
         }
 
         PropertyDescriptor propertyDescriptor;
         try {
             propertyDescriptor = new PropertyDescriptor(strValue, null, null);
         } catch (IntrospectionException ex) {
-            throw new  TagException(tag, "Unable to create property descriptor for facet" + strValue, ex);
+            throw new TagException(tag, "Unable to create property descriptor for facet" + strValue, ex);
         }
         facetDescriptors.put(strValue, propertyDescriptor);
-        
+
         for (TagAttribute tagAttribute : this.tag.getAttributes().getAll()) {
             String attributeName = tagAttribute.getLocalName();
             PropertyHandler handler = ATTRIBUTE_MANAGER.getHandler(ctx, attributeName);
@@ -102,9 +84,9 @@ public class DeclareFacetHandler extends TagHandlerImpl {
             }
 
         }
-        
+
         this.nextHandler.apply(ctx, parent);
-        
+
     }
 
 }

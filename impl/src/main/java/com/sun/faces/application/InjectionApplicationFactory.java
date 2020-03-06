@@ -33,9 +33,9 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * This {@link jakarta.faces.application.ApplicationFactory} is responsible for injecting the default
- * {@link Application} instance into the top-level {@link Application} as configured by the runtime.
- * Doing this allows us to preserve backwards compatibility as the API evolves without having the
- * API rely on implementation specific details.
+ * {@link Application} instance into the top-level {@link Application} as configured by the runtime. Doing this allows
+ * us to preserve backwards compatibility as the API evolves without having the API rely on implementation specific
+ * details.
  */
 public class InjectionApplicationFactory extends ApplicationFactory {
 

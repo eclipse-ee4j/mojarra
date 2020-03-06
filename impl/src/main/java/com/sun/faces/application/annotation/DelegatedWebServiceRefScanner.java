@@ -19,11 +19,11 @@ package com.sun.faces.application.annotation;
 import java.lang.annotation.Annotation;
 
 /**
- * <code>Scanner</code> implementation responsible for {@link WebServiceRef}
- * annotations.
+ * <code>Scanner</code> implementation responsible for {@link WebServiceRef} annotations.
  *
- * <p> Note this will delegate down to the WebServiceRefScanner so we can fail
- * gracefully when JavaEE is not available. </p>
+ * <p>
+ * Note this will delegate down to the WebServiceRefScanner so we can fail gracefully when JavaEE is not available.
+ * </p>
  */
 class DelegatedWebServiceRefScanner implements Scanner {
 

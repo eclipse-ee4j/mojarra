@@ -30,23 +30,19 @@ import jakarta.servlet.http.Cookie;
 import com.sun.faces.util.Util;
 
 /**
- * @see jakarta.faces.context.ExternalContext#getRequestCookieMap()  
+ * @see jakarta.faces.context.ExternalContext#getRequestCookieMap()
  */
 public class RequestCookieMap extends BaseContextMap<Object> {
 
     private final HttpServletRequest request;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public RequestCookieMap(HttpServletRequest newRequest) {
         this.request = newRequest;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public Object get(Object key) {
@@ -69,70 +65,53 @@ public class RequestCookieMap extends BaseContextMap<Object> {
         return result;
     }
 
-
     @Override
-    public Set<Map.Entry<String,Object>> entrySet() {
+    public Set<Map.Entry<String, Object>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
-
 
     @Override
     public Set<String> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
-
     @Override
     public Collection<Object> values() {
         return Collections.unmodifiableCollection(super.values());
     }
 
-
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null ||
-                 !(obj.getClass()
-                   == ExternalContextImpl
-                       .theUnmodifiableMapClass)) && super.equals(obj);
+        return !(obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) && super.equals(obj);
     }
-
 
     @Override
     public int hashCode() {
         int hashCode = 7 * request.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = entrySet().iterator(); i.hasNext();) {
             hashCode += i.next().hashCode();
         }
         return hashCode;
     }
 
-
     // --------------------------------------------- Methods from BaseContextMap
 
-
     @Override
-    protected Iterator<Map.Entry<String,Object>> getEntryIterator() {
-        return new EntryIterator(
-                new CookieArrayEnumerator(request.getCookies()));
+    protected Iterator<Map.Entry<String, Object>> getEntryIterator() {
+        return new EntryIterator(new CookieArrayEnumerator(request.getCookies()));
     }
-
 
     @Override
     protected Iterator<String> getKeyIterator() {
-        return new KeyIterator(
-                new CookieArrayEnumerator(request.getCookies()));
+        return new KeyIterator(new CookieArrayEnumerator(request.getCookies()));
     }
-
 
     @Override
     protected Iterator<Object> getValueIterator() {
-        return new ValueIterator(
-            new CookieArrayEnumerator(request.getCookies()));
+        return new ValueIterator(new CookieArrayEnumerator(request.getCookies()));
     }
 
-
     // ----------------------------------------------------------- Inner Classes
-
 
     private static class CookieArrayEnumerator implements Enumeration {
 
@@ -159,7 +138,7 @@ public class RequestCookieMap extends BaseContextMap<Object> {
                 throw new NoSuchElementException();
             }
         }
-        
+
     }
 
 } // END RequestCookiesMap

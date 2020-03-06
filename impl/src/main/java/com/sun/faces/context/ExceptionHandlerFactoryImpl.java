@@ -35,7 +35,6 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory {
         super(null);
     }
 
-    
     /**
      * @see jakarta.faces.context.ExceptionHandlerFactory#getExceptionHandler()
      */
@@ -44,16 +43,13 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory {
         FacesContext fc = FacesContext.getCurrentInstance();
         ApplicationAssociate myAssociate = getAssociate(fc);
 
-        ExceptionHandler result = new AjaxNoAjaxExceptionHandler(
-                new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(Boolean.TRUE)),
+        ExceptionHandler result = new AjaxNoAjaxExceptionHandler(new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(Boolean.TRUE)),
                 new ExceptionHandlerImpl(((myAssociate != null) ? myAssociate.isErrorPagePresent() : Boolean.TRUE)));
         return result;
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private ApplicationAssociate getAssociate(FacesContext ctx) {
 

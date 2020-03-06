@@ -31,29 +31,25 @@ import java.util.HashMap;
 
 /**
  * <p>
- * <code>ConfigAnnotationHandler</code> for {@link FacesComponent} annotated
- * classes.
+ * <code>ConfigAnnotationHandler</code> for {@link FacesComponent} annotated classes.
  * </p>
  */
 public class ComponentConfigHandler implements ConfigAnnotationHandler {
 
     private static final Collection<Class<? extends Annotation>> HANDLES;
     static {
-        Collection<Class<? extends Annotation>> handles =
-              new ArrayList<>(1);
+        Collection<Class<? extends Annotation>> handles = new ArrayList<>(1);
         handles.add(FacesComponent.class);
         HANDLES = Collections.unmodifiableCollection(handles);
     }
 
-    // key: componentId 
-    private Map<String,FacesComponentUsage> components;
-
+    // key: componentId
+    private Map<String, FacesComponentUsage> components;
 
     // ------------------------------------- Methods from ComponentConfigHandler
 
-
     /**
-     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#getHandledAnnotations() 
+     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#getHandledAnnotations()
      */
     @Override
     public Collection<Class<? extends Annotation>> getHandledAnnotations() {
@@ -61,7 +57,6 @@ public class ComponentConfigHandler implements ConfigAnnotationHandler {
         return HANDLES;
 
     }
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#collect(Class, java.lang.annotation.Annotation)
@@ -77,10 +72,9 @@ public class ComponentConfigHandler implements ConfigAnnotationHandler {
             value = target.getSimpleName();
             value = Character.toLowerCase(value.charAt(0)) + value.substring(1);
         }
-        components.put(value,new FacesComponentUsage(target, (FacesComponent) annotation));
+        components.put(value, new FacesComponentUsage(target, (FacesComponent) annotation));
 
     }
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)

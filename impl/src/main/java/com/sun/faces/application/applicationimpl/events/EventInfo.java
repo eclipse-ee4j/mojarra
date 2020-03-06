@@ -32,9 +32,8 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 
 /**
- * Represent a logical association between a SystemEvent and a Source. This call will contain the
- * Listeners specific to this association as well as provide a method to construct new SystemEvents
- * as required.
+ * Represent a logical association between a SystemEvent and a Source. This call will contain the Listeners specific to
+ * this association as well as provide a method to construct new SystemEvents as required.
  */
 public class EventInfo {
 

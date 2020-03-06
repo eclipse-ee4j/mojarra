@@ -35,10 +35,10 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
- * <p>ConvertDateTimeTag is a ConverterTag implementation for
- * jakarta.faces.convert.DateTimeConverter</p>
+ * <p>
+ * ConvertDateTimeTag is a ConverterTag implementation for jakarta.faces.convert.DateTimeConverter
+ * </p>
  *
  */
 
@@ -47,7 +47,7 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
     private static final long serialVersionUID = -5815655767093677438L;
     private static ValueExpression CONVERTER_ID_EXPR = null;
 
-     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
+    private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
     //
     // Instance Variables
@@ -67,26 +67,23 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
     private TimeZone timeZone;
     private String type;// Log instance for this class
 
-
     // Attribute Instance Variables
 
     // Relationship Instance Variables
 
     //
-    // Constructors and Initializers    
+    // Constructors and Initializers
     //
     public ConvertDateTimeTag() {
         super();
         init();
     }
 
-
     @Override
     public void release() {
         super.release();
         init();
     }
-
 
     private void init() {
         dateStyle = "default";
@@ -103,10 +100,8 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
         typeExpression = null;
         if (CONVERTER_ID_EXPR == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            ExpressionFactory factory = context.getApplication().
-                    getExpressionFactory();
-            CONVERTER_ID_EXPR = factory.createValueExpression(
-                    context.getELContext(),"jakarta.faces.DateTime",String.class);
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            CONVERTER_ID_EXPR = factory.createValueExpression(context.getELContext(), "jakarta.faces.DateTime", String.class);
         }
     }
 
@@ -122,26 +117,21 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
         this.dateStyleExpression = dateStyle;
     }
 
-
     public void setLocale(ValueExpression locale) {
         this.localeExpression = locale;
     }
-
 
     public void setPattern(ValueExpression pattern) {
         this.patternExpression = pattern;
     }
 
-
     public void setTimeStyle(ValueExpression timeStyle) {
         this.timeStyleExpression = timeStyle;
     }
 
-
     public void setTimeZone(ValueExpression timeZone) {
         this.timeZoneExpression = timeZone;
     }
-
 
     public void setType(ValueExpression type) {
         this.typeExpression = type;
@@ -174,7 +164,6 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
         return result;
     }
 
-
     /* Evaluates expressions as necessary */
     private void evaluateExpressions() {
 
@@ -182,20 +171,16 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
         ELContext elContext = facesContext.getELContext();
 
         if (dateStyleExpression != null) {
-            dateStyle = (String)
-            ELUtils.evaluateValueExpression(dateStyleExpression, elContext);
+            dateStyle = (String) ELUtils.evaluateValueExpression(dateStyleExpression, elContext);
         }
         if (patternExpression != null) {
-            pattern = (String)
-            ELUtils.evaluateValueExpression(patternExpression, elContext);
+            pattern = (String) ELUtils.evaluateValueExpression(patternExpression, elContext);
         }
         if (timeStyleExpression != null) {
-            timeStyle = (String)
-            ELUtils.evaluateValueExpression(timeStyleExpression, elContext);
+            timeStyle = (String) ELUtils.evaluateValueExpression(timeStyleExpression, elContext);
         }
         if (typeExpression != null) {
-            type = (String)
-            ELUtils.evaluateValueExpression(typeExpression, elContext);
+            type = (String) ELUtils.evaluateValueExpression(typeExpression, elContext);
         } else {
             if (timeStyleExpression != null) {
                 if (dateStyleExpression != null) {
@@ -211,27 +196,18 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
             if (localeExpression.isLiteralText()) {
                 locale = getLocale(localeExpression.getExpressionString());
             } else {
-                Object loc = ELUtils.evaluateValueExpression(localeExpression,
-                                                          elContext);
+                Object loc = ELUtils.evaluateValueExpression(localeExpression, elContext);
                 if (loc != null) {
                     if (loc instanceof String) {
                         locale = getLocale((String) loc);
                     } else if (loc instanceof Locale) {
                         locale = (Locale) loc;
                     } else {
-                        Object[] params = {
-                            "locale",
-                            "java.lang.String or java.util.Locale",
-                            loc.getClass().getName()
-                        };
+                        Object[] params = { "locale", "java.lang.String or java.util.Locale", loc.getClass().getName() };
                         if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE,
-                                       "jsf.core.tags.eval_result_not_expected_type",
-                                       params);
+                            LOGGER.log(Level.SEVERE, "jsf.core.tags.eval_result_not_expected_type", params);
                         }
-                        throw new FacesException(
-                            MessageUtils.getExceptionMessageString(
-                                MessageUtils.EVAL_ATTR_UNEXPECTED_TYPE, params));
+                        throw new FacesException(MessageUtils.getExceptionMessageString(MessageUtils.EVAL_ATTR_UNEXPECTED_TYPE, params));
                     }
                 } else {
                     locale = facesContext.getViewRoot().getLocale();
@@ -240,31 +216,20 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
         }
         if (timeZoneExpression != null) {
             if (timeZoneExpression.isLiteralText()) {
-                timeZone =
-                TimeZone.getTimeZone(
-                    timeZoneExpression.getExpressionString());
+                timeZone = TimeZone.getTimeZone(timeZoneExpression.getExpressionString());
             } else {
-                Object tz = ELUtils.evaluateValueExpression(timeZoneExpression,
-                                                         elContext);
+                Object tz = ELUtils.evaluateValueExpression(timeZoneExpression, elContext);
                 if (tz != null) {
                     if (tz instanceof String) {
                         timeZone = TimeZone.getTimeZone((String) tz);
                     } else if (tz instanceof TimeZone) {
                         timeZone = (TimeZone) tz;
                     } else {
-                        Object[] params = {
-                            "timeZone",
-                            "java.lang.String or java.util.TimeZone",
-                            tz.getClass().getName()
-                        };
+                        Object[] params = { "timeZone", "java.lang.String or java.util.TimeZone", tz.getClass().getName() };
                         if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE,
-                                       "jsf.core.tags.eval_result_not_expected_type",
-                                       params);
+                            LOGGER.log(Level.SEVERE, "jsf.core.tags.eval_result_not_expected_type", params);
                         }
-                        throw new FacesException(
-                            MessageUtils.getExceptionMessageString(
-                                MessageUtils.EVAL_ATTR_UNEXPECTED_TYPE, params));
+                        throw new FacesException(MessageUtils.getExceptionMessageString(MessageUtils.EVAL_ATTR_UNEXPECTED_TYPE, params));
                     }
                 }
             }
@@ -278,18 +243,14 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
 
         if (string.length() > 2) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING,
-                           "jsf.core.taglib.invalid_locale_value",
-                           string);
+                LOGGER.log(Level.WARNING, "jsf.core.taglib.invalid_locale_value", string);
             }
         } else {
             String[] langs = Locale.getISOLanguages();
             Arrays.sort(langs);
             if (Arrays.binarySearch(langs, string) < 0) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
-                               "jsf.core.taglib.invalid_language",
-                               string);
+                    LOGGER.log(Level.WARNING, "jsf.core.taglib.invalid_language", string);
                 }
             }
         }

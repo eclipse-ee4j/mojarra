@@ -25,8 +25,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The Composite Component producer is the CDI producer that allows EL resolving of
- * <code>#{cc}</code>
+ * The Composite Component producer is the CDI producer that allows EL resolving of <code>#{cc}</code>
  * </p>
  *
  * @since 2.3
@@ -37,33 +36,31 @@ public class CompositeComponentProducer extends CdiProducer<Object> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public CompositeComponentProducer() {
-        super.name("cc")
-             .beanClassAndType(UIComponent.class)
-             .create(e -> {
-              
-                 FacesContext context = getCurrentInstance();
-                 
-                 // The following five lines violate the specification.
-                 // The specification states that the 'cc' implicit object
-                 // always evaluates to the current composite component,
-                 // however, this isn't desirable behavior when passing
-                 // attributes between nested composite components, so we
-                 // need to alter the behavior so that the components behave
-                 // as the user would expect.
-                 /* BEGIN DEVIATION */
-                 UIComponent component = getManager(context).peek();
-                 
-                 /* END DEVIATION */
-                 if (component == null) {
-                     component = getCurrentCompositeComponent(context);
-                 }
-                 
-                 return component;
-                 
-             });
-             
+        super.name("cc").beanClassAndType(UIComponent.class).create(e -> {
+
+            FacesContext context = getCurrentInstance();
+
+            // The following five lines violate the specification.
+            // The specification states that the 'cc' implicit object
+            // always evaluates to the current composite component,
+            // however, this isn't desirable behavior when passing
+            // attributes between nested composite components, so we
+            // need to alter the behavior so that the components behave
+            // as the user would expect.
+            /* BEGIN DEVIATION */
+            UIComponent component = getManager(context).peek();
+
+            /* END DEVIATION */
+            if (component == null) {
+                component = getCurrentCompositeComponent(context);
+            }
+
+            return component;
+
+        });
+
     }
 
 }

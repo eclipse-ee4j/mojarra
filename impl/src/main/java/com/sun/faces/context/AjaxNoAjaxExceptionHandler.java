@@ -21,7 +21,7 @@ import jakarta.faces.context.ExceptionHandlerWrapper;
 import jakarta.faces.context.FacesContext;
 
 public class AjaxNoAjaxExceptionHandler extends ExceptionHandlerWrapper {
-    
+
     private AjaxExceptionHandlerImpl ajaxExceptionHandlerImpl;
 
     public AjaxNoAjaxExceptionHandler(AjaxExceptionHandlerImpl ajaxExceptionHandlerImpl, ExceptionHandlerImpl exceptionHandlerImpl) {
@@ -36,9 +36,7 @@ public class AjaxNoAjaxExceptionHandler extends ExceptionHandlerWrapper {
             return ajaxExceptionHandlerImpl;
         }
         return super.getWrapped();
-        
+
     }
-    
-    
-    
+
 }

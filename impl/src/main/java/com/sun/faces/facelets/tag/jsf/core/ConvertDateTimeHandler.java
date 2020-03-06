@@ -28,9 +28,10 @@ import jakarta.el.ELException;
 import java.util.TimeZone;
 
 /**
- * Register a DateTimeConverter instance on the UIComponent associated with the
- * closest parent UIComponent custom action. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag
+ * Register a DateTimeConverter instance on the UIComponent associated with the closest parent UIComponent custom
+ * action.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag
  * documentation</a>.
  * 
  * @author Jacob Hookom
@@ -68,8 +69,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
      * 
      * @see DateTimeConverter
      */
-    protected Converter createConverter(FaceletContext ctx)
-            throws FacesException, ELException, FaceletException {
+    protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
         return ctx.getFacesContext().getApplication().createConverter(DateTimeConverter.CONVERTER_ID);
 
     }
@@ -93,7 +93,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
                     c.setType(typeStr);
                 }
             }
-            
+
         } else {
             if (this.type != null) {
                 c.setType(this.type.getValue(ctx));
@@ -105,33 +105,30 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
                 c.setTimeStyle(this.timeStyle.getValue(ctx));
             }
         }
-        
+
         if (this.timeZone != null) {
             Object t = this.timeZone.getObject(ctx);
-            if(t != null) {
-	            if (t instanceof TimeZone) {
-	                c.setTimeZone((TimeZone) t);
-	            } else if (t instanceof String) {
-	                TimeZone tz = TimeZone.getTimeZone((String) t);
-	                c.setTimeZone(tz);
-	            } else {
-	                throw new TagAttributeException(
-	                        this.tag,
-	                        this.timeZone,
-	                        "Illegal TimeZone, must evaluate to either a java.util.TimeZone or String, is type: "
-	                                + t.getClass());
-	            }
+            if (t != null) {
+                if (t instanceof TimeZone) {
+                    c.setTimeZone((TimeZone) t);
+                } else if (t instanceof String) {
+                    TimeZone tz = TimeZone.getTimeZone((String) t);
+                    c.setTimeZone(tz);
+                } else {
+                    throw new TagAttributeException(this.tag, this.timeZone,
+                            "Illegal TimeZone, must evaluate to either a java.util.TimeZone or String, is type: " + t.getClass());
+                }
             }
         }
     }
-    
+
     private static boolean isJavaTimeType(String type) {
         boolean result = false;
         if (null != type && type.length() > 1) {
             char c = type.charAt(0);
             result = c == 'l' || c == 'o' || c == 'z';
         }
-        
+
         return result;
     }
 

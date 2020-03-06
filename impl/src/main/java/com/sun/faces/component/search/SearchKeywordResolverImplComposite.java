@@ -25,8 +25,7 @@ public class SearchKeywordResolverImplComposite extends SearchKeywordResolver {
 
     @Override
     public void resolve(SearchKeywordContext searchKeywordContext, UIComponent current, String keyword) {
-        searchKeywordContext.invokeContextCallback(
-            UIComponent.getCompositeComponentParent(current));
+        searchKeywordContext.invokeContextCallback(UIComponent.getCompositeComponentParent(current));
     }
 
     @Override

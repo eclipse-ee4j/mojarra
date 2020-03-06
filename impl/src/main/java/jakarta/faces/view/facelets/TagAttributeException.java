@@ -18,8 +18,9 @@
 package jakarta.faces.view.facelets;
 
 /**
- * <p class="changed_added_2_0">An Exception caused by a {@link
- * TagAttribute}</p>
+ * <p class="changed_added_2_0">
+ * An Exception caused by a {@link TagAttribute}
+ * </p>
  *
  * @since 2.0
  */
@@ -66,8 +67,7 @@ public final class TagAttributeException extends FaceletException {
      * @param message the message.
      * @param cause the cause.
      */
-    public TagAttributeException(TagAttribute attr, String message,
-            Throwable cause) {
+    public TagAttributeException(TagAttribute attr, String message, Throwable cause) {
         super(attr + " " + message, cause);
     }
 
@@ -82,8 +82,7 @@ public final class TagAttributeException extends FaceletException {
     }
 
     private static String print(Tag tag, TagAttribute attr) {
-        return tag.getLocation() + " <" + tag.getQName() + " " + attr.getQName()
-                + "=\"" + attr.getValue() + "\">";
+        return tag.getLocation() + " <" + tag.getQName() + " " + attr.getQName() + "=\"" + attr.getValue() + "\">";
     }
 
     /**
@@ -116,8 +115,7 @@ public final class TagAttributeException extends FaceletException {
      * @param message the message.
      * @param cause the cause.
      */
-    public TagAttributeException(Tag tag, TagAttribute attr, String message,
-            Throwable cause) {
+    public TagAttributeException(Tag tag, TagAttribute attr, String message, Throwable cause) {
         super(print(tag, attr) + " " + message, cause);
     }
 }

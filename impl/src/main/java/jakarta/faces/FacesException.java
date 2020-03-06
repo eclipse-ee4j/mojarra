@@ -95,8 +95,7 @@ public class FacesException extends RuntimeException {
 
     /**
      * <p>
-     * Return the cause of this exception, or <code>null</code> if the cause is nonexistent or
-     * unknown.
+     * Return the cause of this exception, or <code>null</code> if the cause is nonexistent or unknown.
      * </p>
      */
     @Override

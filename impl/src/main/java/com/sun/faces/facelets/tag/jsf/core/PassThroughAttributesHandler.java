@@ -27,8 +27,7 @@ import jakarta.faces.view.facelets.TagException;
 import java.io.IOException;
 import java.util.Map;
 
-public final class PassThroughAttributesHandler extends TagHandlerImpl 
-    implements jakarta.faces.view.facelets.AttributeHandler {
+public final class PassThroughAttributesHandler extends TagHandlerImpl implements jakarta.faces.view.facelets.AttributeHandler {
 
     private final TagAttribute value;
 
@@ -38,8 +37,7 @@ public final class PassThroughAttributesHandler extends TagHandlerImpl
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
             throw new TagException(this.tag, "Parent UIComponent was null");
         }
@@ -53,7 +51,6 @@ public final class PassThroughAttributesHandler extends TagHandlerImpl
             }
         }
     }
-
 
     // jakarta.faces.view.facelets.tag.AttributeHandler.getAttributeName()
     // implementation.

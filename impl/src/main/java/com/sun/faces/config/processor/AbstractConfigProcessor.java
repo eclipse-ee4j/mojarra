@@ -71,16 +71,13 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String CLASS_METADATA_MAP_KEY_SUFFIX = ".METADATA";
-    
-   
 
     // -------------------------------------------- Methods from ConfigProcessor
-
 
     private ApplicationInstanceFactoryMetadataMap<String, Object> getClassMetadataMap(ServletContext servletContext) {
         ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = (ApplicationInstanceFactoryMetadataMap<String, Object>) servletContext
                 .getAttribute(getClassMetadataMapKey());
-        
+
         if (classMetadataMap == null) {
             classMetadataMap = new ApplicationInstanceFactoryMetadataMap(new ConcurrentHashMap<>());
             servletContext.setAttribute(getClassMetadataMapKey(), classMetadataMap);
@@ -101,7 +98,6 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     @Override
     public void destroy(ServletContext sc, FacesContext facesContext) {
     }
-    
 
     // ------------------------------------------------------- Protected Methods
 
@@ -109,9 +105,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
      * @return return the Application instance for this context.
      */
     protected Application getApplication() {
-        return ((ApplicationFactory) 
-            FactoryFinder.getFactory(APPLICATION_FACTORY))
-                         .getApplication();
+        return ((ApplicationFactory) FactoryFinder.getFactory(APPLICATION_FACTORY)).getApplication();
 
     }
 
@@ -119,10 +113,9 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
      * <p>
      * Return the text of the specified <code>Node</code>, if any.
      * 
-     * @param node
-     *            the <code>Node</code>
+     * @param node the <code>Node</code>
      * @return the text of the <code>Node</code> If the length of the text is zero, this method will return
-     *         <code>null</code>
+     * <code>null</code>
      */
     protected String getNodeText(Node node) {
         String res = null;
@@ -138,10 +131,9 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
 
     /**
      * @return a <code>Map</code> of of textual values keyed off the values of any lang or xml:lang attributes specified on
-     *         an attribute. If no such attribute exists, then the key {@link ApplicationResourceBundle#DEFAULT_KEY} will be
-     *         used (i.e. this represents the default Locale).
-     * @param list
-     *            a list of nodes representing textual elements such as description or display-name
+     * an attribute. If no such attribute exists, then the key {@link ApplicationResourceBundle#DEFAULT_KEY} will be used
+     * (i.e. this represents the default Locale).
+     * @param list a list of nodes representing textual elements such as description or display-name
      */
     protected Map<String, String> getTextMap(List<Node> list) {
 
@@ -201,7 +193,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         return result;
     }
 
-    protected Object createInstance(ServletContext sc, FacesContext facesContext, String className, Class<?> rootType, Object root, Node source, boolean performInjection, boolean[] didPerformInjection) {
+    protected Object createInstance(ServletContext sc, FacesContext facesContext, String className, Class<?> rootType, Object root, Node source,
+            boolean performInjection, boolean[] didPerformInjection) {
         Class<?> clazz;
         Object returnObject = null;
         if (className != null) {
@@ -218,7 +211,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                             }
                         }
                     }
-                    
+
                     if (clazz != null && returnObject == null) {
                         returnObject = clazz.newInstance();
                     }
@@ -226,9 +219,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = getClassMetadataMap(sc);
 
                     if (classMetadataMap.hasAnnotations(className) && performInjection) {
-                        InjectionProvider injectionProvider = (InjectionProvider) 
-                                facesContext.getAttributes()
-                                            .get(INJECTION_PROVIDER_KEY);
+                        InjectionProvider injectionProvider = (InjectionProvider) facesContext.getAttributes().get(INJECTION_PROVIDER_KEY);
 
                         try {
                             injectionProvider.inject(returnObject);
@@ -250,20 +241,14 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                 }
 
             } catch (ClassNotFoundException cnfe) {
-                throw new ConfigurationException(buildMessage(format("Unable to find class ''{0}''", className), source),
-                        cnfe);
+                throw new ConfigurationException(buildMessage(format("Unable to find class ''{0}''", className), source), cnfe);
             } catch (NoClassDefFoundError ncdfe) {
-                throw new ConfigurationException(buildMessage(
-                        format("Class ''{0}'' is missing a runtime dependency: {1}", className, ncdfe.toString()), source),
-                        ncdfe);
-            } catch (ClassCastException cce) {
                 throw new ConfigurationException(
-                        buildMessage(format("Class ''{0}'' is not an instance of ''{1}''", className, rootType), source),
-                        cce);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                    | FacesException e) {
-                throw new ConfigurationException(buildMessage(
-                        format("Unable to create a new instance of ''{0}'': {1}", className, e.toString()), source), e);
+                        buildMessage(format("Class ''{0}'' is missing a runtime dependency: {1}", className, ncdfe.toString()), source), ncdfe);
+            } catch (ClassCastException cce) {
+                throw new ConfigurationException(buildMessage(format("Class ''{0}'' is not an instance of ''{1}''", className, rootType), source), cce);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | FacesException e) {
+                throw new ConfigurationException(buildMessage(format("Unable to create a new instance of ''{0}'': {1}", className, e.toString()), source), e);
             }
         }
 
@@ -275,9 +260,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
             ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = getClassMetadataMap(sc);
 
             if (classMetadataMap.hasAnnotations(className)) {
-                InjectionProvider injectionProvider = (InjectionProvider) 
-                        facesContext.getAttributes()
-                                    .get(INJECTION_PROVIDER_KEY);
+                InjectionProvider injectionProvider = (InjectionProvider) facesContext.getAttributes().get(INJECTION_PROVIDER_KEY);
 
                 if (injectionProvider != null) {
                     try {
@@ -291,7 +274,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         }
     }
 
-    protected Class<?> loadClass(ServletContext sc, FacesContext facesContext, String className, Object fallback, Class<?> expectedType) throws ClassNotFoundException {
+    protected Class<?> loadClass(ServletContext sc, FacesContext facesContext, String className, Object fallback, Class<?> expectedType)
+            throws ClassNotFoundException {
         ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = getClassMetadataMap(sc);
 
         Class<?> clazz = (Class<?>) classMetadataMap.get(className);
@@ -308,21 +292,18 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
             }
 
         }
-        
+
         if (expectedType != null && !expectedType.isAssignableFrom(clazz)) {
             throw new ClassCastException();
         }
-        
+
         return clazz;
     }
 
     protected void processAnnotations(FacesContext ctx, Class<? extends Annotation> annotationType) {
-        ApplicationAssociate.getInstance(ctx.getExternalContext())
-                            .getAnnotationManager()
-                            .applyConfigAnnotations(
-                                ctx, annotationType, ConfigManager.getAnnotatedClasses(ctx).get(annotationType));
+        ApplicationAssociate.getInstance(ctx.getExternalContext()).getAnnotationManager().applyConfigAnnotations(ctx, annotationType,
+                ConfigManager.getAnnotatedClasses(ctx).get(annotationType));
     }
-    
 
     // --------------------------------------------------------- Private Methods
 
@@ -341,7 +322,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         if (projectStage == null) {
             WebConfiguration webConfig = WebConfiguration.getInstance(facesContext.getExternalContext());
             String value = webConfig.getEnvironmentEntry(WebConfiguration.WebEnvironmentEntry.ProjectStage);
-            
+
             if (value != null) {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
@@ -354,7 +335,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     }
                 }
             }
-            
+
             if (value != null) {
                 try {
                     projectStage = ProjectStage.valueOf(value);
@@ -364,14 +345,14 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     }
                 }
             }
-            
+
             if (projectStage == null) {
                 projectStage = Production;
             }
-            
+
             sc.setAttribute(projectStageKey, projectStage);
         }
-        
+
         return projectStage;
     }
 

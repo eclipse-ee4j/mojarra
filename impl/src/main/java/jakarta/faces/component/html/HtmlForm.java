@@ -29,14 +29,16 @@ import jakarta.faces.component.UIForm;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
 /**
- * <p>Represents an HTML <code>form</code> element.  Child input components
- * will be submitted unless they have been disabled.</p>
- * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Form</code>".
- * This value can be changed by calling the <code>setRendererType()</code> method.</p>
+ * <p>
+ * Represents an HTML <code>form</code> element. Child input components will be submitted unless they have been
+ * disabled.
+ * </p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Form</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
 public class HtmlForm extends UIForm implements ClientBehaviorHolder {
-
-
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -46,50 +48,39 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("enctype", "application/x-www-form-urlencoded");
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlForm";
 
-
     protected enum PropertyKeys {
-        accept,
-        acceptcharset,
-        dir,
-        enctype,
-        lang,
-        onclick,
-        ondblclick,
-        onkeydown,
-        onkeypress,
-        onkeyup,
-        onmousedown,
-        onmousemove,
-        onmouseout,
-        onmouseover,
-        onmouseup,
-        onreset,
-        onsubmit,
-        role,
-        style,
-        styleClass,
-        target,
-        title,
-;
+        accept, acceptcharset, dir, enctype, lang, onclick, ondblclick, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover,
+        onmouseup, onreset, onsubmit, role, style, styleClass, target, title,;
+
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
-}
+    }
 
     /**
-     * <p>Return the value of the <code>accept</code> property.</p>
+     * <p>
+     * Return the value of the <code>accept</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: List of content types that a server processing this form
-     * will handle correctly
+     * <p>
+     * Contents: List of content types that a server processing this form will handle correctly
      */
     public java.lang.String getAccept() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.accept);
@@ -97,7 +88,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>accept</code> property.</p>
+     * <p>
+     * Set the value of the <code>accept</code> property.
+     * </p>
+     * 
      * @param accept the new property value
      */
     public void setAccept(java.lang.String accept) {
@@ -105,13 +99,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("accept", accept);
     }
 
-
     /**
-     * <p>Return the value of the <code>acceptcharset</code> property.</p>
+     * <p>
+     * Return the value of the <code>acceptcharset</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: List of character encodings for input data
-     * that are accepted by the server processing
-     * this form.
+     * <p>
+     * Contents: List of character encodings for input data that are accepted by the server processing this form.
      */
     public java.lang.String getAcceptcharset() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.acceptcharset);
@@ -119,21 +114,26 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>acceptcharset</code> property.</p>
+     * <p>
+     * Set the value of the <code>acceptcharset</code> property.
+     * </p>
+     * 
      * @param acceptcharset the new property value
      */
     public void setAcceptcharset(java.lang.String acceptcharset) {
         getStateHelper().put(PropertyKeys.acceptcharset, acceptcharset);
     }
 
-
     /**
-     * <p>Return the value of the <code>dir</code> property.</p>
+     * <p>
+     * Return the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Direction indication for text that does not inherit directionality.
-     * Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).
-     * These attributes are case sensitive when rendering to XHTML, so
-     * care must be taken to have the correct case.
+     * <p>
+     * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
+     * and "RTL" (right-to-left). These attributes are case sensitive when rendering to XHTML, so care must be taken to have
+     * the correct case.
      */
     public java.lang.String getDir() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.dir);
@@ -141,7 +141,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>dir</code> property.</p>
+     * <p>
+     * Set the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @param dir the new property value
      */
     public void setDir(java.lang.String dir) {
@@ -149,12 +152,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("dir", dir);
     }
 
-
     /**
-     * <p>Return the value of the <code>enctype</code> property.</p>
+     * <p>
+     * Return the value of the <code>enctype</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Content type used to submit the form to the server.  If not
-     * specified, the default value is
+     * <p>
+     * Contents: Content type used to submit the form to the server. If not specified, the default value is
      * "application/x-www-form-urlencoded".
      */
     public java.lang.String getEnctype() {
@@ -163,19 +168,24 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>enctype</code> property.</p>
+     * <p>
+     * Set the value of the <code>enctype</code> property.
+     * </p>
+     * 
      * @param enctype the new property value
      */
     public void setEnctype(java.lang.String enctype) {
         getStateHelper().put(PropertyKeys.enctype, enctype);
     }
 
-
     /**
-     * <p>Return the value of the <code>lang</code> property.</p>
+     * <p>
+     * Return the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Code describing the language used in the generated markup
-     * for this component.
+     * <p>
+     * Contents: Code describing the language used in the generated markup for this component.
      */
     public java.lang.String getLang() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.lang);
@@ -183,7 +193,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>lang</code> property.</p>
+     * <p>
+     * Set the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @param lang the new property value
      */
     public void setLang(java.lang.String lang) {
@@ -191,12 +204,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("lang", lang);
     }
 
-
     /**
-     * <p>Return the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Return the value of the <code>onclick</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * clicked over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is clicked over this element.
      */
     public java.lang.String getOnclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onclick);
@@ -204,7 +219,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>onclick</code> property.
+     * </p>
+     * 
      * @param onclick the new property value
      */
     public void setOnclick(java.lang.String onclick) {
@@ -212,12 +230,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onclick", onclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Return the value of the <code>ondblclick</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * double clicked over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is double clicked over this element.
      */
     public java.lang.String getOndblclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.ondblclick);
@@ -225,7 +245,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>ondblclick</code> property.
+     * </p>
+     * 
      * @param ondblclick the new property value
      */
     public void setOndblclick(java.lang.String ondblclick) {
@@ -233,12 +256,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("ondblclick", ondblclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeydown</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * pressed down over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is pressed down over this element.
      */
     public java.lang.String getOnkeydown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeydown);
@@ -246,7 +271,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeydown</code> property.
+     * </p>
+     * 
      * @param onkeydown the new property value
      */
     public void setOnkeydown(java.lang.String onkeydown) {
@@ -254,12 +282,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onkeydown", onkeydown);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeypress</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * pressed and released over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is pressed and released over this element.
      */
     public java.lang.String getOnkeypress() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeypress);
@@ -267,7 +297,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeypress</code> property.
+     * </p>
+     * 
      * @param onkeypress the new property value
      */
     public void setOnkeypress(java.lang.String onkeypress) {
@@ -275,12 +308,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onkeypress", onkeypress);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeyup</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * released over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is released over this element.
      */
     public java.lang.String getOnkeyup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeyup);
@@ -288,7 +323,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeyup</code> property.
+     * </p>
+     * 
      * @param onkeyup the new property value
      */
     public void setOnkeyup(java.lang.String onkeyup) {
@@ -296,12 +334,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onkeyup", onkeyup);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmousedown</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * pressed down over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is pressed down over this element.
      */
     public java.lang.String getOnmousedown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousedown);
@@ -309,7 +349,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousedown</code> property.
+     * </p>
+     * 
      * @param onmousedown the new property value
      */
     public void setOnmousedown(java.lang.String onmousedown) {
@@ -317,12 +360,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onmousedown", onmousedown);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmousemove</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved within this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved within this element.
      */
     public java.lang.String getOnmousemove() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousemove);
@@ -330,7 +375,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousemove</code> property.
+     * </p>
+     * 
      * @param onmousemove the new property value
      */
     public void setOnmousemove(java.lang.String onmousemove) {
@@ -338,12 +386,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onmousemove", onmousemove);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseout</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved away from this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved away from this element.
      */
     public java.lang.String getOnmouseout() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseout);
@@ -351,7 +401,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseout</code> property.
+     * </p>
+     * 
      * @param onmouseout the new property value
      */
     public void setOnmouseout(java.lang.String onmouseout) {
@@ -359,12 +412,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onmouseout", onmouseout);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseover</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved onto this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved onto this element.
      */
     public java.lang.String getOnmouseover() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseover);
@@ -372,7 +427,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseover</code> property.
+     * </p>
+     * 
      * @param onmouseover the new property value
      */
     public void setOnmouseover(java.lang.String onmouseover) {
@@ -380,12 +438,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onmouseover", onmouseover);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseup</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * released over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is released over this element.
      */
     public java.lang.String getOnmouseup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseup);
@@ -393,7 +453,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseup</code> property.
+     * </p>
+     * 
      * @param onmouseup the new property value
      */
     public void setOnmouseup(java.lang.String onmouseup) {
@@ -401,11 +464,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onmouseup", onmouseup);
     }
 
-
     /**
-     * <p>Return the value of the <code>onreset</code> property.</p>
+     * <p>
+     * Return the value of the <code>onreset</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when this form is reset.
+     * <p>
+     * Contents: Javascript code executed when this form is reset.
      */
     public java.lang.String getOnreset() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onreset);
@@ -413,7 +479,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onreset</code> property.</p>
+     * <p>
+     * Set the value of the <code>onreset</code> property.
+     * </p>
+     * 
      * @param onreset the new property value
      */
     public void setOnreset(java.lang.String onreset) {
@@ -421,11 +490,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onreset", onreset);
     }
 
-
     /**
-     * <p>Return the value of the <code>onsubmit</code> property.</p>
+     * <p>
+     * Return the value of the <code>onsubmit</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when this form is submitted.
+     * <p>
+     * Contents: Javascript code executed when this form is submitted.
      */
     public java.lang.String getOnsubmit() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onsubmit);
@@ -433,7 +505,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>onsubmit</code> property.</p>
+     * <p>
+     * Set the value of the <code>onsubmit</code> property.
+     * </p>
+     * 
      * @param onsubmit the new property value
      */
     public void setOnsubmit(java.lang.String onsubmit) {
@@ -441,24 +516,26 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("onsubmit", onsubmit);
     }
 
-
     /**
-     * <p>Return the value of the <code>role</code> property.</p>
-     * @return the property value
-     * <p>Contents: <p class="changed_added_2_2">Per the WAI-ARIA spec and its
-     * relationship to HTML5 (Section title ARIA Role Attriubute),
-     * every HTML element may have a "role" attribute whose value
-     * must be passed through unmodified on the element on which it
-     * is declared in the final rendered markup.  The attribute, if
-     * specified, must have a value that is a string literal that is,
-     * or an EL Expression that evaluates to, a set of
-     * space-separated tokens representing the various WAI-ARIA roles
-     * that the element belongs to.
+     * <p>
+     * Return the value of the <code>role</code> property.
      * </p>
      * 
-     * <p class="changed_added_2_2">It is the page author's
-     * responsibility to ensure that the user agent is capable of
-     * correctly interpreting the value of this attribute.</p>
+     * @return the property value
+     * <p>
+     * Contents:
+     * <p class="changed_added_2_2">
+     * Per the WAI-ARIA spec and its relationship to HTML5 (Section title ARIA Role Attriubute), every HTML element may have
+     * a "role" attribute whose value must be passed through unmodified on the element on which it is declared in the final
+     * rendered markup. The attribute, if specified, must have a value that is a string literal that is, or an EL Expression
+     * that evaluates to, a set of space-separated tokens representing the various WAI-ARIA roles that the element belongs
+     * to.
+     * </p>
+     * 
+     * <p class="changed_added_2_2">
+     * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
+     * of this attribute.
+     * </p>
      */
     public java.lang.String getRole() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.role);
@@ -466,7 +543,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>role</code> property.</p>
+     * <p>
+     * Set the value of the <code>role</code> property.
+     * </p>
+     * 
      * @param role the new property value
      */
     public void setRole(java.lang.String role) {
@@ -474,11 +554,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("role", role);
     }
 
-
     /**
-     * <p>Return the value of the <code>style</code> property.</p>
+     * <p>
+     * Return the value of the <code>style</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style(s) to be applied when this component is rendered.
+     * <p>
+     * Contents: CSS style(s) to be applied when this component is rendered.
      */
     public java.lang.String getStyle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.style);
@@ -486,7 +569,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>style</code> property.</p>
+     * <p>
+     * Set the value of the <code>style</code> property.
+     * </p>
+     * 
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -494,13 +580,15 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("style", style);
     }
 
-
     /**
-     * <p>Return the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Space-separated list of CSS style class(es) to be applied when
-     * this element is rendered.  This value must be passed through
-     * as the "class" attribute on generated markup.
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
+     * passed through as the "class" attribute on generated markup.
      */
     public java.lang.String getStyleClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.styleClass);
@@ -508,20 +596,24 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>target</code> property.</p>
+     * <p>
+     * Return the value of the <code>target</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Name of a frame where the response
-     * retrieved after this form submit is to
-     * be displayed.
+     * <p>
+     * Contents: Name of a frame where the response retrieved after this form submit is to be displayed.
      */
     public java.lang.String getTarget() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.target);
@@ -529,7 +621,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>target</code> property.</p>
+     * <p>
+     * Set the value of the <code>target</code> property.
+     * </p>
+     * 
      * @param target the new property value
      */
     public void setTarget(java.lang.String target) {
@@ -537,12 +632,14 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("target", target);
     }
 
-
     /**
-     * <p>Return the value of the <code>title</code> property.</p>
+     * <p>
+     * Return the value of the <code>title</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Advisory title information about markup elements generated
-     * for this component.
+     * <p>
+     * Contents: Advisory title information about markup elements generated for this component.
      */
     public java.lang.String getTitle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.title);
@@ -550,7 +647,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>Set the value of the <code>title</code> property.</p>
+     * <p>
+     * Set the value of the <code>title</code> property.
+     * </p>
+     * 
      * @param title the new property value
      */
     public void setTitle(java.lang.String title) {
@@ -558,16 +658,16 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
         handleAttribute("title", title);
     }
 
-
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("click","dblclick","keydown","keypress","keyup","mousedown","mousemove","mouseout","mouseover","mouseup"));
+    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
+            Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
 
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;    }
-
+        return EVENT_NAMES;
+    }
 
     public String getDefaultEventName() {
-        return null;    }
-
+        return null;
+    }
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");

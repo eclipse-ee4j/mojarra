@@ -22,22 +22,20 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * <span class="changed_modified_2_0 changed_modified_2_2">A</span>
- * <strong>NavigationHandler</strong> is passed the outcome string returned by an application action
- * invoked for this application, and will use this (along with related state information) to choose
- * the view to be displayed next.
+ * <span class="changed_modified_2_0 changed_modified_2_2">A</span> <strong>NavigationHandler</strong> is passed the
+ * outcome string returned by an application action invoked for this application, and will use this (along with related
+ * state information) to choose the view to be displayed next.
  * </p>
  *
  * <p>
  * A default implementation of <code>NavigationHandler</code> must be provided by the Jakarta Server Faces
- * implementation, which will be utilized unless <code>setNavigationHandler()</code> is called to
- * establish a different one. <span class="changed_added_2_0">An implementation of this class must
- * be thread-safe.</span> This default instance will compare the view identifier of the current
- * view, the specified action binding, and the specified outcome against any navigation rules
- * provided in <code>faces-config.xml</code> file(s). If a navigation case matches, the current view
- * will be changed by a call to <code>FacesContext.setViewRoot()</code>. Note that a
- * <code>null</code> outcome value will never match any navigation rule, so it can be used as an
- * indicator that the current view should be redisplayed.
+ * implementation, which will be utilized unless <code>setNavigationHandler()</code> is called to establish a different
+ * one. <span class="changed_added_2_0">An implementation of this class must be thread-safe.</span> This default
+ * instance will compare the view identifier of the current view, the specified action binding, and the specified
+ * outcome against any navigation rules provided in <code>faces-config.xml</code> file(s). If a navigation case matches,
+ * the current view will be changed by a call to <code>FacesContext.setViewRoot()</code>. Note that a <code>null</code>
+ * outcome value will never match any navigation rule, so it can be used as an indicator that the current view should be
+ * redisplayed.
  * </p>
  */
 
@@ -45,31 +43,26 @@ public abstract class NavigationHandler {
 
     /**
      * <p>
-     * <span class="changed_modified_2_0">Perform</span> navigation processing based on the state
-     * information in the specified {@link FacesContext}, plus the outcome string returned by an
-     * executed application action.
+     * <span class="changed_modified_2_0">Perform</span> navigation processing based on the state information in the
+     * specified {@link FacesContext}, plus the outcome string returned by an executed application action.
      * </p>
      *
      * <p class="changed_added_2_0">
-     * If the implementation class also extends {@link ConfigurableNavigationHandler}, the
-     * implementation must guarantee that the logic used in a call to
-     * {@link ConfigurableNavigationHandler#getNavigationCase} is used in this method to determine
-     * the correct navigation.
+     * If the implementation class also extends {@link ConfigurableNavigationHandler}, the implementation must guarantee
+     * that the logic used in a call to {@link ConfigurableNavigationHandler#getNavigationCase} is used in this method to
+     * determine the correct navigation.
      * </p>
      *
      * <p class="changed_added_2_0">
-     * This method must set the render targets (used in partial rendering) to
-     * <code>render all </code> invoking
-     * {@link jakarta.faces.context.PartialViewContext#setRenderAll}) if the view identifier has
-     * changed as the result of an application action (to take into account
-     * <code>Ajax requests</code>).
+     * This method must set the render targets (used in partial rendering) to <code>render all </code> invoking
+     * {@link jakarta.faces.context.PartialViewContext#setRenderAll}) if the view identifier has changed as the result of an
+     * application action (to take into account <code>Ajax requests</code>).
      * </p>
      *
      * @param context The {@link FacesContext} for the current request
-     * @param fromAction The action binding expression that was evaluated to retrieve the specified
-     *            outcome, or <code>null</code> if the outcome was acquired by some other means
-     * @param outcome The logical outcome returned by a previous invoked application action (which
-     *            may be <code>null</code>)
+     * @param fromAction The action binding expression that was evaluated to retrieve the specified outcome, or
+     * <code>null</code> if the outcome was acquired by some other means
+     * @param outcome The logical outcome returned by a previous invoked application action (which may be <code>null</code>)
      *
      * @throws NullPointerException if <code>context</code> is <code>null</code>
      */
@@ -78,22 +71,19 @@ public abstract class NavigationHandler {
     /**
      * <p class="changed_added_2_2">
      * Overloaded variant of
-     * {@link #handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String)}
-     * that allows the caller to provide the defining document id for a flow to be entered by this
-     * navigation. For backward compatibility with decorated {@code NavigationHandler}
-     * implementations that conform to an earlier version of the specification, an implementation is
-     * provided that calls through to
-     * {@link #handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String)},
-     * ignoring the {@code toFlowDocumentId} parameter.
+     * {@link #handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String)} that allows the
+     * caller to provide the defining document id for a flow to be entered by this navigation. For backward compatibility
+     * with decorated {@code NavigationHandler} implementations that conform to an earlier version of the specification, an
+     * implementation is provided that calls through to
+     * {@link #handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String)}, ignoring the
+     * {@code toFlowDocumentId} parameter.
      * </p>
      * 
      * @param context The {@link FacesContext} for the current request
-     * @param fromAction The action binding expression that was evaluated to retrieve the specified
-     *            outcome, or <code>null</code> if the outcome was acquired by some other means
-     * @param outcome The logical outcome returned by a previous invoked application action (which
-     *            may be <code>null</code>)
-     * @param toFlowDocumentId The defining document id of the flow into which this navigation will
-     *            cause entry.
+     * @param fromAction The action binding expression that was evaluated to retrieve the specified outcome, or
+     * <code>null</code> if the outcome was acquired by some other means
+     * @param outcome The logical outcome returned by a previous invoked application action (which may be <code>null</code>)
+     * @param toFlowDocumentId The defining document id of the flow into which this navigation will cause entry.
      *
      * @throws NullPointerException if <code>context</code> is <code>null</code>
      */

@@ -21,24 +21,27 @@ package com.sun.faces.taglib.jsf_core;
 /**
  * <B>MaxMinValidatorTag</B> contains ivars for maximumSet and minimumSet.
  * <p/>
- * <B>Lifetime And Scope</B> <P>
+ * <B>Lifetime And Scope</B>
+ * <P>
  *
  */
 
 public abstract class MaxMinValidatorTag extends AbstractValidatorTag {
 
-
     private static final long serialVersionUID = 5666097564448276941L;
 
     /**
-     * <p>Flag indicating whether a maximum limit has been set.</p>
+     * <p>
+     * Flag indicating whether a maximum limit has been set.
+     * </p>
      */
     protected boolean maximumSet = false;
 
     /**
-     * <p>Flag indicating whether a minimum limit has been set.</p>
+     * <p>
+     * Flag indicating whether a minimum limit has been set.
+     * </p>
      */
     protected boolean minimumSet = false;
-
 
 } // end of class MaxMinValidatorTag

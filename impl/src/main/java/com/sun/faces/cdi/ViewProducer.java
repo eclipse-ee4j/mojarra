@@ -23,8 +23,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- *  The ViewProducer is the CDI producer that allows you to inject the 
- *  UIViewRoot and to do EL resolving of #{view}
+ * The ViewProducer is the CDI producer that allows you to inject the UIViewRoot and to do EL resolving of #{view}
  * </p>
  *
  * @since 2.3
@@ -36,13 +35,10 @@ public class ViewProducer extends CdiProducer<UIViewRoot> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ViewProducer() {
-        super.name("view")
-             .scope(RequestScoped.class)
-             .types(UIViewRoot.class)
-             .beanClass(UIViewRoot.class)
-             .create(e -> FacesContext.getCurrentInstance().getViewRoot());
+        super.name("view").scope(RequestScoped.class).types(UIViewRoot.class).beanClass(UIViewRoot.class)
+                .create(e -> FacesContext.getCurrentInstance().getViewRoot());
     }
 
 }

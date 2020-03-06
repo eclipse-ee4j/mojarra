@@ -35,23 +35,18 @@ import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
 
 /**
- * This action listener implementation processes action events during the
- * <em>Apply Request Values</em> or <em>Invoke Application</em>
- * phase of the request processing lifecycle (depending upon the
- * <code>immediate</code> property of the {@link ActionSource} that
- * queued this event.  It invokes the specified application action method,
- * and uses the logical outcome value to invoke the default navigation handler
- * mechanism to determine which view should be displayed next.</p>
+ * This action listener implementation processes action events during the <em>Apply Request Values</em> or <em>Invoke
+ * Application</em> phase of the request processing lifecycle (depending upon the <code>immediate</code> property of the
+ * {@link ActionSource} that queued this event. It invokes the specified application action method, and uses the logical
+ * outcome value to invoke the default navigation handler mechanism to determine which view should be displayed next.
+ * </p>
  */
 public class ActionListenerImpl implements ActionListener {
-
 
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-
     // --------------------------------------------- Methods From ActionListener
- 
 
     @SuppressWarnings("deprecation")
     @Override
@@ -60,20 +55,18 @@ public class ActionListenerImpl implements ActionListener {
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine(MessageFormat.format("processAction({0})", event.getComponent().getId()));
         }
-        
+
         UIComponent source = event.getComponent();
         FacesContext context = event.getFacesContext();
-        
+
         MethodBinding binding = ((ActionSource) source).getAction();
-        
-        invokeNavigationHandling(
-            context, source, binding, 
-            getNavigationOutcome(context, binding));
+
+        invokeNavigationHandling(context, source, binding, getNavigationOutcome(context, binding));
 
         // Trigger a switch to Render Response if needed
         context.renderResponse();
     }
-    
+
     @SuppressWarnings("deprecation")
     private String getNavigationOutcome(FacesContext context, MethodBinding binding) {
         if (binding != null) {
@@ -81,41 +74,34 @@ public class ActionListenerImpl implements ActionListener {
                 Object invokeResult;
                 if ((invokeResult = binding.invoke(context, null)) != null) {
                     return invokeResult.toString();
-                } 
+                }
                 // else, default to null, as returned at the end
             } catch (MethodNotFoundException e) {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.log(FINE, e.getMessage(), e);
                 }
                 throw new FacesException(binding.getExpressionString() + ": " + e.getMessage(), e);
-            }
-            catch (EvaluationException e) {
+            } catch (EvaluationException e) {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.log(FINE, e.getMessage(), e);
                 }
                 throw new FacesException(binding.getExpressionString() + ": " + e.getMessage(), e);
             }
         }
-        
+
         return null;
     }
-    
+
     @SuppressWarnings("deprecation")
     private void invokeNavigationHandling(FacesContext context, UIComponent source, MethodBinding binding, String outcome) {
-        
+
         NavigationHandler navHandler = context.getApplication().getNavigationHandler();
-        
+
         String toFlowDocumentId = (String) source.getAttributes().get(TO_FLOW_DOCUMENT_ID_ATTR_NAME);
         if (toFlowDocumentId == null) {
-            navHandler.handleNavigation(context,
-                    binding != null ?
-                    binding.getExpressionString() : null,
-                    outcome);
+            navHandler.handleNavigation(context, binding != null ? binding.getExpressionString() : null, outcome);
         } else {
-            navHandler.handleNavigation(context,
-                    binding != null ?
-                    binding.getExpressionString() : null,
-                    outcome, toFlowDocumentId);
+            navHandler.handleNavigation(context, binding != null ? binding.getExpressionString() : null, outcome, toFlowDocumentId);
         }
     }
 

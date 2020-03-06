@@ -27,9 +27,7 @@ public class WebFaceletTaglibResourceProvider extends BaseWebConfigResourceProvi
     private static final String SEPARATOR = ";";
     private static final String[] EXCLUDES = {};
 
-
     // ------------------------------ Methods from BaseWebConfigResourceProvider
-
 
     @Override
     protected WebContextInitParameter getParameter() {

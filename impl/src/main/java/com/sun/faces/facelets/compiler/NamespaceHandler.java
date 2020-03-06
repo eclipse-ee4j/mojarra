@@ -38,7 +38,7 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
     private final TagLibrary library;
     private final Map ns;
     private FaceletHandler next;
-    
+
     public NamespaceHandler(FaceletHandler next, TagLibrary library, Map ns) {
         this.library = library;
         this.ns = ns;
@@ -46,8 +46,7 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         FunctionMapper orig = ctx.getFunctionMapper();
         pushMapper(ctx.getFacesContext(), this);
         ctx.setFunctionMapper(new CompositeFunctionMapper(this, orig));
@@ -67,9 +66,7 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
         return null;
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private void pushMapper(FacesContext ctx, FunctionMapper mapper) {
 

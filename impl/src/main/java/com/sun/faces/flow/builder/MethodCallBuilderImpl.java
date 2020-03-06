@@ -27,7 +27,7 @@ import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
 
 public class MethodCallBuilderImpl extends MethodCallBuilder {
-    
+
     private FlowBuilderImpl root;
     private String methodCallId;
     private MethodCallNodeImpl methodCallNode;
@@ -38,7 +38,7 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
         this.methodCallId = id;
         this.methodCallNode = new MethodCallNodeImpl(id);
         this.root._getFlow()._getMethodCalls().add(methodCallNode);
-                
+
     }
 
     @Override
@@ -76,7 +76,7 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
         methodCallNode._getParameters().addAll(parameters);
         return this;
     }
-    
+
     @Override
     public MethodCallBuilder expression(MethodExpression me) {
         methodCallNode.setMethodExpression(me);
@@ -88,8 +88,5 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
         root._getFlow().setStartNodeId(methodCallId);
         return this;
     }
-    
-    
-    
-    
+
 }

@@ -17,9 +17,9 @@
 package com.sun.faces.application.resource;
 
 public final class ContractInfo {
-    
+
     private static final long serialVersionUID = 6585532979916457692L;
-    
+
     String contract;
 
     public ContractInfo(String contract) {
@@ -52,7 +52,5 @@ public final class ContractInfo {
     public String toString() {
         return contract;
     }
-    
-    
-    
+
 }

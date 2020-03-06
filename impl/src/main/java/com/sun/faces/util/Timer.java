@@ -22,43 +22,39 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class is a simple wrapper for timing method calls.
- * The traditional method is to add two variables, start, and stop,
- * and display the difference of these values.  Encapsulates
- * the process.
+ * This class is a simple wrapper for timing method calls. The traditional method is to add two variables, start, and
+ * stop, and display the difference of these values. Encapsulates the process.
  */
 public class Timer {
 
     private static final Logger LOGGER = FacesLogger.TIMING.getLogger();
 
     private final Level logLevel;
-    
+
     private long start;
     private long stop;
-    
-
 
     // ------------------------------------------------------------ Constructors
 
-
-    private Timer(final Level logLevel) { this.logLevel = logLevel; }
+    private Timer(final Level logLevel) {
+        this.logLevel = logLevel;
+    }
 
     // ---------------------------------------------------------- Public Methods
 
-
     /**
-     * @return a new <code>Timer</code> instance if the <code>TIMING</code>
-     *  logging level is <code>FINE</code>, otherwise, return null;
+     * @return a new <code>Timer</code> instance if the <code>TIMING</code> logging level is <code>FINE</code>, otherwise,
+     * return null;
      */
     public static Timer getInstance() {
         return getInstance(FINE);
     }
-    
+
     public static Timer getInstance(Level logLevel) {
         if (LOGGER.isLoggable(logLevel)) {
             return new Timer(logLevel);
         }
-        
+
         return null;
     }
 
@@ -78,6 +74,7 @@ public class Timer {
 
     /**
      * Log the timing result.
+     * 
      * @param taskInfo task description
      */
     public void logResult(String taskInfo) {
@@ -86,9 +83,7 @@ public class Timer {
         }
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     /**
      * @return the time for this task

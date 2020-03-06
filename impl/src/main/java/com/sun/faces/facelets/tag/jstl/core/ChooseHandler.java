@@ -32,13 +32,13 @@ import java.util.List;
  * @author Jacob Hookom
  */
 public final class ChooseHandler extends TagHandlerImpl {
-    
+
     private final ChooseOtherwiseHandler otherwise;
     private final ChooseWhenHandler[] when;
-    
+
     public ChooseHandler(TagConfig config) {
         super(config);
-        
+
         List whenList = new ArrayList();
         Iterator itr = this.findNextByType(ChooseWhenHandler.class);
         while (itr.hasNext()) {
@@ -48,7 +48,7 @@ public final class ChooseHandler extends TagHandlerImpl {
             throw new TagException(this.tag, "Choose Tag must have one or more When Tags");
         }
         this.when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
-        
+
         itr = this.findNextByType(ChooseOtherwiseHandler.class);
         if (itr.hasNext()) {
             this.otherwise = (ChooseOtherwiseHandler) itr.next();
@@ -58,8 +58,7 @@ public final class ChooseHandler extends TagHandlerImpl {
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         for (int i = 0; i < this.when.length; i++) {
             if (this.when[i].isTestTrue(ctx)) {
                 this.when[i].apply(ctx, parent);

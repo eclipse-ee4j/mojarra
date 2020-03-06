@@ -23,24 +23,21 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ApplicationProducer is the CDI producer that allows EL resolving 
- * of #{application}
+ * The ApplicationProducer is the CDI producer that allows EL resolving of #{application}
  * </p>
  *
  * @since 2.3
  * @see ExternalContext
  */
 public class ApplicationProducer extends CdiProducer<Object> {
-    
+
     /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ApplicationProducer() {
-        super.name("application")
-             .scope(ApplicationScoped.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getContext());
+        super.name("application").scope(ApplicationScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getContext());
     }
 
 }

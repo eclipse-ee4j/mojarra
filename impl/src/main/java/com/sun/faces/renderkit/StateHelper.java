@@ -16,7 +16,6 @@
 
 package com.sun.faces.renderkit;
 
-
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.AutoCompleteOffOnViewState;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CompressViewState;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
@@ -45,18 +44,17 @@ import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.ResponseStateManager;
 
-
 /**
  * Common code for the default <code>StateHelper</code> implementations.
  */
 public abstract class StateHelper {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     /**
      * <p>
-     * Factory for serialization streams.  These are pluggable via
-     * the WebConfiguration.WebContextInitParameter#SerializationProviderClass.
+     * Factory for serialization streams. These are pluggable via the
+     * WebConfiguration.WebContextInitParameter#SerializationProviderClass.
      * </p>
      */
     protected SerializationProvider serialProvider;
@@ -68,41 +66,35 @@ public abstract class StateHelper {
      */
     protected WebConfiguration webConfig;
 
-
     /**
      * <p>
-     * Flag indicating whether or not view state should be compressed to reduce
-     * the memory/bandwidth footprint.  This option is common to both types
-     * of state saving.
+     * Flag indicating whether or not view state should be compressed to reduce the memory/bandwidth footprint. This option
+     * is common to both types of state saving.
      * </p>
      */
     protected boolean compressViewState;
 
-
     /**
-     * This will be used the by the different <code>StateHelper</code> implementations
-     * when writing the start of the state field.
+     * This will be used the by the different <code>StateHelper</code> implementations when writing the start of the state
+     * field.
      */
     protected char[] stateFieldStart;
-    
+
     /**
-     * This will be used by the different <code>StateHelper</code> implementations
-     * when writing the middle of the state or viewId fields.
+     * This will be used by the different <code>StateHelper</code> implementations when writing the middle of the state or
+     * viewId fields.
      */
-    
+
     protected char[] fieldMiddle;
 
-
     /**
-     * This will be used the by the different <code>StateHelper</code> implementations
-     * when writing the end of the state or viewId field.  This value of this field is
-     * determined by the value of the {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#AutoCompleteOffOnViewState}<code>
+     * This will be used the by the different <code>StateHelper</code> implementations when writing the end of the state or
+     * viewId field. This value of this field is determined by the value of the
+     * {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#AutoCompleteOffOnViewState}<code>
      */
     protected char[] fieldEnd;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Constructs a new <code>StateHelper</code> instance.
@@ -110,18 +102,15 @@ public abstract class StateHelper {
     public StateHelper() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
-        serialProvider = SerializationProviderFactory
-              .createInstance(ctx.getExternalContext());
+        serialProvider = SerializationProviderFactory.createInstance(ctx.getExternalContext());
         webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
         compressViewState = webConfig.isOptionEnabled(CompressViewState);
 
         if (serialProvider == null) {
-            serialProvider = SerializationProviderFactory
-                  .createInstance(FacesContext
-                        .getCurrentInstance().getExternalContext());
+            serialProvider = SerializationProviderFactory.createInstance(FacesContext.getCurrentInstance().getExternalContext());
         }
     }
-    
+
     public static void createAndStoreCryptographicallyStrongTokenInSession(HttpSession session) {
         ByteArrayGuardAESCTR guard = new ByteArrayGuardAESCTR();
         String clearText = "" + System.currentTimeMillis();
@@ -135,48 +124,38 @@ public abstract class StateHelper {
             result = clearText;
         }
         session.setAttribute(TOKEN_NAME, result);
-        
+
     }
-    
+
     private static final String TOKEN_NAME = RIConstants.FACES_PREFIX + "TOKEN";
-    
+
     public String getCryptographicallyStrongTokenFromSession(FacesContext context) {
-        String result = (String) 
-                context.getExternalContext().getSessionMap().get(TOKEN_NAME);
+        String result = (String) context.getExternalContext().getSessionMap().get(TOKEN_NAME);
         if (null == result) {
             context.getExternalContext().getSession(true);
         }
         result = (String) context.getExternalContext().getSessionMap().get(TOKEN_NAME);
-        
+
         return result;
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     /**
      * <p>
-     * Functionally similar to ResponseStateManager#writeState(FacesContext, Object)
-     * with an option to write the state directly to the provided <code>StringBuilder</code>
-     * without sending any markup to the client.
+     * Functionally similar to ResponseStateManager#writeState(FacesContext, Object) with an option to write the state
+     * directly to the provided <code>StringBuilder</code> without sending any markup to the client.
      * </p>
      *
-     * @see ResponseStateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object) 
+     * @see ResponseStateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object)
      */
-    public abstract void writeState(FacesContext ctx,
-                                    Object state,
-                                    StringBuilder stateCapture)
-    throws IOException;
-
+    public abstract void writeState(FacesContext ctx, Object state, StringBuilder stateCapture) throws IOException;
 
     /**
      * @see jakarta.faces.render.ResponseStateManager#getState(jakarta.faces.context.FacesContext, String)
      */
-    public abstract Object getState(FacesContext ctx, String viewId)
-    throws IOException;
+    public abstract Object getState(FacesContext ctx, String viewId) throws IOException;
 
-    
     /**
      * @see jakarta.faces.render.ResponseStateManager#isStateless(jakarta.faces.context.FacesContext, String)
      */
@@ -184,9 +163,10 @@ public abstract class StateHelper {
 
     // ------------------------------------------------------- Protected Methods
 
-
     /**
-     * <p>Get our view state from this request</p>
+     * <p>
+     * Get our view state from this request
+     * </p>
      *
      * @param context the <code>FacesContext</code> for the current request
      *
@@ -202,20 +182,17 @@ public abstract class StateHelper {
 
     }
 
-
     /**
      * <p>
-     * If a custom <code>RenderKit</code> is used, write out the ID
-     * of the <code>RenderKit</code> out as a hidden field.  This will be used
-     * when restoring the view state.
+     * If a custom <code>RenderKit</code> is used, write out the ID of the <code>RenderKit</code> out as a hidden field.
+     * This will be used when restoring the view state.
      * </p>
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param writer the <code>ResponseWriter</code> to write to
      * @throws IOException if an error occurs writing to the client
      */
-    protected void writeRenderKitIdField(FacesContext context,
-                                         ResponseWriter writer)
-    throws IOException {
+    protected void writeRenderKitIdField(FacesContext context, ResponseWriter writer) throws IOException {
 
         String result = context.getViewRoot().getRenderKitId();
         String defaultRkit = context.getApplication().getDefaultRenderKitId();
@@ -223,8 +200,7 @@ public abstract class StateHelper {
             defaultRkit = RenderKitFactory.HTML_BASIC_RENDER_KIT;
         }
 
-        if (result != null
-            && !defaultRkit.equals(result)) {
+        if (result != null && !defaultRkit.equals(result)) {
             writer.startElement("input", context.getViewRoot());
             writer.writeAttribute("type", "hidden", "type");
             writer.writeAttribute("name", RENDER_KIT_ID_PARAM.getName(context), "name");
@@ -233,7 +209,7 @@ public abstract class StateHelper {
         }
 
     }
-    
+
     /**
      * Write the client window state field.
      * 
@@ -243,7 +219,7 @@ public abstract class StateHelper {
      */
     protected void writeClientWindowField(FacesContext context, ResponseWriter writer) throws IOException {
         ClientWindow window = context.getExternalContext().getClientWindow();
-        if (null != window) {       
+        if (null != window) {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", CLIENT_WINDOW_PARAM.getName(context), null);
@@ -253,6 +229,6 @@ public abstract class StateHelper {
                 writer.writeAttribute("autocomplete", "off", null);
             }
             writer.endElement("input");
-        }        
+        }
     }
 }

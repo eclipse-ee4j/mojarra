@@ -27,9 +27,9 @@ import jakarta.faces.view.facelets.*;
  * @version $Id$
  */
 final class BeanPropertyTagRule extends MetaRule {
-    
+
     final static class LiteralPropertyMetadata extends Metadata {
-        
+
         private final Method method;
 
         private final TagAttribute attribute;
@@ -45,8 +45,7 @@ final class BeanPropertyTagRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             if (value == null) {
                 String str = this.attribute.getValue();
-                value = new Object[] { ctx.getExpressionFactory().coerceToType(str,
-                        method.getParameterTypes()[0]) };
+                value = new Object[] { ctx.getExpressionFactory().coerceToType(str, method.getParameterTypes()[0]) };
             }
             try {
                 method.invoke(instance, this.value);
@@ -58,7 +57,7 @@ final class BeanPropertyTagRule extends MetaRule {
         }
 
     }
-    
+
     final static class DynamicPropertyMetadata extends Metadata {
 
         private final Method method;
@@ -76,8 +75,7 @@ final class BeanPropertyTagRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             try {
-                this.method.invoke(instance, new Object[] { this.attribute
-                        .getObject(ctx, this.type) });
+                this.method.invoke(instance, new Object[] { this.attribute.getObject(ctx, this.type) });
             } catch (InvocationTargetException e) {
                 throw new TagAttributeException(this.attribute, e.getCause());
             } catch (IllegalAccessException | IllegalArgumentException e) {
@@ -85,12 +83,11 @@ final class BeanPropertyTagRule extends MetaRule {
             }
         }
     }
-    
+
     public final static BeanPropertyTagRule Instance = new BeanPropertyTagRule();
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta) {
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
         Method m = meta.getWriteMethod(name);
 
         // if the property is writable

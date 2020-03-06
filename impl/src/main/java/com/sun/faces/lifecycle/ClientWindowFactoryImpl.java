@@ -29,22 +29,21 @@ import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.ClientWindowFactory;
 
 public class ClientWindowFactoryImpl extends ClientWindowFactory {
-    
+
     private boolean isClientWindowEnabled = false;
     private WebConfiguration config = null;
 
     public ClientWindowFactoryImpl() {
         super(null);
         FacesContext context = FacesContext.getCurrentInstance();
-        context.getApplication().subscribeToEvent(PostConstructApplicationEvent.class,
-                         Application.class, new PostConstructApplicationListener());
+        context.getApplication().subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PostConstructApplicationListener());
     }
-    
+
     public ClientWindowFactoryImpl(boolean ignored) {
         super(null);
         isClientWindowEnabled = false;
     }
-    
+
     private class PostConstructApplicationListener implements SystemEventListener {
 
         @Override
@@ -56,25 +55,24 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
         public void processEvent(SystemEvent event) throws AbortProcessingException {
             ClientWindowFactoryImpl.this.postConstructApplicationInitialization();
         }
-        
+
     }
-    
+
     private void postConstructApplicationInitialization() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = context.getExternalContext();
         config = WebConfiguration.getInstance(extContext);
         String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
-        
+
         isClientWindowEnabled = (null != optionValue) && "url".equals(optionValue);
     }
-    
-    
+
     @Override
     public ClientWindow getClientWindow(FacesContext context) {
         if (!isClientWindowEnabled) {
             return null;
         }
-        
+
         return new ClientWindowImpl();
     }
 }

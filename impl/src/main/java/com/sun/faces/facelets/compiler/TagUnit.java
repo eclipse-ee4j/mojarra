@@ -36,9 +36,9 @@ class TagUnit extends CompilationUnit implements TagConfig {
     private final String id;
 
     private final Tag tag;
-    
+
     private final String namespace;
-    
+
     private final String name;
 
     public TagUnit(TagLibrary library, String namespace, String name, Tag tag, String id) {
@@ -50,26 +50,19 @@ class TagUnit extends CompilationUnit implements TagConfig {
     }
 
     /*
-     * special case if you have a ui:composition tag.  If and only if the
-     * composition is on the same facelet page as the
-     * composite:implementation, throw a FacesException with a helpful error
-     * message.
-     * */
+     * special case if you have a ui:composition tag. If and only if the composition is on the same facelet page as the
+     * composite:implementation, throw a FacesException with a helpful error message.
+     */
 
     @Override
     protected void startNotify(CompilationManager manager) {
         if (this.name.equals("composition") && (this.namespace.equals(RIConstants.FACELET_NAMESPACE) || this.namespace.equals(RIConstants.FACELET_NAMESPACE))) {
-            CompilerPackageCompilationMessageHolder messageHolder =
-                    (CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder();
-            CompilationManager compositeComponentCompilationManager = messageHolder.
-                getCurrentCompositeComponentCompilationManager();
+            CompilerPackageCompilationMessageHolder messageHolder = (CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder();
+            CompilationManager compositeComponentCompilationManager = messageHolder.getCurrentCompositeComponentCompilationManager();
             if (manager.equals(compositeComponentCompilationManager)) {
                 // PENDING I18N
-                String messageStr = 
-                        "Because the definition of ui:composition causes any " +
-                        "parent content to be ignored, it is invalid to use " +
-                        "ui:composition directly inside of a composite component. " +
-                        "Consider ui:decorate instead.";
+                String messageStr = "Because the definition of ui:composition causes any " + "parent content to be ignored, it is invalid to use "
+                        + "ui:composition directly inside of a composite component. " + "Consider ui:decorate instead.";
                 throw new FaceletException(messageStr);
             }
         }

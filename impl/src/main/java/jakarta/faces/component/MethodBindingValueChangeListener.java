@@ -27,25 +27,26 @@ import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 
 /**
- * <p><strong>MethodBindingValueChangeListener</strong> is an {@link
- * ValueChangeListenerListener} that wraps a {@link MethodBinding}. When it
- * receives a {@link ValueChangeEvent}, it executes a method on an
- * object identified by the {@link MethodBinding}.</p>
+ * <p>
+ * <strong>MethodBindingValueChangeListener</strong> is an {@link ValueChangeListenerListener} that wraps a
+ * {@link MethodBinding}. When it receives a {@link ValueChangeEvent}, it executes a method on an object identified by
+ * the {@link MethodBinding}.
+ * </p>
  */
 
 class MethodBindingValueChangeListener extends MethodBindingAdapterBase implements ValueChangeListener, StateHolder {
 
-
     // ------------------------------------------------------ Instance Variables
-    
+
     private MethodBinding methodBinding = null;
 
-    public MethodBindingValueChangeListener() {}
+    public MethodBindingValueChangeListener() {
+    }
 
-    
     /**
-     * <p>Construct a {@link ValueChangeListener} that contains a {@link
-     * MethodBinding}.</p>
+     * <p>
+     * Construct a {@link ValueChangeListener} that contains a {@link MethodBinding}.
+     * </p>
      */
     public MethodBindingValueChangeListener(MethodBinding methodBinding) {
 
@@ -55,68 +56,62 @@ class MethodBindingValueChangeListener extends MethodBindingAdapterBase implemen
     }
 
     public MethodBinding getWrapped() {
-	return methodBinding;
+        return methodBinding;
     }
-
 
     // ------------------------------------------------------- Event Method
 
     /**
-     * @throws NullPointerException {@inheritDoc}     
-     * @throws AbortProcessingException {@inheritDoc}     
-     */ 
+     * @throws NullPointerException {@inheritDoc}
+     * @throws AbortProcessingException {@inheritDoc}
+     */
     @Override
     public void processValueChange(ValueChangeEvent actionEvent) throws AbortProcessingException {
-                         
+
         if (actionEvent == null) {
             throw new NullPointerException();
         }
         try {
             FacesContext context = FacesContext.getCurrentInstance();
-            methodBinding.invoke(context, new Object[] {actionEvent});
-        } 
-	catch (EvaluationException ee) {
-	    Throwable cause = 
-		this.getExpectedCause(AbortProcessingException.class, ee);
-	    if (cause instanceof AbortProcessingException) {
-		throw  ((AbortProcessingException) cause);
-	    }
-	    if (cause instanceof RuntimeException) {
-		throw ((RuntimeException) cause);
-	    }
-	    throw new IllegalStateException(ee);
+            methodBinding.invoke(context, new Object[] { actionEvent });
+        } catch (EvaluationException ee) {
+            Throwable cause = this.getExpectedCause(AbortProcessingException.class, ee);
+            if (cause instanceof AbortProcessingException) {
+                throw ((AbortProcessingException) cause);
+            }
+            if (cause instanceof RuntimeException) {
+                throw ((RuntimeException) cause);
+            }
+            throw new IllegalStateException(ee);
         }
     }
 
-    // 
+    //
     // Methods from StateHolder
     //
-
-    
 
     @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
             throw new NullPointerException();
         }
-	Object result = null;
-	if (!tranzient) {
-	    if (methodBinding instanceof StateHolder) {
-		Object [] stateStruct = new Object[2];
-		
-		// save the actual state of our wrapped methodBinding
-		stateStruct[0] = ((StateHolder)methodBinding).saveState(context);
-		// save the class name of the methodBinding impl
-		stateStruct[1] = methodBinding.getClass().getName();
+        Object result = null;
+        if (!tranzient) {
+            if (methodBinding instanceof StateHolder) {
+                Object[] stateStruct = new Object[2];
 
-		result = stateStruct;
-	    }
-	    else {
-		result = methodBinding;
-	    }
-	}
+                // save the actual state of our wrapped methodBinding
+                stateStruct[0] = ((StateHolder) methodBinding).saveState(context);
+                // save the class name of the methodBinding impl
+                stateStruct[1] = methodBinding.getClass().getName();
 
-	return result;
+                result = stateStruct;
+            } else {
+                result = methodBinding;
+            }
+        }
+
+        return result;
     }
 
     @Override
@@ -124,69 +119,63 @@ class MethodBindingValueChangeListener extends MethodBindingAdapterBase implemen
         if (context == null) {
             throw new NullPointerException();
         }
-	// if we have state
-	if (null == state) {
-	    return;
-	}
-	
-	if (!(state instanceof MethodBinding)) {
-	    Object [] stateStruct = (Object []) state;
-	    Object savedState = stateStruct[0];
-	    String className = stateStruct[1].toString();
-	    MethodBinding result = null;
-	    
-	    Class toRestoreClass;
-	    if (null != className) {
-		try {
-		    toRestoreClass = loadClass(className, this);
-		}
-		catch (ClassNotFoundException e) {
-		    throw new IllegalStateException(e);
-		}
-		
-		if (null != toRestoreClass) {
-		    try {
-			result = 
-			    (MethodBinding) toRestoreClass.newInstance();
-		    }
-		    catch (InstantiationException | IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		    }
-		}
-		
-		if (null != result && null != savedState) {
-		    // don't need to check transient, since that was
-		    // done on the saving side.
-		    ((StateHolder)result).restoreState(context, savedState);
-		}
-		methodBinding = result;
-	    }
-	}
-	else {
-	    methodBinding = (MethodBinding) state;
-	}
+        // if we have state
+        if (null == state) {
+            return;
+        }
+
+        if (!(state instanceof MethodBinding)) {
+            Object[] stateStruct = (Object[]) state;
+            Object savedState = stateStruct[0];
+            String className = stateStruct[1].toString();
+            MethodBinding result = null;
+
+            Class toRestoreClass;
+            if (null != className) {
+                try {
+                    toRestoreClass = loadClass(className, this);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalStateException(e);
+                }
+
+                if (null != toRestoreClass) {
+                    try {
+                        result = (MethodBinding) toRestoreClass.newInstance();
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        throw new IllegalStateException(e);
+                    }
+                }
+
+                if (null != result && null != savedState) {
+                    // don't need to check transient, since that was
+                    // done on the saving side.
+                    ((StateHolder) result).restoreState(context, savedState);
+                }
+                methodBinding = result;
+            }
+        } else {
+            methodBinding = (MethodBinding) state;
+        }
     }
 
     private boolean tranzient = false;
 
     @Override
     public boolean isTransient() {
-	return tranzient;
+        return tranzient;
     }
 
     @Override
     public void setTransient(boolean newTransientValue) {
-	tranzient = newTransientValue;
+        tranzient = newTransientValue;
     }
 
     //
     // Helper methods for StateHolder
     //
 
-    private static Class loadClass(String name, 
-            Object fallbackClass) throws ClassNotFoundException {
-        ClassLoader loader =
-            Thread.currentThread().getContextClassLoader();
+    private static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClass().getClassLoader();
         }

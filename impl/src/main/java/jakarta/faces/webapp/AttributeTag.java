@@ -16,7 +16,6 @@
 
 package jakarta.faces.webapp;
 
-
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
 import jakarta.servlet.jsp.JspException;
@@ -25,38 +24,34 @@ import jakarta.servlet.jsp.tagext.TagSupport;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
-
 /**
- * <p>Tag implementation that adds an attribute with a specified name
- * and String value to the component whose tag it is nested inside,
- * if the component does not already contain an attribute with the
- * same name.  This tag creates no output to the page currently
- * being created.</p>
+ * <p>
+ * Tag implementation that adds an attribute with a specified name and String value to the component whose tag it is
+ * nested inside, if the component does not already contain an attribute with the same name. This tag creates no output
+ * to the page currently being created.
+ * </p>
  *
- * @deprecated The Faces implementation must now provide the
- * implementation for this class.
+ * @deprecated The Faces implementation must now provide the implementation for this class.
  */
 
 public class AttributeTag extends TagSupport {
 
-
     // ---------------------------------------------------------- Static Members
-
 
     private static final long serialVersionUID = -7782950243436672334L;
 
-
     // ------------------------------------------------------------- Attributes
 
-
     /**
-     * <p>The name of the attribute to be created, if not already present.
+     * <p>
+     * The name of the attribute to be created, if not already present.
      */
     private String name = null;
 
-
     /**
-     * <p>Set the attribute name.</p>
+     * <p>
+     * Set the attribute name.
+     * </p>
      *
      * @param name The new attribute name
      */
@@ -66,16 +61,17 @@ public class AttributeTag extends TagSupport {
 
     }
 
-
     /**
-     * <p>The value to be associated with this attribute, if it is created.</p>
+     * <p>
+     * The value to be associated with this attribute, if it is created.
+     * </p>
      */
     private String value = null;
 
-
-
     /**
-     * <p>Set the attribute value.</p>
+     * <p>
+     * Set the attribute value.
+     * </p>
      *
      * @param value The new attribute value
      */
@@ -85,15 +81,14 @@ public class AttributeTag extends TagSupport {
 
     }
 
-
     // --------------------------------------------------------- Public Methods
 
-
     /**
-     * <p>Register the specified attribute name and value with the
-     * {@link UIComponent} instance associated with our most immediately
-     * surrounding {@link UIComponentTag} instance, if this {@link UIComponent}
-     * does not already have a value for the specified attribute name.</p>
+     * <p>
+     * Register the specified attribute name and value with the {@link UIComponent} instance associated with our most
+     * immediately surrounding {@link UIComponentTag} instance, if this {@link UIComponent} does not already have a value
+     * for the specified attribute name.
+     * </p>
      *
      * @throws JspException if a Jakarta Server Pages error occurs
      */
@@ -101,8 +96,7 @@ public class AttributeTag extends TagSupport {
     public int doStartTag() throws JspException {
 
         // Locate our parent UIComponentTag
-        UIComponentClassicTagBase tag =
-             UIComponentClassicTagBase.getParentUIComponentClassicTagBase(pageContext);
+        UIComponentClassicTagBase tag = UIComponentClassicTagBase.getParentUIComponentClassicTagBase(pageContext);
         if (tag == null) { // PENDING - i18n
             throw new JspException("Not nested in a UIComponentTag");
         }
@@ -114,16 +108,11 @@ public class AttributeTag extends TagSupport {
         }
 
         FacesContext context = FacesContext.getCurrentInstance();
-        ExpressionFactory exprFactory =
-            context.getApplication().getExpressionFactory();
+        ExpressionFactory exprFactory = context.getApplication().getExpressionFactory();
         ELContext elContext = context.getELContext();
 
-        String nameVal = (String) 
-                  exprFactory.createValueExpression(elContext, name, String.class)
-                      .getValue(elContext);
-        Object valueVal =
-                exprFactory.createValueExpression(elContext, value, Object.class)
-                    .getValue(elContext);
+        String nameVal = (String) exprFactory.createValueExpression(elContext, name, String.class).getValue(elContext);
+        Object valueVal = exprFactory.createValueExpression(elContext, value, Object.class).getValue(elContext);
 
         if (component.getAttributes().get(nameVal) == null) {
             component.getAttributes().put(nameVal, valueVal);
@@ -132,16 +121,15 @@ public class AttributeTag extends TagSupport {
 
     }
 
-
     @Override
     public int doEndTag() throws JspException {
-	this.release();
-	return (EVAL_PAGE);
+        this.release();
+        return (EVAL_PAGE);
     }
 
-    
     /**
-     * <p>Release references to any acquired resources.
+     * <p>
+     * Release references to any acquired resources.
      */
     @Override
     public void release() {

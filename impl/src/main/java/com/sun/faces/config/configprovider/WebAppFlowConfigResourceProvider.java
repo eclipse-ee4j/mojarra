@@ -37,13 +37,11 @@ import jakarta.servlet.ServletContext;
 /**
  *
  */
-public class WebAppFlowConfigResourceProvider implements
-      ConfigurationResourceProvider {
-    
+public class WebAppFlowConfigResourceProvider implements ConfigurationResourceProvider {
+
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
 
     // ------------------------------ Methods from ConfigurationResourceProvider
-
 
     /**
      * @see ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
@@ -53,7 +51,7 @@ public class WebAppFlowConfigResourceProvider implements
 
         List<URI> list = Collections.emptyList();
         Set<String> allPaths = context.getResourcePaths("/");
-        
+
         if (null == allPaths) {
             return list;
         }
@@ -65,8 +63,7 @@ public class WebAppFlowConfigResourceProvider implements
                     Set<String> webInfPaths = context.getResourcePaths(cur);
                     if (null != webInfPaths) {
                         for (String webInfCur : webInfPaths) {
-                            if (!cur.equals("/WEB-INF/classes/") &&
-                                webInfCur.endsWith("/")) {
+                            if (!cur.equals("/WEB-INF/classes/") && webInfCur.endsWith("/")) {
                                 list = inspectDirectory(context, webInfCur, list);
                             }
                         }
@@ -76,19 +73,19 @@ public class WebAppFlowConfigResourceProvider implements
                 }
             }
         }
-        
+
         return (null == list) ? Collections.EMPTY_LIST : list;
 
     }
-    
+
     private List<URI> inspectDirectory(ServletContext context, String toInspect, List<URI> list) {
         URL curUrl = null;
-        
+
         Set<String> allPaths = context.getResourcePaths(toInspect);
         if (null == allPaths) {
             return list;
         }
-        
+
         for (String cur : allPaths) {
             if (cur.endsWith(RIConstants.FLOW_DEFINITION_ID_SUFFIX)) {
                 int suffixIndex = cur.length() - RIConstants.FLOW_DEFINITION_ID_SUFFIX_LENGTH;
@@ -118,7 +115,7 @@ public class WebAppFlowConfigResourceProvider implements
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.log(Level.SEVERE, "Unable to get URI for {0}" + curUrl.toExternalForm(), use);
                         }
-                        
+
                     }
                 }
             }

@@ -29,15 +29,14 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_0">
- * <span class="changed_modified_2_2 changed_modified_2_3">Provides</span> a simple implementation
- * of {@link Resource} that can be subclassed by developers wishing to provide specialized behavior
- * to an existing {@link Resource} instance. The default implementation of all methods is to call
- * through to the wrapped {@link Resource}.
+ * <span class="changed_modified_2_2 changed_modified_2_3">Provides</span> a simple implementation of {@link Resource}
+ * that can be subclassed by developers wishing to provide specialized behavior to an existing {@link Resource}
+ * instance. The default implementation of all methods is to call through to the wrapped {@link Resource}.
  * </p>
  *
  * <p class="changed_added_2_3">
- * Usage: extend this class and push the implementation being wrapped to the constructor and use
- * {@link #getWrapped} to access the instance being wrapped.
+ * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
+ * access the instance being wrapped.
  * </p>
  *
  * @since 2.0
@@ -46,12 +45,10 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     private Resource wrapped;
 
-
     /**
      * <p class="changed_added_2_3">
-     * If this resource has been decorated, the implementation doing the decorating should push the
-     * implementation being wrapped to this constructor. The {@link #getWrapped()} will then return
-     * the implementation being wrapped.
+     * If this resource has been decorated, the implementation doing the decorating should push the implementation being
+     * wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
      * </p>
      *
      * @param wrapped The implementation being wrapped.
@@ -66,13 +63,12 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
         return wrapped;
     }
 
-    
     // --------------------------------------------------- Methods from Resource
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link Resource#getInputStream} on the wrapped
-     * {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#getInputStream} on the wrapped {@link ResourceHandler}
+     * object.
      * </p>
      */
     @Override
@@ -82,8 +78,7 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link Resource#getURL} on the wrapped
-     * {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#getURL} on the wrapped {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -93,8 +88,8 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link Resource#getResponseHeaders} on the
-     * wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#getResponseHeaders} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -104,8 +99,8 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link Resource#getRequestPath} on the wrapped
-     * {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#getRequestPath} on the wrapped {@link ResourceHandler}
+     * object.
      * </p>
      */
     @Override
@@ -115,8 +110,8 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link Resource#userAgentNeedsUpdate} on the
-     * wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#userAgentNeedsUpdate} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -126,8 +121,8 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_2">
-     * The default behavior of this method is to call {@link Resource#getContentType()} on the
-     * wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#getContentType()} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -137,8 +132,8 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_2">
-     * The default behavior of this method is to call {@link Resource#setContentType(String)} on the
-     * wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#setContentType(String)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -148,8 +143,8 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_2">
-     * The default behavior of this method is to call {@link Resource#getLibraryName()} on the
-     * wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#getLibraryName()} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -159,8 +154,8 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_2">
-     * The default behavior of this method is to call {@link Resource#setLibraryName(String)} on the
-     * wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#setLibraryName(String)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -170,8 +165,8 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_2">
-     * The default behavior of this method is to call {@link Resource#getResourceName()} on the
-     * wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#getResourceName()} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -181,22 +176,17 @@ public abstract class ResourceWrapper extends Resource implements FacesWrapper<R
 
     /**
      * <p class="changed_added_2_2">
-     * The default behavior of this method is to call {@link Resource#setResourceName(String)} on
-     * the wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link Resource#setResourceName(String)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
     public void setResourceName(String resourceName) {
         getWrapped().setResourceName(resourceName);
     }
-    
-    
-    
-    
-    
+
     // --------------------------------------------------- Deprecated methods
-    
-    
+
     /**
      * @deprecated Use the other constructor taking the implementation being wrapped.
      */

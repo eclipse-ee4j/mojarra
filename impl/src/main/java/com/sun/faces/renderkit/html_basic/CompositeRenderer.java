@@ -27,16 +27,13 @@ import java.util.Map;
 
 /**
  * <p>
- * This <code>Renderer</code> is responsible for rendering the children
- * defined within the composite implementation section of a composite component
- * template.
+ * This <code>Renderer</code> is responsible for rendering the children defined within the composite implementation
+ * section of a composite component template.
  * </p>
  */
 public class CompositeRenderer extends Renderer {
 
-
     // --------------------------------------------------- Methods from Renderer
-
 
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
@@ -44,23 +41,19 @@ public class CompositeRenderer extends Renderer {
         Util.notNull("context", context);
         Util.notNull("component", component);
 
-        Map<String,UIComponent> facets = component.getFacets();
+        Map<String, UIComponent> facets = component.getFacets();
         UIComponent compositeRoot = facets.get(UIComponent.COMPOSITE_FACET_NAME);
         if (null == compositeRoot) {
-            throw new IOException("PENDING_I18N: Unable to find composite " + 
-                    " component root for composite component with id " + 
-                    component.getId() + " and class " + 
-                    component.getClass().getName());
+            throw new IOException("PENDING_I18N: Unable to find composite " + " component root for composite component with id " + component.getId()
+                    + " and class " + component.getClass().getName());
         }
         compositeRoot.encodeAll(context);
 
     }
 
-
     @Override
     public boolean getRendersChildren() {
         return true;
     }
-
 
 }

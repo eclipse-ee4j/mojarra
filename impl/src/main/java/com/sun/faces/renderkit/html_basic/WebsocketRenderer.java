@@ -49,7 +49,7 @@ import jakarta.faces.event.PostAddToViewEvent;
  * @since 2.3
  * @see UIWebsocket
  */
-@ListenerFor(systemEventClass=PostAddToViewEvent.class)
+@ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSystemEventListener {
 
     // Constants ------------------------------------------------------------------------------------------------------

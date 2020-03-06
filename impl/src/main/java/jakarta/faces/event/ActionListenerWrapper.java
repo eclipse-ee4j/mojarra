@@ -23,17 +23,17 @@ import jakarta.faces.event.ActionListener;
 import jakarta.faces.FacesWrapper;
 
 /**
- * <p class="changed_added_2_2">Provides a simple implementation of
- * {@link ActionListener} that can be subclassed by developers wishing to
- * provide specialized behavior to an existing {@link ActionListener}
- * instance.  The default implementation of all methods is to call
- * through to the wrapped {@link ActionListener}.</p>
+ * <p class="changed_added_2_2">
+ * Provides a simple implementation of {@link ActionListener} that can be subclassed by developers wishing to provide
+ * specialized behavior to an existing {@link ActionListener} instance. The default implementation of all methods is to
+ * call through to the wrapped {@link ActionListener}.
+ * </p>
  *
  * <div class="changed_added_2_2">
  *
- * <p>Usage: extend
- * this class and override {@link #getWrapped} to return the instance we
- * are wrapping.</p>
+ * <p>
+ * Usage: extend this class and override {@link #getWrapped} to return the instance we are wrapping.
+ * </p>
  *
  * </div>
  *
@@ -41,12 +41,12 @@ import jakarta.faces.FacesWrapper;
  */
 public abstract class ActionListenerWrapper implements ActionListener, FacesWrapper<ActionListener> {
 
-    @Override    
+    @Override
     public void processAction(ActionEvent event) throws AbortProcessingException {
         getWrapped().processAction(event);
     }
 
     @Override
     public abstract ActionListener getWrapped();
-    
+
 }

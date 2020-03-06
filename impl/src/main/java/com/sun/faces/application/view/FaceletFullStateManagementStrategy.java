@@ -79,17 +79,17 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
      * Stores the logger.
      */
     private static final Logger LOGGER = FacesLogger.APPLICATION_VIEW.getLogger();
-    
+
     /**
      * Stores the skip hint.
      */
     private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
-    
+
     /**
      * Stores the class map.
      */
     private Map<String, Class<?>> classMap;
-    
+
     /**
      * Are we in development mode.
      */
@@ -204,22 +204,17 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                         result = COMPLETE;
                     } else if (component instanceof UIForm) {
                         /*
-                         * If the component is a UIForm and it is prepending its
-                         * id then we can short circuit out of here if the the
-                         * client id of the component we are trying to find does
-                         * not begin with the id of the UIForm.
+                         * If the component is a UIForm and it is prepending its id then we can short circuit out of here if the the client id
+                         * of the component we are trying to find does not begin with the id of the UIForm.
                          */
                         UIForm form = (UIForm) component;
                         if (form.isPrependId() && !clientId.startsWith(form.getClientId(visitContext.getFacesContext()))) {
                             result = REJECT;
                         }
-                    } else if (component instanceof NamingContainer
-                            && !clientId.startsWith(component.getClientId(visitContext.getFacesContext()))) {
+                    } else if (component instanceof NamingContainer && !clientId.startsWith(component.getClientId(visitContext.getFacesContext()))) {
                         /*
-                         * If the component is a naming container then assume it
-                         * is prepending its id so if our client id we are
-                         * looking for does not start with the naming container
-                         * id we can skip visiting this tree.
+                         * If the component is a naming container then assume it is prepending its id so if our client id we are looking for
+                         * does not start with the naming container id we can skip visiting this tree.
                          */
                         result = REJECT;
                     }
@@ -234,7 +229,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         if (!found.isEmpty()) {
             result = found.get(0);
         }
-        
+
         return result;
     }
 
@@ -262,7 +257,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                     }
                 }
             }
-            
+
             UIComponent component = (UIComponent) clazz.newInstance();
             component.setId(treeNode.id);
 
@@ -273,14 +268,13 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     }
 
     /**
-     * Methods that takes care of pruning and re-adding an action to the dynamic
-     * action list.
+     * Methods that takes care of pruning and re-adding an action to the dynamic action list.
      *
      * <p>
-     * If you remove a component, re-add it to the same parent and then remove
-     * it again, you only have to capture the FIRST remove. Similarly if you add
-     * a component, remove it, and then re-add it to the same parent you only
-     * need to capture the LAST add. </p>
+     * If you remove a component, re-add it to the same parent and then remove it again, you only have to capture the FIRST
+     * remove. Similarly if you add a component, remove it, and then re-add it to the same parent you only need to capture
+     * the LAST add.
+     * </p>
      *
      * @param dynamicActionList the dynamic action list.
      * @param struct the component struct to add.
@@ -303,7 +297,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                     dynamicActionList.remove(firstIndex);
                     dynamicActionList.add(struct);
                 }
-                
+
                 if (REMOVE.equals(struct.getAction())) {
                     dynamicActionList.remove(lastIndex);
                 }
@@ -370,7 +364,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         if (LOGGER.isLoggable(FINEST)) {
             LOGGER.finest("FaceletFullStateManagementStrategy.restoreDynamicActions");
         }
-        
+
         @SuppressWarnings("unchecked")
         List<Object> savedActions = (List<Object>) context.getViewRoot().getAttributes().get(DYNAMIC_ACTIONS);
         List<ComponentStruct> actions = stateContext.getDynamicActions();
@@ -408,9 +402,8 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             UIComponent child = locateComponentByClientId(context, parent, struct.getClientId());
 
             /*
-             * If Facelets engine restored the child before us we are going to
-             * use it, but we need to remove it before we can add it in the
-             * correct place.
+             * If Facelets engine restored the child before us we are going to use it, but we need to remove it before we can add it
+             * in the correct place.
              */
             if (child != null) {
                 if (struct.getFacetName() == null) {
@@ -421,8 +414,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             }
 
             /*
-             * The child was not build previously, so we are going to check if
-             * the component was saved in the state.
+             * The child was not build previously, so we are going to check if the component was saved in the state.
              */
             if (child == null) {
                 StateHolderSaver saver = (StateHolderSaver) state.get(struct.getClientId());
@@ -432,9 +424,8 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             }
 
             /*
-             * Are we adding =BACK= in a component that was not in the state,
-             * because it was added by the initial buildView and removed by
-             * another dynamic action?
+             * Are we adding =BACK= in a component that was not in the state, because it was added by the initial buildView and
+             * removed by another dynamic action?
              */
             StateContext stateContext = StateContext.getStateContext(context);
             if (child == null) {
@@ -496,7 +487,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
      * @throws FacesException when a serious error occurs.
      */
     private UIViewRoot restoreTree(FacesContext context, String renderKitId, Object[] tree) throws FacesException {
-        
+
         if (LOGGER.isLoggable(FINEST)) {
             LOGGER.log(FINEST, "FaceletFullStateManagementStrategy.restoreTree", renderKitId);
         }
@@ -541,7 +532,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "FaceletFullStateManagementStrategy.restoreView", new Object[]{viewId, renderKitId});
+            LOGGER.log(Level.FINEST, "FaceletFullStateManagementStrategy.restoreView", new Object[] { viewId, renderKitId });
         }
 
         UIViewRoot result = null;
@@ -630,7 +621,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                     } else {
                         result = REJECT;
                     }
-                    
+
                     return result;
                 }
             });
@@ -661,10 +652,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             for (ComponentStruct action : actions) {
                 UIComponent component = componentMap.get(action.getClientId());
                 if (component == null && context.isProjectStage(Development)) {
-                    LOGGER.log(
-                        WARNING,
-                        "Unable to save dynamic action with clientId ''{0}'' because the UIComponent cannot be found",
-                        action.getClientId());
+                    LOGGER.log(WARNING, "Unable to save dynamic action with clientId ''{0}'' because the UIComponent cannot be found", action.getClientId());
                 }
                 if (component != null) {
                     savedActions.add(action.saveState(context));
@@ -712,9 +700,9 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         captureChild(treeList, 0, viewRoot);
         Object[] tree = treeList.toArray();
 
-        result = new Object[]{tree, state};
+        result = new Object[] { tree, state };
         StateContext.release(context);
-        
+
         return result;
     }
 
@@ -727,7 +715,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
          * Stores the serial version UID.
          */
         private static final long serialVersionUID = -3777170310958005106L;
-        
+
         /**
          * Stores the facet name.
          */
@@ -791,22 +779,22 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
          * Stores the serial version UID.
          */
         private static final long serialVersionUID = -835775352718473281L;
-        
+
         /**
          * Stores the NULL_ID constant.
          */
         private static final String NULL_ID = "";
-       
+
         /**
          * Stores the component type.
          */
         private String componentType;
-        
+
         /**
          * Stores the id.
          */
         private String id;
-        
+
         /**
          * Stores the parent.
          */
@@ -865,15 +853,15 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                 out.writeUTF(NULL_ID);
             }
         }
-        
+
         public int getParent() {
             return parent;
         }
     }
 
     /**
-     * Helper method that determines what the index of the given child component
-     * will be taking transient siblings into account.
+     * Helper method that determines what the index of the given child component will be taking transient siblings into
+     * account.
      *
      * @param component the UI component.
      * @return the calculated index.
@@ -895,11 +883,11 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                     }
                 }
             }
-            
+
             if (index == 0 && !parent.getChildren().isEmpty() && parent.getChildren().get(0).isTransient()) {
                 index = -1;
             }
-            
+
             result = index;
         }
 

@@ -30,8 +30,7 @@ import jakarta.faces.validator.LengthValidator;
 import jakarta.faces.validator.Validator;
 
 /**
- * ValidateLengthTag is the tag handler class for
- * <code>validate_length</code> tag
+ * ValidateLengthTag is the tag handler class for <code>validate_length</code> tag
  */
 
 public class ValidateLengthTag extends MaxMinValidatorTag {
@@ -39,14 +38,12 @@ public class ValidateLengthTag extends MaxMinValidatorTag {
     private static final long serialVersionUID = -3594596279980791500L;
     private static ValueExpression VALIDATOR_ID_EXPR = null;
 
-
 // Attribute Instance Variables
     protected ValueExpression maximumExpression = null;
     protected ValueExpression minimumExpression = null;
 
     protected int maximum = 0;
     protected int minimum = 0;
-
 
 // Relationship Instance Variables
 
@@ -58,11 +55,8 @@ public class ValidateLengthTag extends MaxMinValidatorTag {
         super();
         if (VALIDATOR_ID_EXPR == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            ExpressionFactory factory = context.getApplication().
-                    getExpressionFactory();
-            VALIDATOR_ID_EXPR =
-                factory.createValueExpression(context.getELContext(), 
-                    "jakarta.faces.Length", String.class);
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            VALIDATOR_ID_EXPR = factory.createValueExpression(context.getELContext(), "jakarta.faces.Length", String.class);
         }
     }
 
@@ -79,7 +73,6 @@ public class ValidateLengthTag extends MaxMinValidatorTag {
         maximumExpression = newMaximum;
     }
 
-
     public void setMinimum(ValueExpression newMinimum) {
         minimumSet = true;
         minimumExpression = newMinimum;
@@ -91,7 +84,6 @@ public class ValidateLengthTag extends MaxMinValidatorTag {
         return super.doStartTag();
     }
 
-
 //
 // Methods from ValidatorTag
 //
@@ -99,8 +91,7 @@ public class ValidateLengthTag extends MaxMinValidatorTag {
     @Override
     protected Validator createValidator() throws JspException {
 
-        LengthValidator result = (LengthValidator)
-            super.createValidator();
+        LengthValidator result = (LengthValidator) super.createValidator();
         assert (null != result);
 
         evaluateExpressions();
@@ -115,31 +106,23 @@ public class ValidateLengthTag extends MaxMinValidatorTag {
         return result;
     }
 
-/* Evaluates expressions as necessary */
+    /* Evaluates expressions as necessary */
     private void evaluateExpressions() {
 
         ELContext context = FacesContext.getCurrentInstance().getELContext();
 
         if (minimumExpression != null) {
             if (!minimumExpression.isLiteralText()) {
-                minimum = ((Number)
-                              ELUtils.evaluateValueExpression(minimumExpression,
-                                  context)).intValue();
+                minimum = ((Number) ELUtils.evaluateValueExpression(minimumExpression, context)).intValue();
             } else {
-                minimum =
-                Integer.valueOf(minimumExpression.getExpressionString()).
-                    intValue();
+                minimum = Integer.valueOf(minimumExpression.getExpressionString()).intValue();
             }
         }
         if (maximumExpression != null) {
             if (!maximumExpression.isLiteralText()) {
-                maximum = ((Number)
-                              ELUtils.evaluateValueExpression(maximumExpression,
-                                  context)).intValue();
+                maximum = ((Number) ELUtils.evaluateValueExpression(maximumExpression, context)).intValue();
             } else {
-                maximum =
-                Integer.valueOf(maximumExpression.getExpressionString()).
-                    intValue();
+                maximum = Integer.valueOf(maximumExpression.getExpressionString()).intValue();
             }
         }
     }

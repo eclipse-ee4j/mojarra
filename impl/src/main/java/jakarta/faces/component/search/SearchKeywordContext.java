@@ -20,8 +20,8 @@ import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.UIComponent;
 
 /**
- * <p class="changed_added_2_3"><strong>SearchKeywordContext</strong>
- * provides context information that may be useful to 
+ * <p class="changed_added_2_3">
+ * <strong>SearchKeywordContext</strong> provides context information that may be useful to
  * {@link SearchKeywordResolver#resolve} implementations.
  * </p>
  *
@@ -32,11 +32,13 @@ public class SearchKeywordContext {
     private final SearchExpressionContext searchExpressionContext;
     private final ContextCallback callback;
     private final String remainingExpression;
-    
+
     private boolean keywordResolved;
 
     /**
-     * <p class="changed_added_2_3">Construct a new context with the given arguments.</p>
+     * <p class="changed_added_2_3">
+     * Construct a new context with the given arguments.
+     * </p>
      *
      * @param searchExpressionContext the {@link SearchExpressionContext} for the current request.
      * @param callback the {@link ContextCallback}.
@@ -49,8 +51,10 @@ public class SearchKeywordContext {
     }
 
     /**
-     * <p class="changed_added_2_3">This method will be called by an implementation of {@link
-     * SearchKeywordResolver#resolve} with the resolved component for the keyword.</p>
+     * <p class="changed_added_2_3">
+     * This method will be called by an implementation of {@link SearchKeywordResolver#resolve} with the resolved component
+     * for the keyword.
+     * </p>
      *
      * @param target the resolved {@link UIComponent}.
      * 
@@ -62,7 +66,9 @@ public class SearchKeywordContext {
     }
 
     /**
-     * <p class="changed_added_2_3">Returns the {@link SearchExpressionContext} for the current request.</p>
+     * <p class="changed_added_2_3">
+     * Returns the {@link SearchExpressionContext} for the current request.
+     * </p>
      * 
      * @return the {@link SearchExpressionContext}.
      * 
@@ -73,7 +79,9 @@ public class SearchKeywordContext {
     }
 
     /**
-     * <p class="changed_added_2_3">Returns the {@link ContextCallback} for the current request.</p>
+     * <p class="changed_added_2_3">
+     * Returns the {@link ContextCallback} for the current request.
+     * </p>
      * 
      * @return the {@link ContextCallback}.
      * 
@@ -84,7 +92,9 @@ public class SearchKeywordContext {
     }
 
     /**
-     * <p class="changed_added_2_3">Returns the remaining expression for the current request.</p>
+     * <p class="changed_added_2_3">
+     * Returns the remaining expression for the current request.
+     * </p>
      * 
      * @return the remaining expression.
      * 
@@ -95,7 +105,9 @@ public class SearchKeywordContext {
     }
 
     /**
-     * <p class="changed_added_2_3">Returns if the keyword was resolved.</p>
+     * <p class="changed_added_2_3">
+     * Returns if the keyword was resolved.
+     * </p>
      * 
      * @return if the keyword was resolved.
      * 
@@ -106,7 +118,9 @@ public class SearchKeywordContext {
     }
 
     /**
-     * <p class="changed_added_2_3">Sets if the keyword was resolved.</p>
+     * <p class="changed_added_2_3">
+     * Sets if the keyword was resolved.
+     * </p>
      * 
      * @param keywordResolved if the keyword was resolved.
      * 

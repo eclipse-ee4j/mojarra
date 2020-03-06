@@ -16,14 +16,14 @@
 
 package jakarta.faces.webapp;
 
-
 /**
- * <p><strong>UIComponentBodyTag</strong> is a base class for all Jakarta Server Pages custom
- * actions, related to a UIComponent, that need to process their tag bodies.
+ * <p>
+ * <strong>UIComponentBodyTag</strong> is a base class for all Jakarta Server Pages custom actions, related to a
+ * UIComponent, that need to process their tag bodies.
  * </p>
  *
- * @deprecated All component tags now implement <code>BodyTag</code>.
- * This class has been replaced by {@link UIComponentELTag}.
+ * @deprecated All component tags now implement <code>BodyTag</code>. This class has been replaced by
+ * {@link UIComponentELTag}.
  */
 
 public abstract class UIComponentBodyTag extends UIComponentTag {

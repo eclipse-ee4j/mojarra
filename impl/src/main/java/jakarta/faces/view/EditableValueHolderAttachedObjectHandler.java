@@ -17,13 +17,12 @@
 package jakarta.faces.view;
 
 /**
- * <p class="changed_added_2_0">A VDL handler that exposes {@link
- * jakarta.faces.validator.Validator} or {@link
- * jakarta.faces.event.ValueChangeListener} to a <em>page author</em>.
- * The default implementation of Facelets must provide an implemention
- * of this in the handler for the <code>&lt;f:validator&gt;</code> (and
- * any tags for any of the standard validators) and
- * <code>&lt;f:valueChangeListener&gt;</code> tags.</p>
+ * <p class="changed_added_2_0">
+ * A VDL handler that exposes {@link jakarta.faces.validator.Validator} or
+ * {@link jakarta.faces.event.ValueChangeListener} to a <em>page author</em>. The default implementation of Facelets
+ * must provide an implemention of this in the handler for the <code>&lt;f:validator&gt;</code> (and any tags for any of
+ * the standard validators) and <code>&lt;f:valueChangeListener&gt;</code> tags.
+ * </p>
  *
  * @since 2.0
  */

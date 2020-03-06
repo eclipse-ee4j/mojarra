@@ -56,8 +56,8 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
  * Central location for web application lifecycle events.
  * <p>
  * <p>
- * The main purpose of this class is detect when we should be invoking methods marked with the
- * <code>@PreDestroy</code> annotation.
+ * The main purpose of this class is detect when we should be invoking methods marked with the <code>@PreDestroy</code>
+ * annotation.
  * </p>
  */
 public class WebappLifecycleListener {
@@ -133,8 +133,7 @@ public class WebappLifecycleListener {
             }
 
             /*
-             * If we are distributable and we have an active view map force the ACTIVE_VIEW_MAPS
-             * session entry to be replicated.
+             * If we are distributable and we have an active view map force the ACTIVE_VIEW_MAPS session entry to be replicated.
              */
             boolean distributable = config.isOptionEnabled(EnableDistributable);
 
@@ -215,8 +214,8 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that an existing attribute has been removed from the servlet request. Called
-     * after the attribute is removed.
+     * Notification that an existing attribute has been removed from the servlet request. Called after the attribute is
+     * removed.
      * 
      * @param event the notification event
      */
@@ -225,8 +224,7 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that an attribute was replaced on the servlet request. Called after the
-     * attribute is replaced.
+     * Notification that an attribute was replaced on the servlet request. Called after the attribute is replaced.
      *
      * @param event the notification event
      */
@@ -244,8 +242,7 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that an attribute has been removed from a session. Called after the attribute is
-     * removed.
+     * Notification that an attribute has been removed from a session. Called after the attribute is removed.
      *
      * @param event the nofication event
      */
@@ -254,8 +251,7 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that an attribute has been replaced in a session. Called after the attribute is
-     * replaced.
+     * Notification that an attribute has been replaced in a session. Called after the attribute is replaced.
      *
      * @param event the notification event
      */
@@ -275,8 +271,8 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that an existing attribute has been removed from the servlet context. Called
-     * after the attribute is removed.
+     * Notification that an existing attribute has been removed from the servlet context. Called after the attribute is
+     * removed.
      *
      * @param event the notification event
      */
@@ -285,8 +281,7 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that an attribute on the servlet context has been replaced. Called after the
-     * attribute is replaced.
+     * Notification that an attribute on the servlet context has been replaced. Called after the attribute is replaced.
      *
      * @param event the notification event
      */
@@ -333,9 +328,8 @@ public class WebappLifecycleListener {
     } // END handleAttributeEvent
 
     /**
-     * Notification that the web application initialization process is starting. All
-     * ServletContextListeners are notified of context initialization before any filter or servlet
-     * in the web application is initialized.
+     * Notification that the web application initialization process is starting. All ServletContextListeners are notified of
+     * context initialization before any filter or servlet in the web application is initialized.
      *
      * @param event the notification event
      */
@@ -346,8 +340,8 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that the servlet context is about to be shut down. All servlets and filters have
-     * been destroy()ed before any ServletContextListeners are notified of context destruction.
+     * Notification that the servlet context is about to be shut down. All servlets and filters have been destroy()ed before
+     * any ServletContextListeners are notified of context destruction.
      *
      * @param event the nofication event
      */
@@ -377,8 +371,7 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * This method ensures that session scoped managed beans will be synchronized properly in a
-     * clustered environment.
+     * This method ensures that session scoped managed beans will be synchronized properly in a clustered environment.
      *
      * @param request the current <code>ServletRequest</code>
      */

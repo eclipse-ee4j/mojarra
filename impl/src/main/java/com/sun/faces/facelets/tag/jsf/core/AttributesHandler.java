@@ -28,8 +28,7 @@ import java.io.IOException;
 import java.util.Map;
 import jakarta.el.ValueExpression;
 
-public final class AttributesHandler extends TagHandlerImpl 
-    implements jakarta.faces.view.facelets.AttributeHandler {
+public final class AttributesHandler extends TagHandlerImpl implements jakarta.faces.view.facelets.AttributeHandler {
 
     private final TagAttribute value;
 
@@ -41,38 +40,34 @@ public final class AttributesHandler extends TagHandlerImpl
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
             throw new TagException(this.tag, "Parent UIComponent was null");
         }
 
         // only process if the parent is new to the tree
         if (parent.getParent() == null) {
-            
+
             Map<String, Object> tagAttrs = (Map<String, Object>) this.value.getObject(ctx, Map.class);
             for (Map.Entry<String, Object> cur : tagAttrs.entrySet()) {
                 String n = cur.getKey();
                 Object curVal = cur.getValue();
                 if (!parent.getAttributes().containsKey(n)) {
-                    
+
                     if (curVal instanceof ValueExpression) {
                         parent.setValueExpression(n, (ValueExpression) curVal);
                     } else {
                         parent.getAttributes().put(n, curVal);
                     }
-                    
+
                 }
             }
-            
-            
+
         }
     }
-
 
     // jakarta.faces.view.facelets.tag.AttributeHandler.getAttributeName()
     // implementation.

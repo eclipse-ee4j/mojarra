@@ -34,10 +34,8 @@ public class FlashFactoryImpl extends FlashFactory {
     public Flash getFlash(boolean create) {
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
         Flash result = ELFlash.getFlash(context, create);
-        
+
         return result;
     }
-    
-    
-    
+
 }

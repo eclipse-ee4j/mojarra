@@ -31,8 +31,8 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * Utility class to enable partial state saving of Lists of attached objects such as
- * <code>FacesListener</code>s or <code>Validator</code>s.
+ * Utility class to enable partial state saving of Lists of attached objects such as <code>FacesListener</code>s or
+ * <code>Validator</code>s.
  * </p>
  */
 @SuppressWarnings({ "unchecked" })
@@ -72,11 +72,10 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
                 }
             }
         }
-        
+
         initialState = false;
     }
 
-    
     // -------------------------------------------- Methods from StateHolder
 
     @Override
@@ -85,11 +84,11 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         if (attachedObjects == null) {
             return null;
         }
-        
+
         if (initialState) {
             Object[] attachedObjects = new Object[this.attachedObjects.size()];
             boolean stateWritten = false;
@@ -105,7 +104,7 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
                     }
                 }
             }
-            
+
             return stateWritten ? attachedObjects : null;
         }
 
@@ -113,7 +112,7 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
         for (int i = 0, len = attachedObjects.length; i < len; i++) {
             attachedObjects[i] = saveAttachedState(context, this.attachedObjects.get(i));
         }
-        
+
         return attachedObjects;
     }
 
@@ -123,7 +122,7 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         if (state == null) {
             return;
         }
@@ -137,7 +136,7 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
             } else {
                 this.attachedObjects = new ArrayList<>(2);
             }
-            
+
             for (int i = 0, len = attachedObjects.length; i < len; i++) {
                 T restored = (T) ((StateHolderSaver) attachedObjects[i]).restore(context);
                 if (restored != null) {
@@ -165,7 +164,6 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
     public void setTransient(boolean newTransientValue) {
         // no-op
     }
-    
 
     // ------------------------------------------------------ Public Methods
 

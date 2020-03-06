@@ -36,9 +36,9 @@ import java.io.Writer;
 final class UITextHandler extends AbstractUIHandler {
 
     private final ELText txt;
-    
+
     private final String alias;
-    
+
     private final int length;
 
     public UITextHandler(String alias, ELText txt) {
@@ -48,25 +48,23 @@ final class UITextHandler extends AbstractUIHandler {
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-    throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
             try {
                 ELText nt = this.txt.apply(ctx.getExpressionFactory(), ctx);
                 UIComponent c = new UIText(this.alias, nt);
                 String uid;
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
-                if (null != ancestorNamingContainer &&
-                        ancestorNamingContainer instanceof UniqueIdVendor) {
+                if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), null);
                 } else {
                     uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId();
                 }
-                
+
                 c.setId(uid);
                 this.addComponent(ctx, parent, c);
             } catch (Exception e) {
-                throw new ELException(this.alias + ": "+ e.getMessage(), e.getCause());
+                throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
             }
         }
     }
@@ -87,7 +85,7 @@ final class UITextHandler extends AbstractUIHandler {
         try {
             this.txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
         } catch (IOException e) {
-            throw new ELException(this.alias + ": "+ e.getMessage(), e.getCause());
+            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
         }
         return writer.toString();
     }

@@ -30,8 +30,8 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * <strong class="changed_modified_2_0">UINamingContainer</strong> is a convenience base class for
- * components that wish to implement {@link NamingContainer} functionality.
+ * <strong class="changed_modified_2_0">UINamingContainer</strong> is a convenience base class for components that wish
+ * to implement {@link NamingContainer} functionality.
  * </p>
  */
 
@@ -57,8 +57,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
 
     /**
      * <p class="changed_added_2_0">
-     * The context-param that allows the separator char for clientId strings to be set on a per-web
-     * application basis.
+     * The context-param that allows the separator char for clientId strings to be set on a per-web application basis.
      * </p>
      *
      * @since 2.0
@@ -68,7 +67,6 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
     enum PropertyKeys {
         lastId
     }
-    
 
     // ------------------------------------------------------------ Constructors
 
@@ -81,7 +79,6 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
         super();
         setRendererType(null);
     }
-    
 
     // -------------------------------------------------------------- Properties
 
@@ -92,11 +89,11 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
 
     /**
      * <p class="changed_added_2_0">
-     * Return the character used to separate segments of a clientId. The implementation must
-     * determine if there is a &lt;<code>context-param</code>&gt; with the value given by the value
-     * of the symbolic constant {@link #SEPARATOR_CHAR_PARAM_NAME}. If there is a value for this
-     * param, the first character of the value must be returned from this method. Otherwise, the
-     * value of the symbolic constant {@link NamingContainer#SEPARATOR_CHAR} must be returned.
+     * Return the character used to separate segments of a clientId. The implementation must determine if there is a
+     * &lt;<code>context-param</code>&gt; with the value given by the value of the symbolic constant
+     * {@link #SEPARATOR_CHAR_PARAM_NAME}. If there is a value for this param, the first character of the value must be
+     * returned from this method. Otherwise, the value of the symbolic constant {@link NamingContainer#SEPARATOR_CHAR} must
+     * be returned.
      * </p>
      *
      * @param context the {@link FacesContext} for the current request
@@ -110,7 +107,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
                 LOGGER.log(SEVERE, "UINamingContainer.getSeparatorChar() called with null FacesContext. This indicates a SEVERE error. Returning {0}",
                         SEPARATOR_CHAR);
             }
-            
+
             return SEPARATOR_CHAR;
         }
 
@@ -124,10 +121,10 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
                     separatorChar = initParam.charAt(0);
                 }
             }
-            
+
             context.getAttributes().put(SEPARATOR_CHAR_PARAM_NAME, separatorChar);
         }
-        
+
         return separatorChar;
     }
 
@@ -172,17 +169,16 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
     public String createUniqueId(FacesContext context, String seed) {
         int lastId = coalesce(getLastId(), 0);
         setLastId(++lastId);
-        
+
         return UNIQUE_ID_PREFIX + coalesce(seed, lastId);
     }
-    
-    
+
     // ----------------------------------------------------- Private Methods
-    
+
     private Integer getLastId() {
         return (Integer) getStateHelper().get(PropertyKeys.lastId);
     }
-    
+
     private void setLastId(Integer lastId) {
         getStateHelper().put(PropertyKeys.lastId, lastId);
     }

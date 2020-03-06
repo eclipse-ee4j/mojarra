@@ -21,8 +21,9 @@ import java.lang.annotation.Annotation;
 /**
  * <code>Scanner</code> implementation responsible for EJB annotations.
  *
- * <p> Note this will delegate down to the EJBScanner so we can fail gracefully
- * when JavaEE is not available. </p>
+ * <p>
+ * Note this will delegate down to the EJBScanner so we can fail gracefully when JavaEE is not available.
+ * </p>
  */
 public class DelegatedEJBScanner implements Scanner {
 

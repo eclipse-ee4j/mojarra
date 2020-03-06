@@ -17,7 +17,7 @@
 package com.sun.faces.application.resource;
 
 public class ResourceInfo {
-    
+
     ResourceHelper helper;
     LibraryInfo library;
     ContractInfo contract;
@@ -28,10 +28,7 @@ public class ResourceInfo {
     VersionInfo version;
     boolean doNotCache = false;
 
-    public ResourceInfo(LibraryInfo library, 
-            ContractInfo contract,
-            String name, 
-            VersionInfo version) {
+    public ResourceInfo(LibraryInfo library, ContractInfo contract, String name, VersionInfo version) {
         this.contract = contract;
         this.library = library;
         this.helper = library.getHelper();
@@ -39,16 +36,16 @@ public class ResourceInfo {
         this.name = name;
         this.version = version;
         this.libraryName = library.getName();
-        
+
     }
-    
+
     public ResourceInfo(ContractInfo contract, String name, VersionInfo version, ResourceHelper helper) {
         this.contract = contract;
         this.name = name;
         this.version = version;
         this.helper = helper;
     }
-    
+
     public ResourceInfo(ResourceInfo other, boolean copyLocalePrefix) {
         this.helper = other.helper;
         this.library = new LibraryInfo(other.library, copyLocalePrefix);
@@ -60,7 +57,7 @@ public class ResourceInfo {
         this.path = other.path;
         this.version = other.version;
     }
-    
+
     public void copy(ResourceInfo other) {
         this.helper = other.helper;
         this.library = other.library;
@@ -128,7 +125,7 @@ public class ResourceInfo {
     public void setDoNotCache(boolean doNotCache) {
         this.doNotCache = doNotCache;
     }
-    
+
     /**
      * @return return the {@link ResourceHelper} for this resource
      */
@@ -158,23 +155,21 @@ public class ResourceInfo {
     }
 
     /**
-     * @return the full path (including the library, if any) of the
-     *  resource.
+     * @return the full path (including the library, if any) of the resource.
      */
     public String getPath() {
         return path;
     }
-    
+
     public String getContract() {
         return (null != contract) ? contract.toString() : null;
     }
 
     /**
-     * @return return the version of the resource, or <code>null</code> if the
-     *         resource isn't versioned.
+     * @return return the version of the resource, or <code>null</code> if the resource isn't versioned.
      */
     public VersionInfo getVersion() {
         return version;
     }
-    
+
 }

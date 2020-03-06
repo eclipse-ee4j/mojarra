@@ -39,8 +39,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/factory</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/factory</code>.
  * </p>
  */
 public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
@@ -82,14 +81,13 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
 
         for (int i = 0; i < documentInfos.length; i++) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE,
-                        format("Processing faces-config-extension elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing faces-config-extension elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList facesConfigExtensions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_CONFIG_EXTENSION);
-            
+
             if (facesConfigExtensions != null && facesConfigExtensions.getLength() > 0) {
                 processFacesConfigExtensions(facesConfigExtensions, namespace, documentInfos[i]);
             }

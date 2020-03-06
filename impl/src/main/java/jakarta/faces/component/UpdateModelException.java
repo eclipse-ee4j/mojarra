@@ -22,11 +22,12 @@ import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 
 /**
- * <p class="changed_added_2_0">This exception indicates a failure to 
- * update the model and is created to wrap any exception
- * that occurs during {@link UIInput#updateModel}. The exception is then passed 
- * to {@link jakarta.faces.context.ExceptionHandler#processEvent}, where
- * the <code>ExceptionHandler</code> has an opportunity to handle it.</p>
+ * <p class="changed_added_2_0">
+ * This exception indicates a failure to update the model and is created to wrap any exception that occurs during
+ * {@link UIInput#updateModel}. The exception is then passed to
+ * {@link jakarta.faces.context.ExceptionHandler#processEvent}, where the <code>ExceptionHandler</code> has an
+ * opportunity to handle it.
+ * </p>
  *
  * @since 2.0
  */
@@ -36,33 +37,31 @@ public class UpdateModelException extends FacesException {
 
     private FacesMessage facesMessage;
 
-
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p class="changed_added_2_0">Store the argument
-     * <code>facesMessage</code> so it may be returned from {@link
-     * #getFacesMessage} and pass the argument <code>cause</code> to the
-     * super constructor.</p>
+     * <p class="changed_added_2_0">
+     * Store the argument <code>facesMessage</code> so it may be returned from {@link #getFacesMessage} and pass the
+     * argument <code>cause</code> to the super constructor.
+     * </p>
+     * 
      * @param facesMessage the message for the exception
      * @param cause the cause of this exception
      *
      * @since 2.0
      */
-    public UpdateModelException(FacesMessage facesMessage,  
-                                Throwable cause) {
+    public UpdateModelException(FacesMessage facesMessage, Throwable cause) {
 
         super(cause);
         this.facesMessage = facesMessage;
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
     /**
-     * <p class="changed_added_2_0">Return the <code>FacesMessage</code>
-     * passed to the constructor.</p>
+     * <p class="changed_added_2_0">
+     * Return the <code>FacesMessage</code> passed to the constructor.
+     * </p>
      *
      * @return the message of this exception.
      *

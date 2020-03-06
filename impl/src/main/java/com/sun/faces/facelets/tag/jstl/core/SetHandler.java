@@ -35,17 +35,15 @@ import java.util.Iterator;
 public class SetHandler extends TagHandlerImpl {
 
     private final TagAttribute var;
-    
+
     private final TagAttribute value;
 
-
-    
     private final TagAttribute target;
-    
+
     private final TagAttribute property;
-    
+
     private final TagAttribute scope;
-    
+
     public SetHandler(TagConfig config) {
         super(config);
         this.value = this.getAttribute("value");
@@ -53,29 +51,27 @@ public class SetHandler extends TagHandlerImpl {
         this.target = this.getAttribute("target");
         this.property = this.getAttribute("property");
         this.scope = this.getAttribute("scope");
-        
+
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
         StringBuilder bodyValue = new StringBuilder();
 
-        Iterator iter = TagHandlerImpl.findNextByType(this.nextHandler,
-                TextHandler.class);
+        Iterator iter = TagHandlerImpl.findNextByType(this.nextHandler, TextHandler.class);
         while (iter.hasNext()) {
             TextHandler text = (TextHandler) iter.next();
             bodyValue.append(text.getText(ctx));
         }
 
         // true if either a value in body or value attr
-        boolean valSet = bodyValue.length() > 0 || (value != null && value.getValue().length() >0);
+        boolean valSet = bodyValue.length() > 0 || (value != null && value.getValue().length() > 0);
 
-        // Apply precedence algorithm for attributes.  The JstlCoreTLV doesn't
+        // Apply precedence algorithm for attributes. The JstlCoreTLV doesn't
         // seem to enforce much in the way of this, so I edburns needs to check
         // with an authority on the matter, probabyl Kin-Man Chung
-        
+
         ValueExpression veObj;
         ValueExpression lhs;
         String expr;
@@ -84,20 +80,19 @@ public class SetHandler extends TagHandlerImpl {
             veObj = this.value.getValueExpression(ctx, Object.class);
         } else {
 
-            veObj = ctx.getExpressionFactory().createValueExpression(
-                    ctx.getFacesContext().getELContext(),bodyValue.toString(),Object.class);
+            veObj = ctx.getExpressionFactory().createValueExpression(ctx.getFacesContext().getELContext(), bodyValue.toString(), Object.class);
         }
 
         // Otherwise, if var is set, ignore the other attributes
         if (this.var != null) {
             String scopeStr, varStr = this.var.getValue(ctx);
-            
+
             // If scope is set, check for validity
             if (null != this.scope) {
                 if (0 == this.scope.getValue().length()) {
                     throw new TagException(tag, "zero length scope attribute set");
                 }
-                
+
                 if (this.scope.isLiteral()) {
                     scopeStr = this.scope.getValue();
                 } else {
@@ -106,28 +101,23 @@ public class SetHandler extends TagHandlerImpl {
                 if (scopeStr.equals("page")) {
                     throw new TagException(tag, "page scope does not exist in JSF, consider using view scope instead.");
                 }
-                if (scopeStr.equals("request") || scopeStr.equals("session") ||
-                        scopeStr.equals("application") || scopeStr.equals("view")) {
+                if (scopeStr.equals("request") || scopeStr.equals("session") || scopeStr.equals("application") || scopeStr.equals("view")) {
                     scopeStr = scopeStr + "Scope";
                 }
-                // otherwise, assume it's a valid scope.  With custom scopes,
+                // otherwise, assume it's a valid scope. With custom scopes,
                 // it may be.
                 // Conjure up an expression
-                expr = "#{" + scopeStr +"." + varStr + "}";
-                lhs = ctx.getExpressionFactory().
-                        createValueExpression(ctx, expr, Object.class);
+                expr = "#{" + scopeStr + "." + varStr + "}";
+                lhs = ctx.getExpressionFactory().createValueExpression(ctx, expr, Object.class);
                 lhs.setValue(ctx, veObj.getValue(ctx));
-            }
-            else {
+            } else {
                 ctx.getVariableMapper().setVariable(varStr, veObj);
             }
-        } else  {
-           
+        } else {
+
             // Otherwise, target, property and value must be set
-            if ((null == this.target || null == this.target.getValue() ||
-                 this.target.getValue().length() <= 0) ||
-                (null == this.property || null == this.property.getValue() ||
-                 this.property.getValue().length() <= 0) || !valSet) {
+            if ((null == this.target || null == this.target.getValue() || this.target.getValue().length() <= 0)
+                    || (null == this.property || null == this.property.getValue() || this.property.getValue().length() <= 0) || !valSet) {
 
                 throw new TagException(tag, "when using this tag either one of var and value, or (target, property, value) must be set.");
             }
@@ -144,9 +134,8 @@ public class SetHandler extends TagHandlerImpl {
             }
             ValueExpression targetVe = this.target.getValueExpression(ctx, Object.class);
             Object targetValue = targetVe.getValue(ctx);
-            ctx.getFacesContext().getELContext().getELResolver().setValue(ctx, 
-                    targetValue, propertyStr, veObj.getValue(ctx));
-            
+            ctx.getFacesContext().getELContext().getELResolver().setValue(ctx, targetValue, propertyStr, veObj.getValue(ctx));
+
         }
     }
 

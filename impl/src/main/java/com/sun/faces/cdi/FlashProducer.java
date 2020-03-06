@@ -26,8 +26,7 @@ import jakarta.faces.context.Flash;
 
 /**
  * <p class="changed_added_2_3">
- * The Flash producer is the CDI producer that allows EL resolving of
- * #{flash}
+ * The Flash producer is the CDI producer that allows EL resolving of #{flash}
  * </p>
  *
  * @since 2.3
@@ -38,18 +37,14 @@ public class FlashProducer extends CdiProducer<Object> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
-    private static class Dummy {}
-    
+
+    private static class Dummy {
+    }
+
     public FlashProducer() {
-        super.name("flash")
-             .beanClass(Flash.class)
-             .types(
-                 Flash.class, 
-                 new ParameterizedTypeImpl(Map.class, new Type[]{Dummy.class, Dummy.class}),
-                 Object.class)
-             .scope(RequestScoped.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getFlash());
+        super.name("flash").beanClass(Flash.class)
+                .types(Flash.class, new ParameterizedTypeImpl(Map.class, new Type[] { Dummy.class, Dummy.class }), Object.class).scope(RequestScoped.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getFlash());
     }
 
 }

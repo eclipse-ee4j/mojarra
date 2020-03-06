@@ -20,15 +20,14 @@ import static java.util.Arrays.asList;
 import java.util.List;
 
 /**
- * Copier that copies an object trying a variety of strategies until one
- * succeeds.
+ * Copier that copies an object trying a variety of strategies until one succeeds.
  * <p>
  * The strategies that will be attempted in order are:
  * <ol>
- * <li> Serialization
- * <li> Cloning
- * <li> Copy constructor
- * <li> New instance
+ * <li>Serialization
+ * <li>Cloning
+ * <li>Copy constructor
+ * <li>New instance
  * </ol>
  *
  * @since 2.3
@@ -38,8 +37,7 @@ import java.util.List;
 public class MultiStrategyCopier implements Copier {
 
     private static final List<Copier> COPIERS = asList( // Note: copier instances used here must be thread-safe!
-        new SerializationCopier(), new CloneCopier(), new CopyCtorCopier(), new NewInstanceCopier()
-    );
+            new SerializationCopier(), new CloneCopier(), new CopyCtorCopier(), new NewInstanceCopier());
 
     @Override
     public Object copy(Object object) {

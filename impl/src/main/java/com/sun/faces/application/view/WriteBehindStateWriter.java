@@ -28,17 +28,15 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Custom {@link Writer} to efficiently handle the state manager replacement
- * marker written out by {@link MultiViewHandler#writeState(jakarta.faces.context.FacesContext)}.
+ * Custom {@link Writer} to efficiently handle the state manager replacement marker written out by
+ * {@link MultiViewHandler#writeState(jakarta.faces.context.FacesContext)}.
  */
 final class WriteBehindStateWriter extends Writer {
 
     // length of the state marker
-    private static final int STATE_MARKER_LEN =
-          RIConstants.SAVESTATE_FIELD_MARKER.length();
+    private static final int STATE_MARKER_LEN = RIConstants.SAVESTATE_FIELD_MARKER.length();
 
-    private static final ThreadLocal<WriteBehindStateWriter> CUR_WRITER =
-          new ThreadLocal<>();
+    private static final ThreadLocal<WriteBehindStateWriter> CUR_WRITER = new ThreadLocal<>();
     private Writer out;
     private Writer orig;
     private FastStringWriter fWriter;
@@ -48,9 +46,7 @@ final class WriteBehindStateWriter extends Writer {
     private FacesContext context;
     private Object state;
 
-
     // -------------------------------------------------------- Constructors
-
 
     /**
      * Constructs a new <code>WriteBehindStateWriter</code> instance.
@@ -59,21 +55,17 @@ final class WriteBehindStateWriter extends Writer {
      * @param context the {@link FacesContext} for the current request
      * @param bufSize the buffer size for post-processing buffered content
      */
-    public WriteBehindStateWriter(Writer out,
-                                  FacesContext context,
-                                  int bufSize) {
+    public WriteBehindStateWriter(Writer out, FacesContext context, int bufSize) {
         this.out = out;
         this.orig = out;
         this.context = context;
         this.bufSize = bufSize;
         this.buf = new char[bufSize];
         CUR_WRITER.set(this);
-        
+
     }
 
-
     // ------------------------------------------------- Methods from Writer
-
 
     /**
      * Writes directly to the current <code>out</code>.
@@ -85,7 +77,6 @@ final class WriteBehindStateWriter extends Writer {
         out.write(c);
     }
 
-
     /**
      * Writes directly to the current <code>out</code>.
      *
@@ -95,7 +86,6 @@ final class WriteBehindStateWriter extends Writer {
     public void write(char cbuf[]) throws IOException {
         out.write(cbuf);
     }
-
 
     /**
      * Writes directly to the current <code>out</code>.
@@ -107,7 +97,6 @@ final class WriteBehindStateWriter extends Writer {
         out.write(str);
     }
 
-
     /**
      * Writes directly to the current <code>out</code>.
      *
@@ -117,7 +106,6 @@ final class WriteBehindStateWriter extends Writer {
     public void write(String str, int off, int len) throws IOException {
         out.write(str, off, len);
     }
-
 
     /**
      * Writes directly to the current <code>out</code>.
@@ -129,7 +117,6 @@ final class WriteBehindStateWriter extends Writer {
         out.write(cbuf, off, len);
     }
 
-
     /**
      * This is a no-op.
      */
@@ -137,7 +124,6 @@ final class WriteBehindStateWriter extends Writer {
     public void flush() throws IOException {
         // no-op
     }
-
 
     /**
      * This is a no-op.
@@ -147,18 +133,14 @@ final class WriteBehindStateWriter extends Writer {
         // no-op
     }
 
-
     // ------------------------------------------------------ Public Methods
 
-
     /**
-     * @return the <code>WriteBehindStateWriter</code> being used for processing
-     *  this request
+     * @return the <code>WriteBehindStateWriter</code> being used for processing this request
      */
     public static WriteBehindStateWriter getCurrentInstance() {
         return CUR_WRITER.get();
     }
-
 
     /**
      * Clear the ThreadLocal state.
@@ -167,12 +149,9 @@ final class WriteBehindStateWriter extends Writer {
         CUR_WRITER.remove();
     }
 
-
     /**
-     * When called, the original writer is backed up and replaced
-     * with a new FastStringWriter.  All content written after this method
-     * is called will then be buffered and written out later after the
-     * entire view has been rendered.
+     * When called, the original writer is backed up and replaced with a new FastStringWriter. All content written after
+     * this method is called will then be buffered and written out later after the entire view has been rendered.
      */
     public void writingState() {
         if (!stateWritten) {
@@ -182,16 +161,16 @@ final class WriteBehindStateWriter extends Writer {
     }
 
     /**
-     * @return <code>true</code> if {@link #writingState()} has been called,
-     *  otherwise returns <code>false</code>
+     * @return <code>true</code> if {@link #writingState()} has been called, otherwise returns <code>false</code>
      */
     public boolean stateWritten() {
         return stateWritten;
     }
 
-
     /**
-     * <p> Write directly from our FastStringWriter to the provided writer.</p>
+     * <p>
+     * Write directly from our FastStringWriter to the provided writer.
+     * </p>
      *
      * @throws IOException if an error occurs
      */
@@ -225,26 +204,18 @@ final class WriteBehindStateWriter extends Writer {
                     // now check to see if the state saving string is
                     // at the begining of pos, if so, write our
                     // state out.
-                    if (builder.indexOf(
-                          RIConstants.SAVESTATE_FIELD_MARKER,
-                          pos) == tildeIdx) {
+                    if (builder.indexOf(RIConstants.SAVESTATE_FIELD_MARKER, pos) == tildeIdx) {
                         // buf is effectively zero'd out at this point
                         int statePos = 0;
                         while (statePos < stateLen) {
                             if ((stateLen - statePos) > bufSize) {
                                 // enough state to fill the buffer
-                                stateBuilder.getChars(statePos,
-                                                      (statePos + bufSize),
-                                                      buf,
-                                                      0);
+                                stateBuilder.getChars(statePos, (statePos + bufSize), buf, 0);
                                 orig.write(buf);
                                 statePos += bufSize;
                             } else {
                                 int slen = (stateLen - statePos);
-                                stateBuilder.getChars(statePos,
-                                                      stateLen,
-                                                      buf,
-                                                      0);
+                                stateBuilder.getChars(statePos, stateLen, buf, 0);
                                 orig.write(buf, 0, slen);
                                 statePos += slen;
                             }
@@ -253,13 +224,12 @@ final class WriteBehindStateWriter extends Writer {
                         // push us past the last '~' at the end of the marker
                         pos += (len + STATE_MARKER_LEN);
                         tildeIdx = getNextDelimiterIndex(builder, pos);
-                        
+
                         stateBuilder = getState(stateManager, origWriter);
-                        stateLen = stateBuilder.length();        
+                        stateLen = stateBuilder.length();
                     } else {
                         pos = tildeIdx;
-                        tildeIdx = getNextDelimiterIndex(builder,
-                                                         tildeIdx + 1);
+                        tildeIdx = getNextDelimiterIndex(builder, tildeIdx + 1);
                     }
                 }
             } else {
@@ -280,34 +250,30 @@ final class WriteBehindStateWriter extends Writer {
             }
         }
 
-        // all state has been written.  Have 'out' point to the
+        // all state has been written. Have 'out' point to the
         // response so that all subsequent writes will make it to the
         // browser.
         out = orig;
 
     }
-    
+
     /**
      * Get the state.
      * 
      * <p>
-     *  In JSF 2.2 it is required by the specification that the view state hidden
-     *  input in each h:form has a unique id. So we have to call this method
-     *  multiple times as each h:form needs to generate the element id
-     *  for itself.
+     * In JSF 2.2 it is required by the specification that the view state hidden input in each h:form has a unique id. So we
+     * have to call this method multiple times as each h:form needs to generate the element id for itself.
      * </p>
      * 
      * @param stateManager the state manager.
      * @param origWriter the original response writer.
      * @return the state.
-     * @throws IOException when an I/O error occurs. 
+     * @throws IOException when an I/O error occurs.
      */
     private StringBuilder getState(StateManager stateManager, ResponseWriter origWriter) throws IOException {
-        FastStringWriter stateWriter =
-                new FastStringWriter((stateManager.isSavingStateInClient(
-                        context)) ? bufSize : 128);
+        FastStringWriter stateWriter = new FastStringWriter((stateManager.isSavingStateInClient(context)) ? bufSize : 128);
         context.setResponseWriter(origWriter.cloneWithWriter(stateWriter));
-        if(state == null) {
+        if (state == null) {
             state = stateManager.saveView(context);
         }
         stateManager.writeState(context, state);
@@ -316,19 +282,15 @@ final class WriteBehindStateWriter extends Writer {
         return stateBuilder;
     }
 
-
     /**
      * @param builder buffered content
      * @param offset the offset to start the search from
      * @return the index of the next delimiter, if any
      */
-    private static int getNextDelimiterIndex(StringBuilder builder,
-                                             int offset) {
+    private static int getNextDelimiterIndex(StringBuilder builder, int offset) {
 
-        return builder.indexOf(RIConstants.SAVESTATE_FIELD_DELIMITER,
-                               offset);
+        return builder.indexOf(RIConstants.SAVESTATE_FIELD_DELIMITER, offset);
 
     }
 
 }
-

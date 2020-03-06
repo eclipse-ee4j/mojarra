@@ -24,9 +24,7 @@ import jakarta.faces.view.facelets.ComponentHandler;
  */
 public class StylesheetResourceHandler extends ComponentHandler {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public StylesheetResourceHandler(ComponentConfig config) {
 

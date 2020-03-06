@@ -38,9 +38,11 @@ import jakarta.faces.event.WebsocketEvent.Opened;
 /**
  * <p class="changed_added_2_3">
  * The CDI annotation <code>&#64;</code>{@link Push} allows you to inject a {@link PushContext} associated with a given
- *  <code>&lt;f:websocket&gt;</code> channel in any container managed artifact in WAR.
+ * <code>&lt;f:websocket&gt;</code> channel in any container managed artifact in WAR.
+ * 
  * <pre>
- * &#64;Inject &#64;Push
+ * &#64;Inject
+ * &#64;Push
  * private PushContext channelName;
  * </pre>
  * 
@@ -48,6 +50,7 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * <h3 id="configuration"><a href="#configuration">Configuration</a></h3>
  * <p>
  * First enable the web socket endpoint by below boolean context parameter in <code>web.xml</code>.
+ * 
  * <pre>
  * &lt;context-param&gt;
  *     &lt;param-name&gt;jakarta.faces.ENABLE_WEBSOCKET_ENDPOINT&lt;/param-name&gt;
@@ -60,13 +63,15 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * <p>
  * Declare <strong><code>&lt;f:websocket&gt;</code></strong> tag in the Jakarta Server Faces view with at least a
  * <strong><code>channel</code></strong> name and an <strong><code>onmessage</code></strong> JavaScript listener
- * function. The channel name may not be a Jakarta Expression Language expression and it may only contain alphanumeric characters, hyphens,
- * underscores and periods.
+ * function. The channel name may not be a Jakarta Expression Language expression and it may only contain alphanumeric
+ * characters, hyphens, underscores and periods.
  * <p>
  * Here's an example which refers an existing JavaScript listener function.
+ * 
  * <pre>
  * &lt;f:websocket channel="someChannel" onmessage="someWebsocketListener" /&gt;
  * </pre>
+ * 
  * <pre>
  * function someWebsocketListener(message, channel, event) {
  *     console.log(message);
@@ -74,6 +79,7 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * </pre>
  * <p>
  * Here's an example which declares an inline JavaScript listener function.
+ * 
  * <pre>
  * &lt;f:websocket channel="someChannel" onmessage="function(message) { console.log(message); }" /&gt;
  * </pre>
@@ -89,6 +95,7 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * In case your server is configured to run WS container on a different TCP port than the HTTP container, then you can
  * use the optional <strong><code>jakarta.faces.WEBSOCKET_ENDPOINT_PORT</code></strong> integer context parameter in
  * <code>web.xml</code> to explicitly specify the port.
+ * 
  * <pre>
  * &lt;context-param&gt;
  *     &lt;param-name&gt;jakarta.faces.WEBSOCKET_ENDPOINT_PORT&lt;/param-name&gt;
@@ -108,8 +115,10 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * annotation on the given channel name in any CDI/container managed artifact such as <code>@Named</code>,
  * <code>@WebServlet</code>, etc wherever you'd like to send a push message and then invoke
  * <strong>{@link PushContext#send(Object)}</strong> with any Java object representing the push message.
+ * 
  * <pre>
- * &#64;Inject &#64;Push
+ * &#64;Inject
+ * &#64;Push
  * private PushContext someChannel;
  *
  * public void sendMessage(Object message) {
@@ -120,19 +129,21 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * By default the name of the channel is taken from the name of the variable into which injection takes place. The
  * channel name can be optionally specified via the <code>channel</code> attribute. The example below injects the push
  * context for channel name <code>foo</code> into a variable named <code>bar</code>.
+ * 
  * <pre>
- * &#64;Inject &#64;Push(channel="foo")
+ * &#64;Inject
+ * &#64;Push(channel = "foo")
  * private PushContext bar;
  * </pre>
  * <p>
  * The message object will be encoded as JSON and be delivered as <code>message</code> argument of the
- * <code>onmessage</code> JavaScript listener function associated with the <code>channel</code> name. It can be a
- * plain vanilla <code>String</code>, but it can also be a collection, map and even a javabean.
+ * <code>onmessage</code> JavaScript listener function associated with the <code>channel</code> name. It can be a plain
+ * vanilla <code>String</code>, but it can also be a collection, map and even a javabean.
  * <p>
  * Although web sockets support two-way communication, the <code>&lt;f:websocket&gt;</code> push is designed for one-way
- * communication, from server to client. In case you intend to send some data from client to server, continue
- * using Jakarta Server Faces ajax the usual way. This has among others the advantage of maintaining the Jakarta Server Faces view
- * state, the HTTP session and, importantly, all security constraints on business service methods.
+ * communication, from server to client. In case you intend to send some data from client to server, continue using
+ * Jakarta Server Faces ajax the usual way. This has among others the advantage of maintaining the Jakarta Server Faces
+ * view state, the HTTP session and, importantly, all security constraints on business service methods.
  *
  *
  * <h3 id="scopes-and-users"><a href="#scopes-and-users">Scopes and users</a></h3>
@@ -144,6 +155,7 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * The optional <strong><code>scope</code></strong> attribute can be set to <code>session</code> to restrict the push
  * messages to all views in the current user session only. The push message can only be sent by the user itself and not
  * by the application.
+ * 
  * <pre>
  * &lt;f:websocket channel="someChannel" scope="session" ... /&gt;
  * </pre>
@@ -151,12 +163,13 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * The <code>scope</code> attribute can also be set to <code>view</code> to restrict the push messages to the current
  * view only. The push message will not show up in other views in the same session even if it's the same URL. The push
  * message can only be sent by the user itself and not by the application.
+ * 
  * <pre>
  * &lt;f:websocket channel="someChannel" scope="view" ... /&gt;
  * </pre>
  * <p>
- * The <code>scope</code> attribute may not be a Jakarta Expression Language expression and allowed values are <code>application</code>,
- * <code>session</code> and <code>view</code>, case insensitive.
+ * The <code>scope</code> attribute may not be a Jakarta Expression Language expression and allowed values are
+ * <code>application</code>, <code>session</code> and <code>view</code>, case insensitive.
  * <p>
  * Additionally, the optional <strong><code>user</code></strong> attribute can be set to the unique identifier of the
  * logged-in user, usually the login name or the user ID. This way the push message can be targeted to a specific user
@@ -165,12 +178,14 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * recommended.
  * <p>
  * E.g. when you're using container managed authentication or a related framework/library:
+ * 
  * <pre>
  * &lt;f:websocket channel="someChannel" user="#{request.remoteUser}" ... /&gt;
  * </pre>
  * <p>
- * Or when you have a custom user entity around in Jakarta Expression Language as <code>#{someLoggedInUser}</code> which has an <code>id</code>
- * property representing its identifier:
+ * Or when you have a custom user entity around in Jakarta Expression Language as <code>#{someLoggedInUser}</code> which
+ * has an <code>id</code> property representing its identifier:
+ * 
  * <pre>
  * &lt;f:websocket channel="someChannel" user="#{someLoggedInUser.id}" ... /&gt;
  * </pre>
@@ -181,8 +196,10 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * In the server side, the push message can be targeted to the user specified in the <code>user</code> attribute via
  * <strong>{@link PushContext#send(Object, Serializable)}</strong>. The push message can be sent by all users and the
  * application itself.
+ * 
  * <pre>
- * &#64;Inject &#64;Push
+ * &#64;Inject
+ * &#64;Push
  * private PushContext someChannel;
  *
  * public void sendMessage(Object message, User recipientUser) {
@@ -193,6 +210,7 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * <p>
  * Multiple users can be targeted by passing a {@link Collection} holding user identifiers to
  * <strong>{@link PushContext#send(Object, Collection)}</strong>.
+ * 
  * <pre>
  * public void sendMessage(Object message, Group recipientGroup) {
  *     Collection&lt;Long&gt; recipientUserIds = recipientGroup.getUserIds();
@@ -205,16 +223,19 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * <p>
  * You can use the optional <strong><code>connected</code></strong> attribute to control whether to auto-connect the web
  * socket or not.
+ * 
  * <pre>
  * &lt;f:websocket ... connected="#{bean.pushable}" /&gt;
  * </pre>
  * <p>
  * It defaults to <code>true</code> and it's under the covers interpreted as a JavaScript instruction whether to open or
- * close the web socket push connection. If the value is a Jakarta Expression Language expression and it becomes <code>false</code> during an
- * ajax request, then the push connection will explicitly be closed during oncomplete of that ajax request.
+ * close the web socket push connection. If the value is a Jakarta Expression Language expression and it becomes
+ * <code>false</code> during an ajax request, then the push connection will explicitly be closed during oncomplete of
+ * that ajax request.
  * <p>
- * You can also explicitly set it to <code>false</code> and manually open the push connection in client side by
- * invoking <strong><code>jsf.push.open(clientId)</code></strong>, passing the component's client ID.
+ * You can also explicitly set it to <code>false</code> and manually open the push connection in client side by invoking
+ * <strong><code>jsf.push.open(clientId)</code></strong>, passing the component's client ID.
+ * 
  * <pre>
  * &lt;h:commandButton ... onclick="jsf.push.open('foo')"&gt;
  *     &lt;f:ajax ... /&gt;
@@ -222,10 +243,10 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * &lt;f:websocket id="foo" channel="bar" scope="view" ... connected="false" /&gt;
  * </pre>
  * <p>
- * In case you intend to have an one-time push and don't expect more messages,
- * you can optionally explicitly close the push connection from client side by invoking
- * <strong><code>jsf.push.close(clientId)</code></strong>, passing the component's client ID. For example, in the
- * <code>onmessage</code> JavaScript listener function as below:
+ * In case you intend to have an one-time push and don't expect more messages, you can optionally explicitly close the
+ * push connection from client side by invoking <strong><code>jsf.push.close(clientId)</code></strong>, passing the
+ * component's client ID. For example, in the <code>onmessage</code> JavaScript listener function as below:
+ * 
  * <pre>
  * function someWebsocketListener(message) {
  *     // ...
@@ -240,9 +261,11 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * socket in client side. This will be invoked on the very first connection attempt, regardless of whether it will be
  * successful or not. This will not be invoked when the web socket auto-reconnects a broken connection after the first
  * successful connection.
+ * 
  * <pre>
  * &lt;f:websocket ... onopen="websocketOpenListener" /&gt;
  * </pre>
+ * 
  * <pre>
  * function websocketOpenListener(channel) {
  *     // ...
@@ -259,9 +282,11 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * close reason code <code>1000</code> (normal closure) or <code>1008</code> (policy violated), or the maximum reconnect
  * attempts has exceeded. This will not be invoked when the web socket can make an auto-reconnect attempt on a broken
  * connection after the first successful connection.
+ * 
  * <pre>
  * &lt;f:websocket ... onclose="websocketCloseListener" /&gt;
  * </pre>
+ * 
  * <pre>
  * function websocketCloseListener(code, channel, event) {
  *     if (code == -1) {
@@ -276,9 +301,9 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * <p>
  * The <code>onclose</code> JavaScript listener function will be invoked with three arguments:
  * <ul>
- * <li><code>code</code>: the close reason code as integer. If this is <code>-1</code>, then the web socket
- * is simply not <a href="http://caniuse.com/websockets">supported</a> by the client. If this is <code>1000</code>,
- * then it was normally closed. Else if this is not <code>1000</code>, then there may be an error. See also
+ * <li><code>code</code>: the close reason code as integer. If this is <code>-1</code>, then the web socket is simply
+ * not <a href="http://caniuse.com/websockets">supported</a> by the client. If this is <code>1000</code>, then it was
+ * normally closed. Else if this is not <code>1000</code>, then there may be an error. See also
  * <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> and {@link CloseCodes} API for
  * an elaborate list of all close codes.</li>
  * <li><code>channel</code>: the channel name.</li>
@@ -287,16 +312,17 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * </ul>
  * <p>
  * When a session or view scoped socket is automatically closed with close reason code <code>1000</code> by the server
- * (and thus not manually by the client via <code>jsf.push.close(clientId)</code>), then it means that the session
- * or view has expired.
+ * (and thus not manually by the client via <code>jsf.push.close(clientId)</code>), then it means that the session or
+ * view has expired.
  *
  *
  * <h3 id="events-server"><a href="#events-server">Events (server)</a></h3>
  * <p>
  * When a web socket has been opened, a new CDI <strong>{@link WebsocketEvent}</strong> will be fired with
  * <strong><code>&#64;</code>{@link Opened}</strong> qualifier. When a web socket has been closed, a new CDI
- * {@link WebsocketEvent} will be fired with <strong><code>&#64;</code>{@link Closed}</strong> qualifier. They can only be
- * observed and collected in an application scoped CDI bean as below.
+ * {@link WebsocketEvent} will be fired with <strong><code>&#64;</code>{@link Closed}</strong> qualifier. They can only
+ * be observed and collected in an application scoped CDI bean as below.
+ * 
  * <pre>
  * &#64;ApplicationScoped
  * public class WebsocketObserver {
@@ -323,10 +349,11 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * If the socket is declared in a page which is only restricted to logged-in users with a specific role, then you may
  * want to add the URL of the push handshake request URL to the set of restricted URLs.
  * <p>
- * The push handshake request URL is composed of the URI prefix <strong><code>/jakarta.faces.push/</code></strong>, followed
- * by channel name. So, in case of for example container managed security which has already restricted an example page
- * <code>/user/foo.xhtml</code> to logged-in users with the example role <code>USER</code> on the example URL pattern
- * <code>/user/*</code> in <code>web.xml</code> like below,
+ * The push handshake request URL is composed of the URI prefix <strong><code>/jakarta.faces.push/</code></strong>,
+ * followed by channel name. So, in case of for example container managed security which has already restricted an
+ * example page <code>/user/foo.xhtml</code> to logged-in users with the example role <code>USER</code> on the example
+ * URL pattern <code>/user/*</code> in <code>web.xml</code> like below,
+ * 
  * <pre>
  * &lt;security-constraint&gt;
  *     &lt;web-resource-collection&gt;
@@ -339,8 +366,10 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * &lt;/security-constraint&gt;
  * </pre>
  * <p>
- * .. and the page <code>/user/foo.xhtml</code> in turn contains a <code>&lt;f:websocket channel="foo"&gt;</code>, then you
- * need to add a restriction on push handshake request URL pattern of <code>/jakarta.faces.push/foo</code> like below.
+ * .. and the page <code>/user/foo.xhtml</code> in turn contains a <code>&lt;f:websocket channel="foo"&gt;</code>, then
+ * you need to add a restriction on push handshake request URL pattern of <code>/jakarta.faces.push/foo</code> like
+ * below.
+ * 
  * <pre>
  * &lt;security-constraint&gt;
  *     &lt;web-resource-collection&gt;
@@ -367,8 +396,9 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * 
  * <h3 id="ui"><a href="#ui">Ajax support</a></h3>
  * <p>
- * In case you'd like to perform complex UI updates depending on the received push message, then you can nest 
+ * In case you'd like to perform complex UI updates depending on the received push message, then you can nest
  * <code>&lt;f:ajax&gt;</code> inside <code>&lt;f:websocket&gt;</code>. Here's an example:
+ * 
  * <pre>
  * &lt;h:panelGroup id="foo"&gt;
  *     ... (some complex UI here) ...
@@ -382,11 +412,13 @@ import jakarta.faces.event.WebsocketEvent.Opened;
  * </pre>
  * <p>
  * Here, the push message simply represents the ajax event name. You can use any custom event name.
+ * 
  * <pre>
  * someChannel.send("someEvent");
  * </pre>
  * <p>
  * An alternative is to combine <code>&lt;w:websocket&gt;</code> with <code>&lt;h:commandScript&gt;</code>. E.g.
+ * 
  * <pre>
  * &lt;h:panelGroup id="foo"&gt;
  *     ... (some complex UI here) ...
@@ -417,6 +449,7 @@ public @interface Push {
      *
      * @return The name of the push channel.
      */
-    @Nonbinding String channel() default "";
+    @Nonbinding
+    String channel() default "";
 
 }

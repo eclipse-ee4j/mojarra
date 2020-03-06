@@ -33,8 +33,8 @@ import jakarta.faces.model.SelectItem;
 
 /**
  * <p>
- * Package private class for iterating over the set of {@link SelectItem}s for a parent
- * {@link UISelectMany} or {@link UISelectOne}.
+ * Package private class for iterating over the set of {@link SelectItem}s for a parent {@link UISelectMany} or
+ * {@link UISelectOne}.
  * </p>
  *
  */
@@ -61,8 +61,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
     /**
      * <p>
-     * Iterator over the SelectItem elements pointed at by a <code>UISelectItems</code> component,
-     * or <code>null</code>.
+     * Iterator over the SelectItem elements pointed at by a <code>UISelectItems</code> component, or <code>null</code>.
      * </p>
      */
     private Iterator<SelectItem> items;
@@ -75,8 +74,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
     private ListIterator<UIComponent> kids;
 
     /**
-     * Expose single SelectItems via an Iterator. This iterator will be reset/reused for each
-     * individual SelectItem instance encountered.
+     * Expose single SelectItems via an Iterator. This iterator will be reset/reused for each individual SelectItem instance
+     * encountered.
      */
     private SingleElementIterator singleItemIterator;
 
@@ -152,8 +151,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
     /**
      * <p>
-     * Initializes the <code>items</code> instance variable with an <code>Iterator</code>
-     * appropriate to the UISelectItem(s) value.
+     * Initializes the <code>items</code> instance variable with an <code>Iterator</code> appropriate to the UISelectItem(s)
+     * value.
      * </p>
      */
     private void initializeItems(Object kid) {
@@ -272,8 +271,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
     } // END SingleElementIterator
 
     /**
-     * Iterates over a <code>Map</code> of values exposing each entry as a SelectItem. Note that
-     * this will do so re-using the same SelectItem but changing the value and label as appropriate.
+     * Iterates over a <code>Map</code> of values exposing each entry as a SelectItem. Note that this will do so re-using
+     * the same SelectItem but changing the value and label as appropriate.
      */
     private static final class MapIterator implements Iterator<SelectItem> {
 
@@ -320,8 +319,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
     /**
      * <p>
-     * Base class to support iterating over Collections or Arrays that may or may not contain
-     * <code>SelectItem</code> instances.
+     * Base class to support iterating over Collections or Arrays that may or may not contain <code>SelectItem</code>
+     * instances.
      * </p>
      */
     private static abstract class GenericObjectSelectItemIterator implements Iterator<SelectItem> {
@@ -360,9 +359,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
         // ------------------------------------------------------ Nested Classes
 
         /**
-         * A <code>SelectItem</code> implementation to support generating unique
-         * <code>SelectItem</code> values based on <code>ValueExpressions</code> from the owning
-         * {@link UISelectItems} instance.
+         * A <code>SelectItem</code> implementation to support generating unique <code>SelectItem</code> values based on
+         * <code>ValueExpressions</code> from the owning {@link UISelectItems} instance.
          */
         @SuppressWarnings({ "serial" })
         private static final class GenericObjectSelectItem extends SelectItem {
@@ -401,8 +399,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
             private ValueExpression itemDisabled;
 
             /**
-             * Determines the value for the noSelectionOption property of the
-             * <code>SelectItem</code>/
+             * Determines the value for the noSelectionOption property of the <code>SelectItem</code>/
              */
             private ValueExpression noSelectionOption;
 
@@ -490,8 +487,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
     /**
      * Handles arrays of <code>SelectItem</code>s, generic Objects, or combintations of both.
      *
-     * A single <code>GenericObjectSelectItem</code> will be leverage for any
-     * non-<code>SelectItem</code> objects encountered.
+     * A single <code>GenericObjectSelectItem</code> will be leverage for any non-<code>SelectItem</code> objects
+     * encountered.
      */
     private static final class ArrayIterator extends GenericObjectSelectItemIterator {
 
@@ -546,8 +543,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
     /**
      * Handles Collections of <code>SelectItem</code>s, generic Objects, or combintations of both.
      *
-     * A single <code>GenericObjectSelectItem</code> will be leverage for any
-     * non-<code>SelectItem</code> objects encountered.
+     * A single <code>GenericObjectSelectItem</code> will be leverage for any non-<code>SelectItem</code> objects
+     * encountered.
      */
     private static final class IterableItemIterator extends GenericObjectSelectItemIterator {
 

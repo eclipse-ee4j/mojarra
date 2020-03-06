@@ -19,8 +19,9 @@ package jakarta.faces.component.behavior;
 import jakarta.faces.component.behavior.ClientBehavior;
 
 /**
- * <p class="changed_added_2_0">An enum that specifies hints that describes
- * the behavior of ClientBehavior implementations.</p>
+ * <p class="changed_added_2_0">
+ * An enum that specifies hints that describes the behavior of ClientBehavior implementations.
+ * </p>
  *
  * @see ClientBehavior#getHints ClientBehavior.getHints()
  *
@@ -28,11 +29,9 @@ import jakarta.faces.component.behavior.ClientBehavior;
  */
 public enum ClientBehaviorHint {
 
-  /** 
-   * Hint that indicates that ClientBehavior implementation posts back to the
-   * server.  Renderers that normally attach postback-related scripts
-   * may choose to omit such scripts when a submitting ClientBehavior is
-   * present.
-   */
-  SUBMITTING
+    /**
+     * Hint that indicates that ClientBehavior implementation posts back to the server. Renderers that normally attach
+     * postback-related scripts may choose to omit such scripts when a submitting ClientBehavior is present.
+     */
+    SUBMITTING
 }

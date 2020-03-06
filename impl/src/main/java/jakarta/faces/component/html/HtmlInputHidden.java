@@ -24,14 +24,15 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIInput;
 
 /**
- * <p>Represents an HTML <code>input</code> element
- * of type <code>hidden</code>.</p>
- * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Hidden</code>".
- * This value can be changed by calling the <code>setRendererType()</code> method.</p>
+ * <p>
+ * Represents an HTML <code>input</code> element of type <code>hidden</code>.
+ * </p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Hidden</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
 public class HtmlInputHidden extends UIInput {
-
-
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -40,22 +41,28 @@ public class HtmlInputHidden extends UIInput {
         setRendererType("jakarta.faces.Hidden");
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlInputHidden";
 
-
     protected enum PropertyKeys {
-;
+        ;
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
-}
+    }
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");

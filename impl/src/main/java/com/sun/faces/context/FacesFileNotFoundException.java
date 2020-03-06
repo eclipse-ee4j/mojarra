@@ -18,7 +18,6 @@ package com.sun.faces.context;
 
 import java.io.FileNotFoundException;
 
-
 /*
  * This exception thrown in cases when a resource is not found entirely
  * due to error originating in the user agent, as opposed to an error
@@ -40,7 +39,5 @@ public class FacesFileNotFoundException extends FileNotFoundException {
 
     public FacesFileNotFoundException() {
     }
-
-
 
 }

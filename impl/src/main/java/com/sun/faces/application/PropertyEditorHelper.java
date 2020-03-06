@@ -42,8 +42,7 @@ public class PropertyEditorHelper {
     }
 
     /**
-     * Convert the <code>textValue</code> to an object of type targetClass by delegating to a
-     * converter.
+     * Convert the <code>textValue</code> to an object of type targetClass by delegating to a converter.
      */
     public Object convertToObject(Class<?> targetClass, String textValue) {
         UIComponent component = getComponent();
@@ -64,8 +63,7 @@ public class PropertyEditorHelper {
     }
 
     /**
-     * Convert an object of type targetClass to text by delegating to a converter obtained from the
-     * Faces application.
+     * Convert an object of type targetClass to text by delegating to a converter obtained from the Faces application.
      */
     public String convertToString(Class<?> targetClass, Object value) {
         UIComponent component = getComponent();

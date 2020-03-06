@@ -61,9 +61,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
     private int responseBufferSize;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public JspViewHandlingStrategy() {
 
@@ -74,9 +72,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
         }
     }
 
-
     // ------------------------------------ Methods from ViewDeclarationLanguage
-
 
     /**
      * <p>
@@ -91,7 +87,8 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
-     * @see jakarta.faces.view.ViewDeclarationLanguage#buildView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#buildView(jakarta.faces.context.FacesContext,
+     * jakarta.faces.component.UIViewRoot)
      * @param context
      * @param view
      * @throws IOException
@@ -102,7 +99,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
         if (isViewPopulated(context, view)) {
             return;
         }
-        
+
         try {
             if (executePageToBuildView(context, view)) {
                 context.getExternalContext().responseFlushBuffer();
@@ -119,13 +116,14 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.log(FINE, "Completed building view for : \n" + view.getViewId());
         }
-        
+
         context.getApplication().publishEvent(context, PostAddToViewEvent.class, UIViewRoot.class, view);
         setViewPopulated(context, view);
     }
 
     /**
-     * @see jakarta.faces.view.ViewDeclarationLanguage#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#renderView(jakarta.faces.context.FacesContext,
+     * jakarta.faces.component.UIViewRoot)
      */
     @Override
     public void renderView(FacesContext context, UIViewRoot view) throws IOException {
@@ -148,21 +146,16 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
 
         ResponseWriter oldWriter = context.getResponseWriter();
 
-        WriteBehindStateWriter stateWriter =
-              new WriteBehindStateWriter(extContext.getResponseOutputWriter(),
-                                         context,
-                                         responseBufferSize);
+        WriteBehindStateWriter stateWriter = new WriteBehindStateWriter(extContext.getResponseOutputWriter(), context, responseBufferSize);
         ResponseWriter newWriter;
         if (null != oldWriter) {
             newWriter = oldWriter.cloneWithWriter(stateWriter);
         } else {
-            newWriter = renderKit.createResponseWriter(stateWriter,
-                                                       null,
-                                                       extContext.getRequestCharacterEncoding());
+            newWriter = renderKit.createResponseWriter(stateWriter, null, extContext.getRequestCharacterEncoding());
         }
         context.setResponseWriter(newWriter);
 
-        //  Don't call startDoc and endDoc on a partial response
+        // Don't call startDoc and endDoc on a partial response
         if (context.getPartialViewContext().isPartialRequest()) {
             doRenderView(context, view);
             try {
@@ -186,7 +179,6 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
             newWriter.endDocument();
         }
 
-
         // replace markers in the body content and write it to response.
 
         // flush directly to the response
@@ -204,11 +196,9 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
         // write any AFTER_VIEW_CONTENT to the response
         // side effect: AFTER_VIEW_CONTENT removed
         ViewHandlerResponseWrapper wrapper = (ViewHandlerResponseWrapper) RequestStateManager.remove(context, AFTER_VIEW_CONTENT);
-        
+
         if (null != wrapper) {
-            wrapper.flushToWriter(
-                extContext.getResponseOutputWriter(),
-                extContext.getResponseCharacterEncoding());
+            wrapper.flushToWriter(extContext.getResponseOutputWriter(), extContext.getResponseCharacterEncoding());
         }
 
         extContext.responseFlushBuffer();
@@ -218,31 +208,33 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId) {
         return null;
     }
-    
+
     /**
      * <p>
      * Not supported in JSP-based views.
      * </p>
      *
-     * @see jakarta.faces.view.ViewDeclarationLanguage#getComponentMetadata(jakarta.faces.context.FacesContext, jakarta.faces.application.Resource)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getComponentMetadata(jakarta.faces.context.FacesContext,
+     * jakarta.faces.application.Resource)
      */
     @Override
     public BeanInfo getComponentMetadata(FacesContext context, Resource componentResource) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * <p>
      * Not supported in JSP-based views.
      * </p>
      *
-     * @see jakarta.faces.view.ViewDeclarationLanguage#getScriptComponentResource(jakarta.faces.context.FacesContext, jakarta.faces.application.Resource)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getScriptComponentResource(jakarta.faces.context.FacesContext,
+     * jakarta.faces.application.Resource)
      */
     @Override
     public Resource getScriptComponentResource(FacesContext context, Resource componentResource) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * <p>
      * Not supported in JSP-based views.
@@ -254,7 +246,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     public Stream<String> getViews(FacesContext context, String path, ViewVisitOption... options) {
         return Stream.empty();
     }
-    
+
     /**
      * <p>
      * Not supported in JSP-based views.
@@ -266,15 +258,11 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     public Stream<String> getViews(FacesContext context, String path, int maxDepth, ViewVisitOption... options) {
         return Stream.empty();
     }
-    
-    
 
     // --------------------------------------- Methods from ViewHandlingStrategy
 
-    
     /**
-     * This {@link ViewHandlingStrategy} <em>should</em> be the last one queried
-     * and as such we return <code>true</code>.
+     * This {@link ViewHandlingStrategy} <em>should</em> be the last one queried and as such we return <code>true</code>.
      *
      * @see com.sun.faces.application.view.ViewHandlingStrategy#handlesViewId(String)
      */
@@ -283,45 +271,37 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
         return true;
     }
 
-    @Override 
+    @Override
     public String getId() {
         return JSP_VIEW_DECLARATION_LANGUAGE_ID;
     }
 
     // --------------------------------------------------------- Private Methods
 
-
     /**
-     * Execute the target view.  If the HTTP status code range is
-     * not 2xx, then return true to indicate the response should be
-     * immediately flushed by the caller so that conditions such as 404
-     * are properly handled.
+     * Execute the target view. If the HTTP status code range is not 2xx, then return true to indicate the response should
+     * be immediately flushed by the caller so that conditions such as 404 are properly handled.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param viewToExecute the view to build
-     * @return <code>true</code> if the response should be immediately flushed
-     *  to the client, otherwise <code>false</code>
+     * @return <code>true</code> if the response should be immediately flushed to the client, otherwise <code>false</code>
      * @throws java.io.IOException if an error occurs executing the page
      */
-    private boolean executePageToBuildView(FacesContext context,
-                                        UIViewRoot viewToExecute)
-    throws IOException {
+    private boolean executePageToBuildView(FacesContext context, UIViewRoot viewToExecute) throws IOException {
 
         if (null == context) {
-            String message = MessageUtils.getExceptionMessageString
-                    (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context");
             throw new NullPointerException(message);
         }
         if (null == viewToExecute) {
-            String message = MessageUtils.getExceptionMessageString
-                    (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "viewToExecute");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "viewToExecute");
             throw new NullPointerException(message);
         }
 
         ExternalContext extContext = context.getExternalContext();
 
         if ("/*".equals(RequestStateManager.get(context, RequestStateManager.INVOCATION_PATH))) {
-            throw new FacesException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.FACES_SERVLET_MAPPING_INCORRECT_ID));
+            throw new FacesException(MessageUtils.getExceptionMessageString(MessageUtils.FACES_SERVLET_MAPPING_INCORRECT_ID));
         }
 
         String requestURI = viewToExecute.getViewId();
@@ -335,9 +315,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
         // before the JSTL setBundle tag is called because that is when the
         // new LocalizationContext object is created based on the locale.
         if (extContext.getRequest() instanceof ServletRequest) {
-            Config.set((ServletRequest)
-            extContext.getRequest(),
-                       Config.FMT_LOCALE, context.getViewRoot().getLocale());
+            Config.set((ServletRequest) extContext.getRequest(), Config.FMT_LOCALE, context.getViewRoot().getLocale());
         }
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Before dispacthMessage to viewId " + requestURI);
@@ -350,20 +328,17 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
         ViewHandlerResponseWrapper wrapped = getWrapper(extContext);
         extContext.setResponse(wrapped);
 
-        try
-        {
+        try {
 
-          // build the view by executing the page
-          extContext.dispatch(requestURI);
+            // build the view by executing the page
+            extContext.dispatch(requestURI);
 
-          if (LOGGER.isLoggable(Level.FINE)) {
-              LOGGER.fine("After dispacthMessage to viewId " + requestURI);
-          }
-        }
-        finally
-        {
-          // replace the original response
-          extContext.setResponse(originalResponse);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("After dispacthMessage to viewId " + requestURI);
+            }
+        } finally {
+            // replace the original response
+            extContext.setResponse(originalResponse);
         }
 
         // Follow the JSTL 1.2 spec, section 7.4,
@@ -378,37 +353,41 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
 
         // Put the AFTER_VIEW_CONTENT into request scope
         // temporarily
-        RequestStateManager.set(context,
-                                RequestStateManager.AFTER_VIEW_CONTENT,
-                                wrapped);
+        RequestStateManager.set(context, RequestStateManager.AFTER_VIEW_CONTENT, wrapped);
 
         return false;
 
     }
 
-
-     /**
-     * <p>This is a separate method to account for handling the content
-     * after the view tag.</p>
+    /**
+     * <p>
+     * This is a separate method to account for handling the content after the view tag.
+     * </p>
      *
-     * <p>Create a new ResponseWriter around this response's Writer.
-     * Set it into the FacesContext, saving the old one aside.</p>
+     * <p>
+     * Create a new ResponseWriter around this response's Writer. Set it into the FacesContext, saving the old one aside.
+     * </p>
      *
-     * <p>call encodeBegin(), encodeChildren(), encodeEnd() on the
-     * argument <code>UIViewRoot</code>.</p>
+     * <p>
+     * call encodeBegin(), encodeChildren(), encodeEnd() on the argument <code>UIViewRoot</code>.
+     * </p>
      *
-     * <p>Restore the old ResponseWriter into the FacesContext.</p>
+     * <p>
+     * Restore the old ResponseWriter into the FacesContext.
+     * </p>
      *
-     * <p>Write out the after view content to the response's writer.</p>
+     * <p>
+     * Write out the after view content to the response's writer.
+     * </p>
      *
-     * <p>Flush the response buffer, and remove the after view content
-     * from the request scope.</p>
+     * <p>
+     * Flush the response buffer, and remove the after view content from the request scope.
+     * </p>
      *
      * @param context the <code>FacesContext</code> for the current request
      * @param viewToRender the view to render
      * @throws java.io.IOException if an error occurs rendering the view to the client
-     * @throws jakarta.faces.FacesException if some error occurs within the framework
-     *  processing
+     * @throws jakarta.faces.FacesException if some error occurs within the framework processing
      */
     private void doRenderView(FacesContext context, UIViewRoot viewToRender) throws IOException {
 
@@ -423,12 +402,11 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
         viewToRender.encodeAll(context);
     }
 
-
     /**
      * <p>
-     * Simple utility method to wrap the current response with the
-     * {@link ViewHandlerResponseWrapper}.
+     * Simple utility method to wrap the current response with the {@link ViewHandlerResponseWrapper}.
      * </p>
+     * 
      * @param extContext the {@link ExternalContext} for this request
      * @return the current response wrapped with ViewHandlerResponseWrapper
      */
@@ -443,4 +421,3 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
 }
-

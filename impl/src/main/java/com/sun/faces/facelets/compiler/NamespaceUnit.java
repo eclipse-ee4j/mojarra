@@ -32,7 +32,7 @@ final class NamespaceUnit extends CompilationUnit {
 
     private final Map ns = new HashMap();
     private final TagLibrary library;
-    
+
     public NamespaceUnit(TagLibrary library) {
         this.library = library;
     }
@@ -42,15 +42,14 @@ final class NamespaceUnit extends CompilationUnit {
         FaceletHandler next = this.getNextFaceletHandler();
         return new NamespaceHandler(next, this.library, this.ns);
     }
-    
+
     public void setNamespace(String prefix, String uri) {
         this.ns.put(prefix, uri);
     }
-    
+
     @Override
     public void addChild(CompilationUnit unit) {
         super.addChild(unit);
     }
-    
 
 }

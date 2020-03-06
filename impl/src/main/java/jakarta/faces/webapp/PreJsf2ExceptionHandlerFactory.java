@@ -37,30 +37,31 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
 
-
 /**
- * <p class="changed_added_2_0">This {@link ExceptionHandlerFactory} instance 
- * produces Jakarta Server Faces 1.2 compatible
- * {@link ExceptionHandler} instances.  The {@link ExceptionHandler#handle} 
- * method of the <code>ExceptionHandler</code> produced by this factory must 
- * meet the following requirements</p>
+ * <p class="changed_added_2_0">
+ * This {@link ExceptionHandlerFactory} instance produces Jakarta Server Faces 1.2 compatible {@link ExceptionHandler}
+ * instances. The {@link ExceptionHandler#handle} method of the <code>ExceptionHandler</code> produced by this factory
+ * must meet the following requirements
+ * </p>
  * <div class="changed_added_2_0">
  * 
  * <ul>
  * 
- * <li><p>Any
- * exceptions thrown before or after phase execution will be logged and 
- * swallowed.</p></li>
+ * <li>
+ * <p>
+ * Any exceptions thrown before or after phase execution will be logged and swallowed.
+ * </p>
+ * </li>
  * 
- * <li><p>The implementation must examine
- * the <code>Exception</code> within each of the unhandled exception
- * events.  If the <code>Exception</code> is an instance of
- * {@link UpdateModelException}, extract the {@link FacesMessage} from
- * the <code>UpdateModelException</code>.  Log a <code>SEVERE</code>
- * message to the log and queue the <code>FacesMessage</code> 
- * on the {@link FacesContext}, using the <code>clientId</code> of
- * the source component in a call to 
- * {@link FacesContext#addMessage(java.lang.String, jakarta.faces.application.FacesMessage)}</p></li>
+ * <li>
+ * <p>
+ * The implementation must examine the <code>Exception</code> within each of the unhandled exception events. If the
+ * <code>Exception</code> is an instance of {@link UpdateModelException}, extract the {@link FacesMessage} from the
+ * <code>UpdateModelException</code>. Log a <code>SEVERE</code> message to the log and queue the
+ * <code>FacesMessage</code> on the {@link FacesContext}, using the <code>clientId</code> of the source component in a
+ * call to {@link FacesContext#addMessage(java.lang.String, jakarta.faces.application.FacesMessage)}
+ * </p>
+ * </li>
  * 
  * </ul>
  * 
@@ -73,13 +74,11 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
     public PreJsf2ExceptionHandlerFactory() {
     }
 
-
     // ------------------------------------ Methods from ExceptionHandlerFactory
 
-
     /**
-     * @return a new {@link ExceptionHandler} that behaves in a fashion compatible
-     *  with specifications prior to Jakarta Server Faces 1.2
+     * @return a new {@link ExceptionHandler} that behaves in a fashion compatible with specifications prior to Jakarta
+     * Server Faces 1.2
      */
     @Override
     public ExceptionHandler getExceptionHandler() {
@@ -88,34 +87,24 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
     }
 
-
     // ---------------------------------------------------------- Nested Classes
-
 
     /**
      * Jakarta Server Faces 1.2-style <code>ExceptionHandler</code> implementation.
      */
     private static final class PreJsf2ExceptionHandler extends ExceptionHandler {
 
+        private static final Logger LOGGER = Logger.getLogger("jakarta.faces.webapp", "jakarta.faces.LogStrings");
 
-        private static final Logger LOGGER =
-              Logger.getLogger("jakarta.faces.webapp", "jakarta.faces.LogStrings");
-
-        private static final String LOG_BEFORE_KEY =
-              "servere.webapp.prejsf2.exception.handler.log_before";
-        private static final String LOG_AFTER_KEY =
-              "servere.webapp.prejsf2.exception.handler.log_after";
-        private static final String LOG_KEY =
-              "servere.webapp.prejsf2.exception.handler.log";
-
+        private static final String LOG_BEFORE_KEY = "servere.webapp.prejsf2.exception.handler.log_before";
+        private static final String LOG_AFTER_KEY = "servere.webapp.prejsf2.exception.handler.log_after";
+        private static final String LOG_KEY = "servere.webapp.prejsf2.exception.handler.log";
 
         private LinkedList<ExceptionQueuedEvent> unhandledExceptions;
         private LinkedList<ExceptionQueuedEvent> handledExceptions;
         private ExceptionQueuedEvent handled;
 
-
         // ------------------------------------------- Methods from ExceptionHandler
-
 
         /**
          * @see ExceptionHandler@getHandledExceptionQueuedEvent()
@@ -127,7 +116,6 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
         }
 
-
         /**
          * 
          * 
@@ -138,8 +126,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
             for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
                 ExceptionQueuedEvent event = i.next();
-                ExceptionQueuedEventContext context =
-                      (ExceptionQueuedEventContext) event.getSource();
+                ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
                 try {
                     Throwable t = context.getException();
                     if (isRethrown(t, (context.inBeforePhase() || context.inAfterPhase()))) {
@@ -160,8 +147,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
                 } finally {
                     if (handledExceptions == null) {
-                        handledExceptions =
-                              new LinkedList<>();
+                        handledExceptions = new LinkedList<>();
                     }
                     handledExceptions.add(event);
                     i.remove();
@@ -169,7 +155,6 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
             }
 
         }
-
 
         /**
          * @see jakarta.faces.context.ExceptionHandler#isListenerForSource(Object)
@@ -181,13 +166,11 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
         }
 
-
         /**
          * @see jakarta.faces.context.ExceptionHandler#processEvent(jakarta.faces.event.SystemEvent)
          */
         @Override
-        public void processEvent(SystemEvent event)
-              throws AbortProcessingException {
+        public void processEvent(SystemEvent event) throws AbortProcessingException {
 
             if (event != null) {
                 if (unhandledExceptions == null) {
@@ -197,7 +180,6 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
             }
 
         }
-
 
         /**
          * @see ExceptionHandler#getRootCause(Throwable)
@@ -225,19 +207,15 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
         }
 
-
         /**
          * @see jakarta.faces.context.ExceptionHandler#getUnhandledExceptionQueuedEvents()
          */
         @Override
         public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
 
-            return ((unhandledExceptions != null)
-                    ? unhandledExceptions
-                    : Collections.<ExceptionQueuedEvent>emptyList());
+            return ((unhandledExceptions != null) ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
 
         }
-
 
         /**
          * @return
@@ -247,21 +225,16 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
         @Override
         public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {
 
-            return ((handledExceptions != null)
-                    ? handledExceptions
-                    : Collections.<ExceptionQueuedEvent>emptyList());
+            return ((handledExceptions != null) ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
 
         }
 
-
         // --------------------------------------------------------- Private Methods
-
 
         /**
          * @param c <code>Throwable</code> implementation class
          *
-         * @return <code>true</code> if <code>c</code> is FacesException.class or
-         *         ELException.class
+         * @return <code>true</code> if <code>c</code> is FacesException.class or ELException.class
          */
         private boolean shouldUnwrap(Class<? extends Throwable> c) {
 
@@ -269,23 +242,19 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
 
         }
 
-
         private boolean isRethrown(Throwable t, boolean isBeforeOrAfterPhase) {
 
-            return (!isBeforeOrAfterPhase &&
-                    !(t instanceof AbortProcessingException) &&
-                    !(t instanceof UpdateModelException));
+            return (!isBeforeOrAfterPhase && !(t instanceof AbortProcessingException) && !(t instanceof UpdateModelException));
 
         }
 
-        
         private void log(ExceptionQueuedEventContext exceptionContext) {
 
             Throwable t = exceptionContext.getException();
             UIComponent c = exceptionContext.getComponent();
             if (t instanceof UpdateModelException) {
                 FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage message = ((UpdateModelException)t).getFacesMessage();
+                FacesMessage message = ((UpdateModelException) t).getFacesMessage();
                 LOGGER.log(Level.SEVERE, message.getSummary(), t.getCause());
                 context.addMessage(c.getClientId(context), message);
             } else {
@@ -294,14 +263,8 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
                 PhaseId phaseId = exceptionContext.getPhaseId();
                 String key = getLoggingKey(beforePhase, afterPhase);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE,
-                            key,
-                            new Object[]{t.getClass().getName(),
-                                        phaseId.toString(),
-                                        ((c != null)
-                                         ? c.getClientId(exceptionContext.getContext())
-                                         : ""),
-                                        t.getMessage()});
+                    LOGGER.log(Level.SEVERE, key, new Object[] { t.getClass().getName(), phaseId.toString(),
+                            ((c != null) ? c.getClientId(exceptionContext.getContext()) : ""), t.getMessage() });
                     LOGGER.log(Level.SEVERE, t.getMessage(), t);
                 }
             }
@@ -319,5 +282,5 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
         }
 
     } // END PreJsf2ExceptionHandler
-    
+
 }

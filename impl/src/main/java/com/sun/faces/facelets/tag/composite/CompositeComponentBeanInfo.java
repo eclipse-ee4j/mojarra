@@ -30,7 +30,6 @@ import java.util.List;
 
 import jakarta.faces.FacesException;
 
-
 public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanInfo, Externalizable {
 
     private BeanDescriptor descriptor = null;
@@ -47,12 +46,13 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanIn
     @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
         List<PropertyDescriptor> list = getPropertyDescriptorsList();
-        PropertyDescriptor [] result = new PropertyDescriptor[list.size()];
+        PropertyDescriptor[] result = new PropertyDescriptor[list.size()];
         list.toArray(result);
         return result;
     }
 
     private List<PropertyDescriptor> propertyDescriptors;
+
     public List<PropertyDescriptor> getPropertyDescriptorsList() {
 
         if (null == propertyDescriptors) {
@@ -61,9 +61,7 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanIn
         return propertyDescriptors;
     }
 
-
     // ----------------------------------------------Methods From Externalizable
-
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -80,25 +78,22 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanIn
         }
     }
 
-
     @Override
-    public void readExternal(ObjectInput in)
-            throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
         descriptor = new BeanDescriptor((Class) in.readObject());
         int size = (int) in.readObject();
         for (int i = 0; i < size; i++) {
-            
+
             try {
                 String name = (String) in.readObject();
-                CompositeAttributePropertyDescriptor pd = 
-                        new CompositeAttributePropertyDescriptor(name, null, null); // NOPMD
-                
+                CompositeAttributePropertyDescriptor pd = new CompositeAttributePropertyDescriptor(name, null, null); // NOPMD
+
                 Object type = in.readObject();
                 if (type != null) {
                     pd.setValue("type", type);
                 }
-                
+
                 getPropertyDescriptorsList().add(pd);
             } catch (IntrospectionException ex) {
                 throw new FacesException(ex);

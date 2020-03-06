@@ -77,17 +77,15 @@ public class WebsocketSessionManager {
 
     private static final long TOMCAT_WEB_SOCKET_RETRY_TIMEOUT = 10; // Milliseconds.
     private static final long TOMCAT_WEB_SOCKET_MAX_RETRIES = 100; // So, that's retrying for about 1 second.
-    private static final String WARNING_TOMCAT_WEB_SOCKET_BOMBED =
-        "Tomcat cannot handle concurrent push messages."
+    private static final String WARNING_TOMCAT_WEB_SOCKET_BOMBED = "Tomcat cannot handle concurrent push messages."
             + " A push message has been sent only after %s retries of " + TOMCAT_WEB_SOCKET_RETRY_TIMEOUT + "ms apart."
             + " Consider rate limiting sending push messages. For example, once every 500ms.";
-    private static final String ERROR_TOMCAT_WEB_SOCKET_BOMBED =
-        "Tomcat cannot handle concurrent push messages."
+    private static final String ERROR_TOMCAT_WEB_SOCKET_BOMBED = "Tomcat cannot handle concurrent push messages."
             + " A push message could NOT be sent after %s retries of " + TOMCAT_WEB_SOCKET_RETRY_TIMEOUT + "ms apart."
             + " Consider rate limiting sending push messages. For example, once every 500ms.";
 
     // Properties -----------------------------------------------------------------------------------------------------
-    
+
     private final ConcurrentMap<String, Collection<Session>> socketSessions = new ConcurrentHashMap<>();
 
     @Inject
@@ -97,6 +95,7 @@ public class WebsocketSessionManager {
 
     /**
      * Register given channel identifier.
+     * 
      * @param channelId The channel identifier to register.
      */
     protected void register(String channelId) {
@@ -107,6 +106,7 @@ public class WebsocketSessionManager {
 
     /**
      * Register given channel identifiers.
+     * 
      * @param channelIds The channel identifiers to register.
      */
     protected void register(Iterable<String> channelIds) {
@@ -119,6 +119,7 @@ public class WebsocketSessionManager {
      * On open, add given web socket session to the mapping associated with its channel identifier and returns
      * <code>true</code> if it's accepted (i.e. the channel identifier is known) and the same session hasn't been added
      * before, otherwise <code>false</code>.
+     * 
      * @param session The opened web socket session.
      * @return <code>true</code> if given web socket session is accepted and is new, otherwise <code>false</code>.
      */
@@ -141,13 +142,14 @@ public class WebsocketSessionManager {
     }
 
     /**
-     * Encode the given message object as JSON and send it to all open web socket sessions associated with given web
-     * socket channel identifier.
+     * Encode the given message object as JSON and send it to all open web socket sessions associated with given web socket
+     * channel identifier.
+     * 
      * @param channelId The web socket channel identifier.
      * @param message The push message object.
-     * @return The results of the send operation. If it returns an empty set, then there was no open session associated
-     * with given channel identifier. The returned futures will return <code>null</code> on {@link Future#get()} if the
-     * message was successfully delivered and otherwise throw {@link ExecutionException}.
+     * @return The results of the send operation. If it returns an empty set, then there was no open session associated with
+     * given channel identifier. The returned futures will return <code>null</code> on {@link Future#get()} if the message
+     * was successfully delivered and otherwise throw {@link ExecutionException}.
      */
     protected Set<Future<Void>> send(String channelId, Object message) {
         Collection<Session> sessions = (channelId != null) ? socketSessions.get(channelId) : null;
@@ -171,19 +173,16 @@ public class WebsocketSessionManager {
     private Future<Void> send(Session session, String text, boolean retrySendTomcatWebSocket) {
         try {
             return session.getAsyncRemote().sendText(text);
-        }
-        catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             // Awkward workaround for Tomcat not willing to queue/synchronize asyncRemote().
             // https://bz.apache.org/bugzilla/show_bug.cgi?id=56026
             if (session.getClass().getName().startsWith("org.apache.tomcat.websocket.") && e.getMessage().contains("[TEXT_FULL_WRITING]")) {
                 if (retrySendTomcatWebSocket) {
                     return CompletableFuture.supplyAsync(() -> retrySendTomcatWebSocket(session, text));
-                }
-                else {
+                } else {
                     return null;
                 }
-            }
-            else {
+            } else {
                 throw e;
             }
         }
@@ -213,8 +212,7 @@ public class WebsocketSessionManager {
                 }
 
                 return result.get();
-            }
-            catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 Thread.currentThread().interrupt();
                 cause = e;
                 break;
@@ -226,6 +224,7 @@ public class WebsocketSessionManager {
 
     /**
      * On close, remove given web socket session from the mapping.
+     * 
      * @param session The closed web socket session.
      * @param reason The close reason.
      */
@@ -239,6 +238,7 @@ public class WebsocketSessionManager {
 
     /**
      * Deregister given channel identifiers and explicitly close all open web socket sessions associated with it.
+     * 
      * @param channelIds The channel identifiers to deregister.
      */
     protected void deregister(Iterable<String> channelIds) {
@@ -250,8 +250,7 @@ public class WebsocketSessionManager {
                     if (session.isOpen()) {
                         try {
                             session.close(REASON_EXPIRED);
-                        }
-                        catch (IOException ignore) {
+                        } catch (IOException ignore) {
                             continue;
                         }
                     }
@@ -287,7 +286,8 @@ public class WebsocketSessionManager {
 
     private static void fireEvent(Session session, CloseReason reason, AnnotationLiteral<?> qualifier) {
         Serializable user = (Serializable) session.getUserProperties().get("user");
-        Util.getCdiBeanManager(FacesContext.getCurrentInstance()).fireEvent(new WebsocketEvent(getChannel(session), user, (reason != null) ? reason.getCloseCode() : null), qualifier);
+        Util.getCdiBeanManager(FacesContext.getCurrentInstance())
+                .fireEvent(new WebsocketEvent(getChannel(session), user, (reason != null) ? reason.getCloseCode() : null), qualifier);
     }
 
 }

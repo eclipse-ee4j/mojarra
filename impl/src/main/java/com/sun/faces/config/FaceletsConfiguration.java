@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 import jakarta.faces.context.FacesContext;
 
-
 /*
  * This read-only singleton class is vended by the WebConfiguration.
  * It is queried from any point in the program that needs to take action based
@@ -41,14 +40,12 @@ public class FaceletsConfiguration {
 
     private WebConfiguration config;
 
-    private  Map<String, String> faceletsProcessingMappings;
-
+    private Map<String, String> faceletsProcessingMappings;
 
     public FaceletsConfiguration(WebConfiguration config) {
         this.config = config;
 
-        faceletsProcessingMappings =
-                config.getFacesConfigOptionValue(WebConfiguration.WebContextInitParameter.FaceletsProcessingFileExtensionProcessAs);
+        faceletsProcessingMappings = config.getFacesConfigOptionValue(WebConfiguration.WebContextInitParameter.FaceletsProcessingFileExtensionProcessAs);
 
     }
 
@@ -69,10 +66,10 @@ public class FaceletsConfiguration {
 
         return currentModeIsXhtml;
     }
-    
+
     public boolean isOutputHtml5Doctype(String alias) {
         boolean currentModeIsHtml5 = true;
-        
+
         String extension = getExtension(alias);
 
         assert (null != faceletsProcessingMappings);
@@ -80,8 +77,7 @@ public class FaceletsConfiguration {
             String value = faceletsProcessingMappings.get(extension);
             currentModeIsHtml5 = value.equals("html5");
         }
-        
-        
+
         return currentModeIsHtml5;
     }
 
@@ -120,7 +116,7 @@ public class FaceletsConfiguration {
 
         result = (Boolean) context.getAttributes().get(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME);
         if (null == result) {
-        
+
             String extension = getExtension(context.getViewRoot().getViewId());
 
             assert (null != faceletsProcessingMappings);
@@ -130,8 +126,7 @@ public class FaceletsConfiguration {
             } else {
                 result = Boolean.TRUE;
             }
-            context.getAttributes().put(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME,
-                    result);
+            context.getAttributes().put(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME, result);
         }
 
         return result;
@@ -164,8 +159,7 @@ public class FaceletsConfiguration {
             }
         }
 
-        return (ext == null) ? "xhtml": ext;
+        return (ext == null) ? "xhtml" : ext;
     }
-
 
 }

@@ -41,12 +41,9 @@ import java.util.Map;
 
 public class SubviewTag extends UIComponentELTag {
 
-
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public SubviewTag() {
 
@@ -54,9 +51,7 @@ public class SubviewTag extends UIComponentELTag {
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public String getComponentType() {
@@ -65,7 +60,6 @@ public class SubviewTag extends UIComponentELTag {
 
     }
 
-   
     @Override
     public String getRendererType() {
 
@@ -73,69 +67,51 @@ public class SubviewTag extends UIComponentELTag {
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     @Override
     protected UIComponent createVerbatimComponentFromBodyContent() {
 
-        UIOutput verbatim = (UIOutput)
-              super.createVerbatimComponentFromBodyContent();
+        UIOutput verbatim = (UIOutput) super.createVerbatimComponentFromBodyContent();
         String value = null;
 
         FacesContext ctx = getFacesContext();
         Object response = ctx.getExternalContext().getResponse();
         // flush out any content above the view tag
-        Method customFlush = ReflectionUtils.lookupMethod(response.getClass(),
-                                                          "flushContentToWrappedResponse",
-                                                          RIConstants.EMPTY_CLASS_ARGS);
-        Method isBytes = ReflectionUtils.lookupMethod(response.getClass(),
-                                                      "isBytes",
-                                                      RIConstants.EMPTY_CLASS_ARGS);
-        Method isChars = ReflectionUtils.lookupMethod(response.getClass(),
-                                                      "isChars",
-                                                      RIConstants.EMPTY_CLASS_ARGS);
-        Method resetBuffers = ReflectionUtils.lookupMethod(response.getClass(),
-                                                           "resetBuffers",
-                                                           RIConstants.EMPTY_CLASS_ARGS);
-        Method getChars = ReflectionUtils.lookupMethod(response.getClass(),
-                                                       "getChars",
-                                                       RIConstants.EMPTY_CLASS_ARGS);
+        Method customFlush = ReflectionUtils.lookupMethod(response.getClass(), "flushContentToWrappedResponse", RIConstants.EMPTY_CLASS_ARGS);
+        Method isBytes = ReflectionUtils.lookupMethod(response.getClass(), "isBytes", RIConstants.EMPTY_CLASS_ARGS);
+        Method isChars = ReflectionUtils.lookupMethod(response.getClass(), "isChars", RIConstants.EMPTY_CLASS_ARGS);
+        Method resetBuffers = ReflectionUtils.lookupMethod(response.getClass(), "resetBuffers", RIConstants.EMPTY_CLASS_ARGS);
+        Method getChars = ReflectionUtils.lookupMethod(response.getClass(), "getChars", RIConstants.EMPTY_CLASS_ARGS);
         boolean cont = true;
         if (isBytes == null) {
             cont = false;
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE,
-                           "jsf.core.taglib.subviewtag.interweaving_failed_isbytes");
+                LOGGER.log(Level.FINE, "jsf.core.taglib.subviewtag.interweaving_failed_isbytes");
             }
         }
         if (isChars == null) {
             cont = false;
-             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE,
-                           "jsf.core.taglib.subviewtag.interweaving_failed_ischars");
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "jsf.core.taglib.subviewtag.interweaving_failed_ischars");
             }
         }
         if (resetBuffers == null) {
             cont = false;
-             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE,
-                           "jsf.core.taglib.subviewtag.interweaving_failed_resetbuffers");
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "jsf.core.taglib.subviewtag.interweaving_failed_resetbuffers");
             }
         }
         if (getChars == null) {
             cont = false;
-             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE,
-                           "jsf.core.taglib.subviewtag.interweaving_failed_getchars");
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "jsf.core.taglib.subviewtag.interweaving_failed_getchars");
             }
         }
         if (customFlush == null) {
             cont = false;
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE,
-                           "jsf.core.taglib.viewtag.interweaving_failed");
+                LOGGER.log(Level.FINE, "jsf.core.taglib.viewtag.interweaving_failed");
             }
         }
 
@@ -180,34 +156,30 @@ public class SubviewTag extends UIComponentELTag {
     @Override
     public int doStartTag() throws JspException {
         int retValue;
-        
+
         retValue = super.doStartTag();
         getViewTagStack().push(this);
-        
+
         return retValue;
     }
 
-    /** 
-     *  @return Stack of UIComponentClassicTagBase instances, each of
-     *  which is a "view" tag.  The bottom most element on the stack is
-     *  the ViewTag itself.  Subsequent instances are SubviewTag
-     *  instances.
+    /**
+     * @return Stack of UIComponentClassicTagBase instances, each of which is a "view" tag. The bottom most element on the
+     * stack is the ViewTag itself. Subsequent instances are SubviewTag instances.
      */
     static Stack<UIComponentClassicTagBase> getViewTagStack() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
-        Map<String,Object> stateMap = RequestStateManager.getStateMap(ctx);
+        Map<String, Object> stateMap = RequestStateManager.getStateMap(ctx);
 
-        //noinspection unchecked
-        Stack<UIComponentClassicTagBase> result = (Stack<UIComponentClassicTagBase>)
-              stateMap.get(RequestStateManager.VIEWTAG_STACK_ATTR_NAME);
+        // noinspection unchecked
+        Stack<UIComponentClassicTagBase> result = (Stack<UIComponentClassicTagBase>) stateMap.get(RequestStateManager.VIEWTAG_STACK_ATTR_NAME);
         if (result == null) {
             result = new Stack<>();
             stateMap.put(RequestStateManager.VIEWTAG_STACK_ATTR_NAME, result);
         }
-        
+
         return result;
     }
-    
 
 }

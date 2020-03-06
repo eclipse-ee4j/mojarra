@@ -32,12 +32,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class FacesComponentTagLibrary extends LazyTagLibrary {
-    
+
     private static final Logger LOGGER = FacesLogger.FACELETS_COMPONENT.getLogger();
 
     private ApplicationAssociate appAss;
-    
-    
+
     public FacesComponentTagLibrary(String ns) {
         super(ns);
         if (null == ns) {
@@ -46,39 +45,37 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
         appAss = ApplicationAssociate.getCurrentInstance();
     }
 
-
     @Override
     public boolean containsTagHandler(String ns, String localName) {
         Util.notNull("namespace", ns);
         Util.notNull("tagName", localName);
-        
+
         if (!ns.equals(this.getNamespace())) {
             return false;
         }
-        
+
         // Check the cache maintained by our superclass...
         boolean containsTagHandler = super.containsTagHandler(ns, localName);
         if (!containsTagHandler) {
-            FacesComponentUsage matchingFacesComponentUsage = 
-                    findFacesComponentUsageForLocalName(ns, localName);
+            FacesComponentUsage matchingFacesComponentUsage = findFacesComponentUsageForLocalName(ns, localName);
             containsTagHandler = null != matchingFacesComponentUsage;
-            
+
         }
         return containsTagHandler;
     }
-    
+
     private FacesComponentUsage findFacesComponentUsageForLocalName(String ns, String localName) {
         FacesComponentUsage result = null;
-        
+
         Util.notNull("namespace", ns);
         Util.notNull("tagName", localName);
-        
+
         if (!ns.equals(this.getNamespace())) {
             return result;
         }
         List<FacesComponentUsage> componentsForNamespace = appAss.getComponentsForNamespace(ns);
         String tagName;
-        for (FacesComponentUsage cur: componentsForNamespace) {
+        for (FacesComponentUsage cur : componentsForNamespace) {
             FacesComponent curFacesComponent = cur.getAnnotation();
             tagName = curFacesComponent.tagName();
             // if the current entry has an explicitly declared tagName...
@@ -97,27 +94,24 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
                 }
             }
         }
-        
+
         return result;
     }
 
     @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
-        assert(containsTagHandler(ns, localName));
+        assert (containsTagHandler(ns, localName));
         TagHandler result = super.createTagHandler(ns, localName, tag);
         if (null == result) {
-            FacesComponentUsage facesComponentUsage = 
-                    findFacesComponentUsageForLocalName(ns, localName);
+            FacesComponentUsage facesComponentUsage = findFacesComponentUsageForLocalName(ns, localName);
             String componentType = facesComponentUsage.getAnnotation().value();
 
             if (null == componentType || 0 == componentType.length()) {
                 componentType = facesComponentUsage.getTarget().getSimpleName();
-                componentType = Character.toLowerCase(componentType.charAt(0)) + 
-                        componentType.substring(1);
+                componentType = Character.toLowerCase(componentType.charAt(0)) + componentType.substring(1);
             }
-            
-            UIComponent throwAwayComponent = FacesContext.getCurrentInstance().
-                    getApplication().createComponent(componentType);
+
+            UIComponent throwAwayComponent = FacesContext.getCurrentInstance().getApplication().createComponent(componentType);
             String rendererType = throwAwayComponent.getRendererType();
             super.addComponent(localName, componentType, rendererType);
             result = super.createTagHandler(ns, localName, tag);
@@ -129,11 +123,10 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
     public boolean tagLibraryForNSExists(String ns) {
         boolean result = false;
         List<FacesComponentUsage> componentsForNamespace = appAss.getComponentsForNamespace(ns);
-        
+
         result = !componentsForNamespace.isEmpty();
-        
+
         return result;
     }
 
-    
 }

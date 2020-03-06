@@ -36,17 +36,13 @@ import jakarta.faces.el.PropertyResolver;
 @SuppressWarnings("deprecation")
 public class PropertyResolverImpl extends PropertyResolver {
 
-
     private PropertyResolver delegate;
-
 
     // ------------------------------------------- Methods from PropertyResolver
 
-
     // Specified by jakarta.faces.el.PropertyResolver.getType(Object,int)
     @Override
-    public Class getType(Object base, int index)
-        throws EvaluationException, PropertyNotFoundException{
+    public Class getType(Object base, int index) throws EvaluationException, PropertyNotFoundException {
 
         // validates base != null and index >= 0
         assertInput(base, index);
@@ -64,22 +60,14 @@ public class PropertyResolverImpl extends PropertyResolver {
                 Object value = ((List) base).get(index);
                 return (value != null) ? value.getClass() : null;
             } else {
-                throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_PROPERTY_TYPE_ERROR_ID,
-                        base));
+                throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(MessageUtils.EL_PROPERTY_TYPE_ERROR_ID, base));
             }
         } catch (ArrayIndexOutOfBoundsException aioobe) {
-            throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID,
-                        base,
-                        index,
-                        Array.getLength(base)));
+            throw new PropertyNotFoundException(
+                    MessageUtils.getExceptionMessageString(MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID, base, index, Array.getLength(base)));
         } catch (IndexOutOfBoundsException ioobe) {
-           throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID,
-                        base,
-                        index,
-                        ((List)base).size()));
+            throw new PropertyNotFoundException(
+                    MessageUtils.getExceptionMessageString(MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID, base, index, ((List) base).size()));
         }
     }
 
@@ -95,7 +83,7 @@ public class PropertyResolverImpl extends PropertyResolver {
 
         try {
             FacesContext context = FacesContext.getCurrentInstance();
-            return context.getApplication().getELResolver().getType(context.getELContext(), base,property);
+            return context.getApplication().getELResolver().getType(context.getELContext(), base, property);
         } catch (jakarta.el.PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(pnfe);
         } catch (ELException elex) {
@@ -129,9 +117,7 @@ public class PropertyResolverImpl extends PropertyResolver {
                 return null;
             }
         } else {
-            throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_PROPERTY_TYPE_ERROR_ID,
-                        base));
+            throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(MessageUtils.EL_PROPERTY_TYPE_ERROR_ID, base));
         }
 
     }
@@ -146,7 +132,7 @@ public class PropertyResolverImpl extends PropertyResolver {
 
         try {
             FacesContext context = FacesContext.getCurrentInstance();
-            return context.getApplication().getELResolver().getValue(context.getELContext(), base,property);
+            return context.getApplication().getELResolver().getValue(context.getELContext(), base, property);
         } catch (jakarta.el.PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(pnfe);
         } catch (ELException elex) {
@@ -168,9 +154,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         if (base instanceof List || base.getClass().isArray()) {
             return false;
         } else {
-            throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_PROPERTY_TYPE_ERROR_ID,
-                        base));
+            throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(MessageUtils.EL_PROPERTY_TYPE_ERROR_ID, base));
         }
     }
 
@@ -184,7 +168,7 @@ public class PropertyResolverImpl extends PropertyResolver {
 
         try {
             FacesContext context = FacesContext.getCurrentInstance();
-            return context.getApplication().getELResolver().isReadOnly(context.getELContext(), base,property);
+            return context.getApplication().getELResolver().isReadOnly(context.getELContext(), base, property);
         } catch (ELException elex) {
             throw new EvaluationException(elex);
         }
@@ -201,38 +185,27 @@ public class PropertyResolverImpl extends PropertyResolver {
             delegate.setValue(base, index, value);
             return;
         }
-        
+
         FacesContext context = FacesContext.getCurrentInstance();
         Class<?> type = base.getClass();
         if (type.isArray()) {
             try {
-                Array.set(base, index, (context.getApplication().
-                    getExpressionFactory()).coerceToType(value, type
-                        .getComponentType()));
-            }
-            catch (ArrayIndexOutOfBoundsException aioobe) {
-                throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID,
-                        base,
-                        index,
-                        Array.getLength(base)));
+                Array.set(base, index, (context.getApplication().getExpressionFactory()).coerceToType(value, type.getComponentType()));
+            } catch (ArrayIndexOutOfBoundsException aioobe) {
+                throw new PropertyNotFoundException(
+                        MessageUtils.getExceptionMessageString(MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID, base, index, Array.getLength(base)));
             }
         } else if (base instanceof List) {
             try {
                 // Inherently not type safe, but nothing can be done about it.
-                //noinspection unchecked
+                // noinspection unchecked
                 ((List) base).set(index, value);
             } catch (IndexOutOfBoundsException ioobe) {
-                throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID,
-                        base,
-                        index,
-                        ((List)base).size()));
+                throw new PropertyNotFoundException(
+                        MessageUtils.getExceptionMessageString(MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID, base, index, ((List) base).size()));
             }
         } else {
-           throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_PROPERTY_TYPE_ERROR_ID,
-                        base));
+            throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(MessageUtils.EL_PROPERTY_TYPE_ERROR_ID, base));
         }
     }
 
@@ -248,18 +221,15 @@ public class PropertyResolverImpl extends PropertyResolver {
 
         try {
             FacesContext context = FacesContext.getCurrentInstance();
-            context.getApplication().getELResolver().setValue(context.getELContext(), base,property, value);
+            context.getApplication().getELResolver().setValue(context.getELContext(), base, property, value);
         } catch (jakarta.el.PropertyNotFoundException | jakarta.el.PropertyNotWritableException pnfe) {
             throw new PropertyNotFoundException(pnfe);
-        }
-        catch (ELException elex) {
+        } catch (ELException elex) {
             throw new EvaluationException(elex);
         }
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     public void setDelegate(PropertyResolver delegate) {
 
@@ -267,32 +237,24 @@ public class PropertyResolverImpl extends PropertyResolver {
 
     }
 
-    protected static void assertInput(Object base, Object property)
-            throws PropertyNotFoundException {
+    protected static void assertInput(Object base, Object property) throws PropertyNotFoundException {
         if (base == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base");
             throw new PropertyNotFoundException(message);
         }
         if (property == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
             throw new PropertyNotFoundException(message);
         }
     }
 
-    protected static void assertInput(Object base, int index)
-            throws PropertyNotFoundException {
+    protected static void assertInput(Object base, int index) throws PropertyNotFoundException {
         if (base == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base");
             throw new PropertyNotFoundException(message);
         }
         if (index < 0) {
-            throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(
-                        MessageUtils.EL_OUT_OF_BOUNDS_ERROR_ID,
-                        base,
-                        index));
+            throw new PropertyNotFoundException(MessageUtils.getExceptionMessageString(MessageUtils.EL_OUT_OF_BOUNDS_ERROR_ID, base, index));
         }
     }
 }

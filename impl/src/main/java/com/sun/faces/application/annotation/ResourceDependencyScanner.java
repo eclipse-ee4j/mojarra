@@ -28,9 +28,7 @@ import jakarta.faces.application.ResourceDependency;
  */
 class ResourceDependencyScanner implements Scanner {
 
-
     // ---------------------------------------------------- Methods from Scanner
-
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
@@ -38,7 +36,6 @@ class ResourceDependencyScanner implements Scanner {
         return ResourceDependency.class;
 
     }
-
 
     @Override
     public RuntimeAnnotationHandler scan(Class<?> clazz) {
@@ -57,7 +54,7 @@ class ResourceDependencyScanner implements Scanner {
         }
 
         return handler;
-        
+
     }
-    
+
 }

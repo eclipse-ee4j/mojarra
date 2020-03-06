@@ -30,27 +30,25 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p><strong
- * class="changed_modified_2_0_rev_a">MethodExpressionValidator</strong>
- * is a {@link Validator} that wraps a {@link MethodExpression}, and it
- * performs validation by executing a method on an object identified by
- * the {@link MethodExpression}.</p>
+ * <p>
+ * <strong class="changed_modified_2_0_rev_a">MethodExpressionValidator</strong> is a {@link Validator} that wraps a
+ * {@link MethodExpression}, and it performs validation by executing a method on an object identified by the
+ * {@link MethodExpression}.
+ * </p>
  */
 
 public class MethodExpressionValidator implements Validator, StateHolder {
 
-    private static final String BEANS_VALIDATION_AVAILABLE =
-            "jakarta.faces.private.BEANS_VALIDATION_AVAILABLE";
-    
-    private static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = 
-            "jakarta.faces.VALIDATE_EMPTY_FIELDS";
-    
+    private static final String BEANS_VALIDATION_AVAILABLE = "jakarta.faces.private.BEANS_VALIDATION_AVAILABLE";
+
+    private static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "jakarta.faces.VALIDATE_EMPTY_FIELDS";
+
     // ------------------------------------------------------ Instance Variables
 
     private MethodExpression methodExpression = null;
 
     private Boolean validateEmptyFields;
-    
+
     public MethodExpressionValidator() {
 
         super();
@@ -58,7 +56,9 @@ public class MethodExpressionValidator implements Validator, StateHolder {
     }
 
     /**
-     * <p>Construct a {@link Validator} that contains a {@link MethodExpression}.</p>
+     * <p>
+     * Construct a {@link Validator} that contains a {@link MethodExpression}.
+     * </p>
      *
      * @param methodExpression the expression to wrap
      */
@@ -73,12 +73,10 @@ public class MethodExpressionValidator implements Validator, StateHolder {
 
     /**
      * @throws NullPointerException {@inheritDoc}
-     * @throws ValidatorException   {@inheritDoc}
+     * @throws ValidatorException {@inheritDoc}
      */
     @Override
-    public void validate(FacesContext context,
-                         UIComponent component,
-                         Object value) throws ValidatorException {
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         if ((context == null) || (component == null)) {
             throw new NullPointerException();
@@ -86,7 +84,7 @@ public class MethodExpressionValidator implements Validator, StateHolder {
         if (validateEmptyFields(context) || value != null) {
             try {
                 ELContext elContext = context.getELContext();
-                methodExpression.invoke(elContext, new Object[]{context, component, value});
+                methodExpression.invoke(elContext, new Object[] { context, component, value });
             } catch (ELException ee) {
                 Throwable e = ee.getCause();
                 if (e instanceof ValidatorException) {
@@ -100,7 +98,6 @@ public class MethodExpressionValidator implements Validator, StateHolder {
 
     // ----------------------------------------------------- StateHolder Methods
 
-
     @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
@@ -111,7 +108,6 @@ public class MethodExpressionValidator implements Validator, StateHolder {
         return (values);
 
     }
-
 
     @Override
     public void restoreState(FacesContext context, Object state) {
@@ -125,9 +121,7 @@ public class MethodExpressionValidator implements Validator, StateHolder {
         methodExpression = (MethodExpression) values[0];
     }
 
-
     private boolean transientValue;
-
 
     @Override
     public boolean isTransient() {
@@ -135,7 +129,6 @@ public class MethodExpressionValidator implements Validator, StateHolder {
         return (this.transientValue);
 
     }
-
 
     @Override
     public void setTransient(boolean transientValue) {
@@ -167,8 +160,8 @@ public class MethodExpressionValidator implements Validator, StateHolder {
     private boolean isBeansValidationAvailable(FacesContext context) {
         boolean result = false;
 
-        Map<String,Object> appMap = context.getExternalContext().getApplicationMap();
-        
+        Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
+
         if (appMap.containsKey(BEANS_VALIDATION_AVAILABLE)) {
             result = (Boolean) appMap.get(BEANS_VALIDATION_AVAILABLE);
         } else {

@@ -68,16 +68,12 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     private final URL src;
 
     private IdMapper mapper;
-    
+
     private String savedDoctype;
-    
+
     private String savedXMLDecl;
 
-    public DefaultFacelet(DefaultFaceletFactory factory,
-                          ExpressionFactory el,
-                          URL src,
-                          String alias,
-                          FaceletHandler root) {
+    public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias, FaceletHandler root) {
 
         this.factory = factory;
         this.elFactory = el;
@@ -92,22 +88,21 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         if (null != DOCTYPE) {
             // This will happen on the request that causes the facelets to be compiled
             this.setSavedDoctype(DOCTYPE);
-        }        
+        }
 
         String XMLDECL = Util.getXMLDECLFromFacesContextAttributes(FacesContext.getCurrentInstance());
         if (null != XMLDECL) {
             // This will happen on the request that causes the facelets to be compiled
             this.setSavedXMLDecl(XMLDECL);
-        }        
-        
+        }
+
     }
 
     /**
      * @see com.sun.faces.facelets.Facelet#apply(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FacesContext facesContext, UIComponent parent)
-        throws IOException {
+    public void apply(FacesContext facesContext, UIComponent parent) throws IOException {
 
         IdMapper idMapper = IdMapper.getMapper(facesContext);
         boolean mapperSet = false;
@@ -115,7 +110,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
             IdMapper.setMapper(facesContext, this.mapper);
             mapperSet = true;
         }
-        
+
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this);
         this.refresh(parent);
         ComponentSupport.markForDeletion(parent);
@@ -126,7 +121,6 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         if (mapperSet) {
             IdMapper.setMapper(facesContext, null);
         }
-
 
     }
 
@@ -142,15 +136,11 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                     UIComponent cc = (UIComponent) cl.get(sz);
                     if (!cc.isTransient()) {
                         token = (ApplyToken) cc.getAttributes().get(APPLIED_KEY);
-                        if (token != null && token.time < this.createTime
-                                && token.alias.equals(this.alias)) {
+                        if (token != null && token.time < this.createTime && token.alias.equals(this.alias)) {
                             if (log.isLoggable(Level.INFO)) {
                                 DateFormat df = SimpleDateFormat.getTimeInstance();
-                                log.info("Facelet[" + this.alias
-                                        + "] was modified @ "
-                                        + df.format(new Date(this.createTime))
-                                        + ", flushing component applied @ "
-                                        + df.format(new Date(token.time)));
+                                log.info("Facelet[" + this.alias + "] was modified @ " + df.format(new Date(this.createTime))
+                                        + ", flushing component applied @ " + df.format(new Date(token.time)));
                             }
                             cl.remove(sz);
                         }
@@ -167,15 +157,11 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                     fc = (UIComponent) itr.next();
                     if (!fc.isTransient()) {
                         token = (ApplyToken) fc.getAttributes().get(APPLIED_KEY);
-                        if (token != null && token.time < this.createTime
-                                && token.alias.equals(this.alias)) {
+                        if (token != null && token.time < this.createTime && token.alias.equals(this.alias)) {
                             if (log.isLoggable(Level.INFO)) {
                                 DateFormat df = SimpleDateFormat.getTimeInstance();
-                                log.info("Facelet[" + this.alias
-                                        + "] was modified @ "
-                                        + df.format(new Date(this.createTime))
-                                        + ", flushing component applied @ "
-                                        + df.format(new Date(token.time)));
+                                log.info("Facelet[" + this.alias + "] was modified @ " + df.format(new Date(this.createTime))
+                                        + ", flushing component applied @ " + df.format(new Date(token.time)));
                             }
                             itr.remove();
                         }
@@ -188,13 +174,11 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     private void markApplied(UIComponent parent) {
         if (this.refreshPeriod > 0) {
             Iterator itr = parent.getFacetsAndChildren();
-            ApplyToken token =
-                  new ApplyToken(this.alias,
-                                 System.currentTimeMillis() + this.refreshPeriod);
+            ApplyToken token = new ApplyToken(this.alias, System.currentTimeMillis() + this.refreshPeriod);
             while (itr.hasNext()) {
                 UIComponent c = (UIComponent) itr.next();
                 if (!c.isTransient()) {
-                    Map<String,Object> attr = c.getAttributes();
+                    Map<String, Object> attr = c.getAttributes();
                     if (!attr.containsKey(APPLIED_KEY)) {
                         attr.put(APPLIED_KEY, token);
                     }
@@ -231,14 +215,11 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * Delegates resolution to DefaultFaceletFactory reference. Also, caches
-     * URLs for relative paths.
+     * Delegates resolution to DefaultFaceletFactory reference. Also, caches URLs for relative paths.
      * 
-     * @param path
-     *            a relative url path
+     * @param path a relative url path
      * @return URL pointing to destination
-     * @throws IOException
-     *             if there is a problem creating the URL for the path specified
+     * @throws IOException if there is a problem creating the URL for the path specified
      */
     private URL getRelativePath(String path) throws IOException {
         return this.factory.resolveURL(this.src, path);
@@ -254,46 +235,37 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * Given the passed FaceletContext, apply our child FaceletHandlers to the
-     * passed parent
+     * Given the passed FaceletContext, apply our child FaceletHandlers to the passed parent
      * 
      * @see FaceletHandler#apply(FaceletContext, UIComponent)
-     * @param ctx
-     *            the FaceletContext to use for applying our FaceletHandlers
-     * @param parent
-     *            the parent component to apply changes to
+     * @param ctx the FaceletContext to use for applying our FaceletHandlers
+     * @param parent the parent component to apply changes to
      * @throws IOException
      * @throws FacesException
      * @throws FaceletException
      * @throws ELException
      */
-    private void include(DefaultFaceletContext ctx, UIComponent parent)
-    throws IOException  {
+    private void include(DefaultFaceletContext ctx, UIComponent parent) throws IOException {
         this.refresh(parent);
         this.root.apply(new DefaultFaceletContext(ctx, this), parent);
         this.markApplied(parent);
     }
 
     /**
-     * Used for delegation by the DefaultFaceletContext. First pulls the URL
-     * from {@link #getRelativePath(String) getRelativePath(String)}, then
-     * calls
+     * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
+     * getRelativePath(String)}, then calls
      * {@link #include(DefaultFaceletContext, jakarta.faces.component.UIComponent, String)}.
      * 
      * @see FaceletContext#includeFacelet(UIComponent, String)
-     * @param ctx
-     *            FaceletContext to pass to the included Facelet
-     * @param parent
-     *            UIComponent to apply changes to
-     * @param path
-     *            relative path to the desired Facelet from the FaceletContext
+     * @param ctx FaceletContext to pass to the included Facelet
+     * @param parent UIComponent to apply changes to
+     * @param path relative path to the desired Facelet from the FaceletContext
      * @throws IOException
      * @throws FacesException
      * @throws FaceletException
      * @throws ELException
      */
-    public void include(DefaultFaceletContext ctx, UIComponent parent, String path)
-    throws IOException {
+    public void include(DefaultFaceletContext ctx, UIComponent parent, String path) throws IOException {
         URL url;
         if (path.equals(JAKARTA_FACES_ERROR_XHTML)) {
             if (isDevelopment(ctx)) {
@@ -315,19 +287,15 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * Grabs a DefaultFacelet from referenced DefaultFaceletFacotry
      * 
      * @see DefaultFaceletFactory#getFacelet(URL)
-     * @param ctx
-     *            FaceletContext to pass to the included Facelet
-     * @param parent
-     *            UIComponent to apply changes to
-     * @param url
-     *            URL source to include Facelet from
+     * @param ctx FaceletContext to pass to the included Facelet
+     * @param parent UIComponent to apply changes to
+     * @param url URL source to include Facelet from
      * @throws IOException
      * @throws FacesException
      * @throws FaceletException
      * @throws ELException
      */
-    public void include(DefaultFaceletContext ctx, UIComponent parent, URL url)
-    throws IOException {
+    public void include(DefaultFaceletContext ctx, UIComponent parent, URL url) throws IOException {
         DefaultFacelet f = (DefaultFacelet) this.factory.getFacelet(ctx.getFacesContext(), url);
         f.include(ctx, parent);
     }
@@ -337,8 +305,9 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
         public long time;
 
-        @SuppressWarnings({"UnusedDeclaration"})
-        public ApplyToken() { } // For Serialization
+        @SuppressWarnings({ "UnusedDeclaration" })
+        public ApplyToken() {
+        } // For Serialization
 
         public ApplyToken(String alias, long time) {
             this.alias = alias;
@@ -346,8 +315,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         }
 
         @Override
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             this.alias = in.readUTF();
             this.time = in.readLong();
         }
@@ -363,7 +331,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     public String toString() {
         return this.alias;
     }
-    
+
     // ---------------------------------------------------------- Helper Methods
 
     @Override
@@ -385,18 +353,14 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     public void setSavedXMLDecl(String savedXMLDecl) {
         this.savedXMLDecl = savedXMLDecl;
     }
-    
-    
-    
-    // --------------------------------------------------------- Private Methods
 
+    // --------------------------------------------------------- Private Methods
 
     private boolean isDevelopment(FaceletContext ctx) {
 
         return ctx.getFacesContext().isProjectStage(ProjectStage.Development);
 
     }
-
 
     private URL getErrorFacelet(ClassLoader loader) {
 

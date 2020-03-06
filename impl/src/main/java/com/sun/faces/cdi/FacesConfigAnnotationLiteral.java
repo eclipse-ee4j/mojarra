@@ -30,10 +30,9 @@ import jakarta.faces.annotation.FacesConfig;
 public class FacesConfigAnnotationLiteral extends AnnotationLiteral<FacesConfig> implements FacesConfig {
     private static final long serialVersionUID = 1L;
 
-	@Override
-	public Version version() {
-		return FacesConfig.Version.JSF_2_3;
-	}
-
+    @Override
+    public Version version() {
+        return FacesConfig.Version.JSF_2_3;
+    }
 
 }

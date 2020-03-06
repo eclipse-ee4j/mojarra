@@ -19,9 +19,10 @@ package jakarta.faces.flow;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_2"><strong>FlowHandlerFactory</strong> is
- * used by the {@link jakarta.faces.application.Application} to create the
- * singleton instance of {@link FlowHandler}.</p>
+ * <p class="changed_added_2_2">
+ * <strong>FlowHandlerFactory</strong> is used by the {@link jakarta.faces.application.Application} to create the
+ * singleton instance of {@link FlowHandler}.
+ * </p>
  * 
  * @since 2.2
  */
@@ -29,10 +30,11 @@ public abstract class FlowHandlerFactory {
 
     public FlowHandlerFactory() {
     }
-    
+
     /**
-     * <p class="changed_added_2_2">Create the singleton instance of
-     * {@link FlowHandler}.</p>
+     * <p class="changed_added_2_2">
+     * Create the singleton instance of {@link FlowHandler}.
+     * </p>
      * 
      * @param context the {@link FacesContext} for the current request
      * 
@@ -41,6 +43,5 @@ public abstract class FlowHandlerFactory {
      * @since 2.2
      */
     public abstract FlowHandler createFlowHandler(FacesContext context);
-
 
 }

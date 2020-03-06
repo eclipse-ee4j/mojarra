@@ -53,11 +53,10 @@ import java.util.regex.Pattern;
  * @version $Id$
  */
 public final class SAXCompiler extends Compiler {
-    
+
     private final static Pattern XmlDeclaration = Pattern.compile("^<\\?xml.+?version=['\"](.+?)['\"](.+?encoding=['\"]((.+?))['\"])?.*?\\?>");
 
-    private static class CompilationHandler extends DefaultHandler implements
-            LexicalHandler {
+    private static class CompilationHandler extends DefaultHandler implements LexicalHandler {
 
         protected final String alias;
 
@@ -73,16 +72,14 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void characters(char[] ch, int start, int length)
-                throws SAXException {
+        public void characters(char[] ch, int start, int length) throws SAXException {
             if (this.inDocument) {
                 this.unit.writeText(new String(ch, start, length));
             }
         }
 
         @Override
-        public void comment(char[] ch, int start, int length)
-                throws SAXException {
+        public void comment(char[] ch, int start, int length) throws SAXException {
             if (this.inDocument) {
                 if (!unit.getWebConfiguration().getFaceletsConfiguration().isConsumeComments(alias)) {
                     this.unit.writeComment(new String(ch, start, length));
@@ -94,9 +91,7 @@ public final class SAXCompiler extends Compiler {
             int len = attrs.getLength();
             TagAttributeImpl[] ta = new TagAttributeImpl[len];
             for (int i = 0; i < len; i++) {
-                ta[i] = new TagAttributeImpl(this.createLocation(),
-                        attrs.getURI(i), attrs.getLocalName(i), attrs
-                                .getQName(i), attrs.getValue(i));
+                ta[i] = new TagAttributeImpl(this.createLocation(), attrs.getURI(i), attrs.getLocalName(i), attrs.getQName(i), attrs.getValue(i));
             }
             return new TagAttributesImpl(ta);
         }
@@ -104,8 +99,7 @@ public final class SAXCompiler extends Compiler {
         protected Location createLocation() {
             Location result = null;
             if (null != locator) {
-                result = new Location(this.alias, this.locator.getLineNumber(),
-                    this.locator.getColumnNumber());
+                result = new Location(this.alias, this.locator.getLineNumber(), this.locator.getColumnNumber());
             } else {
                 if (log.isLoggable(Level.SEVERE)) {
                     log.log(Level.SEVERE, "Unable to create Location due to null locator instance variable.");
@@ -134,9 +128,8 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName)
-                throws SAXException {
-            
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+
             this.unit.popTag();
         }
 
@@ -152,30 +145,26 @@ public final class SAXCompiler extends Compiler {
         @Override
         public void fatalError(SAXParseException e) throws SAXException {
             if (this.locator != null) {
-            throw new SAXException("Error Traced[line: "
-                    + this.locator.getLineNumber() + "] " + e.getMessage());
+                throw new SAXException("Error Traced[line: " + this.locator.getLineNumber() + "] " + e.getMessage());
             } else {
                 throw e;
             }
         }
 
         @Override
-        public void ignorableWhitespace(char[] ch, int start, int length)
-                throws SAXException {
+        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
             if (this.inDocument) {
                 this.unit.writeWhitespace(new String(ch, start, length));
             }
         }
 
         @Override
-        public InputSource resolveEntity(String publicId, String systemId)
-                throws SAXException {
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
             String dtd = "com/sun/faces/xhtml/default.dtd";
-            /*if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) {
-                dtd = "xhtml1-transitional.dtd";
-            } else if (systemId != null && systemId.startsWith("file:/")) {
-                return new InputSource(systemId);
-            }*/
+            /*
+             * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else if (systemId
+             * != null && systemId.startsWith("file:/")) { return new InputSource(systemId); }
+             */
             URL url = this.getClass().getClassLoader().getResource(dtd);
             return new InputSource(url.toString());
         }
@@ -200,22 +189,19 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void startDTD(String name, String publicId, String systemId)
-                throws SAXException {
+        public void startDTD(String name, String publicId, String systemId) throws SAXException {
             // If there is a process-as value for the extension, only allow
             // the PI to be written if its value is xhtml
             FaceletsConfiguration facelets = this.unit.getWebConfiguration().getFaceletsConfiguration();
-            boolean processAsXhtml =
-                    facelets.isProcessCurrentDocumentAsFaceletsXhtml(alias);
-
+            boolean processAsXhtml = facelets.isProcessCurrentDocumentAsFaceletsXhtml(alias);
 
             if (this.inDocument && (processAsXhtml || facelets.isOutputHtml5Doctype(alias))) {
                 boolean isHtml5 = facelets.isOutputHtml5Doctype(alias);
                 // If we're in an ajax request, this is unnecessary and bugged
                 // RELEASE_PENDING - this is a hack, and should probably not be here -
                 // but the alternative is to somehow figure out how *not* to escape the "<!"
-                // within the cdata of the ajax response.  Putting the PENDING in here to
-                // remind me to have rlubke take a look.  But I'm stumped.
+                // within the cdata of the ajax response. Putting the PENDING in here to
+                // remind me to have rlubke take a look. But I'm stumped.
                 StringBuffer sb = new StringBuffer(64);
                 sb.append("<!DOCTYPE ").append(name);
                 if (!isHtml5 && publicId != null) {
@@ -227,7 +213,7 @@ public final class SAXCompiler extends Compiler {
                     sb.append(" SYSTEM \"").append(systemId).append("\"");
                 }
                 sb.append(">\n");
-                // It is essential to save the doctype here because this is the 
+                // It is essential to save the doctype here because this is the
                 // *only* time we will have access to it.
                 Util.saveDOCTYPEToFacesContextAttributes(sb.toString());
             }
@@ -235,14 +221,13 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void startElement(String uri, String localName, String qName,
-                Attributes attributes) throws SAXException {
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
             TagAttributes tagAttrs = this.createAttributes(attributes);
             Tag tag = new Tag(this.createLocation(), uri, localName, qName, tagAttrs);
             tagAttrs.setTag(tag);
             this.unit.pushTag(tag);
-            
+
         }
 
         @Override
@@ -250,25 +235,21 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void startPrefixMapping(String prefix, String uri)
-                throws SAXException {
+        public void startPrefixMapping(String prefix, String uri) throws SAXException {
             this.unit.pushNamespace(prefix, uri);
         }
 
         @Override
-        public void processingInstruction(String target, String data)
-                throws SAXException {
+        public void processingInstruction(String target, String data) throws SAXException {
             if (this.inDocument) {
 
                 // If there is a process-as value for the extension, only allow
                 // the PI to be written if its value is xhtml
-                boolean processAsXhtml =
-                        this.unit.getWebConfiguration().getFaceletsConfiguration().isProcessCurrentDocumentAsFaceletsXhtml(alias);
+                boolean processAsXhtml = this.unit.getWebConfiguration().getFaceletsConfiguration().isProcessCurrentDocumentAsFaceletsXhtml(alias);
 
                 if (processAsXhtml) {
                     StringBuffer sb = new StringBuffer(64);
-                    sb.append("<?").append(target).append(' ').append(data).append(
-                            "?>\n");
+                    sb.append("<?").append(target).append(' ').append(data).append("?>\n");
                     this.unit.writeInstruction(sb.toString());
                 }
             }
@@ -283,16 +264,13 @@ public final class SAXCompiler extends Compiler {
         }
     }
 
-
     private static class MetadataCompilationHandler extends CompilationHandler {
 
         private static final String METADATA_HANDLER = "metadata";
         private boolean processingMetadata = false;
         private boolean metadataProcessed = false;
 
-
         // -------------------------------------------------------- Constructors
-
 
         public MetadataCompilationHandler(CompilationManager unit, String alias) {
 
@@ -300,17 +278,14 @@ public final class SAXCompiler extends Compiler {
 
         }
 
-
         // ------------------------------------- Methods from CompilationHandler
 
-
         @Override
-        public void characters(char[] ch, int start, int length)
-        throws SAXException {
+        public void characters(char[] ch, int start, int length) throws SAXException {
             if (!metadataProcessed) {
                 if (processingMetadata) {
                     // PENDING consider optimizing this to be a no-op
-                    // on whitespace, but don't instantiate the String 
+                    // on whitespace, but don't instantiate the String
                     // just to test that.
                     this.unit.writeText(new String(ch, start, length));
                 }
@@ -319,8 +294,7 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void comment(char[] ch, int start, int length)
-        throws SAXException {
+        public void comment(char[] ch, int start, int length) throws SAXException {
             // no-op
         }
 
@@ -330,9 +304,8 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void ignorableWhitespace(char[] ch, int start, int length)
-        throws SAXException {
-           // no-op
+        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+            // no-op
         }
 
         @Override
@@ -341,8 +314,7 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void startDTD(String name, String publicId, String systemId)
-        throws SAXException {
+        public void startDTD(String name, String publicId, String systemId) throws SAXException {
             // no-op
         }
 
@@ -352,22 +324,15 @@ public final class SAXCompiler extends Compiler {
         }
 
         @Override
-        public void processingInstruction(String target, String data)
-        throws SAXException {
+        public void processingInstruction(String target, String data) throws SAXException {
             // no-op
         }
 
-
-
         @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes)
-        throws SAXException {
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
             if (!metadataProcessed) {
-                if (!processingMetadata && 
-                        (RIConstants.CORE_NAMESPACE.equals(uri) ||
-                         RIConstants.CORE_NAMESPACE_NEW.equals(uri)                      
-                        )) {
+                if (!processingMetadata && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri))) {
                     if (METADATA_HANDLER.equals(localName)) {
                         processingMetadata = true;
                     }
@@ -375,33 +340,27 @@ public final class SAXCompiler extends Compiler {
                 if (processingMetadata) {
                     super.startElement(uri, localName, qName, attributes);
                 }
-            } 
-            if ((localName.equals("view") && 
-                    (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri)))) {
+            }
+            if ((localName.equals("view") && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri)))) {
                 super.startElement(uri, localName, qName, attributes);
             }
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName)
-        throws SAXException {
+        public void endElement(String uri, String localName, String qName) throws SAXException {
 
             if (!metadataProcessed) {
                 if (processingMetadata) {
                     super.endElement(uri, localName, qName);
                 }
-                if (processingMetadata && 
-                        (RIConstants.CORE_NAMESPACE.equals(uri) ||
-                         RIConstants.CORE_NAMESPACE_NEW.equals(uri)
-                        )) {
+                if (processingMetadata && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri))) {
                     if (METADATA_HANDLER.equals(localName)) {
                         processingMetadata = false;
                         metadataProcessed = true;
                     }
                 }
             }
-            if ((localName.equals("view") && 
-                    (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri)))) {
+            if ((localName.equals("view") && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri)))) {
                 super.endElement(uri, localName, qName);
             }
         }
@@ -422,43 +381,35 @@ public final class SAXCompiler extends Compiler {
     }
 
     @Override
-    public FaceletHandler doMetadataCompile(URL src, String alias)
-    throws IOException {
+    public FaceletHandler doMetadataCompile(URL src, String alias) throws IOException {
 
         CompilationManager mgr = new CompilationManager("metadata/" + alias, this);
         CompilationHandler handler = new MetadataCompilationHandler(mgr, alias);
         return doCompile(mgr, handler, src, alias);
     }
 
-    protected FaceletHandler doCompile(CompilationManager mngr,
-                                       CompilationHandler handler,
-                                       URL src,
-                                       String alias)
-    throws IOException {
+    protected FaceletHandler doCompile(CompilationManager mngr, CompilationHandler handler, URL src, String alias) throws IOException {
 
         String encoding = getEncoding();
         try (InputStream is = new BufferedInputStream(src.openStream(), 1024);) {
-            
+
             writeXmlDecl(is, encoding, mngr);
             SAXParser parser = this.createSAXParser(handler);
             parser.parse(is, handler);
         } catch (SAXException e) {
-            throw new FaceletException("Error Parsing " + alias + ": "
-                    + e.getMessage(), e.getCause());
+            throw new FaceletException("Error Parsing " + alias + ": " + e.getMessage(), e.getCause());
         } catch (ParserConfigurationException e) {
-            throw new FaceletException("Error Configuring Parser " + alias
-                    + ": " + e.getMessage(), e.getCause());
+            throw new FaceletException("Error Configuring Parser " + alias + ": " + e.getMessage(), e.getCause());
         } catch (FaceletException e) {
             throw e;
         }
-        FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding,
-                mngr.getCompilationMessageHolder());
+        FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding, mngr.getCompilationMessageHolder());
         mngr.setCompilationMessageHolder(null);
 
         return result;
 
     }
-    
+
     private String getEncoding() {
         String result;
         String encodingFromRequest = null;
@@ -468,12 +419,11 @@ public final class SAXCompiler extends Compiler {
             encodingFromRequest = extContext.getRequestCharacterEncoding();
         }
         result = (null != encodingFromRequest) ? encodingFromRequest : RIConstants.CHAR_ENCODING;
-        
+
         return result;
     }
 
-    protected static void writeXmlDecl(InputStream is, String encoding, CompilationManager mngr)
-            throws IOException {
+    protected static void writeXmlDecl(InputStream is, String encoding, CompilationManager mngr) throws IOException {
         is.mark(128);
         try {
             byte[] b = new byte[128];
@@ -498,22 +448,18 @@ public final class SAXCompiler extends Compiler {
         }
     }
 
-    private SAXParser createSAXParser(CompilationHandler handler)
-            throws SAXException, ParserConfigurationException {
+    private SAXParser createSAXParser(CompilationHandler handler) throws SAXException, ParserConfigurationException {
         SAXParserFactory factory = Util.createSAXParserFactory();
         factory.setNamespaceAware(true);
-        factory.setFeature("http://xml.org/sax/features/namespace-prefixes",
-                true);
-        factory.setFeature("http://xml.org/sax/features/validation", this
-                .isValidating());
+        factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+        factory.setFeature("http://xml.org/sax/features/validation", this.isValidating());
         factory.setValidating(this.isValidating());
         if (handler.isDisallowDoctypeDeclSet()) {
             factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", handler.isDisallowDoctypeDecl());
         }
         SAXParser parser = factory.newSAXParser();
         XMLReader reader = parser.getXMLReader();
-        reader.setProperty("http://xml.org/sax/properties/lexical-handler",
-                handler);
+        reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
         reader.setErrorHandler(handler);
         reader.setEntityResolver(handler);
         return parser;

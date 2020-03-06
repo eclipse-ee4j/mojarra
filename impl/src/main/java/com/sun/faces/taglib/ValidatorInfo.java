@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
  */
 public class ValidatorInfo {
 
-    //*********************************************************************
+    // *********************************************************************
     // Validation and configuration state (protected)
     private String nameSpace;
     private String localName;
@@ -34,76 +34,61 @@ public class ValidatorInfo {
     private String prefix;
     private String uri;
 
-
     public void setNameSpace(String nameSpace) {
         this.nameSpace = nameSpace;
     }
-
 
     public String getNameSpace() {
         return nameSpace;
     }
 
-
     public void setLocalName(String localName) {
         this.localName = localName;
     }
-
 
     public String getLocalName() {
         return localName;
     }
 
-
     public void setQName(String qName) {
         this.qName = qName;
     }
-
 
     public String getQName() {
         return qName;
     }
 
-
     public void setAttributes(Attributes attributes) {
         this.attributes = attributes;
     }
-
 
     public Attributes getAttributes() {
         return attributes;
     }
 
-
     public void setValidator(FacesValidator validator) {
         this.validator = validator;
     }
-
 
     public FacesValidator getValidator() {
         return validator;
     }
 
-
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
-
 
     public String getPrefix() {
         return prefix;
     }
 
-
     public void setUri(String uri) {
         this.uri = uri;
     }
 
-
     public String getUri() {
         return uri;
     }
-
 
     @Override
     public String toString() {

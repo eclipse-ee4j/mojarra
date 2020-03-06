@@ -21,10 +21,10 @@ import jakarta.faces.component.UINamingContainer;
 
 /**
  * <p>
- * <strong class="changed_modified_2_0">NamingContainer</strong> is an interface that must be
- * implemented by any {@link UIComponent} that wants to be a naming container. Naming containers
- * affect the behavior of the {@link UIComponent#findComponent} and {@link UIComponent#getClientId}
- * methods; see those methods for further information.
+ * <strong class="changed_modified_2_0">NamingContainer</strong> is an interface that must be implemented by any
+ * {@link UIComponent} that wants to be a naming container. Naming containers affect the behavior of the
+ * {@link UIComponent#findComponent} and {@link UIComponent#getClientId} methods; see those methods for further
+ * information.
  * </p>
  */
 
@@ -34,8 +34,7 @@ public interface NamingContainer {
 
     /**
      * <p class="changed_modified_2_0">
-     * The separator character used in component identifiers to demarcate navigation to a child
-     * naming container.
+     * The separator character used in component identifiers to demarcate navigation to a child naming container.
      * </p>
      * 
      * @deprecated use {@link UINamingContainer#getSeparatorChar(jakarta.faces.context.FacesContext)}

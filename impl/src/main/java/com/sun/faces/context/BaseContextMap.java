@@ -30,15 +30,13 @@ import java.util.Enumeration;
  * This is the base Map for all Map instances required by @{link ExternalContext}.
  * </p>
  */
-abstract class BaseContextMap<V> extends AbstractMap<String,V> {
+abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
     private Set<Map.Entry<String, V>> entrySet;
     private Set<String> keySet;
     private Collection<V> values;
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     // Supported by maps if overridden
     @Override
@@ -46,13 +44,11 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         throw new UnsupportedOperationException();
     }
 
-
     // Supported by maps if overridden
     @Override
     public void putAll(Map t) {
         throw new UnsupportedOperationException();
     }
-
 
     @Override
     public Set<Map.Entry<String, V>> entrySet() {
@@ -63,7 +59,6 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         return entrySet;
     }
 
-
     @Override
     public Set<String> keySet() {
         if (keySet == null) {
@@ -72,7 +67,6 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
 
         return keySet;
     }
-
 
     @Override
     public Collection<V> values() {
@@ -83,21 +77,17 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         return values;
     }
 
-
     // Supported by maps if overridden
     @Override
     public V remove(Object key) {
         throw new UnsupportedOperationException();
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected boolean removeKey(Object key) {
         return (this.remove(key) != null);
     }
-
 
     protected boolean removeValue(Object value) {
         boolean valueRemoved = false;
@@ -105,7 +95,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
             return false;
         }
         if (containsValue(value)) {
-            for (Iterator i = entrySet().iterator(); i.hasNext(); ) {
+            for (Iterator i = entrySet().iterator(); i.hasNext();) {
                 Map.Entry e = (Map.Entry) i.next();
                 if (value.equals(e.getValue())) {
                     valueRemoved = (remove(e.getKey()) != null);
@@ -115,14 +105,13 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         return valueRemoved;
     }
 
-
     protected abstract Iterator<Map.Entry<String, V>> getEntryIterator();
+
     protected abstract Iterator<String> getKeyIterator();
+
     protected abstract Iterator<V> getValueIterator();
 
-
     // ----------------------------------------------------------- Inner Classes
-
 
     abstract class BaseSet<E> extends AbstractSet<E> {
 
@@ -137,7 +126,6 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
 
     }
 
-
     class EntrySet extends BaseSet<Map.Entry<String, V>> {
 
         @Override
@@ -147,12 +135,10 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
 
         @Override
         public boolean remove(Object o) {
-            return o instanceof Map.Entry
-                   && removeKey(((Map.Entry) o).getKey());
+            return o instanceof Map.Entry && removeKey(((Map.Entry) o).getKey());
         }
 
     }
-
 
     class KeySet extends BaseSet<String> {
 
@@ -160,7 +146,6 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         public Iterator<String> iterator() {
             return getKeyIterator();
         }
-
 
         @Override
         public boolean contains(Object o) {
@@ -173,7 +158,6 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         }
     }
 
-
     class ValueCollection extends AbstractCollection<V> {
 
         @Override
@@ -184,7 +168,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
             }
             return size;
         }
-        
+
         @Override
         public Iterator<V> iterator() {
             return getValueIterator();
@@ -195,7 +179,6 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
             return removeValue(o);
         }
     }
-
 
     abstract class BaseIterator<E> implements Iterator<E> {
 
@@ -219,8 +202,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         }
     }
 
-
-    class EntryIterator extends BaseIterator<Map.Entry<String,V>> {
+    class EntryIterator extends BaseIterator<Map.Entry<String, V>> {
 
         EntryIterator(Enumeration e) {
             super(e);
@@ -237,12 +219,11 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         }
 
         @Override
-        public Map.Entry<String,V> next() {
+        public Map.Entry<String, V> next() {
             nextKey();
             return new Entry<V>(currentKey, get(currentKey));
         }
     }
-
 
     class KeyIterator extends BaseIterator<String> {
 
@@ -265,7 +246,6 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
             return nextKey();
         }
     }
-
 
     class ValueIterator extends BaseIterator<V> {
 
@@ -290,31 +270,26 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
         }
     }
 
-
-    static class Entry<V> implements Map.Entry<String,V> {
+    static class Entry<V> implements Map.Entry<String, V> {
 
         // immutable Entry
         private final String key;
         private final V value;
-
 
         Entry(String key, V value) {
             this.key = key;
             this.value = value;
         }
 
-
         @Override
         public String getKey() {
             return key;
         }
 
-
         @Override
         public V getValue() {
             return value;
         }
-
 
         // No support of setting the value
         @Override
@@ -324,8 +299,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
 
         @Override
         public int hashCode() {
-            return ((key == null ? 0 : key.hashCode()) ^
-                (value == null ? 0 : value.hashCode()));
+            return ((key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode()));
         }
 
         @Override
@@ -338,15 +312,13 @@ abstract class BaseContextMap<V> extends AbstractMap<String,V> {
             Object inputKey = input.getKey();
             Object inputValue = input.getValue();
 
-            if (inputKey == key ||
-                (inputKey != null && inputKey.equals(key))) {
-                if (inputValue == value ||
-                    (inputValue != null && inputValue.equals(value))) {
+            if (inputKey == key || (inputKey != null && inputKey.equals(key))) {
+                if (inputValue == value || (inputValue != null && inputValue.equals(value))) {
                     return true;
                 }
             }
             return false;
         }
     }
-    
+
 }

@@ -21,37 +21,33 @@ import jakarta.faces.convert.Converter;
 
 /**
  * <p>
- * <strong class="changed_modified_2_0_rev_a changed_modified_2_2">UIOutput</strong> is a
- * {@link UIComponent} that has a value, optionally retrieved from a model tier bean via a value
- * expression, that is displayed to the user. The user cannot directly modify the rendered value; it
- * is for display purposes only.
+ * <strong class="changed_modified_2_0_rev_a changed_modified_2_2">UIOutput</strong> is a {@link UIComponent} that has a
+ * value, optionally retrieved from a model tier bean via a value expression, that is displayed to the user. The user
+ * cannot directly modify the rendered value; it is for display purposes only.
  * </p>
  *
  * <p>
- * During the <em>Render Response</em> phase of the request processing lifecycle, the current value
- * of this component must be converted to a String (if it is not already), according to the
- * following rules:
+ * During the <em>Render Response</em> phase of the request processing lifecycle, the current value of this component
+ * must be converted to a String (if it is not already), according to the following rules:
  * </p>
  * <ul>
- * <li>If the current value is not <code>null</code>, and is not already a <code>String</code>,
- * locate a {@link Converter} (if any) to use for the conversion, as follows:
+ * <li>If the current value is not <code>null</code>, and is not already a <code>String</code>, locate a
+ * {@link Converter} (if any) to use for the conversion, as follows:
  * <ul>
- * <li>If <code>getConverter()</code> returns a non-null {@link Converter}, use that one,
- * otherwise</li>
- * <li>If <code>Application.createConverter(Class)</code>, passing the current value's class,
- * returns a non-null {@link Converter}, use that one.</li>
+ * <li>If <code>getConverter()</code> returns a non-null {@link Converter}, use that one, otherwise</li>
+ * <li>If <code>Application.createConverter(Class)</code>, passing the current value's class, returns a non-null
+ * {@link Converter}, use that one.</li>
  * </ul>
  * </li>
  * <li>If the current value is not <code>null</code> and a {@link Converter} was located, call its
  * <code>getAsString()</code> method to perform the conversion.</li>
- * <li>If the current value is not <code>null</code> but no {@link Converter} was located, call
- * <code>toString()</code> on the current value to perform the conversion.</li>
+ * <li>If the current value is not <code>null</code> but no {@link Converter} was located, call <code>toString()</code>
+ * on the current value to perform the conversion.</li>
  * </ul>
  *
  * <p>
- * By default, the <code>rendererType</code> property must be set to
- * "<code>jakarta.faces.Text</code>". This value can be changed by calling the
- * <code>setRendererType()</code> method.
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Text</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
 public class UIOutput extends UIComponentBase implements ValueHolder {
@@ -91,7 +87,6 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
         super();
         setRendererType("jakarta.faces.Text");
     }
-    
 
     // -------------------------------------------------------------- Properties
 
@@ -99,7 +94,6 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
     public String getFamily() {
         return COMPONENT_FAMILY;
     }
-    
 
     // --------------------------------------- EditableValueHolder Properties
 
@@ -109,7 +103,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
         if (converter != null) {
             return converter;
         }
-        
+
         return (Converter) getStateHelper().eval(PropertyKeys.converter);
     }
 
@@ -158,16 +152,15 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
 
     /**
      * <p>
-     * In addition to the actions taken in {@link UIComponentBase} when
-     * {@link PartialStateHolder#markInitialState()} is called, check if the installed
-     * {@link Converter} is a PartialStateHolder and if it is, call
+     * In addition to the actions taken in {@link UIComponentBase} when {@link PartialStateHolder#markInitialState()} is
+     * called, check if the installed {@link Converter} is a PartialStateHolder and if it is, call
      * {@link jakarta.faces.component.PartialStateHolder#markInitialState()} on it.
      * </p>
      */
     @Override
     public void markInitialState() {
         super.markInitialState();
-        
+
         Converter<?> c = getConverter();
         if (c instanceof PartialStateHolder) {
             ((PartialStateHolder) c).markInitialState();
@@ -178,7 +171,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
     public void clearInitialState() {
         if (initialStateMarked()) {
             super.clearInitialState();
-            
+
             Converter<?> c = getConverter();
             if (c != null && c instanceof PartialStateHolder) {
                 ((PartialStateHolder) c).clearInitialState();
@@ -191,14 +184,13 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         Object converterState = null;
         if (converter != null) {
             if (!initialStateMarked() || getAttributes().containsKey(FORCE_FULL_CONVERTER_STATE)) {
                 /*
-                 * Check if our parent component has its initial state marked and we know we don't.
-                 * That means we are not using the same state saving algorithm. So we are going to
-                 * ALWAYS force to do FSS for the converter.
+                 * Check if our parent component has its initial state marked and we know we don't. That means we are not using the same
+                 * state saving algorithm. So we are going to ALWAYS force to do FSS for the converter.
                  */
                 if (getParent() != null && getParent().initialStateMarked()) {
                     getAttributes().put(FORCE_FULL_CONVERTER_STATE, true);
@@ -224,7 +216,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
         if (converterState != null || values != null) {
             return new Object[] { values, converterState };
         }
-        
+
         return values;
     }
 
@@ -238,7 +230,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
         if (state == null) {
             return;
         }
-        
+
         Object[] values = (Object[]) state;
         super.restoreState(context, values[0]);
         Object converterState = values[1];

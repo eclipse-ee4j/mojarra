@@ -28,8 +28,9 @@ import jakarta.faces.context.FacesContext;
 
 /**
  *
- * <p class="changed_added_2_0">A VisitContext implementation that is 
- * used when performing a full component tree visit.</p>
+ * <p class="changed_added_2_0">
+ * A VisitContext implementation that is used when performing a full component tree visit.
+ * </p>
  *
  * RELEASE_PENDING
  *
@@ -39,25 +40,22 @@ public class FullVisitContext extends VisitContext {
 
     /**
      * Creates a FullVisitorContext instance.
+     * 
      * @param facesContext the FacesContext for the current request
-     * @throws NullPointerException  if {@code facesContext}
-     *                               is {@code null}
-     */    
+     * @throws NullPointerException if {@code facesContext} is {@code null}
+     */
     public FullVisitContext(FacesContext facesContext) {
         this(facesContext, null);
     }
 
     /**
-     * Creates a FullVisitorContext instance with the specified
-     * hints.
+     * Creates a FullVisitorContext instance with the specified hints.
      *
      * @param facesContext the FacesContext for the current request
      * @param hints a the VisitHints for this visit
-     * @throws NullPointerException  if {@code facesContext}
-     *                               is {@code null}
-     */    
-    public FullVisitContext(FacesContext facesContext,
-                            Set<VisitHint> hints) {
+     * @throws NullPointerException if {@code facesContext} is {@code null}
+     */
+    public FullVisitContext(FacesContext facesContext, Set<VisitHint> hints) {
 
         if (facesContext == null) {
             throw new NullPointerException();
@@ -66,9 +64,7 @@ public class FullVisitContext extends VisitContext {
         this.facesContext = facesContext;
 
         // Copy and store hints - ensure unmodifiable and non-empty
-        EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty()))
-                                          ? EnumSet.noneOf(VisitHint.class)
-                                          : EnumSet.copyOf(hints);
+        EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty())) ? EnumSet.noneOf(VisitHint.class) : EnumSet.copyOf(hints);
 
         this.hints = Collections.unmodifiableSet(hintsEnumSet);
     }
@@ -118,11 +114,10 @@ public class FullVisitContext extends VisitContext {
      * @see VisitContext#invokeVisitCallback VisitContext.invokeVisitCallback()
      */
     @Override
-    public VisitResult invokeVisitCallback(UIComponent component, 
-                                           VisitCallback callback) {
+    public VisitResult invokeVisitCallback(UIComponent component, VisitCallback callback) {
 
         // Nothing interesting here - just invoke the callback.
-        // (PartialVisitContext.invokeVisitCallback() does all of the 
+        // (PartialVisitContext.invokeVisitCallback() does all of the
         // interesting work.)
         return callback.visit(this, component);
     }

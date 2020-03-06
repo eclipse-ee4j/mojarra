@@ -34,12 +34,11 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostAddToViewEvent;
 
 public class Stage {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private ProjectStage projectStage;
-    
-    
+
     /**
      * @see jakarta.faces.application.Application#getProjectStage()
      */
@@ -57,12 +56,9 @@ public class Stage {
 
         return projectStage;
     }
-    
-    
-    
+
     // ----------------------------------------------------------- Private methods
 
-    
     private String fetchProjectStageFromConfig() {
         WebConfiguration webConfig = WebConfiguration.getInstance(FacesContext.getCurrentInstance().getExternalContext());
         String value = webConfig.getEnvironmentEntry(WebConfiguration.WebEnvironmentEntry.ProjectStage);
@@ -96,6 +92,5 @@ public class Stage {
             projectStage = defaultStage;
         }
     }
-    
 
 }

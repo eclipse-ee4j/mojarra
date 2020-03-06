@@ -42,11 +42,11 @@ import java.util.logging.Logger;
 public final class DecorateHandler extends TagHandlerImpl implements TemplateClient {
 
     private static final Logger log = FacesLogger.FACELETS_DECORATE.getLogger();
-    
+
     private final TagAttribute template;
 
     private final Map handlers;
-    
+
     private final ParamHandler[] params;
 
     /**
@@ -84,12 +84,10 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctxObj, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
         VariableMapper orig = ctx.getVariableMapper();
         if (this.params != null) {
@@ -107,7 +105,7 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
             if (path.trim().length() == 0) {
                 throw new TagAttributeException(this.tag, this.template, "Invalid path : " + path);
             }
-            WebConfiguration webConfig = WebConfiguration.getInstance(); 
+            WebConfiguration webConfig = WebConfiguration.getInstance();
             if (path.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
                 throw new TagAttributeException(this.tag, this.template, "Invalid path, contract resources cannot be accessed this way : " + path);
             }

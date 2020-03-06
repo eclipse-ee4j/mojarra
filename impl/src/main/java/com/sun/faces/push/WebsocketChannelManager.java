@@ -56,12 +56,10 @@ public class WebsocketChannelManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String ERROR_INVALID_SCOPE =
-        "f:websocket 'scope' attribute '%s' does not represent a valid scope. It may not be an EL expression and allowed"
+    private static final String ERROR_INVALID_SCOPE = "f:websocket 'scope' attribute '%s' does not represent a valid scope. It may not be an EL expression and allowed"
             + " values are 'application', 'session' and 'view', case insensitive. The default is 'application'. When"
             + " 'user' attribute is specified, then scope defaults to 'session' and may not be 'application'.";
-    private static final String ERROR_DUPLICATE_CHANNEL =
-        "f:websocket channel '%s' is already registered on a different scope. Choose an unique channel name for a"
+    private static final String ERROR_DUPLICATE_CHANNEL = "f:websocket channel '%s' is already registered on a different scope. Choose an unique channel name for a"
             + " different channel (or shutdown all browsers and restart the server if you were just testing).";
 
     private static final int ESTIMATED_CHANNELS_PER_APPLICATION = 1;
@@ -105,22 +103,27 @@ public class WebsocketChannelManager implements Serializable {
 
     /**
      * Register given channel on given scope and returns the web socket channel identifier.
+     * 
      * @param context The involved faces context.
      * @param channel The web socket channel.
      * @param scope The web socket scope. Supported values are <code>application</code>, <code>session</code> and
      * <code>view</code>, case insensitive. If <code>null</code>, the default is <code>application</code>.
-     * @param user The user object representing the owner of the given channel. If not <code>null</code>, then scope
-     * may not be <code>application</code>.
+     * @param user The user object representing the owner of the given channel. If not <code>null</code>, then scope may not
+     * be <code>application</code>.
      * @return The web socket URL.
      * @throws IllegalArgumentException When the scope is invalid or when channel already exists on a different scope.
      */
     @SuppressWarnings("unchecked")
     public String register(FacesContext context, String channel, String scope, Serializable user) {
         switch (Scope.of(scope, user)) {
-            case APPLICATION: return register(context, null, channel, APPLICATION_SCOPE, sessionScope, getViewScope(false));
-            case SESSION: return register(context, user, channel, sessionScope, APPLICATION_SCOPE, getViewScope(false));
-            case VIEW: return register(context, user, channel, getViewScope(true), APPLICATION_SCOPE, sessionScope);
-            default: throw new UnsupportedOperationException();
+        case APPLICATION:
+            return register(context, null, channel, APPLICATION_SCOPE, sessionScope, getViewScope(false));
+        case SESSION:
+            return register(context, user, channel, sessionScope, APPLICATION_SCOPE, getViewScope(false));
+        case VIEW:
+            return register(context, user, channel, getViewScope(true), APPLICATION_SCOPE, sessionScope);
+        default:
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -151,12 +154,12 @@ public class WebsocketChannelManager implements Serializable {
         }
 
         socketSessions.register(channelId);
-        return url + "?" + channelId; 
+        return url + "?" + channelId;
     }
 
     /**
-     * When current session scope is about to be destroyed, deregister all session scope channels and explicitly close
-     * any open web sockets associated with it to avoid stale websockets. If any, also deregister session users.
+     * When current session scope is about to be destroyed, deregister all session scope channels and explicitly close any
+     * open web sockets associated with it to avoid stale websockets. If any, also deregister session users.
      */
     @PreDestroy
     protected void deregisterSessionScope() {
@@ -172,6 +175,7 @@ public class WebsocketChannelManager implements Serializable {
     /**
      * This helps the web socket channel manager to hold view scoped web socket channel identifiers registered by
      * <code>&lt;f:websocket&gt;</code>.
+     * 
      * @author Bauke Scholtz
      * @see WebsocketChannelManager
      * @since 2.3
@@ -183,8 +187,8 @@ public class WebsocketChannelManager implements Serializable {
         private ConcurrentMap<String, String> viewScope = new ConcurrentHashMap<>(ESTIMATED_CHANNELS_PER_VIEW);
 
         /**
-         * When current view scope is about to be destroyed, deregister all view scope channels and explicitly close
-         * any open web sockets associated with it to avoid stale websockets.
+         * When current view scope is about to be destroyed, deregister all view scope channels and explicitly close any open
+         * web sockets associated with it to avoid stale websockets.
          */
         @PreDestroy
         protected void deregisterViewScope() {

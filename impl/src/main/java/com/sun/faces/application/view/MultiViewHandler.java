@@ -75,8 +75,7 @@ import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
 
 /**
- * This {@link ViewHandler} implementation handles both JSP-based and
- * Facelets/PDL-based views.
+ * This {@link ViewHandler} implementation handles both JSP-based and Facelets/PDL-based views.
  */
 public class MultiViewHandler extends ViewHandler {
 
@@ -86,28 +85,25 @@ public class MultiViewHandler extends ViewHandler {
     private String[] configuredExtensions;
     private Set<String> protectedViews;
     private boolean extensionsSet; // For legacy JSF 1.2 support
-    
-    private ViewDeclarationLanguageFactory vdlFactory;
 
+    private ViewDeclarationLanguageFactory vdlFactory;
 
     // ------------------------------------------------------------ Constructors
 
-
     public MultiViewHandler() {
         WebConfiguration config = WebConfiguration.getInstance();
-              
+
         configuredExtensions = config.getConfiguredExtensions();
         extensionsSet = config.isSet(WebConfiguration.WebContextInitParameter.DefaultSuffix);
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();
     }
 
-
     // ------------------------------------------------ Methods from ViewHandler
 
-
     /**
-     * Call the default implementation of {@link jakarta.faces.application.ViewHandler#initView(jakarta.faces.context.FacesContext)}
+     * Call the default implementation of
+     * {@link jakarta.faces.application.ViewHandler#initView(jakarta.faces.context.FacesContext)}
      *
      * @see jakarta.faces.application.ViewHandler#initView(jakarta.faces.context.FacesContext)
      */
@@ -121,23 +117,22 @@ public class MultiViewHandler extends ViewHandler {
      * Call {@link ViewDeclarationLanguage#restoreView(jakarta.faces.context.FacesContext, String)}.
      * </p>
      *
-     * @see ViewHandler#restoreView(jakarta.faces.context.FacesContext, String)   
+     * @see ViewHandler#restoreView(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId) {
 
         notNull("context", context);
-        
+
         String physicalViewId = derivePhysicalViewId(context, viewId, false);
-        
-        return vdlFactory.getViewDeclarationLanguage(physicalViewId)
-                         .restoreView(context, physicalViewId);
+
+        return vdlFactory.getViewDeclarationLanguage(physicalViewId).restoreView(context, physicalViewId);
     }
-    
+
     /**
      * <p>
-     * Derive the physical view ID (i.e. the physical resource) and call
-     * call {@link ViewDeclarationLanguage#createView(jakarta.faces.context.FacesContext, String)}.
+     * Derive the physical view ID (i.e. the physical resource) and call call
+     * {@link ViewDeclarationLanguage#createView(jakarta.faces.context.FacesContext, String)}.
      * </p>
      *
      * @see ViewHandler#restoreView(jakarta.faces.context.FacesContext, String)
@@ -146,17 +141,17 @@ public class MultiViewHandler extends ViewHandler {
     public UIViewRoot createView(FacesContext context, String viewId) {
 
         notNull("context", context);
-        
+
         String physicalViewId = derivePhysicalViewId(context, viewId, false);
-        
-        return vdlFactory.getViewDeclarationLanguage(physicalViewId)
-                         .createView(context, physicalViewId);
+
+        return vdlFactory.getViewDeclarationLanguage(physicalViewId).createView(context, physicalViewId);
     }
-    
+
     /**
      * <p>
-     * Call {@link ViewDeclarationLanguage#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)}
-     * if the view can be rendered.
+     * Call
+     * {@link ViewDeclarationLanguage#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)} if
+     * the view can be rendered.
      * </p>
      *
      * @see ViewHandler#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)
@@ -167,8 +162,7 @@ public class MultiViewHandler extends ViewHandler {
         notNull("context", context);
         notNull("viewToRender", viewToRender);
 
-        vdlFactory.getViewDeclarationLanguage(viewToRender.getViewId())
-                  .renderView(context, viewToRender);
+        vdlFactory.getViewDeclarationLanguage(viewToRender.getViewId()).renderView(context, viewToRender);
     }
 
     /**
@@ -195,7 +189,7 @@ public class MultiViewHandler extends ViewHandler {
                 break;
             }
         }
-        
+
         // no match is found.
         if (result == null) {
             if (context.getApplication().getDefaultLocale() == null) {
@@ -204,7 +198,7 @@ public class MultiViewHandler extends ViewHandler {
                 result = context.getApplication().getDefaultLocale();
             }
         }
-        
+
         return result;
     }
 
@@ -223,15 +217,13 @@ public class MultiViewHandler extends ViewHandler {
         String result = RENDER_KIT_ID_PARAM.getValue(context);
 
         if (result == null) {
-            if (null ==
-                (result = context.getApplication().getDefaultRenderKitId())) {
+            if (null == (result = context.getApplication().getDefaultRenderKitId())) {
                 result = RenderKitFactory.HTML_BASIC_RENDER_KIT;
             }
         }
-        
+
         return result;
     }
-
 
     /**
      * <p>
@@ -244,25 +236,21 @@ public class MultiViewHandler extends ViewHandler {
     public void writeState(FacesContext context) throws IOException {
 
         notNull("context", context);
-        
+
         if (!context.getPartialViewContext().isAjaxRequest()) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.fine(
-                    "Begin writing marker for viewId " +
-                    context.getViewRoot().getViewId());
+                LOGGER.fine("Begin writing marker for viewId " + context.getViewRoot().getViewId());
             }
 
             WriteBehindStateWriter writer = WriteBehindStateWriter.getCurrentInstance();
             if (writer != null) {
                 writer.writingState();
             }
-            
+
             context.getResponseWriter().write(SAVESTATE_FIELD_MARKER);
-            
+
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.fine(
-                    "End writing marker for viewId " +
-                    context.getViewRoot().getViewId());
+                LOGGER.fine("End writing marker for viewId " + context.getViewRoot().getViewId());
             }
         }
     }
@@ -280,12 +268,12 @@ public class MultiViewHandler extends ViewHandler {
         // http://java.net/jira/browse/JAVASERVERFACES-2204
         // PENDING: this code is optimized to be fast to write.
         // It must be optimized to be fast to run.
-        
+
         // See git clone ssh://edburns@git.java.net/grizzly~git 1_9_36 for
         // how grizzly does this.
         ViewHandler viewHandler = context.getApplication().getViewHandler();
         Set<String> urlPatterns = viewHandler.getProtectedViewsUnmodifiable();
-        
+
         // Implement section 12.1 of the Servlet spec.
         boolean viewIdIsProtected = false;
         for (String urlPattern : urlPatterns) {
@@ -296,28 +284,27 @@ public class MultiViewHandler extends ViewHandler {
                 break;
             }
         }
-        
+
         if (viewIdIsProtected) {
             StringBuilder builder = new StringBuilder(result);
             // If the result already has a query string...
             if (result.contains("?")) {
-                // ...assume it also has one or more parameters, and 
+                // ...assume it also has one or more parameters, and
                 // append an additional parameter.
                 builder.append("&");
             } else {
                 // Otherwise, this is the first parameter in the result.
                 builder.append("?");
             }
-            
+
             String rkId = viewHandler.calculateRenderKitId(context);
             ResponseStateManager rsm = RenderKitUtils.getResponseStateManager(context, rkId);
             String tokenValue = rsm.getCryptographicallyStrongTokenFromSession(context);
-            builder.append(ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM)
-                   . append("=").append(tokenValue);
+            builder.append(ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM).append("=").append(tokenValue);
             result = builder.toString();
 
         }
-        
+
         return result;
     }
 
@@ -334,11 +321,11 @@ public class MultiViewHandler extends ViewHandler {
         if (context == null || path == null) {
             throw new NullPointerException();
         }
-        
+
         if (path.charAt(0) == '/') {
             return context.getExternalContext().getRequestContextPath() + path;
         }
-            
+
         return path;
     }
 
@@ -353,14 +340,14 @@ public class MultiViewHandler extends ViewHandler {
     }
 
     @Override
-    public String getBookmarkableURL(FacesContext context, String viewId, Map<String,List<String>> parameters, boolean includeViewParams) {
-        Map<String,List<String>> params;
+    public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
+        Map<String, List<String>> params;
         if (includeViewParams) {
             params = getFullParameterList(context, viewId, parameters);
         } else {
             params = parameters;
         }
-        
+
         ExternalContext ectx = context.getExternalContext();
         return ectx.encodeActionURL(ectx.encodeBookmarkableURL(Util.getViewHandler(context).getActionURL(context, viewId), params));
     }
@@ -390,9 +377,9 @@ public class MultiViewHandler extends ViewHandler {
         if (encodingFromContext == null) {
             encodingFromContext = (String) context.getViewRoot().getAttributes().get(FACELETS_ENCODING_KEY);
         }
-        
+
         String responseEncoding;
-        
+
         if (encodingFromContext == null) {
             try {
                 responseEncoding = context.getExternalContext().getResponseCharacterEncoding();
@@ -418,7 +405,7 @@ public class MultiViewHandler extends ViewHandler {
                     String value = it.next();
                     try {
                         value = URLDecoder.decode(value, responseEncoding);
-                    } catch(UnsupportedEncodingException e) {
+                    } catch (UnsupportedEncodingException e) {
                         throw new RuntimeException("Unable to decode");
                     }
                     values.add(value);
@@ -427,14 +414,14 @@ public class MultiViewHandler extends ViewHandler {
             }
             parameters = decodedParameters;
         }
-                
+
         Map<String, List<String>> params;
         if (includeViewParams) {
             params = getFullParameterList(context, viewId, parameters);
         } else {
             params = parameters;
         }
-        
+
         ExternalContext ectx = context.getExternalContext();
         return ectx.encodeActionURL(ectx.encodeRedirectURL(Util.getViewHandler(context).getActionURL(context, viewId), params));
     }
@@ -446,21 +433,15 @@ public class MultiViewHandler extends ViewHandler {
     public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
         return vdlFactory.getViewDeclarationLanguage(viewId);
     }
-    
+
     @Override
     public Stream<String> getViews(FacesContext context, String path, ViewVisitOption... options) {
-        return
-            vdlFactory.getAllViewDeclarationLanguages()
-                      .stream()
-                      .flatMap(vdl -> vdl.getViews(context, path, options));
+        return vdlFactory.getAllViewDeclarationLanguages().stream().flatMap(vdl -> vdl.getViews(context, path, options));
     }
-    
+
     @Override
     public Stream<String> getViews(FacesContext context, String path, int maxDepth, ViewVisitOption... options) {
-        return
-            vdlFactory.getAllViewDeclarationLanguages()
-                      .stream()
-                      .flatMap(vdl -> vdl.getViews(context, path, maxDepth, options));
+        return vdlFactory.getAllViewDeclarationLanguages().stream().flatMap(vdl -> vdl.getViews(context, path, maxDepth, options));
     }
 
     @Override
@@ -473,15 +454,13 @@ public class MultiViewHandler extends ViewHandler {
         return derivePhysicalViewId(context, requestViewId, false);
     }
 
-
     // ------------------------------------------------------- Protected Methods
 
-
     /**
-     * <p>If the specified mapping is a prefix mapping, and the provided
-     * request URI (usually the value from <code>ExternalContext.getRequestServletPath()</code>)
-     * starts with <code>mapping + '/'</code>, prune the mapping from the
-     * URI and return it, otherwise, return the original URI.
+     * <p>
+     * If the specified mapping is a prefix mapping, and the provided request URI (usually the value from
+     * <code>ExternalContext.getRequestServletPath()</code>) starts with <code>mapping + '/'</code>, prune the mapping from
+     * the URI and return it, otherwise, return the original URI.
      * 
      * @param uri the servlet request path
      * @param mapping the FacesServlet mapping used for this request
@@ -494,29 +473,31 @@ public class MultiViewHandler extends ViewHandler {
         if (mapping == null || !isPrefixMapped(mapping)) {
             return uri;
         }
-        
+
         int length = mapping.length() + 1;
         StringBuilder builder = new StringBuilder(length);
         builder.append(mapping).append('/');
         String mappingMod = builder.toString();
         boolean logged = false;
-        
+
         while (uri.startsWith(mappingMod)) {
             if (!logged && LOGGER.isLoggable(WARNING)) {
                 logged = true;
-                LOGGER.log(WARNING, "jsf.viewhandler.requestpath.recursion", new Object[] {uri, mapping});
+                LOGGER.log(WARNING, "jsf.viewhandler.requestpath.recursion", new Object[] { uri, mapping });
             }
             uri = uri.substring(length - 1);
         }
-        
+
         return uri;
     }
 
     /**
-     * <p>Adjust the viewID per the requirements of {@link #renderView}.</p>
+     * <p>
+     * Adjust the viewID per the requirements of {@link #renderView}.
+     * </p>
      *
      * @param context current {@link jakarta.faces.context.FacesContext}
-     * @param viewId  incoming view ID
+     * @param viewId incoming view ID
      * @return the view ID with an altered suffix mapping (if necessary)
      */
     protected String convertViewId(FacesContext context, String viewId) {
@@ -537,7 +518,7 @@ public class MultiViewHandler extends ViewHandler {
             String convertedViewId = buffer.toString();
 
             ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context, convertedViewId);
-            
+
             if (vdl.viewExists(context, convertedViewId)) {
                 // RELEASE_PENDING (rlubke,driscoll) cache the lookup
                 return convertedViewId;
@@ -545,33 +526,33 @@ public class MultiViewHandler extends ViewHandler {
         }
 
         // unable to find any resource match that the default ViewHandler
-        // can deal with.  Fall back to legacy (JSF 1.2) id conversion.
+        // can deal with. Fall back to legacy (JSF 1.2) id conversion.
         return legacyConvertViewId(viewId, length, extIdx, buffer);
     }
 
     protected String derivePhysicalViewId(FacesContext ctx, String requestViewId, boolean checkPhysical) {
-        
+
         if (requestViewId != null) {
             String mapping = getFacesMapping(ctx);
             if (mapping != null) {
                 String physicalViewId;
-                
+
                 if (isExactMapped(mapping)) {
-                    
+
                     // Exact mapping, e.g. /foo
-                    
+
                     // physicalViewId = requestViewId;
-                    
+
                     physicalViewId = convertViewId(ctx, requestViewId);
                 } else if (!isPrefixMapped(mapping)) {
-                    
+
                     // Suffix mapping, e.g. /foo.xhtml
-                    
+
                     physicalViewId = convertViewId(ctx, requestViewId);
                 } else {
-                    
+
                     // Prefix mapping, e.g. /faces/foo.xhtml
-                    
+
                     physicalViewId = normalizeRequestURI(requestViewId, mapping);
                     if (physicalViewId.equals(mapping)) {
                         // The request was to the FacesServlet only - no path info
@@ -584,33 +565,31 @@ public class MultiViewHandler extends ViewHandler {
 
                 if (checkPhysical) {
                     ViewDeclarationLanguage vdl = getViewDeclarationLanguage(ctx, physicalViewId);
-                                                                                
+
                     return vdl.viewExists(ctx, physicalViewId) ? physicalViewId : null;
-                } 
-                
+                }
+
                 return physicalViewId;
             }
         }
-        
+
         return requestViewId;
     }
 
-    protected Map<String,List<String>> getFullParameterList(FacesContext ctx,
-                                                            String viewId,
-                                                            Map<String,List<String>> existingParameters) {
+    protected Map<String, List<String>> getFullParameterList(FacesContext ctx, String viewId, Map<String, List<String>> existingParameters) {
 
-        Map<String,List<String>> copy;
+        Map<String, List<String>> copy;
         if (existingParameters == null || existingParameters.isEmpty()) {
             copy = new LinkedHashMap<>(4);
         } else {
-          copy = new LinkedHashMap<>(existingParameters);
+            copy = new LinkedHashMap<>(existingParameters);
         }
         addViewParameters(ctx, viewId, copy);
-        
+
         return copy;
     }
 
-    protected void addViewParameters(FacesContext ctx, String viewId, Map<String,List<String>> existingParameters) {
+    protected void addViewParameters(FacesContext ctx, String viewId, Map<String, List<String>> existingParameters) {
 
         UIViewRoot currentRoot = ctx.getViewRoot();
         String currentViewId = currentRoot.getViewId();
@@ -622,8 +601,7 @@ public class MultiViewHandler extends ViewHandler {
         if (currentViewId.equals(viewId)) {
             currentIsSameAsNew = true;
             toViewParams = currentViewParams;
-        }
-        else {
+        } else {
             ViewDeclarationLanguage pdl = getViewDeclarationLanguage(ctx, viewId);
             ViewMetadata viewMetadata = pdl.getViewMetadata(ctx, viewId);
             if (null != viewMetadata) {
@@ -642,7 +620,7 @@ public class MultiViewHandler extends ViewHandler {
             if (existingParameters.containsKey(viewParam.getName())) {
                 continue;
             }
-            
+
             if (paramHasValueExpression(viewParam)) {
                 value = viewParam.getStringValueFromModel(ctx);
             }
@@ -653,15 +631,14 @@ public class MultiViewHandler extends ViewHandler {
                      * Anonymous view parameter: get string value from UIViewParameter instance stored in current view.
                      */
                     value = viewParam.getStringValue(ctx);
-                }
-                else {
+                } else {
                     /*
                      * Or transfer string value from matching UIViewParameter instance stored in current view.
                      */
                     value = getStringValueToTransfer(ctx, viewParam, currentViewParams);
                 }
             }
-            
+
             if (value != null) {
                 List<String> existing = existingParameters.get(viewParam.getName());
                 if (existing == null) {
@@ -674,13 +651,12 @@ public class MultiViewHandler extends ViewHandler {
     }
 
     /**
-     * Attempts to find a matching locale based on <code>pref</code> and
-     * list of supported locales, using the matching algorithm
-     * as described in JSTL 8.3.2.
+     * Attempts to find a matching locale based on <code>pref</code> and list of supported locales, using the matching
+     * algorithm as described in JSTL 8.3.2.
+     * 
      * @param context the <code>FacesContext</code> for the current request
      * @param pref the preferred locale
-     * @return the Locale based on pref and the matching alogritm specified
-     *  in JSTL 8.3.2
+     * @return the Locale based on pref and the matching alogritm specified in JSTL 8.3.2
      */
     protected Locale findMatch(FacesContext context, Locale pref) {
 
@@ -699,18 +675,17 @@ public class MultiViewHandler extends ViewHandler {
                 // preferred locale is "en-US", if one of supported
                 // locales is "en-UK", even though its language matches
                 // that of the preferred locale, we must ignore it.
-                if (pref.getLanguage().equals(supportedLocale.getLanguage()) &&
-                     supportedLocale.getCountry().length() == 0) {
+                if (pref.getLanguage().equals(supportedLocale.getLanguage()) && supportedLocale.getCountry().length() == 0) {
                     result = supportedLocale;
                 }
             }
         }
-        
+
         // if it's not in the supported locales,
         if (result == null) {
             Locale defaultLocale = context.getApplication().getDefaultLocale();
             if (defaultLocale != null) {
-                if ( pref.equals(defaultLocale)) {
+                if (pref.equals(defaultLocale)) {
                     // exact match
                     result = defaultLocale;
                 } else {
@@ -719,8 +694,7 @@ public class MultiViewHandler extends ViewHandler {
                     // preferred locale is "en-US", if one of supported
                     // locales is "en-UK", even though its language matches
                     // that of the preferred locale, we must ignore it.
-                    if (pref.getLanguage().equals(defaultLocale.getLanguage()) &&
-                         defaultLocale.getCountry().length() == 0) {
+                    if (pref.getLanguage().equals(defaultLocale.getLanguage()) && defaultLocale.getCountry().length() == 0) {
                         result = defaultLocale;
                     }
                 }
@@ -747,9 +721,8 @@ public class MultiViewHandler extends ViewHandler {
         }
     }
 
-
     // --------------------------------------------------------- Private Methods
-    
+
     private String getActionURLWithoutViewProtection(FacesContext context, String viewId) {
 
         notNull("context", context);
@@ -773,7 +746,7 @@ public class MultiViewHandler extends ViewHandler {
         if (mapping == null) {
             return contextPath + viewId;
         }
-        
+
         // Deal with exact mapping
         if (isExactMapped(mapping)) {
             if (viewId.contains(".")) {
@@ -790,22 +763,20 @@ public class MultiViewHandler extends ViewHandler {
                     return contextPath + viewId;
                 }
             }
-            
-            // No exact mapping for the requested view id, see if Facelets service is mapped to 
+
+            // No exact mapping for the requested view id, see if Facelets service is mapped to
             // e.g. /faces/* or *.xhtml and take that mapping
             String servletMapping = getFirstWildCardMappingToFacesServlet(context.getExternalContext());
-            
+
             if (servletMapping == null) {
-                
+
                 // If there are only exact mappings and the view is not exact mapped,
                 // we can't serve this view
-                
-                throw new IllegalStateException(
-                    "No suitable mapping for FacesServlet found. To serve views that are not exact mapped " +
-                    "FacesServlet should have at least one prefix or suffix mapping."
-                );
+
+                throw new IllegalStateException("No suitable mapping for FacesServlet found. To serve views that are not exact mapped "
+                        + "FacesServlet should have at least one prefix or suffix mapping.");
             }
-            
+
             mapping = servletMapping.replace("*", "");
         }
 
@@ -831,7 +802,7 @@ public class MultiViewHandler extends ViewHandler {
             }
 
             return contextPath + viewId.substring(0, period) + mapping;
-         
+
         } else {
             return contextPath + viewId;
         }
@@ -854,8 +825,8 @@ public class MultiViewHandler extends ViewHandler {
         return param.getStringValue(context);
     }
 
-    // Utility method used by viewId conversion.  Appends the extension
-    // if no extension is present.  Otherwise, replaces the extension.
+    // Utility method used by viewId conversion. Appends the extension
+    // if no extension is present. Otherwise, replaces the extension.
     private void appendOrReplaceExtension(String viewId, String extension, int length, int extensionIndex, StringBuilder buffer) {
 
         buffer.setLength(0);
@@ -873,15 +844,13 @@ public class MultiViewHandler extends ViewHandler {
 
         // In 1.2, the viewId was converted by replacing the extension
         // with the single extension specified by jakarta.faces.DEFAULT_SUFFIX,
-        // which defaulted to ".jsp".  In 2.0, jakarta.faces.DEFAULT_SUFFIX
-        // may specify multiple extensions.  If jakarta.faces.DEFAULT_SUFFIX is
+        // which defaulted to ".jsp". In 2.0, jakarta.faces.DEFAULT_SUFFIX
+        // may specify multiple extensions. If jakarta.faces.DEFAULT_SUFFIX is
         // explicitly set, we honor it and pick off the first specified
-        // extension.  If jakarta.faces.DEFAULT_SUFFIX is not explicitly set,
+        // extension. If jakarta.faces.DEFAULT_SUFFIX is not explicitly set,
         // we honor the default 1.2 behavior and use ".jsp" as the suffix.
 
-        String extension = (extensionsSet && 
-                       !(configuredExtensions.length == 0)) ?
-                          configuredExtensions[0] : ".jsp";
+        String extension = (extensionsSet && !(configuredExtensions.length == 0)) ? configuredExtensions[0] : ".jsp";
 
         if (viewId.endsWith(extension)) {
             return viewId;
@@ -890,5 +859,5 @@ public class MultiViewHandler extends ViewHandler {
         appendOrReplaceExtension(viewId, extension, length, extensionIndex, buffer);
 
         return buffer.toString();
-    }    
+    }
 }

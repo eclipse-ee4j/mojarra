@@ -19,17 +19,19 @@ package jakarta.faces.flow;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_2">Represents a return node in the flow graph.
- * When control passes to a return node, its {@link #getFromOutcome} is called
- * to determine the next node in the flow graph.</p>
+ * <p class="changed_added_2_2">
+ * Represents a return node in the flow graph. When control passes to a return node, its {@link #getFromOutcome} is
+ * called to determine the next node in the flow graph.
+ * </p>
  * 
  * @since 2.2
  */
 public abstract class ReturnNode extends FlowNode {
-    
+
     /**
-     * <p class="changed_added_2_2">Return the {@code fromOutcome} to be
-     * used when control passes to this return node.</p>
+     * <p class="changed_added_2_2">
+     * Return the {@code fromOutcome} to be used when control passes to this return node.
+     * </p>
      * 
      * @param context the {@link FacesContext} for this request.
      * @throws NullPointerException if {@code context} is {@code null}.
@@ -37,6 +39,6 @@ public abstract class ReturnNode extends FlowNode {
      * 
      * @return the {@code fromOutcome}
      */
-    public abstract String getFromOutcome(FacesContext context); 
-    
+    public abstract String getFromOutcome(FacesContext context);
+
 }

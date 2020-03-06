@@ -45,12 +45,12 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         private final TagConfig parent;
         private final String validatorId;
-        
+
         public ValidatorConfigWrapper(TagConfig parent, String validatorId) {
             this.parent = parent;
             this.validatorId = validatorId;
         }
-        
+
         @Override
         public String getValidatorId() {
             return this.validatorId;
@@ -69,87 +69,104 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         @Override
         public String getTagId() {
             return this.parent.getTagId();
-        }  
+        }
     }
-    
+
     private static class ConverterConfigWrapper implements ConverterConfig {
         private final TagConfig parent;
         private final String converterId;
-        
+
         public ConverterConfigWrapper(TagConfig parent, String converterId) {
             this.parent = parent;
             this.converterId = converterId;
         }
-        
+
         @Override
         public String getConverterId() {
             return this.converterId;
         }
+
         @Override
         public FaceletHandler getNextHandler() {
             return this.parent.getNextHandler();
         }
+
         @Override
         public Tag getTag() {
             return this.parent.getTag();
         }
+
         @Override
         public String getTagId() {
             return this.parent.getTagId();
         }
     }
-    
+
     private static final class BehaviorConfigWrapper implements BehaviorConfig {
         private final TagConfig parent;
         private final String behaviorId;
-		/**
-		 * <p class="changed_added_2_0"></p>
-		 * @param parent
-		 * @param behaviorId
-		 */
-		public BehaviorConfigWrapper(TagConfig parent, String behaviorId) {
-			this.parent = parent;
-			this.behaviorId = behaviorId;
-		}
-		/**
-		 * <p class="changed_added_2_0"></p>
-		 * @return the behaviorId
-		 */
+
+        /**
+         * <p class="changed_added_2_0">
+         * </p>
+         * 
+         * @param parent
+         * @param behaviorId
+         */
+        public BehaviorConfigWrapper(TagConfig parent, String behaviorId) {
+            this.parent = parent;
+            this.behaviorId = behaviorId;
+        }
+
+        /**
+         * <p class="changed_added_2_0">
+         * </p>
+         * 
+         * @return the behaviorId
+         */
         @Override
-		public String getBehaviorId() {
-			return behaviorId;
-		}
-		/**
-		 * <p class="changed_added_2_0"></p>
-		 * @return
-		 * @see jakarta.faces.view.facelets.TagConfig#getNextHandler()
-		 */
+        public String getBehaviorId() {
+            return behaviorId;
+        }
+
+        /**
+         * <p class="changed_added_2_0">
+         * </p>
+         * 
+         * @return
+         * @see jakarta.faces.view.facelets.TagConfig#getNextHandler()
+         */
         @Override
-		public FaceletHandler getNextHandler() {
-			return parent.getNextHandler();
-		}
-		/**
-		 * <p class="changed_added_2_0"></p>
-		 * @return
-		 * @see jakarta.faces.view.facelets.TagConfig#getTag()
-		 */
+        public FaceletHandler getNextHandler() {
+            return parent.getNextHandler();
+        }
+
+        /**
+         * <p class="changed_added_2_0">
+         * </p>
+         * 
+         * @return
+         * @see jakarta.faces.view.facelets.TagConfig#getTag()
+         */
         @Override
-		public Tag getTag() {
-			return parent.getTag();
-		}
-		/**
-		 * <p class="changed_added_2_0"></p>
-		 * @return
-		 * @see jakarta.faces.view.facelets.TagConfig#getTagId()
-		 */
+        public Tag getTag() {
+            return parent.getTag();
+        }
+
+        /**
+         * <p class="changed_added_2_0">
+         * </p>
+         * 
+         * @return
+         * @see jakarta.faces.view.facelets.TagConfig#getTagId()
+         */
         @Override
-		public String getTagId() {
-			return parent.getTagId();
-		}
-        
-    	
+        public String getTagId() {
+            return parent.getTagId();
+        }
+
     }
-    
+
     private static class HandlerFactory implements TagHandlerFactory {
         private final static Class[] CONSTRUCTOR_SIG = new Class[] { TagConfig.class };
 
@@ -160,11 +177,9 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         }
 
         @Override
-        public TagHandler createHandler(TagConfig cfg) throws FacesException,
-                ELException {
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                return (TagHandler) this.handlerType.getConstructor(
-                        CONSTRUCTOR_SIG).newInstance(new Object[] { cfg });
+                return (TagHandler) this.handlerType.getConstructor(CONSTRUCTOR_SIG).newInstance(new Object[] { cfg });
             } catch (InvocationTargetException ite) {
                 Throwable t = ite.getCause();
                 if (t instanceof FacesException) {
@@ -172,12 +187,10 @@ public abstract class AbstractTagLibrary implements TagLibrary {
                 } else if (t instanceof ELException) {
                     throw (ELException) t;
                 } else {
-                    throw new FacesException("Error Instantiating: "
-                            + this.handlerType.getName(), t);
+                    throw new FacesException("Error Instantiating: " + this.handlerType.getName(), t);
                 }
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-                throw new FacesException("Error Instantiating: "
-                        + this.handlerType.getName(), e);
+                throw new FacesException("Error Instantiating: " + this.handlerType.getName(), e);
             }
         }
     }
@@ -190,8 +203,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final String rendererType;
 
-        public ComponentConfigWrapper(TagConfig parent, String componentType,
-                String rendererType) {
+        public ComponentConfigWrapper(TagConfig parent, String componentType, String rendererType) {
             this.parent = parent;
             this.componentType = componentType;
             this.rendererType = rendererType;
@@ -231,8 +243,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         }
 
         @Override
-        public TagHandler createHandler(TagConfig cfg) throws FacesException,
-                ELException {
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             return new UserTagHandler(cfg, this.location);
         }
     }
@@ -245,14 +256,9 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         }
 
         @Override
-        public TagHandler createHandler(TagConfig cfg) throws FacesException,
-                ELException {
-            ComponentConfig componentConfig = 
-                    new ComponentConfigWrapper(cfg, 
-                    "jakarta.faces.NamingContainer",
-                    "jakarta.faces.Composite");
-            ResourceHandler resourceHandler = 
-                    FacesContext.getCurrentInstance().getApplication().getResourceHandler();
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
+            ComponentConfig componentConfig = new ComponentConfigWrapper(cfg, "jakarta.faces.NamingContainer", "jakarta.faces.Composite");
+            ResourceHandler resourceHandler = FacesContext.getCurrentInstance().getApplication().getResourceHandler();
             TagHandler result = null;
             // Use the naming convention to extract the library name and
             // component name from the resourceId.
@@ -280,16 +286,13 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         }
 
         @Override
-        public TagHandler createHandler(TagConfig cfg) throws FacesException,
-                ELException {
-            ComponentConfig ccfg = new ComponentConfigWrapper(cfg,
-                    this.componentType, this.renderType);
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
+            ComponentConfig ccfg = new ComponentConfigWrapper(cfg, this.componentType, this.renderType);
             return new ComponentHandler(ccfg);
         }
     }
 
-    private static class UserComponentHandlerFactory implements
-            TagHandlerFactory {
+    private static class UserComponentHandlerFactory implements TagHandlerFactory {
 
         private final static Class[] CONS_SIG = new Class[] { ComponentConfig.class };
 
@@ -301,32 +304,26 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Constructor constructor;
 
-        public UserComponentHandlerFactory(String componentType,
-                String renderType, Class type) {
+        public UserComponentHandlerFactory(String componentType, String renderType, Class type) {
             this.componentType = componentType;
             this.renderType = renderType;
             this.type = type;
             try {
                 this.constructor = this.type.getConstructor(CONS_SIG);
             } catch (NoSuchMethodException | SecurityException e) {
-                throw new FaceletException(
-                        "Must have a Constructor that takes in a ComponentConfig",
-                        e);
+                throw new FaceletException("Must have a Constructor that takes in a ComponentConfig", e);
             }
         }
 
         @Override
-        public TagHandler createHandler(TagConfig cfg) throws FacesException,
-                ELException {
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                ComponentConfig ccfg = new ComponentConfigWrapper(cfg,
-                        this.componentType, this.renderType);
-                return (TagHandler) this.constructor
-                        .newInstance(new Object[] { ccfg });
+                ComponentConfig ccfg = new ComponentConfigWrapper(cfg, this.componentType, this.renderType);
+                return (TagHandler) this.constructor.newInstance(new Object[] { ccfg });
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-                throw new FaceletException("Error Instantiating ComponentHandler: "+this.type.getName(), e);
+                throw new FaceletException("Error Instantiating ComponentHandler: " + this.type.getName(), e);
             }
         }
     }
@@ -340,8 +337,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         }
 
         @Override
-        public TagHandler createHandler(TagConfig cfg) throws FacesException,
-                ELException {
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             return new ValidatorHandler(new ValidatorConfigWrapper(cfg, this.validatorId));
         }
     }
@@ -355,149 +351,126 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         }
 
         @Override
-        public TagHandler createHandler(TagConfig cfg) throws FacesException,
-                ELException {
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             return new ConverterHandler(new ConverterConfigWrapper(cfg, this.converterId));
         }
     }
-    
-    private static final class BehaviorHandlerFactory implements TagHandlerFactory {
-    	private final String behaviorId;
 
-		/**
-		 * <p class="changed_added_2_0"></p>
-		 * @param behaviorId
-		 */
-		public BehaviorHandlerFactory(String behaviorId) {
-			this.behaviorId = behaviorId;
-		}
-    	
-            @Override
-		public TagHandler createHandler(TagConfig cfg) throws FacesException,
-				ELException {
-			return new BehaviorHandler(new BehaviorConfigWrapper(cfg,behaviorId));
-		}
+    private static final class BehaviorHandlerFactory implements TagHandlerFactory {
+        private final String behaviorId;
+
+        /**
+         * <p class="changed_added_2_0">
+         * </p>
+         * 
+         * @param behaviorId
+         */
+        public BehaviorHandlerFactory(String behaviorId) {
+            this.behaviorId = behaviorId;
+        }
+
+        @Override
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
+            return new BehaviorHandler(new BehaviorConfigWrapper(cfg, behaviorId));
+        }
     }
 
     private static class UserConverterHandlerFactory implements TagHandlerFactory {
         private final static Class[] CONS_SIG = new Class[] { ConverterConfig.class };
-        
+
         protected final String converterId;
-        
+
         protected final Class type;
 
         protected final Constructor constructor;
-        
+
         public UserConverterHandlerFactory(String converterId, Class type) {
             this.converterId = converterId;
             this.type = type;
             try {
                 this.constructor = this.type.getConstructor(CONS_SIG);
             } catch (NoSuchMethodException | SecurityException e) {
-                throw new FaceletException(
-                        "Must have a Constructor that takes in a ConverterConfig",
-                        e);
+                throw new FaceletException("Must have a Constructor that takes in a ConverterConfig", e);
             }
         }
-        
+
         @Override
-        public TagHandler createHandler(TagConfig cfg) throws FacesException,
-        ELException {
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                ConverterConfig ccfg = new ConverterConfigWrapper(cfg,
-                        this.converterId);
-                return (TagHandler) this.constructor
-                        .newInstance(new Object[] { ccfg });
+                ConverterConfig ccfg = new ConverterConfigWrapper(cfg, this.converterId);
+                return (TagHandler) this.constructor.newInstance(new Object[] { ccfg });
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-                throw new FaceletException("Error Instantiating ConverterHandler: "+this.type.getName(), e);
+                throw new FaceletException("Error Instantiating ConverterHandler: " + this.type.getName(), e);
             }
         }
     }
-    
-    private static class UserValidatorHandlerFactory implements
-			TagHandlerFactory {
-		private final static Class[] CONS_SIG = new Class[] { ValidatorConfig.class };
 
-		protected final String validatorId;
+    private static class UserValidatorHandlerFactory implements TagHandlerFactory {
+        private final static Class[] CONS_SIG = new Class[] { ValidatorConfig.class };
 
-		protected final Class type;
+        protected final String validatorId;
 
-		protected final Constructor constructor;
+        protected final Class type;
 
-		public UserValidatorHandlerFactory(String validatorId, Class type) {
-			this.validatorId = validatorId;
-			this.type = type;
-			try {
-				this.constructor = this.type.getConstructor(CONS_SIG);
-			} catch (NoSuchMethodException | SecurityException e) {
-				throw new FaceletException(
-						"Must have a Constructor that takes in a ValidatorConfig",
-						e);
-			}
-		}
+        protected final Constructor constructor;
 
-                @Override
-		public TagHandler createHandler(TagConfig cfg) throws FacesException,
-				ELException {
-			try {
-				ValidatorConfig ccfg = new ValidatorConfigWrapper(cfg,
-						this.validatorId);
-				return (TagHandler) this.constructor
-						.newInstance(new Object[] { ccfg });
-			} catch (InvocationTargetException e) {
-				throw new FaceletException(e.getCause().getMessage(), e
-						.getCause().getCause());
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-				throw new FaceletException(
-						"Error Instantiating ValidatorHandler: "
-								+ this.type.getName(), e);
-			}
-		}
-	}
- 
-    private static class UserBehaviorHandlerFactory implements
-			TagHandlerFactory {
-		private final static Class[] CONS_SIG = new Class[] { BehaviorConfig.class };
+        public UserValidatorHandlerFactory(String validatorId, Class type) {
+            this.validatorId = validatorId;
+            this.type = type;
+            try {
+                this.constructor = this.type.getConstructor(CONS_SIG);
+            } catch (NoSuchMethodException | SecurityException e) {
+                throw new FaceletException("Must have a Constructor that takes in a ValidatorConfig", e);
+            }
+        }
 
-		protected final String behaviorId;
+        @Override
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
+            try {
+                ValidatorConfig ccfg = new ValidatorConfigWrapper(cfg, this.validatorId);
+                return (TagHandler) this.constructor.newInstance(new Object[] { ccfg });
+            } catch (InvocationTargetException e) {
+                throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+                throw new FaceletException("Error Instantiating ValidatorHandler: " + this.type.getName(), e);
+            }
+        }
+    }
 
-		protected final Class type;
+    private static class UserBehaviorHandlerFactory implements TagHandlerFactory {
+        private final static Class[] CONS_SIG = new Class[] { BehaviorConfig.class };
 
-		protected final Constructor constructor;
+        protected final String behaviorId;
 
-		public UserBehaviorHandlerFactory(String behaviorId, Class type) {
-			this.behaviorId = behaviorId;
-			this.type = type;
-			try {
-				this.constructor = this.type.getConstructor(CONS_SIG);
-			} catch (NoSuchMethodException | SecurityException e) {
-				throw new FaceletException(
-						"Must have a Constructor that takes in a BehaviorConfig",
-						e);
-			}
-		}
+        protected final Class type;
 
-                @Override
-		public TagHandler createHandler(TagConfig cfg) throws FacesException,
-				ELException {
-			try {
-				BehaviorConfig ccfg = new BehaviorConfigWrapper(cfg,
-						this.behaviorId);
-				return (TagHandler) this.constructor
-						.newInstance(new Object[] { ccfg });
-			} catch (InvocationTargetException e) {
-				throw new FaceletException(e.getCause().getMessage(), e
-						.getCause().getCause());
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-				throw new FaceletException(
-						"Error Instantiating BehaviorHandler: "
-								+ this.type.getName(), e);
-			}
-		}
-	}
-        
+        protected final Constructor constructor;
+
+        public UserBehaviorHandlerFactory(String behaviorId, Class type) {
+            this.behaviorId = behaviorId;
+            this.type = type;
+            try {
+                this.constructor = this.type.getConstructor(CONS_SIG);
+            } catch (NoSuchMethodException | SecurityException e) {
+                throw new FaceletException("Must have a Constructor that takes in a BehaviorConfig", e);
+            }
+        }
+
+        @Override
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
+            try {
+                BehaviorConfig ccfg = new BehaviorConfigWrapper(cfg, this.behaviorId);
+                return (TagHandler) this.constructor.newInstance(new Object[] { ccfg });
+            } catch (InvocationTargetException e) {
+                throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+                throw new FaceletException("Error Instantiating BehaviorHandler: " + this.type.getName(), e);
+            }
+        }
+    }
+
     private final Map factories;
 
     private final String namespace;
@@ -511,41 +484,28 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     /**
-     * Add a ComponentHandlerImpl with the specified componentType and rendererType,
-     * aliased by the tag name.
+     * Add a ComponentHandlerImpl with the specified componentType and rendererType, aliased by the tag name.
      * 
      * @see jakarta.faces.application.Application#createComponent(java.lang.String)
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
-     * @param componentType
-     *            componentType to use
-     * @param rendererType
-     *            rendererType to use
+     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param componentType componentType to use
+     * @param rendererType rendererType to use
      */
-    protected final void addComponent(String name, String componentType,
-            String rendererType) {
-        this.factories.put(name, new ComponentHandlerFactory(componentType,
-                rendererType));
+    protected final void addComponent(String name, String componentType, String rendererType) {
+        this.factories.put(name, new ComponentHandlerFactory(componentType, rendererType));
     }
 
     /**
-     * Add a ComponentHandlerImpl with the specified componentType and rendererType,
-     * aliased by the tag name. The Facelet will be compiled with the specified
-     * HandlerType (which must extend AbstractComponentHandler).
+     * Add a ComponentHandlerImpl with the specified componentType and rendererType, aliased by the tag name. The Facelet
+     * will be compiled with the specified HandlerType (which must extend AbstractComponentHandler).
      * 
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
-     * @param componentType
-     *            componentType to use
-     * @param rendererType
-     *            rendererType to use
-     * @param handlerType
-     *            a Class that extends ComponentHandler
+     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param componentType componentType to use
+     * @param rendererType rendererType to use
+     * @param handlerType a Class that extends ComponentHandler
      */
-    protected final void addComponent(String name, String componentType,
-            String rendererType, Class handlerType) {
-        this.factories.put(name, new UserComponentHandlerFactory(componentType,
-                rendererType, handlerType));
+    protected final void addComponent(String name, String componentType, String rendererType, Class handlerType) {
+        this.factories.put(name, new UserComponentHandlerFactory(componentType, rendererType, handlerType));
     }
 
     /**
@@ -553,27 +513,22 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * 
      * @see ConverterHandler
      * @see jakarta.faces.application.Application#createConverter(java.lang.String)
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
-     * @param converterId
-     *            id to pass to Application instance
+     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param converterId id to pass to Application instance
      */
     protected final void addConverter(String name, String converterId) {
         this.factories.put(name, new ConverterHandlerFactory(converterId));
     }
-    
+
     /**
      * Add a ConverterHandler for the specified converterId of a TagHandler type
      * 
      * @see ConverterHandler
      * @see ConverterConfig
      * @see jakarta.faces.application.Application#createConverter(java.lang.String)
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
-     * @param converterId
-     *            id to pass to Application instance
-     * @param type
-     *            TagHandler type that takes in a ConverterConfig
+     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param converterId id to pass to Application instance
+     * @param type TagHandler type that takes in a ConverterConfig
      */
     protected final void addConverter(String name, String converterId, Class type) {
         this.factories.put(name, new UserConverterHandlerFactory(converterId, type));
@@ -584,53 +539,48 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * 
      * @see ValidatorHandler
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
-     * @param validatorId
-     *            id to pass to Application instance
+     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param validatorId id to pass to Application instance
      */
     protected final void addValidator(String name, String validatorId) {
         this.factories.put(name, new ValidatorHandlerFactory(validatorId));
     }
-    
+
     /**
      * Add a ValidatorHandler for the specified validatorId
      * 
      * @see ValidatorHandler
      * @see ValidatorConfig
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
-     * @param validatorId
-     *            id to pass to Application instance
-     * @param type
-     *            TagHandler type that takes in a ValidatorConfig
+     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param validatorId id to pass to Application instance
+     * @param type TagHandler type that takes in a ValidatorConfig
      */
     protected final void addValidator(String name, String validatorId, Class type) {
         this.factories.put(name, new UserValidatorHandlerFactory(validatorId, type));
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
+     * 
      * @param name
      * @param behaviorId
      */
-    protected final void addBehavior(String name, String behaviorId){
-		this.factories.put(name, new BehaviorHandlerFactory(behaviorId));
-	}
+    protected final void addBehavior(String name, String behaviorId) {
+        this.factories.put(name, new BehaviorHandlerFactory(behaviorId));
+    }
 
     protected final void addBehavior(String name, String behaviorId, Class type) {
         this.factories.put(name, new UserBehaviorHandlerFactory(behaviorId, type));
     }
-	/**
-     * Use the specified HandlerType in compiling Facelets. HandlerType must
-     * extend TagHandler.
+
+    /**
+     * Use the specified HandlerType in compiling Facelets. HandlerType must extend TagHandler.
      * 
      * @see TagHandler
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
-     * @param handlerType
-     *            must extend TagHandler
+     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param handlerType must extend TagHandler
      */
     protected final void addTagHandler(String name, Class handlerType) {
         this.factories.put(name, new HandlerFactory(handlerType));
@@ -640,34 +590,31 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * Add a UserTagHandler specified a the URL source.
      * 
      * @see UserTagHandler
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be &lt;my:foo />
      * @param source source where the Facelet (Tag) source is
      */
     protected final void addUserTag(String name, URL source) {
         this.factories.put(name, new UserTagFactory(source));
     }
-    
+
     /**
      * Add a CompositeComponentTagHandler for the specified resource.
      * 
      * @see UserTagHandler
-     * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be &lt;my:foo />
      * @param resourceId source where the Facelet (Tag) source is
      */
     protected final void addCompositeComponentTag(String name, String resourceId) {
         this.factories.put(name, new CompositeComponentTagFactory(resourceId));
     }
-    
-    
+
     /**
      * Add a Method to be used as a Function at Compilation.
      * 
      * @see jakarta.el.FunctionMapper
      * 
      * @param name (suffix) of function name
-     * @param method method instance 
+     * @param method method instance
      */
     protected final void addFunction(String name, Method method) {
         this.functions.put(name, method);
@@ -686,8 +633,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.TagLibrary#containsTagHandler(java.lang.String,
-     *      java.lang.String)
+     * @see com.sun.facelets.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
      */
     @Override
     public boolean containsTagHandler(String ns, String localName) {
@@ -702,15 +648,12 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.TagLibrary#createTagHandler(java.lang.String,
-     *      java.lang.String, com.sun.facelets.TagConfig)
+     * @see com.sun.facelets.TagLibrary#createTagHandler(java.lang.String, java.lang.String, com.sun.facelets.TagConfig)
      */
     @Override
-    public TagHandler createTagHandler(String ns, String localName,
-            TagConfig tag) throws FacesException {
+    public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
         if (this.namespace.equals(ns)) {
-            TagHandlerFactory f = (TagHandlerFactory) this.factories
-                    .get(localName);
+            TagHandlerFactory f = (TagHandlerFactory) this.factories.get(localName);
             if (f != null) {
                 return f.createHandler(tag);
             }
@@ -721,8 +664,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.TagLibrary#containsFunction(java.lang.String,
-     *      java.lang.String)
+     * @see com.sun.facelets.TagLibrary#containsFunction(java.lang.String, java.lang.String)
      */
     @Override
     public boolean containsFunction(String ns, String name) {
@@ -735,8 +677,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.TagLibrary#createFunction(java.lang.String,
-     *      java.lang.String)
+     * @see com.sun.facelets.TagLibrary#createFunction(java.lang.String, java.lang.String)
      */
     @Override
     public Method createFunction(String ns, String name) {

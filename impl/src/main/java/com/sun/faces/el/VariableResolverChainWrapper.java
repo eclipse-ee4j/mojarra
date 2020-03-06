@@ -32,7 +32,7 @@ import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.VariableResolver;
 
 public class VariableResolverChainWrapper extends ELResolver {
-    
+
     @SuppressWarnings("deprecation")
     private VariableResolver legacyVR = null;
 
@@ -47,8 +47,7 @@ public class VariableResolverChainWrapper extends ELResolver {
 
     @Override
     @SuppressWarnings("deprecation")
-    public Object getValue(ELContext context, Object base, Object property)
-        throws ELException {
+    public Object getValue(ELContext context, Object base, Object property) throws ELException {
 
         // Don't call into the chain unless it's been decorated.
         if (legacyVR instanceof ChainAwareVariableResolver) {
@@ -58,26 +57,22 @@ public class VariableResolverChainWrapper extends ELResolver {
         if (base != null) {
             return null;
         }
-        if ( base == null && property == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
+        if (base == null && property == null) {
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
             throw new PropertyNotFoundException(message);
         }
         context.setPropertyResolved(true);
         Object result = null;
-        
-        FacesContext facesContext = (FacesContext)
-            context.getContext(FacesContext.class);
+
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         String propString = property.toString();
-        Map<String,Object> stateMap = RequestStateManager.getStateMap(facesContext);
+        Map<String, Object> stateMap = RequestStateManager.getStateMap(facesContext);
         try {
-        // If we are already in the midst of an expression evaluation
-        // that touched this resolver...
-            //noinspection unchecked
+            // If we are already in the midst of an expression evaluation
+            // that touched this resolver...
+            // noinspection unchecked
             List<String> varNames = (List<String>) stateMap.get(RequestStateManager.REENTRANT_GUARD);
-            if (varNames != null
-                 && !varNames.isEmpty()
-                 && varNames.contains(propString)) {
+            if (varNames != null && !varNames.isEmpty() && varNames.contains(propString)) {
                 // take no action and return.
                 context.setPropertyResolved(false);
                 return null;
@@ -88,20 +83,19 @@ public class VariableResolverChainWrapper extends ELResolver {
                 stateMap.put(RequestStateManager.REENTRANT_GUARD, varNames);
             }
             varNames.add(propString);
-            
-            result = legacyVR.resolveVariable(facesContext,
-                                              propString);
+
+            result = legacyVR.resolveVariable(facesContext, propString);
         } catch (EvaluationException ex) {
             context.setPropertyResolved(false);
             throw new ELException(ex);
         } finally {
             // Make sure to remove the guard after the call returns
-            //noinspection unchecked
+            // noinspection unchecked
             List<String> varNames = (List<String>) stateMap.get(RequestStateManager.REENTRANT_GUARD);
             if (varNames != null && !varNames.isEmpty()) {
                 varNames.remove(propString);
             }
-            // Make sure that the ELContext "resolved" indicator is set 
+            // Make sure that the ELContext "resolved" indicator is set
             // in accordance wth the result of the resolution.
             context.setPropertyResolved(result != null);
         }
@@ -109,8 +103,7 @@ public class VariableResolverChainWrapper extends ELResolver {
     }
 
     @Override
-    public Class<?> getType(ELContext context, Object base, Object property)
-        throws ELException {
+    public Class<?> getType(ELContext context, Object base, Object property) throws ELException {
 
         // Don't call into the chain unless it's been decorated.
         if (legacyVR instanceof ChainAwareVariableResolver) {
@@ -126,8 +119,7 @@ public class VariableResolverChainWrapper extends ELResolver {
     }
 
     @Override
-    public void  setValue(ELContext context, Object base, Object property,
-                          Object val) throws ELException {
+    public void setValue(ELContext context, Object base, Object property, Object val) throws ELException {
         // Don't call into the chain unless it's been decorated.
         if (legacyVR instanceof ChainAwareVariableResolver) {
             return;
@@ -139,8 +131,7 @@ public class VariableResolverChainWrapper extends ELResolver {
     }
 
     @Override
-    public boolean isReadOnly(ELContext context, Object base, Object property)
-        throws ELException {
+    public boolean isReadOnly(ELContext context, Object base, Object property) throws ELException {
 
         // Don't call into the chain unless it's been decorated.
         if (legacyVR instanceof ChainAwareVariableResolver) {
@@ -148,14 +139,13 @@ public class VariableResolverChainWrapper extends ELResolver {
         }
 
         if (null == base && null == property) {
-        throw new PropertyNotFoundException();
-    }
+            throw new PropertyNotFoundException();
+        }
         return false;
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, 
-                                                             Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return null;
     }
 
@@ -166,8 +156,8 @@ public class VariableResolverChainWrapper extends ELResolver {
         if (legacyVR instanceof ChainAwareVariableResolver) {
             return null;
         }
-        
-        if ( base == null ) {
+
+        if (base == null) {
             return String.class;
         }
         return null;

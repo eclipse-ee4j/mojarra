@@ -20,45 +20,40 @@ package jakarta.faces.view.facelets;
 import java.net.URL;
 
 /**
- * <p class="changed_added_2_0"><span class="changed_deleted_2_2">Deprecated as 
- * of Jakarta Server Faces 2.2.  The same functionality is more correctly provided by
- * {@link jakarta.faces.application.ResourceHandler}.</span> Provide
- * a hook to decorate or override
- * the way that Facelets loads template files.  A default implementation
- * must be provided that satisfies the requirements for loading
- * templates as in Pre-Jakarta Server Faces 2.0 Facelets.</p>
-
+ * <p class="changed_added_2_0">
+ * <span class="changed_deleted_2_2">Deprecated as of Jakarta Server Faces 2.2. The same functionality is more correctly
+ * provided by {@link jakarta.faces.application.ResourceHandler}.</span> Provide a hook to decorate or override the way
+ * that Facelets loads template files. A default implementation must be provided that satisfies the requirements for
+ * loading templates as in Pre-Jakarta Server Faces 2.0 Facelets.
+ * </p>
+ * 
  * <div class="changed_added_2_0">
-
- * <p>If a <code>&lt;context-param&gt;</code> with the param name equal
- * to the value of {@link #FACELETS_RESOURCE_RESOLVER_PARAM_NAME}
- * exists, the runtime must interpret its value as a fully qualified
- * classname of a java class that extends <code>ResourceResolver</code>
- * and has a zero argument public constructor or a one argument public
- * constructor where the type of the argument is
- * <code>ResourceResolver</code>. If this param is set and its value
- * does not conform to those requirements, the runtime must log a
- * message and continue. If it does conform to these requirements and
- * has a one-argument constructor, the default
- * <code>ResourceResolver</code> must be passed to the constructor. If
- * it has a zero argument constructor it is invoked directly. In either
- * case, the new <code>ResourceResolver</code> replaces the old
- * one. </p>
-
+ * 
+ * <p>
+ * If a <code>&lt;context-param&gt;</code> with the param name equal to the value of
+ * {@link #FACELETS_RESOURCE_RESOLVER_PARAM_NAME} exists, the runtime must interpret its value as a fully qualified
+ * classname of a java class that extends <code>ResourceResolver</code> and has a zero argument public constructor or a
+ * one argument public constructor where the type of the argument is <code>ResourceResolver</code>. If this param is set
+ * and its value does not conform to those requirements, the runtime must log a message and continue. If it does conform
+ * to these requirements and has a one-argument constructor, the default <code>ResourceResolver</code> must be passed to
+ * the constructor. If it has a zero argument constructor it is invoked directly. In either case, the new
+ * <code>ResourceResolver</code> replaces the old one.
+ * </p>
+ * 
  * </div>
-
+ * 
  */
 
 @Deprecated
 public abstract class ResourceResolver {
 
-    public static final String FACELETS_RESOURCE_RESOLVER_PARAM_NAME = 
-        "jakarta.faces.FACELETS_RESOURCE_RESOLVER";
+    public static final String FACELETS_RESOURCE_RESOLVER_PARAM_NAME = "jakarta.faces.FACELETS_RESOURCE_RESOLVER";
 
     /**
-     * <p class="changed_added_2_0">Returns the <code>URL</code> of a
-     * Facelet template file. Called by the Facelets Runtime to load a
-     * template file referred to in a Facelets page.</p>
+     * <p class="changed_added_2_0">
+     * Returns the <code>URL</code> of a Facelet template file. Called by the Facelets Runtime to load a template file
+     * referred to in a Facelets page.
+     * </p>
      *
      * @param path the internal path to the template resource.
      * @return the resolved URL.

@@ -29,16 +29,15 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_0">
- * <span class="changed_modified_2_0_rev_a changed_modified_2_2
- * changed_modified_2_3">Provides</span> a simple implementation of {@link ResourceHandler} that can
- * be subclassed by developers wishing to provide specialized behavior to an existing
- * {@link ResourceHandler} instance. The default implementation of all methods is to call through to
- * the wrapped {@link ResourceHandler}.
+ * <span class="changed_modified_2_0_rev_a changed_modified_2_2 changed_modified_2_3">Provides</span> a simple
+ * implementation of {@link ResourceHandler} that can be subclassed by developers wishing to provide specialized
+ * behavior to an existing {@link ResourceHandler} instance. The default implementation of all methods is to call
+ * through to the wrapped {@link ResourceHandler}.
  * </p>
  *
  * <p class="changed_added_2_3">
- * Usage: extend this class and push the implementation being wrapped to the constructor and use
- * {@link #getWrapped} to access the instance being wrapped.
+ * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
+ * access the instance being wrapped.
  * </p>
  *
  * @since 2.0
@@ -57,9 +56,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
 
     /**
      * <p class="changed_added_2_3">
-     * If this resource handler has been decorated, the implementation doing the decorating should
-     * push the implementation being wrapped to this constructor. The {@link #getWrapped()} will
-     * then return the implementation being wrapped.
+     * If this resource handler has been decorated, the implementation doing the decorating should push the implementation
+     * being wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
      * </p>
      *
      * @param wrapped The implementation being wrapped.
@@ -74,13 +72,12 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
         return wrapped;
     }
 
-    
     // -------------------------------------------- Methods from ResourceHandler
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link ResourceHandler#createResource(String)}
-     * on the wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link ResourceHandler#createResource(String)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -90,9 +87,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
 
     /**
      * <p class="changed_added_2_2">
-     * The default behavior of this method is to call
-     * {@link ResourceHandler#createResourceFromId(String)} on the wrapped {@link ResourceHandler}
-     * object.
+     * The default behavior of this method is to call {@link ResourceHandler#createResourceFromId(String)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      *
      * @since 2.2
@@ -104,9 +100,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call
-     * {@link ResourceHandler#createResource(String, String)} on the wrapped {@link ResourceHandler}
-     * object.
+     * The default behavior of this method is to call {@link ResourceHandler#createResource(String, String)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -116,8 +111,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
 
     /**
      * <p class="changed_added_2_2">
-     * The default behavior of this method is to call {@link ResourceHandler#createViewResource} on
-     * the wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link ResourceHandler#createViewResource} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -128,8 +123,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
     /**
      * <p class="changed_added_2_3">
      * The default behavior of this method is to call
-     * {@link ResourceHandler#getViewResources(FacesContext, String, int, ResourceVisitOption...)}
-     * on the wrapped {@link ResourceHandler} object.
+     * {@link ResourceHandler#getViewResources(FacesContext, String, int, ResourceVisitOption...)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      *
      * @since 2.3
@@ -142,8 +137,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
     /**
      * <p class="changed_added_2_3">
      * The default behavior of this method is to call
-     * {@link ResourceHandler#getViewResources(FacesContext, String, ResourceVisitOption...)} on the
-     * wrapped {@link ResourceHandler} object.
+     * {@link ResourceHandler#getViewResources(FacesContext, String, ResourceVisitOption...)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      *
      * @since 2.3
@@ -154,9 +149,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call
-     * {@link ResourceHandler#createResource(String, String, String)} on the wrapped
-     * {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link ResourceHandler#createResource(String, String, String)} on the
+     * wrapped {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -167,8 +161,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
     /**
      * <p class="changed_added_2_0">
      * The default behavior of this method is to call
-     * {@link ResourceHandler#handleResourceRequest(jakarta.faces.context.FacesContext)} on the
-     * wrapped {@link ResourceHandler} object.
+     * {@link ResourceHandler#handleResourceRequest(jakarta.faces.context.FacesContext)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -179,8 +173,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
     /**
      * <p class="changed_added_2_0">
      * The default behavior of this method is to call
-     * {@link ResourceHandler#isResourceRequest(jakarta.faces.context.FacesContext)} on the wrapped
-     * {@link ResourceHandler} object.
+     * {@link ResourceHandler#isResourceRequest(jakarta.faces.context.FacesContext)} on the wrapped {@link ResourceHandler}
+     * object.
      * </p>
      */
     @Override
@@ -190,8 +184,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link ResourceHandler#isResourceURL} on the
-     * wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link ResourceHandler#isResourceURL} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -201,8 +195,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call {@link ResourceHandler#libraryExists(String)}
-     * on the wrapped {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link ResourceHandler#libraryExists(String)} on the wrapped
+     * {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -212,9 +206,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call
-     * {@link ResourceHandler#getRendererTypeForResourceName(String)} on the wrapped
-     * {@link ResourceHandler} object.
+     * The default behavior of this method is to call {@link ResourceHandler#getRendererTypeForResourceName(String)} on the
+     * wrapped {@link ResourceHandler} object.
      * </p>
      */
     @Override
@@ -225,8 +218,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
     /**
      * <p class="changed_added_2_3">
      * The default behavior of this method is to call
-     * {@link ResourceHandler#markResourceRendered(FacesContext, String, String)} on the wrapped
-     * {@link ResourceHandler} object.
+     * {@link ResourceHandler#markResourceRendered(FacesContext, String, String)} on the wrapped {@link ResourceHandler}
+     * object.
      * </p>
      *
      * @since 2.3
@@ -239,8 +232,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
     /**
      * <p class="changed_added_2_3">
      * The default behavior of this method is to call
-     * {@link ResourceHandler#isResourceRendered(FacesContext, String, String)} on the wrapped
-     * {@link ResourceHandler} object.
+     * {@link ResourceHandler#isResourceRendered(FacesContext, String, String)} on the wrapped {@link ResourceHandler}
+     * object.
      * </p>
      *
      * @since 2.3

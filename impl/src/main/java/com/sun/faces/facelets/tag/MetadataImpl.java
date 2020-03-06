@@ -28,7 +28,7 @@ final class MetadataImpl extends Metadata {
 
     private final Metadata[] mappers;
     private final int size;
-    
+
     public MetadataImpl(Metadata[] mappers) {
         this.mappers = mappers;
         this.size = mappers.length;

@@ -18,8 +18,9 @@
 package jakarta.faces.view.facelets;
 
 /**
- * <p class="changed_added_2_0"><span class="changed_modified_2_2">A</span> set
- * of TagAttributes, usually representing all attributes on a Tag.</p>
+ * <p class="changed_added_2_0">
+ * <span class="changed_modified_2_2">A</span> set of TagAttributes, usually representing all attributes on a Tag.
+ * </p>
  *
  * @since 2.0
  */
@@ -66,10 +67,10 @@ public abstract class TagAttributes {
     public abstract String[] getNamespaces();
 
     /**
-     * <p class="changed_added_2_2">A reference to the Tag for which this class
-     * represents the attributes. For compatibility with previous
-     * implementations, an implementation is provided that returns
-     * {@code null}.</p>
+     * <p class="changed_added_2_2">
+     * A reference to the Tag for which this class represents the attributes. For compatibility with previous
+     * implementations, an implementation is provided that returns {@code null}.
+     * </p>
      *
      * @since 2.2
      *
@@ -80,11 +81,11 @@ public abstract class TagAttributes {
     }
 
     /**
-     * <p class="changed_added_2_2">Set a reference to the Tag for which this
-     * class represents the attributes. The VDL runtime must ensure that this
-     * method is called before any {@link
-     * FaceletHandler}s for this element are instantiated. For compatibility
-     * with previous implementations, a no-op implementation is provided.</p>
+     * <p class="changed_added_2_2">
+     * Set a reference to the Tag for which this class represents the attributes. The VDL runtime must ensure that this
+     * method is called before any {@link FaceletHandler}s for this element are instantiated. For compatibility with
+     * previous implementations, a no-op implementation is provided.
+     * </p>
      *
      * @param tag the parent tag.
      * @since 2.2

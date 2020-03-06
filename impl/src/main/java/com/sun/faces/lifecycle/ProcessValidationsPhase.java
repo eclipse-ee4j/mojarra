@@ -27,18 +27,14 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
 
 /**
- * ProcessValidationsPhase executes <code>processValidators</code> on each
- * component in the tree.
+ * ProcessValidationsPhase executes <code>processValidators</code> on each component in the tree.
  */
 public class ProcessValidationsPhase extends Phase {
-
 
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void execute(FacesContext facesContext) throws FacesException {
@@ -66,14 +62,12 @@ public class ProcessValidationsPhase extends Phase {
 
     }
 
-
     @Override
     public PhaseId getId() {
 
         return PhaseId.PROCESS_VALIDATIONS;
 
     }
-
 
 // The testcase for this class is TestProcessValidationsPhase.java
 

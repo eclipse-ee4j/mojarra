@@ -23,10 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Utility class for wrapping another VariableMapper with a new context,
- * represented by a {@link java.util.Map Map}. Modifications occur to the Map
- * instance, but resolve against the wrapped VariableMapper if the Map doesn't
- * contain the ValueExpression requested.
+ * Utility class for wrapping another VariableMapper with a new context, represented by a {@link java.util.Map Map}.
+ * Modifications occur to the Map instance, but resolve against the wrapped VariableMapper if the Map doesn't contain
+ * the ValueExpression requested.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -46,8 +45,7 @@ public class VariableMapperWrapper extends VariableMapper {
     }
 
     /**
-     * First tries to resolve agains the inner Map, then the wrapped
-     * ValueExpression.
+     * First tries to resolve agains the inner Map, then the wrapped ValueExpression.
      *
      * @see jakarta.el.VariableMapper#resolveVariable(java.lang.String)
      */
@@ -63,23 +61,20 @@ public class VariableMapperWrapper extends VariableMapper {
             }
             return ve;
         } catch (StackOverflowError e) {
-            throw new ELException("Could not Resolve Variable [Overflow]: "
-                                  + variable, e);
+            throw new ELException("Could not Resolve Variable [Overflow]: " + variable, e);
         }
     }
 
     /**
      * Set the ValueExpression on the inner Map instance.
      *
-     * @see jakarta.el.VariableMapper#setVariable(java.lang.String,
-     *      jakarta.el.ValueExpression)
+     * @see jakarta.el.VariableMapper#setVariable(java.lang.String, jakarta.el.ValueExpression)
      */
     @Override
-    public ValueExpression setVariable(String variable,
-                                       ValueExpression expression) {
+    public ValueExpression setVariable(String variable, ValueExpression expression) {
         if (this.vars == null) {
             this.vars = new HashMap();
         }
         return (ValueExpression) this.vars.put(variable, expression);
-	}
+    }
 }

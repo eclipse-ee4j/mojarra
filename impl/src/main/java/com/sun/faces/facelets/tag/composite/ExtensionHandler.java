@@ -26,7 +26,6 @@ import jakarta.faces.view.facelets.TagHandler;
 
 import java.io.IOException;
 
-
 public class ExtensionHandler extends TagHandler {
 
     public ExtensionHandler(TagConfig tagConfig) {
@@ -52,8 +51,5 @@ public class ExtensionHandler extends TagHandler {
         }
 
     }
-    
-    
-    
 
 }

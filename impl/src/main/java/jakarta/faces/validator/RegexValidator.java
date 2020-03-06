@@ -31,11 +31,11 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_0"><span
- * class="changed_modified_2_0_rev_a">A Validator</span> that checks
- * against a Regular Expression (which is the pattern property).  The
- * pattern must resolve to a String that follows the java.util.regex
- * standards.</p>
+ * <p class="changed_added_2_0">
+ * <span class="changed_modified_2_0_rev_a">A Validator</span> that checks against a Regular Expression (which is the
+ * pattern property). The pattern must resolve to a String that follows the java.util.regex standards.
+ * </p>
+ * 
  * @since 2.0
  */
 public class RegexValidator implements Validator, PartialStateHolder {
@@ -43,42 +43,40 @@ public class RegexValidator implements Validator, PartialStateHolder {
     private String regex;
 
     /**
-     * <p>The standard converter id for this converter.</p>
+     * <p>
+     * The standard converter id for this converter.
+     * </p>
      */
     public static final String VALIDATOR_ID = "jakarta.faces.RegularExpression";
 
     /**
-     * <p>The message identifier of the {@link
-     * jakarta.faces.application.FacesMessage} to be created if the value
-     * returned from {@link #getPattern} is <code>null</code> or the
-     * empty String.</p>
+     * <p>
+     * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the value returned from
+     * {@link #getPattern} is <code>null</code> or the empty String.
+     * </p>
      */
-    public static final String PATTERN_NOT_SET_MESSAGE_ID =
-         "jakarta.faces.validator.RegexValidator.PATTERN_NOT_SET";
+    public static final String PATTERN_NOT_SET_MESSAGE_ID = "jakarta.faces.validator.RegexValidator.PATTERN_NOT_SET";
 
     /**
-     * <p>The message identifier of the {@link
-     * jakarta.faces.application.FacesMessage} to be created if the act of
-     * matching the value against the pattern returned from {@link
-     * #getPattern} fails because the value does not match the
-     * pattern.</p>
+     * <p>
+     * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the act of matching the
+     * value against the pattern returned from {@link #getPattern} fails because the value does not match the pattern.
+     * </p>
      */
-    public static final String NOT_MATCHED_MESSAGE_ID =
-         "jakarta.faces.validator.RegexValidator.NOT_MATCHED";
+    public static final String NOT_MATCHED_MESSAGE_ID = "jakarta.faces.validator.RegexValidator.NOT_MATCHED";
 
     /**
-     * <p>The message identifier of the {@link
-     * jakarta.faces.application.FacesMessage} to be created if the act of
-     * matching the value against the pattern returned from {@link
-     * #getPattern} fails because of a
-     * <code>PatternSyntaxException</code>.</p>
+     * <p>
+     * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the act of matching the
+     * value against the pattern returned from {@link #getPattern} fails because of a <code>PatternSyntaxException</code>.
+     * </p>
      */
-    public static final String MATCH_EXCEPTION_MESSAGE_ID =
-         "jakarta.faces.validator.RegexValidator.MATCH_EXCEPTION";
-
+    public static final String MATCH_EXCEPTION_MESSAGE_ID = "jakarta.faces.validator.RegexValidator.MATCH_EXCEPTION";
 
     /**
-     * <p>The Regular Expression property to validate against.</p>
+     * <p>
+     * The Regular Expression property to validate against.
+     * </p>
      *
      * @param pattern a regular expression pattern
      */
@@ -88,8 +86,9 @@ public class RegexValidator implements Validator, PartialStateHolder {
     }
 
     /**
-     * <p>Return the <code>ValueExpression</code> that yields the
-     * regular expression pattern when evaluated.</p>
+     * <p>
+     * Return the <code>ValueExpression</code> that yields the regular expression pattern when evaluated.
+     * </p>
      *
      * @return the pattern
      */
@@ -99,23 +98,22 @@ public class RegexValidator implements Validator, PartialStateHolder {
     }
 
     /**
-
-     * <p>Validate a String against a regular expression pattern.  The
-     * full regex pattern must be matched in order to pass the
-     * validation.</p>
-
+     * 
+     * <p>
+     * Validate a String against a regular expression pattern. The full regex pattern must be matched in order to pass the
+     * validation.
+     * </p>
+     * 
      * @param context {@inheritDoc}
      * @param component {@inheritDoc}
      * @param value {@inheritDoc}
-
+     * 
      * @throws NullPointerException {@inheritDoc}
-     * @throws ValidatorException   {@inheritDoc}
-
+     * @throws ValidatorException {@inheritDoc}
+     * 
      */
     @Override
-    public void validate(FacesContext context,
-                         UIComponent component,
-                         Object value) {
+    public void validate(FacesContext context, UIComponent component, Object value) {
 
         if (context == null) {
             throw new NullPointerException();
@@ -123,7 +121,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
         if (component == null) {
             throw new NullPointerException();
         }
-        
+
         if (value == null) {
             return;
         }
@@ -133,9 +131,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
         Locale locale = context.getViewRoot().getLocale();
 
         if (regex == null || regex.length() == 0) {
-            fmsg = MessageFactory.getMessage(locale,
-                    PATTERN_NOT_SET_MESSAGE_ID,
-                    (Object) null);
+            fmsg = MessageFactory.getMessage(locale, PATTERN_NOT_SET_MESSAGE_ID, (Object) null);
             throw new ValidatorException(fmsg);
         }
 
@@ -144,21 +140,16 @@ public class RegexValidator implements Validator, PartialStateHolder {
             Matcher matcher = pattern.matcher((String) value);
             if (!matcher.matches()) {
                 Object[] params = { regex };
-                fmsg = MessageFactory.getMessage(locale,
-                        NOT_MATCHED_MESSAGE_ID,
-                        params);
+                fmsg = MessageFactory.getMessage(locale, NOT_MATCHED_MESSAGE_ID, params);
                 throw new ValidatorException(fmsg);
             }
         } catch (PatternSyntaxException pse) {
-            fmsg = MessageFactory.getMessage(locale,
-                    MATCH_EXCEPTION_MESSAGE_ID,
-                    (Object) null);
+            fmsg = MessageFactory.getMessage(locale, MATCH_EXCEPTION_MESSAGE_ID, (Object) null);
             throw new ValidatorException(fmsg, pse);
         }
     }
-    
-    // ----------------------------------------------------- StateHolder Methods
 
+    // ----------------------------------------------------- StateHolder Methods
 
     @Override
     public Object saveState(FacesContext context) {
@@ -176,7 +167,6 @@ public class RegexValidator implements Validator, PartialStateHolder {
 
     }
 
-
     @Override
     public void restoreState(FacesContext context, Object state) {
 
@@ -190,9 +180,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
 
     }
 
-
     private boolean transientValue;
-
 
     @Override
     public boolean isTransient() {
@@ -201,14 +189,12 @@ public class RegexValidator implements Validator, PartialStateHolder {
 
     }
 
-
     @Override
     public void setTransient(boolean transientValue) {
 
         this.transientValue = transientValue;
 
     }
-
 
     private boolean initialState;
 

@@ -31,10 +31,10 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Load a resource bundle localized for the Locale of the current view, and
- * expose it (as a Map) in the request attributes of the current request. <p/>
- * See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag
+ * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
+ * attributes of the current request.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag
  * documentation</a>.
  * 
  * @author Jacob Hookom
@@ -76,8 +76,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
             @Override
             public boolean equals(Object obj) {
-                return (obj instanceof ResourceEntry && this.hashCode() == obj
-                        .hashCode());
+                return (obj instanceof ResourceEntry && this.hashCode() == obj.hashCode());
             }
         }
 
@@ -121,11 +120,11 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public Object get(Object key) {
-        	try {
-        		return this.bundle.getObject((String) key);
-        	} catch( java.util.MissingResourceException mre ) {
-        		return "???"+key+"???";
-        	}
+            try {
+                return this.bundle.getObject((String) key);
+            } catch (java.util.MissingResourceException mre) {
+                return "???" + key + "???";
+            }
         }
 
         @Override
@@ -191,8 +190,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
      * See taglib documentation.
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
         ResourceBundle bundle = null;
         try {
@@ -201,15 +199,13 @@ public final class LoadBundleHandler extends TagHandlerImpl {
             if (root != null && root.getLocale() != null) {
                 bundle = ResourceBundle.getBundle(name, root.getLocale(), cl);
             } else {
-                bundle = ResourceBundle
-                        .getBundle(name, Locale.getDefault(), cl);
+                bundle = ResourceBundle.getBundle(name, Locale.getDefault(), cl);
             }
         } catch (Exception e) {
             throw new TagAttributeException(this.tag, this.basename, e);
         }
         ResourceBundleMap map = new ResourceBundleMap(bundle);
         FacesContext faces = ctx.getFacesContext();
-        faces.getExternalContext().getRequestMap().put(this.var.getValue(ctx),
-                map);
+        faces.getExternalContext().getRequestMap().put(this.var.getValue(ctx), map);
     }
 }

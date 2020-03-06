@@ -20,25 +20,22 @@ package jakarta.faces.view.facelets;
 import jakarta.faces.view.ValueHolderAttachedObjectHandler;
 
 /**
- * <p class="changed_added_2_0">Handles setting a {@link
- * jakarta.faces.convert.Converter} instance on a {@link
- * jakarta.faces.component.ValueHolder} parent. Will wire all attributes
- * set to the <code>Converter</code> instance created/fetched. Uses the
- * "binding" attribute for grabbing instances to apply attributes
- * to. </p>
+ * <p class="changed_added_2_0">
+ * Handles setting a {@link jakarta.faces.convert.Converter} instance on a {@link jakarta.faces.component.ValueHolder}
+ * parent. Will wire all attributes set to the <code>Converter</code> instance created/fetched. Uses the "binding"
+ * attribute for grabbing instances to apply attributes to.
+ * </p>
  *
- * <p class="changed_added_2_0">Will only set/create
- * <code>Converter</code> if the passed <code>UIComponent</code>'s
- * <code>parent</code> is <code>null</code>, signifying that it wasn't
- * restored from an existing tree.</p>
+ * <p class="changed_added_2_0">
+ * Will only set/create <code>Converter</code> if the passed <code>UIComponent</code>'s <code>parent</code> is
+ * <code>null</code>, signifying that it wasn't restored from an existing tree.
+ * </p>
  * 
  */
 public class ConverterHandler extends FaceletsAttachedObjectHandler implements ValueHolderAttachedObjectHandler {
 
-    
     private String converterId;
-    
-    
+
     private TagHandlerDelegate helper;
 
     public ConverterHandler(ConverterConfig config) {
@@ -66,5 +63,5 @@ public class ConverterHandler extends FaceletsAttachedObjectHandler implements V
         }
         return converterId;
     }
-    
+
 }

@@ -17,19 +17,20 @@
 package jakarta.faces.model;
 
 /**
- * <p><strong>ScalarDataModel</strong> is a convenience implementation of
- * {@link DataModel} that wraps an individual Java object.</p>
+ * <p>
+ * <strong>ScalarDataModel</strong> is a convenience implementation of {@link DataModel} that wraps an individual Java
+ * object.
+ * </p>
  */
 
 public class ScalarDataModel<E> extends DataModel<E> {
 
-
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p>Construct a new {@link ScalarDataModel} with no specified
-     * wrapped data.</p>
+     * <p>
+     * Construct a new {@link ScalarDataModel} with no specified wrapped data.
+     * </p>
      */
     public ScalarDataModel() {
 
@@ -37,10 +38,10 @@ public class ScalarDataModel<E> extends DataModel<E> {
 
     }
 
-
     /**
-     * <p>Construct a new {@link ScalarDataModel} wrapping the specified
-     * scalar object.</p>
+     * <p>
+     * Construct a new {@link ScalarDataModel} wrapping the specified scalar object.
+     * </p>
      *
      * @param scalar Scalar to be wrapped (if any)
      */
@@ -51,25 +52,21 @@ public class ScalarDataModel<E> extends DataModel<E> {
 
     }
 
-
     // ------------------------------------------------------ Instance Variables
-
 
     // The currently selected row index (zero-relative)
     private int index;
 
-
     // The scalar we are wrapping
     private E scalar;
 
-
     // -------------------------------------------------------------- Properties
 
-
     /**
-     * <p>Return <code>true</code> if there is <code>wrappedData</code>
-     * available, and the current value of <code>rowIndex</code> is zero.
-     * Otherwise, return <code>false</code>.</p>
+     * <p>
+     * Return <code>true</code> if there is <code>wrappedData</code> available, and the current value of
+     * <code>rowIndex</code> is zero. Otherwise, return <code>false</code>.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row availability
      */
@@ -77,7 +74,7 @@ public class ScalarDataModel<E> extends DataModel<E> {
     public boolean isRowAvailable() {
 
         if (scalar == null) {
-	    return (false);
+            return (false);
         } else if (index == 0) {
             return (true);
         } else {
@@ -86,10 +83,10 @@ public class ScalarDataModel<E> extends DataModel<E> {
 
     }
 
-
     /**
-     * <p>If there is <code>wrappedData</code> available, return 1.
-     * If no <code>wrappedData</code> is available, return -1.</p>
+     * <p>
+     * If there is <code>wrappedData</code> available, return 1. If no <code>wrappedData</code> is available, return -1.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row count
      */
@@ -97,39 +94,37 @@ public class ScalarDataModel<E> extends DataModel<E> {
     public int getRowCount() {
 
         if (scalar == null) {
-	    return (-1);
+            return (-1);
         }
         return (1);
 
     }
 
-
     /**
-     * <p>If wrapped data is available, return the wrapped data instance.
-     * Otherwise, return <code>null</code>.</p>
+     * <p>
+     * If wrapped data is available, return the wrapped data instance. Otherwise, return <code>null</code>.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row data
-     * @throws IllegalArgumentException if now row data is available
-     *  at the currently specified row index
+     * @throws IllegalArgumentException if now row data is available at the currently specified row index
      */
     @Override
     public E getRowData() {
 
         if (scalar == null) {
-	    return (null);
+            return (null);
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         } else {
-            //noinspection unchecked
+            // noinspection unchecked
             return (scalar);
         }
 
     }
 
-
     /**
-     * @throws jakarta.faces.FacesException {@inheritDoc}     
-     */ 
+     * @throws jakarta.faces.FacesException {@inheritDoc}
+     */
     @Override
     public int getRowIndex() {
 
@@ -137,11 +132,10 @@ public class ScalarDataModel<E> extends DataModel<E> {
 
     }
 
-
     /**
      * @throws jakarta.faces.FacesException {@inheritDoc}
      * @throws IllegalArgumentException {@inheritDoc}
-     */ 
+     */
     @Override
     public void setRowIndex(int rowIndex) {
 
@@ -150,27 +144,25 @@ public class ScalarDataModel<E> extends DataModel<E> {
         }
         int old = index;
         index = rowIndex;
-	if (scalar == null) {
-	    return;
-	}
-	DataModelListener [] listeners = getDataModelListeners();
+        if (scalar == null) {
+            return;
+        }
+        DataModelListener[] listeners = getDataModelListeners();
         if ((old != index) && (listeners != null)) {
             Object rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
             }
-            DataModelEvent event =
-                new DataModelEvent(this, index, rowData);
+            DataModelEvent event = new DataModelEvent(this, index, rowData);
             int n = listeners.length;
             for (int i = 0; i < n; i++) {
-		if (null != listeners[i]) {
-		    listeners[i].rowSelected(event);
-		}
+                if (null != listeners[i]) {
+                    listeners[i].rowSelected(event);
+                }
             }
         }
 
     }
-
 
     @Override
     public Object getWrappedData() {
@@ -178,7 +170,6 @@ public class ScalarDataModel<E> extends DataModel<E> {
         return (this.scalar);
 
     }
-
 
     /**
      * @throws ClassCastException {@inheritDoc}
@@ -196,6 +187,5 @@ public class ScalarDataModel<E> extends DataModel<E> {
         }
 
     }
-
 
 }

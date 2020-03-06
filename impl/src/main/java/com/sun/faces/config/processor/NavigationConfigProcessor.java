@@ -47,8 +47,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/managed-bean</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/managed-bean</code>.
  * </p>
  */
 public class NavigationConfigProcessor extends AbstractConfigProcessor {
@@ -187,7 +186,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing navigation-rule elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
-            
+
             Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList navigationRules = document.getDocumentElement().getElementsByTagNameNS(namespace, NAVIGATION_RULE);

@@ -121,22 +121,17 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                         result = COMPLETE;
                     } else if (component instanceof UIForm) {
                         /*
-                         * If the component is a UIForm and it is prepending its
-                         * id then we can short circuit out of here if the the
-                         * client id of the component we are trying to find does
-                         * not begin with the id of the UIForm.
+                         * If the component is a UIForm and it is prepending its id then we can short circuit out of here if the the client id
+                         * of the component we are trying to find does not begin with the id of the UIForm.
                          */
                         UIForm form = (UIForm) component;
                         if (form.isPrependId() && !clientId.startsWith(form.getClientId(visitContext.getFacesContext()))) {
                             result = REJECT;
                         }
-                    } else if (component instanceof NamingContainer &&
-                        !clientId.startsWith(component.getClientId(visitContext.getFacesContext()))) {
+                    } else if (component instanceof NamingContainer && !clientId.startsWith(component.getClientId(visitContext.getFacesContext()))) {
                         /*
-                         * If the component is a naming container then assume it
-                         * is prepending its id so if our client id we are
-                         * looking for does not start with the naming container
-                         * id we can skip visiting this tree.
+                         * If the component is a naming container then assume it is prepending its id so if our client id we are looking for
+                         * does not start with the naming container id we can skip visiting this tree.
                          */
                         result = REJECT;
                     }
@@ -151,18 +146,18 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         if (!found.isEmpty()) {
             result = found.get(0);
         }
-        
+
         return result;
     }
 
     /**
-     * Methods that takes care of pruning and re-adding an action to the dynamic
-     * action list.
+     * Methods that takes care of pruning and re-adding an action to the dynamic action list.
      *
-     * <p> If you remove a component, re-add it to the same parent and then
-     * remove it again, you only have to capture the FIRST remove. Similarly if
-     * you add a component, remove it, and then re-add it to the same parent you
-     * only need to capture the LAST add. </p>
+     * <p>
+     * If you remove a component, re-add it to the same parent and then remove it again, you only have to capture the FIRST
+     * remove. Similarly if you add a component, remove it, and then re-add it to the same parent you only need to capture
+     * the LAST add.
+     * </p>
      *
      * @param dynamicActionList the dynamic action list.
      * @param struct the component struct to add.
@@ -242,9 +237,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             UIComponent child = locateComponentByClientId(context, parent, struct.getClientId());
 
             /*
-             * If Facelets engine restored the child before us we are going to
-             * use it, but we need to remove it before we can add it in the
-             * correct place.
+             * If Facelets engine restored the child before us we are going to use it, but we need to remove it before we can add it
+             * in the correct place.
              */
             if (child != null) {
                 if (struct.getFacetName() == null) {
@@ -255,8 +249,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             }
 
             /*
-             * The child was not build previously, so we are going to check if
-             * the component was saved in the state.
+             * The child was not build previously, so we are going to check if the component was saved in the state.
              */
             if (child == null) {
                 StateHolderSaver saver = (StateHolderSaver) state.get(struct.getClientId());
@@ -266,9 +259,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             }
 
             /*
-             * Are we adding =BACK= in a component that was not in the state,
-             * because it was added by the initial buildView and removed by
-             * another dynamic action?
+             * Are we adding =BACK= in a component that was not in the state, because it was added by the initial buildView and
+             * removed by another dynamic action?
              */
             StateContext stateContext = StateContext.getStateContext(context);
             if (child == null) {
@@ -332,7 +324,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
 
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "FaceletPartialStateManagementStrategy.restoreView", new Object[]{viewId, renderKitId});
+            LOGGER.log(Level.FINEST, "FaceletPartialStateManagementStrategy.restoreView", new Object[] { viewId, renderKitId });
         }
 
         ResponseStateManager rsm = RenderKitUtils.getResponseStateManager(context, renderKitId);
@@ -371,11 +363,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                                 try {
                                     target.restoreState(context.getFacesContext(), stateObj);
                                 } catch (Exception e) {
-                                    String msg =
-                                            MessageUtils.getExceptionMessageString(
-                                            MessageUtils.PARTIAL_STATE_ERROR_RESTORING_ID,
-                                            cid,
-                                            e.toString());
+                                    String msg = MessageUtils.getExceptionMessageString(MessageUtils.PARTIAL_STATE_ERROR_RESTORING_ID, cid, e.toString());
                                     throw new FacesException(msg, e);
                                 }
                             }
@@ -410,15 +398,13 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
 
         List<ComponentStruct> actions = stateContext.getDynamicActions();
         HashMap<String, UIComponent> componentMap = stateContext.getDynamicComponents();
-        
+
         if (actions != null) {
             List<Object> savedActions = new ArrayList<>(actions.size());
             for (ComponentStruct action : actions) {
                 UIComponent component = componentMap.get(action.getClientId());
                 if (component == null && context.isProjectStage(ProjectStage.Development)) {
-                    LOGGER.log(
-                            Level.WARNING,
-                            "Unable to save dynamic action with clientId ''{0}'' because the UIComponent cannot be found",
+                    LOGGER.log(Level.WARNING, "Unable to save dynamic action with clientId ''{0}'' because the UIComponent cannot be found",
                             action.getClientId());
                 }
                 if (component != null) {
@@ -489,6 +475,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
 
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
-        return new Object[]{null, stateMap};
+        return new Object[] { null, stateMap };
     }
 }

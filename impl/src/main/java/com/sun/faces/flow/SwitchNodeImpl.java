@@ -28,9 +28,9 @@ import jakarta.faces.flow.SwitchCase;
 import jakarta.faces.flow.SwitchNode;
 
 public class SwitchNodeImpl extends SwitchNode implements Serializable {
-    
+
     private static final long serialVersionUID = -9203493858518714933L;
-        
+
     private final String id;
     private ValueExpression defaultOutcome;
     private CopyOnWriteArrayList<SwitchCase> _cases;
@@ -38,7 +38,7 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
 
     public SwitchNodeImpl(String id) {
         this.id = id;
-        
+
         this.defaultOutcome = null;
         _cases = new CopyOnWriteArrayList<>();
         cases = Collections.unmodifiableList(_cases);
@@ -73,12 +73,12 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
         hash = 47 * hash + (this._cases != null ? this._cases.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public String getId() {
         return id;
     }
-        
+
     @Override
     public List<SwitchCase> getCases() {
         return cases;
@@ -91,27 +91,25 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
     @Override
     public String getDefaultOutcome(FacesContext context) {
         String result = null;
-        
+
         if (null != defaultOutcome) {
             Object objResult = defaultOutcome.getValue(context.getELContext());
             result = (null != objResult) ? objResult.toString() : null;
         }
         return result;
     }
-    
+
     public void setDefaultOutcome(String defaultOutcome) {
         if (null == defaultOutcome) {
             this.defaultOutcome = null;
         }
         FacesContext context = FacesContext.getCurrentInstance();
         ExpressionFactory eFactory = context.getApplication().getExpressionFactory();
-        this.defaultOutcome = eFactory.createValueExpression(context.getELContext(), 
-                defaultOutcome, Object.class);
+        this.defaultOutcome = eFactory.createValueExpression(context.getELContext(), defaultOutcome, Object.class);
     }
-    
+
     public void setDefaultOutcome(ValueExpression defaultOutcome) {
         this.defaultOutcome = defaultOutcome;
     }
 
-    
 }

@@ -26,21 +26,19 @@ public class VersionInfo implements Comparable {
 
     // ------------------------------------------------------------ Constructors
 
-
     /**
      * Constructs a new VersionInfo instance.
+     * 
      * @param version the version
-     * @param extension the extension (only pertains to versioned resources,
-     *  not libraries, and thus may be <code>null</code>)
+     * @param extension the extension (only pertains to versioned resources, not libraries, and thus may be
+     * <code>null</code>)
      */
     public VersionInfo(String version, String extension) {
         this.version = version;
         this.extension = extension;
     }
 
-    
     // ---------------------------------------------------------- Public Methods
-
 
     /**
      * @return the version
@@ -52,15 +50,13 @@ public class VersionInfo implements Comparable {
     }
 
     /**
-     * @return the extension of the resource at processing time, or null
-     *  if this version is associated with a library
+     * @return the extension of the resource at processing time, or null if this version is associated with a library
      */
     public String getExtension() {
 
         return extension;
 
     }
-
 
     @Override
     public String toString() {
@@ -69,13 +65,10 @@ public class VersionInfo implements Comparable {
 
     }
 
-
     @Override
     public int hashCode() {
 
-        return (version.hashCode() ^ ((extension != null)
-                                      ? extension.hashCode()
-                                      : 0));
+        return (version.hashCode() ^ ((extension != null) ? extension.hashCode() : 0));
 
     }
 
@@ -100,13 +93,11 @@ public class VersionInfo implements Comparable {
 
     }
 
-
     // ------------------------------------------------- Methods from Comparable
-
 
     @Override
     public int compareTo(Object o) {
-        assert(o instanceof VersionInfo);
+        assert (o instanceof VersionInfo);
         VersionInfo c = (VersionInfo) o;
         return (this.version.compareTo(c.version));
     }

@@ -33,7 +33,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <p>Base class for all <code>ConverterTag<code>s.</p>
+ * <p>
+ * Base class for all <code>ConverterTag<code>s.
+ * </p>
  */
 public class AbstractConverterTag extends ConverterELTag {
 
@@ -42,25 +44,27 @@ public class AbstractConverterTag extends ConverterELTag {
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
     /**
-     * <p>The {@link jakarta.el.ValueExpression} that evaluates to an object that
-     * implements {@link jakarta.faces.convert.Converter}.</p>
+     * <p>
+     * The {@link jakarta.el.ValueExpression} that evaluates to an object that implements
+     * {@link jakarta.faces.convert.Converter}.
+     * </p>
      */
     protected ValueExpression binding = null;
 
-
     /**
-     * <p>The identifier of the {@link jakarta.faces.convert.Converter}
-     * instance to be created.</p>
+     * <p>
+     * The identifier of the {@link jakarta.faces.convert.Converter} instance to be created.
+     * </p>
      */
     protected ValueExpression converterId = null;
 
     // ---------------------------------------------------------- Public Methods
 
-
     /**
-     * <p>Set the expression that will be used to create a
-     * {@link jakarta.el.ValueExpression} that references a backing bean property
-     * of the {@link jakarta.faces.convert.Converter} instance to be created.</p>
+     * <p>
+     * Set the expression that will be used to create a {@link jakarta.el.ValueExpression} that references a backing bean
+     * property of the {@link jakarta.faces.convert.Converter} instance to be created.
+     * </p>
      *
      * @param binding The new expression
      */
@@ -70,13 +74,11 @@ public class AbstractConverterTag extends ConverterELTag {
 
     }
 
-
     /**
-     * <p>Set the identifer of the {@link jakarta.faces.convert.Converter}
-     * instance to be created.
+     * <p>
+     * Set the identifer of the {@link jakarta.faces.convert.Converter} instance to be created.
      *
-     * @param converterId The identifier of the converter instance to be
-     *                    created.
+     * @param converterId The identifier of the converter instance to be created.
      */
     public void setConverterId(ValueExpression converterId) {
 
@@ -86,24 +88,18 @@ public class AbstractConverterTag extends ConverterELTag {
 
     // --------------------------------------------- Methods from ConverterELTag
 
-
     @Override
     protected Converter createConverter() throws JspException {
 
         try {
-            return createConverter(converterId,
-                                   binding,
-                                   FacesContext.getCurrentInstance());
+            return createConverter(converterId, binding, FacesContext.getCurrentInstance());
         } catch (FacesException fe) {
             throw new JspException(fe.getCause());
         }
 
     }
 
-
-    protected static Converter createConverter(ValueExpression converterId,
-                                               ValueExpression binding,
-                                               FacesContext facesContext) {
+    protected static Converter createConverter(ValueExpression converterId, ValueExpression binding, FacesContext facesContext) {
 
         ELContext elContext = facesContext.getELContext();
         Converter converter = null;
@@ -121,15 +117,13 @@ public class AbstractConverterTag extends ConverterELTag {
         }
 
         // If "converterId" is set, use it to create the converter
-        // instance.  If "converterId" and "binding" are both set, store the
+        // instance. If "converterId" and "binding" are both set, store the
         // converter instance in the value of the property represented by
         // the ValueExpression 'binding'.
         if (converterId != null) {
             try {
-                String converterIdVal = (String)
-                     converterId.getValue(elContext);
-                converter = facesContext.getApplication()
-                     .createConverter(converterIdVal);
+                String converterIdVal = (String) converterId.getValue(elContext);
+                converter = facesContext.getApplication().createConverter(converterIdVal);
                 if (converter != null && binding != null) {
                     binding.setValue(elContext, converter);
                 }
@@ -140,11 +134,8 @@ public class AbstractConverterTag extends ConverterELTag {
 
         if (converter == null) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING,
-                     MessageUtils.getExceptionMessageString(
-                          MessageUtils.CANNOT_CONVERT_ID,
-                          converterId != null ? converterId.getExpressionString() : "",
-                          binding != null ? binding.getExpressionString() : ""));
+                LOGGER.log(Level.WARNING, MessageUtils.getExceptionMessageString(MessageUtils.CANNOT_CONVERT_ID,
+                        converterId != null ? converterId.getExpressionString() : "", binding != null ? binding.getExpressionString() : ""));
             }
         }
 

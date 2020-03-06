@@ -19,27 +19,31 @@ package jakarta.faces.flow;
 import jakarta.el.ValueExpression;
 
 /**
- * <p class="changed_added_2_2">Represents a parameter in any of several
- * places where parameters are needed when processing flows.</p>
+ * <p class="changed_added_2_2">
+ * Represents a parameter in any of several places where parameters are needed when processing flows.
+ * </p>
  * 
  * @since 2.2
  */
 public abstract class Parameter {
-    
+
     /**
-     * <p class="changed_added_2_2">Return the name of the parameter</p>
+     * <p class="changed_added_2_2">
+     * Return the name of the parameter
+     * </p>
      * 
      * @since 2.2
      * 
      * @return the name of the parameter
      */
-    
+
     public abstract String getName();
 
     /**
-     * <p class="changed_added_2_2">Return a {@code ValueExpression} for the
-     * value of the parameter.  Depending on the context, this expression
-     * may only ever be evaluated in a "get" operation.</p>
+     * <p class="changed_added_2_2">
+     * Return a {@code ValueExpression} for the value of the parameter. Depending on the context, this expression may only
+     * ever be evaluated in a "get" operation.
+     * </p>
      * 
      * @since 2.2
      * 

@@ -59,8 +59,7 @@ public final class IndexedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      * 
-     * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext,
-     *      java.lang.Object)
+     * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object value) {

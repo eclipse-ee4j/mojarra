@@ -16,7 +16,6 @@
 
 package com.sun.faces.spi;
 
-
 import java.util.List;
 
 import static com.sun.faces.spi.ServiceFactoryUtils.getProviderFromEntry;
@@ -33,8 +32,8 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.faces.FacesException;
 
 /**
- * Factory class for creating <code>ConfigurationResourceProvider</code> instances
- * using the Java services discovery mechanism.
+ * Factory class for creating <code>ConfigurationResourceProvider</code> instances using the Java services discovery
+ * mechanism.
  */
 public class ConfigurationResourceProviderFactory {
 
@@ -60,9 +59,7 @@ public class ConfigurationResourceProviderFactory {
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     /**
      * @param providerType the type of providers that should be discovered and instantiated.
@@ -74,12 +71,12 @@ public class ConfigurationResourceProviderFactory {
 
         String[] serviceEntries = getServiceEntries(providerType.servicesKey);
         List<ConfigurationResourceProvider> providers = new ArrayList<>();
-        
+
         if (serviceEntries.length > 0) {
             for (String serviceEntry : serviceEntries) {
                 try {
                     ConfigurationResourceProvider provider = (ConfigurationResourceProvider) getProviderFromEntry(serviceEntry, null, null);
-                    
+
                     if (provider != null) {
                         if (ProviderType.FacesConfig == providerType) {
                             if (!(provider instanceof FacesConfigResourceProvider)) {
@@ -87,7 +84,8 @@ public class ConfigurationResourceProviderFactory {
                             }
                         } else {
                             if (!(provider instanceof FaceletConfigResourceProvider)) {
-                                throw new IllegalStateException("Expected ConfigurationResourceProvider type to be an instance of FaceletConfigResourceProvider");
+                                throw new IllegalStateException(
+                                        "Expected ConfigurationResourceProvider type to be an instance of FaceletConfigResourceProvider");
                             }
                         }
                         providers.add(provider);
@@ -105,15 +103,14 @@ public class ConfigurationResourceProviderFactory {
             ServiceLoader serviceLoader;
 
             switch (providerType) {
-                case FacesConfig:
-                    serviceLoader = ServiceLoader.load(FacesConfigResourceProvider.class);
+            case FacesConfig:
+                serviceLoader = ServiceLoader.load(FacesConfigResourceProvider.class);
                 break;
-                case FaceletConfig:
-                    serviceLoader = ServiceLoader.load(FaceletConfigResourceProvider.class);
+            case FaceletConfig:
+                serviceLoader = ServiceLoader.load(FaceletConfigResourceProvider.class);
                 break;
-                default:
-                    throw new UnsupportedOperationException(providerType.servicesKey +
-                        " cannot be loaded via ServiceLoader API.");
+            default:
+                throw new UnsupportedOperationException(providerType.servicesKey + " cannot be loaded via ServiceLoader API.");
             }
 
             Iterator iterator = serviceLoader.iterator();

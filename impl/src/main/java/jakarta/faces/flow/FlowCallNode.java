@@ -21,11 +21,11 @@ import java.util.Map;
 import jakarta.faces.context.FacesContext;
 
 public abstract class FlowCallNode extends FlowNode {
-    
+
     public abstract Map<String, Parameter> getOutboundParameters();
 
     public abstract String getCalledFlowDocumentId(FacesContext context);
 
     public abstract String getCalledFlowId(FacesContext context);
-    
+
 }

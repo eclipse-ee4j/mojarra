@@ -16,119 +16,98 @@
 
 package jakarta.faces.el;
 
-
 import jakarta.faces.context.FacesContext;
 
-
 /**
- * <p><strong>ValueBinding</strong> is an object that can be used
- * to access the property represented by an action or value binding
- * expression.  An immutable {@link ValueBinding} for a particular value binding
- * can be acquired by calling the <code>createValueBinding()</code> method of
- * the {@link jakarta.faces.application.Application} instance for this web
- * application.</p>
+ * <p>
+ * <strong>ValueBinding</strong> is an object that can be used to access the property represented by an action or value
+ * binding expression. An immutable {@link ValueBinding} for a particular value binding can be acquired by calling the
+ * <code>createValueBinding()</code> method of the {@link jakarta.faces.application.Application} instance for this web
+ * application.
+ * </p>
  *
  * @deprecated This has been replaced by {@link jakarta.el.ValueExpression}.
  */
 
 public abstract class ValueBinding {
 
-
     /**
-     * <p>Return the value of the property represented by this
-     * {@link ValueBinding}, relative to the specified {@link FacesContext}.
+     * <p>
+     * Return the value of the property represented by this {@link ValueBinding}, relative to the specified
+     * {@link FacesContext}.
      * </p>
      *
      * @param context {@link FacesContext} for the current request
      *
-     * @throws EvaluationException if an exception is thrown while getting
-     *  the value (the thrown exception must be included as the
-     *  <code>cause</code> property of this exception)
-     * @throws NullPointerException if <code>context</code>
-     *  is <code>null</code>
-     * @throws PropertyNotFoundException if a specified property name
-     *  does not exist, or is not readable
+     * @throws EvaluationException if an exception is thrown while getting the value (the thrown exception must be included
+     * as the <code>cause</code> property of this exception)
+     * @throws NullPointerException if <code>context</code> is <code>null</code>
+     * @throws PropertyNotFoundException if a specified property name does not exist, or is not readable
      *
      * @return the value of this expression
      */
-    public abstract Object getValue(FacesContext context)
-        throws EvaluationException, PropertyNotFoundException;
-
+    public abstract Object getValue(FacesContext context) throws EvaluationException, PropertyNotFoundException;
 
     /**
-     * <p>Set the value of the property represented by this
-     * {@link ValueBinding}, relative to the specified {@link FacesContext}.
+     * <p>
+     * Set the value of the property represented by this {@link ValueBinding}, relative to the specified
+     * {@link FacesContext}.
      * </p>
      *
      * @param context {@link FacesContext} for the current request
      * @param value The new value to be set
      *
-     * @throws EvaluationException if an exception is thrown while setting
-     *  the value (the thrown exception must be included as the
-     *  <code>cause</code> property of this exception)
-     * @throws NullPointerException if <code>context</code>
-     *  is <code>null</code>
-     * @throws PropertyNotFoundException if a specified property name
-     *  does not exist, or is not writeable
+     * @throws EvaluationException if an exception is thrown while setting the value (the thrown exception must be included
+     * as the <code>cause</code> property of this exception)
+     * @throws NullPointerException if <code>context</code> is <code>null</code>
+     * @throws PropertyNotFoundException if a specified property name does not exist, or is not writeable
      */
-    public abstract void setValue(FacesContext context, Object value)
-        throws EvaluationException, PropertyNotFoundException;
-
+    public abstract void setValue(FacesContext context, Object value) throws EvaluationException, PropertyNotFoundException;
 
     /**
-     * <p>Return <code>true</code> if the specified property of the specified
-     * property is known to be immutable; otherwise, return
-     * <code>false</code>.</p>
-     *
-     * @param context {@link FacesContext} for the current request
-     *
-     * @throws EvaluationException if an exception is thrown while getting
-     *  the description of the property (the thrown exception must be
-     *  included as the <code>cause</code> property of this exception)
-     * @throws NullPointerException if <code>context</code>
-     *  is <code>null</code>
-     * @throws PropertyNotFoundException if a specified property name
-     *  does not exist
-     *
-     * @return whether or not this expression is read only
-     */
-    public abstract boolean isReadOnly(FacesContext context)
-        throws EvaluationException, PropertyNotFoundException;
-
-
-    /**
-     * <p>Return the type of the property represented by this
-     * {@link ValueBinding}, relative to the specified {@link FacesContext}.
+     * <p>
+     * Return <code>true</code> if the specified property of the specified property is known to be immutable; otherwise,
+     * return <code>false</code>.
      * </p>
      *
      * @param context {@link FacesContext} for the current request
      *
-     * @throws EvaluationException if an exception is thrown while getting
-     *  the description of the property (the thrown exception must be
-     *  included as the <code>cause</code> property of this exception)
-     * @throws NullPointerException if <code>context</code>
-     *  is <code>null</code>
-     * @throws PropertyNotFoundException if a specified property name
-     *  does not exist
+     * @throws EvaluationException if an exception is thrown while getting the description of the property (the thrown
+     * exception must be included as the <code>cause</code> property of this exception)
+     * @throws NullPointerException if <code>context</code> is <code>null</code>
+     * @throws PropertyNotFoundException if a specified property name does not exist
+     *
+     * @return whether or not this expression is read only
+     */
+    public abstract boolean isReadOnly(FacesContext context) throws EvaluationException, PropertyNotFoundException;
+
+    /**
+     * <p>
+     * Return the type of the property represented by this {@link ValueBinding}, relative to the specified
+     * {@link FacesContext}.
+     * </p>
+     *
+     * @param context {@link FacesContext} for the current request
+     *
+     * @throws EvaluationException if an exception is thrown while getting the description of the property (the thrown
+     * exception must be included as the <code>cause</code> property of this exception)
+     * @throws NullPointerException if <code>context</code> is <code>null</code>
+     * @throws PropertyNotFoundException if a specified property name does not exist
      *
      * @return the Java type of this expression
      */
-    public abstract Class getType(FacesContext context)
-        throws EvaluationException, PropertyNotFoundException;
-
+    public abstract Class getType(FacesContext context) throws EvaluationException, PropertyNotFoundException;
 
     /**
-     * <p>Return the (possibly <code>null</code>) expression String,
-     * including the delimiters, from which this
-     * <code>ValueBinding</code> was built.</p>
+     * <p>
+     * Return the (possibly <code>null</code>) expression String, including the delimiters, from which this
+     * <code>ValueBinding</code> was built.
+     * </p>
      *
      * @return the expression string
      */
     public String getExpressionString() {
-	return null;
+        return null;
     }
-
-
-
 
 }

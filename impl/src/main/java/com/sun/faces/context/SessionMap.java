@@ -33,7 +33,7 @@ import com.sun.faces.util.Util;
 import jakarta.faces.application.ProjectStage;
 
 /**
- * @see jakarta.faces.context.ExternalContext#getSessionMap()  
+ * @see jakarta.faces.context.ExternalContext#getSessionMap()
  */
 public class SessionMap extends BaseContextMap<Object> {
 
@@ -44,49 +44,41 @@ public class SessionMap extends BaseContextMap<Object> {
 
     // ------------------------------------------------------------ Constructors
 
-
     public SessionMap(HttpServletRequest request, ProjectStage stage) {
         this.request = request;
         this.stage = stage;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public void clear() {
         HttpSession session = getSession(false);
         if (session != null) {
-            for (Enumeration e = session.getAttributeNames();
-                 e.hasMoreElements();) {
+            for (Enumeration e = session.getAttributeNames(); e.hasMoreElements();) {
                 String name = (String) e.nextElement();
                 session.removeAttribute(name);
             }
         }
     }
 
-
     // Supported by maps if overridden
     @Override
     public void putAll(Map t) {
         HttpSession session = getSession(true);
-        for (Iterator i = t.entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = t.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             Object v = entry.getValue();
             Object k = entry.getKey();
             if (ProjectStage.Development.equals(stage) && !(v instanceof Serializable)) {
-            	if (LOGGER.isLoggable(Level.WARNING)) {
-	                LOGGER.log(Level.WARNING,
-	                           "jsf.context.extcontext.sessionmap.nonserializable",
-	                           new Object[] { k, v.getClass().getName() });
-            	}
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING, "jsf.context.extcontext.sessionmap.nonserializable", new Object[] { k, v.getClass().getName() });
+                }
             }
-            //noinspection NonSerializableObjectBoundToHttpSession
+            // noinspection NonSerializableObjectBoundToHttpSession
             session.setAttribute((String) k, v);
         }
     }
-
 
     @Override
     public Object get(Object key) {
@@ -96,20 +88,17 @@ public class SessionMap extends BaseContextMap<Object> {
 
     }
 
-
     @Override
     public Object put(String key, Object value) {
         Util.notNull("key", key);
         HttpSession session = getSession(true);
         Object result = session.getAttribute(key);
         if (value != null && ProjectStage.Development.equals(stage) && !(value instanceof Serializable)) {
-        	if (LOGGER.isLoggable(Level.WARNING)) {
-	            LOGGER.log(Level.WARNING,
-	                       "jsf.context.extcontext.sessionmap.nonserializable",
-	                       new Object[]{key, value.getClass().getName()});
-        	}
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.log(Level.WARNING, "jsf.context.extcontext.sessionmap.nonserializable", new Object[] { key, value.getClass().getName() });
+            }
         }
-        //noinspection NonSerializableObjectBoundToHttpSession
+        // noinspection NonSerializableObjectBoundToHttpSession
         boolean doSet = true;
         if (null != value && null != result) {
             int valCode = System.identityHashCode(value);
@@ -121,7 +110,6 @@ public class SessionMap extends BaseContextMap<Object> {
         }
         return (result);
     }
-
 
     @Override
     public Object remove(Object key) {
@@ -138,27 +126,21 @@ public class SessionMap extends BaseContextMap<Object> {
         return null;
     }
 
-
     @Override
     public boolean containsKey(Object key) {
         HttpSession session = getSession(false);
-        return ((session != null)
-                && session.getAttribute(key.toString()) != null);
+        return ((session != null) && session.getAttribute(key.toString()) != null);
     }
-
 
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null || !(obj instanceof SessionMap))
-               && super.equals(obj);
+        return !(obj == null || !(obj instanceof SessionMap)) && super.equals(obj);
     }
-
 
     @Override
     public int hashCode() {
         HttpSession session = getSession(false);
-        int hashCode =
-              7 * ((session != null) ? session.hashCode() : super.hashCode());
+        int hashCode = 7 * ((session != null) ? session.hashCode() : super.hashCode());
         if (session != null) {
             for (Iterator i = entrySet().iterator(); i.hasNext();) {
                 hashCode += i.next().hashCode();
@@ -167,22 +149,19 @@ public class SessionMap extends BaseContextMap<Object> {
         return hashCode;
     }
 
-
     // --------------------------------------------- Methods from BaseContextMap
-
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Iterator<Map.Entry<String,Object>> getEntryIterator() {
+    protected Iterator<Map.Entry<String, Object>> getEntryIterator() {
         HttpSession session = getSession(false);
         if (session != null) {
             return new EntryIterator(session.getAttributeNames());
         } else {
-            Map<String,Object> empty = Collections.emptyMap();
+            Map<String, Object> empty = Collections.emptyMap();
             return empty.entrySet().iterator();
         }
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
@@ -191,27 +170,24 @@ public class SessionMap extends BaseContextMap<Object> {
         if (session != null) {
             return new KeyIterator(session.getAttributeNames());
         } else {
-            Map<String,Object> empty = Collections.emptyMap();
+            Map<String, Object> empty = Collections.emptyMap();
             return empty.keySet().iterator();
         }
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
     protected Iterator<Object> getValueIterator() {
         HttpSession session = getSession(false);
-         if (session != null) {
+        if (session != null) {
             return new ValueIterator(session.getAttributeNames());
         } else {
-            Map<String,Object> empty = Collections.emptyMap();
+            Map<String, Object> empty = Collections.emptyMap();
             return empty.values().iterator();
         }
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     protected HttpSession getSession(boolean createNew) {
         return request.getSession(createNew);

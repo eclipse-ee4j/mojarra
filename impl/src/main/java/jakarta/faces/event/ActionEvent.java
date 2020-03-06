@@ -16,7 +16,6 @@
 
 package jakarta.faces.event;
 
-
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
@@ -27,28 +26,30 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_modified_2_3">An {@link ActionEvent} represents the 
- * activation of a user interface component (such as a <code>UICommand</code>).</p>
+ * <p class="changed_modified_2_3">
+ * An {@link ActionEvent} represents the activation of a user interface component (such as a <code>UICommand</code>).
+ * </p>
  */
 public class ActionEvent extends FacesEvent {
 
     private static final long serialVersionUID = 2391694421423935722L;
 
     /**
-     * <p class="changed_removed_2_3">Construct a new event object from the 
-     * specified source component and action command.</p>
+     * <p class="changed_removed_2_3">
+     * Construct a new event object from the specified source component and action command.
+     * </p>
      *
      * @param component Source {@link UIComponent} for this event
-     * @throws IllegalArgumentException if <code>component</code> is
-     *  <code>null</code>
+     * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
      */
     public ActionEvent(UIComponent component) {
         super(component);
     }
-    
+
     /**
-     * <p class="changed_added_2_3">Construct a new event object from the 
-     * Faces context, specified source component and action command.</p>
+     * <p class="changed_added_2_3">
+     * Construct a new event object from the Faces context, specified source component and action command.
+     * </p>
      *
      * @param facesContext the Faces context.
      * @param component Source {@link UIComponent} for this event.
@@ -61,9 +62,8 @@ public class ActionEvent extends FacesEvent {
 
     // ------------------------------------------------- Event Broadcast Methods
 
-
     @Override
-    public  boolean isAppropriateListener(FacesListener listener) {
+    public boolean isAppropriateListener(FacesListener listener) {
 
         return (listener instanceof ActionListener);
 
@@ -71,13 +71,12 @@ public class ActionEvent extends FacesEvent {
 
     /**
      * @throws AbortProcessingException {@inheritDoc}
-     */ 
+     */
     @Override
     public void processListener(FacesListener listener) {
 
         ((ActionListener) listener).processAction(this);
 
     }
-
 
 }

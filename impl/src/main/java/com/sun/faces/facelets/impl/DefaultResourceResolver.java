@@ -26,9 +26,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.ResourceResolver;
 
 public class DefaultResourceResolver extends ResourceResolver {
-    
+
     private ResourceHandler resourceHandler = null;
-    
+
     public static final String NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME = RIConstants.FACES_PREFIX + "NDRRPN";
 
     public DefaultResourceResolver(ResourceHandler resourceHandler) {
@@ -42,7 +42,7 @@ public class DefaultResourceResolver extends ResourceResolver {
         if (faceletResource != null) {
             return faceletResource.getURL();
         }
-        
+
         return null;
     }
 

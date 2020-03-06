@@ -16,7 +16,6 @@
 
 package jakarta.faces;
 
-
 import java.lang.reflect.Field;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +44,7 @@ import jakarta.faces.lifecycle.Lifecycle;
  * thread re-use.
  */
 final class ServletContextFacesContextFactory extends FacesContextFactory {
-    
+
     static final String SERVLET_CONTEXT_FINDER_NAME = "com.sun.faces.ServletContextFacesContextFactory";
     static final String SERVLET_CONTEXT_FINDER_REMOVAL_NAME = "com.sun.faces.ServletContextFacesContextFactory_Removal";
 
@@ -78,41 +77,39 @@ final class ServletContextFacesContextFactory extends FacesContextFactory {
     }
 
     /**
-     * This method does what FacesContext.getCurrentInstance() did *before* the fix for Bug
-     * 20458755.
+     * This method does what FacesContext.getCurrentInstance() did *before* the fix for Bug 20458755.
      */
     FacesContext getFacesContextWithoutServletContextLookup() {
         FacesContext result = facesContextCurrentInstance.get();
-        
+
         if (result == null) {
             if (facesContextThreadInitContextMap != null) {
                 result = facesContextThreadInitContextMap.get(Thread.currentThread());
             }
         }
-        
+
         return result;
     }
 
     /**
-     * Consult the initContextServletContextMap (reflectively obtained from the FacesContext in our
-     * ctor). If it is non-empty, obtain the ServletContext corresponding to the current Thread's
-     * context ClassLoader. If found, use the initContextServletContextMap to find the FacesContext
-     * corresponding to that ServletContext.
+     * Consult the initContextServletContextMap (reflectively obtained from the FacesContext in our ctor). If it is
+     * non-empty, obtain the ServletContext corresponding to the current Thread's context ClassLoader. If found, use the
+     * initContextServletContextMap to find the FacesContext corresponding to that ServletContext.
      */
     @Override
     public FacesContext getFacesContext(Object context, Object request, Object response, Lifecycle lifecycle) throws FacesException {
         FacesContext result = null;
-        
+
         if (initContextServletContextMap != null && !initContextServletContextMap.isEmpty()) {
-            
+
             // Obtain the ServletContext corresponding to the current Thread's context ClassLoader
             ServletContext servletContext = (ServletContext) FactoryFinder.FACTORIES_CACHE.getServletContextForCurrentClassLoader();
-            
+
             if (servletContext != null) {
-                
-                // ServletContext found. Use the initContextServletContextMap to find the FacesContext corresponding 
+
+                // ServletContext found. Use the initContextServletContextMap to find the FacesContext corresponding
                 // to this ServletContext.
-                
+
                 for (Entry<FacesContext, ServletContext> entry : initContextServletContextMap.entrySet()) {
                     if (servletContext.equals(entry.getValue())) {
                         result = entry.getKey();

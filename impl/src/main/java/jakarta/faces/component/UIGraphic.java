@@ -16,20 +16,20 @@
 
 package jakarta.faces.component;
 
-
 import jakarta.el.ValueExpression;
 
 import jakarta.faces.el.ValueBinding;
 
-
 /**
- * <p><strong>UIGraphic</strong> is a {@link UIComponent} that displays
- * a graphical image to the user.  The user cannot manipulate this component;
- * it is for display purposes only.</p>
+ * <p>
+ * <strong>UIGraphic</strong> is a {@link UIComponent} that displays a graphical image to the user. The user cannot
+ * manipulate this component; it is for display purposes only.
+ * </p>
  *
- * <p>By default, the <code>rendererType</code> property must be set to
- * "<code>jakarta.faces.Image</code>".  This value can be changed by calling the
- * <code>setRendererType()</code> method.</p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Image</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
 
 public class UIGraphic extends UIComponentBase {
@@ -40,32 +40,35 @@ public class UIGraphic extends UIComponentBase {
     enum PropertyKeys {
 
         /**
-         * <p>The local value of this {@link UIComponent}.</p>
+         * <p>
+         * The local value of this {@link UIComponent}.
+         * </p>
          */
         value
     }
 
     // ------------------------------------------------------ Manifest Constants
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.Graphic";
 
-
     /**
-     * <p>The standard component family for this component.</p>
+     * <p>
+     * The standard component family for this component.
+     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Graphic";
 
-
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p>Create a new {@link UIGraphic} instance with default property
-     * values.</p>
+     * <p>
+     * Create a new {@link UIGraphic} instance with default property values.
+     * </p>
      */
     public UIGraphic() {
 
@@ -74,15 +77,11 @@ public class UIGraphic extends UIComponentBase {
 
     }
 
-
     // ------------------------------------------------------ Instance Variables
 
-
-    //private Object value = null;
-
+    // private Object value = null;
 
     // -------------------------------------------------------------- Properties
-
 
     @Override
     public String getFamily() {
@@ -91,10 +90,10 @@ public class UIGraphic extends UIComponentBase {
 
     }
 
-
     /**
-     * <p>Return the image URL for this {@link UIGraphic}.  This method is a
-     * typesafe alias for <code>getValue()</code>.</p>
+     * <p>
+     * Return the image URL for this {@link UIGraphic}. This method is a typesafe alias for <code>getValue()</code>.
+     * </p>
      * 
      * @return the url.
      */
@@ -104,10 +103,10 @@ public class UIGraphic extends UIComponentBase {
 
     }
 
-
     /**
-     * <p>Set the image URL for this {@link UIGraphic}.  This method is a
-     * typesafe alias for <code>setValue()</code>.</p>
+     * <p>
+     * Set the image URL for this {@link UIGraphic}. This method is a typesafe alias for <code>setValue()</code>.
+     * </p>
      *
      * @param url The new image URL
      */
@@ -117,12 +116,10 @@ public class UIGraphic extends UIComponentBase {
 
     }
 
-
-
-
     /**
-     * <p>Returns the <code>value</code> property of the
-     * <code>UIGraphic</code>. This will typically be rendered as an URL.</p>
+     * <p>
+     * Returns the <code>value</code> property of the <code>UIGraphic</code>. This will typically be rendered as an URL.
+     * </p>
      * 
      * @return the value.
      */
@@ -132,10 +129,10 @@ public class UIGraphic extends UIComponentBase {
 
     }
 
-
     /**
-     * <p>Sets the <code>value</code> property of the <code>UIGraphic</code>.
-     * This will typically be rendered as an URL.</p>
+     * <p>
+     * Sets the <code>value</code> property of the <code>UIGraphic</code>. This will typically be rendered as an URL.
+     * </p>
      * 
      * @param value the new value
      */
@@ -145,20 +142,17 @@ public class UIGraphic extends UIComponentBase {
 
     }
 
-
     // ---------------------------------------------------------------- Bindings
 
-
     /**
-     * <p>Return any {@link ValueBinding} set for <code>value</code> if a
-     * {@link ValueBinding} for <code>url</code> is requested; otherwise,
-     * perform the default superclass processing for this method.</p>
+     * <p>
+     * Return any {@link ValueBinding} set for <code>value</code> if a {@link ValueBinding} for <code>url</code> is
+     * requested; otherwise, perform the default superclass processing for this method.
+     * </p>
      *
-     * @param name Name of the attribute or property for which to retrieve
-     *  a {@link ValueBinding}
+     * @param name Name of the attribute or property for which to retrieve a {@link ValueBinding}
      * @return the value binding, or <code>null</code>.
-     * @throws NullPointerException if <code>name</code>
-     *  is <code>null</code>
+     * @throws NullPointerException if <code>name</code> is <code>null</code>
      *
      * @deprecated This has been replaced by {@link #getValueExpression(java.lang.String)}.
      */
@@ -173,21 +167,17 @@ public class UIGraphic extends UIComponentBase {
 
     }
 
-
     /**
-     * <p>Store any {@link ValueBinding} specified for <code>url</code>
-     * under <code>value</code> instead; otherwise, perform the default
-     * superclass processing for this method.  In all cases, the
-     * superclass is relied on to convert the <code>ValueBinding</code>
-     * to a <code>ValueExpression</code>.</p>
+     * <p>
+     * Store any {@link ValueBinding} specified for <code>url</code> under <code>value</code> instead; otherwise, perform
+     * the default superclass processing for this method. In all cases, the superclass is relied on to convert the
+     * <code>ValueBinding</code> to a <code>ValueExpression</code>.
+     * </p>
      *
-     * @param name Name of the attribute or property for which to set
-     *  a {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code>
-     *  to remove any currently set {@link ValueBinding}
+     * @param name Name of the attribute or property for which to set a {@link ValueBinding}
+     * @param binding The {@link ValueBinding} to set, or <code>null</code> to remove any currently set {@link ValueBinding}
      *
-     * @throws NullPointerException if <code>name</code>
-     *  is <code>null</code>
+     * @throws NullPointerException if <code>name</code> is <code>null</code>
      *
      * @deprecated This has been replaced by {@link #setValueExpression}.
      */
@@ -203,15 +193,14 @@ public class UIGraphic extends UIComponentBase {
     }
 
     /**
-     * <p>Return any {@link ValueExpression} set for <code>value</code> if a
-     * {@link ValueExpression} for <code>url</code> is requested; otherwise,
-     * perform the default superclass processing for this method.</p>
+     * <p>
+     * Return any {@link ValueExpression} set for <code>value</code> if a {@link ValueExpression} for <code>url</code> is
+     * requested; otherwise, perform the default superclass processing for this method.
+     * </p>
      *
-     * @param name Name of the attribute or property for which to retrieve
-     *  a {@link ValueExpression}
+     * @param name Name of the attribute or property for which to retrieve a {@link ValueExpression}
      * @return the value expression, or <code>null</code>.
-     * @throws NullPointerException if <code>name</code>
-     *  is <code>null</code>
+     * @throws NullPointerException if <code>name</code> is <code>null</code>
      * @since 1.2
      */
     @Override
@@ -224,19 +213,18 @@ public class UIGraphic extends UIComponentBase {
         }
 
     }
-    
+
     /**
-     * <p>Store any {@link ValueExpression} specified for <code>url</code> under
-     * <code>value</code> instead; otherwise, perform the default superclass
-     * processing for this method.</p>
+     * <p>
+     * Store any {@link ValueExpression} specified for <code>url</code> under <code>value</code> instead; otherwise, perform
+     * the default superclass processing for this method.
+     * </p>
      *
-     * @param name Name of the attribute or property for which to set
-     *  a {@link ValueExpression}
-     * @param binding The {@link ValueExpression} to set, or <code>null</code>
-     *  to remove any currently set {@link ValueExpression}
+     * @param name Name of the attribute or property for which to set a {@link ValueExpression}
+     * @param binding The {@link ValueExpression} to set, or <code>null</code> to remove any currently set
+     * {@link ValueExpression}
      *
-     * @throws NullPointerException if <code>name</code>
-     *  is <code>null</code>
+     * @throws NullPointerException if <code>name</code> is <code>null</code>
      * @since 1.2
      */
     @Override
@@ -251,8 +239,5 @@ public class UIGraphic extends UIComponentBase {
     }
 
     // ----------------------------------------------------- StateHolder Methods
-
-
-
 
 }

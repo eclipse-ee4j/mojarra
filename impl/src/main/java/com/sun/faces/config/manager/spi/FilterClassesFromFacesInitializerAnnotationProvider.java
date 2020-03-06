@@ -36,25 +36,23 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.AnnotationProvider;
 
 /**
- * This class is the default implementation of AnnotationProvider referenced by the AnnotationProviderFactory.  
- * Unless someone manually provides one via in META-INF/services, this is the one that will actually be instantiated and installed
- * into Mojarra.
+ * This class is the default implementation of AnnotationProvider referenced by the AnnotationProviderFactory. Unless
+ * someone manually provides one via in META-INF/services, this is the one that will actually be instantiated and
+ * installed into Mojarra.
  *
  * <p>
- * This class just further filters the classes that have already been obtained by the ServletContainerInitializer 
- * and stored in the ServletContext using the key <code>RIConstants.ANNOTATED_CLASSES</code>
+ * This class just further filters the classes that have already been obtained by the ServletContainerInitializer and
+ * stored in the ServletContext using the key <code>RIConstants.ANNOTATED_CLASSES</code>
  *
  */
 public class FilterClassesFromFacesInitializerAnnotationProvider extends AnnotationProvider {
 
-
     public FilterClassesFromFacesInitializerAnnotationProvider(ServletContext servletContext) {
         super(servletContext);
     }
-    
-    
+
     // ---------------------------------------------------------- Public Methods
-    
+
     /*
      * This will only be called if the InjectionProvider offered by the container implements
      * com.sun.faces.spi.AnnotationScanner.
@@ -62,15 +60,12 @@ public class FilterClassesFromFacesInitializerAnnotationProvider extends Annotat
     public void setAnnotationScanner(com.sun.faces.spi.AnnotationScanner containerConnector, Set<String> jarNamesWithoutMetadataComplete) {
     }
 
- 
     @SuppressWarnings("unchecked")
     @Override
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(Set<URI> urls) {
         return createAnnotatedMap((Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES));
     }
-  
-    
-    
+
     // ---------------------------------------------------------- Private Methods
 
     /**
@@ -80,55 +75,53 @@ public class FilterClassesFromFacesInitializerAnnotationProvider extends Annotat
      * @param annotatedSet
      */
     private Map<Class<? extends Annotation>, Set<Class<?>>> createAnnotatedMap(Set<Class<?>> annotatedSet) {
-        
+
         HashMap<Class<? extends Annotation>, Set<Class<?>>> annotatedMap = new HashMap<>();
-        
+
         if (isEmpty(annotatedSet)) {
             return annotatedMap;
         }
 
         WebConfiguration webConfig = WebConfiguration.getInstance();
         boolean annotationScanPackagesSet = webConfig.isSet(AnnotationScanPackages);
-        
-        String[] annotationScanPackages = annotationScanPackagesSet? webConfig.getOptionValue(AnnotationScanPackages).split("\\s+") : null;
+
+        String[] annotationScanPackages = annotationScanPackagesSet ? webConfig.getOptionValue(AnnotationScanPackages).split("\\s+") : null;
 
         Iterator<Class<?>> iterator = annotatedSet.iterator();
         while (iterator.hasNext()) {
             try {
                 Class<?> clazz = iterator.next();
-                
-                stream(clazz.getAnnotations())
-                    .map(annotation -> annotation.annotationType())
-                    .filter(annotationType -> FACES_ANNOTATION_TYPE.contains(annotationType))
-                    .forEach(annotationType -> {
-                        
-                        Set<Class<?>> classes = annotatedMap.computeIfAbsent(annotationType, e -> new HashSet<>());
-                        
-                        if (annotationScanPackagesSet) {
-                            if (matchesAnnotationScanPackages(clazz, annotationScanPackages)) {
+
+                stream(clazz.getAnnotations()).map(annotation -> annotation.annotationType())
+                        .filter(annotationType -> FACES_ANNOTATION_TYPE.contains(annotationType)).forEach(annotationType -> {
+
+                            Set<Class<?>> classes = annotatedMap.computeIfAbsent(annotationType, e -> new HashSet<>());
+
+                            if (annotationScanPackagesSet) {
+                                if (matchesAnnotationScanPackages(clazz, annotationScanPackages)) {
+                                    classes.add(clazz);
+                                }
+                            } else {
                                 classes.add(clazz);
                             }
-                        } else {
-                            classes.add(clazz);
-                        }
-                        
-                    });
-                
+
+                        });
+
             } catch (NoClassDefFoundError ncdfe) {
             }
         }
-        
+
         return annotatedMap;
     }
 
     private boolean matchesAnnotationScanPackages(Class<?> clazz, String[] annotationScanPackages) {
         boolean result = false;
-        
+
         for (int i = 0; i < annotationScanPackages.length; i++) {
-            
+
             String classUrlString = clazz.getProtectionDomain().getCodeSource().getLocation().toString();
             String classPackageName = clazz.getPackage().getName();
-            
+
             if (classUrlString.contains("WEB-INF/classes") && annotationScanPackages[i].equals("*")) {
                 result = true;
             } else if (classPackageName.equals(annotationScanPackages[i])) {
@@ -149,7 +142,7 @@ public class FilterClassesFromFacesInitializerAnnotationProvider extends Annotat
                 }
             }
         }
-        
+
         return result;
     }
 }

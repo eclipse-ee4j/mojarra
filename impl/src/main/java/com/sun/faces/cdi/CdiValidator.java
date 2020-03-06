@@ -62,9 +62,7 @@ public class CdiValidator implements Validator, StateHolder {
      */
     @Override
     public Object saveState(FacesContext facesContext) {
-        return new Object[]{
-            validatorId
-        };
+        return new Object[] { validatorId };
     }
 
     /**
@@ -121,7 +119,7 @@ public class CdiValidator implements Validator, StateHolder {
      * @param facesContext the Faces context.
      * @param component the UI component.
      * @param value the value.
-     * @throws ValidatorException when a validation error occurs. 
+     * @throws ValidatorException when a validation error occurs.
      */
     @Override
     public void validate(FacesContext facesContext, UIComponent component, Object value) throws ValidatorException {

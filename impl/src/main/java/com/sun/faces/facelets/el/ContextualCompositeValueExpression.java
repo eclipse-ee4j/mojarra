@@ -27,16 +27,15 @@ import jakarta.el.ELContext;
 
 /**
  * <p>
- * This specialized <code>ValueExpression</code> enables the evaluation of
- * composite component expressions.  Instances of this expression will be
- * created when {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
+ * This specialized <code>ValueExpression</code> enables the evaluation of composite component expressions. Instances of
+ * this expression will be created when
+ * {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
  * is invoked and the expression represents a composite component expression (i.e. #{cc.[properties]}).
  * </p>
  *
  * <p>
- * It's important to note that these <code>ValueExpression</code>s are context
- * sensitive in that they leverage the location in which they were referenced
- * in order to push the proper composite component to the evaluation context
+ * It's important to note that these <code>ValueExpression</code>s are context sensitive in that they leverage the
+ * location in which they were referenced in order to push the proper composite component to the evaluation context
  * prior to evaluating the expression itself.
  * </p>
  *
@@ -68,46 +67,40 @@ import jakarta.el.ELContext;
  * </pre>
  *
  * <p>
- * In the above example, there will be two composite components available to
- * the runtime: <code>ez:comp1</code> and <code>ez:nesting</code>.
+ * In the above example, there will be two composite components available to the runtime: <code>ez:comp1</code> and
+ * <code>ez:nesting</code>.
  * </p>
  *
  * <p>
- * When &lt;h:outputText value="#{cc.attrs.greeting}" /&gt;, prior to attempting
- * to evaluate the expression, the {@link Location} object will be used to
- * find the composite component that 'owns' the template in which
- * the expression was defined in by comparing the path of the Location with the
- * name and library of the {@link jakarta.faces.application.Resource} instance associated
- * with each composite component.  If a matching composite component is found,
- * it will be made available to the EL by calling {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
+ * When &lt;h:outputText value="#{cc.attrs.greeting}" /&gt;, prior to attempting to evaluate the expression, the
+ * {@link Location} object will be used to find the composite component that 'owns' the template in which the expression
+ * was defined in by comparing the path of the Location with the name and library of the
+ * {@link jakarta.faces.application.Resource} instance associated with each composite component. If a matching composite
+ * component is found, it will be made available to the EL by calling
+ * {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
  * </p>
  */
 public final class ContextualCompositeValueExpression extends ValueExpression {
-    
+
     private static final long serialVersionUID = -2637560875633456679L;
 
     private ValueExpression originalVE;
     private Location location;
 
-
     // ---------------------------------------------------- Constructors
 
-
     /* For serialization purposes */
-    public ContextualCompositeValueExpression() { }
+    public ContextualCompositeValueExpression() {
+    }
 
-
-    public ContextualCompositeValueExpression(Location location,
-                                              ValueExpression originalVE) {
+    public ContextualCompositeValueExpression(Location location, ValueExpression originalVE) {
 
         this.originalVE = originalVE;
         this.location = location;
 
     }
 
-
     // ------------------------------------ Methods from ValueExpression
-
 
     @Override
     public Object getValue(ELContext elContext) {
@@ -128,7 +121,7 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     public void setValue(ELContext elContext, Object o) {
 
         FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
-         boolean pushed = pushCompositeComponent(ctx);
+        boolean pushed = pushCompositeComponent(ctx);
         try {
             originalVE.setValue(elContext, o);
         } finally {
@@ -184,16 +177,14 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
 
     }
 
-
     // --------------------------------------------- Methods from Expression
-
 
     @Override
     public String getExpressionString() {
         return originalVE.getExpressionString();
     }
 
-    @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
+    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
     @Override
     public boolean equals(Object o) {
         return originalVE.equals(o);
@@ -214,9 +205,7 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         return originalVE.toString();
     }
 
-
     // ------------------------------------------------------ Public Methods
-
 
     /**
      * @return the {@link Location} of this <code>ValueExpression</code>
@@ -225,27 +214,21 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         return location;
     }
 
-
     // ----------------------------------------------------- Private Methods
-
 
     private boolean pushCompositeComponent(FacesContext ctx) {
 
-        CompositeComponentStackManager manager =
-              CompositeComponentStackManager.getManager(ctx);
+        CompositeComponentStackManager manager = CompositeComponentStackManager.getManager(ctx);
         UIComponent cc = manager.findCompositeComponentUsingLocation(ctx, location);
         return manager.push(cc);
 
     }
 
-
     private void popCompositeComponent(FacesContext ctx) {
 
-        CompositeComponentStackManager manager =
-              CompositeComponentStackManager.getManager(ctx);
+        CompositeComponentStackManager manager = CompositeComponentStackManager.getManager(ctx);
         manager.pop();
 
     }
-
 
 } // END ContextualCompositeValueExpression

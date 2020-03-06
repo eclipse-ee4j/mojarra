@@ -28,14 +28,14 @@ import jakarta.faces.model.DataModelListener;
 import jakarta.faces.model.ListDataModel;
 
 /**
- * <p class="changed_added_2_3"><strong>IterableDataModel</strong> is an
- * implementation of {@link DataModel} that wraps an <code>Iterable</code>.</p>
+ * <p class="changed_added_2_3">
+ * <strong>IterableDataModel</strong> is an implementation of {@link DataModel} that wraps an <code>Iterable</code>.
+ * </p>
  * 
  * <p>
- * This can be used to encapsulate nearly every collection type, including 
- * {@link Collection} derived types such as {@link List} and {@link Set}. 
- * As such this specific DataModel can be used instead of more specific 
- * DataModels like {@link ListDataModel} and {@link CollectionDataModel}.
+ * This can be used to encapsulate nearly every collection type, including {@link Collection} derived types such as
+ * {@link List} and {@link Set}. As such this specific DataModel can be used instead of more specific DataModels like
+ * {@link ListDataModel} and {@link CollectionDataModel}.
  *
  */
 public class IterableDataModel<E> extends DataModel<E> {
@@ -44,29 +44,30 @@ public class IterableDataModel<E> extends DataModel<E> {
      * The current row index.
      */
     private int index = -1;
-    
+
     /**
      * The iterable that this data model is primarily wrapping.
      */
     private Iterable<E> iterable;
-    
+
     /**
-     * A list that's optionally used to hold and cache data collected
-     * from the iterable that this data model is wrapping.
+     * A list that's optionally used to hold and cache data collected from the iterable that this data model is wrapping.
      */
     private List<E> list;
-    
+
     /**
-     * <p>Construct a new {@link IterableDataModel} with no specified
-     * wrapped data.</p>
+     * <p>
+     * Construct a new {@link IterableDataModel} with no specified wrapped data.
+     * </p>
      */
     public IterableDataModel() {
         this(null);
     }
 
     /**
-     * <p>Construct a new {@link IterableDataModel} wrapping the specified
-     * iterable.</p>
+     * <p>
+     * Construct a new {@link IterableDataModel} wrapping the specified iterable.
+     * </p>
      *
      * @param iterable Iterable to be wrapped.
      */
@@ -75,9 +76,10 @@ public class IterableDataModel<E> extends DataModel<E> {
     }
 
     /**
-     * <p>Return a flag indicating whether there is <code>rowData</code>
-     * available at the current <code>rowIndex</code>.  If no
-     * <code>wrappedData</code> is available, return <code>false</code>.</p>
+     * <p>
+     * Return a flag indicating whether there is <code>rowData</code> available at the current <code>rowIndex</code>. If no
+     * <code>wrappedData</code> is available, return <code>false</code>.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row availability
      */
@@ -87,9 +89,10 @@ public class IterableDataModel<E> extends DataModel<E> {
     }
 
     /**
-     * <p>Return the number of rows of data objects represented by this
-     * {@link DataModel}.  If the number of rows is unknown, or no
-     * <code>wrappedData</code> is available, return -1.</p>
+     * <p>
+     * Return the number of rows of data objects represented by this {@link DataModel}. If the number of rows is unknown, or
+     * no <code>wrappedData</code> is available, return -1.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row count
      */
@@ -103,13 +106,13 @@ public class IterableDataModel<E> extends DataModel<E> {
     }
 
     /**
-     * <p>Return an object representing the data for the currenty selected
-     * row index.  If no <code>wrappedData</code> is available, return
-     * <code>null</code>.</p>
+     * <p>
+     * Return an object representing the data for the currenty selected row index. If no <code>wrappedData</code> is
+     * available, return <code>null</code>.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row data
-     * @throws IllegalArgumentException if now row data is available
-     *  at the currently specified row index
+     * @throws IllegalArgumentException if now row data is available at the currently specified row index
      */
     @Override
     public E getRowData() {
@@ -124,9 +127,10 @@ public class IterableDataModel<E> extends DataModel<E> {
     }
 
     /**
-     * <p>Return the zero-relative index of the currently selected row.  If
-     * we are not currently positioned on a row, or no <code>wrappedData</code>
-     * is available, return -1.</p>
+     * <p>
+     * Return the zero-relative index of the currently selected row. If we are not currently positioned on a row, or no
+     * <code>wrappedData</code> is available, return -1.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row index
      */
@@ -136,26 +140,24 @@ public class IterableDataModel<E> extends DataModel<E> {
     }
 
     /**
-     * <p>Set the zero-relative index of the currently selected row, or -1
-     * to indicate that we are not positioned on a row.  It is
-     * possible to set the row index at a value for which the underlying data
-     * collection does not contain any row data.  Therefore, callers may
-     * use the <code>isRowAvailable()</code> method to detect whether row data
-     * will be available for use by the <code>getRowData()</code> method.</p>
+     * <p>
+     * Set the zero-relative index of the currently selected row, or -1 to indicate that we are not positioned on a row. It
+     * is possible to set the row index at a value for which the underlying data collection does not contain any row data.
+     * Therefore, callers may use the <code>isRowAvailable()</code> method to detect whether row data will be available for
+     * use by the <code>getRowData()</code> method.
+     * </p>
      *
-     * <p>If there is no <code>wrappedData</code> available when this method
-     * is called, the specified <code>rowIndex</code> is stored (and may be
-     * retrieved by a subsequent call to <code>getRowData()</code>), but no
-     * event is sent.  Otherwise, if the currently selected row index is
-     * changed by this call, a {@link DataModelEvent} will be sent to the
-     * <code>rowSelected()</code> method of all registered
-     * {@link DataModelListener}s.</p>
+     * <p>
+     * If there is no <code>wrappedData</code> available when this method is called, the specified <code>rowIndex</code> is
+     * stored (and may be retrieved by a subsequent call to <code>getRowData()</code>), but no event is sent. Otherwise, if
+     * the currently selected row index is changed by this call, a {@link DataModelEvent} will be sent to the
+     * <code>rowSelected()</code> method of all registered {@link DataModelListener}s.
+     * </p>
      *
      * @param rowIndex The new zero-relative index (must be non-negative)
      *
      * @throws jakarta.faces.FacesException if an error occurs setting the row index
-     * @throws IllegalArgumentException if <code>rowIndex</code>
-     *  is less than -1
+     * @throws IllegalArgumentException if <code>rowIndex</code> is less than -1
      */
     @Override
     public void setRowIndex(int rowIndex) {
@@ -175,8 +177,9 @@ public class IterableDataModel<E> extends DataModel<E> {
     }
 
     /**
-     * <p>Return the object representing the data wrapped by this
-     * {@link DataModel}, if any.</p>
+     * <p>
+     * Return the object representing the data wrapped by this {@link DataModel}, if any.
+     * </p>
      */
     @Override
     public Object getWrappedData() {
@@ -184,21 +187,21 @@ public class IterableDataModel<E> extends DataModel<E> {
     }
 
     /**
-     * <p>Set the object representing the data collection wrapped by this
-     * {@link DataModel}.  If the specified <code>data</code> is
-     * <code>null</code>, detach this {@link DataModel} from any previously
-     * wrapped data collection instead.</p>
+     * <p>
+     * Set the object representing the data collection wrapped by this {@link DataModel}. If the specified <code>data</code>
+     * is <code>null</code>, detach this {@link DataModel} from any previously wrapped data collection instead.
+     * </p>
      *
-     * <p>If <code>data</code> is non-<code>null</code>, the currently selected
-     * row index must be set to zero, and a {@link DataModelEvent} must be sent
-     * to the <code>rowSelected()</code> method of all registered
-     * {@link DataModelListener}s indicating that this row is now selected.</p>
+     * <p>
+     * If <code>data</code> is non-<code>null</code>, the currently selected row index must be set to zero, and a
+     * {@link DataModelEvent} must be sent to the <code>rowSelected()</code> method of all registered
+     * {@link DataModelListener}s indicating that this row is now selected.
+     * </p>
      *
-     * @param data Data collection to be wrapped, or <code>null</code> to
-     *  detach from any previous data collection
+     * @param data Data collection to be wrapped, or <code>null</code> to detach from any previous data collection
      *
-     * @throws ClassCastException if <code>data</code> is not of the
-     *  appropriate type for this {@link DataModel} implementation
+     * @throws ClassCastException if <code>data</code> is not of the appropriate type for this {@link DataModel}
+     * implementation
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -215,10 +218,11 @@ public class IterableDataModel<E> extends DataModel<E> {
     }
 
     /**
-     * <p>Return an object representing the data for the currently selected
-     * row index. If either no <code>wrappedData</code> is available or if 
-     * there is no <code>rowData</code>available at the current <code>rowIndex</code>, 
-     * return <code>null</code>.</p>
+     * <p>
+     * Return an object representing the data for the currently selected row index. If either no <code>wrappedData</code> is
+     * available or if there is no <code>rowData</code>available at the current <code>rowIndex</code>, return
+     * <code>null</code>.
+     * </p>
      * 
      * @return data for the currently selected row index, or null if there's no data
      */
@@ -249,13 +253,12 @@ public class IterableDataModel<E> extends DataModel<E> {
             }
         }
     }
-    
+
     /**
      * Converts an iterable into a list.
      * <p>
-     * This method makes NO guarantee to whether changes to the source iterable are
-     * reflected in the returned list or not. For instance if the given iterable
-     * already is a list, it's returned directly.
+     * This method makes NO guarantee to whether changes to the source iterable are reflected in the returned list or not.
+     * For instance if the given iterable already is a list, it's returned directly.
      *
      * @param <E> The generic iterable element type.
      * @param iterable The iterable to be converted.

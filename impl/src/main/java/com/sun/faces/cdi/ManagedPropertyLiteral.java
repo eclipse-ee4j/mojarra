@@ -15,6 +15,7 @@
  */
 
 package com.sun.faces.cdi;
+
 import jakarta.enterprise.util.AnnotationLiteral;
 
 import jakarta.faces.annotation.ManagedProperty;
@@ -26,17 +27,17 @@ import jakarta.faces.annotation.ManagedProperty;
 @SuppressWarnings("all")
 class ManagedPropertyLiteral extends AnnotationLiteral<ManagedProperty> implements ManagedProperty {
     private static final long serialVersionUID = 1L;
-    
+
     private final String value;
-    
+
     public ManagedPropertyLiteral() {
         this("");
     }
-    
+
     public ManagedPropertyLiteral(String value) {
         this.value = value;
     }
-    
+
     @Override
     public String value() {
         return value;

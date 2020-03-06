@@ -23,7 +23,7 @@ import jakarta.faces.model.FacesDataModel;
 @SuppressWarnings("all")
 class FacesDataModelAnnotationLiteral extends AnnotationLiteral<FacesDataModel> implements FacesDataModel {
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * Stores the forClass attribute.
      */

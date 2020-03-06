@@ -31,18 +31,17 @@ import java.io.IOException;
 public final class ChooseWhenHandler extends TagHandlerImpl {
 
     private final TagAttribute test;
-    
+
     public ChooseWhenHandler(TagConfig config) {
         super(config);
         this.test = this.getRequiredAttribute("test");
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         this.nextHandler.apply(ctx, parent);
     }
-    
+
     public boolean isTestTrue(FaceletContext ctx) {
         return this.test.getBoolean(ctx);
     }

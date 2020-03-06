@@ -41,16 +41,15 @@ import jakarta.el.MethodNotFoundException;
 
 /**
  * <p>
- * This specialized <code>MethodExpression</code> enables the evaluation of
- * composite component expressions.  Instances of this expression will be created
- * when {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
+ * This specialized <code>MethodExpression</code> enables the evaluation of composite component expressions. Instances
+ * of this expression will be created when
+ * {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
  * is invoked and the expression represents a composite component expression (i.e. #{cc.[properties]}).
  * </p>
  *
  * <p>
- * It's important to note that these <code>MethodExpression</code>s are context
- * sensitive in that they leverage the location in which they were referenced
- * in order to push the proper composite component to the evaluation context
+ * It's important to note that these <code>MethodExpression</code>s are context sensitive in that they leverage the
+ * location in which they were referenced in order to push the proper composite component to the evaluation context
  * prior to evaluating the expression itself.
  * </p>
  *
@@ -81,23 +80,23 @@ import jakarta.el.MethodNotFoundException;
  * &lt;/composite:implementation&gt;
  * </pre>
  *
- * When <code>commandButton</code> is clicked, the <code>ContextualCompositeMethodExpression</code>
- * first is looked up by {@link com.sun.faces.facelets.tag.TagAttributeImpl.AttributeLookupMethodExpression}
- * which results an instance of <code>ContextualCompositeMethodExpression</code>.
- * When this <code>ContextualCompositeMethodExpression is invoked, the {@link jakarta.faces.view.Location}
+ * When <code>commandButton</code> is clicked, the <code>ContextualCompositeMethodExpression</code> first is looked up
+ * by {@link com.sun.faces.facelets.tag.TagAttributeImpl.AttributeLookupMethodExpression} which results an instance of
+ * <code>ContextualCompositeMethodExpression</code>. When this
+ * <code>ContextualCompositeMethodExpression is invoked, the {@link jakarta.faces.view.Location}
  * object necessary to find the proper composite component will be derived from
- * source <code>ValueExpression</code> provided at construction time.  Using the
- * derived {@link jakarta.faces.view.Location}, we can find the composite component
- * that matches 'owns' the template in which the expression was defined in by
- * comparing the path of the Location with the name and library of the {@link jakarta.faces.application.Resource}
- * instance associated with each composite component.  If a matching composite
- * component is found, it will be made available to the EL by calling {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
+ * source <code>ValueExpression</code> provided at construction time. Using the derived
+ * {@link jakarta.faces.view.Location}, we can find the composite component that matches 'owns' the template in which
+ * the expression was defined in by comparing the path of the Location with the name and library of the
+ * {@link jakarta.faces.application.Resource} instance associated with each composite component. If a matching composite
+ * component is found, it will be made available to the EL by calling
+ * {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
  * </p>
  */
 public class ContextualCompositeMethodExpression extends MethodExpression {
 
     private static final long serialVersionUID = -6281398928485392830L;
-    
+
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.FACELETS_EL.getLogger();
 
@@ -106,12 +105,9 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
     private final Location location;
     private String ccClientId;
 
-
     // -------------------------------------------------------- Constructors
 
-
-    public ContextualCompositeMethodExpression(ValueExpression source,
-                                               MethodExpression delegate) {
+    public ContextualCompositeMethodExpression(ValueExpression source, MethodExpression delegate) {
 
         this.delegate = delegate;
         this.source = source;
@@ -121,10 +117,7 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
         cc.subscribeToEvent(PostAddToViewEvent.class, new SetClientIdListener(this));
     }
 
-
-    public ContextualCompositeMethodExpression(Location location,
-                                               MethodExpression delegate) {
-
+    public ContextualCompositeMethodExpression(Location location, MethodExpression delegate) {
 
         this.delegate = delegate;
         this.location = location;
@@ -134,9 +127,7 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
         cc.subscribeToEvent(PostAddToViewEvent.class, new SetClientIdListener(this));
     }
 
-
     // ------------------------------------------- Methods from MethodExpression
-
 
     @Override
     public MethodInfo getMethodInfo(ELContext elContext) {
@@ -160,19 +151,18 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
             }
         } catch (ELException ele) {
             /*
-             * If we got a validator exception it is actually correct to 
-             * immediately bubble it up. 
+             * If we got a validator exception it is actually correct to immediately bubble it up.
              */
             if (ele.getCause() != null && ele.getCause() instanceof ValidatorException) {
                 throw (ValidatorException) ele.getCause();
             }
-            
+
             if (source != null && ele instanceof MethodNotFoundException) {
-                // special handling when an ELException handling.  This is necessary
+                // special handling when an ELException handling. This is necessary
                 // when there are multiple levels of composite component nesting.
                 // When this happens, we need to evaluate the source expression
                 // to find and invoke the MethodExpression at the next highest
-                // nesting level.  Is there a cleaner way to detect this case?
+                // nesting level. Is there a cleaner way to detect this case?
                 try {
                     Object fallback = source.getValue(elContext);
                     if (fallback != null && fallback instanceof MethodExpression) {
@@ -180,24 +170,21 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
                     }
 
-                } catch(ELException ex) {
-                    
+                } catch (ELException ex) {
+
                     /*
-                     * If we got a validator exception it is actually correct to 
-                     * immediately bubble it up. 
+                     * If we got a validator exception it is actually correct to immediately bubble it up.
                      */
                     if (ex.getCause() != null && ex.getCause() instanceof ValidatorException) {
                         throw (ValidatorException) ex.getCause();
                     }
-                    
+
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING, ele.toString());
-                        LOGGER.log(Level.WARNING,
-                            "jsf.facelets.el.method.expression.invoke.error: {0} {1}",
-                                   new Object[] { ex.toString(),
-                                                  source.getExpressionString() });
+                        LOGGER.log(Level.WARNING, "jsf.facelets.el.method.expression.invoke.error: {0} {1}",
+                                new Object[] { ex.toString(), source.getExpressionString() });
                     }
-                    
+
                     if (!(ex instanceof MethodNotFoundException)) {
                         throw ex;
                     }
@@ -208,9 +195,7 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     }
 
-
     // ------------------------------------------------- Methods from Expression
-
 
     @Override
     public String getExpressionString() {
@@ -219,15 +204,13 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     }
 
-
-    @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
+    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
     @Override
     public boolean equals(Object o) {
 
         return delegate.equals(o);
 
     }
-
 
     @Override
     public int hashCode() {
@@ -236,7 +219,6 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     }
 
-
     @Override
     public boolean isLiteralText() {
 
@@ -244,14 +226,11 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     }
 
-
     // ----------------------------------------------------- Private Methods
-
 
     private boolean pushCompositeComponent(FacesContext ctx) {
 
-        CompositeComponentStackManager manager =
-              CompositeComponentStackManager.getManager(ctx);
+        CompositeComponentStackManager manager = CompositeComponentStackManager.getManager(ctx);
         UIComponent foundCc = null;
 
         if (location != null) {
@@ -274,11 +253,9 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
         return manager.push(foundCc);
     }
 
-
     private void popCompositeComponent(FacesContext ctx) {
 
-        CompositeComponentStackManager manager =
-              CompositeComponentStackManager.getManager(ctx);
+        CompositeComponentStackManager manager = CompositeComponentStackManager.getManager(ctx);
         manager.pop();
 
     }
@@ -286,10 +263,10 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
     private class SetClientIdListener implements ComponentSystemEventListener {
 
         private ContextualCompositeMethodExpression ccME;
-        
+
         public SetClientIdListener() {
         }
-        
+
         public SetClientIdListener(ContextualCompositeMethodExpression ccME) {
             this.ccME = ccME;
         }

@@ -83,8 +83,7 @@ public class MessageFactory {
      * @param messageId - the key of the message in the resource bundle
      * @param params - substittion parameters
      *
-     * @return a localized <code>FacesMessage</code> with the severity of
-     *         FacesMessage.SEVERITY_ERROR
+     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
      */
     public static FacesMessage getMessage(String messageId, Object... params) {
         Locale locale = null;
@@ -111,8 +110,7 @@ public class MessageFactory {
      * @param messageId - the key of the message in the resource bundle
      * @param params - substittion parameters
      *
-     * @return a localized <code>FacesMessage</code> with the severity of
-     *         FacesMessage.SEVERITY_ERROR
+     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
      */
     public static FacesMessage getMessage(Locale locale, String messageId, Object... params) {
         String summary = null;
@@ -182,8 +180,7 @@ public class MessageFactory {
      * @param messageId - the key of the message in the resource bundle
      * @param params - substittion parameters
      *
-     * @return a localized <code>FacesMessage</code> with the severity of
-     *         FacesMessage.SEVERITY_ERROR
+     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
      */
     public static FacesMessage getMessage(FacesContext context, String messageId, Object... params) {
 
@@ -251,12 +248,11 @@ public class MessageFactory {
     }
 
     /**
-     * This class overrides FacesMessage to provide the evaluation of binding expressions in
-     * addition to Strings. It is often the case, that a binding expression may reference a
-     * localized property value that would be used as a substitution parameter in the message. For
-     * example: <code>#{bundle.userLabel}</code> "bundle" may not be available until the page is
-     * rendered. The "late" binding evaluation in <code>getSummary</code> and <code>getDetail</code>
-     * allow the expression to be evaluated when that property is available.
+     * This class overrides FacesMessage to provide the evaluation of binding expressions in addition to Strings. It is
+     * often the case, that a binding expression may reference a localized property value that would be used as a
+     * substitution parameter in the message. For example: <code>#{bundle.userLabel}</code> "bundle" may not be available
+     * until the page is rendered. The "late" binding evaluation in <code>getSummary</code> and <code>getDetail</code> allow
+     * the expression to be evaluated when that property is available.
      */
     static class BindingFacesMessage extends FacesMessage {
         BindingFacesMessage(Locale locale, String messageFormat, String detailMessageFormat,

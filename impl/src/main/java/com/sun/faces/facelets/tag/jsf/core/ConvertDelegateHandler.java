@@ -23,9 +23,9 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.view.facelets.*;
 
 /**
- * Register a named Converter instance on the UIComponent associated with the
- * closest parent UIComponent custom action. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
+ * Register a named Converter instance on the UIComponent associated with the closest parent UIComponent custom action.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
  * documentation</a>.
  * 
  * @author Jacob Hookom
@@ -47,10 +47,8 @@ public final class ConvertDelegateHandler extends ConverterHandler {
      * 
      * @see jakarta.faces.application.Application#createComponent(java.lang.String)
      */
-    protected Converter createConverter(FaceletContext ctx)
-            throws FacesException, ELException, FaceletException {
-        return ctx.getFacesContext().getApplication().createConverter(
-                this.converterId.getValue(ctx));
+    protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
+        return ctx.getFacesContext().getApplication().createConverter(this.converterId.getValue(ctx));
     }
 
     @Override

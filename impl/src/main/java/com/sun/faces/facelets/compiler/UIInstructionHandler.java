@@ -42,11 +42,11 @@ final class UIInstructionHandler extends AbstractUIHandler {
     private final String id;
 
     private final ELText txt;
-    
+
     private final Instruction[] instructions;
 
     private final int length;
-  
+
     private final boolean literal;
 
     public UIInstructionHandler(String alias, String id, Instruction[] instructions, ELText txt) {
@@ -70,15 +70,13 @@ final class UIInstructionHandler extends AbstractUIHandler {
         this.literal = literal;
     }
 
-
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
             // our id
             String id = ctx.generateUniqueId(this.id);
             FacesContext context = ctx.getFacesContext();
-            
+
             // grab our component
             UIComponent c = ComponentSupport.findUIInstructionChildByTagId(context, parent, id);
             boolean componentFound = false;
@@ -86,7 +84,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
             if (c != null) {
                 componentFound = true;
                 suppressEvents = ComponentSupport.suppressViewModificationEvents(ctx.getFacesContext());
-                // mark all children for cleaning 
+                // mark all children for cleaning
                 ComponentSupport.markForDeletion(c);
             } else {
                 Instruction[] applied;
@@ -110,13 +108,12 @@ final class UIInstructionHandler extends AbstractUIHandler {
                 IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
                 String mid = ((mapper != null) ? mapper.getAliasedId(id) : id);
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
-                if (null != ancestorNamingContainer &&
-                        ancestorNamingContainer instanceof UniqueIdVendor) {
+                if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);
                 } else {
                     uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId(ctx.getFacesContext(), mid);
                 }
-                
+
                 c.setId(uid);
                 c.getAttributes().put(ComponentSupport.MARK_CREATED, id);
             }
@@ -159,7 +156,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
         try {
             this.txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
         } catch (IOException e) {
-            throw new ELException(this.alias + ": "+ e.getMessage(), e.getCause());
+            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
         }
         return writer.toString();
     }

@@ -25,14 +25,13 @@ import jakarta.faces.el.ValueBinding;
 
 /**
  * <p>
- * <strong>UISelectBoolean</strong> is a {@link UIComponent} that represents a single boolean
- * (<code>true</code> or <code>false</code>) value. It is most commonly rendered as a checkbox.
+ * <strong>UISelectBoolean</strong> is a {@link UIComponent} that represents a single boolean (<code>true</code> or
+ * <code>false</code>) value. It is most commonly rendered as a checkbox.
  * </p>
  *
  * <p>
- * By default, the <code>rendererType</code> property must be set to
- * "<code>jakarta.faces.Checkbox</code>". This value can be changed by calling the
- * <code>setRendererType()</code> method.
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Checkbox</code>". This value
+ * can be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
 
@@ -65,7 +64,6 @@ public class UISelectBoolean extends UIInput {
         super();
         setRendererType("jakarta.faces.Checkbox");
     }
-    
 
     // -------------------------------------------------------------- Properties
 
@@ -76,8 +74,8 @@ public class UISelectBoolean extends UIInput {
 
     /**
      * <p>
-     * Return the local value of the selected state of this component. This method is a typesafe
-     * alias for <code>getValue()</code>.
+     * Return the local value of the selected state of this component. This method is a typesafe alias for
+     * <code>getValue()</code>.
      * </p>
      * 
      * @return true if selected, false otherwise.
@@ -87,14 +85,14 @@ public class UISelectBoolean extends UIInput {
         if (value != null) {
             return value.booleanValue();
         }
-            
+
         return false;
     }
 
     /**
      * <p>
-     * Set the local value of the selected state of this component. This method is a typesafe alias
-     * for <code>setValue()</code>.
+     * Set the local value of the selected state of this component. This method is a typesafe alias for
+     * <code>setValue()</code>.
      * </p>
      *
      * @param selected The new selected state
@@ -102,15 +100,13 @@ public class UISelectBoolean extends UIInput {
     public void setSelected(boolean selected) {
         setValue(selected);
     }
-    
 
     // ---------------------------------------------------------------- Bindings
 
     /**
      * <p>
-     * Return any {@link ValueExpression} set for <code>value</code> if a {@link ValueExpression}
-     * for <code>selected</code> is requested; otherwise, perform the default superclass processing
-     * for this method.
+     * Return any {@link ValueExpression} set for <code>value</code> if a {@link ValueExpression} for <code>selected</code>
+     * is requested; otherwise, perform the default superclass processing for this method.
      * </p>
      *
      * @param name Name of the attribute or property for which to retrieve a {@link ValueExpression}
@@ -122,21 +118,20 @@ public class UISelectBoolean extends UIInput {
     public ValueExpression getValueExpression(String name) {
         if ("selected".equals(name)) {
             return super.getValueExpression("value");
-        } 
-        
+        }
+
         return super.getValueExpression(name);
     }
 
     /**
      * <p>
-     * Store any {@link ValueExpression} specified for <code>selected</code> under
-     * <code>value</code> instead; otherwise, perform the default superclass processing for this
-     * method.
+     * Store any {@link ValueExpression} specified for <code>selected</code> under <code>value</code> instead; otherwise,
+     * perform the default superclass processing for this method.
      * </p>
      *
      * @param name Name of the attribute or property for which to set a {@link ValueExpression}
-     * @param binding The {@link ValueExpression} to set, or <code>null</code> to remove any
-     *            currently set {@link ValueExpression}
+     * @param binding The {@link ValueExpression} to set, or <code>null</code> to remove any currently set
+     * {@link ValueExpression}
      *
      * @throws NullPointerException if <code>name</code> is <code>null</code>
      * @since 1.2
@@ -149,20 +144,13 @@ public class UISelectBoolean extends UIInput {
             super.setValueExpression(name, binding);
         }
     }
-    
-    
-    
-    
-    
-    
+
     // ------------------------------------------------------------ Deprecated methods
-    
-    
+
     /**
      * <p>
-     * Return any {@link ValueBinding} set for <code>value</code> if a {@link ValueBinding} for
-     * <code>selected</code> is requested; otherwise, perform the default superclass processing for
-     * this method.
+     * Return any {@link ValueBinding} set for <code>value</code> if a {@link ValueBinding} for <code>selected</code> is
+     * requested; otherwise, perform the default superclass processing for this method.
      * </p>
      *
      * <p>
@@ -181,14 +169,14 @@ public class UISelectBoolean extends UIInput {
         if ("selected".equals(name)) {
             return super.getValueBinding("value");
         }
-        
+
         return super.getValueBinding(name);
     }
-    
+
     /**
      * <p>
-     * Store any {@link ValueBinding} specified for <code>selected</code> under <code>value</code>
-     * instead; otherwise, perform the default superclass processing for this method.
+     * Store any {@link ValueBinding} specified for <code>selected</code> under <code>value</code> instead; otherwise,
+     * perform the default superclass processing for this method.
      * </p>
      *
      * <p>
@@ -197,8 +185,7 @@ public class UISelectBoolean extends UIInput {
      * </p>
      *
      * @param name Name of the attribute or property for which to set a {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code> to remove any currently
-     *            set {@link ValueBinding}
+     * @param binding The {@link ValueBinding} to set, or <code>null</code> to remove any currently set {@link ValueBinding}
      *
      * @throws NullPointerException if <code>name</code> is <code>null</code>
      *

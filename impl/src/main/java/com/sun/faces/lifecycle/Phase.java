@@ -33,11 +33,10 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.lifecycle.Lifecycle;
 
-
 /**
- * <p>A <strong>Phase</strong> is a single step in the processing of a
- * JavaServer Faces request throughout its entire {@link jakarta.faces.lifecycle.Lifecycle}.
- * Each <code>Phase</code> performs the required transitions on the state
+ * <p>
+ * A <strong>Phase</strong> is a single step in the processing of a JavaServer Faces request throughout its entire
+ * {@link jakarta.faces.lifecycle.Lifecycle}. Each <code>Phase</code> performs the required transitions on the state
  * information in the {@link FacesContext} associated with this request.
  */
 
@@ -47,16 +46,13 @@ public abstract class Phase {
 
     // ---------------------------------------------------------- Public Methods
 
-
     /**
-     * Performs PhaseListener processing and invokes the execute method
-     * of the Phase.
+     * Performs PhaseListener processing and invokes the execute method of the Phase.
+     * 
      * @param context the FacesContext for the current request
      * @param lifecycle the lifecycle for this request
      */
-    public void doPhase(FacesContext context,
-                        Lifecycle lifecycle,
-                        ListIterator<PhaseListener> listeners) {
+    public void doPhase(FacesContext context, Lifecycle lifecycle, ListIterator<PhaseListener> listeners) {
 
         context.setCurrentPhaseId(getId());
         PhaseEvent event = null;
@@ -86,9 +82,7 @@ public abstract class Phase {
             // stop timing
             if (timer != null) {
                 timer.stopTiming();
-                timer.logResult(
-                      "Execution time for phase (including any PhaseListeners) -> "
-                      + this.getId().toString());
+                timer.logResult("Execution time for phase (including any PhaseListeners) -> " + this.getId().toString());
             }
 
             context.getExceptionHandler().handle();
@@ -96,35 +90,29 @@ public abstract class Phase {
 
     }
 
-
-     /**
-     * <p>Perform all state transitions required by the current phase of the
-     * request processing {@link jakarta.faces.lifecycle.Lifecycle} for a
-     * particular request. </p>
+    /**
+     * <p>
+     * Perform all state transitions required by the current phase of the request processing
+     * {@link jakarta.faces.lifecycle.Lifecycle} for a particular request.
+     * </p>
      *
      * @param context FacesContext for the current request being processed
-     * @throws FacesException if a processing error occurred while
-     *                        executing this phase
+     * @throws FacesException if a processing error occurred while executing this phase
      */
     public abstract void execute(FacesContext context) throws FacesException;
 
-
     /**
-     * @return the current {@link jakarta.faces.lifecycle.Lifecycle}
-     * <strong>Phase</strong> identifier.
+     * @return the current {@link jakarta.faces.lifecycle.Lifecycle} <strong>Phase</strong> identifier.
      */
     public abstract PhaseId getId();
 
-
     // ------------------------------------------------------- Protected Methods
 
-
-     protected void queueException(FacesContext ctx, Throwable t) {
+    protected void queueException(FacesContext ctx, Throwable t) {
 
         queueException(ctx, t, null);
 
     }
-
 
     protected void queueException(FacesContext ctx, Throwable t, String booleanKey) {
 
@@ -136,36 +124,30 @@ public abstract class Phase {
 
     }
 
-
     /**
      * Handle <code>afterPhase</code> <code>PhaseListener</code> events.
+     * 
      * @param context the FacesContext for the current request
-     * @param listenersIterator a ListIterator for the PhaseListeners that need
-     *  to be invoked
+     * @param listenersIterator a ListIterator for the PhaseListeners that need to be invoked
      * @param event the event to pass to each of the invoked listeners
      */
-    protected void handleAfterPhase(FacesContext context,
-                                    ListIterator<PhaseListener> listenersIterator,
-                                    PhaseEvent event) {
+    protected void handleAfterPhase(FacesContext context, ListIterator<PhaseListener> listenersIterator, PhaseEvent event) {
 
         try {
             Flash flash = context.getExternalContext().getFlash();
             flash.doPostPhaseActions(context);
         } catch (UnsupportedOperationException uoe) {
             if (LOGGER.isLoggable(Level.FINE)) {
-                 LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
-            }    
+                LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
+            }
         }
         while (listenersIterator.hasPrevious()) {
             PhaseListener listener = listenersIterator.previous();
-            if (this.getId().equals(listener.getPhaseId()) ||
-                PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
+            if (this.getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
                 try {
                     listener.afterPhase(event);
                 } catch (Exception e) {
-                    queueException(context,
-                                   e,
-                                   ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
+                    queueException(context, e, ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
                     return;
                 }
             }
@@ -173,63 +155,53 @@ public abstract class Phase {
 
     }
 
-
-     /**
+    /**
      * Handle <code>beforePhase</code> <code>PhaseListener</code> events.
+     * 
      * @param context the FacesContext for the current request
-     * @param listenersIterator a ListIterator for the PhaseListeners that need
-     *  to be invoked
+     * @param listenersIterator a ListIterator for the PhaseListeners that need to be invoked
      * @param event the event to pass to each of the invoked listeners
      */
-     protected void handleBeforePhase(FacesContext context,
-                                      ListIterator<PhaseListener> listenersIterator,
-                                      PhaseEvent event) {
+    protected void handleBeforePhase(FacesContext context, ListIterator<PhaseListener> listenersIterator, PhaseEvent event) {
 
-         try {
+        try {
             Flash flash = context.getExternalContext().getFlash();
             flash.doPrePhaseActions(context);
-         } catch (UnsupportedOperationException uoe) {
-             if (LOGGER.isLoggable(Level.FINE)) {
-                 LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
-             }
-         }
-         while (listenersIterator.hasNext()) {
-             PhaseListener listener = listenersIterator.next();
-             if (this.getId().equals(listener.getPhaseId()) ||
-                 PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
-                 try {
-                     listener.beforePhase(event);
-                 } catch (Exception e) {
-                     queueException(context,
-                                    e,
-                                    ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY);
-                     // move the iterator pointer back one
-                     if (listenersIterator.hasPrevious()) {
-                         listenersIterator.previous();
-                     }
-                     return;
-                 }
-             }
-         }
+        } catch (UnsupportedOperationException uoe) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
+            }
+        }
+        while (listenersIterator.hasNext()) {
+            PhaseListener listener = listenersIterator.next();
+            if (this.getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
+                try {
+                    listener.beforePhase(event);
+                } catch (Exception e) {
+                    queueException(context, e, ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY);
+                    // move the iterator pointer back one
+                    if (listenersIterator.hasPrevious()) {
+                        listenersIterator.previous();
+                    }
+                    return;
+                }
+            }
+        }
 
-     }
-
+    }
 
     // --------------------------------------------------------- Private Methods
 
-
     /**
      * @param context the FacesContext for the current request
-     * @return <code>true</code> if <code>FacesContext.responseComplete()</code>
-     *  or <code>FacesContext.renderResponse()</code> and the phase is not
-     *  RENDER_RESPONSE, otherwise return <code>false</code>
+     * @return <code>true</code> if <code>FacesContext.responseComplete()</code> or
+     * <code>FacesContext.renderResponse()</code> and the phase is not RENDER_RESPONSE, otherwise return <code>false</code>
      */
     private boolean shouldSkip(FacesContext context) {
 
         if (context.getResponseComplete()) {
             return (true);
-        } else if (context.getRenderResponse() &&
-                   !PhaseId.RENDER_RESPONSE.equals(this.getId())) {
+        } else if (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(this.getId())) {
             return (true);
         } else {
             return (false);

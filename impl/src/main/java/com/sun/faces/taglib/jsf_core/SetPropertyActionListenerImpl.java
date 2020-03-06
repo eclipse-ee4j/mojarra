@@ -29,15 +29,14 @@ import jakarta.faces.event.ActionListener;
 import jakarta.el.ExpressionFactory;
 
 public class SetPropertyActionListenerImpl implements ActionListener, StateHolder {
-    
+
     private ValueExpression target;
     private ValueExpression source;
 
-
     // ------------------------------------------------------------ Constructors
-    
-    public SetPropertyActionListenerImpl() {}
 
+    public SetPropertyActionListenerImpl() {
+    }
 
     public SetPropertyActionListenerImpl(ValueExpression target, ValueExpression value) {
 
@@ -46,9 +45,7 @@ public class SetPropertyActionListenerImpl implements ActionListener, StateHolde
 
     }
 
-
     // --------------------------------------------- Methods from ActionListener
-
 
     @Override
     public void processAction(ActionEvent e) throws AbortProcessingException {
@@ -59,8 +56,7 @@ public class SetPropertyActionListenerImpl implements ActionListener, StateHolde
         try {
             Object value = source.getValue(elContext);
             if (value != null) {
-                ExpressionFactory factory =
-                      facesContext.getApplication().getExpressionFactory();
+                ExpressionFactory factory = facesContext.getApplication().getExpressionFactory();
                 value = factory.coerceToType(value, target.getType(elContext));
             }
             target.setValue(elContext, value);
@@ -68,18 +64,14 @@ public class SetPropertyActionListenerImpl implements ActionListener, StateHolde
             throw new AbortProcessingException(ele);
         }
 
-
     }
-
 
     // ------------------------------------------------ Methods from StateHolder
 
-    
     @Override
     public void setTransient(boolean trans) {
     }
 
-    
     @Override
     public boolean isTransient() {
 
@@ -87,20 +79,19 @@ public class SetPropertyActionListenerImpl implements ActionListener, StateHolde
 
     }
 
-    
     @Override
     public Object saveState(FacesContext context) {
 
         if (context == null) {
             throw new NullPointerException();
         }
-        Object [] state = new Object[2];
+        Object[] state = new Object[2];
         state[0] = target;
         state[1] = source;
         return state;
 
     }
-    
+
     @Override
     public void restoreState(FacesContext context, Object state) {
 
@@ -110,10 +101,10 @@ public class SetPropertyActionListenerImpl implements ActionListener, StateHolde
         if (state == null) {
             return;
         }
-        Object [] stateArray = (Object []) state;
+        Object[] stateArray = (Object[]) state;
         target = (ValueExpression) stateArray[0];
         source = (ValueExpression) stateArray[1];
 
     }
-    
+
 }

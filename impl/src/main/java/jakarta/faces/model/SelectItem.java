@@ -16,31 +16,28 @@
 
 package jakarta.faces.model;
 
-
 import java.io.Serializable;
 
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 
-
 /**
- * <p><strong class="changed_modified_2_0
- * changed_modified_2_0_rev_a">SelectItem</strong> represents a single
- * <em>item</em> in the list of supported <em>items</em> associated with
- * a {@link UISelectMany} or {@link UISelectOne} component.</p>
+ * <p>
+ * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a">SelectItem</strong> represents a single <em>item</em>
+ * in the list of supported <em>items</em> associated with a {@link UISelectMany} or {@link UISelectOne} component.
+ * </p>
  */
 
 public class SelectItem implements Serializable {
 
     private static final long serialVersionUID = 876782311414654999L;
 
-
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p>Construct a <code>SelectItem</code> with no initialized property
-     * values.</p>
+     * <p>
+     * Construct a <code>SelectItem</code> with no initialized property values.
+     * </p>
      */
     public SelectItem() {
 
@@ -48,17 +45,15 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Construct a <code>SelectItem</code> with the specified value.  The
-     * <code>label</code> property will be set to the value (converted to a
-     * String, if necessary), the <code>description</code> property will be
-     * set to <code>null</code>, the <code>disabled</code> property will be set to 
-     * <code>false</code>, and the <code>escape</code> property will be set to
-     ( <code>true</code>.</p>
+     * <p>
+     * Construct a <code>SelectItem</code> with the specified value. The <code>label</code> property will be set to the
+     * value (converted to a String, if necessary), the <code>description</code> property will be set to <code>null</code>,
+     * the <code>disabled</code> property will be set to <code>false</code>, and the <code>escape</code> property will be
+     * set to ( <code>true</code>.
+     * </p>
      *
-     * @param value Value to be delivered to the model if this
-     *  item is selected by the user
+     * @param value Value to be delivered to the model if this item is selected by the user
      */
     public SelectItem(Object value) {
 
@@ -66,16 +61,14 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Construct a <code>SelectItem</code> with the specified value and
-     * label.  The <code>description</code> property will be set to
-     * <code>null</code>, the <code>disabled</code> property will be
-     * set to <code>false</code>, and the <code>escape</code> property will
-     * be set to <code>true</code>.</p>
+     * <p>
+     * Construct a <code>SelectItem</code> with the specified value and label. The <code>description</code> property will be
+     * set to <code>null</code>, the <code>disabled</code> property will be set to <code>false</code>, and the
+     * <code>escape</code> property will be set to <code>true</code>.
+     * </p>
      *
-     * @param value Value to be delivered to the model if this
-     *  item is selected by the user
+     * @param value Value to be delivered to the model if this item is selected by the user
      * @param label Label to be rendered for this item in the response
      */
     public SelectItem(Object value, String label) {
@@ -84,15 +77,14 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Construct a <code>SelectItem</code> instance with the specified
-     * value, label and description.  This <code>disabled</code> property
-     * will be set to <code>false</code>,  and the <code>escape</code> 
-     * property will be set to <code>true</code>.</p>
+     * <p>
+     * Construct a <code>SelectItem</code> instance with the specified value, label and description. This
+     * <code>disabled</code> property will be set to <code>false</code>, and the <code>escape</code> property will be set to
+     * <code>true</code>.
+     * </p>
      *
-     * @param value Value to be delivered to the model if this
-     *  item is selected by the user
+     * @param value Value to be delivered to the model if this item is selected by the user
      * @param label Label to be rendered for this item in the response
      * @param description Description of this item, for use in tools
      */
@@ -102,62 +94,55 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Construct a <code>SelectItem</code> instance with the specified
-     * property values.   The <code>escape</code> property will be set 
-     * to <code>true</code>.</p>
+     * <p>
+     * Construct a <code>SelectItem</code> instance with the specified property values. The <code>escape</code> property
+     * will be set to <code>true</code>.
+     * </p>
      *
-     * @param value Value to be delivered to the model if this
-     *  item is selected by the user
+     * @param value Value to be delivered to the model if this item is selected by the user
      * @param label Label to be rendered for this item in the response
      * @param description Description of this item, for use in tools
      * @param disabled Flag indicating that this option is disabled
      */
-    public SelectItem(Object value, String label, String description,
-                      boolean disabled) {
+    public SelectItem(Object value, String label, String description, boolean disabled) {
 
         this(value, label, description, disabled, true, false);
 
     }
-    
+
     /**
-     * <p>Construct a <code>SelectItem</code> instance with the specified
-     * property values.</p>
+     * <p>
+     * Construct a <code>SelectItem</code> instance with the specified property values.
+     * </p>
      *
-     * @param value Value to be delivered to the model if this
-     *  item is selected by the user
+     * @param value Value to be delivered to the model if this item is selected by the user
      * @param label Label to be rendered for this item in the response
      * @param description Description of this item, for use in tools
      * @param disabled Flag indicating that this option is disabled
-     * @param escape Flag indicating that the text of this option should be
-     * escaped when rendered.
+     * @param escape Flag indicating that the text of this option should be escaped when rendered.
      * @since 1.2
      */
-    public SelectItem(Object value, String label, String description,
-                      boolean disabled, boolean escape) {
+    public SelectItem(Object value, String label, String description, boolean disabled, boolean escape) {
 
         this(value, label, description, disabled, escape, false);
 
     }
-    
-    
+
     /**
-     * <p>Construct a <code>SelectItem</code> instance with the specified
-     * property values.</p>
+     * <p>
+     * Construct a <code>SelectItem</code> instance with the specified property values.
+     * </p>
      *
-     * @param value Value to be delivered to the model if this
-     *  item is selected by the user
+     * @param value Value to be delivered to the model if this item is selected by the user
      * @param label Label to be rendered for this item in the response
      * @param description Description of this item, for use in tools
      * @param disabled Flag indicating that this option is disabled
-     * @param escape Flag indicating that the text of this option should be
-     * escaped when rendered.
+     * @param escape Flag indicating that the text of this option should be escaped when rendered.
      * @param noSelectionOption Flag indicating that the current option is a "no selection" option
      * @since 1.2
      */
-    public SelectItem(Object value, String label, String description,
-                      boolean disabled, boolean escape, boolean noSelectionOption) {
+    public SelectItem(Object value, String label, String description, boolean disabled, boolean escape, boolean noSelectionOption) {
 
         super();
         setValue(value);
@@ -169,24 +154,19 @@ public class SelectItem implements Serializable {
 
     }
 
-    
-
-
     // ------------------------------------------------------ Instance Variables
-
 
     private String description = null;
     private boolean disabled = false;
     private String label = null;
-    @SuppressWarnings({"NonSerializableFieldInSerializableClass"})
+    @SuppressWarnings({ "NonSerializableFieldInSerializableClass" })
     private Object value = null;
-
 
     // -------------------------------------------------------------- Properties
 
-
     /**
-     * <p>Return a description of this item, for use in development tools.
+     * <p>
+     * Return a description of this item, for use in development tools.
      * 
      * @return a description of this item, for use in development tools
      */
@@ -196,9 +176,10 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Set the description of this item, for use in development tools.</p>
+     * <p>
+     * Set the description of this item, for use in development tools.
+     * </p>
      *
      * @param description The new description
      */
@@ -208,11 +189,11 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Return the disabled flag for this item, which should modify the
-     * rendered output to make this item unavailable for selection by the user
-     * if set to <code>true</code>.</p>
+     * <p>
+     * Return the disabled flag for this item, which should modify the rendered output to make this item unavailable for
+     * selection by the user if set to <code>true</code>.
+     * </p>
      * 
      * @return the disabled flag for this item
      */
@@ -222,11 +203,11 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Set the disabled flag for this item, which should modify the
-     * rendered output to make this item unavailable for selection by the user
-     * if set to <code>true</code>.</p>
+     * <p>
+     * Set the disabled flag for this item, which should modify the rendered output to make this item unavailable for
+     * selection by the user if set to <code>true</code>.
+     * </p>
      *
      * @param disabled The new disabled flag
      */
@@ -236,9 +217,9 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Return the label of this item, to be rendered visibly for the user.
+     * <p>
+     * Return the label of this item, to be rendered visibly for the user.
      * 
      * @return the label of this item
      */
@@ -248,9 +229,9 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Set the label of this item, to be rendered visibly for the user.
+     * <p>
+     * Set the label of this item, to be rendered visibly for the user.
      *
      * @param label The new label
      */
@@ -260,10 +241,9 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Return the value of this item, to be delivered to the model
-     * if this item is selected by the user.
+     * <p>
+     * Return the value of this item, to be delivered to the model if this item is selected by the user.
      * 
      * @return the value of this item
      */
@@ -273,10 +253,9 @@ public class SelectItem implements Serializable {
 
     }
 
-
     /**
-     * <p>Set the value of this item, to be delivered to the model
-     * if this item is selected by this user.
+     * <p>
+     * Set the value of this item, to be delivered to the model if this item is selected by this user.
      *
      * @param value The new value
      *
@@ -290,10 +269,10 @@ public class SelectItem implements Serializable {
     private boolean escape;
 
     /**
-     * <p class="changed_added_2_0_rev_a">If and only if this returns
-     * <code>true</code>, the code that renders this select item must
-     * escape the label using escaping syntax appropriate to the content
-     * type being rendered.  </p>
+     * <p class="changed_added_2_0_rev_a">
+     * If and only if this returns <code>true</code>, the code that renders this select item must escape the label using
+     * escaping syntax appropriate to the content type being rendered.
+     * </p>
      *
      * @return the escape value.
      * @since 2.0
@@ -303,8 +282,9 @@ public class SelectItem implements Serializable {
     }
 
     /**
-     * <p class="changed_added_2_0_rev_a">Set the value of the escape
-     * property.  See {@link #isEscape}.</p>
+     * <p class="changed_added_2_0_rev_a">
+     * Set the value of the escape property. See {@link #isEscape}.
+     * </p>
      * 
      * @param escape the new value of the escape property
      *
@@ -313,16 +293,15 @@ public class SelectItem implements Serializable {
     public void setEscape(boolean escape) {
         this.escape = escape;
     }
-    
+
     private boolean noSelectionOption = false;
 
-    /** <p class="changed_added_2_0">Return the value of the
-     * <code>noSelectionOption</code> property.  If the value of this
-     * property is <code>true</code>, the system interprets the option
-     * represented by this <code>SelectItem</code> instance as
-     * representing a "no selection" option.  See {@link
-     * UISelectOne#validateValue} and {@link UISelectMany#validateValue}
-     * for usage.</p>
+    /**
+     * <p class="changed_added_2_0">
+     * Return the value of the <code>noSelectionOption</code> property. If the value of this property is <code>true</code>,
+     * the system interprets the option represented by this <code>SelectItem</code> instance as representing a "no
+     * selection" option. See {@link UISelectOne#validateValue} and {@link UISelectMany#validateValue} for usage.
+     * </p>
      *
      * @return the value of the <code>noSelectionOption</code> property
      * 
@@ -334,8 +313,9 @@ public class SelectItem implements Serializable {
     }
 
     /**
-     * <p class="changed_added_2_0">Set the value of the
-     * <code>noSelectionOption</code> property.</p>
+     * <p class="changed_added_2_0">
+     * Set the value of the <code>noSelectionOption</code> property.
+     * </p>
      * 
      * @param noSelectionOption the new value of the {@code noSelectionOption} property
      *
@@ -345,7 +325,5 @@ public class SelectItem implements Serializable {
     public void setNoSelectionOption(boolean noSelectionOption) {
         this.noSelectionOption = noSelectionOption;
     }
-
-
 
 }

@@ -30,21 +30,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>This <code>TagLibrary</code> exposes the <code>public static</code>
- * methods defined on the <code>functionsClass</code> provided to the constructor
- * as EL functions.</p>
+ * <p>
+ * This <code>TagLibrary</code> exposes the <code>public static</code> methods defined on the
+ * <code>functionsClass</code> provided to the constructor as EL functions.
+ * </p>
  */
 public class FunctionLibrary implements TagLibrary {
-    
+
     public final static String Namespace = "http://java.sun.com/jsp/jstl/functions";
     public final static String XMLNSNamespace = "http://xmlns.jcp.org/jsp/jstl/functions";
-    
 
     private String _namespace;
-    private Map<String,Method> functions;
+    private Map<String, Method> functions;
 
     // ------------------------------------------------------------ Constructors
-
 
     public FunctionLibrary(Class<?> functionsClass, String namespace) {
 
@@ -57,8 +56,7 @@ public class FunctionLibrary implements TagLibrary {
             Method[] methods = functionsClass.getMethods();
             functions = new HashMap<>(methods.length, 1.0f);
             for (Method method : methods) {
-                if (Modifier.isStatic(method.getModifiers())
-                    && Modifier.isPublic(method.getModifiers())) {
+                if (Modifier.isStatic(method.getModifiers()) && Modifier.isPublic(method.getModifiers())) {
                     functions.put(method.getName(), method);
                 }
             }
@@ -81,8 +79,7 @@ public class FunctionLibrary implements TagLibrary {
     }
 
     @Override
-    public TagHandler createTagHandler(String ns, String localName,
-            TagConfig tag) throws FacesException {
+    public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
         return null;
     }
 
@@ -98,5 +95,5 @@ public class FunctionLibrary implements TagLibrary {
         }
         return null;
     }
-    
+
 }

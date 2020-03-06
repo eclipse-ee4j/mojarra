@@ -24,7 +24,7 @@ import jakarta.faces.flow.builder.ReturnBuilder;
 import jakarta.el.ValueExpression;
 
 public class ReturnBuilderImpl extends ReturnBuilder {
-    
+
     private FlowBuilderImpl root;
     String id;
 
@@ -38,7 +38,7 @@ public class ReturnBuilderImpl extends ReturnBuilder {
         root._getFlow().setStartNodeId(id);
         return this;
     }
-    
+
     @Override
     public ReturnBuilder fromOutcome(String outcome) {
         Util.notNull("outcome", outcome);

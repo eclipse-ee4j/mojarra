@@ -44,8 +44,7 @@ import jakarta.faces.validator.Validator;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/valiator</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/valiator</code>.
  * </p>
  */
 public class ValidatorConfigProcessor extends AbstractConfigProcessor {
@@ -89,16 +88,16 @@ public class ValidatorConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing validator elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList validators = document.getDocumentElement().getElementsByTagNameNS(namespace, VALIDATOR);
-            
+
             if (validators != null && validators.getLength() > 0) {
                 addValidators(facesContext, validators, namespace);
             }
         }
-        
+
         processDefaultValidatorIds();
     }
 
@@ -117,7 +116,7 @@ public class ValidatorConfigProcessor extends AbstractConfigProcessor {
                     break;
                 }
             }
-            
+
             if (!found) {
                 throw new ConfigurationException(format("Default validator ''{0}'' does not reference a registered validator.", defaultValidatorId));
             }
@@ -135,7 +134,7 @@ public class ValidatorConfigProcessor extends AbstractConfigProcessor {
             NodeList children = ((Element) validator).getElementsByTagNameNS(namespace, "*");
             String validatorId = null;
             String validatorClass = null;
-            
+
             for (int c = 0, csize = children.getLength(); c < csize; c++) {
                 Node n = children.item(c);
                 if (n.getNodeType() == Node.ELEMENT_NODE) {

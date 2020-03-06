@@ -22,26 +22,32 @@ import jakarta.faces.context.ExceptionHandlerFactory;
 import jakarta.faces.FacesWrapper;
 
 /**
- * <p class="changed_added_2_0"><strong class="changed_modified_2_3">ExceptionHandlerFactory</strong>
- * is a factory object that creates (if needed) and returns a new {@link
- * ExceptionHandler} instance.</p>
+ * <p class="changed_added_2_0">
+ * <strong class="changed_modified_2_3">ExceptionHandlerFactory</strong> is a factory object that creates (if needed)
+ * and returns a new {@link ExceptionHandler} instance.
+ * </p>
  *
  * <div class="changed_added_2_0">
-
- * <p>There must be one <code>ExceptionHandlerFactory</code> instance per web
- * application that is utilizing Jakarta Server Faces.  This instance can be
- * acquired, in a portable manner, by calling:</p>
+ * 
+ * <p>
+ * There must be one <code>ExceptionHandlerFactory</code> instance per web application that is utilizing Jakarta Server
+ * Faces. This instance can be acquired, in a portable manner, by calling:
+ * </p>
  *
- * <pre><code>
+ * <pre>
+ * <code>
  *   ExceptionHandlerFactory factory = (ExceptionHandlerFactory)
  *    FactoryFinder.getFactory(FactoryFinder.EXCEPTION_HANDLER_FACTORY);
- * </code></pre>
+ * </code>
+ * </pre>
  *
-
+ * 
  * </div>
  *
- * <p class="changed_added_2_3">Usage: extend this class and push the implementation being wrapped to the
- * constructor and use {@link #getWrapped} to access the instance being wrapped.</p>
+ * <p class="changed_added_2_3">
+ * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
+ * access the instance being wrapped.
+ * </p>
  *
  * @since 2.0
  */
@@ -59,9 +65,10 @@ public abstract class ExceptionHandlerFactory implements FacesWrapper<ExceptionH
     }
 
     /**
-     * <p class="changed_added_2_3">If this factory has been decorated,
-     * the implementation doing the decorating should push the implementation being wrapped to this constructor.
-     * The {@link #getWrapped()} will then return the implementation being wrapped.</p>
+     * <p class="changed_added_2_3">
+     * If this factory has been decorated, the implementation doing the decorating should push the implementation being
+     * wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
+     * </p>
      *
      * @param wrapped The implementation being wrapped.
      */
@@ -70,9 +77,10 @@ public abstract class ExceptionHandlerFactory implements FacesWrapper<ExceptionH
     }
 
     /**
-     * <p class="changed_modified_2_3">If this factory has been decorated, the
-     * implementation doing the decorating may override this method to provide
-     * access to the implementation being wrapped.</p>
+     * <p class="changed_modified_2_3">
+     * If this factory has been decorated, the implementation doing the decorating may override this method to provide
+     * access to the implementation being wrapped.
+     * </p>
      */
     @Override
     public ExceptionHandlerFactory getWrapped() {
@@ -80,15 +88,14 @@ public abstract class ExceptionHandlerFactory implements FacesWrapper<ExceptionH
     }
 
     /**
-     * <p class="changed_added_2_0">Create and return a A new
-     * <code>ExceptionHandler</code> instance.  The implementation must return
-     * an <code>ExceptionHandler</code> instance suitable for the environment.
-     * For example, in some cases it may be desirable for an
-     * <code>ExceptionHandler</code> to write error information
-     * to the response instead of throwing exceptions as in the case of
-     * Ajax applications.</p>
+     * <p class="changed_added_2_0">
+     * Create and return a A new <code>ExceptionHandler</code> instance. The implementation must return an
+     * <code>ExceptionHandler</code> instance suitable for the environment. For example, in some cases it may be desirable
+     * for an <code>ExceptionHandler</code> to write error information to the response instead of throwing exceptions as in
+     * the case of Ajax applications.
+     * </p>
      *
-     *  @return newly created <code>ExceptionHandler</code>.
+     * @return newly created <code>ExceptionHandler</code>.
      *
      */
     public abstract ExceptionHandler getExceptionHandler();

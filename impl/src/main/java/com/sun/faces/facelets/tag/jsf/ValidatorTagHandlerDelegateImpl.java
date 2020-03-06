@@ -41,25 +41,19 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
     protected final ValidatorHandler owner;
     private final boolean wrapping;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ValidatorTagHandlerDelegateImpl(ValidatorHandler owner) {
 
         this.owner = owner;
         wrapping = isWrapping();
 
-
     }
-
 
     // ----------------------------------------- Methods from TagHandlerDelegate
 
-
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-    throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
         ComponentSupport.copyPassthroughAttributes(ctx, parent, owner.getTag());
         if (wrapping) {
@@ -70,35 +64,29 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
     }
 
-
     @Override
     public MetaRuleset createMetaRuleset(Class type) {
 
         Util.notNull("type", type);
         MetaRuleset m = new MetaRulesetImpl(owner.getTag(), type);
-        
+
         return m.ignore("binding").ignore("disabled").ignore("for");
 
     }
-    
 
     // -------------------------------------- Methods from AttachedObjectHandler
 
-
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent) {
 
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
         EditableValueHolder evh = (EditableValueHolder) parent;
         if (owner.isDisabled(ctx)) {
-            Set<String> disabledIds = (Set<String>)
-                  RequestStateManager.get(context, RequestStateManager.DISABLED_VALIDATORS);
+            Set<String> disabledIds = (Set<String>) RequestStateManager.get(context, RequestStateManager.DISABLED_VALIDATORS);
             if (disabledIds == null) {
                 disabledIds = new HashSet<>(3);
-                RequestStateManager.set(context,
-                                        RequestStateManager.DISABLED_VALIDATORS,
-                                        disabledIds);
+                RequestStateManager.set(context, RequestStateManager.DISABLED_VALIDATORS, disabledIds);
             }
             disabledIds.add(owner.getValidatorId(ctx));
             return;
@@ -120,45 +108,42 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
             throw new TagException(owner.getTag(), "No Validator was created");
         }
         owner.setAttributes(ctx, v);
-        
+
         Validator[] validators = evh.getValidators();
         boolean found = false;
-        
+
         for (Validator validator : validators) {
             if (validator.getClass().equals(v.getClass()) && !(v instanceof CdiValidator)) {
                 found = true;
                 break;
             }
         }
-        
+
         if (!found) {
             evh.addValidator(v);
         }
     }
-
 
     @Override
     public String getFor() {
 
         String result = null;
         TagAttribute attr = owner.getTagAttribute("for");
-        
+
         if (null != attr) {
             if (attr.isLiteral()) {
                 result = attr.getValue();
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                result = (String)attr.getValueExpression(ctx, String.class).getValue(ctx);
+                result = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
             }
         }
         return result;
-        
+
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected ComponentValidators.ValidatorInfo createValidatorInfo(FaceletContext ctx) {
 
@@ -166,25 +151,22 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
     }
 
-
     // --------------------------------------------------------- Private Methods
 
     // Tests whether the valiator tag is wrapping other tags.
     private boolean isWrapping() {
 
         // Would be nice if there was some easy way to determine whether
-        // we are a leaf handler.  However, even leaf handlers have a
+        // we are a leaf handler. However, even leaf handlers have a
         // non-null nextHandler - the CompilationUnit.LEAF instance.
         // We assume that if we've got a TagHandler or CompositeFaceletHandler
         // as our nextHandler, we are not a leaf.
-        return ((owner.getValidatorConfig().getNextHandler() instanceof TagHandler) ||
-                (owner.getValidatorConfig().getNextHandler() instanceof CompositeFaceletHandler));
-        
+        return ((owner.getValidatorConfig().getNextHandler() instanceof TagHandler)
+                || (owner.getValidatorConfig().getNextHandler() instanceof CompositeFaceletHandler));
+
     }
 
-
-    private void applyWrapping(FaceletContext ctx,
-                               UIComponent parent) throws IOException {
+    private void applyWrapping(FaceletContext ctx, UIComponent parent) throws IOException {
 
         ComponentValidators validators = ComponentValidators.getValidators(ctx.getFacesContext(), true);
         validators.pushValidatorInfo(createValidatorInfo(ctx));
@@ -193,9 +175,7 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
     }
 
-
-    private void applyNested(FaceletContext ctx,
-                             UIComponent parent) {
+    private void applyNested(FaceletContext ctx, UIComponent parent) {
 
         // only process if it's been created
         if (!ComponentHandler.isNew(parent)) {
@@ -207,38 +187,32 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         } else if (UIComponent.isCompositeComponent(parent)) {
             if (null == owner.getFor()) {
                 // PENDING(): I18N
-                throw new TagException(owner.getTag(),
-                                       "validator tags nested within composite components must have a non-null \"for\" attribute");
+                throw new TagException(owner.getTag(), "validator tags nested within composite components must have a non-null \"for\" attribute");
             }
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(owner);
         } else {
-            throw new TagException(owner.getTag(),
-                    "Parent not an instance of EditableValueHolder: " + parent);
+            throw new TagException(owner.getTag(), "Parent not an instance of EditableValueHolder: " + parent);
         }
 
     }
 
-    
     /**
      * Template method for creating a Validator instance
      * 
-     * @param ctx
-     *            FaceletContext to use
+     * @param ctx FaceletContext to use
      * @return a new Validator instance
      */
     private Validator createValidator(FaceletContext ctx) {
 
         String id = owner.getValidatorId(ctx);
         if (id == null) {
-            throw new TagException(
-                    owner.getTag(),
+            throw new TagException(owner.getTag(),
                     "A validator id was not specified. Typically the validator id is set in the constructor ValidateHandler(ValidatorConfig)");
         }
         return ctx.getFacesContext().getApplication().createValidator(id);
 
     }
-
 
 }

@@ -31,32 +31,25 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <B>ImageRenderer</B> is a class that handles the rendering of the graphic
- * ImageTag
+ * <B>ImageRenderer</B> is a class that handles the rendering of the graphic ImageTag
  *
  */
 
 public class ImageRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.GRAPHICIMAGE);
-
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.GRAPHICIMAGE);
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -65,40 +58,32 @@ public class ImageRenderer extends HtmlBasicRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
 
         writer.startElement("img", component);
         writeIdAttributeIfNecessary(context, writer, component);
         writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "value"), "value");
         // if we're writing XHTML and we have a null alt attribute
-        if (writer.getContentType().equals(RIConstants.XHTML_CONTENT_TYPE) &&
-            null == component.getAttributes().get("alt")) {
+        if (writer.getContentType().equals(RIConstants.XHTML_CONTENT_TYPE) && null == component.getAttributes().get("alt")) {
             // write out an empty alt
             writer.writeAttribute("alt", "", "alt");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
         String styleClass;
-        if (null != (styleClass = (String)
-              component.getAttributes().get("styleClass"))) {
+        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
         writer.endElement("img");
         if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER,
-                       "End encoding component " + component.getId());
+            logger.log(Level.FINER, "End encoding component " + component.getId());
         }
 
     }
 
     // --------------------------------------------------------- Private Methods
 
-
     // The testcase for this class is TestRenderers_2.java
 
 } // end of class ImageRenderer
-

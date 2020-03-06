@@ -78,8 +78,7 @@ import jakarta.faces.flow.builder.SwitchBuilder;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/flow-definition</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/flow-definition</code>.
  * </p>
  */
 public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor {
@@ -90,7 +89,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
      * <code>/faces-config/flow-definition</code>
      */
     private static final String FACES_FLOW_DEFINITION = "flow-definition";
-    
+
     private static final String flowDefinitionListKey = RIConstants.FACES_PREFIX + "FacesFlowDefinitions";
 
     public FacesFlowDefinitionConfigProcessor() {
@@ -195,9 +194,6 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     }
 
-
-    
-
     private void saveFlowDefinition(FacesContext context, URI definingDocumentURI, Document flowDefinitions) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
         List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
@@ -252,18 +248,16 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         @Override
         public void processEvent(SystemEvent event) throws AbortProcessingException {
             FacesContext facesContext = event.getFacesContext();
-            
+
             for (FlowDefinitionDocument flowDefinition : FacesFlowDefinitionConfigProcessor.this.getSavedFlowDefinitions(facesContext)) {
                 try {
-                    FacesFlowDefinitionConfigProcessor.this.processFacesFlowDefinitions(
-                        facesContext,
-                        flowDefinition.definingDocumentURI, 
-                        flowDefinition.flowDefinitions);
+                    FacesFlowDefinitionConfigProcessor.this.processFacesFlowDefinitions(facesContext, flowDefinition.definingDocumentURI,
+                            flowDefinition.flowDefinitions);
                 } catch (XPathExpressionException ex) {
                     throw new FacesException(ex);
                 }
             }
-            
+
             FacesFlowDefinitionConfigProcessor.this.clearSavedFlowDefinitions(facesContext);
         }
     }
@@ -275,10 +269,10 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         if (flowDefinitions.getLength() == 0) {
             return;
         }
-        
+
         Application application = context.getApplication();
         FlowHandler flowHandler = application.getFlowHandler();
-        
+
         if (flowHandler == null) {
             FlowHandlerFactory flowHandlerFactory = (FlowHandlerFactory) FactoryFinder.getFactory(FactoryFinder.FLOW_HANDLER_FACTORY);
             application.setFlowHandler(flowHandler = flowHandlerFactory.createFlowHandler(context));
@@ -292,7 +286,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         if (null != nameList && 1 < nameList.getLength()) {
             throw new XPathExpressionException("<faces-config> must have at most one <name> element.");
         }
-        
+
         if (null != nameList && 1 == nameList.getLength()) {
             nameStr = nameList.item(0).getNodeValue().trim();
             if (0 < nameStr.length()) {
@@ -702,7 +696,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     protected String getAttribute(Node node, String attrName) {
         notNull("flow definition element", node);
-        
+
         String result = null;
         NamedNodeMap attrs = node.getAttributes();
 
@@ -718,7 +712,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     protected String getIdAttribute(Node node) throws XPathExpressionException {
         notNull("flow definition element", node);
-        
+
         String result = null;
         NamedNodeMap attrs = node.getAttributes();
         String localName = "";

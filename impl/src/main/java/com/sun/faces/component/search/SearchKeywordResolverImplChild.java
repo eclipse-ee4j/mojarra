@@ -30,7 +30,7 @@ import jakarta.faces.component.search.UntargetableComponent;
 public class SearchKeywordResolverImplChild extends SearchKeywordResolver {
 
     private static final Pattern PATTERN = Pattern.compile("child\\((\\d+)\\)");
-    
+
     @Override
     public void resolve(SearchKeywordContext searchKeywordContext, UIComponent current, String keyword) {
 
@@ -40,10 +40,8 @@ public class SearchKeywordResolverImplChild extends SearchKeywordResolver {
 
             int childNumber = Integer.parseInt(matcher.group(1));
             if (childNumber + 1 > current.getChildCount()) {
-                throw new FacesException("Component with clientId \""
-                        + current.getClientId(searchKeywordContext.getSearchExpressionContext().getFacesContext()) 
-                        + "\" has fewer children as \"" + 
-                          childNumber + "\". Expression: \"" + keyword + "\"");
+                throw new FacesException("Component with clientId \"" + current.getClientId(searchKeywordContext.getSearchExpressionContext().getFacesContext())
+                        + "\" has fewer children as \"" + childNumber + "\". Expression: \"" + keyword + "\"");
             }
 
             List<UIComponent> list = current.getChildren();
@@ -59,20 +57,17 @@ public class SearchKeywordResolverImplChild extends SearchKeywordResolver {
             }
 
             if (count < childNumber) {
-                throw new FacesException("Component with clientId \""
-                        + current.getClientId(searchKeywordContext.getSearchExpressionContext().getFacesContext()) 
-                        + "\" has fewer children as \"" + 
-                          childNumber + "\". Expression: \"" + keyword + "\"");
+                throw new FacesException("Component with clientId \"" + current.getClientId(searchKeywordContext.getSearchExpressionContext().getFacesContext())
+                        + "\" has fewer children as \"" + childNumber + "\". Expression: \"" + keyword + "\"");
             }
         } else {
-            throw new FacesException(
-                    "Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"");
+            throw new FacesException("Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"");
         }
     }
 
     @Override
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
-        
+
         if (keyword.startsWith("child")) {
             try {
                 Matcher matcher = PATTERN.matcher(keyword);
@@ -83,5 +78,5 @@ public class SearchKeywordResolverImplChild extends SearchKeywordResolver {
         }
         return false;
     }
-    
+
 }

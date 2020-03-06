@@ -26,42 +26,39 @@ import jakarta.faces.validator.ValidatorException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
-
 /**
- * <p>A <strong class="changed_modified_2_0">Validator</strong>
- * implementation is a class that can perform validation (correctness
- * checks) on a {@link jakarta.faces.component.EditableValueHolder}.  Zero
- * or more <code>Validator</code>s can be associated with each {@link
- * jakarta.faces.component.EditableValueHolder} in the view, and are
- * called during the <em>Process Validations</em> phase of the request
- * processing lifecycle.</p>
+ * <p>
+ * A <strong class="changed_modified_2_0">Validator</strong> implementation is a class that can perform validation
+ * (correctness checks) on a {@link jakarta.faces.component.EditableValueHolder}. Zero or more <code>Validator</code>s
+ * can be associated with each {@link jakarta.faces.component.EditableValueHolder} in the view, and are called during
+ * the <em>Process Validations</em> phase of the request processing lifecycle.
+ * </p>
  * 
- * <p>Individual {@link Validator}s should examine the value and
- * component that they are passed, and throw a {@link ValidatorException}
- * containing a {@link jakarta.faces.application.FacesMessage}, documenting
- * any failures to conform to the required rules.
+ * <p>
+ * Individual {@link Validator}s should examine the value and component that they are passed, and throw a
+ * {@link ValidatorException} containing a {@link jakarta.faces.application.FacesMessage}, documenting any failures to
+ * conform to the required rules.
  * 
- * <p>For maximum generality, {@link Validator} instances may be
- * configurable based on properties of the {@link Validator} implementation
- * class.  For example, a range check {@link Validator} might support
- * configuration of the minimum and maximum values to be used.</p>
+ * <p>
+ * For maximum generality, {@link Validator} instances may be configurable based on properties of the {@link Validator}
+ * implementation class. For example, a range check {@link Validator} might support configuration of the minimum and
+ * maximum values to be used.
+ * </p>
  * 
- * <p>{@link Validator} implementations must have a zero-arguments
- * public constructor.  In addition, if the {@link Validator} class
- * wishes to have configuration property values saved and restored with
- * the view, the implementation must also implement {@link
- * jakarta.faces.component.StateHolder}.</p>
-
- * <p class="changed_added_2_0">If the class implementing
- * <code>Validator</code> has a {@link
- * jakarta.faces.application.ResourceDependency} annotation, the action
- * described in <code>ResourceDependency</code> must be taken when
- * {@link jakarta.faces.component.EditableValueHolder#addValidator} is
- * called.  If the class implementing <code>Validator</code> has a {@link
- * jakarta.faces.application.ResourceDependencies} annotation, the
- * action described in <code>ResourceDependencies</code> must be taken
- * when {@link jakarta.faces.component.EditableValueHolder#addValidator} 
- * is called.</p>
+ * <p>
+ * {@link Validator} implementations must have a zero-arguments public constructor. In addition, if the
+ * {@link Validator} class wishes to have configuration property values saved and restored with the view, the
+ * implementation must also implement {@link jakarta.faces.component.StateHolder}.
+ * </p>
+ * 
+ * <p class="changed_added_2_0">
+ * If the class implementing <code>Validator</code> has a {@link jakarta.faces.application.ResourceDependency}
+ * annotation, the action described in <code>ResourceDependency</code> must be taken when
+ * {@link jakarta.faces.component.EditableValueHolder#addValidator} is called. If the class implementing
+ * <code>Validator</code> has a {@link jakarta.faces.application.ResourceDependencies} annotation, the action described
+ * in <code>ResourceDependencies</code> must be taken when
+ * {@link jakarta.faces.component.EditableValueHolder#addValidator} is called.
+ * </p>
  * 
  * @param <T> The generic type of object value to validate.
  */
@@ -69,53 +66,42 @@ import jakarta.faces.context.FacesContext;
 public interface Validator<T> extends EventListener {
 
     /**
-     * <p>The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if
-     * the maximum or minimum value check fails, and both the maximum
-     * and minimum values for this validator have been set.  The message
-     * format string for this message may optionally include a
-     * <code>{0}</code> placeholder, which will be replaced by the
-     * configured minimum value, and a <code>{1}</code> placeholder,
-     * which will be replaced by the configured maximum value.</p>
+     * <p>
+     * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the maximum or minimum
+     * value check fails, and both the maximum and minimum values for this validator have been set. The message format
+     * string for this message may optionally include a <code>{0}</code> placeholder, which will be replaced by the
+     * configured minimum value, and a <code>{1}</code> placeholder, which will be replaced by the configured maximum value.
+     * </p>
      *
      * @deprecated Use {@link DoubleRangeValidator#NOT_IN_RANGE_MESSAGE_ID} or
-     *             {@link LongRangeValidator#NOT_IN_RANGE_MESSAGE_ID} instead.
+     * {@link LongRangeValidator#NOT_IN_RANGE_MESSAGE_ID} instead.
      */
-    public static final String NOT_IN_RANGE_MESSAGE_ID =
-         "jakarta.faces.validator.NOT_IN_RANGE";
+    public static final String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.NOT_IN_RANGE";
 
     /**
-     * <p><span class="changed_modified_2_0">Perform</span> the
-     * correctness checks implemented by this {@link Validator} against
-     * the specified {@link UIComponent}.  If any violations are found,
-     * a {@link ValidatorException} will be thrown containing the {@link
-     * jakarta.faces.application.FacesMessage} describing the failure.
+     * <p>
+     * <span class="changed_modified_2_0">Perform</span> the correctness checks implemented by this {@link Validator}
+     * against the specified {@link UIComponent}. If any violations are found, a {@link ValidatorException} will be thrown
+     * containing the {@link jakarta.faces.application.FacesMessage} describing the failure.
      *
      * <div class="changed_added_2_0">
      *
-     * <p>For a validator to be fully compliant with Version 2 and later
-     * of the specification, it must not fail validation on
-     * <code>null</code> or empty values unless it is specifically
-     * intended to address <code>null</code> or empty values.  An
-     * application-wide <code>&lt;context-param&gt;</code> is provided
-     * to allow validators designed for Jakarta Server Faces 1.2 to work
-     * with Jakarta Server Faces 2 and later. 
-     * The <code>jakarta.faces.VALIDATE_EMPTY_FIELDS</code>
-     * <code>&lt;context-param&gt;</code> must be set to
-     * <code>false</code> to enable this backwards compatibility
-     * behavior.</p>
+     * <p>
+     * For a validator to be fully compliant with Version 2 and later of the specification, it must not fail validation on
+     * <code>null</code> or empty values unless it is specifically intended to address <code>null</code> or empty values. An
+     * application-wide <code>&lt;context-param&gt;</code> is provided to allow validators designed for Jakarta Server Faces
+     * 1.2 to work with Jakarta Server Faces 2 and later. The <code>jakarta.faces.VALIDATE_EMPTY_FIELDS</code>
+     * <code>&lt;context-param&gt;</code> must be set to <code>false</code> to enable this backwards compatibility behavior.
+     * </p>
      *
      * </div>
      *
-     * @param context   FacesContext for the request we are processing
+     * @param context FacesContext for the request we are processing
      * @param component UIComponent we are checking for correctness
-     * @param value     the value to validate
-     * @throws ValidatorException   if validation fails
-     * @throws NullPointerException if <code>context</code>
-     *                              or <code>component</code> is <code>null</code>
+     * @param value the value to validate
+     * @throws ValidatorException if validation fails
+     * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
-    public void validate(FacesContext context,
-                         UIComponent component,
-                         T value) throws ValidatorException;
-
+    public void validate(FacesContext context, UIComponent component, T value) throws ValidatorException;
 
 }

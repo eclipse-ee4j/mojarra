@@ -58,31 +58,31 @@ import jakarta.faces.el.ValueBinding;
 import jakarta.faces.el.VariableResolver;
 
 public class ExpressionLanguage {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private static final ELContextListener[] EMPTY_EL_CTX_LIST_ARRAY = {};
-    
+
     private final ApplicationAssociate associate;
-    
+
     private volatile PropertyResolverImpl propertyResolver;
     private volatile VariableResolverImpl variableResolver;
-    
+
     private List<ELContextListener> elContextListeners;
     private CompositeELResolver elResolvers;
     private volatile FacesCompositeELResolver compositeELResolver;
 
     private Version version = new Version();
-    
+
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
         this.associate = applicationAssociate;
-        
+
         propertyResolver = new PropertyResolverImpl();
         variableResolver = new VariableResolverImpl();
         elContextListeners = new CopyOnWriteArrayList<>();
         elResolvers = new CompositeELResolver();
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#addELContextListener(jakarta.el.ELContextListener)
      */
@@ -108,17 +108,17 @@ public class ExpressionLanguage {
         if (!elContextListeners.isEmpty()) {
             return elContextListeners.toArray(new ELContextListener[elContextListeners.size()]);
         }
-            
+
         return EMPTY_EL_CTX_LIST_ARRAY;
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getELResolver()
      */
     public ELResolver getELResolver() {
 
         if (compositeELResolver == null) {
-            synchronized(this) {
+            synchronized (this) {
                 if (compositeELResolver == null) {
                     performOneTimeELInitialization();
                 }
@@ -149,27 +149,26 @@ public class ExpressionLanguage {
             elResolvers.add(resolver);
         }
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getExpressionFactory()
      */
     public ExpressionFactory getExpressionFactory() {
         return associate.getExpressionFactory();
     }
-    
+
     /**
-     * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext,
-     *      String, Class)
+     * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)
      */
     @SuppressWarnings("unchecked")
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
         return (T) getExpressionFactory().createValueExpression(context.getELContext(), expression, expectedType).getValue(context.getELContext());
     }
-    
+
     public CompositeELResolver getApplicationELResolvers() {
         return elResolvers;
     }
-    
+
     public FacesCompositeELResolver getCompositeELResolver() {
         return compositeELResolver;
     }
@@ -177,25 +176,14 @@ public class ExpressionLanguage {
     public void setCompositeELResolver(FacesCompositeELResolver compositeELResolver) {
         this.compositeELResolver = compositeELResolver;
     }
-    
-    
-    
-    
-    
+
     private void performOneTimeELInitialization() {
         if (compositeELResolver != null) {
             throw new IllegalStateException("Class invariant invalidated: " + "The Application instance's ELResolver is not null " + "and it should be.");
         }
         associate.initializeELResolverChains();
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
     /**
      * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
      */
@@ -207,7 +195,7 @@ public class ExpressionLanguage {
 
         return propertyResolver;
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
      */
@@ -233,7 +221,7 @@ public class ExpressionLanguage {
             LOGGER.fine(MessageFormat.format("set PropertyResolver Instance to ''{0}''", resolver.getClass().getName()));
         }
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#createMethodBinding(String, Class[])
      */
@@ -262,7 +250,7 @@ public class ExpressionLanguage {
         return new MethodBindingMethodExpressionAdapter(result);
 
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#createValueBinding(String)
      */
@@ -281,7 +269,7 @@ public class ExpressionLanguage {
         return new ValueBindingValueExpressionAdapter(result);
 
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getVariableResolver()
      */
@@ -293,7 +281,7 @@ public class ExpressionLanguage {
 
         return variableResolver;
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#setVariableResolver(jakarta.faces.el.VariableResolver)
      */
@@ -309,8 +297,5 @@ public class ExpressionLanguage {
             LOGGER.fine(MessageFormat.format("set VariableResolver Instance to ''{0}''", variableResolver.getClass().getName()));
         }
     }
-
-
-
 
 }

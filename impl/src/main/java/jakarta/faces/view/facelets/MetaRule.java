@@ -18,42 +18,47 @@
 package jakarta.faces.view.facelets;
 
 /**
- * <p class="changed_added_2_0">The root class of the abstraction that dictates
- * how attributes on a markup element in a Facelets VDL page are wired to the
- * Jakarta Server Faces API object instance associated with that element. The single method on
- * this interface, {@link #applyRule}, returns an encapsulation of the behavior
- * that actually does the work of handling the attribute and its value. There
- * are implementations of specific concrete subclasses of this class for all the
- * basic kinds of elements that appear in Facelets VDL pages: components,
- * non-components, and attached objects.</p>
+ * <p class="changed_added_2_0">
+ * The root class of the abstraction that dictates how attributes on a markup element in a Facelets VDL page are wired
+ * to the Jakarta Server Faces API object instance associated with that element. The single method on this interface,
+ * {@link #applyRule}, returns an encapsulation of the behavior that actually does the work of handling the attribute
+ * and its value. There are implementations of specific concrete subclasses of this class for all the basic kinds of
+ * elements that appear in Facelets VDL pages: components, non-components, and attached objects.
+ * </p>
  *
  * <div class="changed_added_2_0">
  *
  * <p>
- * For example, consider this markup:</p>
+ * For example, consider this markup:
+ * </p>
  *
-<pre><code>&lt;h:inputText value="#{user.userid}"
- * valueChangeListener="#{user.newUserId}" /&gt;</code></pre>
+ * <pre>
+ * <code>&lt;h:inputText value="#{user.userid}"
+ * valueChangeListener="#{user.newUserId}" /&gt;</code>
+ * </pre>
  *
  * <p>
- * Two <code>MetaRule</code> instances are involved in this example.</p>
+ * Two <code>MetaRule</code> instances are involved in this example.
+ * </p>
  *
  * <ol>
  *
- * <li><p>
- * The first has an <code>applyRule()</code> method that returns a
- * {@link Metadata} instance that, when its <code>applyMetada()</code> method is
- * called, dictates how the "value" attribute is processed: calling {@link
- * jakarta.faces.component.UIComponent#setValueExpression} on the
- * <code>UIComponent</code> instance associated with the
- * <code>&lt;h:inputText&gt;</code> element.</p></li>
+ * <li>
+ * <p>
+ * The first has an <code>applyRule()</code> method that returns a {@link Metadata} instance that, when its
+ * <code>applyMetada()</code> method is called, dictates how the "value" attribute is processed: calling
+ * {@link jakarta.faces.component.UIComponent#setValueExpression} on the <code>UIComponent</code> instance associated
+ * with the <code>&lt;h:inputText&gt;</code> element.
+ * </p>
+ * </li>
  *
- * <li><p>
- * The second has an <code>applyRule()</code> method that returns a
- * {@link Metadata} instance that, when its <code>applyMetadata()</code> method
- * is called, dictates how the "valueChangeListener" attribute is processed:
- * calling {@link
- * jakarta.faces.component.EditableValueHolder#addValueChangeListener}.</p></li>
+ * <li>
+ * <p>
+ * The second has an <code>applyRule()</code> method that returns a {@link Metadata} instance that, when its
+ * <code>applyMetadata()</code> method is called, dictates how the "valueChangeListener" attribute is processed: calling
+ * {@link jakarta.faces.component.EditableValueHolder#addValueChangeListener}.
+ * </p>
+ * </li>
  *
  * </ol>
  *
@@ -64,21 +69,18 @@ package jakarta.faces.view.facelets;
 public abstract class MetaRule {
 
     /**
-     * <p class="changed_added_2_0">Return an abstraction that takes appropriate
-     * action given the kind of rule represented by the argument
-     * <code>name</code>, in the context of this particular concrete subclass of
-     * <code>MetaRule</code>. The abstraction must encapsulate the value from
-     * the argument <code>attribute</code>.</p>
+     * <p class="changed_added_2_0">
+     * Return an abstraction that takes appropriate action given the kind of rule represented by the argument
+     * <code>name</code>, in the context of this particular concrete subclass of <code>MetaRule</code>. The abstraction must
+     * encapsulate the value from the argument <code>attribute</code>.
+     * </p>
      *
-     * @param name the name for this rule. This will generally be the name of a
-     * tag attribute in the VDL.
-     * @param attribute the name/value pair for this attribute on this
-     * particular instance of an element in the page.
-     * @param meta the <code>MetadataTarged</code> that can be used to discern
-     * what kind of action to encapsulate within the abstraction to be returned.
+     * @param name the name for this rule. This will generally be the name of a tag attribute in the VDL.
+     * @param attribute the name/value pair for this attribute on this particular instance of an element in the page.
+     * @param meta the <code>MetadataTarged</code> that can be used to discern what kind of action to encapsulate within the
+     * abstraction to be returned.
      * @return the {@link Metadata}.
      * @since 2.0
      */
-    public abstract Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta);
+    public abstract Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta);
 }

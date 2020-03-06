@@ -54,7 +54,6 @@ import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
 
-
 /**
  * The CDI extension.
  */
@@ -81,15 +80,10 @@ public class CdiExtension implements Extension {
      * @param beanManager the bean manager.
      */
     public void beforeBean(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
-        addAnnotatedTypes(beforeBeanDiscovery, beanManager, 
-            WebsocketUserManager.class, 
-            WebsocketSessionManager.class,
-            WebsocketChannelManager.class,
-            WebsocketChannelManager.ViewScope.class,
-            InjectionPointGenerator.class,
-            WebsocketPushContextProducer.class);
+        addAnnotatedTypes(beforeBeanDiscovery, beanManager, WebsocketUserManager.class, WebsocketSessionManager.class, WebsocketChannelManager.class,
+                WebsocketChannelManager.ViewScope.class, InjectionPointGenerator.class, WebsocketPushContextProducer.class);
     }
-    
+
     /**
      * After bean discovery.
      *
@@ -138,9 +132,7 @@ public class CdiExtension implements Extension {
 
         Optional<FacesDataModel> optionalFacesDataModel = getAnnotation(beanManager, event.getAnnotated(), FacesDataModel.class);
         if (optionalFacesDataModel.isPresent()) {
-            forClassToDataModelClass.put(
-                optionalFacesDataModel.get().forClass(),
-                (Class<? extends DataModel<?>>) event.getBean().getBeanClass());
+            forClassToDataModelClass.put(optionalFacesDataModel.get().forClass(), (Class<? extends DataModel<?>>) event.getBean().getBeanClass());
         }
     }
 
@@ -150,16 +142,17 @@ public class CdiExtension implements Extension {
             ProcessManagedBean<T> event = eventIn; // JDK8 u60 workaround
 
             getAnnotation(beanManager, event.getAnnotated(), FacesConfig.class)
-                    .ifPresent(config ->
-                            setAddBeansForJSFImplicitObjects(config.version().ordinal() >= JSF_2_3.ordinal()));
+                    .ifPresent(config -> setAddBeansForJSFImplicitObjects(config.version().ordinal() >= JSF_2_3.ordinal()));
 
             for (AnnotatedField<? super T> field : event.getAnnotatedBeanClass().getFields()) {
-                if (field.isAnnotationPresent(ManagedProperty.class) && (field.getBaseType() instanceof Class || field.getBaseType() instanceof ParameterizedType)) {
+                if (field.isAnnotationPresent(ManagedProperty.class)
+                        && (field.getBaseType() instanceof Class || field.getBaseType() instanceof ParameterizedType)) {
                     managedPropertyTargetTypes.add(field.getBaseType());
                 }
             }
         } catch (Exception e) {
-            // Log and continue; if we are not allowed somehow to investigate this ManagedBean, we're unlikely to be interested in it anyway
+            // Log and continue; if we are not allowed somehow to investigate this ManagedBean, we're unlikely to be interested in
+            // it anyway
             // but logging at SEVERE level is important
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("Exception happened when collecting: " + e);

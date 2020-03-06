@@ -17,23 +17,23 @@
 
 package jakarta.faces.view.facelets;
 
-
 /**
- * <p class="changed_added_2_0">An interface that allows other code 
- * to identify FaceletHandlers that correspond to component attributes.</p>
+ * <p class="changed_added_2_0">
+ * An interface that allows other code to identify FaceletHandlers that correspond to component attributes.
+ * </p>
  *
  * @since 2.0
  */
 public interface AttributeHandler {
 
     /**
-     * <p class="changed_added_2_0">Returns the resolved literal String value 
-     * of the attribute name after evaluating EL.</p>
+     * <p class="changed_added_2_0">
+     * Returns the resolved literal String value of the attribute name after evaluating EL.
+     * </p>
      *
      * @param ctx the <code>FaceletContext</code> for this view execution
      *
-     * @return the literal string value of the attribute name after
-     * evaluating EL
+     * @return the literal string value of the attribute name after evaluating EL
      */
     public String getAttributeName(FaceletContext ctx);
 }

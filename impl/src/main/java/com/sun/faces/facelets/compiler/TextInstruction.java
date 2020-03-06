@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.compiler;
 
-
 import com.sun.faces.facelets.el.ELText;
 
 import jakarta.faces.context.FacesContext;
@@ -30,7 +29,7 @@ import java.io.IOException;
 
 final class TextInstruction implements Instruction {
     private final ELText txt;
-    
+
     private final String alias;
 
     public TextInstruction(String alias, ELText txt) {
@@ -44,14 +43,13 @@ final class TextInstruction implements Instruction {
         try {
             ELContext elContext = context.getELContext();
             txt.writeText(out, elContext);
-            //out.writeText(txt.toString(elContext), null);
+            // out.writeText(txt.toString(elContext), null);
         } catch (ELException e) {
             throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
         } catch (IOException e) {
             throw new ELException(this.alias + ": " + e.getMessage(), e);
         }
     }
-
 
     @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx) {

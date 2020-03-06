@@ -21,14 +21,13 @@ import java.util.List;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p>This doesn't really do anything, aside from being a place holder
- * if the managed bean is configured incorrectly.</p>
+ * <p>
+ * This doesn't really do anything, aside from being a place holder if the managed bean is configured incorrectly.
+ * </p>
  */
 public class ErrorBean extends BeanBuilder {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ErrorBean(ManagedBeanInfo beanInfo, String message) {
         super(beanInfo);
@@ -38,7 +37,6 @@ public class ErrorBean extends BeanBuilder {
         queueMessage(message);
     }
 
-    
     public ErrorBean(ManagedBeanInfo beanInfo, List<String> messages) {
         super(beanInfo);
         if (messages == null || messages.isEmpty()) {
@@ -47,14 +45,12 @@ public class ErrorBean extends BeanBuilder {
         queueMessages(messages);
     }
 
-
     // ------------------------------------------------ Methods from BeanBuilder
 
     @Override
     synchronized void bake() {
         // no-op
     }
-
 
     @Override
     protected void buildBean(Object bean, FacesContext context) {

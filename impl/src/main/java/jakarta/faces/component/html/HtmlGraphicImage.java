@@ -29,14 +29,15 @@ import jakarta.faces.component.UIGraphic;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
 /**
- * <p>Represents an HTML <code>img</code> element, used to retrieve
- * and render a graphical image.</p>
- * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Image</code>".
- * This value can be changed by calling the <code>setRendererType()</code> method.</p>
+ * <p>
+ * Represents an HTML <code>img</code> element, used to retrieve and render a graphical image.
+ * </p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Image</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
 public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder {
-
-
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -45,50 +46,39 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         setRendererType("jakarta.faces.Image");
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlGraphicImage";
 
-
     protected enum PropertyKeys {
-        alt,
-        dir,
-        height,
-        ismap,
-        lang,
-        longdesc,
-        onclick,
-        ondblclick,
-        onkeydown,
-        onkeypress,
-        onkeyup,
-        onmousedown,
-        onmousemove,
-        onmouseout,
-        onmouseover,
-        onmouseup,
-        role,
-        style,
-        styleClass,
-        title,
-        usemap,
-        width,
-;
+        alt, dir, height, ismap, lang, longdesc, onclick, ondblclick, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover,
+        onmouseup, role, style, styleClass, title, usemap, width,;
+
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
-}
+    }
 
     /**
-     * <p>Return the value of the <code>alt</code> property.</p>
+     * <p>
+     * Return the value of the <code>alt</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Alternate textual description of the
-     * element rendered by this component.
+     * <p>
+     * Contents: Alternate textual description of the element rendered by this component.
      */
     public java.lang.String getAlt() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.alt);
@@ -96,7 +86,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>alt</code> property.</p>
+     * <p>
+     * Set the value of the <code>alt</code> property.
+     * </p>
+     * 
      * @param alt the new property value
      */
     public void setAlt(java.lang.String alt) {
@@ -104,14 +97,16 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("alt", alt);
     }
 
-
     /**
-     * <p>Return the value of the <code>dir</code> property.</p>
+     * <p>
+     * Return the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Direction indication for text that does not inherit directionality.
-     * Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).
-     * These attributes are case sensitive when rendering to XHTML, so
-     * care must be taken to have the correct case.
+     * <p>
+     * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
+     * and "RTL" (right-to-left). These attributes are case sensitive when rendering to XHTML, so care must be taken to have
+     * the correct case.
      */
     public java.lang.String getDir() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.dir);
@@ -119,7 +114,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>dir</code> property.</p>
+     * <p>
+     * Set the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @param dir the new property value
      */
     public void setDir(java.lang.String dir) {
@@ -127,11 +125,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("dir", dir);
     }
 
-
     /**
-     * <p>Return the value of the <code>height</code> property.</p>
+     * <p>
+     * Return the value of the <code>height</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Override for the height of this image.
+     * <p>
+     * Contents: Override for the height of this image.
      */
     public java.lang.String getHeight() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.height);
@@ -139,7 +140,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>height</code> property.</p>
+     * <p>
+     * Set the value of the <code>height</code> property.
+     * </p>
+     * 
      * @param height the new property value
      */
     public void setHeight(java.lang.String height) {
@@ -147,15 +151,16 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("height", height);
     }
 
-
     /**
-     * <p>Return the value of the <code>ismap</code> property.</p>
+     * <p>
+     * Return the value of the <code>ismap</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Flag indicating that this image is to be used as a server side
-     * image map.  Such an image must be enclosed within a hyperlink
-     * ("a").  A value of false causes no attribute to be rendered,
-     * while a value of true causes the attribute to be rendered as
-     * ismap="ismap".
+     * <p>
+     * Contents: Flag indicating that this image is to be used as a server side image map. Such an image must be enclosed
+     * within a hyperlink ("a"). A value of false causes no attribute to be rendered, while a value of true causes the
+     * attribute to be rendered as ismap="ismap".
      */
     public boolean isIsmap() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.ismap, false);
@@ -163,19 +168,24 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>ismap</code> property.</p>
+     * <p>
+     * Set the value of the <code>ismap</code> property.
+     * </p>
+     * 
      * @param ismap the new property value
      */
     public void setIsmap(boolean ismap) {
         getStateHelper().put(PropertyKeys.ismap, ismap);
     }
 
-
     /**
-     * <p>Return the value of the <code>lang</code> property.</p>
+     * <p>
+     * Return the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Code describing the language used in the generated markup
-     * for this component.
+     * <p>
+     * Contents: Code describing the language used in the generated markup for this component.
      */
     public java.lang.String getLang() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.lang);
@@ -183,7 +193,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>lang</code> property.</p>
+     * <p>
+     * Set the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @param lang the new property value
      */
     public void setLang(java.lang.String lang) {
@@ -191,12 +204,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("lang", lang);
     }
 
-
     /**
-     * <p>Return the value of the <code>longdesc</code> property.</p>
+     * <p>
+     * Return the value of the <code>longdesc</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: URI to a long description of the image
-     * represented by this element.
+     * <p>
+     * Contents: URI to a long description of the image represented by this element.
      */
     public java.lang.String getLongdesc() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.longdesc);
@@ -204,7 +219,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>longdesc</code> property.</p>
+     * <p>
+     * Set the value of the <code>longdesc</code> property.
+     * </p>
+     * 
      * @param longdesc the new property value
      */
     public void setLongdesc(java.lang.String longdesc) {
@@ -212,12 +230,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("longdesc", longdesc);
     }
 
-
     /**
-     * <p>Return the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Return the value of the <code>onclick</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * clicked over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is clicked over this element.
      */
     public java.lang.String getOnclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onclick);
@@ -225,7 +245,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>onclick</code> property.
+     * </p>
+     * 
      * @param onclick the new property value
      */
     public void setOnclick(java.lang.String onclick) {
@@ -233,12 +256,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onclick", onclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Return the value of the <code>ondblclick</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * double clicked over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is double clicked over this element.
      */
     public java.lang.String getOndblclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.ondblclick);
@@ -246,7 +271,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>ondblclick</code> property.
+     * </p>
+     * 
      * @param ondblclick the new property value
      */
     public void setOndblclick(java.lang.String ondblclick) {
@@ -254,12 +282,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("ondblclick", ondblclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeydown</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * pressed down over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is pressed down over this element.
      */
     public java.lang.String getOnkeydown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeydown);
@@ -267,7 +297,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeydown</code> property.
+     * </p>
+     * 
      * @param onkeydown the new property value
      */
     public void setOnkeydown(java.lang.String onkeydown) {
@@ -275,12 +308,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onkeydown", onkeydown);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeypress</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * pressed and released over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is pressed and released over this element.
      */
     public java.lang.String getOnkeypress() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeypress);
@@ -288,7 +323,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeypress</code> property.
+     * </p>
+     * 
      * @param onkeypress the new property value
      */
     public void setOnkeypress(java.lang.String onkeypress) {
@@ -296,12 +334,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onkeypress", onkeypress);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeyup</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * released over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is released over this element.
      */
     public java.lang.String getOnkeyup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeyup);
@@ -309,7 +349,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeyup</code> property.
+     * </p>
+     * 
      * @param onkeyup the new property value
      */
     public void setOnkeyup(java.lang.String onkeyup) {
@@ -317,12 +360,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onkeyup", onkeyup);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmousedown</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * pressed down over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is pressed down over this element.
      */
     public java.lang.String getOnmousedown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousedown);
@@ -330,7 +375,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousedown</code> property.
+     * </p>
+     * 
      * @param onmousedown the new property value
      */
     public void setOnmousedown(java.lang.String onmousedown) {
@@ -338,12 +386,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onmousedown", onmousedown);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmousemove</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved within this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved within this element.
      */
     public java.lang.String getOnmousemove() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousemove);
@@ -351,7 +401,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousemove</code> property.
+     * </p>
+     * 
      * @param onmousemove the new property value
      */
     public void setOnmousemove(java.lang.String onmousemove) {
@@ -359,12 +412,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onmousemove", onmousemove);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseout</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved away from this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved away from this element.
      */
     public java.lang.String getOnmouseout() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseout);
@@ -372,7 +427,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseout</code> property.
+     * </p>
+     * 
      * @param onmouseout the new property value
      */
     public void setOnmouseout(java.lang.String onmouseout) {
@@ -380,12 +438,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onmouseout", onmouseout);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseover</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved onto this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved onto this element.
      */
     public java.lang.String getOnmouseover() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseover);
@@ -393,7 +453,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseover</code> property.
+     * </p>
+     * 
      * @param onmouseover the new property value
      */
     public void setOnmouseover(java.lang.String onmouseover) {
@@ -401,12 +464,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onmouseover", onmouseover);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseup</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * released over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is released over this element.
      */
     public java.lang.String getOnmouseup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseup);
@@ -414,7 +479,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseup</code> property.
+     * </p>
+     * 
      * @param onmouseup the new property value
      */
     public void setOnmouseup(java.lang.String onmouseup) {
@@ -422,24 +490,26 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("onmouseup", onmouseup);
     }
 
-
     /**
-     * <p>Return the value of the <code>role</code> property.</p>
-     * @return the property value
-     * <p>Contents: <p class="changed_added_2_2">Per the WAI-ARIA spec and its
-     * relationship to HTML5 (Section title ARIA Role Attriubute),
-     * every HTML element may have a "role" attribute whose value
-     * must be passed through unmodified on the element on which it
-     * is declared in the final rendered markup.  The attribute, if
-     * specified, must have a value that is a string literal that is,
-     * or an EL Expression that evaluates to, a set of
-     * space-separated tokens representing the various WAI-ARIA roles
-     * that the element belongs to.
+     * <p>
+     * Return the value of the <code>role</code> property.
      * </p>
      * 
-     * <p class="changed_added_2_2">It is the page author's
-     * responsibility to ensure that the user agent is capable of
-     * correctly interpreting the value of this attribute.</p>
+     * @return the property value
+     * <p>
+     * Contents:
+     * <p class="changed_added_2_2">
+     * Per the WAI-ARIA spec and its relationship to HTML5 (Section title ARIA Role Attriubute), every HTML element may have
+     * a "role" attribute whose value must be passed through unmodified on the element on which it is declared in the final
+     * rendered markup. The attribute, if specified, must have a value that is a string literal that is, or an EL Expression
+     * that evaluates to, a set of space-separated tokens representing the various WAI-ARIA roles that the element belongs
+     * to.
+     * </p>
+     * 
+     * <p class="changed_added_2_2">
+     * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
+     * of this attribute.
+     * </p>
      */
     public java.lang.String getRole() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.role);
@@ -447,7 +517,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>role</code> property.</p>
+     * <p>
+     * Set the value of the <code>role</code> property.
+     * </p>
+     * 
      * @param role the new property value
      */
     public void setRole(java.lang.String role) {
@@ -455,11 +528,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("role", role);
     }
 
-
     /**
-     * <p>Return the value of the <code>style</code> property.</p>
+     * <p>
+     * Return the value of the <code>style</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style(s) to be applied when this component is rendered.
+     * <p>
+     * Contents: CSS style(s) to be applied when this component is rendered.
      */
     public java.lang.String getStyle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.style);
@@ -467,7 +543,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>style</code> property.</p>
+     * <p>
+     * Set the value of the <code>style</code> property.
+     * </p>
+     * 
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -475,13 +554,15 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("style", style);
     }
 
-
     /**
-     * <p>Return the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Space-separated list of CSS style class(es) to be applied when
-     * this element is rendered.  This value must be passed through
-     * as the "class" attribute on generated markup.
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
+     * passed through as the "class" attribute on generated markup.
      */
     public java.lang.String getStyleClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.styleClass);
@@ -489,19 +570,24 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>title</code> property.</p>
+     * <p>
+     * Return the value of the <code>title</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Advisory title information about markup elements generated
-     * for this component.
+     * <p>
+     * Contents: Advisory title information about markup elements generated for this component.
      */
     public java.lang.String getTitle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.title);
@@ -509,7 +595,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>title</code> property.</p>
+     * <p>
+     * Set the value of the <code>title</code> property.
+     * </p>
+     * 
      * @param title the new property value
      */
     public void setTitle(java.lang.String title) {
@@ -517,12 +606,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("title", title);
     }
 
-
     /**
-     * <p>Return the value of the <code>usemap</code> property.</p>
+     * <p>
+     * Return the value of the <code>usemap</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: The name of a client side image map (an HTML "map"
-     * element) for which this element provides the image.
+     * <p>
+     * Contents: The name of a client side image map (an HTML "map" element) for which this element provides the image.
      */
     public java.lang.String getUsemap() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.usemap);
@@ -530,7 +621,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>usemap</code> property.</p>
+     * <p>
+     * Set the value of the <code>usemap</code> property.
+     * </p>
+     * 
      * @param usemap the new property value
      */
     public void setUsemap(java.lang.String usemap) {
@@ -538,11 +632,14 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("usemap", usemap);
     }
 
-
     /**
-     * <p>Return the value of the <code>width</code> property.</p>
+     * <p>
+     * Return the value of the <code>width</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Override for the width of this image.
+     * <p>
+     * Contents: Override for the width of this image.
      */
     public java.lang.String getWidth() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.width);
@@ -550,7 +647,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     }
 
     /**
-     * <p>Set the value of the <code>width</code> property.</p>
+     * <p>
+     * Set the value of the <code>width</code> property.
+     * </p>
+     * 
      * @param width the new property value
      */
     public void setWidth(java.lang.String width) {
@@ -558,16 +658,16 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         handleAttribute("width", width);
     }
 
-
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("click","dblclick","keydown","keypress","keyup","mousedown","mousemove","mouseout","mouseover","mouseup"));
+    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
+            Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
 
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;    }
-
+        return EVENT_NAMES;
+    }
 
     public String getDefaultEventName() {
-        return null;    }
-
+        return null;
+    }
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");

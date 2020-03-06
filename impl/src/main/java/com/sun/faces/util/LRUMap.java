@@ -19,12 +19,10 @@ package com.sun.faces.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
 /**
- * A special implementation of {@link java.util.LinkedHashMap} to provide
- * LRU functionality.
+ * A special implementation of {@link java.util.LinkedHashMap} to provide LRU functionality.
  */
-public class LRUMap<K,V> extends LinkedHashMap<K,V> {
+public class LRUMap<K, V> extends LinkedHashMap<K, V> {
 
     private static final long serialVersionUID = -7137951139094651602L;
     private int maxCapacity;
@@ -33,15 +31,15 @@ public class LRUMap<K,V> extends LinkedHashMap<K,V> {
 
     public LRUMap(int maxCapacity) {
         super(maxCapacity, 1.0f, true);
-        this.maxCapacity = maxCapacity;        
+        this.maxCapacity = maxCapacity;
     }
 
     // ---------------------------------------------- Methods from LinkedHashMap
 
     @Override
     protected boolean removeEldestEntry(Map.Entry eldest) {
-        return (size() > maxCapacity);   
+        return (size() > maxCapacity);
     }
-    
+
     // TEST: com.sun.faces.TestLRUMap_local
 }

@@ -16,24 +16,25 @@
 
 package jakarta.faces.el;
 
-
 import jakarta.faces.FacesException;
 
-
 /**
- * <p>An exception reporting an error that occurred during the evaluation
- * of an expression in a {@link MethodBinding} or {@link ValueBinding}.</p>
+ * <p>
+ * An exception reporting an error that occurred during the evaluation of an expression in a {@link MethodBinding} or
+ * {@link ValueBinding}.
+ * </p>
  *
  * @deprecated This has been replaced by {@link jakarta.el.ELException}.
  */
 
 public class EvaluationException extends FacesException {
 
-
     private static final long serialVersionUID = 6143696299509378423L;
 
     /**
-     * <p>Construct a new exception with no detail message or root cause.</p>
+     * <p>
+     * Construct a new exception with no detail message or root cause.
+     * </p>
      */
     public EvaluationException() {
 
@@ -41,10 +42,10 @@ public class EvaluationException extends FacesException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * no root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and no root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      */
@@ -54,10 +55,10 @@ public class EvaluationException extends FacesException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified root cause.  The detail
-     * message will be set to <code>(cause == null ? null :
+     * <p>
+     * Construct a new exception with the specified root cause. The detail message will be set to
+     * <code>(cause == null ? null :
      * cause.toString()</code>
      *
      * @param cause The root cause for this exception
@@ -68,10 +69,10 @@ public class EvaluationException extends FacesException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      * @param cause The root cause for this exception
@@ -81,7 +82,5 @@ public class EvaluationException extends FacesException {
         super(message, cause);
 
     }
-
-
 
 }

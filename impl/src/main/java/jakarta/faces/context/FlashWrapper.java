@@ -26,15 +26,16 @@ import jakarta.faces.context.Flash;
 import jakarta.faces.FacesWrapper;
 
 /**
- * <p class="changed_added_2_2"><span class="changed_modified_2_3">Provides</span>
- * a simple implementation of
- * {@link Flash} that can be subclassed by developers wishing
- * to provide specialized behavior to an existing {@link
- * Flash} instance.  The default implementation of all methods
- * is to call through to the wrapped {@link Flash}.</p>
+ * <p class="changed_added_2_2">
+ * <span class="changed_modified_2_3">Provides</span> a simple implementation of {@link Flash} that can be subclassed by
+ * developers wishing to provide specialized behavior to an existing {@link Flash} instance. The default implementation
+ * of all methods is to call through to the wrapped {@link Flash}.
+ * </p>
  *
- * <p class="changed_added_2_3">Usage: extend this class and push the implementation being wrapped to the
- * constructor and use {@link #getWrapped} to access the instance being wrapped.</p>
+ * <p class="changed_added_2_3">
+ * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
+ * access the instance being wrapped.
+ * </p>
  *
  * @since 2.2
  */
@@ -51,9 +52,10 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_3">If this flash has been decorated,
-     * the implementation doing the decorating should push the implementation being wrapped to this constructor.
-     * The {@link #getWrapped()} will then return the implementation being wrapped.</p>
+     * <p class="changed_added_2_3">
+     * If this flash has been decorated, the implementation doing the decorating should push the implementation being
+     * wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
+     * </p>
      *
      * @param wrapped The implementation being wrapped.
      * @since 2.3
@@ -68,9 +70,10 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#doPostPhaseActions(FacesContext)} on the
-     * wrapped {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#doPostPhaseActions(FacesContext)} on the wrapped
+     * {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -81,9 +84,10 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#doPrePhaseActions(FacesContext)} on the
-     * wrapped {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#doPrePhaseActions(FacesContext)} on the wrapped
+     * {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -93,9 +97,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#isKeepMessages()} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#isKeepMessages()} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -105,9 +109,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#isRedirect()} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#isRedirect()} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -117,9 +121,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#keep(String)} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#keep(String)} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -129,9 +133,10 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#putNow(String, Object)} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#putNow(String, Object)} on the wrapped {@link Flash}
+     * object.
+     * </p>
      *
      * @since 2.2
      */
@@ -141,9 +146,10 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#setKeepMessages(boolean)} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#setKeepMessages(boolean)} on the wrapped {@link Flash}
+     * object.
+     * </p>
      *
      * @since 2.2
      */
@@ -153,9 +159,10 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#setRedirect(boolean)} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#setRedirect(boolean)} on the wrapped {@link Flash}
+     * object.
+     * </p>
      *
      * @since 2.2
      */
@@ -165,9 +172,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#clear()} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#clear()} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -177,9 +184,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#containsKey(Object)} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#containsKey(Object)} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -189,9 +196,10 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#containsValue(Object)} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#containsValue(Object)} on the wrapped {@link Flash}
+     * object.
+     * </p>
      *
      * @since 2.2
      */
@@ -201,9 +209,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#entrySet()} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#entrySet()} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -213,9 +221,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#get(Object)} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#get(Object)} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -225,9 +233,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#isEmpty()} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#isEmpty()} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -237,9 +245,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#keySet()} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#keySet()} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -249,9 +257,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#put} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#put} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -261,9 +269,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#putAll(Map)} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#putAll(Map)} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -273,9 +281,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#remove(Object)} on the wrapped
-     * {@link Flash} object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#remove(Object)} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -285,9 +293,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#size()} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#size()} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */
@@ -297,9 +305,9 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash> 
     }
 
     /**
-     * <p class="changed_added_2_2">The default behavior of this method
-     * is to call {@link Flash#values()} on the wrapped {@link Flash}
-     * object.</p>
+     * <p class="changed_added_2_2">
+     * The default behavior of this method is to call {@link Flash#values()} on the wrapped {@link Flash} object.
+     * </p>
      *
      * @since 2.2
      */

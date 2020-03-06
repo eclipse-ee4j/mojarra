@@ -48,30 +48,16 @@ public class InterfaceHandler extends TagHandlerImpl {
 
     private final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
-    private static final String[] ATTRIBUTES_DEV = {
-          "displayName",
-          "expert",
-          "hidden",
-          "preferred",
-          "shortDescription",
-          "name",
-          "componentType"
-    };
+    private static final String[] ATTRIBUTES_DEV = { "displayName", "expert", "hidden", "preferred", "shortDescription", "name", "componentType" };
 
-
-
-    private static final PropertyHandlerManager INTERFACE_HANDLERS =
-          PropertyHandlerManager.getInstance(ATTRIBUTES_DEV);
-
-
+    private static final PropertyHandlerManager INTERFACE_HANDLERS = PropertyHandlerManager.getInstance(ATTRIBUTES_DEV);
 
     public final static String Name = "interface";
 
-    
     public InterfaceHandler(TagConfig config) {
         super(config);
     }
-    
+
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         FacesContext context = ctx.getFacesContext();
@@ -86,15 +72,13 @@ public class InterfaceHandler extends TagHandlerImpl {
             }
         }
     }
-    
+
     private void validateComponent(FacesContext context, UIComponent ccParent) throws TagException {
         UIComponent cc = ccParent.getParent();
         if (null == cc) {
             String clientId = ccParent.getClientId(context);
 
-            throw new TagException(tag, MessageUtils.getExceptionMessageString(
-                    MessageUtils.COMPONENT_NOT_FOUND_ERROR_MESSAGE_ID,
-                    clientId + ".getParent()"));
+            throw new TagException(tag, MessageUtils.getExceptionMessageString(MessageUtils.COMPONENT_NOT_FOUND_ERROR_MESSAGE_ID, clientId + ".getParent()"));
         }
         Tag usingPageTag = ComponentSupport.getTagForComponent(context, cc);
         Map<String, Object> attrs = cc.getAttributes();
@@ -103,8 +87,7 @@ public class InterfaceHandler extends TagHandlerImpl {
         if (null == componentMetadata) {
             String clientId = ccParent.getClientId(context);
 
-            throw new TagException(usingPageTag, MessageUtils.getExceptionMessageString(
-                    MessageUtils.MISSING_COMPONENT_METADATA, clientId));
+            throw new TagException(usingPageTag, MessageUtils.getExceptionMessageString(MessageUtils.MISSING_COMPONENT_METADATA, clientId));
         }
 
         PropertyDescriptor[] declaredAttributes = componentMetadata.getPropertyDescriptors();
@@ -137,7 +120,7 @@ public class InterfaceHandler extends TagHandlerImpl {
                     // Special case: nested composite components
                     if (!found) {
                         // Check if an EL expression was given.
-                        found = (null!=cc.getValueExpression(key));
+                        found = (null != cc.getValueExpression(key));
                     }
                 }
                 if (!found) {
@@ -151,15 +134,14 @@ public class InterfaceHandler extends TagHandlerImpl {
             }
         }
         if (null != buf) {
-            attrMessage = MessageUtils.getExceptionMessageString(MessageUtils.MISSING_COMPONENT_ATTRIBUTE_VALUE,
-                    buf.toString());
+            attrMessage = MessageUtils.getExceptionMessageString(MessageUtils.MISSING_COMPONENT_ATTRIBUTE_VALUE, buf.toString());
         }
 
         buf = null;
 
         // Traverse the declared facets
-        Map<String, PropertyDescriptor> declaredFacets =
-                (Map<String, PropertyDescriptor>) componentMetadata.getBeanDescriptor().getValue(UIComponent.FACETS_KEY);
+        Map<String, PropertyDescriptor> declaredFacets = (Map<String, PropertyDescriptor>) componentMetadata.getBeanDescriptor()
+                .getValue(UIComponent.FACETS_KEY);
         if (null != declaredFacets) {
             for (PropertyDescriptor cur : declaredFacets.values()) {
                 required = false;
@@ -184,31 +166,27 @@ public class InterfaceHandler extends TagHandlerImpl {
             }
         }
         if (null != buf) {
-            facetMessage = MessageUtils.getExceptionMessageString(MessageUtils.MISSING_COMPONENT_FACET,
-                    buf.toString());
+            facetMessage = MessageUtils.getExceptionMessageString(MessageUtils.MISSING_COMPONENT_FACET, buf.toString());
         }
 
         if (0 < attrMessage.length() || 0 < facetMessage.length()) {
             throw new TagException(usingPageTag, attrMessage + " " + facetMessage);
         }
     }
-    
-    @SuppressWarnings({"unchecked"})
+
+    @SuppressWarnings({ "unchecked" })
     private void imbueComponentWithMetadata(FaceletContext ctx, UIComponent parent) {
         // only process if it's been created
-        if (null == parent || 
-            (null == (parent = parent.getParent())) ||
-            !(ComponentHandler.isNew(parent))) {
+        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
             return;
         }
-        
+
         Map<String, Object> attrs = parent.getAttributes();
 
-        CompositeComponentBeanInfo componentBeanInfo =
-              (CompositeComponentBeanInfo) attrs.get(UIComponent.BEANINFO_KEY);
+        CompositeComponentBeanInfo componentBeanInfo = (CompositeComponentBeanInfo) attrs.get(UIComponent.BEANINFO_KEY);
 
         if (componentBeanInfo == null) {
-        
+
             componentBeanInfo = new CompositeComponentBeanInfo();
             attrs.put(UIComponent.BEANINFO_KEY, componentBeanInfo);
             BeanDescriptor componentDescriptor = new BeanDescriptor(parent.getClass());
@@ -220,24 +198,18 @@ public class InterfaceHandler extends TagHandlerImpl {
                 String attributeName = tagAttribute.getLocalName();
                 PropertyHandler handler = INTERFACE_HANDLERS.getHandler(ctx, attributeName);
                 if (handler != null) {
-                    handler.apply(ctx,
-                                  attributeName,
-                                  componentDescriptor,
-                                  tagAttribute);
+                    handler.apply(ctx, attributeName, componentDescriptor, tagAttribute);
                 }
 
             }
 
-            List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>)
-              componentDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
+            List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>) componentDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
             if (null == targetList) {
                 targetList = new ArrayList<>();
-                componentDescriptor.setValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY,
-                        targetList);
+                componentDescriptor.setValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY, targetList);
             }
 
-            Resource componentResource =
-                    (Resource) attrs.get(Resource.COMPONENT_RESOURCE_KEY);
+            Resource componentResource = (Resource) attrs.get(Resource.COMPONENT_RESOURCE_KEY);
             if (null == componentResource) {
                 throw new NullPointerException("Unable to find Resource for composite component");
             }

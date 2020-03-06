@@ -23,18 +23,15 @@ import java.io.ObjectStreamClass;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * An ObjectInputStream that can deserialize objects relative to the current
- * application's class loader.  In particular, this class works around 
- * deserialization problems when the JSF JARs are shared (i.e. the 
- * classloader has no access to application objects).
+ * An ObjectInputStream that can deserialize objects relative to the current application's class loader. In particular,
+ * this class works around deserialization problems when the JSF JARs are shared (i.e. the classloader has no access to
+ * application objects).
  */
 public class ApplicationObjectInputStream extends ObjectInputStream {
 
     // Taken from ObjectInputStream to resolve primitive types
-    private static final Map<String,Class<?>> PRIMITIVE_CLASSES =
-          new HashMap<>(9, 1.0F);
+    private static final Map<String, Class<?>> PRIMITIVE_CLASSES = new HashMap<>(9, 1.0F);
 
     static {
         PRIMITIVE_CLASSES.put("boolean", boolean.class);
@@ -47,31 +44,27 @@ public class ApplicationObjectInputStream extends ObjectInputStream {
         PRIMITIVE_CLASSES.put("double", double.class);
         PRIMITIVE_CLASSES.put("void", void.class);
     }
-   
-    public ApplicationObjectInputStream() throws IOException, 
-            SecurityException {
+
+    public ApplicationObjectInputStream() throws IOException, SecurityException {
         super();
     }
-    
+
     public ApplicationObjectInputStream(InputStream in) throws IOException {
         super(in);
-    } 
+    }
 
     @Override
-    protected Class<?> resolveClass(ObjectStreamClass desc)
-    throws IOException, ClassNotFoundException {
-        
-        // When the container is about to call code associated with a 
-        // particular web application, it sets the context classloader to the 
-        // web app class loader. We make use of that here to locate any classes 
-        // that the UIComponent may hold references to.  This won't cause a 
-        // problem to locate classes in the system class loader because 
+    protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+
+        // When the container is about to call code associated with a
+        // particular web application, it sets the context classloader to the
+        // web app class loader. We make use of that here to locate any classes
+        // that the UIComponent may hold references to. This won't cause a
+        // problem to locate classes in the system class loader because
         // class loaders can look up the chain and not down the chain.
         String name = desc.getName();
         try {
-            return Class.forName(name,
-                                 true,
-                                 Thread.currentThread().getContextClassLoader());
+            return Class.forName(name, true, Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException cnfe) {
             Class<?> c = PRIMITIVE_CLASSES.get(name);
             if (c != null) {
@@ -81,5 +74,4 @@ public class ApplicationObjectInputStream extends ObjectInputStream {
         }
 
     }
-} 
-    
+}

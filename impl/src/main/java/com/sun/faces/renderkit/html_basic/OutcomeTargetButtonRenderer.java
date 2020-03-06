@@ -31,16 +31,12 @@ import java.io.IOException;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
-    private static final Attribute[] ATTRIBUTES =
-        AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
-
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
     // --------------------------------------------------- Methods from Renderer
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-    throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
         if (!shouldEncode(component)) {
@@ -48,7 +44,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
 
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
@@ -57,8 +53,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         if (imageSrc != null) {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
-        }
-        else {
+        } else {
             writer.writeAttribute("type", "button", "type");
         }
 
@@ -71,8 +66,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
                 // QUESTION should this only be added in development mode?
                 label += MessageUtils.getExceptionMessageString(MessageUtils.OUTCOME_TARGET_BUTTON_NO_MATCH);
                 writer.writeAttribute("disabled", "true", "disabled");
-            }
-            else {
+            } else {
                 String hrefVal = getEncodedTargetURL(context, component, navCase);
                 hrefVal += getFragment(component);
                 writer.writeAttribute("onclick", getOnclick(component, hrefVal), "onclick");
@@ -89,28 +83,24 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
 
-        if(component.getChildCount() == 0) {
+        if (component.getChildCount() == 0) {
             writer.endElement("input");
         }
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-    throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
-        if(component.getChildCount() > 0) {
+        if (component.getChildCount() > 0) {
             context.getResponseWriter().endElement("input");
         }
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected String getOnclick(UIComponent component, String targetURI) {
 
@@ -121,8 +111,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             if (onclick.length() > 0 && !onclick.endsWith(";")) {
                 onclick += "; ";
             }
-        }
-        else {
+        } else {
             onclick = "";
         }
 
@@ -133,7 +122,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         onclick += "return false;";
 
         return onclick;
-        
+
     }
 
 }

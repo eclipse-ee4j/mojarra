@@ -45,12 +45,12 @@ import java.beans.PropertyDescriptor;
 
 /**
  * <p>
- * This {@link ELResolver} will handle the resolution of <code>attrs</code>
- * when processing a composite component instance.
+ * This {@link ELResolver} will handle the resolution of <code>attrs</code> when processing a composite component
+ * instance.
  * </p>
  */
 public class CompositeComponentAttributesELResolver extends ELResolver {
-    
+
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
@@ -60,41 +60,32 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     private static final String COMPOSITE_COMPONENT_ATTRIBUTES_NAME = "attrs";
 
     /**
-     * Implicit object related only to the cc implicit object
-     * and refers to the composite component parent (if any).
+     * Implicit object related only to the cc implicit object and refers to the composite component parent (if any).
      */
     private static final String COMPOSITE_COMPONENT_PARENT_NAME = "parent";
 
     /**
-     * Key to which we store the mappings between composite component instances
-     * and their ExpressionEvalMap.
+     * Key to which we store the mappings between composite component instances and their ExpressionEvalMap.
      */
-    private static final String EVAL_MAP_KEY =
-          CompositeComponentAttributesELResolver.class.getName() + "_EVAL_MAP";
-
+    private static final String EVAL_MAP_KEY = CompositeComponentAttributesELResolver.class.getName() + "_EVAL_MAP";
 
     // ------------------------------------------------- Methods from ELResolver
 
-
     /**
      * <p>
-     * If <code>base</code> is a composite component and <code>property</code>
-     * is <code>attrs</code>, return a new <code>ExpressionEvalMap</code>
-     * which wraps the composite component's attributes map.
+     * If <code>base</code> is a composite component and <code>property</code> is <code>attrs</code>, return a new
+     * <code>ExpressionEvalMap</code> which wraps the composite component's attributes map.
      * </p>
      *
      * <p>
-     * The <code>ExpressionEvalMap</code> simple evaluates any {@link ValueExpression}
-     * instances stored in the composite component's attribute map and returns
-     * the result.
+     * The <code>ExpressionEvalMap</code> simple evaluates any {@link ValueExpression} instances stored in the composite
+     * component's attribute map and returns the result.
      * </p>
      *
      * <p>
-     * If <code>base</code> is a composite component and <code>property</code>
-     * is <code>parent</code> attempt to resolve the composite componet parent
-     * of the current composite component by calling
-     * {@link UIComponent#getCompositeComponentParent(jakarta.faces.component.UIComponent)})
-     * and returning that value.
+     * If <code>base</code> is a composite component and <code>property</code> is <code>parent</code> attempt to resolve the
+     * composite componet parent of the current composite component by calling
+     * {@link UIComponent#getCompositeComponentParent(jakarta.faces.component.UIComponent)}) and returning that value.
      * </p>
      *
      * @see jakarta.el.ELResolver#getValue(jakarta.el.ELContext, Object, Object)
@@ -105,34 +96,24 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         Util.notNull("context", context);
 
-        if (base != null
-            && (base instanceof UIComponent)
-            && UIComponent.isCompositeComponent((UIComponent) base)
-            && property != null) {
+        if (base != null && (base instanceof UIComponent) && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
 
             String propertyName = property.toString();
             if (COMPOSITE_COMPONENT_ATTRIBUTES_NAME.equals(propertyName)) {
                 UIComponent c = (UIComponent) base;
                 context.setPropertyResolved(true);
-                FacesContext ctx = (FacesContext)
-                      context.getContext(FacesContext.class);
+                FacesContext ctx = (FacesContext) context.getContext(FacesContext.class);
                 return getEvalMapFor(c, ctx);
             }
 
             if (COMPOSITE_COMPONENT_PARENT_NAME.equals(propertyName)) {
                 UIComponent c = (UIComponent) base;
                 context.setPropertyResolved(true);
-                FacesContext ctx = (FacesContext)
-                      context.getContext(FacesContext.class);
-                CompositeComponentStackManager m =
-                      CompositeComponentStackManager.getManager(ctx);
-                UIComponent ccp = m.getParentCompositeComponent(TreeCreation,
-                                                                ctx,
-                                                                c);
+                FacesContext ctx = (FacesContext) context.getContext(FacesContext.class);
+                CompositeComponentStackManager m = CompositeComponentStackManager.getManager(ctx);
+                UIComponent ccp = m.getParentCompositeComponent(TreeCreation, ctx, c);
                 if (ccp == null) {
-                    ccp = m.getParentCompositeComponent(Evaluation,
-                                                        ctx,
-                                                        c);
+                    ccp = m.getParentCompositeComponent(Evaluation, ctx, c);
                 }
                 return ccp;
             }
@@ -141,7 +122,6 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         return null;
 
     }
-
 
     /**
      * <p>
@@ -169,14 +149,14 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
             FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
             UIComponent cc = UIComponent.getCurrentCompositeComponent(facesContext);
             BeanInfo metadata = (BeanInfo) cc.getAttributes().get(UIComponent.BEANINFO_KEY);
-            assert(null != metadata);
+            assert (null != metadata);
             PropertyDescriptor[] attributes = metadata.getPropertyDescriptors();
             if (null != attributes) {
                 for (PropertyDescriptor cur : attributes) {
                     if (property.equals(cur.getName())) {
                         Object type = cur.getValue("type");
                         if (null != type) {
-                            assert(type instanceof Class);
+                            assert (type instanceof Class);
                             metaType = (Class) type;
                             break;
                         }
@@ -193,7 +173,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         }
         return exprType;
     }
-    
+
     /**
      * <p>
      * This is a no-op.
@@ -202,15 +182,11 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      * @see ELResolver#setValue(jakarta.el.ELContext, Object, Object, Object)
      */
     @Override
-    public void setValue(ELContext context,
-                         Object base,
-                         Object property,
-                         Object value) {
+    public void setValue(ELContext context, Object base, Object property, Object value) {
 
         Util.notNull("context", context);
 
     }
-
 
     /**
      * <p>
@@ -227,25 +203,21 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
     }
 
-
     /**
      * <p>
-     * This <code>ELResolver</code> currently returns no feature descriptors
-     * as we have no way to effectively iterate over the UIComponent
-     * attributes Map.
+     * This <code>ELResolver</code> currently returns no feature descriptors as we have no way to effectively iterate over
+     * the UIComponent attributes Map.
      * </p>
      *
      * @see jakarta.el.ELResolver#getFeatureDescriptors(jakarta.el.ELContext, Object)
      */
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context,
-                                                             Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
 
         Util.notNull("context", context);
         return null;
 
     }
-
 
     /**
      * <p>
@@ -262,68 +234,59 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     /**
      * <p>
-     * Creates (if necessary) and caches an <code>ExpressionEvalMap</code>
-     * instance associated with the owning {@link UIComponent}
+     * Creates (if necessary) and caches an <code>ExpressionEvalMap</code> instance associated with the owning
+     * {@link UIComponent}
      * </p>
      *
      * @param c the owning {@link UIComponent}
      * @param ctx the {@link FacesContext} for the current request
      * @return an <code>ExpressionEvalMap</code> for the specified component
      */
-    public Map<String,Object> getEvalMapFor(UIComponent c, FacesContext ctx) {
+    public Map<String, Object> getEvalMapFor(UIComponent c, FacesContext ctx) {
 
         Map<Object, Object> ctxAttributes = ctx.getAttributes();
-        //noinspection unchecked
-        Map<UIComponent,Map<String,Object>> topMap =
-              (Map<UIComponent,Map<String,Object>>) ctxAttributes.get(EVAL_MAP_KEY);
-        Map<String,Object> evalMap = null;
+        // noinspection unchecked
+        Map<UIComponent, Map<String, Object>> topMap = (Map<UIComponent, Map<String, Object>>) ctxAttributes.get(EVAL_MAP_KEY);
+        Map<String, Object> evalMap = null;
         if (topMap == null) {
             topMap = new HashMap<>();
             ctxAttributes.put(EVAL_MAP_KEY, topMap);
             evalMap = new ExpressionEvalMap(ctx, c);
             topMap.put(c, evalMap);
-        }
-        else {
+        } else {
             evalMap = topMap.get(c);
             if (evalMap == null) {
                 evalMap = new ExpressionEvalMap(ctx, c);
                 topMap.put(c, evalMap);
             } else {
-        	// JAVASERVERFACES-2508 - running as Portlet2 FacesContext must be updated for rendering, or 
-        	// ExpressionEvalMap would have to be reconstructed for the second Portlet phase
-        	((ExpressionEvalMap)evalMap).updateFacesContext(ctx);
+                // JAVASERVERFACES-2508 - running as Portlet2 FacesContext must be updated for rendering, or
+                // ExpressionEvalMap would have to be reconstructed for the second Portlet phase
+                ((ExpressionEvalMap) evalMap).updateFacesContext(ctx);
             }
         }
         return evalMap;
 
     }
 
-
     // ---------------------------------------------------------- Nested Classes
 
-
     /**
-     * Simple Map implementation to evaluate any <code>ValueExpression</code>
-     * stored directly within the provided attributes map.
+     * Simple Map implementation to evaluate any <code>ValueExpression</code> stored directly within the provided attributes
+     * map.
      */
-    private static final class ExpressionEvalMap
-    implements Map<String,Object>, CompositeComponentExpressionHolder {
+    private static final class ExpressionEvalMap implements Map<String, Object>, CompositeComponentExpressionHolder {
 
-        private Map<String,Object> attributesMap;
+        private Map<String, Object> attributesMap;
         private PropertyDescriptor[] declaredAttributes;
         private Map<Object, Object> declaredDefaultValues;
         private FacesContext ctx;
         private UIComponent cc;
 
-
         // -------------------------------------------------------- Constructors
-
 
         ExpressionEvalMap(FacesContext ctx, UIComponent cc) {
 
@@ -338,9 +301,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         }
 
-
         // --------------------- Methods from CompositeComponentExpressionHolder
-
 
         @Override
         public ValueExpression getExpression(String name) {
@@ -348,9 +309,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
             return ((ve instanceof ValueExpression) ? (ValueExpression) ve : null);
         }
 
-
         // ---------------------------------------------------- Methods from Map
-
 
         @Override
         public int size() {
@@ -375,8 +334,6 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         public boolean containsValue(Object value) {
             throw new UnsupportedOperationException();
         }
-
-
 
         @Override
         public Object get(Object key) {
@@ -414,7 +371,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         }
 
         @Override
-        public void putAll(Map<? extends String,?> t) {
+        public void putAll(Map<? extends String, ?> t) {
             throw new UnsupportedOperationException();
         }
 
@@ -434,7 +391,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         }
 
         @Override
-        public Set<Map.Entry<String,Object>> entrySet() {
+        public Set<Map.Entry<String, Object>> entrySet() {
             throw new UnsupportedOperationException();
         }
 
@@ -466,11 +423,11 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
             return result;
         }
-        
+
         public void updateFacesContext(FacesContext ctx) {
-        	if (this.ctx != ctx) {
-        		this.ctx = ctx;
-        	}
+            if (this.ctx != ctx) {
+                this.ctx = ctx;
+            }
         }
     }
 }

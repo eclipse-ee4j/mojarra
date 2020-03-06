@@ -47,37 +47,37 @@ import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.event.SystemEventListenerHolder;
 
 public class Events {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private static final String CONTEXT = "context";
     private static final String LISTENER = "listener";
     private static final String SOURCE = "source";
     private static final String SYSTEM_EVENT_CLASS = "systemEventClass";
-    
+
     private final SystemEventHelper systemEventHelper = new SystemEventHelper();
     private final ComponentSystemEventHelper compSysEventHelper = new ComponentSystemEventHelper();
-    
+
     /*
-     * This class encapsulates the behavior to prevent infinite loops when the publishing of one
-     * event leads to the queueing of another event of the same type. Special provision is made to
-     * allow the case where this guaring mechanims happens on a per-FacesContext,
-     * per-SystemEvent.class type basis.
+     * This class encapsulates the behavior to prevent infinite loops when the publishing of one event leads to the queueing
+     * of another event of the same type. Special provision is made to allow the case where this guaring mechanims happens
+     * on a per-FacesContext, per-SystemEvent.class type basis.
      */
 
     private ReentrantLisneterInvocationGuard listenerInvocationGuard = new ReentrantLisneterInvocationGuard();
-    
+
     /**
      * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
      */
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source, ProjectStage projectStage) {
         publishEvent(context, systemEventClass, null, source, projectStage);
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
      */
-    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source, ProjectStage projectStage) {
+    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source,
+            ProjectStage projectStage) {
 
         notNull(CONTEXT, context);
         notNull(SYSTEM_EVENT_CLASS, systemEventClass);
@@ -117,25 +117,25 @@ public class Events {
             context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, new ExceptionQueuedEventContext(context, ape));
         }
     }
-    
+
     /**
      * @see Application#subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
         subscribeToEvent(systemEventClass, null, listener);
     }
-    
+
     /**
      * @see Application#subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
-        
+
         notNull(SYSTEM_EVENT_CLASS, systemEventClass);
         notNull(LISTENER, listener);
 
         getListeners(systemEventClass, sourceClass).add(listener);
     }
-    
+
     /**
      * @see Application#unsubscribeFromEvent(Class, Class, jakarta.faces.event.SystemEventListener)
      */
@@ -149,10 +149,9 @@ public class Events {
             listeners.remove(listener);
         }
     }
-    
+
     /**
-     * @return the SystemEventListeners that should be used for the provided combination of
-     *         SystemEvent and source.
+     * @return the SystemEventListeners that should be used for the provided combination of SystemEvent and source.
      */
     private Set<SystemEventListener> getListeners(Class<? extends SystemEvent> systemEvent, Class<?> sourceClass) {
 
@@ -165,14 +164,14 @@ public class Events {
         return listeners;
 
     }
-    
+
     private boolean needsProcessing(FacesContext context, Class<? extends SystemEvent> systemEventClass) {
         return context.isProcessingEvents() || ExceptionQueuedEvent.class.isAssignableFrom(systemEventClass);
     }
-    
+
     /**
-     * @return process any listeners for the specified SystemEventListenerHolder and return any
-     *         SystemEvent that may have been created as a side-effect of processing the listeners.
+     * @return process any listeners for the specified SystemEventListenerHolder and return any SystemEvent that may have
+     * been created as a side-effect of processing the listeners.
      */
     private SystemEvent invokeComponentListenersFor(Class<? extends SystemEvent> systemEventClass, Object source) {
 
@@ -188,7 +187,7 @@ public class Events {
         return null;
 
     }
-    
+
     private SystemEvent invokeViewListenersFor(FacesContext ctx, Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source) {
         SystemEvent result = event;
 
@@ -215,10 +214,9 @@ public class Events {
         return result;
 
     }
-    
+
     /**
-     * Traverse the <code>List</code> of listeners and invoke any that are relevent for the
-     * specified source.
+     * Traverse the <code>List</code> of listeners and invoke any that are relevent for the specified source.
      *
      * @throws jakarta.faces.event.AbortProcessingException propagated from the listener invocation
      */
@@ -233,10 +231,9 @@ public class Events {
 
         return event;
     }
-    
+
     /**
-     * Iterate through and invoke the listeners. If the passed event was <code>null</code>, create
-     * the event, and return it.
+     * Iterate through and invoke the listeners. If the passed event was <code>null</code>, create the event, and return it.
      */
     private SystemEvent processListeners(Collection<SystemEventListener> listeners, SystemEvent event, Object source, EventInfo eventInfo) {
 

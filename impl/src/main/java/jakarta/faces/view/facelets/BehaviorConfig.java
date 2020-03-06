@@ -17,15 +17,18 @@
 package jakarta.faces.view.facelets;
 
 /**
- * <p class="changed_added_2_0">Convey the id of a behavior declared in
- * a view.</p>
+ * <p class="changed_added_2_0">
+ * Convey the id of a behavior declared in a view.
+ * </p>
  *
  * @since 2.0
  */
 public interface BehaviorConfig extends TagConfig {
 
     /**
-     * <p>Return the value of the behavior-id.</p>
+     * <p>
+     * Return the value of the behavior-id.
+     * </p>
      *
      * @since 2.0
      *

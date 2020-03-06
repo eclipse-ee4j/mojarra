@@ -29,48 +29,39 @@ import java.util.logging.Logger;
 
 /**
  * <p>
- * This <code>Renderer</code> is responsible for rendering the content of a
- * facet defined within the <em>using page</em> template in the desired location
- * within the composite component implementation section.
+ * This <code>Renderer</code> is responsible for rendering the content of a facet defined within the <em>using page</em>
+ * template in the desired location within the composite component implementation section.
  * </p>
  */
 public class CompositeFacetRenderer extends Renderer {
 
     private static final Logger logger = FacesLogger.RENDERKIT.getLogger();
 
-
     // --------------------------------------------------- Methods from Renderer
 
-
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-    throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         Util.notNull("context", context);
         Util.notNull("component", component);
 
-        String facetName = (String)
-              component.getAttributes().get(UIComponent.FACETS_KEY);
+        String facetName = (String) component.getAttributes().get(UIComponent.FACETS_KEY);
         if (null == facetName) {
             return;
         }
 
-        UIComponent currentCompositeComponent = UIComponent
-              .getCurrentCompositeComponent(context);
+        UIComponent currentCompositeComponent = UIComponent.getCurrentCompositeComponent(context);
         if (null != currentCompositeComponent) {
             UIComponent facet = currentCompositeComponent.getFacet(facetName);
             if (null != facet) {
                 facet.encodeAll(context);
             } else {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.log(Level.FINE,
-                               "Could not find facet named {0}",
-                               facetName);
+                    logger.log(Level.FINE, "Could not find facet named {0}", facetName);
                 }
             }
         }
     }
-
 
     @Override
     public boolean getRendersChildren() {

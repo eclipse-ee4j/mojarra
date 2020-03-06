@@ -19,21 +19,19 @@ package jakarta.faces.view.facelets;
 import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
 
 /**
- * <p class="changed_added_2_0">The {@link FaceletHandler} that
- * corresponds to attached objects that represent an instance of {@link
- * jakarta.faces.component.behavior.ClientBehavior} that must be added to
- * the parent component, which must implement {@link
- * jakarta.faces.component.behavior.ClientBehaviorHolder}, with a call to
- * {@link
- * jakarta.faces.component.behavior.ClientBehaviorHolder#addClientBehavior}.
- * The current specification defines one Facelet element for this sort
- * of attached object, <code>&lt;f:ajax&gt;</code>.</p>
- */ 
+ * <p class="changed_added_2_0">
+ * The {@link FaceletHandler} that corresponds to attached objects that represent an instance of
+ * {@link jakarta.faces.component.behavior.ClientBehavior} that must be added to the parent component, which must
+ * implement {@link jakarta.faces.component.behavior.ClientBehaviorHolder}, with a call to
+ * {@link jakarta.faces.component.behavior.ClientBehaviorHolder#addClientBehavior}. The current specification defines
+ * one Facelet element for this sort of attached object, <code>&lt;f:ajax&gt;</code>.
+ * </p>
+ */
 
 public class BehaviorHandler extends FaceletsAttachedObjectHandler implements BehaviorHolderAttachedObjectHandler {
 
     private final TagAttribute event;
-    
+
     private String behaviorId;
 
     private TagHandlerDelegate helper;
@@ -42,22 +40,22 @@ public class BehaviorHandler extends FaceletsAttachedObjectHandler implements Be
         super(config);
         this.behaviorId = config.getBehaviorId();
         this.event = this.getAttribute("event");
-        if (null != event && !event.isLiteral()){
+        if (null != event && !event.isLiteral()) {
             throw new TagException(this.tag, "The 'event' attribute for behavior tag must be a literal");
         }
     }
-    
+
     public TagAttribute getEvent() {
         return this.event;
     }
-    
+
     public String getEventName() {
         if (null != getEvent()) {
             return getEvent().getValue();
         }
         return null;
     }
-    
+
     @Override
     protected TagHandlerDelegate getTagHandlerDelegate() {
         if (null == helper) {

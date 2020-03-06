@@ -28,18 +28,14 @@ class ImplementationUnit extends TrimmedTagUnit {
 
     @Override
     protected void finishNotify(CompilationManager manager) {
-        ((CompilerPackageCompilationMessageHolder)manager.getCompilationMessageHolder()).
-                setCurrentCompositeComponentCompilationManager(null);
+        ((CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder()).setCurrentCompositeComponentCompilationManager(null);
         super.finishNotify(manager);
     }
 
     @Override
     protected void startNotify(CompilationManager manager) {
         super.startNotify(manager);
-        ((CompilerPackageCompilationMessageHolder)manager.getCompilationMessageHolder()).
-                setCurrentCompositeComponentCompilationManager(manager);
+        ((CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder()).setCurrentCompositeComponentCompilationManager(manager);
     }
-
-
 
 }

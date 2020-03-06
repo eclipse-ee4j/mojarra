@@ -26,8 +26,8 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ViewMapProducer is the CDI producer that allows injection of the view map
- * using @Inject and allows EL resolving of #{viewScope}
+ * The ViewMapProducer is the CDI producer that allows injection of the view map using @Inject and allows EL resolving
+ * of #{viewScope}
  * </p>
  *
  * @since 2.3
@@ -39,17 +39,11 @@ public class ViewMapProducer extends CdiProducer<Map<String, Object>> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ViewMapProducer() {
-        super.name("viewScope")
-             .scope(RequestScoped.class)
-             .qualifiers(new ViewMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, Object.class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getViewRoot().getViewMap());
+        super.name("viewScope").scope(RequestScoped.class).qualifiers(new ViewMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getViewRoot().getViewMap());
     }
 
 }

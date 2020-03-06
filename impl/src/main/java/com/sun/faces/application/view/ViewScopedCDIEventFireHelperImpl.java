@@ -26,20 +26,24 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.view.ViewScoped;
 
 public class ViewScopedCDIEventFireHelperImpl implements Serializable, ViewScopedCDIEventFireHelper {
-    
+
     private static final long serialVersionUID = 5777997951420156171L;
-    
-    @Inject @Initialized(ViewScoped.class) Event<UIViewRoot> viewScopeInitializedEvent;
-    @Inject @Destroyed(ViewScoped.class) Event<UIViewRoot> viewScopeDestroyedEvent;
-    
+
+    @Inject
+    @Initialized(ViewScoped.class)
+    Event<UIViewRoot> viewScopeInitializedEvent;
+    @Inject
+    @Destroyed(ViewScoped.class)
+    Event<UIViewRoot> viewScopeDestroyedEvent;
+
     @Override
     public void fireInitializedEvent(UIViewRoot root) {
         viewScopeInitializedEvent.fire(root);
     }
-    
+
     @Override
     public void fireDestroyedEvent(UIViewRoot root) {
         viewScopeDestroyedEvent.fire(root);
     }
-        
+
 }

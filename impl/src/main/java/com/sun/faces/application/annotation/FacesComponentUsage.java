@@ -21,7 +21,7 @@ import jakarta.faces.component.FacesComponent;
 public class FacesComponentUsage {
     private Class<?> target;
     private FacesComponent annotation;
-    
+
     public FacesComponentUsage(Class<?> target, FacesComponent annotation) {
         this.target = target;
         this.annotation = annotation;
@@ -34,8 +34,5 @@ public class FacesComponentUsage {
     public Class<?> getTarget() {
         return target;
     }
-    
-    
-}
 
-    
+}

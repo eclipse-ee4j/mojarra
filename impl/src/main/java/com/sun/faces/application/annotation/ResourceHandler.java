@@ -23,8 +23,7 @@ import jakarta.annotation.Resource;
 import jakarta.faces.context.FacesContext;
 
 /**
- * {@link RuntimeAnnotationHandler} responsible for processing Resource
- * annotations.
+ * {@link RuntimeAnnotationHandler} responsible for processing Resource annotations.
  */
 class ResourceHandler extends JndiHandler {
 
@@ -33,16 +32,14 @@ class ResourceHandler extends JndiHandler {
     private Method[] methods;
     private Resource[] methodAnnotations;
 
-    public ResourceHandler(
-            Field[] fields, Resource[] fieldAnnotations,
-            Method[] methods, Resource[] methodAnnotations) {
+    public ResourceHandler(Field[] fields, Resource[] fieldAnnotations, Method[] methods, Resource[] methodAnnotations) {
         this.fields = fields;
         this.fieldAnnotations = fieldAnnotations;
         this.methods = methods;
         this.methodAnnotations = methodAnnotations;
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];
@@ -58,9 +55,8 @@ class ResourceHandler extends JndiHandler {
     private void applyToField(FacesContext facesContext, Field field, Resource resource, Object instance) {
         Object value;
         /*
-         if (resource.lookup() != null && !"".equals(resource.lookup().trim())) {
-         value = lookup(facesContext, resource.lookup());
-         } else
+         * if (resource.lookup() != null && !"".equals(resource.lookup().trim())) { value = lookup(facesContext,
+         * resource.lookup()); } else
          */
         if (resource.name() != null && !"".equals(resource.name().trim())) {
             value = lookup(facesContext, JAVA_COMP_ENV + resource.name());
@@ -74,9 +70,8 @@ class ResourceHandler extends JndiHandler {
         if (method.getName().startsWith("set")) {
             Object value = null;
             /*
-             if (resource.lookup() != null && !"".equals(resource.lookup().trim())) {
-             value = lookup(facesContext, resource.lookup());
-             } else
+             * if (resource.lookup() != null && !"".equals(resource.lookup().trim())) { value = lookup(facesContext,
+             * resource.lookup()); } else
              */
             if (resource.name() != null && !"".equals(resource.name().trim())) {
                 value = lookup(facesContext, JAVA_COMP_ENV + resource.name());

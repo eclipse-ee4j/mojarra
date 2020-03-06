@@ -16,75 +16,69 @@
 
 package jakarta.faces.component;
 
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 
 import jakarta.faces.convert.Converter;
 
-
 /**
- * <p><strong class="changed_modified_2_0">ValueHolder</strong> is an
- * interface that may be implemented by any concrete {@link UIComponent}
- * that wishes to support a local value, as well as access data in the
- * model tier via a <em>value expression</em>, and support conversion
- * between String and the model tier data's native data type.
+ * <p>
+ * <strong class="changed_modified_2_0">ValueHolder</strong> is an interface that may be implemented by any concrete
+ * {@link UIComponent} that wishes to support a local value, as well as access data in the model tier via a <em>value
+ * expression</em>, and support conversion between String and the model tier data's native data type.
  */
 
 public interface ValueHolder {
 
-
     // -------------------------------------------------------------- Properties
 
     /**
-     * <p>Return the local value of this {@link UIComponent} (if any),
-     * without evaluating any associated {@link ValueExpression}.</p>
+     * <p>
+     * Return the local value of this {@link UIComponent} (if any), without evaluating any associated
+     * {@link ValueExpression}.
+     * </p>
      * 
      * @return the local value.
      */
     public Object getLocalValue();
 
-
     /**
-     * <p>Gets the value of this {@link UIComponent}.  If validation
-     * failed, as indicated by 
-     * {@link jakarta.faces.context.FacesContext#isValidationFailed}
-     * returning <code>true</code>, always return the local value.
-     * Otherwise, first, consult the local value property of this
-     * component.  If non-<code>null</code> return it.  If
-     * <code>null</code>, see if we have a {@link ValueExpression} for
-     * the <code>value</code> property.  If so, return the result of
-     * evaluating the property, otherwise return <code>null</code>.
-     * Note that because the specification for {@link
-     * UIComponent#setValueBinding} requires a call through to {@link
-     * UIComponent#setValueExpression}, legacy tags will continue to
-     * work.</p>
+     * <p>
+     * Gets the value of this {@link UIComponent}. If validation failed, as indicated by
+     * {@link jakarta.faces.context.FacesContext#isValidationFailed} returning <code>true</code>, always return the local
+     * value. Otherwise, first, consult the local value property of this component. If non-<code>null</code> return it. If
+     * <code>null</code>, see if we have a {@link ValueExpression} for the <code>value</code> property. If so, return the
+     * result of evaluating the property, otherwise return <code>null</code>. Note that because the specification for
+     * {@link UIComponent#setValueBinding} requires a call through to {@link UIComponent#setValueExpression}, legacy tags
+     * will continue to work.
+     * </p>
      * 
      * @return the value.
      */
     public Object getValue();
 
-
     /**
-      * <p>Set the value of this {@link UIComponent} (if any).</p>
-      *
-      * @param value The new local value
-      */
+     * <p>
+     * Set the value of this {@link UIComponent} (if any).
+     * </p>
+     *
+     * @param value The new local value
+     */
     public void setValue(Object value);
 
-
     /**
-     * <p>Return the {@link Converter} (if any)
-     * that is registered for this {@link UIComponent}.</p>
+     * <p>
+     * Return the {@link Converter} (if any) that is registered for this {@link UIComponent}.
+     * </p>
      * 
      * @return the converter.
      */
     public Converter getConverter();
 
-
     /**
-     * <p>Set the {@link Converter} (if any) that is registered for this
-     * {@link UIComponent}.</p>
+     * <p>
+     * Set the {@link Converter} (if any) that is registered for this {@link UIComponent}.
+     * </p>
      *
      * @param converter New {@link Converter} (or <code>null</code>)
      */

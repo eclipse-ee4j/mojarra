@@ -40,6 +40,4 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory {
 
     }
 
-
-
 }

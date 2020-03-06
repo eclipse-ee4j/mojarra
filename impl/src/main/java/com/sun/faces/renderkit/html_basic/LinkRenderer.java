@@ -29,44 +29,30 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-
 /**
- * <B>LinkRenderer</B> acts as superclass for CommandLinkRenderer and
- * OutputLinkRenderer.
+ * <B>LinkRenderer</B> acts as superclass for CommandLinkRenderer and OutputLinkRenderer.
  */
 
 public abstract class LinkRenderer extends HtmlBasicRenderer {
 
-
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.COMMANDLINK);
-
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDLINK);
 
     // ------------------------------------------------------- Protected Methods
 
+    protected abstract void renderAsActive(FacesContext context, UIComponent component) throws IOException;
 
-    protected abstract void renderAsActive(FacesContext context,
-                                           UIComponent component)
-          throws IOException;
-
-
-    protected void renderAsDisabled(FacesContext context, UIComponent component)
-          throws IOException {
+    protected void renderAsDisabled(FacesContext context, UIComponent component) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
 
         writer.startElement("span", component);
-        String writtenId =
-              writeIdAttributeIfNecessary(context, writer, component);
+        String writtenId = writeIdAttributeIfNecessary(context, writer, component);
         if (null != writtenId) {
             writer.writeAttribute("name", writtenId, "name");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
         writeCommonLinkAttributes(writer, component);
         writeValue(component, writer);
@@ -74,29 +60,23 @@ public abstract class LinkRenderer extends HtmlBasicRenderer {
 
     }
 
-
-    protected void writeCommonLinkAttributes(ResponseWriter writer,
-                                             UIComponent component)
-          throws IOException {
+    protected void writeCommonLinkAttributes(ResponseWriter writer, UIComponent component) throws IOException {
 
         // handle styleClass
-        String styleClass = (String)
-              component.getAttributes().get("styleClass");
+        String styleClass = (String) component.getAttributes().get("styleClass");
         if (styleClass != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 
     }
 
-
-    protected void writeValue(UIComponent component, ResponseWriter writer)
-          throws IOException {
+    protected void writeValue(UIComponent component, ResponseWriter writer) throws IOException {
 
         Object v = getValue(component);
         String label = null;
         if (v != null) {
             label = v.toString();
-        }        
+        }
 
         if (label != null && label.length() != 0) {
             if (logger.isLoggable(Level.FINE)) {

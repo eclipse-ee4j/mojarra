@@ -26,8 +26,8 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The request parameter values map producer is the CDI producer that allows injection of the request
- * parameter values map using @Inject.
+ * The request parameter values map producer is the CDI producer that allows injection of the request parameter values
+ * map using @Inject.
  * </p>
  *
  * @since 2.3
@@ -39,17 +39,11 @@ public class RequestParameterValuesMapProducer extends CdiProducer<Map<String, S
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public RequestParameterValuesMapProducer() {
-        super.name("paramValues")
-             .scope(RequestScoped.class)
-             .qualifiers(new RequestParameterValuesMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, String[].class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap());
+        super.name("paramValues").scope(RequestScoped.class).qualifiers(new RequestParameterValuesMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String[].class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap());
     }
-    
+
 }

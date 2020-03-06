@@ -38,41 +38,40 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <p>Tag implementation that creates a {@link PhaseListener} instance
- * and registers it on the {@link UIViewRoot} associated with our most
- * immediate surrounding instance of a tag whose component
- * is an instance of {@link UIViewRoot}.  This tag creates no output to the
- * page currently being created.</p>
+ * <p>
+ * Tag implementation that creates a {@link PhaseListener} instance and registers it on the {@link UIViewRoot}
+ * associated with our most immediate surrounding instance of a tag whose component is an instance of
+ * {@link UIViewRoot}. This tag creates no output to the page currently being created.
+ * </p>
  * <p/>
  */
 
 public class PhaseListenerTag extends TagSupport {
 
-
     private static final long serialVersionUID = -387813302573848228L;
 
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
-
     // ------------------------------------------------------------- Attributes
 
-
     /**
-     * <p>The fully qualified class name of the {@link PhaseListener}
-     * instance to be created.</p>
+     * <p>
+     * The fully qualified class name of the {@link PhaseListener} instance to be created.
+     * </p>
      */
     private ValueExpression type = null;
 
     /**
-     * <p>The value binding expression used to create a listener
-     * instance and it is also used to wire up this listener to an
-     * {@link PhaseListener} property of a JavaBean class.</p>
+     * <p>
+     * The value binding expression used to create a listener instance and it is also used to wire up this listener to an
+     * {@link PhaseListener} property of a JavaBean class.
+     * </p>
      */
     private ValueExpression binding = null;
 
     /**
-     * <p>Set the fully qualified class name of the
-     * {@link PhaseListener} instance to be created.
+     * <p>
+     * Set the fully qualified class name of the {@link PhaseListener} instance to be created.
      *
      * @param type The new class name
      */
@@ -83,7 +82,7 @@ public class PhaseListenerTag extends TagSupport {
     }
 
     /*
-     * <p>Set the value binding expression  for this listener.</p>
+     * <p>Set the value binding expression for this listener.</p>
      *
      * @param binding The new value binding expression
      */
@@ -93,13 +92,12 @@ public class PhaseListenerTag extends TagSupport {
 
     // --------------------------------------------------------- Public Methods
 
-
     /**
-     * <p>Create a new instance of the specified {@link PhaseListener}
-     * class, and register it with the {@link UIComponent} instance associated
-     * with our most immediately surrounding {@link UIComponentELTag} instance, if
-     * the {@link UIComponent} instance was created by this execution of the
-     * containing JSP page.</p>
+     * <p>
+     * Create a new instance of the specified {@link PhaseListener} class, and register it with the {@link UIComponent}
+     * instance associated with our most immediately surrounding {@link UIComponentELTag} instance, if the
+     * {@link UIComponent} instance was created by this execution of the containing JSP page.
+     * </p>
      *
      * @throws JspException if a JSP error occurs
      */
@@ -116,10 +114,8 @@ public class PhaseListenerTag extends TagSupport {
         }
 
         if (tag == null) {
-            Object params[] = {this.getClass().getName()};
-            throw new JspException(
-                 MessageUtils.getExceptionMessageString(
-                      MessageUtils.NOT_NESTED_IN_FACES_TAG_ERROR_MESSAGE_ID, params));
+            Object params[] = { this.getClass().getName() };
+            throw new JspException(MessageUtils.getExceptionMessageString(MessageUtils.NOT_NESTED_IN_FACES_TAG_ERROR_MESSAGE_ID, params));
         }
 
         // Nothing to do unless this tag created a component
@@ -129,23 +125,21 @@ public class PhaseListenerTag extends TagSupport {
 
         UIViewRoot viewRoot = (UIViewRoot) tag.getComponentInstance();
         if (viewRoot == null) {
-            throw new JspException(
-                 MessageUtils.getExceptionMessageString(MessageUtils.NULL_COMPONENT_ERROR_MESSAGE_ID));
+            throw new JspException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_COMPONENT_ERROR_MESSAGE_ID));
         }
 
         // If binding is null, type is set and is a literal value,
-        // then don't bother wrapping.  Just instantiate and
+        // then don't bother wrapping. Just instantiate and
         // set.
         PhaseListener listener;
         if (binding == null && type != null && type.isLiteralText()) {
             try {
-                listener = (PhaseListener)
-                    Util.getListenerInstance(type, null);
+                listener = (PhaseListener) Util.getListenerInstance(type, null);
             } catch (Exception e) {
                 throw new JspException(e.getMessage(), e.getCause());
             }
         } else {
-            listener = new BindingPhaseListener(type, binding);            
+            listener = new BindingPhaseListener(type, binding);
         }
         viewRoot.addPhaseListener(listener);
 
@@ -153,9 +147,9 @@ public class PhaseListenerTag extends TagSupport {
 
     }
 
-
     /**
-     * <p>Release references to any acquired resources.
+     * <p>
+     * Release references to any acquired resources.
      */
     @Override
     public void release() {
@@ -164,12 +158,9 @@ public class PhaseListenerTag extends TagSupport {
 
     }
 
-
 // ----------------------------------------------------------- Inner Classes
 
-
-    private static class BindingPhaseListener
-         implements PhaseListener, Serializable {
+    private static class BindingPhaseListener implements PhaseListener, Serializable {
 
         private static final long serialVersionUID = -3748298130133609119L;
         private ValueExpression type;
@@ -177,9 +168,7 @@ public class PhaseListenerTag extends TagSupport {
 
         // -------------------------------------------------------- Constructors
 
-
-        public BindingPhaseListener(ValueExpression type,
-                                    ValueExpression binding) {
+        public BindingPhaseListener(ValueExpression type, ValueExpression binding) {
 
             this.type = type;
             this.binding = binding;
@@ -188,10 +177,10 @@ public class PhaseListenerTag extends TagSupport {
 
         // ------------------------------------------ Methods from PhaseListener
 
-
         /**
-         * <p>Handle a notification that the processing for a particular
-         * phase has just been completed.</p>
+         * <p>
+         * Handle a notification that the processing for a particular phase has just been completed.
+         * </p>
          */
         @Override
         public void afterPhase(PhaseEvent event) {
@@ -204,8 +193,10 @@ public class PhaseListenerTag extends TagSupport {
         }
 
         /**
-         * <p>Handle a notification that the processing for a particular
-         * phase of the request processing lifecycle is about to begin.</p>
+         * <p>
+         * Handle a notification that the processing for a particular phase of the request processing lifecycle is about to
+         * begin.
+         * </p>
          */
         @Override
         public void beforePhase(PhaseEvent event) {
@@ -218,11 +209,12 @@ public class PhaseListenerTag extends TagSupport {
         }
 
         /**
-         * <p>Return the identifier of the request processing phase during
-         * which this listener is interested in processing {@link jakarta.faces.event.PhaseEvent}
-         * events.  Legal values are the singleton instances defined by the
-         * {@link jakarta.faces.event.PhaseId} class, including <code>PhaseId.ANY_PHASE</code>
-         * to indicate an interest in being notified for all standard phases.</p>
+         * <p>
+         * Return the identifier of the request processing phase during which this listener is interested in processing
+         * {@link jakarta.faces.event.PhaseEvent} events. Legal values are the singleton instances defined by the
+         * {@link jakarta.faces.event.PhaseId} class, including <code>PhaseId.ANY_PHASE</code> to indicate an interest in being
+         * notified for all standard phases.
+         * </p>
          */
         @Override
         public PhaseId getPhaseId() {
@@ -237,25 +229,22 @@ public class PhaseListenerTag extends TagSupport {
         }
 
         /**
-         * <p>Invoked when the value change described by the specified
-         * {@link jakarta.faces.event.ValueChangeEvent} occurs.</p>
+         * <p>
+         * Invoked when the value change described by the specified {@link jakarta.faces.event.ValueChangeEvent} occurs.
+         * </p>
          *
          * @return a <code>PhaseListener</code> instance
-         * @throws jakarta.faces.event.AbortProcessingException
-         *          Signal the JavaServer Faces
-         *          implementation that no further processing on the current event
-         *          should be performed
+         * @throws jakarta.faces.event.AbortProcessingException Signal the JavaServer Faces implementation that no further
+         * processing on the current event should be performed
          */
         public PhaseListener getPhaseListener() throws AbortProcessingException {
-            PhaseListener instance = (PhaseListener)
-                     Util.getListenerInstance(type, binding);
+            PhaseListener instance = (PhaseListener) Util.getListenerInstance(type, binding);
             if (instance != null) {
                 return instance;
             } else {
-                 if (LOGGER.isLoggable(Level.WARNING)) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
                     // PENDING i18n
-                    LOGGER.warning("PhaseListener will not be processed - " +
-                         "both 'binding' and 'type' are null");
+                    LOGGER.warning("PhaseListener will not be processed - " + "both 'binding' and 'type' are null");
                 }
                 return null;
             }

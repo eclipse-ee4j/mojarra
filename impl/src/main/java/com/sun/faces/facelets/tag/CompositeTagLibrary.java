@@ -34,9 +34,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the
- * chain of responsibility pattern to stop searching as soon as one of the
- * children handles the requested method.
+ * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the chain of responsibility pattern to stop
+ * searching as soon as one of the children handles the requested method.
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -55,7 +54,7 @@ public final class CompositeTagLibrary implements TagLibrary {
     public CompositeTagLibrary(TagLibrary[] libraries) {
         this(libraries, null);
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -69,8 +68,8 @@ public final class CompositeTagLibrary implements TagLibrary {
                 return true;
             }
         }
-        // PENDING: this is a terribly inefficient impl.  Needs refactoring.
-        LazyTagLibrary lazyLibraries [] = new LazyTagLibrary[2];
+        // PENDING: this is a terribly inefficient impl. Needs refactoring.
+        LazyTagLibrary lazyLibraries[] = new LazyTagLibrary[2];
         lazyLibraries[0] = new CompositeComponentTagLibrary(ns);
         lazyLibraries[1] = new FacesComponentTagLibrary(ns);
         LazyTagLibrary toTest = null;
@@ -81,40 +80,35 @@ public final class CompositeTagLibrary implements TagLibrary {
             }
         }
         if (null != toTest) {
-            TagLibrary [] librariesPlusOne = new TagLibrary[libraries.length+1];
-            System.arraycopy(this.libraries, 0, librariesPlusOne, 
-                    0, libraries.length);
+            TagLibrary[] librariesPlusOne = new TagLibrary[libraries.length + 1];
+            System.arraycopy(this.libraries, 0, librariesPlusOne, 0, libraries.length);
             librariesPlusOne[libraries.length] = toTest;
             for (int i = 0; i < this.libraries.length; i++) {
                 libraries[i] = null;
             }
             libraries = librariesPlusOne;
             return true;
-        }
-        else {
+        } else {
             FacesContext context = FacesContext.getCurrentInstance();
             if (context.isProjectStage(ProjectStage.Development)) {
-                if (null != t &&
-                    !ns.equals("http://www.w3.org/1999/xhtml")) {
-                    // messageHolder will only be null in the case of the private 
+                if (null != t && !ns.equals("http://www.w3.org/1999/xhtml")) {
+                    // messageHolder will only be null in the case of the private
                     // EMPTY_LIBRARY class variable of the Compiler class.
                     // This code will never be called on that CompositeTagLibrary
                     // instance.
-                    assert(null != this.messageHolder);
+                    assert (null != this.messageHolder);
                     String prefix = getPrefixFromTag(t);
                     if (null != prefix) {
                         List<FacesMessage> prefixMessages = this.messageHolder.getNamespacePrefixMessages(context, prefix);
-                        prefixMessages.add(new FacesMessage(FacesMessage.SEVERITY_WARN,
-                                "Warning: This page calls for XML namespace " + ns +
-                                " declared with prefix " + prefix + 
-                                " but no taglibrary exists for that namespace.", ""));
+                        prefixMessages.add(new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning: This page calls for XML namespace " + ns
+                                + " declared with prefix " + prefix + " but no taglibrary exists for that namespace.", ""));
                     }
                 }
             }
         }
         return false;
     }
-    
+
     private String getPrefixFromTag(Tag t) {
         String result = t.getQName();
         if (null != result) {
@@ -125,12 +119,11 @@ public final class CompositeTagLibrary implements TagLibrary {
         }
         return result;
     }
-    
+
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.tag.TagLibrary#containsTagHandler(java.lang.String,
-     *      java.lang.String)
+     * @see com.sun.facelets.tag.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
      */
     @Override
     public boolean containsTagHandler(String ns, String localName) {
@@ -145,12 +138,11 @@ public final class CompositeTagLibrary implements TagLibrary {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.tag.TagLibrary#createTagHandler(java.lang.String,
-     *      java.lang.String, com.sun.facelets.tag.TagConfig)
+     * @see com.sun.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String,
+     * com.sun.facelets.tag.TagConfig)
      */
     @Override
-    public TagHandler createTagHandler(String ns, String localName,
-            TagConfig tag) throws FacesException {
+    public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
         for (int i = 0; i < this.libraries.length; i++) {
             if (this.libraries[i].containsTagHandler(ns, localName)) {
                 return this.libraries[i].createTagHandler(ns, localName, tag);
@@ -162,8 +154,7 @@ public final class CompositeTagLibrary implements TagLibrary {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.tag.TagLibrary#containsFunction(java.lang.String,
-     *      java.lang.String)
+     * @see com.sun.facelets.tag.TagLibrary#containsFunction(java.lang.String, java.lang.String)
      */
     @Override
     public boolean containsFunction(String ns, String name) {
@@ -178,8 +169,7 @@ public final class CompositeTagLibrary implements TagLibrary {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.tag.TagLibrary#createFunction(java.lang.String,
-     *      java.lang.String)
+     * @see com.sun.facelets.tag.TagLibrary#createFunction(java.lang.String, java.lang.String)
      */
     @Override
     public Method createFunction(String ns, String name) {

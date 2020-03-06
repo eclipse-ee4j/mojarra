@@ -119,6 +119,5 @@ public abstract class NoOpFacesContext extends FacesContext {
     @Override
     public void validationFailed() {
     }
-    
-    
+
 }

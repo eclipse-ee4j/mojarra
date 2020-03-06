@@ -25,34 +25,26 @@ import java.util.Set;
 import jakarta.faces.context.FacesContext;
 
 public class CopierUtils {
-    
+
     private static final String ERROR_COPIER_NAME = "The copier name should be a Java valid simple/qualified name.";
     private static final String COPIER_PREFIX = "com.sun.faces.util.copier.";
-    
+
     private final static Set<String> keywords;
 
     static {
         Set<String> s = new HashSet<String>();
-        String[] kws = {
-            "abstract", "continue", "for", "new", "switch",
-            "assert", "default", "if", "package", "synchronized",
-            "boolean", "do", "goto", "private", "this",
-            "break", "double", "implements", "protected", "throw",
-            "byte", "else", "import", "public", "throws",
-            "case", "enum", "instanceof", "return", "transient",
-            "catch", "extends", "int", "short", "try",
-            "char", "final", "interface", "static", "void",
-            "class", "finally", "long", "strictfp", "volatile",
-            "const", "float", "native", "super", "while",
-            // literals
-            "null", "true", "false"
-        };
+        String[] kws = { "abstract", "continue", "for", "new", "switch", "assert", "default", "if", "package", "synchronized", "boolean", "do", "goto",
+                "private", "this", "break", "double", "implements", "protected", "throw", "byte", "else", "import", "public", "throws", "case", "enum",
+                "instanceof", "return", "transient", "catch", "extends", "int", "short", "try", "char", "final", "interface", "static", "void", "class",
+                "finally", "long", "strictfp", "volatile", "const", "float", "native", "super", "while",
+                // literals
+                "null", "true", "false" };
         for (String kw : kws) {
             s.add(kw);
         }
         keywords = Collections.unmodifiableSet(s);
-    }    
-    
+    }
+
     public static Copier getCopier(FacesContext context, String copierType) {
         Copier copier = null;
 
@@ -60,8 +52,8 @@ public class CopierUtils {
 
             // TODO: or should validate only against {"MultiStrategyCopier", "SerializationCopier",
             // "NewInstanceCopier", "CopyCtorCopier", "CloneCopier"} strings / enum
-            
-            if (isCopierTypeSimpleName(copierType)) {                
+
+            if (isCopierTypeSimpleName(copierType)) {
                 copierType = COPIER_PREFIX.concat(copierType);
             } else if (!isName(copierType)) {
                 throw new IllegalArgumentException(ERROR_COPIER_NAME);
@@ -79,7 +71,7 @@ public class CopierUtils {
         if (copier == null) {
             copier = new MultiStrategyCopier();
         }
-        
+
         return copier;
     }
 
@@ -96,7 +88,7 @@ public class CopierUtils {
         return (isIdentifier(copierType) && !(isKeyword(copierType)));
     }
 
-    // maybe the following four methods should be moved in com.sun.faces.util   
+    // maybe the following four methods should be moved in com.sun.faces.util
     private static boolean isEmpty(String string) {
         return string == null || string.isEmpty();
     }
@@ -122,9 +114,7 @@ public class CopierUtils {
         if (!Character.isJavaIdentifierStart(cp)) {
             return false;
         }
-        for (int i = Character.charCount(cp);
-                i < id.length();
-                i += Character.charCount(cp)) {
+        for (int i = Character.charCount(cp); i < id.length(); i += Character.charCount(cp)) {
             cp = id.codePointAt(i);
             if (!Character.isJavaIdentifierPart(cp)) {
                 return false;

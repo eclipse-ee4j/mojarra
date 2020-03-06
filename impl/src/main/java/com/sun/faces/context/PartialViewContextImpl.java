@@ -61,7 +61,7 @@ import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 
- public class PartialViewContextImpl extends PartialViewContext {
+public class PartialViewContextImpl extends PartialViewContext {
 
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.CONTEXT.getLogger();
@@ -80,14 +80,11 @@ import jakarta.faces.render.RenderKitFactory;
 
     private static final String ORIGINAL_WRITER = "com.sun.faces.ORIGINAL_WRITER";
 
-
     // ----------------------------------------------------------- Constructors
-
 
     public PartialViewContextImpl(FacesContext ctx) {
         this.ctx = ctx;
     }
-
 
     // ---------------------------------------------- Methods from PartialViewContext
 
@@ -99,11 +96,9 @@ import jakarta.faces.render.RenderKitFactory;
 
         assertNotReleased();
         if (ajaxRequest == null) {
-            ajaxRequest = "partial/ajax".equals(ctx.
-                getExternalContext().getRequestHeaderMap().get("Faces-Request"));
+            ajaxRequest = "partial/ajax".equals(ctx.getExternalContext().getRequestHeaderMap().get("Faces-Request"));
             if (!ajaxRequest) {
-                ajaxRequest = "partial/ajax".equals(ctx.getExternalContext().getRequestParameterMap().
-                    get("Faces-Request"));
+                ajaxRequest = "partial/ajax".equals(ctx.getExternalContext().getRequestParameterMap().get("Faces-Request"));
             }
         }
         return ajaxRequest;
@@ -118,14 +113,11 @@ import jakarta.faces.render.RenderKitFactory;
 
         assertNotReleased();
         if (partialRequest == null) {
-            partialRequest = isAjaxRequest() ||
-                    "partial/process".equals(ctx.
-                    getExternalContext().getRequestHeaderMap().get("Faces-Request"));
+            partialRequest = isAjaxRequest() || "partial/process".equals(ctx.getExternalContext().getRequestHeaderMap().get("Faces-Request"));
         }
         return partialRequest;
 
     }
-
 
     /**
      * @see jakarta.faces.context.PartialViewContext#isExecuteAll()
@@ -154,9 +146,9 @@ import jakarta.faces.render.RenderKitFactory;
         return renderAll;
 
     }
-    
+
     /**
-     * @see jakarta.faces.context.PartialViewContext#setRenderAll(boolean) 
+     * @see jakarta.faces.context.PartialViewContext#setRenderAll(boolean)
      */
     @Override
     public void setRenderAll(boolean renderAll) {
@@ -176,7 +168,6 @@ import jakarta.faces.render.RenderKitFactory;
         this.partialRequest = isPartialRequest;
     }
 
-
     /**
      * @see jakarta.faces.context.PartialViewContext#getExecuteIds()
      */
@@ -195,7 +186,7 @@ import jakarta.faces.render.RenderKitFactory;
             UIViewRoot root = ctx.getViewRoot();
             if (root.getFacetCount() > 0) {
                 if (root.getFacet(UIViewRoot.METADATA_FACET_NAME) != null) {
-                    executeIds.add(0, UIViewRoot.METADATA_FACET_NAME);   
+                    executeIds.add(0, UIViewRoot.METADATA_FACET_NAME);
                 }
             }
         }
@@ -218,41 +209,38 @@ import jakarta.faces.render.RenderKitFactory;
 
     }
 
-	/**
-	 * @see jakarta.faces.context.PartialViewContext#getEvalScripts()
-	 */
-	@Override
-	public List<String> getEvalScripts() {
-		assertNotReleased();
+    /**
+     * @see jakarta.faces.context.PartialViewContext#getEvalScripts()
+     */
+    @Override
+    public List<String> getEvalScripts() {
+        assertNotReleased();
 
-		if (evalScripts == null) {
-			evalScripts = new ArrayList<>(1);
-		}
+        if (evalScripts == null) {
+            evalScripts = new ArrayList<>(1);
+        }
 
-		return evalScripts;
-	}
+        return evalScripts;
+    }
 
     /**
-     * @see PartialViewContext#processPartial(jakarta.faces.event.PhaseId) 
+     * @see PartialViewContext#processPartial(jakarta.faces.event.PhaseId)
      */
     @Override
     public void processPartial(PhaseId phaseId) {
         PartialViewContext pvc = ctx.getPartialViewContext();
-        Collection <String> myExecuteIds = pvc.getExecuteIds();
-        Collection <String> myRenderIds = pvc.getRenderIds();
+        Collection<String> myExecuteIds = pvc.getExecuteIds();
+        Collection<String> myRenderIds = pvc.getRenderIds();
         UIViewRoot viewRoot = ctx.getViewRoot();
 
-        if (phaseId == PhaseId.APPLY_REQUEST_VALUES ||
-            phaseId == PhaseId.PROCESS_VALIDATIONS ||
-            phaseId == PhaseId.UPDATE_MODEL_VALUES) {
+        if (phaseId == PhaseId.APPLY_REQUEST_VALUES || phaseId == PhaseId.PROCESS_VALIDATIONS || phaseId == PhaseId.UPDATE_MODEL_VALUES) {
 
             // Skip this processing if "none" is specified in the render list,
             // or there were no execute phase client ids.
 
             if (myExecuteIds == null || myExecuteIds.isEmpty()) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE,
-                        "No execute and render identifiers specified.  Skipping component processing.");
+                    LOGGER.log(Level.FINE, "No execute and render identifiers specified.  Skipping component processing.");
                 }
                 return;
             }
@@ -261,15 +249,13 @@ import jakarta.faces.render.RenderKitFactory;
                 processComponents(viewRoot, phaseId, myExecuteIds, ctx);
             } catch (Exception e) {
                 if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.log(Level.INFO,
-                           e.toString(),
-                           e);
+                    LOGGER.log(Level.INFO, e.toString(), e);
                 }
                 throw new FacesException(e);
             }
 
             // If we have just finished APPLY_REQUEST_VALUES phase, install the
-            // partial response writer.  We want to make sure that any content
+            // partial response writer. We want to make sure that any content
             // or errors generated in the other phases are written using the
             // partial response writer.
             //
@@ -292,18 +278,18 @@ import jakarta.faces.render.RenderKitFactory;
                 ExternalContext exContext = ctx.getExternalContext();
                 exContext.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
                 exContext.addResponseHeader("Cache-Control", "no-cache");
-                
+
 //                String encoding = writer.getCharacterEncoding( );
 //                if( encoding == null ) {
 //                    encoding = "UTF-8";
 //                }
 //                writer.writePreamble("<?xml version='1.0' encoding='" + encoding + "'?>\n");
                 writer.startDocument();
-                
+
                 if (isResetValues()) {
                     viewRoot.resetValues(ctx, myRenderIds);
                 }
-                
+
                 if (isRenderAll()) {
                     renderAll(ctx, viewRoot);
                     renderState(ctx);
@@ -350,7 +336,7 @@ import jakarta.faces.render.RenderKitFactory;
      */
     @Override
     public void release() {
-        
+
         released = true;
         ajaxRequest = null;
         renderAll = null;
@@ -365,8 +351,6 @@ import jakarta.faces.render.RenderKitFactory;
 
     // -------------------------------------------------------- Private Methods
 
-
-
     private List<String> populatePhaseClientIds(PredefinedPostbackParameter parameterName) {
 
         String param = parameterName.getValue(ctx);
@@ -375,28 +359,23 @@ import jakarta.faces.render.RenderKitFactory;
         } else {
             Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
             String[] pcs = Util.split(appMap, param, "[ \t]+");
-            return ((pcs != null && pcs.length != 0)
-                    ? new ArrayList<>(Arrays.asList(pcs))
-                    : new ArrayList<>());
+            return ((pcs != null && pcs.length != 0) ? new ArrayList<>(Arrays.asList(pcs)) : new ArrayList<>());
         }
-        
+
     }
 
     // Process the components specified in the phaseClientIds list
-    private void processComponents(UIComponent component, PhaseId phaseId,
-        Collection<String> phaseClientIds, FacesContext context) throws IOException {
+    private void processComponents(UIComponent component, PhaseId phaseId, Collection<String> phaseClientIds, FacesContext context) throws IOException {
 
         // We use the tree visitor mechanism to locate the components to
-        // process.  Create our (partial) VisitContext and the
+        // process. Create our (partial) VisitContext and the
         // VisitCallback that will be invoked for each component that
-        // is visited.  Note that we use the SKIP_UNRENDERED hint as we
+        // is visited. Note that we use the SKIP_UNRENDERED hint as we
         // only want to visit the rendered subtree.
         EnumSet<VisitHint> hints = EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.EXECUTE_LIFECYCLE);
-        VisitContextFactory visitContextFactory = (VisitContextFactory) 
-                FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
+        VisitContextFactory visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
         VisitContext visitContext = visitContextFactory.getVisitContext(context, phaseClientIds, hints);
-        PhaseAwareVisitCallback visitCallback =
-            new PhaseAwareVisitCallback(ctx, phaseId);
+        PhaseAwareVisitCallback visitCallback = new PhaseAwareVisitCallback(ctx, phaseId);
         component.visitTree(visitContext, visitCallback);
 
         PartialVisitContext partialVisitContext = unwrapPartialVisitContext(visitContext);
@@ -407,11 +386,9 @@ import jakarta.faces.render.RenderKitFactory;
                 for (String cur : unvisitedClientIds) {
                     builder.append(cur).append(" ");
                 }
-                LOGGER.log(Level.FINER,
-                        "jsf.context.partial_visit_context_unvisited_children",
-                        new Object[]{builder.toString()});
+                LOGGER.log(Level.FINER, "jsf.context.partial_visit_context_unvisited_children", new Object[] { builder.toString() });
             }
-        }    
+        }
     }
 
     /**
@@ -434,16 +411,16 @@ import jakarta.faces.render.RenderKitFactory;
         }
         return null;
     }
-    
+
     private void renderAll(FacesContext context, UIViewRoot viewRoot) throws IOException {
         // If this is a "render all via ajax" request,
         // make sure to wrap the entire page in a <render> elemnt
-        // with the special viewStateId of VIEW_ROOT_ID.  This is how the client
+        // with the special viewStateId of VIEW_ROOT_ID. This is how the client
         // JavaScript knows how to replace the entire document with
         // this response.
         PartialViewContext pvc = context.getPartialViewContext();
         PartialResponseWriter writer = pvc.getPartialResponseWriter();
-        
+
         if (!(viewRoot instanceof NamingContainer)) {
             writer.startUpdate(PartialResponseWriter.RENDER_ALL_MARKER);
             if (viewRoot.getChildCount() > 0) {
@@ -452,8 +429,7 @@ import jakarta.faces.render.RenderKitFactory;
                 }
             }
             writer.endUpdate();
-        }
-        else {
+        } else {
             /*
              * If we have a portlet request, start rendering at the view root.
              */
@@ -478,10 +454,8 @@ import jakarta.faces.render.RenderKitFactory;
             String name = (String) resource.getAttributes().get("name");
             String library = (String) resource.getAttributes().get("library");
 
-            if (resource.getChildCount() == 0 
-              && resourceHandler.getRendererTypeForResourceName(name) != null 
-              && !resourceHandler.isResourceRendered(context, name, library)) 
-            {
+            if (resource.getChildCount() == 0 && resourceHandler.getRendererTypeForResourceName(name) != null
+                    && !resourceHandler.isResourceRendered(context, name, library)) {
                 if (!updateStarted) {
                     writer.startUpdate("jakarta.faces.Resource");
                     updateStarted = true;
@@ -495,7 +469,7 @@ import jakarta.faces.render.RenderKitFactory;
             writer.endUpdate();
         }
     }
-    
+
     private void renderState(FacesContext context) throws IOException {
         // Get the view state and write it to the response..
         PartialViewContext pvc = context.getPartialViewContext();
@@ -516,16 +490,16 @@ import jakarta.faces.render.RenderKitFactory;
         }
     }
 
-	private void renderEvalScripts(FacesContext context) throws IOException {
-		PartialViewContext pvc = context.getPartialViewContext();
-		PartialResponseWriter writer = pvc.getPartialResponseWriter();
+    private void renderEvalScripts(FacesContext context) throws IOException {
+        PartialViewContext pvc = context.getPartialViewContext();
+        PartialResponseWriter writer = pvc.getPartialResponseWriter();
 
-		for (String evalScript : pvc.getEvalScripts()) {
-			writer.startEval();
-			writer.write(evalScript);
-			writer.endEval();
-		}
-	}
+        for (String evalScript : pvc.getEvalScripts()) {
+            writer.startEval();
+            writer.write(evalScript);
+            writer.endEval();
+        }
+    }
 
     private PartialResponseWriter createPartialResponseWriter() {
 
@@ -538,26 +512,21 @@ import jakarta.faces.render.RenderKitFactory;
             out = extContext.getResponseOutputWriter();
         } catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                           ioe.toString(),
-                           ioe);
+                LOGGER.log(Level.SEVERE, ioe.toString(), ioe);
             }
         }
 
         if (out != null) {
             UIViewRoot viewRoot = ctx.getViewRoot();
             if (viewRoot != null) {
-                responseWriter =
-                    ctx.getRenderKit().createResponseWriter(out,
-                    RIConstants.TEXT_XML_CONTENT_TYPE, encoding);
+                responseWriter = ctx.getRenderKit().createResponseWriter(out, RIConstants.TEXT_XML_CONTENT_TYPE, encoding);
             } else {
-                RenderKitFactory factory = (RenderKitFactory)
-                    FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+                RenderKitFactory factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
                 RenderKit renderKit = factory.getRenderKit(ctx, RenderKitFactory.HTML_BASIC_RENDER_KIT);
                 responseWriter = renderKit.createResponseWriter(out, RIConstants.TEXT_XML_CONTENT_TYPE, encoding);
             }
         }
-        if (responseWriter instanceof PartialResponseWriter)  {
+        if (responseWriter instanceof PartialResponseWriter) {
             return (PartialResponseWriter) responseWriter;
         } else {
             return new PartialResponseWriter(responseWriter);
@@ -566,9 +535,8 @@ import jakarta.faces.render.RenderKitFactory;
     }
 
     private void cleanupAfterView() {
-        ResponseWriter orig = (ResponseWriter) ctx.getAttributes().
-            get(ORIGINAL_WRITER);
-        assert(null != orig);
+        ResponseWriter orig = (ResponseWriter) ctx.getAttributes().get(ORIGINAL_WRITER);
+        assert (null != orig);
         // move aside the PartialResponseWriter
         ctx.setResponseWriter(orig);
     }
@@ -581,7 +549,6 @@ import jakarta.faces.render.RenderKitFactory;
 
     // ----------------------------------------------------------- Inner Classes
 
-
     private static class PhaseAwareVisitCallback implements VisitCallback {
 
         private PhaseId curPhase;
@@ -590,8 +557,7 @@ import jakarta.faces.render.RenderKitFactory;
         private PhaseAwareVisitCallback(FacesContext ctx, PhaseId curPhase) {
             this.ctx = ctx;
             this.curPhase = curPhase;
-        }  
-
+        }
 
         @Override
         public VisitResult visit(VisitContext context, UIComponent comp) {
@@ -615,44 +581,35 @@ import jakarta.faces.render.RenderKitFactory;
                     comp.encodeAll(ctx);
                     writer.endUpdate();
                 } else {
-                    throw new IllegalStateException("I18N: Unexpected " +
-                                                    "PhaseId passed to " +
-                                              " PhaseAwareContextCallback: " +
-                                                    curPhase.toString());
+                    throw new IllegalStateException("I18N: Unexpected " + "PhaseId passed to " + " PhaseAwareContextCallback: " + curPhase.toString());
                 }
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.severe(ex.toString());
                 }
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE,
-                    ex.toString(),
-                    ex);
+                    LOGGER.log(Level.FINE, ex.toString(), ex);
                 }
                 throw new FacesException(ex);
             }
 
             // Once we visit a component, there is no need to visit
             // its children, since processDecodes/Validators/Updates and
-            // encodeAll() already traverse the subtree.  We return
+            // encodeAll() already traverse the subtree. We return
             // VisitResult.REJECT to supress the subtree visit.
             return VisitResult.REJECT;
         }
     }
 
-
-     /**
-      * Delays the actual construction of the PartialResponseWriter <em>until</em>
-      * content is going to actually be written.
-      */
+    /**
+     * Delays the actual construction of the PartialResponseWriter <em>until</em> content is going to actually be written.
+     */
     private static final class DelayedInitPartialResponseWriter extends PartialResponseWriter {
 
         private ResponseWriter writer;
         private PartialViewContextImpl ctx;
 
         // -------------------------------------------------------- Constructors
-
 
         public DelayedInitPartialResponseWriter(PartialViewContextImpl ctx) {
 
@@ -663,7 +620,6 @@ import jakarta.faces.render.RenderKitFactory;
             extCtx.setResponseCharacterEncoding(extCtx.getRequestCharacterEncoding());
             extCtx.setResponseBufferSize(ctx.ctx.getExternalContext().getResponseBufferSize());
         }
-
 
         // ---------------------------------- Methods from PartialResponseWriter
 
@@ -681,7 +637,7 @@ import jakarta.faces.render.RenderKitFactory;
             return writer;
 
         }
-         
+
     } // END DelayedInitPartialResponseWriter
 
-} 
+}

@@ -35,9 +35,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     private ViewHandlingStrategyManager viewHandlingStrategyManager;
     private List<ViewDeclarationLanguage> allViewDeclarationLanguages;
 
-
     // ------------------------------------ Methods from ViewDeclarationLanguageFactory
-
 
     /**
      * @see jakarta.faces.view.ViewDeclarationLanguageFactory#getViewDeclarationLanguage(String)
@@ -46,13 +44,13 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     public ViewDeclarationLanguage getViewDeclarationLanguage(String viewId) {
         return getViewHandlingStrategyManager().getStrategy(viewId);
     }
-    
+
     /**
      * @see jakarta.faces.view.ViewDeclarationLanguageFactory#getAllViewDeclarationLanguages()
      */
     @Override
     public List<ViewDeclarationLanguage> getAllViewDeclarationLanguages() {
-        
+
         if (allViewDeclarationLanguages == null) {
             allViewDeclarationLanguages = asList(getViewHandlingStrategyManager().getViewHandlingStrategies());
         }
@@ -60,16 +58,14 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         return allViewDeclarationLanguages;
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private ViewHandlingStrategyManager getViewHandlingStrategyManager() {
 
         if (viewHandlingStrategyManager == null) {
             viewHandlingStrategyManager = new ViewHandlingStrategyManager();
         }
-        
+
         return viewHandlingStrategyManager;
     }
 

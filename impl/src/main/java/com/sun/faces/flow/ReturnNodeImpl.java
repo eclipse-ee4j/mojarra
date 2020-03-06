@@ -26,9 +26,9 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 
 public class ReturnNodeImpl extends ReturnNode implements Serializable {
-    
+
     private static final long serialVersionUID = 7159675814039078231L;
-    
+
     private final String id;
     private ValueExpression fromOutcome;
 
@@ -41,25 +41,24 @@ public class ReturnNodeImpl extends ReturnNode implements Serializable {
     public String getFromOutcome(FacesContext context) {
         Util.notNull("context", context);
         String result = null;
-        
+
         if (null != fromOutcome) {
             Object objResult = fromOutcome.getValue(context.getELContext());
             result = (null != objResult) ? objResult.toString() : null;
         }
         return result;
     }
-    
+
     public void setFromOutcome(String fromOutcome) {
         if (null == fromOutcome) {
             this.fromOutcome = null;
         }
         FacesContext context = FacesContext.getCurrentInstance();
         ExpressionFactory eFactory = context.getApplication().getExpressionFactory();
-        this.fromOutcome = eFactory.createValueExpression(context.getELContext(), 
-                fromOutcome, Object.class);
-        
+        this.fromOutcome = eFactory.createValueExpression(context.getELContext(), fromOutcome, Object.class);
+
     }
-    
+
     public void setFromOutcome(ValueExpression fromOutcome) {
         this.fromOutcome = fromOutcome;
     }
@@ -68,9 +67,5 @@ public class ReturnNodeImpl extends ReturnNode implements Serializable {
     public String getId() {
         return id;
     }
-    
-    
-    
-    
-    
+
 }

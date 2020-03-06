@@ -18,7 +18,6 @@ package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.facelets.tag.AbstractTagLibrary;
 
-
 public final class PassThroughAttributeLibrary extends AbstractTagLibrary {
 
     public final static String Namespace = "http://xmlns.jcp.org/jsf/passthrough";

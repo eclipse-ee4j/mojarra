@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.compiler;
 
-
 import com.sun.faces.facelets.el.ELText;
 
 import jakarta.faces.context.FacesContext;
@@ -34,12 +33,11 @@ final class AttributeInstruction implements Instruction {
     private final String attr;
 
     private final ELText txt;
-    
 
     public AttributeInstruction(String alias, String attr, ELText txt) {
         this.alias = alias;
-        this.attr  = attr;
-        this.txt   = txt;
+        this.attr = attr;
+        this.txt = txt;
     }
 
     @Override

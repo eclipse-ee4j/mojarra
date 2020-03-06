@@ -33,28 +33,24 @@ import java.util.logging.Logger;
 
 /**
  * <p>
- * <code>ConfigAnnotationHandler</code> for {@link FacesConverter} annotated
- * classes.
+ * <code>ConfigAnnotationHandler</code> for {@link FacesConverter} annotated classes.
  * </p>
  */
 public class ConverterConfigHandler implements ConfigAnnotationHandler {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private static final Collection<Class<? extends Annotation>> HANDLES;
-    
+
     static {
-        Collection<Class<? extends Annotation>> handles =
-              new ArrayList<>(1);
+        Collection<Class<? extends Annotation>> handles = new ArrayList<>(1);
         handles.add(FacesConverter.class);
         HANDLES = Collections.unmodifiableCollection(handles);
     }
 
-    private Map<Object,String> converters;
-
+    private Map<Object, String> converters;
 
     // ------------------------------------- Methods from ComponentConfigHandler
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#getHandledAnnotations()
@@ -65,7 +61,6 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
         return HANDLES;
 
     }
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#collect(Class, java.lang.annotation.Annotation)
@@ -78,15 +73,13 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
         }
         Object key;
         FacesConverter converterAnnotation = (FacesConverter) annotation;
-        
-        if (converterAnnotation.value().length() > 0 &&
-                converterAnnotation.forClass() != null &&
-                converterAnnotation.forClass() != Object.class) {
+
+        if (converterAnnotation.value().length() > 0 && converterAnnotation.forClass() != null && converterAnnotation.forClass() != Object.class) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, "@FacesConverter is using both value and forClass, only value will be applied.");
             }
         }
-        
+
         if (0 == converterAnnotation.value().length()) {
             key = converterAnnotation.forClass();
         } else {
@@ -95,7 +88,6 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
         converters.put(key, target.getName());
 
     }
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)

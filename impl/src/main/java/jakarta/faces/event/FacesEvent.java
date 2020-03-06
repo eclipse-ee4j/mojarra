@@ -16,7 +16,6 @@
 
 package jakarta.faces.event;
 
-
 import java.util.EventObject;
 
 import jakarta.faces.event.AbortProcessingException;
@@ -30,23 +29,27 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_modified_2_3"><strong>FacesEvent</strong> is the base class 
- * for user interface and application events that can be fired by {@link UIComponent}s.
- * Concrete event classes must subclass {@link FacesEvent} in order to be supported
- * by the request processing lifecycle.</p>
+ * <p class="changed_modified_2_3">
+ * <strong>FacesEvent</strong> is the base class for user interface and application events that can be fired by
+ * {@link UIComponent}s. Concrete event classes must subclass {@link FacesEvent} in order to be supported by the request
+ * processing lifecycle.
+ * </p>
  */
 public abstract class FacesEvent extends EventObject {
 
     private static final long serialVersionUID = -367663885586773794L;
 
     /**
-     * <p class="changed_added_2_3">Stores the Faces context.</p>
+     * <p class="changed_added_2_3">
+     * Stores the Faces context.
+     * </p>
      */
     private transient FacesContext facesContext;
-    
+
     /**
-     * <p class="changed_removed_2_3">Construct a new event object from the 
-     * specified source component.</p>
+     * <p class="changed_removed_2_3">
+     * Construct a new event object from the specified source component.
+     * </p>
      *
      * @param component Source {@link UIComponent} for this event
      * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
@@ -54,10 +57,11 @@ public abstract class FacesEvent extends EventObject {
     public FacesEvent(UIComponent component) {
         super(component);
     }
-    
+
     /**
-     * <p class="changed_added_2_3">Construct a new event object from the 
-     * Faces context and specified source component.</p>
+     * <p class="changed_added_2_3">
+     * Construct a new event object from the Faces context and specified source component.
+     * </p>
      * 
      * @param facesContext the Faces context.
      * @param component Source {@link UIComponent} for this event.
@@ -71,9 +75,9 @@ public abstract class FacesEvent extends EventObject {
 
     // -------------------------------------------------------------- Properties
 
-
     /**
-     * <p>Return the source {@link UIComponent} that sent this event.
+     * <p>
+     * Return the source {@link UIComponent} that sent this event.
      * 
      * @return the source UI component.
      */
@@ -82,13 +86,15 @@ public abstract class FacesEvent extends EventObject {
         return ((UIComponent) getSource());
 
     }
-    
+
     /**
-     * <p class="changed_added_2_3">Get the Faces context.</p>
+     * <p class="changed_added_2_3">
+     * Get the Faces context.
+     * </p>
      * 
      * <p>
-     *  If the constructor was passed a FacesContext we return it, otherwise
-     *  we call FacesContext.getCurrentInstance() and return it.
+     * If the constructor was passed a FacesContext we return it, otherwise we call FacesContext.getCurrentInstance() and
+     * return it.
      * </p>
      * 
      * @return the Faces context.
@@ -96,10 +102,8 @@ public abstract class FacesEvent extends EventObject {
      */
     public FacesContext getFacesContext() {
         /*
-         * Note because UIViewAction is decorating the FacesContext during
-         * the execution of a request we cannot rely on the saved FacesContext 
-         * as it would be the original FacesContext (which is what we should be
-         * able to rely on). 
+         * Note because UIViewAction is decorating the FacesContext during the execution of a request we cannot rely on the
+         * saved FacesContext as it would be the original FacesContext (which is what we should be able to rely on).
          *
          * TODO - remove UIViewAction dependency on decorating the FacesContext.
          */
@@ -112,42 +116,41 @@ public abstract class FacesEvent extends EventObject {
     private PhaseId phaseId = PhaseId.ANY_PHASE;
 
     /**
-     * <p>Return the identifier of the request processing phase during
-     * which this event should be delivered.  Legal values are the
-     * singleton instances defined by the {@link PhaseId} class,
-     * including <code>PhaseId.ANY_PHASE</code>, which is the default
-     * value.</p>
+     * <p>
+     * Return the identifier of the request processing phase during which this event should be delivered. Legal values are
+     * the singleton instances defined by the {@link PhaseId} class, including <code>PhaseId.ANY_PHASE</code>, which is the
+     * default value.
+     * </p>
      * 
      * @return the phase id.
      */
     public PhaseId getPhaseId() {
-	return phaseId;
+        return phaseId;
     }
-   
+
     /**
-     * <p>Set the {@link PhaseId} during which this event will be
-     * delivered.</p>
+     * <p>
+     * Set the {@link PhaseId} during which this event will be delivered.
+     * </p>
      * 
      * @param phaseId the phase id.
      * @throws IllegalArgumentException phaseId is null.
-     */ 
+     */
     public void setPhaseId(PhaseId phaseId) {
-	if (null == phaseId) {
-	    throw new IllegalArgumentException();
-	}
-	this.phaseId = phaseId;
+        if (null == phaseId) {
+            throw new IllegalArgumentException();
+        }
+        this.phaseId = phaseId;
     }
-
 
     // ------------------------------------------------- Event Broadcast Methods
 
-
     /**
-     * <p>Convenience method to queue this event for broadcast at the end
-     * of the current request processing lifecycle phase.</p>
+     * <p>
+     * Convenience method to queue this event for broadcast at the end of the current request processing lifecycle phase.
+     * </p>
      *
-     * @throws IllegalStateException if the source component for this
-     *  event is not a descendant of a {@link UIViewRoot}
+     * @throws IllegalStateException if the source component for this event is not a descendant of a {@link UIViewRoot}
      */
     public void queue() {
 
@@ -155,31 +158,29 @@ public abstract class FacesEvent extends EventObject {
 
     }
 
-
     /**
-     * <p>Return <code>true</code> if this {@link FacesListener} is an instance
-     * of a listener class that this event supports.  Typically, this will be
-     * accomplished by an "instanceof" check on the listener class.</p>
+     * <p>
+     * Return <code>true</code> if this {@link FacesListener} is an instance of a listener class that this event supports.
+     * Typically, this will be accomplished by an "instanceof" check on the listener class.
+     * </p>
      *
      * @param listener {@link FacesListener} to evaluate
      * @return true if it is the appropriate instance, false otherwise.
      */
     public abstract boolean isAppropriateListener(FacesListener listener);
 
-
     /**
-     * <p>Broadcast this {@link FacesEvent} to the specified
-     * {@link FacesListener}, by whatever mechanism is appropriate.  Typically,
-     * this will be accomplished by calling an event processing method, and
-     * passing this {@link FacesEvent} as a paramter.</p>
+     * <p>
+     * Broadcast this {@link FacesEvent} to the specified {@link FacesListener}, by whatever mechanism is appropriate.
+     * Typically, this will be accomplished by calling an event processing method, and passing this {@link FacesEvent} as a
+     * paramter.
+     * </p>
      *
      * @param listener {@link FacesListener} to send this {@link FacesEvent} to
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces
-     *  implementation that no further processing on the current event
-     *  should be performed
+     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * current event should be performed
      */
     public abstract void processListener(FacesListener listener);
-
 
 }

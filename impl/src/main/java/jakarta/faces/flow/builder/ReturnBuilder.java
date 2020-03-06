@@ -19,16 +19,20 @@ package jakarta.faces.flow.builder;
 import jakarta.el.ValueExpression;
 
 /**
- * <p class="changed_added_2_2">Create a return node in the current {@link jakarta.faces.flow.Flow}.</p>
+ * <p class="changed_added_2_2">
+ * Create a return node in the current {@link jakarta.faces.flow.Flow}.
+ * </p>
+ * 
  * @since 2.2
  */
 public abstract class ReturnBuilder implements NodeBuilder {
-    
+
     /**
-     * <p class="changed_added_2_2">Set the outcome of the current return node.</p>
+     * <p class="changed_added_2_2">
+     * Set the outcome of the current return node.
+     * </p>
      * 
-     * @param outcome A {@code ValueExpression} String {@code String} that will be the 
-     * outcome of the return.
+     * @param outcome A {@code ValueExpression} String {@code String} that will be the outcome of the return.
      * @throws NullPointerException if any of the parameters are {@code null}
      * 
      * @since 2.2
@@ -36,12 +40,13 @@ public abstract class ReturnBuilder implements NodeBuilder {
      * @return the builder instance
      */
     public abstract ReturnBuilder fromOutcome(String outcome);
-    
+
     /**
-     * <p class="changed_added_2_2">Set the outcome of the current return node.</p>
+     * <p class="changed_added_2_2">
+     * Set the outcome of the current return node.
+     * </p>
      * 
-     * @param outcome A {@code ValueExpression} {@code String} that will be the 
-     * outcome of the return.
+     * @param outcome A {@code ValueExpression} {@code String} that will be the outcome of the return.
      * @throws NullPointerException if any of the parameters are {@code null}
      * 
      * @since 2.2
@@ -52,5 +57,5 @@ public abstract class ReturnBuilder implements NodeBuilder {
 
     @Override
     public abstract ReturnBuilder markAsStartNode();
-        
+
 }

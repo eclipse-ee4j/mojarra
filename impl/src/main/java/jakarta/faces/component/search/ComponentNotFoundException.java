@@ -19,8 +19,9 @@ package jakarta.faces.component.search;
 import jakarta.faces.FacesException;
 
 /**
- * <p class="changed_added_2_3">Typed {@link FacesException} for the {@link SearchExpressionHandler},
- * if a component can't be resolved.</p>
+ * <p class="changed_added_2_3">
+ * Typed {@link FacesException} for the {@link SearchExpressionHandler}, if a component can't be resolved.
+ * </p>
  *
  * @since 2.3
  */
@@ -29,7 +30,9 @@ public class ComponentNotFoundException extends FacesException {
     private static final long serialVersionUID = -8962632721771880921L;
 
     /**
-     * <p class="changed_added_2_3">Construct a new exception with no detail message or root cause.</p>
+     * <p class="changed_added_2_3">
+     * Construct a new exception with no detail message or root cause.
+     * </p>
      * 
      * @since 2.3
      */
@@ -38,8 +41,9 @@ public class ComponentNotFoundException extends FacesException {
     }
 
     /**
-     * <p class="changed_added_2_3">Construct a new exception with the specified detail message and
-     * no root cause.</p>
+     * <p class="changed_added_2_3">
+     * Construct a new exception with the specified detail message and no root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      * 
@@ -50,8 +54,9 @@ public class ComponentNotFoundException extends FacesException {
     }
 
     /**
-     * <p class="changed_added_2_3">Construct a new exception with the specified root cause.  The detail
-     * message will be set to <code>(cause == null ? null :
+     * <p class="changed_added_2_3">
+     * Construct a new exception with the specified root cause. The detail message will be set to
+     * <code>(cause == null ? null :
      * cause.toString()</code>
      *
      * @param cause The root cause for this exception
@@ -63,8 +68,9 @@ public class ComponentNotFoundException extends FacesException {
     }
 
     /**
-     * <p class="changed_added_2_3">Construct a new exception with the specified detail message and
-     * root cause.</p>
+     * <p class="changed_added_2_3">
+     * Construct a new exception with the specified detail message and root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      * @param cause The root cause for this exception

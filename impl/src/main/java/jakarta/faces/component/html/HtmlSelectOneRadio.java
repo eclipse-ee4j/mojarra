@@ -29,17 +29,16 @@ import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
 /**
- * <p><span
- * class="changed_modified_2_0_rev_a">Represents</span> a
- * single-selection component that is rendered as a set of HTML
- * <code>input</code> elements of type
- * <code>radio</code>.</p>
- * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Radio</code>".
- * This value can be changed by calling the <code>setRendererType()</code> method.</p>
+ * <p>
+ * <span class="changed_modified_2_0_rev_a">Represents</span> a single-selection component that is rendered as a set of
+ * HTML <code>input</code> elements of type <code>radio</code>.
+ * </p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Radio</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
 public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHolder {
-
-
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -48,58 +47,39 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         setRendererType("jakarta.faces.Radio");
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlSelectOneRadio";
 
-
     protected enum PropertyKeys {
-        accesskey,
-        border,
-        dir,
-        disabled,
-        disabledClass,
-        enabledClass,
-        group,
-        label,
-        lang,
-        layout,
-        onblur,
-        onchange,
-        onclick,
-        ondblclick,
-        onfocus,
-        onkeydown,
-        onkeypress,
-        onkeyup,
-        onmousedown,
-        onmousemove,
-        onmouseout,
-        onmouseover,
-        onmouseup,
-        onselect,
-        readonly,
-        role,
-        style,
-        styleClass,
-        tabindex,
-        title,
-;
+        accesskey, border, dir, disabled, disabledClass, enabledClass, group, label, lang, layout, onblur, onchange, onclick, ondblclick, onfocus, onkeydown,
+        onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, style, styleClass, tabindex, title,;
+
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
-}
+    }
 
     /**
-     * <p>Return the value of the <code>accesskey</code> property.</p>
+     * <p>
+     * Return the value of the <code>accesskey</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Access key that, when pressed, transfers focus
-     * to this element.
+     * <p>
+     * Contents: Access key that, when pressed, transfers focus to this element.
      */
     public java.lang.String getAccesskey() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.accesskey);
@@ -107,7 +87,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>accesskey</code> property.</p>
+     * <p>
+     * Set the value of the <code>accesskey</code> property.
+     * </p>
+     * 
      * @param accesskey the new property value
      */
     public void setAccesskey(java.lang.String accesskey) {
@@ -115,13 +98,15 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("accesskey", accesskey);
     }
 
-
     /**
-     * <p>Return the value of the <code>border</code> property.</p>
+     * <p>
+     * Return the value of the <code>border</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Width (in pixels) of the border to be drawn
-     * around the table containing the options list.
-     * This attribute is ignored when "group" attribute is specified.
+     * <p>
+     * Contents: Width (in pixels) of the border to be drawn around the table containing the options list. This attribute is
+     * ignored when "group" attribute is specified.
      */
     public int getBorder() {
         return (java.lang.Integer) getStateHelper().eval(PropertyKeys.border, Integer.MIN_VALUE);
@@ -129,7 +114,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>border</code> property.</p>
+     * <p>
+     * Set the value of the <code>border</code> property.
+     * </p>
+     * 
      * @param border the new property value
      */
     public void setBorder(int border) {
@@ -137,14 +125,16 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("border", border);
     }
 
-
     /**
-     * <p>Return the value of the <code>dir</code> property.</p>
+     * <p>
+     * Return the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Direction indication for text that does not inherit directionality.
-     * Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).
-     * These attributes are case sensitive when rendering to XHTML, so
-     * care must be taken to have the correct case.
+     * <p>
+     * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
+     * and "RTL" (right-to-left). These attributes are case sensitive when rendering to XHTML, so care must be taken to have
+     * the correct case.
      */
     public java.lang.String getDir() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.dir);
@@ -152,7 +142,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>dir</code> property.</p>
+     * <p>
+     * Set the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @param dir the new property value
      */
     public void setDir(java.lang.String dir) {
@@ -160,14 +153,16 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("dir", dir);
     }
 
-
     /**
-     * <p>Return the value of the <code>disabled</code> property.</p>
+     * <p>
+     * Return the value of the <code>disabled</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Flag indicating that this element must never receive focus or
-     * be included in a subsequent submit.  A value of false causes
-     * no attribute to be rendered, while a value of true causes the
-     * attribute to be rendered as disabled="disabled".
+     * <p>
+     * Contents: Flag indicating that this element must never receive focus or be included in a subsequent submit. A value
+     * of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as
+     * disabled="disabled".
      */
     public boolean isDisabled() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.disabled, false);
@@ -175,20 +170,25 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>disabled</code> property.</p>
+     * <p>
+     * Set the value of the <code>disabled</code> property.
+     * </p>
+     * 
      * @param disabled the new property value
      */
     public void setDisabled(boolean disabled) {
         getStateHelper().put(PropertyKeys.disabled, disabled);
     }
 
-
     /**
-     * <p>Return the value of the <code>disabledClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>disabledClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style class to apply to the rendered label
-     * on disabled options.
-     * This attribute is ignored when "group" attribute is specified.
+     * <p>
+     * Contents: CSS style class to apply to the rendered label on disabled options. This attribute is ignored when "group"
+     * attribute is specified.
      */
     public java.lang.String getDisabledClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.disabledClass);
@@ -196,20 +196,25 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>disabledClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>disabledClass</code> property.
+     * </p>
+     * 
      * @param disabledClass the new property value
      */
     public void setDisabledClass(java.lang.String disabledClass) {
         getStateHelper().put(PropertyKeys.disabledClass, disabledClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>enabledClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>enabledClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style class to apply to the rendered label
-     * on enabled options.
-     * This attribute is ignored when "group" attribute is specified.
+     * <p>
+     * Contents: CSS style class to apply to the rendered label on enabled options. This attribute is ignored when "group"
+     * attribute is specified.
      */
     public java.lang.String getEnabledClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.enabledClass);
@@ -217,26 +222,29 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>enabledClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>enabledClass</code> property.
+     * </p>
+     * 
      * @param enabledClass the new property value
      */
     public void setEnabledClass(java.lang.String enabledClass) {
         getStateHelper().put(PropertyKeys.enabledClass, enabledClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>group</code> property.</p>
+     * <p>
+     * Return the value of the <code>group</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Specifies the name of the radio button group. Radio button components
-     * having the same group within a <code>UIForm</code> parent will uncheck
-     * all others when being checked. If the <code>value</code> attribute is
-     * absent then the one from first component of the group will be used. If
-     * the <code>UISelectItem</code> child is absent then the one from first
-     * component of the group will be used. When specified, the
-     * <code>group</code> attribute disables the default rendering of the
-     * "table" element and any attribute related to the rendering of the
-     * "table" element, such as "border", is ignored.
+     * <p>
+     * Contents: Specifies the name of the radio button group. Radio button components having the same group within a
+     * <code>UIForm</code> parent will uncheck all others when being checked. If the <code>value</code> attribute is absent
+     * then the one from first component of the group will be used. If the <code>UISelectItem</code> child is absent then
+     * the one from first component of the group will be used. When specified, the <code>group</code> attribute disables the
+     * default rendering of the "table" element and any attribute related to the rendering of the "table" element, such as
+     * "border", is ignored.
      */
     public java.lang.String getGroup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.group);
@@ -244,18 +252,24 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>group</code> property.</p>
+     * <p>
+     * Set the value of the <code>group</code> property.
+     * </p>
+     * 
      * @param group the new property value
      */
     public void setGroup(java.lang.String group) {
         getStateHelper().put(PropertyKeys.group, group);
     }
 
-
     /**
-     * <p>Return the value of the <code>label</code> property.</p>
+     * <p>
+     * Return the value of the <code>label</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: A localized user presentable name for this component.
+     * <p>
+     * Contents: A localized user presentable name for this component.
      */
     public java.lang.String getLabel() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.label);
@@ -263,19 +277,24 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>label</code> property.</p>
+     * <p>
+     * Set the value of the <code>label</code> property.
+     * </p>
+     * 
      * @param label the new property value
      */
     public void setLabel(java.lang.String label) {
         getStateHelper().put(PropertyKeys.label, label);
     }
 
-
     /**
-     * <p>Return the value of the <code>lang</code> property.</p>
+     * <p>
+     * Return the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Code describing the language used in the generated markup
-     * for this component.
+     * <p>
+     * Contents: Code describing the language used in the generated markup for this component.
      */
     public java.lang.String getLang() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.lang);
@@ -283,7 +302,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>lang</code> property.</p>
+     * <p>
+     * Set the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @param lang the new property value
      */
     public void setLang(java.lang.String lang) {
@@ -291,16 +313,16 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("lang", lang);
     }
 
-
     /**
-     * <p>Return the value of the <code>layout</code> property.</p>
+     * <p>
+     * Return the value of the <code>layout</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Orientation of the options list to be created.
-     * Valid values are "pageDirection" (list is laid
-     * out vertically), or "lineDirection" (list is
-     * laid out horizontally).  If not specified, the
-     * default value is "lineDirection".
-     * This attribute is ignored when "group" attribute is specified.
+     * <p>
+     * Contents: Orientation of the options list to be created. Valid values are "pageDirection" (list is laid out
+     * vertically), or "lineDirection" (list is laid out horizontally). If not specified, the default value is
+     * "lineDirection". This attribute is ignored when "group" attribute is specified.
      */
     public java.lang.String getLayout() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.layout);
@@ -308,18 +330,24 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>layout</code> property.</p>
+     * <p>
+     * Set the value of the <code>layout</code> property.
+     * </p>
+     * 
      * @param layout the new property value
      */
     public void setLayout(java.lang.String layout) {
         getStateHelper().put(PropertyKeys.layout, layout);
     }
 
-
     /**
-     * <p>Return the value of the <code>onblur</code> property.</p>
+     * <p>
+     * Return the value of the <code>onblur</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when this element loses focus.
+     * <p>
+     * Contents: Javascript code executed when this element loses focus.
      */
     public java.lang.String getOnblur() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onblur);
@@ -327,7 +355,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onblur</code> property.</p>
+     * <p>
+     * Set the value of the <code>onblur</code> property.
+     * </p>
+     * 
      * @param onblur the new property value
      */
     public void setOnblur(java.lang.String onblur) {
@@ -335,12 +366,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onblur", onblur);
     }
 
-
     /**
-     * <p>Return the value of the <code>onchange</code> property.</p>
+     * <p>
+     * Return the value of the <code>onchange</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when this element loses focus
-     * and its value has been modified since gaining focus.
+     * <p>
+     * Contents: Javascript code executed when this element loses focus and its value has been modified since gaining focus.
      */
     public java.lang.String getOnchange() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onchange);
@@ -348,7 +381,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onchange</code> property.</p>
+     * <p>
+     * Set the value of the <code>onchange</code> property.
+     * </p>
+     * 
      * @param onchange the new property value
      */
     public void setOnchange(java.lang.String onchange) {
@@ -356,12 +392,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onchange", onchange);
     }
 
-
     /**
-     * <p>Return the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Return the value of the <code>onclick</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * clicked over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is clicked over this element.
      */
     public java.lang.String getOnclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onclick);
@@ -369,19 +407,24 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>onclick</code> property.
+     * </p>
+     * 
      * @param onclick the new property value
      */
     public void setOnclick(java.lang.String onclick) {
         getStateHelper().put(PropertyKeys.onclick, onclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Return the value of the <code>ondblclick</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * double clicked over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is double clicked over this element.
      */
     public java.lang.String getOndblclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.ondblclick);
@@ -389,7 +432,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>ondblclick</code> property.
+     * </p>
+     * 
      * @param ondblclick the new property value
      */
     public void setOndblclick(java.lang.String ondblclick) {
@@ -397,11 +443,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("ondblclick", ondblclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>onfocus</code> property.</p>
+     * <p>
+     * Return the value of the <code>onfocus</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when this element receives focus.
+     * <p>
+     * Contents: Javascript code executed when this element receives focus.
      */
     public java.lang.String getOnfocus() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onfocus);
@@ -409,7 +458,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onfocus</code> property.</p>
+     * <p>
+     * Set the value of the <code>onfocus</code> property.
+     * </p>
+     * 
      * @param onfocus the new property value
      */
     public void setOnfocus(java.lang.String onfocus) {
@@ -417,12 +469,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onfocus", onfocus);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeydown</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * pressed down over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is pressed down over this element.
      */
     public java.lang.String getOnkeydown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeydown);
@@ -430,7 +484,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeydown</code> property.
+     * </p>
+     * 
      * @param onkeydown the new property value
      */
     public void setOnkeydown(java.lang.String onkeydown) {
@@ -438,12 +495,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onkeydown", onkeydown);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeypress</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * pressed and released over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is pressed and released over this element.
      */
     public java.lang.String getOnkeypress() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeypress);
@@ -451,7 +510,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeypress</code> property.
+     * </p>
+     * 
      * @param onkeypress the new property value
      */
     public void setOnkeypress(java.lang.String onkeypress) {
@@ -459,12 +521,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onkeypress", onkeypress);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeyup</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * released over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is released over this element.
      */
     public java.lang.String getOnkeyup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeyup);
@@ -472,7 +536,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeyup</code> property.
+     * </p>
+     * 
      * @param onkeyup the new property value
      */
     public void setOnkeyup(java.lang.String onkeyup) {
@@ -480,12 +547,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onkeyup", onkeyup);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmousedown</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * pressed down over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is pressed down over this element.
      */
     public java.lang.String getOnmousedown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousedown);
@@ -493,7 +562,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousedown</code> property.
+     * </p>
+     * 
      * @param onmousedown the new property value
      */
     public void setOnmousedown(java.lang.String onmousedown) {
@@ -501,12 +573,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onmousedown", onmousedown);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmousemove</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved within this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved within this element.
      */
     public java.lang.String getOnmousemove() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousemove);
@@ -514,7 +588,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousemove</code> property.
+     * </p>
+     * 
      * @param onmousemove the new property value
      */
     public void setOnmousemove(java.lang.String onmousemove) {
@@ -522,12 +599,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onmousemove", onmousemove);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseout</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved away from this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved away from this element.
      */
     public java.lang.String getOnmouseout() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseout);
@@ -535,7 +614,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseout</code> property.
+     * </p>
+     * 
      * @param onmouseout the new property value
      */
     public void setOnmouseout(java.lang.String onmouseout) {
@@ -543,12 +625,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onmouseout", onmouseout);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseover</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved onto this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved onto this element.
      */
     public java.lang.String getOnmouseover() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseover);
@@ -556,7 +640,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseover</code> property.
+     * </p>
+     * 
      * @param onmouseover the new property value
      */
     public void setOnmouseover(java.lang.String onmouseover) {
@@ -564,12 +651,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onmouseover", onmouseover);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseup</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * released over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is released over this element.
      */
     public java.lang.String getOnmouseup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseup);
@@ -577,7 +666,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseup</code> property.
+     * </p>
+     * 
      * @param onmouseup the new property value
      */
     public void setOnmouseup(java.lang.String onmouseup) {
@@ -585,12 +677,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onmouseup", onmouseup);
     }
 
-
     /**
-     * <p>Return the value of the <code>onselect</code> property.</p>
+     * <p>
+     * Return the value of the <code>onselect</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when text within this
-     * element is selected by the user.
+     * <p>
+     * Contents: Javascript code executed when text within this element is selected by the user.
      */
     public java.lang.String getOnselect() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onselect);
@@ -598,7 +692,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>onselect</code> property.</p>
+     * <p>
+     * Set the value of the <code>onselect</code> property.
+     * </p>
+     * 
      * @param onselect the new property value
      */
     public void setOnselect(java.lang.String onselect) {
@@ -606,14 +703,15 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("onselect", onselect);
     }
 
-
     /**
-     * <p>Return the value of the <code>readonly</code> property.</p>
+     * <p>
+     * Return the value of the <code>readonly</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Flag indicating that this component will prohibit changes by
-     * the user.  The element may receive focus unless it has also
-     * been disabled.  A value of false causes
-     * no attribute to be rendered, while a value of true causes the
+     * <p>
+     * Contents: Flag indicating that this component will prohibit changes by the user. The element may receive focus unless
+     * it has also been disabled. A value of false causes no attribute to be rendered, while a value of true causes the
      * attribute to be rendered as readonly="readonly".
      */
     public boolean isReadonly() {
@@ -622,31 +720,36 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>readonly</code> property.</p>
+     * <p>
+     * Set the value of the <code>readonly</code> property.
+     * </p>
+     * 
      * @param readonly the new property value
      */
     public void setReadonly(boolean readonly) {
         getStateHelper().put(PropertyKeys.readonly, readonly);
     }
 
-
     /**
-     * <p>Return the value of the <code>role</code> property.</p>
-     * @return the property value
-     * <p>Contents: <p class="changed_added_2_2">Per the WAI-ARIA spec and its
-     * relationship to HTML5 (Section title ARIA Role Attriubute),
-     * every HTML element may have a "role" attribute whose value
-     * must be passed through unmodified on the element on which it
-     * is declared in the final rendered markup.  The attribute, if
-     * specified, must have a value that is a string literal that is,
-     * or an EL Expression that evaluates to, a set of
-     * space-separated tokens representing the various WAI-ARIA roles
-     * that the element belongs to.
+     * <p>
+     * Return the value of the <code>role</code> property.
      * </p>
      * 
-     * <p class="changed_added_2_2">It is the page author's
-     * responsibility to ensure that the user agent is capable of
-     * correctly interpreting the value of this attribute.</p>
+     * @return the property value
+     * <p>
+     * Contents:
+     * <p class="changed_added_2_2">
+     * Per the WAI-ARIA spec and its relationship to HTML5 (Section title ARIA Role Attriubute), every HTML element may have
+     * a "role" attribute whose value must be passed through unmodified on the element on which it is declared in the final
+     * rendered markup. The attribute, if specified, must have a value that is a string literal that is, or an EL Expression
+     * that evaluates to, a set of space-separated tokens representing the various WAI-ARIA roles that the element belongs
+     * to.
+     * </p>
+     * 
+     * <p class="changed_added_2_2">
+     * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
+     * of this attribute.
+     * </p>
      */
     public java.lang.String getRole() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.role);
@@ -654,7 +757,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>role</code> property.</p>
+     * <p>
+     * Set the value of the <code>role</code> property.
+     * </p>
+     * 
      * @param role the new property value
      */
     public void setRole(java.lang.String role) {
@@ -662,11 +768,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("role", role);
     }
 
-
     /**
-     * <p>Return the value of the <code>style</code> property.</p>
+     * <p>
+     * Return the value of the <code>style</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style(s) to be applied when this component is rendered.
+     * <p>
+     * Contents: CSS style(s) to be applied when this component is rendered.
      */
     public java.lang.String getStyle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.style);
@@ -674,7 +783,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>style</code> property.</p>
+     * <p>
+     * Set the value of the <code>style</code> property.
+     * </p>
+     * 
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -682,13 +794,15 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("style", style);
     }
 
-
     /**
-     * <p>Return the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Space-separated list of CSS style class(es) to be applied when
-     * this element is rendered.  This value must be passed through
-     * as the "class" attribute on generated markup.
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
+     * passed through as the "class" attribute on generated markup.
      */
     public java.lang.String getStyleClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.styleClass);
@@ -696,20 +810,25 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>tabindex</code> property.</p>
+     * <p>
+     * Return the value of the <code>tabindex</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Position of this element in the tabbing order
-     * for the current document.  This value must be
-     * an integer between 0 and 32767.
+     * <p>
+     * Contents: Position of this element in the tabbing order for the current document. This value must be an integer
+     * between 0 and 32767.
      */
     public java.lang.String getTabindex() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.tabindex);
@@ -717,7 +836,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>tabindex</code> property.</p>
+     * <p>
+     * Set the value of the <code>tabindex</code> property.
+     * </p>
+     * 
      * @param tabindex the new property value
      */
     public void setTabindex(java.lang.String tabindex) {
@@ -725,12 +847,14 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("tabindex", tabindex);
     }
 
-
     /**
-     * <p>Return the value of the <code>title</code> property.</p>
+     * <p>
+     * Return the value of the <code>title</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Advisory title information about markup elements generated
-     * for this component.
+     * <p>
+     * Contents: Advisory title information about markup elements generated for this component.
      */
     public java.lang.String getTitle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.title);
@@ -738,7 +862,10 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     /**
-     * <p>Set the value of the <code>title</code> property.</p>
+     * <p>
+     * Set the value of the <code>title</code> property.
+     * </p>
+     * 
      * @param title the new property value
      */
     public void setTitle(java.lang.String title) {
@@ -746,16 +873,16 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         handleAttribute("title", title);
     }
 
-
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur","change","click","valueChange","dblclick","focus","keydown","keypress","keyup","mousedown","mousemove","mouseout","mouseover","mouseup","select"));
+    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur", "change", "click", "valueChange", "dblclick",
+            "focus", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "select"));
 
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;    }
-
+        return EVENT_NAMES;
+    }
 
     public String getDefaultEventName() {
-        return "valueChange";    }
-
+        return "valueChange";
+    }
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");

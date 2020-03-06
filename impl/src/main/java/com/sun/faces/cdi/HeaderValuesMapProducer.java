@@ -26,8 +26,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The Header values map producer is the CDI producer that allows injection of the header
- * values map using @Inject.
+ * The Header values map producer is the CDI producer that allows injection of the header values map using @Inject.
  * </p>
  *
  * @since 2.3
@@ -39,17 +38,11 @@ public class HeaderValuesMapProducer extends CdiProducer<Map<String, String[]>> 
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public HeaderValuesMapProducer() {
-        super.name("headerValues")
-             .scope(RequestScoped.class)
-             .qualifiers(new HeaderValuesMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, String[].class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestHeaderValuesMap());
+        super.name("headerValues").scope(RequestScoped.class).qualifiers(new HeaderValuesMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String[].class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestHeaderValuesMap());
     }
-    
+
 }

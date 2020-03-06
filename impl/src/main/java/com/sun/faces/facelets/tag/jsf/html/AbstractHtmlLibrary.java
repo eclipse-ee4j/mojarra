@@ -30,10 +30,8 @@ public abstract class AbstractHtmlLibrary extends AbstractTagLibrary {
         super(namespace);
     }
 
-    public void addHtmlComponent(String name, String componentType,
-            String rendererType) {
-        super.addComponent(name, componentType, rendererType,
-                HtmlComponentHandler.class);
+    public void addHtmlComponent(String name, String componentType, String rendererType) {
+        super.addComponent(name, componentType, rendererType, HtmlComponentHandler.class);
     }
 
 }

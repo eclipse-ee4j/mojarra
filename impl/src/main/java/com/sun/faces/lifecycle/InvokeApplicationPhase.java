@@ -29,20 +29,18 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
 
 /**
- * <B>Lifetime And Scope</B> <P> Same lifetime and scope as
- * DefaultLifecycleImpl.
+ * <B>Lifetime And Scope</B>
+ * <P>
+ * Same lifetime and scope as DefaultLifecycleImpl.
  *
  */
 
 public class InvokeApplicationPhase extends Phase {
 
-
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void execute(FacesContext facesContext) throws FacesException {
@@ -72,14 +70,12 @@ public class InvokeApplicationPhase extends Phase {
 
     }
 
-
     @Override
     public PhaseId getId() {
 
         return PhaseId.INVOKE_APPLICATION;
 
     }
-
 
 // The testcase for this class is TestInvokeApplicationPhase.java
 

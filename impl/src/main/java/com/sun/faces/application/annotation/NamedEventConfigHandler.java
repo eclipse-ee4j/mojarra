@@ -31,15 +31,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class handles the processing the NamedEvent annotation.  For each class
- * with this annotation, the following logic is applied:
+ * This class handles the processing the NamedEvent annotation. For each class with this annotation, the following logic
+ * is applied:
  * <ol>
- *      <li>Get the unqualified class name (e.g., UserLoginEvent)</li>
- *      <li>Strip off the trailing "Event", if present (e.g., UserLogin)</li>
- *      <li>Convert the first character to lower-case (e.g., userLogin)</li>
- *      <li>Prepend the package name to the lower-cased name</li>
- *      <li>If the <code>shortName</code> attribute is specified, register the
- *          event by that name as well.</li>
+ * <li>Get the unqualified class name (e.g., UserLoginEvent)</li>
+ * <li>Strip off the trailing "Event", if present (e.g., UserLogin)</li>
+ * <li>Convert the first character to lower-case (e.g., userLogin)</li>
+ * <li>Prepend the package name to the lower-cased name</li>
+ * <li>If the <code>shortName</code> attribute is specified, register the event by that name as well.</li>
  * </ol>
  */
 public class NamedEventConfigHandler implements ConfigAnnotationHandler {
@@ -47,10 +46,8 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
     private Map<Class<?>, Annotation> namedEvents;
     private static final Collection<Class<? extends Annotation>> HANDLES;
 
-
     static {
-        Collection<Class<? extends Annotation>> handles =
-                new ArrayList<>(2);
+        Collection<Class<? extends Annotation>> handles = new ArrayList<>(2);
         handles.add(NamedEvent.class);
         HANDLES = Collections.unmodifiableCollection(handles);
     }
@@ -71,8 +68,7 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
     @Override
     public void push(FacesContext ctx) {
         if (namedEvents != null) {
-            ApplicationAssociate associate =
-                    ApplicationAssociate.getInstance(ctx.getExternalContext());
+            ApplicationAssociate associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
             if (associate != null) {
                 NamedEventManager nem = associate.getNamedEventManager();
                 for (Map.Entry<Class<?>, Annotation> entry : namedEvents.entrySet()) {
@@ -85,9 +81,7 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
     // --------------------------------------------------------- Private Methods
     /*
      */
-    private void process(NamedEventManager nem,
-            Class<?> annotatedClass,
-            Annotation annotation) {
+    private void process(NamedEventManager nem, Class<?> annotatedClass, Annotation annotation) {
         String name = annotatedClass.getSimpleName();
         int index = name.lastIndexOf("Event");
         if (index > -1) {

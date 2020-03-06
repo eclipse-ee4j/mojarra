@@ -25,70 +25,75 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.webapp.UIComponentELTag;
 
-
 /*
  * ******* GENERATED CODE - DO NOT EDIT *******
  */
 
-
 public class OutputFormatTag extends UIComponentELTag {
-
 
     // Setter Methods
     // PROPERTY: converter
     private jakarta.el.ValueExpression converter;
+
     public void setConverter(jakarta.el.ValueExpression converter) {
         this.converter = converter;
     }
 
     // PROPERTY: value
     private jakarta.el.ValueExpression value;
+
     public void setValue(jakarta.el.ValueExpression value) {
         this.value = value;
     }
 
     // PROPERTY: dir
     private jakarta.el.ValueExpression dir;
+
     public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: escape
     private jakarta.el.ValueExpression escape;
+
     public void setEscape(jakarta.el.ValueExpression escape) {
         this.escape = escape;
     }
 
     // PROPERTY: lang
     private jakarta.el.ValueExpression lang;
+
     public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: role
     private jakarta.el.ValueExpression role;
+
     public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: style
     private jakarta.el.ValueExpression style;
+
     public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
     private jakarta.el.ValueExpression styleClass;
+
     public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: title
     private jakarta.el.ValueExpression title;
+
     public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
-
 
     // General Methods
     public String getRendererType() {
@@ -105,7 +110,8 @@ public class OutputFormatTag extends UIComponentELTag {
         try {
             output = (jakarta.faces.component.UIOutput) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIOutput.  Perhaps you're missing a tag?");
+            throw new IllegalStateException(
+                    "Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIOutput.  Perhaps you're missing a tag?");
         }
 
         if (converter != null) {
@@ -142,6 +148,7 @@ public class OutputFormatTag extends UIComponentELTag {
             output.setValueExpression("title", title);
         }
     }
+
     // Methods From TagSupport
     public int doStartTag() throws JspException {
         try {

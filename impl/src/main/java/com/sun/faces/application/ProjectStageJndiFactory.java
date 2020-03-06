@@ -31,9 +31,9 @@ import javax.naming.spi.ObjectFactory;
 import com.sun.faces.util.FacesLogger;
 
 /**
- * Allows configuring ProjectStage at a server (or in GlassFish's case domain) level. This allows
- * for the concept of development and test servers where each application doesn't need to be
- * individually configured, but will instead rely on global JNDI configuration instead.
+ * Allows configuring ProjectStage at a server (or in GlassFish's case domain) level. This allows for the concept of
+ * development and test servers where each application doesn't need to be individually configured, but will instead rely
+ * on global JNDI configuration instead.
  */
 public class ProjectStageJndiFactory implements ObjectFactory {
 
@@ -44,8 +44,7 @@ public class ProjectStageJndiFactory implements ObjectFactory {
      * If the value of <code>stage</code> cannot be determined, the default
      * {@link jakarta.faces.application.ProjectStage#Production} is returned.
      *
-     * @see ObjectFactory#getObjectInstance(Object, javax.naming.Name, javax.naming.Context,
-     *      java.util.Hashtable)
+     * @see ObjectFactory#getObjectInstance(Object, javax.naming.Name, javax.naming.Context, java.util.Hashtable)
      */
     @Override
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception {

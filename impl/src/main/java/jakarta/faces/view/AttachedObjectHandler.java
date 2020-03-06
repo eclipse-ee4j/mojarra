@@ -20,38 +20,35 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_0">The
- * abstract base interface for a
- * handler representing an <em>attached object</em> in a VDL page.
- * Subinterfaces are provided for the common attached objects that
- * expose {@link jakarta.faces.component.behavior.Behavior}, {@link
- * jakarta.faces.convert.Converter}s, {@link
- * jakarta.faces.validator.Validator}s, {@link
- * jakarta.faces.event.ValueChangeListener}s, and {@link
- * jakarta.faces.event.ActionListener}s for use by <em>page
- * authors</em>.</p>
+ * <p class="changed_added_2_0">
+ * The abstract base interface for a handler representing an <em>attached object</em> in a VDL page. Subinterfaces are
+ * provided for the common attached objects that expose {@link jakarta.faces.component.behavior.Behavior},
+ * {@link jakarta.faces.convert.Converter}s, {@link jakarta.faces.validator.Validator}s,
+ * {@link jakarta.faces.event.ValueChangeListener}s, and {@link jakarta.faces.event.ActionListener}s for use by <em>page
+ * authors</em>.
+ * </p>
  *
  * @since 2.0
  */
 public interface AttachedObjectHandler {
-    
+
     /**
-     * <p class="changed_added_2_0">Take the argument
-     * <code>parent</code> and apply this attached object to it.  The
-     * action taken varies with class that implements one of the
-     * subinterfaces of this interface.</p>
+     * <p class="changed_added_2_0">
+     * Take the argument <code>parent</code> and apply this attached object to it. The action taken varies with class that
+     * implements one of the subinterfaces of this interface.
+     * </p>
+     * 
      * @param context The <code>FacesContext</code> for this request
-     * @param parent The <code>UIComponent</code> to which this
-     * particular attached object must be applied.
+     * @param parent The <code>UIComponent</code> to which this particular attached object must be applied.
      */
     public void applyAttachedObject(FacesContext context, UIComponent parent);
 
-
     /**
-     * <p class="changed_added_2_0">Return the value of the "for"
-     * attribute specified by the <em>page author</em> on the tag for
-     * this <code>AttachedObjectHandler</code>.</p>
-
+     * <p class="changed_added_2_0">
+     * Return the value of the "for" attribute specified by the <em>page author</em> on the tag for this
+     * <code>AttachedObjectHandler</code>.
+     * </p>
+     * 
      * @return the value of the "for" attribute for this attached object
      */
     public String getFor();

@@ -19,36 +19,45 @@ package jakarta.faces.flow.builder;
 import jakarta.el.ValueExpression;
 
 /**
- * <p class="changed_added_2_2">Create a switch node in the current {@link jakarta.faces.flow.Flow}.</p>
+ * <p class="changed_added_2_2">
+ * Create a switch node in the current {@link jakarta.faces.flow.Flow}.
+ * </p>
+ * 
  * @since 2.2
  */
 
 public abstract class SwitchBuilder implements NodeBuilder {
-    
+
     /**
-     * <p class="changed_added_2_2">Create a switch case in the current switch.</p>
+     * <p class="changed_added_2_2">
+     * Create a switch case in the current switch.
+     * </p>
+     * 
      * @since 2.2
      *
      * @return the builder instance
      */
-    
+
     public abstract SwitchCaseBuilder switchCase();
-    
+
     /**
-     * <p class="changed_added_2_2">Set the default outcome of the current switch.</p>
+     * <p class="changed_added_2_2">
+     * Set the default outcome of the current switch.
+     * </p>
      * 
-     * @param outcome A {@code ValueExpression} {@code String} that will be the 
-     * default outcome of the switch.
+     * @param outcome A {@code ValueExpression} {@code String} that will be the default outcome of the switch.
      * @since 2.2
      * @throws NullPointerException if any of the parameters are {@code null}
      * 
      * @return the builder instance
      */
-    
+
     public abstract SwitchCaseBuilder defaultOutcome(String outcome);
-    
+
     /**
-     * <p class="changed_added_2_2">Set the default outcome of the current switch.</p>
+     * <p class="changed_added_2_2">
+     * Set the default outcome of the current switch.
+     * </p>
      * 
      * @param outcome A {@code ValueExpression} that will be the default outcome of the switch.
      * @throws NullPointerException if any of the parameters are {@code null}
@@ -57,7 +66,7 @@ public abstract class SwitchBuilder implements NodeBuilder {
      *
      * @return the builder instance
      */
-    
+
     public abstract SwitchCaseBuilder defaultOutcome(ValueExpression outcome);
 
     @Override

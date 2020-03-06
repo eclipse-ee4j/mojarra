@@ -24,8 +24,7 @@ import jakarta.faces.component.behavior.FacesBehavior;
  * A helper class.
  *
  * <p>
- * Used in CdiUtils to define a CDI qualifier so we can get a match out using
- * the BeanManager API.
+ * Used in CdiUtils to define a CDI qualifier so we can get a match out using the BeanManager API.
  * </p>
  */
 @SuppressWarnings("all")
@@ -35,7 +34,7 @@ class FacesBehaviorAnnotationLiteral extends AnnotationLiteral<FacesBehavior> im
      * Stores the serial version UID.
      */
     private static final long serialVersionUID = -258069073667018312L;
-    
+
     /**
      * Stores the value.
      */

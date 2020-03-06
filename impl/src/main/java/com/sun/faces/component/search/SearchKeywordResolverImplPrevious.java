@@ -56,5 +56,5 @@ public class SearchKeywordResolverImplPrevious extends SearchKeywordResolver {
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "previous".equals(keyword);
     }
-    
+
 }

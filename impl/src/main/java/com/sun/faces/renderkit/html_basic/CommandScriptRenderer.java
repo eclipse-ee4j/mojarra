@@ -32,10 +32,9 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.PhaseId;
 
-
 /**
- * <b>CommandScriptRenderer</b> is a class that renders the current value of
- * <code>UICommand<code> as a Script that acts like an Ajax Button.
+ * <b>CommandScriptRenderer</b> is a class that renders the current value of <code>UICommand<code> as a Script that acts
+ * like an Ajax Button.
  */
 public class CommandScriptRenderer extends HtmlBasicRenderer {
 
@@ -75,11 +74,11 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
 
         HtmlCommandScript commandScript = (HtmlCommandScript) component;
         String clientId = commandScript.getClientId(context);
-        
+
         if (RenderKitUtils.getForm(commandScript, context) == null) {
             throw new IllegalArgumentException("commandScript ID " + clientId + " must be placed in UIForm");
         }
-        
+
         String name = commandScript.getName();
 
         if (name == null || !PATTERN_NAME.matcher(name).matches()) {
@@ -90,7 +89,7 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
 
         ResponseWriter writer = context.getResponseWriter();
         assert (writer != null);
-        
+
         writer.startElement("span", commandScript);
         writer.writeAttribute("id", clientId, "id");
         writer.startElement("script", commandScript);

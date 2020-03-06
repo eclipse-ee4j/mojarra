@@ -16,7 +16,6 @@
 
 package jakarta.faces.model;
 
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -36,25 +35,23 @@ import java.io.ObjectInputStream;
 import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 
-
 /**
- * <p><strong>ResultSetDataModel</strong> is a convenience implementation of
- * {@link DataModel} that wraps a <code>ResultSet</code> of Java objects.
- * Note that the specified <code>ResultSet</code> <strong>MUST</strong>
- * be scrollable.  In addition, if input components (that will be updating
- * model values) reference this object in value binding expressions, the
- * specified <code>ResultSet</code> <strong>MUST</strong> be updatable.</p>
+ * <p>
+ * <strong>ResultSetDataModel</strong> is a convenience implementation of {@link DataModel} that wraps a
+ * <code>ResultSet</code> of Java objects. Note that the specified <code>ResultSet</code> <strong>MUST</strong> be
+ * scrollable. In addition, if input components (that will be updating model values) reference this object in value
+ * binding expressions, the specified <code>ResultSet</code> <strong>MUST</strong> be updatable.
+ * </p>
  */
 
-public class ResultSetDataModel extends DataModel<Map<String,Object>> {
-
+public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p>Construct a new {@link ResultSetDataModel} with no specified
-     * wrapped data.</p>
+     * <p>
+     * Construct a new {@link ResultSetDataModel} with no specified wrapped data.
+     * </p>
      */
     public ResultSetDataModel() {
 
@@ -62,10 +59,10 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     /**
-     * <p>Construct a new {@link ResultSetDataModel} wrapping the specified
-     * <code>ResultSet</code>.</p>
+     * <p>
+     * Construct a new {@link ResultSetDataModel} wrapping the specified <code>ResultSet</code>.
+     * </p>
      *
      * @param resultSet <code>ResultSet</code> to be wrapped (if any)
      */
@@ -76,44 +73,37 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     // ------------------------------------------------------ Instance Variables
-
 
     // The current row index (zero relative)
     private int index = -1;
 
-
     // The metadata for the ResultSet we are wrapping (lazily instantiated)
     private ResultSetMetaData metadata = null;
-
 
     // The ResultSet we are wrapping
     private ResultSet resultSet = null;
 
-
     // Has the row at the current index been updated?
     private boolean updated = false;
 
-
     // -------------------------------------------------------------- Properties
 
-
     /**
-     * <p>Return <code>true</code> if there is <code>wrappedData</code>
-     * available, and the result of calling <code>absolute()</code> on the
-     * underlying <code>ResultSet</code>, passing the current value of
-     * <code>rowIndex</code> plus one (to account for the fact that
-     * <code>ResultSet</code> uses one-relative indexing), returns
-     * <code>true</code>.  Otherwise, return <code>false</code>.</p>
+     * <p>
+     * Return <code>true</code> if there is <code>wrappedData</code> available, and the result of calling
+     * <code>absolute()</code> on the underlying <code>ResultSet</code>, passing the current value of <code>rowIndex</code>
+     * plus one (to account for the fact that <code>ResultSet</code> uses one-relative indexing), returns <code>true</code>.
+     * Otherwise, return <code>false</code>.
+     * </p>
      *
      * @throws FacesException if an error occurs getting the row availability
-     */ 
+     */
     @Override
     public boolean isRowAvailable() {
 
         if (resultSet == null) {
-	    return (false);
+            return (false);
         } else if (index < 0) {
             return (false);
         }
@@ -129,83 +119,71 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     /**
-     * <p>Return -1, since <code>ResultSet</code> does not provide a
-     * standard way to determine the number of available rows without
-     * scrolling through the entire <code>ResultSet</code>, and this can
-     * be very expensive if the number of rows is large.</p>
+     * <p>
+     * Return -1, since <code>ResultSet</code> does not provide a standard way to determine the number of available rows
+     * without scrolling through the entire <code>ResultSet</code>, and this can be very expensive if the number of rows is
+     * large.
+     * </p>
      *
      * @throws FacesException if an error occurs getting the row count
      */
     @Override
     public int getRowCount() {
 
-	return (-1);
+        return (-1);
 
     }
 
-
     /**
-     * <p>If row data is available, return a <code>Map</code> representing
-     * the values of the columns for the row specified by <code>rowIndex</code>,
-     * keyed by the corresponding column names.  If no wrapped data is
-     * available, return <code>null</code>.</p>
+     * <p>
+     * If row data is available, return a <code>Map</code> representing the values of the columns for the row specified by
+     * <code>rowIndex</code>, keyed by the corresponding column names. If no wrapped data is available, return
+     * <code>null</code>.
+     * </p>
      *
-     * <p>If a non-<code>null</code> <code>Map</code> is returned, its behavior
-     * must correspond to the contract for a mutable <code>Map</code> as
-     * described in the JavaDocs for <code>AbstractMap</code>, with the
-     * following exceptions and specialized behavior:</p>
+     * <p>
+     * If a non-<code>null</code> <code>Map</code> is returned, its behavior must correspond to the contract for a mutable
+     * <code>Map</code> as described in the JavaDocs for <code>AbstractMap</code>, with the following exceptions and
+     * specialized behavior:
+     * </p>
      * <ul>
-
-     * <li>The <code>Map</code>, and any supporting objects it returns,
-     *     must perform all column name comparisons in a
-     *     case-insensitive manner.  This case-insensitivity must be
-     *     implemented using a case-insensitive <code>Comparator</code>,
-     *     such as
-     *     <code>String.CASE_INSENSITIVE_ORDER</code>.</li>
-
-     * <li>The following methods must throw
-     *     <code>UnsupportedOperationException</code>:  <code>clear()</code>,
-     *     <code>remove()</code>.</li>
-     * <li>The <code>entrySet()</code> method must return a <code>Set</code>
-     *     that has the following behavior:
-     *     <ul>
-     *     <li>Throw <code>UnsupportedOperationException</code> for any attempt
-     *         to add or remove entries from the <code>Set</code>, either
-     *         directly or indirectly through an <code>Iterator</code>
-     *         returned by the <code>Set</code>.</li>
-     *     <li>Updates to the <code>value</code> of an entry in this
-     *         <code>set</code> must write through to the corresponding
-     *         column value in the underlying <code>ResultSet</code>.</li>
-     *     </ul></li>
-     * <li>The <code>keySet()</code> method must return a <code>Set</code>
-     *     that throws <code>UnsupportedOperationException</code> on any
-     *     attempt to add or remove keys, either directly or through an
-     *     <code>Iterator</code> returned by the <code>Set</code>.</li>
-     * <li>The <code>put()</code> method must throw
-     *     <code>IllegalArgumentException</code> if a key value for which
-     *     <code>containsKey()</code> returns <code>false</code> is
-     *     specified.  However, if a key already present in the <code>Map</code>
-     *     is specified, the specified value must write through to the
-     *     corresponding column value in the underlying <code>ResultSet</code>.
-     *     </li>
-     * <li>The <code>values()</code> method must return a
-     *     <code>Collection</code> that throws
-     *     <code>UnsupportedOperationException</code> on any attempt to add
-     *     or remove values, either directly or through an <code>Iterator</code>
-     *     returned by the <code>Collection</code>.</li>
+     * 
+     * <li>The <code>Map</code>, and any supporting objects it returns, must perform all column name comparisons in a
+     * case-insensitive manner. This case-insensitivity must be implemented using a case-insensitive
+     * <code>Comparator</code>, such as <code>String.CASE_INSENSITIVE_ORDER</code>.</li>
+     * 
+     * <li>The following methods must throw <code>UnsupportedOperationException</code>: <code>clear()</code>,
+     * <code>remove()</code>.</li>
+     * <li>The <code>entrySet()</code> method must return a <code>Set</code> that has the following behavior:
+     * <ul>
+     * <li>Throw <code>UnsupportedOperationException</code> for any attempt to add or remove entries from the
+     * <code>Set</code>, either directly or indirectly through an <code>Iterator</code> returned by the
+     * <code>Set</code>.</li>
+     * <li>Updates to the <code>value</code> of an entry in this <code>set</code> must write through to the corresponding
+     * column value in the underlying <code>ResultSet</code>.</li>
+     * </ul>
+     * </li>
+     * <li>The <code>keySet()</code> method must return a <code>Set</code> that throws
+     * <code>UnsupportedOperationException</code> on any attempt to add or remove keys, either directly or through an
+     * <code>Iterator</code> returned by the <code>Set</code>.</li>
+     * <li>The <code>put()</code> method must throw <code>IllegalArgumentException</code> if a key value for which
+     * <code>containsKey()</code> returns <code>false</code> is specified. However, if a key already present in the
+     * <code>Map</code> is specified, the specified value must write through to the corresponding column value in the
+     * underlying <code>ResultSet</code>.</li>
+     * <li>The <code>values()</code> method must return a <code>Collection</code> that throws
+     * <code>UnsupportedOperationException</code> on any attempt to add or remove values, either directly or through an
+     * <code>Iterator</code> returned by the <code>Collection</code>.</li>
      * </ul>
      *
      * @throws FacesException if an error occurs getting the row data
-     * @throws IllegalArgumentException if now row data is available
-     *  at the currently specified row index
-     */ 
+     * @throws IllegalArgumentException if now row data is available at the currently specified row index
+     */
     @Override
-    public Map<String,Object> getRowData() {
+    public Map<String, Object> getRowData() {
 
         if (resultSet == null) {
-	    return (null);
+            return (null);
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         }
@@ -218,10 +196,9 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     /**
-     * @throws FacesException {@inheritDoc}     
-     */ 
+     * @throws FacesException {@inheritDoc}
+     */
     @Override
     public int getRowIndex() {
 
@@ -229,11 +206,10 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     /**
      * @throws FacesException {@inheritDoc}
      * @throws IllegalArgumentException {@inheritDoc}
-     */ 
+     */
     @Override
     public void setRowIndex(int rowIndex) {
 
@@ -244,9 +220,9 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         // Tell the ResultSet that the previous row was updated if necessary
         if (updated && (resultSet != null)) {
             try {
-		if (!resultSet.rowDeleted()) {
-		    resultSet.updateRow();
-		}
+                if (!resultSet.rowDeleted()) {
+                    resultSet.updateRow();
+                }
                 updated = false;
             } catch (SQLException e) {
                 throw new FacesException(e);
@@ -255,28 +231,25 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
         int old = index;
         index = rowIndex;
-	if (resultSet == null) {
-	    return;
-	}
-	DataModelListener [] listeners = getDataModelListeners();
+        if (resultSet == null) {
+            return;
+        }
+        DataModelListener[] listeners = getDataModelListeners();
         if ((old != index) && (listeners != null)) {
             Object rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
             }
-            DataModelEvent event =
-                new DataModelEvent(this, index, rowData);
+            DataModelEvent event = new DataModelEvent(this, index, rowData);
             int n = listeners.length;
             for (int i = 0; i < n; i++) {
-		if (null != listeners[i]) {
-		    listeners[i].rowSelected(event);
-		}
+                if (null != listeners[i]) {
+                    listeners[i].rowSelected(event);
+                }
             }
         }
 
-
     }
-
 
     @Override
     public Object getWrappedData() {
@@ -284,7 +257,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         return (this.resultSet);
 
     }
-
 
     /**
      * @throws ClassCastException {@inheritDoc}
@@ -304,17 +276,15 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         }
     }
 
-
     // --------------------------------------------------------- Private Methods
 
-
     /**
-     * <p>Return the <code>ResultSetMetaData</code> for the
-     * <code>ResultSet</code> we are wrapping, caching it the first time
-     * it is returned.</p>
+     * <p>
+     * Return the <code>ResultSetMetaData</code> for the <code>ResultSet</code> we are wrapping, caching it the first time
+     * it is returned.
+     * </p>
      *
-     * @throws FacesException if the <code>ResultSetMetaData</code>
-     *  cannot be acquired
+     * @throws FacesException if the <code>ResultSetMetaData</code> cannot be acquired
      */
     private ResultSetMetaData getMetaData() {
 
@@ -329,10 +299,10 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     /**
-     * <p>Mark the current row as having been updated, so that we will call
-     * <code>updateRow()</code> before moving elsewhere.</p>
+     * <p>
+     * Mark the current row as having been updated, so that we will call <code>updateRow()</code> before moving elsewhere.
+     * </p>
      */
     private void updated() {
 
@@ -340,21 +310,18 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     // --------------------------------------------------------- Private Classes
-
 
     // Private implementation of Map that delegates column get and put
     // operations to the underlying ResultSet, after setting the required
     // row index
     // NOT SERIALIZABLE
-    @SuppressWarnings({"serial"})
-    private static class ResultSetMap extends TreeMap<String,Object> {
+    @SuppressWarnings({ "serial" })
+    private static class ResultSetMap extends TreeMap<String, Object> {
 
         private ResultSetDataModel model;
 
-        public ResultSetMap(ResultSetDataModel model,
-                            Comparator<String> comparator) throws SQLException {
+        public ResultSetMap(ResultSetDataModel model, Comparator<String> comparator) throws SQLException {
 
             super(comparator);
             this.model = model;
@@ -362,8 +329,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
             model.resultSet.absolute(index + 1);
             int n = model.metadata.getColumnCount();
             for (int i = 1; i <= n; i++) {
-                super.put(model.metadata.getColumnName(i),
-                          model.metadata.getColumnName(i));
+                super.put(model.metadata.getColumnName(i), model.metadata.getColumnName(i));
             }
         }
 
@@ -378,10 +344,10 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
         @Override
         public boolean containsValue(Object value) {
-            for (Iterator i = entrySet().iterator(); i .hasNext(); ) {
+            for (Iterator i = entrySet().iterator(); i.hasNext();) {
                 Map.Entry entry = (Map.Entry) i.next();
                 Object contained = entry.getValue();
-                 if (value == null) {
+                if (value == null) {
                     if (contained == null) {
                         return (true);
                     }
@@ -395,7 +361,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         }
 
         @Override
-        public Set<Map.Entry<String,Object>> entrySet() {
+        public Set<Map.Entry<String, Object>> entrySet() {
             return (new ResultSetEntries(this));
         }
 
@@ -422,14 +388,13 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
             if (!containsKey(key)) {
                 throw new IllegalArgumentException();
             }
-            
+
             try {
                 model.resultSet.absolute(index + 1);
                 Object previous = model.resultSet.getObject((String) realKey(key));
                 if ((previous == null) && (value == null)) {
                     return (previous);
-                } else if ((previous != null) && (value != null) &&
-                           previous.equals(value)) {
+                } else if ((previous != null) && (value != null) && previous.equals(value)) {
                     return (previous);
                 }
                 model.resultSet.updateObject((String) realKey(key), value);
@@ -476,10 +441,9 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     // Private implementation of Set that implements the entrySet() behavior
     // for ResultSetMap
-    private static class ResultSetEntries extends AbstractSet<Map.Entry<String,Object>> {
+    private static class ResultSetEntries extends AbstractSet<Map.Entry<String, Object>> {
 
         public ResultSetEntries(ResultSetMap map) {
             this.map = map;
@@ -489,7 +453,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
         // Adding entries is not allowed
         @Override
-        public boolean add(Map.Entry<String,Object> o) {
+        public boolean add(Map.Entry<String, Object> o) {
             throw new UnsupportedOperationException();
         }
 
@@ -532,7 +496,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         }
 
         @Override
-        public Iterator<Map.Entry<String,Object>> iterator() {
+        public Iterator<Map.Entry<String, Object>> iterator() {
             return (new ResultSetEntriesIterator(map));
         }
 
@@ -561,10 +525,9 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     // Private implementation of Iterator that implements the iterator()
     // behavior for the Set returned by entrySet() from ResultSetMap
-    private static class ResultSetEntriesIterator implements Iterator<Map.Entry<String,Object>> {
+    private static class ResultSetEntriesIterator implements Iterator<Map.Entry<String, Object>> {
 
         public ResultSetEntriesIterator(ResultSetMap map) {
             this.map = map;
@@ -580,7 +543,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         }
 
         @Override
-        public Map.Entry<String,Object> next() {
+        public Map.Entry<String, Object> next() {
             String key = keys.next();
             return (new ResultSetEntry(map, key));
         }
@@ -593,10 +556,9 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     // Private implementation of Map.Entry that implements the behavior for
     // a single entry from the Set returned by entrySet() from ResultSetMap
-    private static class ResultSetEntry implements Map.Entry<String,Object> {
+    private static class ResultSetEntry implements Map.Entry<String, Object> {
 
         public ResultSetEntry(ResultSetMap map, String key) {
             this.map = map;
@@ -650,8 +612,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         @Override
         public int hashCode() {
             Object value = map.get(key);
-            return (((key == null) ? 0 : key.hashCode()) ^
-                    ((value == null) ? 0 : value.hashCode()));
+            return (((key == null) ? 0 : key.hashCode()) ^ ((value == null) ? 0 : value.hashCode()));
         }
 
         @Override
@@ -662,7 +623,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         }
 
     }
-
 
     // Private implementation of Set that implements the keySet() behavior
     // for ResultSetMap
@@ -732,7 +692,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     // Private implementation of Iterator that implements the iterator()
     // behavior for the Set returned by keySet() from ResultSetMap
     private static class ResultSetKeysIterator implements Iterator<String> {
@@ -760,7 +719,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         }
 
     }
-
 
     // Private implementation of Collection that implements the behavior
     // for the Collection returned by values() from ResultSetMap
@@ -819,7 +777,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
 
     }
 
-
     // Private implementation of Iterator that implements the behavior
     // for the Iterator returned by values().iterator() from ResultSetMap
     private static class ResultSetValuesIterator implements Iterator<Object> {
@@ -848,6 +805,5 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>> {
         }
 
     }
-
 
 }

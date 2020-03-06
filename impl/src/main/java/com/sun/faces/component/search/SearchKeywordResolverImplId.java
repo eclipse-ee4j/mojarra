@@ -42,11 +42,10 @@ public class SearchKeywordResolverImplId extends AbstractSearchKeywordResolverIm
 
         if (isHintSet(searchKeywordContext.getSearchExpressionContext(), SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS)) {
             // Avoid visit tree because in this case we need real component instances.
-            // This means components inside UIData will not be scanned. 
+            // This means components inside UIData will not be scanned.
             findWithId(facesContext, id, current, searchKeywordContext.getCallback());
         } else {
-            current.visitTree(
-                    VisitContext.createVisitContext(facesContext, null, searchKeywordContext.getSearchExpressionContext().getVisitHints()),
+            current.visitTree(VisitContext.createVisitContext(facesContext, null, searchKeywordContext.getSearchExpressionContext().getVisitHints()),
                     new VisitCallback() {
                         @Override
                         public VisitResult visit(VisitContext context, UIComponent target) {
@@ -67,7 +66,7 @@ public class SearchKeywordResolverImplId extends AbstractSearchKeywordResolverIm
 
         searchKeywordContext.setKeywordResolved(true);
     }
-    
+
     @Override
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
 
@@ -88,8 +87,7 @@ public class SearchKeywordResolverImplId extends AbstractSearchKeywordResolverIm
         if (matcher.matches()) {
             return matcher.group(1);
         } else {
-            throw new FacesException("Expression does not match following pattern @id(id). Expression: \""
-                    + expression + "\"");
+            throw new FacesException("Expression does not match following pattern @id(id). Expression: \"" + expression + "\"");
         }
     }
 

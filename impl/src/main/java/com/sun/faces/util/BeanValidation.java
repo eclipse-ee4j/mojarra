@@ -38,22 +38,19 @@ public class BeanValidation {
 
     public static Validator getBeanValidator(FacesContext context) {
         ValidatorFactory validatorFactory = getValidatorFactory(context);
-        
+
         ValidatorContext validatorContext = validatorFactory.usingContext();
         MessageInterpolator jsfMessageInterpolator = new JsfAwareMessageInterpolator(context, validatorFactory.getMessageInterpolator());
         validatorContext.messageInterpolator(jsfMessageInterpolator);
-        
+
         return validatorContext.getValidator();
     }
-    
+
     public static ValidatorFactory getValidatorFactory(FacesContext context) {
         ValidatorFactory validatorFactory = null;
-        
-        Object cachedObject = context.getExternalContext()
-                                     .getApplicationMap()
-                                     .get(VALIDATOR_FACTORY_KEY);
-        
-        
+
+        Object cachedObject = context.getExternalContext().getApplicationMap().get(VALIDATOR_FACTORY_KEY);
+
         if (cachedObject instanceof ValidatorFactory) {
             validatorFactory = (ValidatorFactory) cachedObject;
         } else {
@@ -62,12 +59,10 @@ public class BeanValidation {
             } catch (ValidationException e) {
                 throw new FacesException("Could not build a default Bean Validator factory", e);
             }
-            
-            context.getExternalContext()
-                   .getApplicationMap()
-                   .put(VALIDATOR_FACTORY_KEY, validatorFactory);
+
+            context.getExternalContext().getApplicationMap().put(VALIDATOR_FACTORY_KEY, validatorFactory);
         }
-        
+
         return validatorFactory;
     }
 
@@ -95,5 +90,5 @@ public class BeanValidation {
             return delegate.interpolate(message, context, locale);
         }
     }
-    
+
 }

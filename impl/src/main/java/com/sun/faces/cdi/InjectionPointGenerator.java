@@ -22,8 +22,8 @@ import jakarta.inject.Inject;
 
 /**
  * <p class="changed_added_2_3">
- * This is a work around in order to be able to get {@link InjectionPoint} in {@link CdiProducer}.
- * It is broken in some Weld versions.
+ * This is a work around in order to be able to get {@link InjectionPoint} in {@link CdiProducer}. It is broken in some
+ * Weld versions.
  * </p>
  *
  * @since 2.3

@@ -32,12 +32,12 @@ public class SearchKeywordResolverImplNone extends AbstractSearchKeywordResolver
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "none".equals(keyword);
     }
-    
+
     @Override
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword) {
         return isHintSet(searchExpressionContext, SearchExpressionHint.RESOLVE_CLIENT_SIDE);
     }
-    
+
     @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword) {
         return true;

@@ -16,7 +16,6 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -28,21 +27,17 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <B>GridRenderer</B> is a class that renders <code>UIPanel</code> component
- * as a "Grid".
+ * <B>GridRenderer</B> is a class that renders <code>UIPanel</code> component as a "Grid".
  */
 
 public class GridRenderer extends BaseTableRenderer {
 
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.PANELGRID);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGRID);
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -65,10 +60,8 @@ public class GridRenderer extends BaseTableRenderer {
 
     }
 
-
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -86,8 +79,7 @@ public class GridRenderer extends BaseTableRenderer {
         // Render our children, starting a new row as needed
         renderTableBodyStart(context, component, writer);
         boolean rowRendered = false;
-        for (Iterator<UIComponent> kids = getChildren(component);
-             kids.hasNext();) {
+        for (Iterator<UIComponent> kids = getChildren(component); kids.hasNext();) {
 
             UIComponent child = kids.next();
             if (!child.isRendered()) {
@@ -106,7 +98,7 @@ public class GridRenderer extends BaseTableRenderer {
             i++;
         }
         if (open) {
-           renderRowEnd(context, component, writer);
+            renderRowEnd(context, component, writer);
         }
         if (!rowRendered) {
             this.renderEmptyTableRow(writer, component);
@@ -114,10 +106,8 @@ public class GridRenderer extends BaseTableRenderer {
         renderTableBodyEnd(context, component, writer);
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -132,7 +122,6 @@ public class GridRenderer extends BaseTableRenderer {
 
     }
 
-
     @Override
     public boolean getRendersChildren() {
 
@@ -140,24 +129,16 @@ public class GridRenderer extends BaseTableRenderer {
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
 
-
     @Override
-    protected void renderRow(FacesContext context,
-                             UIComponent table,
-                             UIComponent child,
-                             ResponseWriter writer)
-    throws IOException {
+    protected void renderRow(FacesContext context, UIComponent table, UIComponent child, ResponseWriter writer) throws IOException {
 
         TableMetaInfo info = getMetaInfo(context, table);
         writer.startElement("td", table);
         String columnClass = info.getCurrentColumnClass();
         if (columnClass != null) {
-            writer.writeAttribute("class",
-                                  columnClass,
-                                  "columns");
+            writer.writeAttribute("class", columnClass, "columns");
         }
         encodeRecursive(context, child);
         writer.endElement("td");
@@ -165,16 +146,12 @@ public class GridRenderer extends BaseTableRenderer {
 
     }
 
-
     @Override
-    protected void renderHeader(FacesContext context,
-                                UIComponent table,
-                                ResponseWriter writer) throws IOException {
+    protected void renderHeader(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         TableMetaInfo info = getMetaInfo(context, table);
         UIComponent header = getFacet(table, "header");
-        String headerClass =
-              (String) table.getAttributes().get("headerClass");
+        String headerClass = (String) table.getAttributes().get("headerClass");
         if (header != null) {
             writer.startElement("thead", table);
             writer.writeText("\n", table, null);
@@ -183,9 +160,7 @@ public class GridRenderer extends BaseTableRenderer {
             if (headerClass != null) {
                 writer.writeAttribute("class", headerClass, "headerClass");
             }
-            writer.writeAttribute("colspan",
-                                  String.valueOf(info.columns.size()),
-                                  null);
+            writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
             writer.writeAttribute("scope", "colgroup", null);
             encodeRecursive(context, header);
             writer.endElement("th");
@@ -197,16 +172,12 @@ public class GridRenderer extends BaseTableRenderer {
 
     }
 
-
     @Override
-    protected void renderFooter(FacesContext context,
-                                UIComponent table,
-                                ResponseWriter writer) throws IOException {
+    protected void renderFooter(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         TableMetaInfo info = getMetaInfo(context, table);
         UIComponent footer = getFacet(table, "footer");
-        String footerClass =
-              (String) table.getAttributes().get("footerClass");
+        String footerClass = (String) table.getAttributes().get("footerClass");
         if (footer != null) {
             writer.startElement("tfoot", table);
             writer.writeText("\n", table, null);
@@ -215,9 +186,7 @@ public class GridRenderer extends BaseTableRenderer {
             if (footerClass != null) {
                 writer.writeAttribute("class", footerClass, "footerClass");
             }
-            writer.writeAttribute("colspan",
-                                  String.valueOf(info.columns.size()),
-                                  null);
+            writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
             encodeRecursive(context, footer);
             writer.endElement("td");
             writer.endElement("tr");
@@ -228,12 +197,9 @@ public class GridRenderer extends BaseTableRenderer {
 
     }
 
-
     // ------------------------------------------------------- Private Methods
 
-
-    private void renderEmptyTableRow(final ResponseWriter writer,
-            final UIComponent component) throws IOException {
+    private void renderEmptyTableRow(final ResponseWriter writer, final UIComponent component) throws IOException {
 
         writer.startElement("tr", component);
         writer.startElement("td", component);

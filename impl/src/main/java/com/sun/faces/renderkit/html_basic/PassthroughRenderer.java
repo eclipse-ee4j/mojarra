@@ -16,7 +16,6 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -35,12 +34,10 @@ public class PassthroughRenderer extends HtmlBasicRenderer {
 
 // We are purposely piggy backing off the PANELGROUP attributes since they are 
 // identical for this renderer.
-private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-            throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -59,14 +56,10 @@ private static final Attribute[] ATTRIBUTES =
         writer.startElement(localName, component);
 
         writeIdAttributeIfNecessary(context, writer, component);
-        
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
+
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
     }
-
 
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
@@ -84,7 +77,6 @@ private static final Attribute[] ATTRIBUTES =
 
     }
 
-
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
@@ -98,7 +90,6 @@ private static final Attribute[] ATTRIBUTES =
         String localName = (String) attrs.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
         context.getResponseWriter().endElement(localName);
     }
-
 
     @Override
     public boolean getRendersChildren() {

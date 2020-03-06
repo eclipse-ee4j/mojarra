@@ -16,21 +16,22 @@
 
 package jakarta.faces.el;
 
-
 /**
- * <p>An exception reporting a syntax error in a method binding expression
- * or value binding expression.</p>
+ * <p>
+ * An exception reporting a syntax error in a method binding expression or value binding expression.
+ * </p>
  *
  * @deprecated This has been replaced by {@link jakarta.el.ELException}.
  */
 
 public class ReferenceSyntaxException extends EvaluationException {
 
-
     private static final long serialVersionUID = -7230574031883380998L;
 
     /**
-     * <p>Construct a new exception with no detail message or root cause.</p>
+     * <p>
+     * Construct a new exception with no detail message or root cause.
+     * </p>
      */
     public ReferenceSyntaxException() {
 
@@ -38,10 +39,10 @@ public class ReferenceSyntaxException extends EvaluationException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * no root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and no root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      */
@@ -51,10 +52,10 @@ public class ReferenceSyntaxException extends EvaluationException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified root cause.  The detail
-     * message will be set to <code>(cause == null ? null :
+     * <p>
+     * Construct a new exception with the specified root cause. The detail message will be set to
+     * <code>(cause == null ? null :
      * cause.toString()</code>
      *
      * @param cause The root cause for this exception
@@ -65,10 +66,10 @@ public class ReferenceSyntaxException extends EvaluationException {
 
     }
 
-
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      * @param cause The root cause for this exception
@@ -78,7 +79,5 @@ public class ReferenceSyntaxException extends EvaluationException {
         super(message, cause);
 
     }
-
-
 
 }

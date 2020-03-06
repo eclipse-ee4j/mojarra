@@ -26,14 +26,14 @@ import jakarta.faces.bean.ManagedBean;
 import java.lang.annotation.Inherited;
 
 /**
- * <p class="changed_added_2_0">The presence of this annotation on a class is
- * equivalent to the <em>referenced-bean</em> element in the application
- * configuration resources.</p>
+ * <p class="changed_added_2_0">
+ * The presence of this annotation on a class is equivalent to the <em>referenced-bean</em> element in the application
+ * configuration resources.
+ * </p>
  *
  * @since 2.0
- * @deprecated The referenced-bean concept was used for a design time promise
- * which however did not achieve widespread adoption. There is no direct 
- * replacement for this other than using the XML variant in faces-config.xml.
+ * @deprecated The referenced-bean concept was used for a design time promise which however did not achieve widespread
+ * adoption. There is no direct replacement for this other than using the XML variant in faces-config.xml.
  */
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
@@ -42,9 +42,9 @@ import java.lang.annotation.Inherited;
 public @interface ReferencedBean {
 
     /**
-     * <p class="changed_added_2_0">Taken to be the
-     * <code>referenced-bean-name</code>. See class documentation for
-     * {@link ManagedBean} for details.</p>
+     * <p class="changed_added_2_0">
+     * Taken to be the <code>referenced-bean-name</code>. See class documentation for {@link ManagedBean} for details.
+     * </p>
      *
      * @return the referenced bean name.
      */

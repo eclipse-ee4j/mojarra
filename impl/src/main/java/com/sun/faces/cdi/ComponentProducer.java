@@ -23,8 +23,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The Component producer is the CDI producer that allows EL resolving of
- * <code>#{component}</code>
+ * The Component producer is the CDI producer that allows EL resolving of <code>#{component}</code>
  * </p>
  *
  * @since 2.3
@@ -36,11 +35,9 @@ public class ComponentProducer extends CdiProducer<UIComponent> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ComponentProducer() {
-        super.name("component")
-             .beanClassAndType(UIComponent.class)
-             .create(e -> getCurrentComponent(FacesContext.getCurrentInstance()));
+        super.name("component").beanClassAndType(UIComponent.class).create(e -> getCurrentComponent(FacesContext.getCurrentInstance()));
     }
 
 }

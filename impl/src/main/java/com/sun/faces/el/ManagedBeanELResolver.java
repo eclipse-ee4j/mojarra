@@ -43,14 +43,12 @@ public class ManagedBeanELResolver extends ELResolver {
     }
 
     @Override
-    public Object getValue(ELContext context, Object base, Object property)
-        throws ELException {
+    public Object getValue(ELContext context, Object base, Object property) throws ELException {
         if (base != null) {
             return null;
         }
         if (property == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
             throw new PropertyNotFoundException(message);
         }
 
@@ -58,14 +56,11 @@ public class ManagedBeanELResolver extends ELResolver {
 
     }
 
-
     @Override
-    public Class<?> getType(ELContext context, Object base, Object property)
-        throws ELException {
+    public Class<?> getType(ELContext context, Object base, Object property) throws ELException {
 
         if (base == null && property == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
             throw new PropertyNotFoundException(message);
         }
 
@@ -74,20 +69,15 @@ public class ManagedBeanELResolver extends ELResolver {
     }
 
     @Override
-    public void setValue(ELContext context,
-                         Object base,
-                         Object property,
-                         Object val)
-    throws ELException {
+    public void setValue(ELContext context, Object base, Object property, Object val) throws ELException {
 
         if (base == null && property == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property");
             throw new PropertyNotFoundException(message);
         }
 
         if (base == null) {
-            // create the bean if it doesn't exist.  We won't mark the property
+            // create the bean if it doesn't exist. We won't mark the property
             // as resolved in this case, since the spec requires us to actually
             // wait to set the value until the ScopeAttributeELResolved so that
             // implicit scopes with higher priority than this one have a crack
@@ -98,14 +88,12 @@ public class ManagedBeanELResolver extends ELResolver {
     }
 
     @Override
-    public boolean isReadOnly(ELContext context, Object base, Object property)
-        throws ELException {
+    public boolean isReadOnly(ELContext context, Object base, Object property) throws ELException {
         if (base != null) {
             return false;
         }
         if (property == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
             throw new PropertyNotFoundException(message);
         }
 
@@ -119,23 +107,21 @@ public class ManagedBeanELResolver extends ELResolver {
             return null;
         }
 
-        FacesContext facesContext =
-            (FacesContext) context.getContext(FacesContext.class);
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         BeanManager beanManager = getBeanManager();
         if (beanManager == null || beanManager.getRegisteredBeans().isEmpty()) {
             List<FeatureDescriptor> l = Collections.emptyList();
             return l.iterator();
         }
 
-        Map<String,BeanBuilder> beans = beanManager.getRegisteredBeans();
-        List<FeatureDescriptor> list =
-             new ArrayList<>(beans.size());
+        Map<String, BeanBuilder> beans = beanManager.getRegisteredBeans();
+        List<FeatureDescriptor> list = new ArrayList<>(beans.size());
         // iterate over the list of managed beans
-        for (Map.Entry<String,BeanBuilder> bean : beans.entrySet()) {
+        for (Map.Entry<String, BeanBuilder> bean : beans.entrySet()) {
             String beanName = bean.getKey();
             BeanBuilder builder = bean.getValue();
             String loc = Util.getLocaleFromContextOrSystem(facesContext).toString();
-            Map<String,String> descriptions = builder.getDescriptions();
+            Map<String, String> descriptions = builder.getDescriptions();
 
             String description = null;
             if (descriptions != null) {
@@ -144,14 +130,8 @@ public class ManagedBeanELResolver extends ELResolver {
                     description = descriptions.get("DEFAULT");
                 }
             }
-            list.add(Util.getFeatureDescriptor(beanName,
-                                               beanName,
-                                               (description == null) ? "" : description,
-                                               false,
-                                               false,
-                                               true,
-                                               builder.getBeanClass(),
-                                               Boolean.TRUE));
+            list.add(Util.getFeatureDescriptor(beanName, beanName, (description == null) ? "" : description, false, false, true, builder.getBeanClass(),
+                    Boolean.TRUE));
         }
 
         return list.iterator();
@@ -165,9 +145,7 @@ public class ManagedBeanELResolver extends ELResolver {
         return Object.class;
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private static BeanManager getBeanManager() {
 
@@ -183,23 +161,21 @@ public class ManagedBeanELResolver extends ELResolver {
             String beanName = property.toString();
             BeanBuilder builder = manager.getBuilder(beanName);
             if (builder != null) {
-                FacesContext facesContext = (FacesContext)
-                    context.getContext(FacesContext.class);
+                FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
 
                 // JAVASERVERFACES-2989: Make sure to check request, session, and application.
                 ExternalContext extContext = facesContext.getExternalContext();
                 if (extContext.getRequestMap().containsKey(beanName)) {
                     return null;
-                } else if (null != extContext.getSession(false) &&
-                           extContext.getSessionMap().containsKey(beanName)) {
+                } else if (null != extContext.getSession(false) && extContext.getSessionMap().containsKey(beanName)) {
                     return null;
                 } else if (extContext.getApplicationMap().containsKey(beanName)) {
                     return null;
-                }                
-                
+                }
+
                 result = manager.getBeanFromScope(beanName, builder, facesContext);
                 if (result == null) {
-                        result = manager.create(beanName, builder, facesContext);
+                    result = manager.create(beanName, builder, facesContext);
                 }
                 context.setPropertyResolved(markAsResolvedIfCreated && (result != null));
             }
@@ -207,6 +183,5 @@ public class ManagedBeanELResolver extends ELResolver {
 
         return result;
     }
-
 
 }

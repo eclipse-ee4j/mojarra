@@ -37,14 +37,10 @@ import java.util.Map;
 class DefaultTagDecorator implements TagDecorator {
 
     private static enum Mapper {
-        a(
-                new ElementConverter("h:commandLink", "jsf:action"),
-                new ElementConverter("h:commandLink", "jsf:actionListener"),
-                new ElementConverter("h:outputLink", "jsf:value"),
-                new ElementConverter("h:link", "jsf:outcome")),
+        a(new ElementConverter("h:commandLink", "jsf:action"), new ElementConverter("h:commandLink", "jsf:actionListener"),
+                new ElementConverter("h:outputLink", "jsf:value"), new ElementConverter("h:link", "jsf:outcome")),
 
-        img("h:graphicImage"), body("h:body"), head("h:head"), label("h:outputLabel"), script("h:outputScript"),
-        link("h:outputStylesheet"),
+        img("h:graphicImage"), body("h:body"), head("h:head"), label("h:outputLabel"), script("h:outputScript"), link("h:outputStylesheet"),
 
         form("h:form"), textarea("h:inputTextarea"),
         // TODO if we want the name of the button to become the id, we have to do .id("name")
@@ -56,25 +52,10 @@ class DefaultTagDecorator implements TagDecorator {
 
         input(new ElementConverter("h:inputText", "type")
                 // TODO this is a little bit ugly to handle the name as if it were jsf:id. we should not support this
-                .id("name")
-                .map("hidden", "inputHidden")
-                .map("password", "inputSecret")
-                .map("number", "inputText")
-                .map("search", "inputText")
-                .map("email", "inputText")
-                .map("datetime", "inputText")
-                .map("date", "inputText")
-                .map("month", "inputText")
-                .map("week", "inputText")
-                .map("time", "inputText")
-                .map("datetime-local", "inputText")
-                .map("range", "inputText")
-                .map("color", "inputText")
-                .map("url", "inputText")
-                .map("checkbox", "selectBooleanCheckbox")
-                .map("file", "inputFile")
-                .map("submit", "commandButton")
-                .map("reset", "commandButton")
+                .id("name").map("hidden", "inputHidden").map("password", "inputSecret").map("number", "inputText").map("search", "inputText")
+                .map("email", "inputText").map("datetime", "inputText").map("date", "inputText").map("month", "inputText").map("week", "inputText")
+                .map("time", "inputText").map("datetime-local", "inputText").map("range", "inputText").map("color", "inputText").map("url", "inputText")
+                .map("checkbox", "selectBooleanCheckbox").map("file", "inputFile").map("submit", "commandButton").map("reset", "commandButton")
                 .map("button", "button"));
 
         private ElementConverter elementConverter;
@@ -104,9 +85,7 @@ class DefaultTagDecorator implements TagDecorator {
     }
 
     private static enum Namespace {
-        p(PassThroughAttributeLibrary.Namespace),
-        jsf(PassThroughElementLibrary.Namespace),
-        h(HtmlLibrary.Namespace);
+        p(PassThroughAttributeLibrary.Namespace), jsf(PassThroughElementLibrary.Namespace), h(HtmlLibrary.Namespace);
 
         private String uri;
 
@@ -126,12 +105,9 @@ class DefaultTagDecorator implements TagDecorator {
         }
         // we only handle html tags!
         if (!("".equals(ns) || "http://www.w3.org/1999/xhtml".equals(ns))) {
-            throw new FaceletException("Elements with namespace " +
-                    ns + " may not have attributes in namespace " +
-                    Namespace.jsf.uri + "." +
-                    " Namespace " + Namespace.jsf.uri +
-                    " is intended for otherwise non-JSF-aware markup, such as <input type=\"text\" jsf:id >" +
-                    " It is not valid to have <h:commandButton jsf:id=\"button\" />.");
+            throw new FaceletException("Elements with namespace " + ns + " may not have attributes in namespace " + Namespace.jsf.uri + "." + " Namespace "
+                    + Namespace.jsf.uri + " is intended for otherwise non-JSF-aware markup, such as <input type=\"text\" jsf:id >"
+                    + " It is not valid to have <h:commandButton jsf:id=\"button\" />.");
         }
         for (Mapper mapper : Mapper.values()) {
             if (tag.getLocalName().equals(mapper.name())) {
@@ -201,14 +177,12 @@ class DefaultTagDecorator implements TagDecorator {
 
             if (arbiterAttribute == null) {
                 // no arbiter
-                return null;//convertTag(tag, namespace, localName);
+                return null;// convertTag(tag, namespace, localName);
             }
 
-            // PENDING 
+            // PENDING
             /**
-             if (!arbiterAttribute.isLiteral()) {
-             // TODO should we throw an exception here?
-             }
+             * if (!arbiterAttribute.isLiteral()) { // TODO should we throw an exception here? }
              **/
 
             String myLocalName = additionalMappings.get(arbiterAttribute.getValue());
@@ -260,7 +234,6 @@ class DefaultTagDecorator implements TagDecorator {
 
             return new TagAttributeImpl(location, ns, myLocalName, qName, value);
         }
-
 
         protected TagAttribute convertTagAttribute(TagAttribute attribute) {
             Location location = attribute.getLocation();

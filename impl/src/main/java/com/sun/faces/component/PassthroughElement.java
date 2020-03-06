@@ -26,18 +26,17 @@ import jakarta.el.ValueExpression;
 
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
-
 /**
- * <p>Causes all child components of this component
- * to be rendered.  This is useful in scenarios
- * where a parent component is expecting a single
- * component to be present, but the application
- * wishes to render more than one.</p>
- * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.passthrough.Element</code>".
- * This value can be changed by calling the <code>setRendererType()</code> method.</p>
+ * <p>
+ * Causes all child components of this component to be rendered. This is useful in scenarios where a parent component is
+ * expecting a single component to be present, but the application wishes to render more than one.
+ * </p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.passthrough.Element</code>".
+ * This value can be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
-public class PassthroughElement extends jakarta.faces.component.UIPanel 
-    implements ClientBehaviorHolder {
+public class PassthroughElement extends jakarta.faces.component.UIPanel implements ClientBehaviorHolder {
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -46,30 +45,25 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
         setRendererType("jakarta.faces.passthrough.Element");
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.Panel";
 
-
     protected enum PropertyKeys {
-        onclick,
-        ondblclick,
-        onkeydown,
-        onkeypress,
-        onkeyup,
-        onmousedown,
-        onmousemove,
-        onmouseout,
-        onmouseover,
-        onmouseup,
-        style,
-        styleClass,
-;
+        onclick, ondblclick, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, style, styleClass,;
+
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
@@ -77,9 +71,11 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Return the value of the <code>onclick</code> property.</p>
-     * <p>Contents: Javascript code executed when a pointer button is
-     * clicked over this element.
+     * <p>
+     * Return the value of the <code>onclick</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a pointer button is clicked over this element.
      */
     public java.lang.String getOnclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onclick);
@@ -87,18 +83,21 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>onclick</code> property.
+     * </p>
      */
     public void setOnclick(java.lang.String onclick) {
         getStateHelper().put(PropertyKeys.onclick, onclick);
         handleAttribute("onclick", onclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>ondblclick</code> property.</p>
-     * <p>Contents: Javascript code executed when a pointer button is
-     * double clicked over this element.
+     * <p>
+     * Return the value of the <code>ondblclick</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a pointer button is double clicked over this element.
      */
     public java.lang.String getOndblclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.ondblclick);
@@ -106,18 +105,21 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>ondblclick</code> property.
+     * </p>
      */
     public void setOndblclick(java.lang.String ondblclick) {
         getStateHelper().put(PropertyKeys.ondblclick, ondblclick);
         handleAttribute("ondblclick", ondblclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeydown</code> property.</p>
-     * <p>Contents: Javascript code executed when a key is
-     * pressed down over this element.
+     * <p>
+     * Return the value of the <code>onkeydown</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a key is pressed down over this element.
      */
     public java.lang.String getOnkeydown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeydown);
@@ -125,7 +127,9 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeydown</code> property.
+     * </p>
      */
     public void setOnkeydown(java.lang.String onkeydown) {
         getStateHelper().put(PropertyKeys.onkeydown, onkeydown);
@@ -133,9 +137,11 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Return the value of the <code>onkeypress</code> property.</p>
-     * <p>Contents: Javascript code executed when a key is
-     * pressed and released over this element.
+     * <p>
+     * Return the value of the <code>onkeypress</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a key is pressed and released over this element.
      */
     public java.lang.String getOnkeypress() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeypress);
@@ -143,18 +149,21 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeypress</code> property.
+     * </p>
      */
     public void setOnkeypress(java.lang.String onkeypress) {
         getStateHelper().put(PropertyKeys.onkeypress, onkeypress);
         handleAttribute("onkeypress", onkeypress);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeyup</code> property.</p>
-     * <p>Contents: Javascript code executed when a key is
-     * released over this element.
+     * <p>
+     * Return the value of the <code>onkeyup</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a key is released over this element.
      */
     public java.lang.String getOnkeyup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeyup);
@@ -162,18 +171,21 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeyup</code> property.
+     * </p>
      */
     public void setOnkeyup(java.lang.String onkeyup) {
         getStateHelper().put(PropertyKeys.onkeyup, onkeyup);
         handleAttribute("onkeyup", onkeyup);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousedown</code> property.</p>
-     * <p>Contents: Javascript code executed when a pointer button is
-     * pressed down over this element.
+     * <p>
+     * Return the value of the <code>onmousedown</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a pointer button is pressed down over this element.
      */
     public java.lang.String getOnmousedown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousedown);
@@ -181,7 +193,9 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousedown</code> property.
+     * </p>
      */
     public void setOnmousedown(java.lang.String onmousedown) {
         getStateHelper().put(PropertyKeys.onmousedown, onmousedown);
@@ -189,9 +203,11 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Return the value of the <code>onmousemove</code> property.</p>
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved within this element.
+     * <p>
+     * Return the value of the <code>onmousemove</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved within this element.
      */
     public java.lang.String getOnmousemove() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousemove);
@@ -199,18 +215,21 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousemove</code> property.
+     * </p>
      */
     public void setOnmousemove(java.lang.String onmousemove) {
         getStateHelper().put(PropertyKeys.onmousemove, onmousemove);
         handleAttribute("onmousemove", onmousemove);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseout</code> property.</p>
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved away from this element.
+     * <p>
+     * Return the value of the <code>onmouseout</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved away from this element.
      */
     public java.lang.String getOnmouseout() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseout);
@@ -218,7 +237,9 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseout</code> property.
+     * </p>
      */
     public void setOnmouseout(java.lang.String onmouseout) {
         getStateHelper().put(PropertyKeys.onmouseout, onmouseout);
@@ -226,9 +247,11 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Return the value of the <code>onmouseover</code> property.</p>
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved onto this element.
+     * <p>
+     * Return the value of the <code>onmouseover</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved onto this element.
      */
     public java.lang.String getOnmouseover() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseover);
@@ -236,18 +259,21 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseover</code> property.
+     * </p>
      */
     public void setOnmouseover(java.lang.String onmouseover) {
         getStateHelper().put(PropertyKeys.onmouseover, onmouseover);
         handleAttribute("onmouseover", onmouseover);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseup</code> property.</p>
-     * <p>Contents: Javascript code executed when a pointer button is
-     * released over this element.
+     * <p>
+     * Return the value of the <code>onmouseup</code> property.
+     * </p>
+     * <p>
+     * Contents: Javascript code executed when a pointer button is released over this element.
      */
     public java.lang.String getOnmouseup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseup);
@@ -255,17 +281,21 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseup</code> property.
+     * </p>
      */
     public void setOnmouseup(java.lang.String onmouseup) {
         getStateHelper().put(PropertyKeys.onmouseup, onmouseup);
         handleAttribute("onmouseup", onmouseup);
     }
 
-
     /**
-     * <p>Return the value of the <code>style</code> property.</p>
-     * <p>Contents: CSS style(s) to be applied when this component is rendered.
+     * <p>
+     * Return the value of the <code>style</code> property.
+     * </p>
+     * <p>
+     * Contents: CSS style(s) to be applied when this component is rendered.
      */
     public java.lang.String getStyle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.style);
@@ -273,7 +303,9 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>style</code> property.</p>
+     * <p>
+     * Set the value of the <code>style</code> property.
+     * </p>
      */
     public void setStyle(java.lang.String style) {
         getStateHelper().put(PropertyKeys.style, style);
@@ -281,10 +313,12 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Return the value of the <code>styleClass</code> property.</p>
-     * <p>Contents: Space-separated list of CSS style class(es) to be applied when
-     * this element is rendered.  This value must be passed through
-     * as the "class" property on generated markup.
+     * <p>
+     * Return the value of the <code>styleClass</code> property.
+     * </p>
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
+     * passed through as the "class" property on generated markup.
      */
     public java.lang.String getStyleClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.styleClass);
@@ -292,31 +326,29 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel
     }
 
     /**
-     * <p>Set the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>styleClass</code> property.
+     * </p>
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
-        Arrays.asList("click","dblclick","keydown","keypress","keyup","mousedown","mousemove",
-        "mouseout","mouseover","mouseup"));
+            Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
 
     @Override
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;    
+        return EVENT_NAMES;
     }
-
 
     @Override
     public String getDefaultEventName() {
-        return "click";    
+        return "click";
     }
 
-
     private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) this.getAttributes().get(
-            "jakarta.faces.component.UIComponentBase.attributesThatAreSet");
+        List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
             if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {

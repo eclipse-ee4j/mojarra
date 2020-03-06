@@ -50,13 +50,14 @@ import java.util.Set;
 /**
  * <B>DebugUtil</B> is a class ...
  * <p/>
- * <B>Lifetime And Scope</B> <P>
+ * <B>Lifetime And Scope</B>
+ * <P>
  */
 
 public class DebugUtil {
 
     private static final Logger LOGGER = Logger.getLogger(DebugUtil.class.getPackage().getName());
-    
+
 //
 // Protected Constants
 //
@@ -87,7 +88,6 @@ public class DebugUtil {
         this.init();
     }
 
-
     protected void init() {
         // super.init();
     }
@@ -103,14 +103,13 @@ public class DebugUtil {
     }
 
     /**
-     * Usage: <P>
+     * Usage:
+     * <P>
      * <p/>
-     * Place a call to this method in the earliest possible entry point of
-     * your servlet app.  It will cause the app to enter into an infinite
-     * loop, sleeping until the static var keepWaiting is set to false.  The
-     * idea is that you attach your debugger to the servlet, then, set a
-     * breakpont in this method.  When it is hit, you use the debugger to set
-     * the keepWaiting class var to false.
+     * Place a call to this method in the earliest possible entry point of your servlet app. It will cause the app to enter
+     * into an infinite loop, sleeping until the static var keepWaiting is set to false. The idea is that you attach your
+     * debugger to the servlet, then, set a breakpont in this method. When it is hit, you use the debugger to set the
+     * keepWaiting class var to false.
      */
 
     public static void waitForDebugger() {
@@ -118,12 +117,10 @@ public class DebugUtil {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                System.out.println("DebugUtil.waitForDebugger(): Exception: " +
-                                   e.getMessage());
+                System.out.println("DebugUtil.waitForDebugger(): Exception: " + e.getMessage());
             }
         }
     }
-
 
     private static void indentPrintln(Writer out, String str) {
 
@@ -139,7 +136,7 @@ public class DebugUtil {
             }
         }
     }
-    
+
     private static void assertSerializability(StringBuilder builder, Object toPrint) {
         DebugObjectOutputStream doos = null;
         try {
@@ -147,8 +144,7 @@ public class DebugUtil {
             ObjectOutputStream oos = new ObjectOutputStream(base);
             doos = new DebugObjectOutputStream(oos);
             doos.writeObject(toPrint);
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             List pathToBadObject = doos.getStack();
             builder.append("Path to non-Serializable Object: \n");
             for (Object cur : pathToBadObject) {
@@ -158,7 +154,7 @@ public class DebugUtil {
     }
 
     private static void indentPrintln(Logger out, Object toPrint) {
-        
+
         StringBuilder builder = new StringBuilder();
         String str = (null == toPrint) ? "null" : toPrint.toString();
 
@@ -167,21 +163,19 @@ public class DebugUtil {
             builder.append("  ");
         }
         builder.append(str + "\n");
-        
+
         if (!(toPrint instanceof String)) {
             assertSerializability(builder, toPrint);
         }
-        
+
         out.severe(builder.toString());
-        
-        
+
     }
 
     /**
      * @param root the root component
-     * @return the output of printTree() as a String.
-     * Useful when used with a Logger. For example:
-     *    logger.log(DebugUtil.printTree(root));
+     * @return the output of printTree() as a String. Useful when used with a Logger. For example:
+     * logger.log(DebugUtil.printTree(root));
      */
     public static String printTree(UIComponent root) {
         Writer writer = new FastStringWriter(1024);
@@ -190,9 +184,7 @@ public class DebugUtil {
     }
 
     /**
-     * Output of printTree() to a PrintStream.
-     * Usage:
-     *    DebugUtil.printTree(root, System.out);
+     * Output of printTree() to a PrintStream. Usage: DebugUtil.printTree(root, System.out);
      *
      * @param root the root component
      * @param out the PrintStream to write to
@@ -208,7 +200,7 @@ public class DebugUtil {
             System.out.println(ex.getMessage());
         }
     }
-    
+
     public static void printTree(UIComponent root, Logger logger, Level level) {
         StringWriter sw = new StringWriter();
         printTree(root, sw);
@@ -221,33 +213,25 @@ public class DebugUtil {
         }
         Object value = null;
 
-/* PENDING
-   indentPrintln(out, "===>Type:" + root.getComponentType());
-*/
+        /*
+         * PENDING indentPrintln(out, "===>Type:" + root.getComponentType());
+         */
         indentPrintln(out, "id:" + root.getId());
         indentPrintln(out, "type:" + root.getClass().getName());
 
         if (root instanceof jakarta.faces.component.UISelectOne) {
             Iterator<SelectItem> items = null;
             try {
-                items = RenderKitUtils.getSelectItems(FacesContext.getCurrentInstance(),
-                                                      root);
+                items = RenderKitUtils.getSelectItems(FacesContext.getCurrentInstance(), root);
             } catch (Exception e) {
-                 // select items couldn't be resolved at this time
+                // select items couldn't be resolved at this time
                 indentPrintln(out, " { SelectItem(s) not resolvable at this point in time }");
             }
             if (items != null) {
                 indentPrintln(out, " {");
                 while (items.hasNext()) {
                     SelectItem curItem = items.next();
-                    indentPrintln(out, "\t value = "
-                                       + curItem.getValue()
-                                       +
-                                       ", label = "
-                                       + curItem.getLabel()
-                                       + ", description = "
-                                       +
-                                       curItem.getDescription());
+                    indentPrintln(out, "\t value = " + curItem.getValue() + ", label = " + curItem.getLabel() + ", description = " + curItem.getDescription());
                 }
                 indentPrintln(out, " }");
             }
@@ -269,7 +253,7 @@ public class DebugUtil {
 
             Iterator<String> it = root.getAttributes().keySet().iterator();
             if (it != null) {
-                while (it.hasNext()) {                   
+                while (it.hasNext()) {
                     String attrName = it.next();
                     ve = root.getValueExpression(attrName);
                     String expr = null;
@@ -303,22 +287,20 @@ public class DebugUtil {
         }
         curDepth--;
     }
-    
-    public static void simplePrintTree(UIComponent root, 
-                                      String duplicateId,
-                                       Writer out) {
+
+    public static void simplePrintTree(UIComponent root, String duplicateId, Writer out) {
         if (null == root) {
             return;
-        }                     
+        }
 
         if (duplicateId.equals(root.getClientId())) {
             indentPrintln(out, "+id: " + root.getId() + "  <===============");
         } else {
             indentPrintln(out, "+id: " + root.getId());
         }
-        indentPrintln(out, " type: " + root.toString());           
+        indentPrintln(out, " type: " + root.toString());
 
-        curDepth++;       
+        curDepth++;
         // print all the facets of this component
         for (UIComponent uiComponent : root.getFacets().values()) {
             simplePrintTree(uiComponent, duplicateId, out);
@@ -329,7 +311,7 @@ public class DebugUtil {
         }
         curDepth--;
     }
-    
+
     public static void printState(Map state, Logger out) {
         Set<Map.Entry> entrySet = state.entrySet();
         Object key, value;
@@ -339,17 +321,14 @@ public class DebugUtil {
             value = cur.getValue();
             keyIsSerializable = (key instanceof Serializable) ? "true" : "+_+_+_+FALSE+_+_+_+_";
             valueIsSerializable = (value instanceof Serializable) ? "true" : "+_+_+_+FALSE+_+_+_+_";
-            out.severe("key: " + key.toString() + " class:" + key.getClass() + " Serializable: " + 
-                    keyIsSerializable);
-            out.severe("value: " + value.toString() + " class:" + key.getClass() + " Serializable: " + 
-                    keyIsSerializable);
-            if (value instanceof Object []) {
-                printTree((Object []) value, out);
+            out.severe("key: " + key.toString() + " class:" + key.getClass() + " Serializable: " + keyIsSerializable);
+            out.severe("value: " + value.toString() + " class:" + key.getClass() + " Serializable: " + keyIsSerializable);
+            if (value instanceof Object[]) {
+                printTree((Object[]) value, out);
             }
         }
-        
-    }
 
+    }
 
 //    /**
 //     * Output of printTree() as a String. 
@@ -400,13 +379,13 @@ public class DebugUtil {
 //        curDepth--;
 //    }
 
-    public static void printTree(Object [] root, Writer out) {
-        
+    public static void printTree(Object[] root, Writer out) {
+
         if (null == root) {
             indentPrintln(out, "null");
             return;
         }
-        
+
         Object obj;
         for (int i = 0; i < root.length; i++) {
             obj = root[i];
@@ -415,25 +394,24 @@ public class DebugUtil {
             } else {
                 if (obj.getClass().isArray()) {
                     curDepth++;
-                    printTree((Object [])obj, out);
+                    printTree((Object[]) obj, out);
                     curDepth--;
                 } else {
                     indentPrintln(out, obj.toString());
                 }
-                
+
             }
         }
-        
-        
+
     }
 
-    public static void printTree(Object [] root, Logger out) {
-        
+    public static void printTree(Object[] root, Logger out) {
+
         if (null == root) {
             indentPrintln(out, "null");
             return;
         }
-        
+
         Object obj;
         for (int i = 0; i < root.length; i++) {
             obj = root[i];
@@ -442,35 +420,33 @@ public class DebugUtil {
             } else {
                 if (obj.getClass().isArray()) {
                     curDepth++;
-                    printTree((Object [])obj, out);
+                    printTree((Object[]) obj, out);
                     curDepth--;
                 } else if (obj instanceof List) {
                     printList((List) obj, out);
                 } else {
                     indentPrintln(out, obj);
                 }
-                
+
             }
         }
-        
-        
+
     }
-    
+
     public static void printList(List list, Logger out) {
         for (Object cur : list) {
             if (cur instanceof List) {
                 curDepth++;
-                printList((List)cur, out);
+                printList((List) cur, out);
                 curDepth--;
             } else {
                 indentPrintln(out, cur);
             }
         }
     }
-    
+
     //
 // General Methods
 //
-
 
 } // end of class DebugUtil

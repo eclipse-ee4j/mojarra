@@ -44,18 +44,18 @@ import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.component.search.SearchKeywordResolver;
 
 public class SearchExpression {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private final ApplicationAssociate associate;
-    
+
     private CompositeSearchKeywordResolver searchKeywordResolvers;
 
     public SearchExpression(ApplicationAssociate applicationAssociate) {
         this.associate = applicationAssociate;
-        
+
         searchKeywordResolvers = new CompositeSearchKeywordResolver();
-        
+
         searchKeywordResolvers.add(new SearchKeywordResolverImplThis());
         searchKeywordResolvers.add(new SearchKeywordResolverImplParent());
         searchKeywordResolvers.add(new SearchKeywordResolverImplForm());
@@ -69,7 +69,7 @@ public class SearchExpression {
         searchKeywordResolvers.add(new SearchKeywordResolverImplChild());
         searchKeywordResolvers.add(new SearchKeywordResolverImplAll());
     }
-    
+
     public SearchExpressionHandler getSearchExpressionHandler() {
         return associate.getSearchExpressionHandler();
     }
@@ -86,8 +86,7 @@ public class SearchExpression {
 
     public void addSearchKeywordResolver(SearchKeywordResolver resolver) {
         if (associate.hasRequestBeenServiced()) {
-            throw new IllegalStateException(
-                    MessageUtils.getExceptionMessageString(ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID, "SearchKeywordResolver"));
+            throw new IllegalStateException(MessageUtils.getExceptionMessageString(ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID, "SearchKeywordResolver"));
         }
 
         searchKeywordResolvers.add(resolver);
@@ -96,5 +95,5 @@ public class SearchExpression {
     public SearchKeywordResolver getSearchKeywordResolver() {
         return searchKeywordResolvers;
     }
-    
+
 }

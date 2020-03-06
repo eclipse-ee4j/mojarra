@@ -33,16 +33,14 @@ class PersistenceContextHandler extends JndiHandler implements RuntimeAnnotation
     private Field[] fields;
     private PersistenceContext[] fieldAnnotations;
 
-    public PersistenceContextHandler(
-            Method[] methods, PersistenceContext[] methodAnnotations,
-            Field[] fields, PersistenceContext[] fieldAnnotations) {
+    public PersistenceContextHandler(Method[] methods, PersistenceContext[] methodAnnotations, Field[] fields, PersistenceContext[] fieldAnnotations) {
         this.methods = methods;
         this.methodAnnotations = methodAnnotations;
         this.fields = fields;
         this.fieldAnnotations = fieldAnnotations;
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];

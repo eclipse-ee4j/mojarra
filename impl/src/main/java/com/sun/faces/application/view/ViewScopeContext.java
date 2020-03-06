@@ -55,7 +55,7 @@ public class ViewScopeContext implements Context, Serializable {
     /**
      * Assert the context is active, otherwise throw ContextNotActiveException.
      */
-    @SuppressWarnings({"FinalPrivateMethod"})
+    @SuppressWarnings({ "FinalPrivateMethod" })
     private final void assertNotReleased() {
         if (!isActive()) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -64,7 +64,6 @@ public class ViewScopeContext implements Context, Serializable {
             throw new ContextNotActiveException();
         }
     }
-
 
     /**
      * Get the ViewScoped bean for the given contextual.
@@ -78,7 +77,7 @@ public class ViewScopeContext implements Context, Serializable {
         assertNotReleased();
 
         T result = null;
-        
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null) {
             ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
@@ -91,8 +90,7 @@ public class ViewScopeContext implements Context, Serializable {
     }
 
     /**
-     * Get the existing instance of the ViewScoped bean for the given contextual
-     * or create a new one.
+     * Get the existing instance of the ViewScoped bean for the given contextual or create a new one.
      *
      * @param <T> the type.
      * @param contextual the contextual.

@@ -17,11 +17,11 @@
 package jakarta.faces.view;
 
 /**
- * <p class="changed_added_2_0">A VDL handler that exposes {@link
- * jakarta.faces.convert.Converter} to a <em>page author</em>.  The
- * default implementation of Facelets must provide an implemention of
- * this in the handler for the <code>&lt;f:converter&gt;</code> (and any
- * tags for any of the standard converters) tags.</p>
+ * <p class="changed_added_2_0">
+ * A VDL handler that exposes {@link jakarta.faces.convert.Converter} to a <em>page author</em>. The default
+ * implementation of Facelets must provide an implemention of this in the handler for the
+ * <code>&lt;f:converter&gt;</code> (and any tags for any of the standard converters) tags.
+ * </p>
  *
  * @since 2.0
  */

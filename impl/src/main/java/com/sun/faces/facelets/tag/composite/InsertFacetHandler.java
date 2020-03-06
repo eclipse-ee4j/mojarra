@@ -37,14 +37,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This <code>TagHandler</code> is responsible for relocating Facets
- * defined within a composite component to a component within the
- * composite component's <code>composite:implementation</code> section.
+ * This <code>TagHandler</code> is responsible for relocating Facets defined within a composite component to a component
+ * within the composite component's <code>composite:implementation</code> section.
  */
 public class InsertFacetHandler extends TagHandlerImpl {
 
     private final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
-    
+
     // Supported attribute names
     private static final String NAME_ATTRIBUTE = "name";
 
@@ -55,14 +54,12 @@ public class InsertFacetHandler extends TagHandlerImpl {
     // This attribute is required.
     private TagAttribute name;
 
-    // This attribute is not required.  If it's not defined or false,
+    // This attribute is not required. If it's not defined or false,
     // then the facet associated with name need not be present in the
     // using page.
     private TagAttribute required;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public InsertFacetHandler(TagConfig config) {
 
@@ -72,45 +69,30 @@ public class InsertFacetHandler extends TagHandlerImpl {
 
     }
 
-
     // ------------------------------------------------- Methods from TagHandler
 
-
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-          throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
-        UIComponent compositeParent =
-              UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
-
+        UIComponent compositeParent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
 
         if (compositeParent != null) {
-            compositeParent.subscribeToEvent(PostAddToViewEvent.class,
-                                             new RelocateFacetListener(ctx,
-                                                                       parent,
-                                                                       this.tag.getLocation()));
+            compositeParent.subscribeToEvent(PostAddToViewEvent.class, new RelocateFacetListener(ctx, parent, this.tag.getLocation()));
         }
 
     }
 
-
     // ----------------------------------------------------------- Inner Classes
 
-
     private class RelocateFacetListener extends RelocateListener {
-
 
         private FaceletContext ctx;
         private UIComponent component;
         private Location location;
 
-
         // -------------------------------------------------------- Constructors
 
-
-        RelocateFacetListener(FaceletContext ctx,
-                              UIComponent component,
-                              Location location) {
+        RelocateFacetListener(FaceletContext ctx, UIComponent component, Location location) {
 
             this.ctx = ctx;
             this.component = component;
@@ -120,10 +102,8 @@ public class InsertFacetHandler extends TagHandlerImpl {
 
         // --------------------------- Methods from ComponentSystemEventListener
 
-
         @Override
-        public void processEvent(ComponentSystemEvent event)
-        throws AbortProcessingException {
+        public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
 
             UIComponent compositeParent = event.getComponent();
             if (compositeParent == null) {
@@ -142,9 +122,7 @@ public class InsertFacetHandler extends TagHandlerImpl {
 
             if (compositeParent == null) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
-                               "jsf.composite.component.insertfacet.missing.template",
-                               location.toString());
+                    LOGGER.log(Level.WARNING, "jsf.composite.component.insertfacet.missing.template", location.toString());
                 }
                 return;
             }
@@ -162,11 +140,11 @@ public class InsertFacetHandler extends TagHandlerImpl {
             if (facet != null) {
                 component.getFacets().put(facetName, facet);
 
-                String key = (String)facet.getAttributes().get(ComponentSupport.MARK_CREATED);
-               
+                String key = (String) facet.getAttributes().get(ComponentSupport.MARK_CREATED);
+
                 String value = component.getId();
                 if (key != null && value != null) {
-                    //store the new parent's info per child in the old parent's attr map
+                    // store the new parent's info per child in the old parent's attr map
                     compositeParent.getAttributes().put(key, value);
                 }
 
@@ -180,26 +158,17 @@ public class InsertFacetHandler extends TagHandlerImpl {
                     throwRequiredException(ctx, facetName, compositeParent);
                 }
             }
-         
-        }
 
+        }
 
         // ----------------------------------------------------- Private Methods
 
+        private void throwRequiredException(FaceletContext ctx, String facetName, UIComponent compositeParent) {
 
-        private void throwRequiredException(FaceletContext ctx,
-                                            String facetName,
-                                            UIComponent compositeParent) {
-
-            throw new TagException(tag,
-                                   "Unable to find facet named '"
-                                   + facetName
-                                   + "' in parent composite component with id '"
-                                   + compositeParent .getClientId(ctx.getFacesContext())
-                                   + '\'');
+            throw new TagException(tag, "Unable to find facet named '" + facetName + "' in parent composite component with id '"
+                    + compositeParent.getClientId(ctx.getFacesContext()) + '\'');
 
         }
-
 
         private boolean isRequired() {
 

@@ -46,9 +46,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
 
-
     // ------------------------------ Methods from ConfigurationResourceProvider
-
 
     @Override
     public Collection<URI> getResources(ServletContext context) {
@@ -56,7 +54,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
         WebConfiguration webConfig = WebConfiguration.getInstance(context);
         String paths = webConfig.getOptionValue(getParameter());
         Set<URI> urls = new LinkedHashSet<>(6);
-        
+
         if (paths != null) {
             for (String token : split(context, paths.trim(), getSeparatorRegex())) {
                 String path = token.trim();
@@ -66,9 +64,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
                         urls.add(u);
                     } else {
                         if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, 
-                                    "jsf.config.web_resource_not_found",
-                                    new Object[] { path, JakartaFacesConfigFiles.getQualifiedName() });
+                            LOGGER.log(WARNING, "jsf.config.web_resource_not_found", new Object[] { path, JakartaFacesConfigFiles.getQualifiedName() });
                         }
                     }
                 }
@@ -79,9 +75,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
         return urls;
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected abstract WebContextInitParameter getParameter();
 
@@ -89,17 +83,16 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
 
     protected abstract String getSeparatorRegex();
 
-
     protected URI getContextURLForPath(ServletContext context, String path) {
         try {
             URL url = context.getResource(path);
             if (url != null) {
-                return new URI(url.toExternalForm().replaceAll(" ", "%20"));            
+                return new URI(url.toExternalForm().replaceAll(" ", "%20"));
             }
         } catch (MalformedURLException | URISyntaxException mue) {
             throw new FacesException(mue);
         }
-        
+
         return null;
     }
 
