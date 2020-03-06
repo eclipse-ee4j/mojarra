@@ -16,14 +16,13 @@
 
 package jakarta.faces.webapp;
 
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>
@@ -80,7 +79,7 @@ public abstract class ConverterELTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -118,7 +117,7 @@ public abstract class ConverterELTag extends TagSupport {
             }
         }
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
@@ -130,7 +129,7 @@ public abstract class ConverterELTag extends TagSupport {
      * </p>
      *
      * @throws JspException if a new instance cannot be created
-     * 
+     *
      * @return the {@code Converter}
      */
     protected abstract Converter createConverter() throws JspException;

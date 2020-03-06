@@ -18,10 +18,9 @@ package jakarta.faces.component;
 
 import java.util.Map;
 
-import jakarta.el.MethodExpression;
-
 import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;
@@ -36,14 +35,14 @@ import jakarta.faces.event.PreRenderViewEvent;
 import jakarta.faces.view.ViewMetadata;
 
 /**
- * 
+ *
  * <p class="changed_added_2_2">
  * <strong class="changed_modified_2_3">UIViewAction</strong> represents a method invocation that occurs during the
  * request processing lifecycle, usually in response to an initial request, as opposed to a postback.
  * </p>
- * 
+ *
  * <div class="changed_added_2_2">
- * 
+ *
  * <p>
  * The {@link jakarta.faces.view.ViewDeclarationLanguage} implementation must cause an instance of this component to be
  * placed in the view for each occurrence of an <code>&lt;f:viewAction
@@ -51,24 +50,24 @@ import jakarta.faces.view.ViewMetadata;
  * /&gt;</code> element. The user must place <code>&lt;f:metadata
  * /&gt;</code> as a direct child of the <code>UIViewRoot</code>.
  * </p>
- * 
+ *
  * <p>
  * Because this class implements {@link ActionSource2}, any actions that one would normally take on a component that
  * implements <code>ActionSource2</code>, such as {@link UICommand}, are valid for instances of this class. Instances of
  * this class participate in the regular Jakarta Server Faces lifecycle, including on Ajax requests.
  * </p>
- * 
+ *
  * <p>
  * The purpose of this component is to provide a light-weight front-controller solution for executing code upon the
  * loading of a Jakarta Server Faces view to support the integration of system services, content retrieval, view
  * management, and navigation. This functionality is especially useful for non-faces (initial) requests.
  * </p>
- * 
+ *
  * <p>
  * The most common use case for this component is to take actions necessary for a particular view, often with the help
  * of one or more {@link UIViewParameter}s.
  * </p>
- * 
+ *
  * <p>
  * The {@link NavigationHandler} is consulted after the action is invoked to carry out the navigation case that matches
  * the action signature and outcome. If a navigation case is matched that causes the new viewId to be different from the
@@ -78,7 +77,7 @@ import jakarta.faces.view.ViewMetadata;
  * included in the query string for the redirect. See section JSF.7.4.2 Default NavigationHandler Algorithm, for the
  * discussion of how to handle {@code &lt;redirect /&gt;} cases.</span>
  * </p>
- * 
+ *
  * <p>
  * It's important to note that the full component tree is not built before the UIViewAction components are processed on
  * an non-faces (initial) request. Rather, the component tree only contains the {@link ViewMetadata}, an important part
@@ -86,7 +85,7 @@ import jakarta.faces.view.ViewMetadata;
  * </p>
  *
  * </div>
- * 
+ *
  * @since 2.2
  */
 public class UIViewAction extends UIComponentBase implements ActionSource2 {
@@ -238,7 +237,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * during the <em>Invoke Application</em> phase, the default behavior. The phase can be set explicitly in the
      * <code>phase</code> attribute, which takes precedence over the <code>immediate</code> attribute.
      * </p>
-     * 
+     *
      * @since 2.2
      */
     @Override
@@ -281,7 +280,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * </p>
      *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * {@link PhaseId#APPLY_REQUEST_VALUES}
@@ -302,13 +301,13 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * {@link PhaseId#INVOKE_APPLICATION}
      * </p>
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * If set, this value takes precedence over the immediate flag.
      * </p>
-     * 
+     *
      * @param phase the phase id (as string value).
      * @since 2.2
      */
@@ -341,7 +340,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * @param context {@link FacesContext} for the current request
      * @return <code>true</code> is currently processing broadcast, <code>false</code> otherwise.
      * @since 2.2
-     * 
+     *
      */
 
     public static boolean isProcessingBroadcast(FacesContext context) {
@@ -376,7 +375,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
     @Override
     public ActionListener[] getActionListeners() {
         ActionListener al[] = (ActionListener[]) getFacesListeners(ActionListener.class);
-        return (al);
+        return al;
     }
 
     /**
@@ -414,7 +413,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * <p class="changed_added_2_2">
      * If <code>true</code> this component will operate on postback.
      * </p>
-     * 
+     *
      * @return <code>true</code> if operating upon postback, <code>false</code> otherwise.
      * @since 2.2
      */
@@ -426,7 +425,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * <p class="changed_added_2_2">
      * Controls whether or not this component operates on postback.
      * </p>
-     * 
+     *
      * @param onPostback the onPostback flag.
      * @since 2.2
      */
@@ -438,7 +437,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * <p class="changed_added_2_2">
      * Return <code>true</code> if this component should take the actions specified in the {@link #decode} method.
      * </p>
-     * 
+     *
      * @return <code>true</code> if it should be rendered, <code>false</code> otherwise.
      * @since 2.2
      */
@@ -469,34 +468,34 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * Enable the method invocation specified by this component instance to return a value that performs navigation, similar
      * in spirit to {@link UICommand#broadcast}.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * Take no action and return immediately if any of the following conditions are true.
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * The response has already been marked as complete.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * The current <code>UIViewRoot</code> is different from the event's source's <code>UIViewRoot</code>.
      * </p>
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * Save a local reference to the viewId of the current <code>UIViewRoot</code>. For discussion, let this reference be
      * <em>viewIdBeforeAction</em>.
      * </p>
-     * 
+     *
      * <p>
      * Obtain the {@link ActionListener} from the {@link jakarta.faces.application.Application}. Wrap the current
      * {@link FacesContext} in an implementation of {@link jakarta.faces.context.FacesContextWrapper} that overrides the
@@ -508,7 +507,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * block, restore the original <code>FacesContext</code>, make it so a call to {@link #isProcessingBroadcast} on the
      * current context will return <code>false</code> and discard the wrapper.
      * </p>
-     * 
+     *
      * <p>
      * If the response has been marked as complete during the invocation of <code>processAction()</code>, take no further
      * action and return. Otherwise, compare <em>viewIdBeforeAction</em> with the viewId of the <code>UIViewRoot</code> on
@@ -518,9 +517,9 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * <code>UIViewAction</code> events have been queued because the number of such events queued has been noted in the
      * specification for {@link #decode}. Otherwise, execute the lifecycle on the new <code>UIViewRoot</code>.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param event {@link FacesEvent} to be broadcast
      *
      * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
@@ -528,7 +527,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * @throws IllegalArgumentException if the implementation class of this {@link FacesEvent} is not supported by this
      * component
      * @throws NullPointerException if <code>event</code> is <code>null</code>
-     * 
+     *
      * @since 2.2
      */
     @Override
@@ -546,12 +545,12 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
 
         // only proceed if the response has not been marked complete and
         // navigation to another view has not occurred
-        if (!context.getResponseComplete() && (context.getViewRoot() == getViewRootOf(event))) {
+        if (!context.getResponseComplete() && context.getViewRoot() == getViewRootOf(event)) {
             ActionListener listener = context.getApplication().getActionListener();
             if (listener != null) {
                 boolean hasMoreViewActionEvents = false;
                 UIViewRoot viewRootBefore = context.getViewRoot();
-                assert (null != viewRootBefore);
+                assert null != viewRootBefore;
                 InstrumentedFacesContext instrumentedContext = null;
                 try {
                     instrumentedContext = new InstrumentedFacesContext(context);
@@ -570,14 +569,14 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
                 // if the response is marked complete, the story is over
                 if (!context.getResponseComplete()) {
                     UIViewRoot viewRootAfter = context.getViewRoot();
-                    assert (null != viewRootAfter);
+                    assert null != viewRootAfter;
 
                     // if the view id changed as a result of navigation, then
                     // execute the Jakarta Server Faces lifecycle for the new view
                     // id
                     String viewIdBefore = viewRootBefore.getViewId();
                     String viewIdAfter = viewRootAfter.getViewId();
-                    assert (null != viewIdBefore && null != viewIdAfter);
+                    assert null != viewIdBefore && null != viewIdAfter;
                     boolean viewIdsSame = viewIdBefore.equals(viewIdAfter);
 
                     if (viewIdsSame && !hasMoreViewActionEvents) {
@@ -594,67 +593,67 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * Override behavior from the superclass to queue an {@link ActionEvent} that may result in the invocation of the
      * <code>action</code> or any <code>actionListener</code>s that may be associated with this instance.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * Take no action if any of the following conditions are true:
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * The current request is a postback and the instance has been configured to not operate on postback. See
      * {@link #isOnPostback}.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * The condition stated in the <code>if</code> property evaluates to <code>false</code>. See {@link #isRendered}
      * </p>
      * .</li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * Instantiate an {@link ActionEvent}, passing this component instance as the source. Set the <code>phaseId</code>
      * property of the <code>ActionEvent</code> as follows.
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * If this component instance has been configured with a specific lifecycle phase with a call to {@link #setPhase} use
      * that as the <code>phaseId</code>
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If the value of the <code>immediate</code> property is true, use {@link PhaseId#APPLY_REQUEST_VALUES}.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Otherwise, use {@link PhaseId#INVOKE_APPLICATION}.
      * </p>
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * Queue the event with a call to {@link #queueEvent}. Keep track of the number of events that are queued in this way on
      * this run through the lifecycle. This information is necessary during processing in {@link #broadcast}.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      */
     @Override
     public void decode(final FacesContext context) {
@@ -662,7 +661,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
             throw new NullPointerException();
         }
 
-        if ((context.isPostback() && !isOnPostback()) || !isRendered()) {
+        if (context.isPostback() && !isOnPostback() || !isRendered()) {
             return;
         }
 

@@ -18,9 +18,6 @@ package jakarta.faces.event;
 
 import java.util.List;
 
-import jakarta.faces.event.SystemEvent;
-import jakarta.faces.event.SystemEventListener;
-
 /**
  * <p class="changed_added_2_0">
  * Classes that implement this interface agree to maintain a list of {@link SystemEventListener} instances for each kind
@@ -50,10 +47,10 @@ public interface SystemEventListenerHolder {
      * </div>
      *
      * @param facesEventClass the class for which listeners are to be returned
-     * 
+     *
      * @return the listeners for the argument class
      *
      */
-    public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> facesEventClass);
+    List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> facesEventClass);
 
 }

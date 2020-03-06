@@ -115,9 +115,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
         // the following is the standard hashing algorithm included
         // in the original source
         h += ~(h << 9);
-        h ^= (h >>> 14);
-        h += (h << 4);
-        h ^= (h >>> 10);
+        h ^= h >>> 14;
+        h += h << 4;
+        h ^= h >>> 10;
         return h;
     }
 
@@ -130,7 +130,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
      */
     final Segment<K, V> segmentFor(int hash) {
         // noinspection unchecked
-        return (Segment<K, V>) segments[(hash >>> segmentShift) & segmentMask];
+        return segments[hash >>> segmentShift & segmentMask];
     }
 
     /* ---------------- Inner Classes -------------- */
@@ -194,6 +194,11 @@ public class MultiKeyConcurrentHashMap<K, V> {
          */
 
         /**
+         *
+         */
+        private static final long serialVersionUID = -5546647604753877171L;
+
+        /**
          * The number of elements in this segment's region.
          */
         volatile int count;
@@ -244,7 +249,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
         HashEntry<K, V> getFirst(int hash) {
             HashEntry[] tab = table;
             // noinspection unchecked
-            return (HashEntry<K, V>) tab[hash & (tab.length - 1)];
+            return tab[hash & tab.length - 1];
         }
 
         /**
@@ -267,9 +272,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
             if (count != 0) { // read-volatile
                 HashEntry<K, V> e = getFirst(hash);
                 while (e != null) {
-                    if ((e.hash == hash && key1.equals(e.key1)) && ((key2 == null && e.key2 == null) || (key2 != null && key2.equals(e.key2)))
-                            && ((key3 == null && e.key3 == null) || (key3 != null && key3.equals(e.key3)))
-                            && ((key4 == null && e.key4 == null) || (key4 != null && key4.equals(e.key4)))) {
+                    if (e.hash == hash && key1.equals(e.key1) && (key2 == null && e.key2 == null || key2 != null && key2.equals(e.key2))
+                            && (key3 == null && e.key3 == null || key3 != null && key3.equals(e.key3))
+                            && (key4 == null && e.key4 == null || key4 != null && key4.equals(e.key4))) {
                         V v = e.value;
                         if (v != null) {
                             return v;
@@ -286,9 +291,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
             if (count != 0) { // read-volatile
                 HashEntry<K, V> e = getFirst(hash);
                 while (e != null) {
-                    if ((e.hash == hash && key1.equals(e.key1)) && ((key2 == null && e.key2 == null) || (key2 != null && key2.equals(e.key2)))
-                            && ((key3 == null && e.key3 == null) || (key3 != null && key3.equals(e.key3)))
-                            && ((key4 == null && e.key4 == null) || (key4 != null && key4.equals(e.key4)))) {
+                    if (e.hash == hash && key1.equals(e.key1) && (key2 == null && e.key2 == null || key2 != null && key2.equals(e.key2))
+                            && (key3 == null && e.key3 == null || key3 != null && key3.equals(e.key3))
+                            && (key4 == null && e.key4 == null || key4 != null && key4.equals(e.key4))) {
                         return true;
                     }
                     e = e.next;
@@ -303,7 +308,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 int len = tab.length;
                 for (int i = 0; i < len; i++) {
                     for (// noinspection unchecked
-                            HashEntry<K, V> e = (HashEntry<K, V>) tab[i]; e != null; e = e.next) {
+                            HashEntry<K, V> e = tab[i]; e != null; e = e.next) {
                         V v = e.value;
                         if (v == null) // recheck
                         {
@@ -367,9 +372,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
                     rehash();
                 }
                 HashEntry[] tab = table;
-                int index = hash & (tab.length - 1);
+                int index = hash & tab.length - 1;
                 // noinspection unchecked
-                HashEntry<K, V> first = (HashEntry<K, V>) tab[index];
+                HashEntry<K, V> first = tab[index];
                 HashEntry<K, V> e = first;
                 while (e != null && (e.hash != hash || key1 != null && !key1.equals(e.key1) || key2 != null && !key2.equals(e.key2)
                         || key3 != null && !key3.equals(e.key3) || key4 != null && !key4.equals(e.key4))) {
@@ -417,7 +422,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 // We need to guarantee that any existing reads of old Map can
                 // proceed. So we cannot yet null out each bin.
                 // noinspection unchecked
-                HashEntry<K, V> e = (HashEntry<K, V>) oldTable[i];
+                HashEntry<K, V> e = oldTable[i];
 
                 if (e != null) {
                     HashEntry<K, V> next = e.next;
@@ -443,7 +448,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
                         for (HashEntry<K, V> p = e; p != lastRun; p = p.next) {
                             int k = p.hash & sizeMask;
                             // noinspection unchecked
-                            HashEntry<K, V> n = (HashEntry<K, V>) newTable[k];
+                            HashEntry<K, V> n = newTable[k];
                             newTable[k] = new HashEntry<>(p.key1, p.key2, p.key3, p.key4, p.hash, n, p.value);
                         }
                     }
@@ -460,9 +465,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
             try {
                 int c = count - 1;
                 HashEntry[] tab = table;
-                int index = hash & (tab.length - 1);
+                int index = hash & tab.length - 1;
                 // noinspection unchecked
-                HashEntry<K, V> first = (HashEntry<K, V>) tab[index];
+                HashEntry<K, V> first = tab[index];
                 HashEntry<K, V> e = first;
                 while (e != null && (e.hash != hash || key1 != null && !key1.equals(e.key1) || key2 != null && !key2.equals(e.key2)
                         || key3 != null && !key3.equals(e.key3) || key4 != null && !key4.equals(e.key4))) {
@@ -876,14 +881,14 @@ public class MultiKeyConcurrentHashMap<K, V> {
 
     /**
      * If the specified key is not already associated with a value, associate it with the given value. This is equivalent to
-     * 
+     *
      * <pre>
      * if (!map.containsKey(key))
      *     return map.put(key, value);
      * else
      *     return map.get(key);
      * </pre>
-     * 
+     *
      * Except that the action is performed atomically.
      *
      * @param key key with which the specified value is to be associated.
@@ -970,7 +975,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
 
     /**
      * Replace entry for key only if currently mapped to given value. Acts as
-     * 
+     *
      * <pre>
      * if (map.get(key).equals(oldValue)) {
      *     map.put(key, newValue);
@@ -978,7 +983,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * } else
      *     return false;
      * </pre>
-     * 
+     *
      * except that the action is performed atomically.
      *
      * @param key key with which the specified value is associated.
@@ -999,13 +1004,13 @@ public class MultiKeyConcurrentHashMap<K, V> {
 
     /**
      * Replace entry for key only if currently mapped to some value. Acts as
-     * 
+     *
      * <pre>
      *  if ((map.containsKey(key)) {
      *     return map.put(key, value);
      * } else return null;
      * </pre>
-     * 
+     *
      * except that the action is performed atomically.
      *
      * @param key key with which the specified value is associated.

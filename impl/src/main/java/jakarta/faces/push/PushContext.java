@@ -29,7 +29,7 @@ import jakarta.websocket.RemoteEndpoint.Async;
  * <p class="changed_added_2_3">
  * CDI interface to send a message object to the push socket channel as identified by <code>&#64;</code>{@link Push}.
  * This can be injected via <code>&#64;Push</code> in any container managed artifact in WAR.
- * 
+ *
  * <pre>
  * &#64;Inject
  * &#64;Push
@@ -37,7 +37,7 @@ import jakarta.websocket.RemoteEndpoint.Async;
  * </pre>
  * <p>
  * For detailed usage instructions, see <code>&#64;</code>{@link Push} javadoc.
- * 
+ *
  * @since 2.3
  * @see Push
  */
@@ -60,7 +60,7 @@ public interface PushContext extends Serializable {
      * Send given message object to the push socket channel as identified by <code>&#64;</code>{@link Push}. The message
      * object will be encoded as JSON and be available as first argument of the JavaScript listener function declared in
      * <code>&lt;f:websocket onmessage&gt;</code>.
-     * 
+     *
      * @param message The push message object.
      * @return The results of the send operation. If it returns an empty set, then there was no open web socket session
      * associated with given socket channel. The returned futures will return <code>null</code> on {@link Future#get()} if
@@ -75,7 +75,7 @@ public interface PushContext extends Serializable {
      * given user as identified by <code>&lt;f:websocket user&gt;</code>. The message object will be encoded as JSON and be
      * available as first argument of the JavaScript listener function declared in
      * <code>&lt;f:websocket onmessage&gt;</code>.
-     * 
+     *
      * @param <S> The generic type of the user identifier.
      * @param message The push message object.
      * @param user The user to which the push message object must be delivered to.
@@ -92,7 +92,7 @@ public interface PushContext extends Serializable {
      * given users as identified by <code>&lt;f:websocket user&gt;</code>. The message object will be encoded as JSON and be
      * available as first argument of the JavaScript listener function declared in
      * <code>&lt;f:websocket onmessage&gt;</code>.
-     * 
+     *
      * @param <S> The generic type of the user identifier.
      * @param message The push message object.
      * @param users The users to which the push message object must be delivered to.

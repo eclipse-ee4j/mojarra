@@ -22,7 +22,7 @@ import jakarta.faces.context.FacesContext;
  * <p class="changed_added_2_2">
  * Represents a case within a switch node in the flow graph. See {@link SwitchNode}.
  * </p>
- * 
+ *
  * @since 2.2
  */
 public abstract class SwitchCase {
@@ -31,9 +31,9 @@ public abstract class SwitchCase {
      * <p class="changed_added_2_2">
      * Return the outcome to be used if {@link #getCondition} return {@code true}.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @return the outcome
      */
     public abstract String getFromOutcome();
@@ -42,9 +42,9 @@ public abstract class SwitchCase {
      * <p class="changed_added_2_2">
      * Return {@code true} if this case should be taken, {@code false} otherwise.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @param context the {@code FacesContext} for the current request.
      *
      * @return a value indicating whether or not this condition should be taken

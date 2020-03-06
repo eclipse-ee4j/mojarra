@@ -16,27 +16,6 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.ReflectionUtils;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.webapp.UIComponentClassicTagBase;
-
-import com.sun.faces.util.RequestStateManager;
-
-import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.Tag;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -53,6 +32,25 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.ReflectionUtils;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>
@@ -82,11 +80,11 @@ public class LoadBundleTag extends TagSupport {
      * <p>
      * Set the base name of the <code>ResourceBundle</code> to be loaded.
      * </p>
-     * 
+     *
      * @param basename the ValueExpression which will resolve the basename
      */
     public void setBasename(ValueExpression basename) {
-        this.basenameExpression = basename;
+        basenameExpression = basename;
     }
 
     private String var;
@@ -96,7 +94,7 @@ public class LoadBundleTag extends TagSupport {
      * Set the name of the attribute in the request scope under which to store the <code>ResourceBundle</code>
      * <code>Map</code>.
      * </p>
-     * 
+     *
      * @param var the variable name to export the loaded ResourceBundle to
      */
     public void setVar(String var) {
@@ -144,7 +142,7 @@ public class LoadBundleTag extends TagSupport {
             @Override
             public String toString() {
                 StringBuffer sb = new StringBuffer();
-                Iterator<Map.Entry<String, Object>> entries = this.entrySet().iterator();
+                Iterator<Map.Entry<String, Object>> entries = entrySet().iterator();
                 Map.Entry<String, Object> cur;
                 while (entries.hasNext()) {
                     cur = entries.next();
@@ -164,7 +162,7 @@ public class LoadBundleTag extends TagSupport {
             public boolean containsKey(Object key) {
                 boolean result = false;
                 if (null != key) {
-                    result = (null != bundle.getObject(key.toString()));
+                    result = null != bundle.getObject(key.toString());
                 }
                 return result;
             }
@@ -175,7 +173,7 @@ public class LoadBundleTag extends TagSupport {
                 boolean result = false;
                 while (keys.hasMoreElements()) {
                     Object curObj = bundle.getObject(keys.nextElement());
-                    if ((curObj == value) || ((null != curObj) && curObj.equals(value))) {
+                    if (curObj == value || null != curObj && curObj.equals(value)) {
                         result = true;
                         break;
                     }
@@ -197,7 +195,7 @@ public class LoadBundleTag extends TagSupport {
 
             @Override
             public boolean equals(Object obj) {
-                return !((obj == null) || !(obj instanceof Map)) && entrySet().equals(((Map) obj).entrySet());
+                return !(obj == null || !(obj instanceof Map)) && entrySet().equals(((Map) obj).entrySet());
 
             }
 
@@ -294,7 +292,7 @@ public class LoadBundleTag extends TagSupport {
             }
         }
 
-        return (EVAL_BODY_INCLUDE);
+        return EVAL_BODY_INCLUDE;
 
     }
 
@@ -315,7 +313,7 @@ public class LoadBundleTag extends TagSupport {
             } catch (InvocationTargetException targetException) {
                 Throwable cause = targetException.getCause();
                 if (cause instanceof RuntimeException) {
-                    throw ((RuntimeException) cause);
+                    throw (RuntimeException) cause;
                 }
             }
         }
@@ -346,9 +344,9 @@ public class LoadBundleTag extends TagSupport {
      * component should be added as a child
      */
     private UIComponentClassicTagBase getParentUIComponentTag() {
-        Tag parent = this.getParent();
-        while (null != parent && (!(parent instanceof UIComponentClassicTagBase))) {
-            parent = this.getParent();
+        Tag parent = getParent();
+        while (null != parent && !(parent instanceof UIComponentClassicTagBase)) {
+            parent = getParent();
         }
         UIComponentClassicTagBase result = (UIComponentClassicTagBase) parent;
 
@@ -372,8 +370,8 @@ public class LoadBundleTag extends TagSupport {
     @Override
     public void release() {
 
-        this.basenameExpression = null;
-        this.var = null;
+        basenameExpression = null;
+        var = null;
 
     }
 

@@ -17,7 +17,6 @@
 package jakarta.faces.component;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.el.ValueBinding;
 
 /**
@@ -86,7 +85,7 @@ public class UIGraphic extends UIComponentBase {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -94,12 +93,12 @@ public class UIGraphic extends UIComponentBase {
      * <p>
      * Return the image URL for this {@link UIGraphic}. This method is a typesafe alias for <code>getValue()</code>.
      * </p>
-     * 
+     *
      * @return the url.
      */
     public String getUrl() {
 
-        return ((String) getValue());
+        return (String) getValue();
 
     }
 
@@ -120,7 +119,7 @@ public class UIGraphic extends UIComponentBase {
      * <p>
      * Returns the <code>value</code> property of the <code>UIGraphic</code>. This will typically be rendered as an URL.
      * </p>
-     * 
+     *
      * @return the value.
      */
     public Object getValue() {
@@ -133,7 +132,7 @@ public class UIGraphic extends UIComponentBase {
      * <p>
      * Sets the <code>value</code> property of the <code>UIGraphic</code>. This will typically be rendered as an URL.
      * </p>
-     * 
+     *
      * @param value the new value
      */
     public void setValue(Object value) {
@@ -156,13 +155,14 @@ public class UIGraphic extends UIComponentBase {
      *
      * @deprecated This has been replaced by {@link #getValueExpression(java.lang.String)}.
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name) {
 
         if ("url".equals(name)) {
-            return (super.getValueBinding("value"));
+            return super.getValueBinding("value");
         } else {
-            return (super.getValueBinding(name));
+            return super.getValueBinding(name);
         }
 
     }
@@ -181,6 +181,7 @@ public class UIGraphic extends UIComponentBase {
      *
      * @deprecated This has been replaced by {@link #setValueExpression}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
 
@@ -207,9 +208,9 @@ public class UIGraphic extends UIComponentBase {
     public ValueExpression getValueExpression(String name) {
 
         if ("url".equals(name)) {
-            return (super.getValueExpression("value"));
+            return super.getValueExpression("value");
         } else {
-            return (super.getValueExpression(name));
+            return super.getValueExpression(name);
         }
 
     }

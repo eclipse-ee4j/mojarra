@@ -16,11 +16,12 @@
 
 package com.sun.faces.facelets.el;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Utility class for wrapping another VariableMapper with a new context, represented by a {@link java.util.Map Map}.
@@ -41,7 +42,7 @@ public class VariableMapperWrapper extends VariableMapper {
      */
     public VariableMapperWrapper(VariableMapper orig) {
         super();
-        this.target = orig;
+        target = orig;
     }
 
     /**
@@ -53,11 +54,11 @@ public class VariableMapperWrapper extends VariableMapper {
     public ValueExpression resolveVariable(String variable) {
         ValueExpression ve = null;
         try {
-            if (this.vars != null) {
-                ve = (ValueExpression) this.vars.get(variable);
+            if (vars != null) {
+                ve = (ValueExpression) vars.get(variable);
             }
             if (ve == null) {
-                return this.target.resolveVariable(variable);
+                return target.resolveVariable(variable);
             }
             return ve;
         } catch (StackOverflowError e) {
@@ -72,9 +73,9 @@ public class VariableMapperWrapper extends VariableMapper {
      */
     @Override
     public ValueExpression setVariable(String variable, ValueExpression expression) {
-        if (this.vars == null) {
-            this.vars = new HashMap();
+        if (vars == null) {
+            vars = new HashMap();
         }
-        return (ValueExpression) this.vars.put(variable, expression);
+        return (ValueExpression) vars.put(variable, expression);
     }
 }

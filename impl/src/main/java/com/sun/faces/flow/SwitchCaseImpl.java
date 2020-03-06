@@ -17,9 +17,9 @@
 package com.sun.faces.flow;
 
 import java.io.Serializable;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.SwitchCase;
 
@@ -44,7 +44,7 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
             conditionExpr = factory.createValueExpression(context.getELContext(), condition, Boolean.class);
         }
 
-        return ((conditionExpr != null) ? (Boolean) conditionExpr.getValue(context.getELContext()) : Boolean.FALSE);
+        return conditionExpr != null ? (Boolean) conditionExpr.getValue(context.getELContext()) : Boolean.FALSE;
     }
 
     public void setCondition(String condition) {
@@ -52,7 +52,7 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
     }
 
     public void setConditionExpression(ValueExpression conditionExpression) {
-        this.conditionExpr = conditionExpression;
+        conditionExpr = conditionExpression;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
     }
 
     public void setEnclosingId(String returnId) {
-        this.enclosingId = returnId;
+        enclosingId = returnId;
     }
 
 }

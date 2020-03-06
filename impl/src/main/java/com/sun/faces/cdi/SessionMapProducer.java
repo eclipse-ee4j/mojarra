@@ -20,7 +20,6 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import jakarta.enterprise.context.RequestScoped;
-
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 

@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.el.ValueExpression;
-import jakarta.faces.application.ConfigurableNavigationHandler;
-import jakarta.faces.application.NavigationCase;
-
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -81,7 +78,7 @@ public class NavigationCase {
         this.fromOutcome = fromOutcome;
         this.condition = condition;
         this.toViewId = toViewId;
-        this.toFlowDocumentId = null;
+        toFlowDocumentId = null;
         this.parameters = parameters;
         this.redirect = redirect;
         this.includeViewParams = includeViewParams;
@@ -198,7 +195,7 @@ public class NavigationCase {
      * Return the <code>&lt;from-view-id&gt;</code> of the <code>&lt;navigation-rule&gt;</code> inside which this
      * <code>&lt;navigation-case&gt;</code> is nested.
      * </p>
-     * 
+     *
      * @return the from viedId.
      */
     public String getFromViewId() {
@@ -209,7 +206,7 @@ public class NavigationCase {
      * <p class="changed_added_2_0">
      * Return the <code>&lt;from-action&gt;</code> for this <code>&lt;navigation-case&gt;</code>
      * </p>
-     * 
+     *
      * @return the from action.
      */
     public String getFromAction() {
@@ -220,7 +217,7 @@ public class NavigationCase {
      * <p class="changed_added_2_0">
      * Return the <code>&lt;from-outcome&gt;</code> for this <code>&lt;navigation-case&gt;</code>
      * </p>
-     * 
+     *
      * @return the from outcome.
      */
     public String getFromOutcome() {
@@ -305,7 +302,7 @@ public class NavigationCase {
      * <code>null</code> will be returned. The keys in the <code>Map</code> are parameter names. For each key, the
      * corresponding value is a <code>List</code> of unconverted values.
      * </p>
-     * 
+     *
      * @return the list of parameters, or <code>null</code>
      */
     public Map<String, List<String>> getParameters() {
@@ -318,7 +315,7 @@ public class NavigationCase {
      * <code>true</code> if the new view should be navigated to via a
      * {@link jakarta.faces.context.ExternalContext#redirect(String)}
      * </p>
-     * 
+     *
      * @return <code>true</code> if this is a redirect, <code>false</code> otherwise.
      */
     public boolean isRedirect() {
@@ -330,7 +327,7 @@ public class NavigationCase {
      * Return the <code>&lt;redirect&gt;</code> value for this <code>&lt;navigation-case&gt;</code>. This will be
      * <code>true</code> if the view parametets should be encoded into the redirect URL (only applies to redirect case)
      * </p>
-     * 
+     *
      * @return <code>true</code> if view parameters are to be included, <code>false</code> otherwise.
      */
     public boolean isIncludeViewParams() {
@@ -349,13 +346,13 @@ public class NavigationCase {
 
         NavigationCase that = (NavigationCase) o;
 
-        return (redirect == that.redirect && !(fromAction != null ? !fromAction.equals(that.fromAction) : that.fromAction != null)
+        return redirect == that.redirect && !(fromAction != null ? !fromAction.equals(that.fromAction) : that.fromAction != null)
                 && !(fromOutcome != null ? !fromOutcome.equals(that.fromOutcome) : that.fromOutcome != null)
                 && !(condition != null ? !condition.equals(that.condition) : that.condition != null)
                 && !(fromViewId != null ? !fromViewId.equals(that.fromViewId) : that.fromViewId != null)
                 && !(toViewId != null ? !toViewId.equals(that.toViewId) : that.toViewId != null)
                 && !(toFlowDocumentId != null ? !toFlowDocumentId.equals(that.toFlowDocumentId) : that.toFlowDocumentId != null)
-                && !(parameters != null ? !parameters.equals(that.parameters) : that.parameters != null));
+                && !(parameters != null ? !parameters.equals(that.parameters) : that.parameters != null);
 
     }
 
@@ -390,7 +387,7 @@ public class NavigationCase {
             sb.append(", toViewId='").append(toViewId).append('\'');
             sb.append(", faces-redirect=").append(redirect);
             sb.append(", includeViewParams=").append(includeViewParams).append('\'');
-            sb.append(", parameters=").append(((parameters != null) ? parameters.toString() : ""));
+            sb.append(", parameters=").append(parameters != null ? parameters.toString() : "");
             sb.append('}');
             toString = sb.toString();
         }

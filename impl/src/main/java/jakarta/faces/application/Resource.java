@@ -21,12 +21,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.application.ViewResource;
-import jakarta.servlet.ServletRegistration;
-
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletRegistration;
 
 /**
  * <p class="changed_added_2_0">
@@ -61,7 +57,7 @@ public abstract class Resource extends ViewResource {
      * <p class="changed_added_2_0">
      * Return the MIME content-type for this resource.
      * </p>
-     * 
+     *
      * @return the MIME content-type for this resource.
      */
     public String getContentType() {
@@ -69,11 +65,11 @@ public abstract class Resource extends ViewResource {
     }
 
     /**
-     * 
+     *
      * <p class="changed_added_2_0">
      * Set the MIME content-type for this resource. The default implementation performs no validation on the argument.
      * </p>
-     * 
+     *
      * @param contentType the MIME content-type for this resource. The default implementation must accept <code>null</code>
      * as a parameter.
      */
@@ -99,7 +95,7 @@ public abstract class Resource extends ViewResource {
      * <p class="changed_added_2_0">
      * Set the libraryName for this resource.
      * </p>
-     * 
+     *
      * @param libraryName the libraryName for this resource. The default implementation must accept <code>null</code> for
      * the <em>libraryName</em>.
      */
@@ -112,7 +108,7 @@ public abstract class Resource extends ViewResource {
      * Return the resourceName for this resource. Will never be null. All <code>Resource</code> instances must have a
      * resourceName.
      * </p>
-     * 
+     *
      * @return Return the resourceName for this resource. Will never be null.
      */
     public String getResourceName() {
@@ -123,7 +119,7 @@ public abstract class Resource extends ViewResource {
      * <p class="changed_added_2_0">
      * Set the resourceName for this resource.
      * </p>
-     * 
+     *
      * @param resourceName a non-null String.
      *
      * @throws NullPointerException if argument <code>resourceName</code> is null.
@@ -267,8 +263,8 @@ public abstract class Resource extends ViewResource {
      * If there is a <code>localePrefix</code> for this application, as defined in {@link ResourceHandler#LOCALE_PREFIX},
      * <code>resourceMetaData</code> must include "loc=" + the <code>localePrefix</code>.
      * </p>
-     * 
-     * 
+     *
+     *
      * <p class="changed_added_2_2">
      * If this resource is contained in a resource library contract, <code>resourceMetaData</code> must include "con=" + the
      * name of the resource library contract.
@@ -289,7 +285,7 @@ public abstract class Resource extends ViewResource {
      * </li>
      *
      * </ul>
-     * 
+     *
      * </div>
      *
      * @return the path to this resource, intended to be included in the encoded view that is sent to the browser when

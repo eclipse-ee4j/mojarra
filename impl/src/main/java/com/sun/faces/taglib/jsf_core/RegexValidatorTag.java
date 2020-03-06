@@ -16,18 +16,17 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import jakarta.el.ValueExpression;
 import jakarta.el.ExpressionFactory;
-import jakarta.servlet.jsp.JspException;
-
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.RegexValidator;
 import jakarta.faces.validator.Validator;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Tag for the Regular Expression Validator. Can accept a regex pattern as a property - this will be used to validate
  * against.
- * 
+ *
  * @author driscoll
  */
 public class RegexValidatorTag extends AbstractValidatorTag {
@@ -48,18 +47,18 @@ public class RegexValidatorTag extends AbstractValidatorTag {
 
     /**
      * Set the Regular Expression to use for validation.
-     * 
+     *
      * @param pattern A regular expression - needs to be escaped, @see java.util.regex .
      */
     public void setPattern(ValueExpression pattern) {
-        this.regex = pattern;
+        regex = pattern;
     }
 
     @Override
     protected Validator createValidator() throws JspException {
         super.setValidatorId(VALIDATOR_ID_EXPR);
         RegexValidator validator = (RegexValidator) super.createValidator();
-        assert (validator != null);
+        assert validator != null;
         if (regex != null) {
             FacesContext ctx = FacesContext.getCurrentInstance();
             validator.setPattern((String) regex.getValue(ctx.getELContext()));

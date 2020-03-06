@@ -45,7 +45,7 @@ public abstract class ViewMetadata {
      * <p class="changed_added_2_0">
      * Get the view id
      * </p>
-     * 
+     *
      * @return the view ID for which this <code>ViewMetadata</code> instance was created
      */
     public abstract String getViewId();
@@ -58,7 +58,7 @@ public abstract class ViewMetadata {
      * beginning of the method, and pass <code>true</code> to the same method at the end. The implementation must ensure
      * that this happens regardless of ant exceptions that may be thrown.
      * </p>
-     * 
+     *
      * <p class="changed_modified_2_3">
      * Take note a compliant implementation has to ensure that:
      * </p>

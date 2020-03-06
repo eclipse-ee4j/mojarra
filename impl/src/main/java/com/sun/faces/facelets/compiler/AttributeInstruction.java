@@ -16,16 +16,15 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.el.ELText;
+import java.io.IOException;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
+import com.sun.faces.facelets.el.ELText;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
-
-import java.io.IOException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 final class AttributeInstruction implements Instruction {
     private final String alias;
@@ -50,16 +49,16 @@ final class AttributeInstruction implements Instruction {
                 out.writeAttribute(attr, val, null);
             }
         } catch (ELException e) {
-            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+            throw new ELException(alias + ": " + e.getMessage(), e.getCause());
         } catch (IOException e) {
-            throw new ELException(this.alias + ": " + e.getMessage(), e);
+            throw new ELException(alias + ": " + e.getMessage(), e);
         }
     }
 
     @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx) {
-        ELText nt = this.txt.apply(factory, ctx);
-        if (nt == this.txt) {
+        ELText nt = txt.apply(factory, ctx);
+        if (nt == txt) {
             return this;
         }
 

@@ -16,6 +16,14 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.component.UIComponent;
@@ -25,14 +33,6 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.Metadata;
 import jakarta.faces.view.facelets.TagAttribute;
-
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class RepeatHandler extends ComponentHandler {
 
@@ -45,9 +45,9 @@ public class RepeatHandler extends ComponentHandler {
     @Override
     protected MetaRuleset createMetaRuleset(Class type) {
         MetaRuleset meta = super.createMetaRuleset(type);
-        String myNamespace = this.tag.getNamespace();
+        String myNamespace = tag.getNamespace();
 
-        if ((!UILibrary.Namespace.equals(myNamespace)) && (!UILibrary.XMLNSNamespace.equals(myNamespace))) {
+        if (!UILibrary.Namespace.equals(myNamespace) && !UILibrary.XMLNSNamespace.equals(myNamespace)) {
             meta.add(new TagMetaData(type));
         }
 
@@ -82,7 +82,7 @@ public class RepeatHandler extends ComponentHandler {
                     log.log(Level.FINEST, "Unable to get bean info", e);
                 }
             }
-            this.attrs = (String[]) s.toArray(new String[s.size()]);
+            attrs = (String[]) s.toArray(new String[s.size()]);
         }
 
         @Override
@@ -90,8 +90,8 @@ public class RepeatHandler extends ComponentHandler {
             UIComponent c = (UIComponent) instance;
             Map localAttrs = c.getAttributes();
             localAttrs.put("alias.element", tag.getQName());
-            if (this.attrs.length > 0) {
-                localAttrs.put("alias.attributes", this.attrs);
+            if (attrs.length > 0) {
+                localAttrs.put("alias.attributes", attrs);
             }
         }
 

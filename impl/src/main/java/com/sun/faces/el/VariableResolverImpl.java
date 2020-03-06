@@ -16,10 +16,9 @@
 
 package com.sun.faces.el;
 
-import jakarta.el.ELException;
-
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ELException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.VariableResolver;
@@ -73,6 +72,6 @@ public class VariableResolverImpl extends VariableResolver {
     }
 
     public VariableResolver getDelegate() {
-        return this.delegate;
+        return delegate;
     }
 }

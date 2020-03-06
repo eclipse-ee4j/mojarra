@@ -21,7 +21,7 @@ package jakarta.faces.component.visit;
  * <span class="changed_modified_2_1">An</span> enum that specifies hints that impact the behavior of a component tree
  * visit.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public enum VisitHint {
@@ -30,7 +30,7 @@ public enum VisitHint {
      * <p class="changed_added_2_0">
      * Hint that indicates that only the rendered subtrees should be visited.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     SKIP_UNRENDERED,
@@ -39,7 +39,7 @@ public enum VisitHint {
      * <p class="changed_added_2_0">
      * Hint that indicates that only non-transient subtrees should be visited.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     SKIP_TRANSIENT,
@@ -49,7 +49,7 @@ public enum VisitHint {
      * Hint that indicates that components that normally visit children multiple times (eg. <code>UIData</code>) in an
      * iterative fashion should instead visit each child only one time.
      * </p>
-     * 
+     *
      * @since 2.1
      */
     SKIP_ITERATION,
@@ -58,7 +58,7 @@ public enum VisitHint {
      * <p class="changed_added_2_0 changed_modified_2_3">
      * Hint that indicates that the visit is being performed as part of lifecycle phase execution.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     EXECUTE_LIFECYCLE,

@@ -16,14 +16,18 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-import jakarta.faces.view.facelets.*;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.ValidatorConfig;
+import jakarta.faces.view.facelets.ValidatorHandler;
 
 /**
  * Register a named Validator instance on the UIComponent associated with the closest parent UIComponent custom action.
  * <p/>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/validator.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -33,17 +37,17 @@ public final class ValidateDelegateHandler extends ValidatorHandler {
 
     public ValidateDelegateHandler(ValidatorConfig config) {
         super(config);
-        this.validatorId = this.getAttribute("validatorId");
+        validatorId = getAttribute("validatorId");
     }
 
     /**
      * Resolve the validator id from the attribute "validatorId", which is then used to create a new Validator instance from
      * the Application.
-     * 
+     *
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
      */
     protected String getValidator(FaceletContext ctx) {
-        return ((validatorId != null) ? this.validatorId.getValue(ctx) : null);
+        return validatorId != null ? validatorId.getValue(ctx) : null;
     }
 
     @Override

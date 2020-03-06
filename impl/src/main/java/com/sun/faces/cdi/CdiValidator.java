@@ -115,7 +115,7 @@ public class CdiValidator implements Validator, StateHolder {
 
     /**
      * Validate.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the UI component.
      * @param value the value.

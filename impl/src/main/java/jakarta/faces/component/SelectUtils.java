@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 
 import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
@@ -56,9 +55,9 @@ class SelectUtils {
             SelectItem item = items.next();
             if (item instanceof SelectItemGroup) {
                 SelectItem subitems[] = ((SelectItemGroup) item).getSelectItems();
-                if ((subitems != null) && (subitems.length > 0)) {
+                if (subitems != null && subitems.length > 0) {
                     if (matchValue(ctx, component, value, new ArrayIterator(subitems), converter)) {
-                        return (true);
+                        return true;
                     }
                 }
             } else {
@@ -75,17 +74,17 @@ class SelectUtils {
                 }
 
                 if (value.equals(compareValue)) {
-                    return (true);
+                    return true;
                 }
             }
         }
-        return (false);
+        return false;
 
     }
 
     /**
      * Returns true iff component has a {@link UISelectItem} child whose itemValue exactly matches the argument value
-     * 
+     *
      * @param ctx
      * @param component
      * @param value
@@ -100,7 +99,7 @@ class SelectUtils {
             SelectItem item = items.next();
             if (item instanceof SelectItemGroup) {
                 SelectItem subitems[] = ((SelectItemGroup) item).getSelectItems();
-                if ((subitems != null) && (subitems.length > 0)) {
+                if (subitems != null && subitems.length > 0) {
                     if (valueIsNoSelectionOption(ctx, component, value, new ArrayIterator(subitems), converter)) {
                         result = true;
                         break;
@@ -133,9 +132,9 @@ class SelectUtils {
             throws IllegalStateException {
         Object itemValue = item.getValue();
         if (itemValue == null && value == null) {
-            return (null);
+            return null;
         }
-        if ((value == null) ^ (itemValue == null)) {
+        if (value == null ^ itemValue == null) {
             throw new IllegalStateException("Either value was null, or itemValue was null, but not both.");
         }
         Object compareValue;
@@ -197,13 +196,13 @@ class SelectUtils {
 
         @Override
         public boolean hasNext() {
-            return (index < items.length);
+            return index < items.length;
         }
 
         @Override
         public Object next() {
             try {
-                return (items[index++]);
+                return items[index++];
             } catch (IndexOutOfBoundsException e) {
                 throw new NoSuchElementException();
             }

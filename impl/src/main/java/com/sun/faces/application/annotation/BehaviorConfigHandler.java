@@ -17,16 +17,15 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.context.FacesContext;
-
-import java.util.HashMap;
 
 /**
  * <p>

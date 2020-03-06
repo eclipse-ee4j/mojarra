@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * <p class="changed_added_2_0">
  * </p>
- * 
+ *
  * @author asmirnov@exadel.com
  *
  */
@@ -39,7 +39,7 @@ public class CollectionsUtils {
 
     @SafeVarargs
     public static <T> Set<T> asSet(T... a) {
-        return new HashSet<T>(asList(a));
+        return new HashSet<>(asList(a));
     }
 
     public static <T> T[] ar(T... ts) {
@@ -56,6 +56,11 @@ public class CollectionsUtils {
 
     @SuppressWarnings("serial")
     public static class ConstMap<T, V> extends HashMap<T, V> {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 7233295794116070299L;
 
         public ConstMap() {
             super(50, 1.0F);

@@ -21,7 +21,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
 /**
  * An annotation literal for classifier for obtaining the map that the {@link DataModelClassesMapProducer} producer
  * produces.
- * 
+ *
  * @since 2.3
  *
  */

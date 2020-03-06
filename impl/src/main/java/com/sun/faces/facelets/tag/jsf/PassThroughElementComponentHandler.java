@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.util.Map;
+
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
@@ -27,16 +29,14 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagException;
 
-import java.util.Map;
-
 public class PassThroughElementComponentHandler extends ComponentHandler {
 
     private final TagAttribute elementName;
 
     protected final TagAttribute getRequiredPassthroughAttribute(String localName) throws TagException {
-        TagAttribute attr = this.tag.getAttributes().get(PassThroughAttributeLibrary.Namespace, localName);
+        TagAttribute attr = tag.getAttributes().get(PassThroughAttributeLibrary.Namespace, localName);
         if (attr == null) {
-            throw new TagException(this.tag, "Attribute '" + localName + "' is required");
+            throw new TagException(tag, "Attribute '" + localName + "' is required");
         }
         return attr;
     }
@@ -44,7 +44,7 @@ public class PassThroughElementComponentHandler extends ComponentHandler {
     public PassThroughElementComponentHandler(ComponentConfig config) {
         super(config);
 
-        elementName = this.getRequiredPassthroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
+        elementName = getRequiredPassthroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class PassThroughElementComponentHandler extends ComponentHandler {
         if (parent.getParent() == null) {
             Map<String, Object> passThroughAttrs = c.getPassThroughAttributes(true);
             Object attrValue;
-            attrValue = (this.elementName.isLiteral()) ? this.elementName.getValue(ctx) : this.elementName.getValueExpression(ctx, Object.class);
+            attrValue = elementName.isLiteral() ? elementName.getValue(ctx) : elementName.getValueExpression(ctx, Object.class);
             passThroughAttrs.put(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY, attrValue);
         }
 

@@ -16,25 +16,31 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.sun.faces.cdi.CdiValidator;
 import com.sun.faces.component.validator.ComponentValidators;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
+import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.view.AttachedObjectHandler;
-import jakarta.faces.view.facelets.*;
-
-import com.sun.faces.util.RequestStateManager;
-
-import jakarta.el.ValueExpression;
-
-import java.io.IOException;
-import java.util.Set;
-import java.util.HashSet;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandler;
+import jakarta.faces.view.facelets.TagHandlerDelegate;
+import jakarta.faces.view.facelets.ValidatorHandler;
 
 public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implements AttachedObjectHandler {
 
@@ -99,7 +105,7 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
             v = (Validator) ve.getValue(ctx);
         }
         if (v == null) {
-            v = this.createValidator(ctx);
+            v = createValidator(ctx);
             if (ve != null) {
                 ve.setValue(ctx, v);
             }
@@ -161,8 +167,8 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         // non-null nextHandler - the CompilationUnit.LEAF instance.
         // We assume that if we've got a TagHandler or CompositeFaceletHandler
         // as our nextHandler, we are not a leaf.
-        return ((owner.getValidatorConfig().getNextHandler() instanceof TagHandler)
-                || (owner.getValidatorConfig().getNextHandler() instanceof CompositeFaceletHandler));
+        return owner.getValidatorConfig().getNextHandler() instanceof TagHandler
+                || owner.getValidatorConfig().getNextHandler() instanceof CompositeFaceletHandler;
 
     }
 
@@ -200,7 +206,7 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
     /**
      * Template method for creating a Validator instance
-     * 
+     *
      * @param ctx FaceletContext to use
      * @return a new Validator instance
      */

@@ -17,7 +17,6 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.util.AnnotationLiteral;
-
 import jakarta.faces.model.FacesDataModel;
 
 @SuppressWarnings("all")
@@ -33,6 +32,7 @@ class FacesDataModelAnnotationLiteral extends AnnotationLiteral<FacesDataModel> 
         this.forClass = forClass;
     }
 
+    @Override
     public Class<?> forClass() {
         return forClass;
     }

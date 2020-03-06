@@ -74,7 +74,7 @@ public class Timer {
 
     /**
      * Log the timing result.
-     * 
+     *
      * @param taskInfo task description
      */
     public void logResult(String taskInfo) {

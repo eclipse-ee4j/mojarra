@@ -33,17 +33,17 @@ import java.lang.annotation.Target;
  * implementation must guarantee that for each class annotated with <code>FacesBehaviorRenderer</code>, found with the
  * algorithm in section JSF.11.5, the following actions are taken.
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * Obtain a reference to the {@link RenderKitFactory} for this application.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * See if a <code>RenderKit</code> exists for <em>render-kit-id</em>. If so, let that instance be <em>renderKit</em> for
@@ -51,27 +51,27 @@ import java.lang.annotation.Target;
  * and the application must not be placed in service.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * Create an instance of this class using the public zero-argument constructor.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * Call {@link RenderKit#addClientBehaviorRenderer} on <em>renderKit</em>, passing <em>type</em> as the first argument,
  * and a {@link ClientBehaviorRenderer} instance as the second argument.
  * </p>
  * </li>
- * 
+ *
  * </ul>
- * 
- * 
+ *
+ *
  * </div>
  *
  * @since 2.0
- * 
+ *
  */
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -85,7 +85,7 @@ public @interface FacesBehaviorRenderer {
      * </p>
      *
      * @since 2.0
-     * 
+     *
      * @return the <em>render-kit-id</em>
      */
 

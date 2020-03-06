@@ -150,7 +150,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         }
 
         try {
-            Class<?> t = ((classMap != null) ? classMap.get(n.componentType) : null);
+            Class<?> t = classMap != null ? classMap.get(n.componentType) : null;
             if (t == null) {
                 t = Util.loadClass(n.componentType, n);
                 if (t != null && classMap != null) {
@@ -162,7 +162,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
                 }
             }
 
-            assert (t != null);
+            assert t != null;
             UIComponent c = (UIComponent) t.newInstance();
             c.setId(n.id);
 
@@ -205,7 +205,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
                 if (i != tn.parent) {
                     ((UIComponent) tree[tn.parent]).getChildren().add(c);
                 } else {
-                    assert (c instanceof UIViewRoot);
+                    assert c instanceof UIViewRoot;
                     UIViewRoot viewRoot = (UIViewRoot) c;
                     context.setViewRoot(viewRoot);
                     viewRoot.setRenderKitId(renderKitId);
@@ -320,7 +320,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
          */
         public FacetNode(int parent, String name, UIComponent c) {
             super(parent, c);
-            this.facetName = name;
+            facetName = name;
         }
 
         /**
@@ -333,7 +333,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             super.readExternal(in);
-            this.facetName = in.readUTF();
+            facetName = in.readUTF();
         }
 
         /**
@@ -346,7 +346,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         public void writeExternal(ObjectOutput out) throws IOException {
 
             super.writeExternal(out);
-            out.writeUTF(this.facetName);
+            out.writeUTF(facetName);
 
         }
     }
@@ -395,8 +395,8 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         public TreeNode(int parent, UIComponent c) {
 
             this.parent = parent;
-            this.id = c.getId();
-            this.componentType = c.getClass().getName();
+            id = c.getId();
+            componentType = c.getClass().getName();
 
         }
 
@@ -410,9 +410,9 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
-            this.parent = in.readInt();
-            this.componentType = in.readUTF();
-            this.id = in.readUTF();
+            parent = in.readInt();
+            componentType = in.readUTF();
+            id = in.readUTF();
             if (id.length() == 0) {
                 id = null;
             }
@@ -427,10 +427,10 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
 
-            out.writeInt(this.parent);
-            out.writeUTF(this.componentType);
-            if (this.id != null) {
-                out.writeUTF(this.id);
+            out.writeInt(parent);
+            out.writeUTF(componentType);
+            if (id != null) {
+                out.writeUTF(id);
             } else {
                 out.writeUTF(NULL_ID);
             }

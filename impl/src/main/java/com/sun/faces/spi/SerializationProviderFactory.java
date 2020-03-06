@@ -16,23 +16,22 @@
 
 package com.sun.faces.spi;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.ObjectInputStream;
-import java.io.InputStream;
-import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
-import com.sun.faces.renderkit.ApplicationObjectInputStream;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.renderkit.ApplicationObjectInputStream;
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.context.ExternalContext;
-
-import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -61,7 +60,7 @@ public class SerializationProviderFactory {
      * <p>
      * Creates a new instance of the class specified by the <code>com.sun.faces.InjectionProvider</code> system property. If
      * this propery is not defined, then a default, no-op, <code>InjectionProvider</code> will be returned.
-     * 
+     *
      * @param extContext the ExternalContext for this application
      * @return an implementation of the <code>InjectionProvider</code> interfaces
      */
@@ -110,7 +109,7 @@ public class SerializationProviderFactory {
      * <p>
      * Determine if the specified class implements the <code>SerializationProvider</code> interfaces.
      * </p>
-     * 
+     *
      * @param clazz the class in question
      * @return <code>true</code> if <code>clazz</code> implements the <code>SerializationProvider</code> interface
      */

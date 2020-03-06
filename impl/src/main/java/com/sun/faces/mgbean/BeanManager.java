@@ -26,18 +26,17 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.spi.InjectionProvider;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.FunctionMapper;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
-
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.spi.InjectionProvider;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.PreDestroyCustomScopeEvent;
@@ -109,7 +108,7 @@ public class BeanManager implements SystemEventListener {
     @Override
     public boolean isListenerForSource(Object source) {
 
-        return (source instanceof ScopeContext);
+        return source instanceof ScopeContext;
 
     }
 
@@ -162,7 +161,7 @@ public class BeanManager implements SystemEventListener {
 
     public boolean isManaged(String name) {
 
-        return (managedBeans != null && managedBeans.containsKey(name));
+        return managedBeans != null && managedBeans.containsKey(name);
 
     }
 
@@ -200,7 +199,7 @@ public class BeanManager implements SystemEventListener {
 
     public Object getBeanFromScope(String name, FacesContext context) {
 
-        String scope = this.getBuilder(name).getScope();
+        String scope = getBuilder(name).getScope();
         return ScopeManager.getFromScope(name, scope, context);
 
     }
@@ -470,7 +469,7 @@ public class BeanManager implements SystemEventListener {
             public boolean isInScope(String name, FacesContext context) {
 
                 Map<String, Object> viewMap = context.getViewRoot().getViewMap(false);
-                return ((viewMap != null) && viewMap.containsKey(name));
+                return viewMap != null && viewMap.containsKey(name);
 
             }
 
@@ -478,7 +477,7 @@ public class BeanManager implements SystemEventListener {
             public Object getFromScope(String name, FacesContext context) {
 
                 Map<String, Object> viewMap = context.getViewRoot().getViewMap(false);
-                return ((viewMap != null) ? viewMap.get(name) : null);
+                return viewMap != null ? viewMap.get(name) : null;
 
             }
 
@@ -560,7 +559,7 @@ public class BeanManager implements SystemEventListener {
                  * storing the bean into the Map causes an Exception, the exception is allowed to flow up to the ExceptionHandler. If
                  * the ValueExpression does not evaluate to a Map, a FacesException must be thrown with a message that includes the
                  * expression string, the toString() of the value, and the type of the value.
-                 * 
+                 *
                  */
 
                 if (scopeMap != null) {

@@ -16,8 +16,6 @@
 
 package jakarta.faces.component.behavior;
 
-import jakarta.faces.component.behavior.ClientBehavior;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.event.BehaviorEvent;
 
@@ -30,7 +28,7 @@ import jakarta.faces.event.BehaviorEvent;
  * the {@link ClientBehavior}, which defines a mechanism by which script-producing behaviors attach scripts to
  * components for execution on the client. In the future other types of behavior contracts may be added.
  * </p>
- * 
+ *
  * <p>
  * Like other attached objects (converters, validators) Behavior instances are created via the
  * {@link jakarta.faces.application.Application} object. See
@@ -57,6 +55,6 @@ public interface Behavior {
      *
      * @since 2.0
      */
-    public void broadcast(BehaviorEvent event);
+    void broadcast(BehaviorEvent event);
 
 }

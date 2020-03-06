@@ -20,23 +20,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.ApplicationFactory;
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceDependencies;
-import jakarta.faces.application.ResourceDependency;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
@@ -55,9 +46,6 @@ import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.view.ViewDeclarationLanguage;
-
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
 
 /**
  * <p>
@@ -239,14 +227,14 @@ public abstract class Application {
      * In all of the above cases, the runtime must employ the decorator pattern as for every other pluggable artifact in
      * Jakarta Server Faces.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users that
      * decorate <code>Application</code> can continue to function
      * </p>
      * .
-     * 
-     * 
+     *
+     *
      * </div>
      *
      * @return the resource handler.
@@ -300,6 +288,7 @@ public abstract class Application {
      * @return the property resolver.
      * @deprecated This has been replaced by {@link #getELResolver}.
      */
+    @Deprecated
     public abstract PropertyResolver getPropertyResolver();
 
     /**
@@ -331,6 +320,7 @@ public abstract class Application {
      * @throws IllegalStateException if called after the first request to the {@link jakarta.faces.webapp.FacesServlet} has
      * been serviced.
      */
+    @Deprecated
     public abstract void setPropertyResolver(PropertyResolver resolver);
 
     /**
@@ -367,7 +357,7 @@ public abstract class Application {
      * Return the project stage for the currently running application instance. The default value is
      * {@link ProjectStage#Production}
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
      * <p>
      * The implementation of this method must perform the following algorithm or an equivalent with the same end result to
@@ -379,14 +369,14 @@ public abstract class Application {
      * <p>
      * If the value has already been determined by a previous call to this method, simply return that value.
      * </p>
-     * 
+     *
      * <p>
      * Look for a <code>JNDI</code> environment entry under the key given by the value of
      * {@link ProjectStage#PROJECT_STAGE_JNDI_NAME} (return type of <code>java.lang.String</code>). If found, continue with
      * the algorithm below, otherwise, look for an entry in the <code>initParamMap</code> of the
      * <code>ExternalContext</code> from the current <code>FacesContext</code> with the key given by the value of
      * {@link ProjectStage#PROJECT_STAGE_PARAM_NAME}
-     * 
+     *
      * </p>
      *
      * <p>
@@ -400,13 +390,13 @@ public abstract class Application {
      * </p>
      *
      * </blockquote>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users that
      * decorate <code>Application</code> can continue to function
      * </p>
      * .
-     * 
+     *
      * </div>
      *
      * @return the project stage.
@@ -438,6 +428,7 @@ public abstract class Application {
      * @return the variable resolver.
      * @deprecated This has been replaced by {@link #getELResolver}.
      */
+    @Deprecated
     public abstract VariableResolver getVariableResolver();
 
     /**
@@ -471,6 +462,7 @@ public abstract class Application {
      * @throws IllegalStateException if called after the first request to the {@link jakarta.faces.webapp.FacesServlet} has
      * been serviced.
      */
+    @Deprecated
     public abstract void setVariableResolver(VariableResolver resolver);
 
     /**
@@ -496,7 +488,7 @@ public abstract class Application {
      * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
      * not breaking existing applications that extend {@link Application}.
      * </p>
-     * 
+     *
      * @throws IllegalStateException <span class="changed_modified_2_0_rev_a">if called after the first request to the
      * {@link jakarta.faces.webapp.FacesServlet} has been serviced.</span>
      *
@@ -758,7 +750,7 @@ public abstract class Application {
      * Such inspection is the province of {@link #createComponent(ValueExpression, FacesContext, String, String)} or
      * {@link #createComponent(FacesContext, String, String)}.
      * </p>
-     * 
+     *
      * @param componentType The component type for which to create and return a new {@link UIComponent} instance
      * @return the UI component.
      * @throws FacesException if a {@link UIComponent} of the specified type cannot be created
@@ -782,6 +774,7 @@ public abstract class Application {
      * @deprecated This has been replaced by
      * {@link #createComponent(jakarta.el.ValueExpression,jakarta.faces.context.FacesContext,java.lang.String)}.
      */
+    @Deprecated
     public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException;
 
     /**
@@ -839,13 +832,13 @@ public abstract class Application {
      * with a helpful error message. Otherwise, {@link UIComponent#setRendererType} must be called on the newly created
      * <code>UIComponent</code> instance, passing the argument <code>rendererType</code> as the argument.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users that
      * decorate <code>Application</code> can continue to function.
      * </p>
      *
-     * 
+     *
      * @param componentExpression {@link ValueExpression} representing a component value expression (typically specified by
      * the <code>component</code> attribute of a custom tag)
      * @param context {@link FacesContext} for the current request
@@ -880,14 +873,14 @@ public abstract class Application {
      * must be called on the newly created <code>UIComponent</code> instance, passing the argument <code>rendererType</code>
      * as the argument.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users that
      * decorate <code>Application</code> can continue to function
      * </p>
      * .
      *
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param componentType Component type to create
      * @param rendererType The renderer-type of the <code>Renderer</code> that will render this component. A
@@ -916,9 +909,9 @@ public abstract class Application {
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * Obtain a reference to the {@link ViewDeclarationLanguage} for this <code>Application</code> instance by calling
@@ -927,8 +920,8 @@ public abstract class Application {
      * argument {@link FacesContext}.
      * </p>
      * </li>
-     * 
-     * 
+     *
+     *
      * <li>
      * <p>
      * Obtain a reference to the <em>composite component metadata</em> for this composite component by calling
@@ -937,7 +930,7 @@ public abstract class Application {
      * JavaBeans as the API to the component metadata.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Determine if the component author declared a <code><span
@@ -949,7 +942,7 @@ public abstract class Application {
      * create the component.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Otherwise, determine if a script based component for this <code>Resource</code> can be found by calling
@@ -958,7 +951,7 @@ public abstract class Application {
      * <code>UIComponent</code> instance from the script resource.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Otherwise, let <em>library-name</em> be the return from calling {@link Resource#getLibraryName} on the argument
@@ -971,47 +964,47 @@ public abstract class Application {
      * any other exception is thrown, log the exception and continue to the next step.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If none of the previous steps have yielded a <code>UIComponent</code> instance, call
      * {@link #createComponent(java.lang.String)} passing "<code>jakarta.faces.NamingContainer</code>" as the argument.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Call {@link UIComponent#setRendererType} on the <code>UIComponent</code> instance, passing
      * "<code>jakarta.faces.Composite</code>" as the argument.
      * </p>
      * </li>
-     * 
+     *
      * <li>
-     * 
+     *
      * <p>
      * Store the argument <code>Resource</code> in the attributes <code>Map</code> of the <code>UIComponent</code> under the
      * key, {@link Resource#COMPONENT_RESOURCE_KEY}.
      * </p>
-     * 
+     *
      * </li>
-     * 
+     *
      * <li>
-     * 
+     *
      * <p>
      * Store <em>composite component metadata</em> in the attributes <code>Map</code> of the <code>UIComponent</code> under
      * the key, {@link UIComponent#BEANINFO_KEY}.
      * </p>
-     * 
+     *
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * Before the component instance is returned, it must be inspected for the presence of a
      * {@link jakarta.faces.event.ListenerFor} annotation. If this annotation is present, the action listed in
      * {@link jakarta.faces.event.ListenerFor} must be taken on the component, before it is returned from this method.
      * </p>
-     * 
+     *
      * <p>
      * A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users that
      * decorate <code>Application</code> can continue to function.
@@ -1087,7 +1080,7 @@ public abstract class Application {
      * {@link jakarta.faces.convert.DateTimeConverter#setTimeZone} must be called, passing the return from
      * <code>TimeZone.getDefault()</code>.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * The argument <code>converter</code> must be inspected for the presence of the
      * {@link jakarta.faces.application.ResourceDependency} annotation. If the <code>ResourceDependency</code> annotation is
@@ -1283,6 +1276,7 @@ public abstract class Application {
      * @deprecated This has been replaced by calling {@link #getExpressionFactory} then
      * {@link ExpressionFactory#createMethodExpression}.
      */
+    @Deprecated
     public abstract MethodBinding createMethodBinding(String ref, Class<?> params[]) throws ReferenceSyntaxException;
 
     /**
@@ -1399,7 +1393,7 @@ public abstract class Application {
      * <span class="changed_modified_2_0">Instantiate</span> and return a new {@link Validator} instance of the class
      * specified by a previous call to <code>addValidator()</code> for the specified validator id.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * The argument <code>validator</code> must be inspected for the presence of the
      * {@link jakarta.faces.application.ResourceDependency} annotation. If the <code>ResourceDependency</code> annotation is
@@ -1409,7 +1403,7 @@ public abstract class Application {
      * <code>ResourceDependencies</code> annotation is present, the action described in <code>ResourceDependencies</code>
      * must be taken.
      * </p>
-     * 
+     *
      * @param validatorId The validator id for which to create and return a new {@link Validator} instance
      * @return the validator.
      * @throws FacesException if a {@link Validator} of the specified id cannot be created
@@ -1440,6 +1434,7 @@ public abstract class Application {
      * @deprecated This has been replaced by calling {@link #getExpressionFactory} then
      * {@link ExpressionFactory#createValueExpression}.
      */
+    @Deprecated
     public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
 
     /**
@@ -1479,7 +1474,7 @@ public abstract class Application {
      * the list.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If any <em>view</em> level listeners have been installed by previous calls to
@@ -1488,7 +1483,7 @@ public abstract class Application {
      * for that event installed on the <code>UIViewRoot</code>.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If any <code>Application</code> level listeners have been installed by previous calls to
@@ -1549,13 +1544,13 @@ public abstract class Application {
      * </li>
      *
      * </ul>
-     * 
+     *
      * <p class="changed_added_2_0">
      * A default implementation is provided that throws <code>UnsupportedOperationException</code> so that users that
      * decorate <code>Application</code> can continue to function
      * </p>
      * .
-     * 
+     *
      * </div>
      *
      * @param context the <code>FacesContext</code> for the current request
@@ -1632,17 +1627,17 @@ public abstract class Application {
      * </p>
      *
      * </div>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * It is valid to call this method <strong>during</strong> the processing of an event which was subscribed to by a
      * previous call to this method.
      * </p>
-     * 
+     *
      * </div>
      *
-     * 
+     *
      * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
      *
      * @param sourceClass the <code>Class</code> of the instance which causes events of type <code>systemEventClass</code>
@@ -1680,22 +1675,22 @@ public abstract class Application {
      * decorate <code>Application</code> can continue to function
      * </p>
      * .
-     * 
+     *
      * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
-     * 
+     *
      * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} whose
      * {@link jakarta.faces.event.SystemEventListener#processEvent} method must be called when events of type
      * <code>systemEventClass</code> are fired.
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * See {@link #subscribeToEvent(java.lang.Class,java.lang.Class,jakarta.faces.event.SystemEventListener)} for an
      * additional requirement regarding when it is valid to call this method.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @throws NullPointerException if any combination of <code>systemEventClass</code>, or <code>listener</code> are
      * <code>null</code>.
      *
@@ -1718,16 +1713,16 @@ public abstract class Application {
      * type <code>sourceClass</code>. See {@link #subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)}
      * for the specification of how the listener is stored, and therefore, how it must be removed.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * See {@link #subscribeToEvent(java.lang.Class,java.lang.Class,jakarta.faces.event.SystemEventListener)} for an
      * additional requirement regarding when it is valid to call this method.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
      *
      * @param sourceClass the <code>Class</code> of the instance which causes events of type <code>systemEventClass</code>
@@ -1760,14 +1755,14 @@ public abstract class Application {
      * </p>
      *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * See {@link #subscribeToEvent(java.lang.Class,java.lang.Class,jakarta.faces.event.SystemEventListener)} for an
      * additional requirement regarding when it is valid to call this method.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
      *
      * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} to remove from the internal

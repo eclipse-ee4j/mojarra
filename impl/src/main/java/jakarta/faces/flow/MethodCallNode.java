@@ -17,6 +17,7 @@
 package jakarta.faces.flow;
 
 import java.util.List;
+
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
 
@@ -29,7 +30,7 @@ import jakarta.el.ValueExpression;
  * <em>outcome</em>. If there is a non-{@code null} return, let it be <em>outcome</em>. Convert <em>outcome</em> to a
  * String by calling its {@code toString} method. Use <em>outcome</em> to determine the next node in the flow graph.
  * </p>
- * 
+ *
  * @since 2.2
  */
 
@@ -39,9 +40,9 @@ public abstract class MethodCallNode extends FlowNode {
      * <p class="changed_added_2_2">
      * Return the {@code MethodExpression} to be invoked to when control passes to this node.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @return the {@code MethodExpression} to be invoked to when control passes to this node
      */
     public abstract MethodExpression getMethodExpression();
@@ -50,9 +51,9 @@ public abstract class MethodCallNode extends FlowNode {
      * <p class="changed_added_2_2">
      * Return the {@code outcome} to be used in the event of a {@code null} return from the method.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @return the {@code outcome}
      */
     public abstract ValueExpression getOutcome();
@@ -61,9 +62,9 @@ public abstract class MethodCallNode extends FlowNode {
      * <p class="changed_added_2_2">
      * Return the parameters to be passed to the method.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @return the parameters to be passed to the method
      */
     public abstract List<Parameter> getParameters();

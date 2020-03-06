@@ -16,11 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.PostConstructViewMapEvent;
-import jakarta.faces.event.PreDestroyViewMapEvent;
-import jakarta.faces.event.SystemEvent;
-import jakarta.faces.event.SystemEventListener;
-
 /**
  * <p class="changed_added_2_0">
  * Marker interface for {@link SystemEvent}s that indicate the view map has been created

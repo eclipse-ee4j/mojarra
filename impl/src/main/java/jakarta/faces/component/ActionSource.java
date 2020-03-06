@@ -16,10 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.ActionSource;
-import jakarta.faces.component.ActionSource2;
-import jakarta.faces.component.UIComponent;
-
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
@@ -42,10 +38,10 @@ public interface ActionSource {
      * lifecycle), rather than waiting until the <em>Invoke Application</em> phase. The default value for this property must
      * be <code>false</code>.
      * </p>
-     * 
+     *
      * @return <code>true</code> if immediate, <code>false</code> otherwise.
      */
-    public boolean isImmediate();
+    boolean isImmediate();
 
     /**
      * <p>
@@ -54,7 +50,7 @@ public interface ActionSource {
      *
      * @param immediate The new immediate execution flag
      */
-    public void setImmediate(boolean immediate);
+    void setImmediate(boolean immediate);
 
     // -------------------------------------------------- Event Listener Methods
 
@@ -68,17 +64,17 @@ public interface ActionSource {
      *
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
-    public void addActionListener(ActionListener listener);
+    void addActionListener(ActionListener listener);
 
     /**
      * <p>
      * Return the set of registered {@link ActionListener}s for this {@link ActionSource} instance. If there are no
      * registered listeners, a zero-length array is returned.
      * </p>
-     * 
+     *
      * @return the action listeners, or a zero-length array.
      */
-    public abstract ActionListener[] getActionListeners();
+    ActionListener[] getActionListeners();
 
     /**
      * <p>
@@ -90,7 +86,7 @@ public interface ActionSource {
      *
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
-    public void removeActionListener(ActionListener listener);
+    void removeActionListener(ActionListener listener);
 
     // -------------------------------------------------------------- Deprecated methods
 
@@ -101,7 +97,7 @@ public interface ActionSource {
      * {@link #setAction}, extract the <code>MethodBinding</code> from it and return it. Otherwise, wrap the returned
      * {@link jakarta.el.MethodExpression} in a <code>MethodBinding</code> implementation, and return it.
      * </p>
-     * 
+     *
      * <p>
      * If the implementing class does not implement <code>ActionSource2</code>, return the {@link MethodBinding}pointing at
      * the application action to be invoked, if this {@link UIComponent} is activated by the user, during the <em>Apply
@@ -110,10 +106,11 @@ public interface ActionSource {
      * </p>
      *
      * @deprecated This has been replaced by {@link ActionSource2#getActionExpression}.
-     * 
+     *
      * @return the action.
      */
-    public MethodBinding getAction();
+    @Deprecated
+    MethodBinding getAction();
 
     /**
      * <p>
@@ -138,7 +135,8 @@ public interface ActionSource {
      *
      * @deprecated This has been replaced by {@link ActionSource2#setActionExpression(jakarta.el.MethodExpression)}.
      */
-    public void setAction(MethodBinding action);
+    @Deprecated
+    void setAction(MethodBinding action);
 
     /**
      * <p>
@@ -156,7 +154,8 @@ public interface ActionSource {
      * @return the action listener.
      * @deprecated Use {@link #getActionListeners} instead.
      */
-    public MethodBinding getActionListener();
+    @Deprecated
+    MethodBinding getActionListener();
 
     /**
      * <p>
@@ -174,6 +173,7 @@ public interface ActionSource {
      *
      * @deprecated This has been replaced by {@link #addActionListener(jakarta.faces.event.ActionListener)}.
      */
-    public void setActionListener(MethodBinding actionListener);
+    @Deprecated
+    void setActionListener(MethodBinding actionListener);
 
 }

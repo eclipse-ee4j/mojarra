@@ -16,9 +16,6 @@
 
 package jakarta.faces.context;
 
-import jakarta.faces.context.ExceptionHandlerFactory;
-import jakarta.faces.context.FacesContextFactory;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ExceptionQueuedEvent;
@@ -31,7 +28,7 @@ import jakarta.faces.event.SystemEventListener;
  * <code>Exception</code>s that are thrown during the Faces lifecycle. The <code>ExceptionHandler</code> must not be
  * notified of any <code>Exception</code>s that occur during application startup or shutdown.
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
  *
  * <p>
@@ -89,13 +86,13 @@ import jakarta.faces.event.SystemEventListener;
  * With either approach, any <code>ExceptionQueuedEvent</code> instances that are published in this way are accessible
  * to the {@link #handle} method, which is called at the end of each lifecycle phase, as specified in section JSF.6.2.
  * </p>
- * 
+ *
  * <p class="changed_added_2_3">
  * Note that if {@link #handle} happens to be invoked during {@link jakarta.faces.event.PhaseId#RENDER_RESPONSE}, the
  * recovery options are more limited than when it is invoked during other phases. Specifically, it is not valid to call
  * {@link jakarta.faces.application.NavigationHandler#handleNavigation} during {@code RENDER_RESPONSE}.
  * </p>
- * 
+ *
  * <p>
  * Instances of this class are request scoped and are created by virtue of {@link FacesContextFactory#getFacesContext}
  * calling {@link ExceptionHandlerFactory#getExceptionHandler}.
@@ -113,7 +110,7 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * that have been queued by calls to <code>Application().publishEvent(ExceptionQueuedEvent.class,
      * <em>eventContext</em>)</code>. The requirements of the default implementation are detailed in section JSF.6.2.1.
      * </p>
-     * 
+     *
      * @throws FacesException if and only if a problem occurs while performing the algorithm to handle the
      * <code>Exception</code>, not as a means of conveying a handled <code>Exception</code> itself.
      *
@@ -125,9 +122,9 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * <p class="changed_added_2_0">
      * Return the first <code>ExceptionQueuedEvent</code> handled by this handler.
      * </p>
-     * 
+     *
      * @return instance of <code>ExceptionQueuedEvent</code>.
-     * 
+     *
      */
     public abstract ExceptionQueuedEvent getHandledExceptionQueuedEvent();
 
@@ -136,9 +133,9 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * Return an <code>Iterable</code> over all <code>ExceptionQueuedEvent</code>s that have not yet been handled by the
      * {@link #handle} method.
      * </p>
-     * 
+     *
      * @return the unhandled set of <code>ExceptionQueuedEvent</code>s.
-     * 
+     *
      */
     public abstract Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents();
 
@@ -147,9 +144,9 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * The default implementation must return an <code>Iterable</code> over all <code>ExceptionQueuedEvent</code>s that have
      * been handled by the {@link #handle} method.
      * </p>
-     * 
+     *
      * @return an <code>Iterable</code> over all <code>ExceptionQueuedEvent</code>s.
-     * 
+     *
      */
     public abstract Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents();
 
@@ -175,9 +172,9 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * @param t passed-in wrapped <code>Throwable</code>.
      *
      * @return unwrapped object.
-     * 
+     *
      * @throws NullPointerException if argument <code>t</code> is <code>null</code>.
-     * 
+     *
      * @since 2.0
      */
     public abstract Throwable getRootCause(Throwable t);

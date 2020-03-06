@@ -90,7 +90,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String style = (String) component.getAttributes().get("style");
         String styleClass = (String) component.getAttributes().get("styleClass");
@@ -121,7 +121,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         }
 
         Object val = component.getAttributes().get("escape");
-        boolean escape = (val != null) && Boolean.valueOf(val.toString());
+        boolean escape = val != null && Boolean.valueOf(val.toString());
 
         if (escape) {
             writer.writeText(message, component, "value");

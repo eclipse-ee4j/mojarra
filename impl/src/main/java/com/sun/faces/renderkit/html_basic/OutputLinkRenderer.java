@@ -18,8 +18,6 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import static com.sun.faces.renderkit.RenderKitUtils.getParameterName;
-
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.logging.Level;
@@ -66,7 +64,7 @@ public class OutputLinkRenderer extends LinkRenderer {
         UIOutput output = (UIOutput) component;
         boolean componentDisabled = false;
         if (output.getAttributes().get("disabled") != null) {
-            if ((output.getAttributes().get("disabled")).equals(Boolean.TRUE)) {
+            if (output.getAttributes().get("disabled").equals(Boolean.TRUE)) {
                 componentDisabled = true;
             }
         }
@@ -105,7 +103,7 @@ public class OutputLinkRenderer extends LinkRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         if (Boolean.TRUE.equals(component.getAttributes().get("disabled"))) {
             writer.endElement("span");
@@ -129,7 +127,7 @@ public class OutputLinkRenderer extends LinkRenderer {
     protected String getFragment(UIComponent component) {
 
         String fragment = (String) component.getAttributes().get("fragment");
-        fragment = (fragment != null ? fragment.trim() : "");
+        fragment = fragment != null ? fragment.trim() : "";
         if (fragment.length() > 0) {
             fragment = "#" + fragment;
         }
@@ -165,7 +163,7 @@ public class OutputLinkRenderer extends LinkRenderer {
             return;
         }
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
         writer.startElement("a", component);
         String writtenId = writeIdAttributeIfNecessary(context, writer, component);
         if (null != writtenId) {
@@ -181,13 +179,13 @@ public class OutputLinkRenderer extends LinkRenderer {
         Param paramList[] = getParamList(component);
         StringBuffer sb = new StringBuffer();
         sb.append(hrefVal);
-        boolean paramWritten = (hrefVal.indexOf('?') > 0);
+        boolean paramWritten = hrefVal.indexOf('?') > 0;
 
         for (int i = 0, len = paramList.length; i < len; i++) {
             String pn = paramList[i].name;
             if (pn != null && pn.length() != 0) {
                 String pv = paramList[i].value;
-                sb.append((paramWritten) ? '&' : '?');
+                sb.append(paramWritten ? '&' : '?');
                 sb.append(URLEncoder.encode(pn, "UTF-8"));
                 sb.append('=');
                 if (pv != null && pv.length() != 0) {

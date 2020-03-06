@@ -18,16 +18,15 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
-import jakarta.el.ExpressionFactory;
-import jakarta.servlet.jsp.JspException;
-
 import com.sun.faces.el.ELUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.DoubleRangeValidator;
 import jakarta.faces.validator.Validator;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * ValidateDoubleRangeTag is the tag handler class for <code>validate_doublerange</code> tag.
@@ -53,7 +52,7 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
 // Relationship Instance Variables
 
 //
-// Constructors and Initializers    
+// Constructors and Initializers
 //
 
     public ValidateDoubleRangeTag() {
@@ -89,7 +88,7 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
         return super.doStartTag();
     }
 
-// 
+//
 // Methods from ValidatorTag
 //
 
@@ -98,7 +97,7 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
 
         DoubleRangeValidator result = (DoubleRangeValidator) super.createValidator();
 
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         if (maximumSet) {

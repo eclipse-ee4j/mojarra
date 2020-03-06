@@ -25,13 +25,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
 import com.sun.faces.spi.AnnotationProvider;
 import com.sun.faces.spi.AnnotationProviderFactory;
 import com.sun.faces.util.Timer;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * Scans the class files within a web application returning a <code>Set</code> of classes that have been annotated with
@@ -49,9 +49,9 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
     @SuppressWarnings("unchecked")
     public FindAnnotatedConfigClasses(ServletContext servletContext, InitFacesContext facesContext, ProvideMetadataToAnnotationScanTask metadataGetter) {
         this.facesContext = facesContext;
-        this.provider = AnnotationProviderFactory.createAnnotationProvider(servletContext);
+        provider = AnnotationProviderFactory.createAnnotationProvider(servletContext);
         this.metadataGetter = metadataGetter;
-        this.annotatedSet = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);
+        annotatedSet = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);
     }
 
     // ----------------------------------------------- Methods from Callable

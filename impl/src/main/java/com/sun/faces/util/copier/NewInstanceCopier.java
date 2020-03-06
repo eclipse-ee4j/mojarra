@@ -20,7 +20,7 @@ package com.sun.faces.util.copier;
  * Copier that doesn't actually copy an object fully, but just returns a new instance of the same type.
  * <p>
  * The object that is to be copied has to implement a public default constructor.
- * 
+ *
  * @since 2.3
  * @author Arjan Tijms
  *

@@ -16,10 +16,21 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.tag.jsf.core.FacetHandler;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
@@ -35,19 +46,8 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -82,7 +82,7 @@ public final class ComponentSupport {
         }
 
         String rendererType = config.getRendererType();
-        return ("jakarta.faces.resource.Script".equals(rendererType) || "jakarta.faces.resource.Stylesheet".equals(rendererType));
+        return "jakarta.faces.resource.Script".equals(rendererType) || "jakarta.faces.resource.Stylesheet".equals(rendererType);
     }
 
     public static boolean isBuildingNewComponentTree(FacesContext context) {
@@ -95,7 +95,7 @@ public final class ComponentSupport {
 
     /**
      * Used in conjunction with markForDeletion where any UIComponent marked will be removed.
-     * 
+     *
      * @param c UIComponent to finalize
      */
     public static void finalizeForDeletion(UIComponent c) {
@@ -128,7 +128,7 @@ public final class ComponentSupport {
                 if (attrs.containsKey(MARK_DELETED)) {
                     itr.remove();
                 } else if (UIComponent.COMPOSITE_FACET_NAME.equals(curEntry.getKey())
-                        || (attrs.containsKey(IMPLICIT_PANEL) && !curEntry.getKey().equals(UIViewRoot.METADATA_FACET_NAME))) {
+                        || attrs.containsKey(IMPLICIT_PANEL) && !curEntry.getKey().equals(UIViewRoot.METADATA_FACET_NAME)) {
                     List<UIComponent> implicitPanelChildren = fc.getChildren();
                     UIComponent innerChild;
                     for (Iterator<UIComponent> innerItr = implicitPanelChildren.iterator(); innerItr.hasNext();) {
@@ -151,7 +151,7 @@ public final class ComponentSupport {
             componentToTagMap = new HashMap<>();
             contextMap.put(COMPONENT_TO_TAG_MAP_NAME, componentToTagMap);
         }
-        return componentToTagMap.put((Integer) System.identityHashCode(c), t);
+        return componentToTagMap.put(System.identityHashCode(c), t);
     }
 
     public static Tag getTagForComponent(FacesContext context, UIComponent c) {
@@ -160,7 +160,7 @@ public final class ComponentSupport {
         Map<Integer, Tag> componentToTagMap;
         componentToTagMap = (Map<Integer, Tag>) contextMap.get(COMPONENT_TO_TAG_MAP_NAME);
         if (null != componentToTagMap) {
-            result = componentToTagMap.get((Integer) System.identityHashCode(c));
+            result = componentToTagMap.get(System.identityHashCode(c));
         }
 
         return result;
@@ -168,7 +168,7 @@ public final class ComponentSupport {
 
     /**
      * A lighter-weight version of UIComponent's findChild.
-     * 
+     *
      * @param parent parent to start searching from
      * @param id to match to
      * @return UIComponent found or null
@@ -219,7 +219,7 @@ public final class ComponentSupport {
 
     /**
      * By TagId, find Child
-     * 
+     *
      * @param parent the parent UI component
      * @param id the id
      * @return the UI component
@@ -227,7 +227,7 @@ public final class ComponentSupport {
     public static UIComponent findChildByTagId(FacesContext context, UIComponent parent, String id) {
         UIComponent c = null;
         UIViewRoot root = context.getViewRoot();
-        boolean hasDynamicComponents = (null != root && root.getAttributes().containsKey(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS));
+        boolean hasDynamicComponents = null != root && root.getAttributes().containsKey(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS);
         String cid = null;
         List<UIComponent> components;
         String facetName = getFacetName(parent);
@@ -284,7 +284,7 @@ public final class ComponentSupport {
     /**
      * According to JSF 1.2 tag specs, this helper method will use the TagAttribute passed in determining the Locale
      * intended.
-     * 
+     *
      * @param ctx FaceletContext to evaluate from
      * @param attr TagAttribute representing a Locale
      * @return Locale found
@@ -310,7 +310,7 @@ public final class ComponentSupport {
     /**
      * Tries to walk up the parent to find the UIViewRoot, if not found, then go to FaceletContext's FacesContext for the
      * view root.
-     * 
+     *
      * @param ctx FaceletContext
      * @param parent UIComponent to search from
      * @return UIViewRoot instance for this evaluation
@@ -329,7 +329,7 @@ public final class ComponentSupport {
 
     /**
      * Marks all direct children and Facets with an attribute for deletion.
-     * 
+     *
      * @see #finalizeForDeletion(UIComponent)
      * @param c UIComponent to mark
      */
@@ -512,7 +512,7 @@ public final class ComponentSupport {
             Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
             Object attrValue = null;
             for (TagAttribute cur : passthroughAttrs) {
-                attrValue = (cur.isLiteral()) ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
+                attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
                 componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
             }
         }

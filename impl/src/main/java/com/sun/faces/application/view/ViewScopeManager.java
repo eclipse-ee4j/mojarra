@@ -16,9 +16,17 @@
 
 package com.sun.faces.application.view;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.LRUMap;
 
@@ -31,14 +39,6 @@ import jakarta.faces.event.PostConstructViewMapEvent;
 import jakarta.faces.event.PreDestroyViewMapEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.ViewMapListener;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
@@ -182,7 +182,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @return the CDI context manager.
      */
     ViewScopeContextManager getContextManager() {
-        return this.contextManager;
+        return contextManager;
     }
 
     /**
@@ -205,7 +205,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      */
     @Override
     public boolean isListenerForSource(Object source) {
-        return (source instanceof UIViewRoot);
+        return source instanceof UIViewRoot;
     }
 
     /**
@@ -261,7 +261,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 }
 
                 if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {
-                    sessionMap.put(ACTIVE_VIEW_MAPS, (Map<String, Object>) Collections.synchronizedMap(new LRUMap<String, Object>(size)));
+                    sessionMap.put(ACTIVE_VIEW_MAPS, Collections.synchronizedMap(new LRUMap<String, Object>(size)));
                 }
 
                 Map<String, Object> viewMaps = (Map<String, Object>) sessionMap.get(ACTIVE_VIEW_MAPS);
@@ -322,7 +322,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
 
     /**
      * Create the associated data in the session (if any).
-     * 
+     *
      * @param se the HTTP session event.
      */
     @Override

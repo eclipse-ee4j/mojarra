@@ -41,7 +41,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
         WebConfiguration webConfig = WebConfiguration.getInstance();
         String stateMode = webConfig.getOptionValue(StateSavingMethod);
-        helper = ((StateManager.STATE_SAVING_METHOD_CLIENT.equalsIgnoreCase(stateMode) ? new ClientSideStateHelper() : new ServerSideStateHelper()));
+        helper = StateManager.STATE_SAVING_METHOD_CLIENT.equalsIgnoreCase(stateMode) ? new ClientSideStateHelper() : new ServerSideStateHelper();
 
     }
 

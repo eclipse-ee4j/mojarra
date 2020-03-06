@@ -1,18 +1,18 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the
  * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
  * version 2 with the GNU Classpath Exception, which is available at
  * https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 package jakarta.faces.component.html;
@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
@@ -64,8 +63,9 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 
@@ -73,7 +73,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>dir</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
@@ -89,7 +89,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>dir</code> property.
      * </p>
-     * 
+     *
      * @param dir the new property value
      */
     public void setDir(java.lang.String dir) {
@@ -101,7 +101,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>lang</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Code describing the language used in the generated markup for this component.
@@ -115,7 +115,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>lang</code> property.
      * </p>
-     * 
+     *
      * @param lang the new property value
      */
     public void setLang(java.lang.String lang) {
@@ -127,7 +127,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onclick</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is clicked over this element.
@@ -141,7 +141,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onclick</code> property.
      * </p>
-     * 
+     *
      * @param onclick the new property value
      */
     public void setOnclick(java.lang.String onclick) {
@@ -153,7 +153,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>ondblclick</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is double clicked over this element.
@@ -167,7 +167,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>ondblclick</code> property.
      * </p>
-     * 
+     *
      * @param ondblclick the new property value
      */
     public void setOndblclick(java.lang.String ondblclick) {
@@ -179,7 +179,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onkeydown</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a key is pressed down over this element.
@@ -193,7 +193,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onkeydown</code> property.
      * </p>
-     * 
+     *
      * @param onkeydown the new property value
      */
     public void setOnkeydown(java.lang.String onkeydown) {
@@ -205,7 +205,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onkeypress</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a key is pressed and released over this element.
@@ -219,7 +219,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onkeypress</code> property.
      * </p>
-     * 
+     *
      * @param onkeypress the new property value
      */
     public void setOnkeypress(java.lang.String onkeypress) {
@@ -231,7 +231,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onkeyup</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a key is released over this element.
@@ -245,7 +245,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onkeyup</code> property.
      * </p>
-     * 
+     *
      * @param onkeyup the new property value
      */
     public void setOnkeyup(java.lang.String onkeyup) {
@@ -257,7 +257,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onload</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      */
     public java.lang.String getOnload() {
@@ -269,7 +269,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onload</code> property.
      * </p>
-     * 
+     *
      * @param onload the new property value
      */
     public void setOnload(java.lang.String onload) {
@@ -281,7 +281,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmousedown</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is pressed down over this element.
@@ -295,7 +295,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmousedown</code> property.
      * </p>
-     * 
+     *
      * @param onmousedown the new property value
      */
     public void setOnmousedown(java.lang.String onmousedown) {
@@ -307,7 +307,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmousemove</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is moved within this element.
@@ -321,7 +321,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmousemove</code> property.
      * </p>
-     * 
+     *
      * @param onmousemove the new property value
      */
     public void setOnmousemove(java.lang.String onmousemove) {
@@ -333,7 +333,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmouseout</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is moved away from this element.
@@ -347,7 +347,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmouseout</code> property.
      * </p>
-     * 
+     *
      * @param onmouseout the new property value
      */
     public void setOnmouseout(java.lang.String onmouseout) {
@@ -359,7 +359,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmouseover</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is moved onto this element.
@@ -373,7 +373,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmouseover</code> property.
      * </p>
-     * 
+     *
      * @param onmouseover the new property value
      */
     public void setOnmouseover(java.lang.String onmouseover) {
@@ -385,7 +385,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmouseup</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is released over this element.
@@ -399,7 +399,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmouseup</code> property.
      * </p>
-     * 
+     *
      * @param onmouseup the new property value
      */
     public void setOnmouseup(java.lang.String onmouseup) {
@@ -411,7 +411,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onunload</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      */
     public java.lang.String getOnunload() {
@@ -423,7 +423,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onunload</code> property.
      * </p>
-     * 
+     *
      * @param onunload the new property value
      */
     public void setOnunload(java.lang.String onunload) {
@@ -435,7 +435,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>role</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents:
@@ -446,7 +446,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * that evaluates to, a set of space-separated tokens representing the various WAI-ARIA roles that the element belongs
      * to.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
      * of this attribute.
@@ -461,7 +461,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>role</code> property.
      * </p>
-     * 
+     *
      * @param role the new property value
      */
     public void setRole(java.lang.String role) {
@@ -473,7 +473,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style(s) to be applied when this component is rendered.
@@ -487,7 +487,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -499,7 +499,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
@@ -514,7 +514,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
@@ -525,7 +525,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>title</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Advisory title information about markup elements generated for this component.
@@ -539,7 +539,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>title</code> property.
      * </p>
-     * 
+     *
      * @param title the new property value
      */
     public void setTitle(java.lang.String title) {
@@ -551,7 +551,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>xmlns</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: <div class="changed_added_2_1"> An XML Namespace to be passed through to the rendered element </div>
@@ -565,7 +565,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>xmlns</code> property.
      * </p>
-     * 
+     *
      * @param xmlns the new property value
      */
     public void setXmlns(java.lang.String xmlns) {
@@ -576,21 +576,23 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
             Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "load", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "unload"));
 
+    @Override
     public Collection<String> getEventNames() {
         return EVENT_NAMES;
     }
 
+    @Override
     public String getDefaultEventName() {
         return null;
     }
 
     private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
+        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
             if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<String>(6);
-                this.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
+                setAttributes = new ArrayList<>(6);
+                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }
         }
         if (setAttributes != null) {

@@ -16,14 +16,15 @@
 
 package com.sun.faces.application;
 
-import com.sun.faces.util.MetadataWrapperMap;
 import java.util.Map;
+
+import com.sun.faces.util.MetadataWrapperMap;
 
 /**
  *
  * Used to hold metadata for classes that are members of views. Does not support annotation scanning for these classes,
  * as they are not eligible for injection.
- * 
+ *
  * @param <K>
  * @param <V>
  */

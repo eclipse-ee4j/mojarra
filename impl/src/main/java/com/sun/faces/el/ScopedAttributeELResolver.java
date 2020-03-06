@@ -16,27 +16,25 @@
 
 package com.sun.faces.el;
 
+import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.beans.FeatureDescriptor;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Map;
 
-import jakarta.el.ELException;
-import jakarta.el.PropertyNotFoundException;
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
-
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.mgbean.BeanManager;
+import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.mgbean.BeanManager;
 
 public class ScopedAttributeELResolver extends ELResolver {
 
@@ -132,13 +130,13 @@ public class ScopedAttributeELResolver extends ELResolver {
         String attribute = (String) property;
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         ExternalContext ec = facesContext.getExternalContext();
-        if ((ec.getRequestMap().get(attribute)) != null) {
+        if (ec.getRequestMap().get(attribute) != null) {
             ec.getRequestMap().put(attribute, val);
-        } else if ((facesContext.getViewRoot()) != null && (facesContext.getViewRoot().getViewMap().get(attribute)) != null) {
+        } else if (facesContext.getViewRoot() != null && facesContext.getViewRoot().getViewMap().get(attribute) != null) {
             facesContext.getViewRoot().getViewMap().put(attribute, val);
-        } else if ((ec.getSessionMap().get(attribute)) != null) {
+        } else if (ec.getSessionMap().get(attribute) != null) {
             ec.getSessionMap().put(attribute, val);
-        } else if ((ec.getApplicationMap().get(attribute)) != null) {
+        } else if (ec.getApplicationMap().get(attribute) != null) {
             ec.getApplicationMap().put(attribute, val);
         } else {
             // if the property doesn't exist in any of the scopes, put it in

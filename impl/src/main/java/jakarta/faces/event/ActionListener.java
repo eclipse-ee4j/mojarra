@@ -16,10 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ActionEvent;
-import jakarta.faces.event.FacesListener;
-
 import jakarta.faces.component.UIComponent;
 
 /**
@@ -40,9 +36,9 @@ public interface ActionListener extends FacesListener {
      * to
      * {@link jakarta.faces.application.NavigationHandler#handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String, java.lang.String)}.
      * </p>
-     * 
+     *
      */
-    public static final String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
+    String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
 
     /**
      * <p>
@@ -54,6 +50,6 @@ public interface ActionListener extends FacesListener {
      * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
      * current event should be performed
      */
-    public void processAction(ActionEvent event) throws AbortProcessingException;
+    void processAction(ActionEvent event) throws AbortProcessingException;
 
 }

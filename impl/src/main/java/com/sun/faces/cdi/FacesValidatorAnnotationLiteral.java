@@ -17,7 +17,6 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.util.AnnotationLiteral;
-
 import jakarta.faces.validator.FacesValidator;
 
 /**

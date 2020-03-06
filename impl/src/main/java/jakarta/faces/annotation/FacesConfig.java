@@ -53,7 +53,7 @@ public @interface FacesConfig {
      * The value of this attribute indicates that features corresponding to this version must be enabled for this
      * application.
      * </p>
-     * 
+     *
      * @return the spec version for which the features must be enabled.
      */
     @Nonbinding

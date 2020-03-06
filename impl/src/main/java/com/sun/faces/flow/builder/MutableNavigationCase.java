@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.context.FacesContext;
 
@@ -70,7 +69,7 @@ public class MutableNavigationCase extends NavigationCase {
         this.condition = condition;
         this.toViewId = toViewId;
         this.toFlowDocumentId = toFlowDocumentId;
-        this.parameters = (null != parameters) ? parameters : new ConcurrentHashMap<>();
+        this.parameters = null != parameters ? parameters : new ConcurrentHashMap<>();
         this.redirect = redirect;
         this.includeViewParams = includeViewParams;
 
@@ -86,7 +85,7 @@ public class MutableNavigationCase extends NavigationCase {
         this.condition = condition;
         this.toViewId = toViewId;
         this.toFlowDocumentId = toFlowDocumentId;
-        this.parameters = Collections.emptyMap();
+        parameters = Collections.emptyMap();
         this.redirect = redirect;
         this.includeViewParams = includeViewParams;
 
@@ -162,7 +161,7 @@ public class MutableNavigationCase extends NavigationCase {
     @Override
     public boolean hasCondition() {
 
-        return (condition != null);
+        return condition != null;
 
     }
 
@@ -174,17 +173,17 @@ public class MutableNavigationCase extends NavigationCase {
             conditionExpr = factory.createValueExpression(context.getELContext(), condition, Boolean.class);
         }
 
-        return ((conditionExpr != null) ? (Boolean) conditionExpr.getValue(context.getELContext()) : null);
+        return conditionExpr != null ? (Boolean) conditionExpr.getValue(context.getELContext()) : null;
 
     }
 
     public void setCondition(String condition) {
         this.condition = condition;
-        this.conditionExpr = null;
+        conditionExpr = null;
     }
 
     public void setConditionExpression(ValueExpression conditionExpression) {
-        this.conditionExpr = conditionExpression;
+        conditionExpr = conditionExpression;
     }
 
     @Override
@@ -225,31 +224,31 @@ public class MutableNavigationCase extends NavigationCase {
             return false;
         }
         final MutableNavigationCase other = (MutableNavigationCase) obj;
-        if ((this.fromViewId == null) ? (other.fromViewId != null) : !this.fromViewId.equals(other.fromViewId)) {
+        if (fromViewId == null ? other.fromViewId != null : !fromViewId.equals(other.fromViewId)) {
             return false;
         }
-        if ((this.fromAction == null) ? (other.fromAction != null) : !this.fromAction.equals(other.fromAction)) {
+        if (fromAction == null ? other.fromAction != null : !fromAction.equals(other.fromAction)) {
             return false;
         }
-        if ((this.fromOutcome == null) ? (other.fromOutcome != null) : !this.fromOutcome.equals(other.fromOutcome)) {
+        if (fromOutcome == null ? other.fromOutcome != null : !fromOutcome.equals(other.fromOutcome)) {
             return false;
         }
-        if ((this.condition == null) ? (other.condition != null) : !this.condition.equals(other.condition)) {
+        if (condition == null ? other.condition != null : !condition.equals(other.condition)) {
             return false;
         }
-        if ((this.toViewId == null) ? (other.toViewId != null) : !this.toViewId.equals(other.toViewId)) {
+        if (toViewId == null ? other.toViewId != null : !toViewId.equals(other.toViewId)) {
             return false;
         }
-        if ((this.toFlowDocumentId == null) ? (other.toFlowDocumentId != null) : !this.toFlowDocumentId.equals(other.toFlowDocumentId)) {
+        if (toFlowDocumentId == null ? other.toFlowDocumentId != null : !toFlowDocumentId.equals(other.toFlowDocumentId)) {
             return false;
         }
-        if (this.parameters != other.parameters && (this.parameters == null || !this.parameters.equals(other.parameters))) {
+        if (parameters != other.parameters && (parameters == null || !parameters.equals(other.parameters))) {
             return false;
         }
-        if (this.redirect != other.redirect) {
+        if (redirect != other.redirect) {
             return false;
         }
-        if (this.includeViewParams != other.includeViewParams) {
+        if (includeViewParams != other.includeViewParams) {
             return false;
         }
         return true;
@@ -258,15 +257,15 @@ public class MutableNavigationCase extends NavigationCase {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 29 * hash + (this.fromViewId != null ? this.fromViewId.hashCode() : 0);
-        hash = 29 * hash + (this.fromAction != null ? this.fromAction.hashCode() : 0);
-        hash = 29 * hash + (this.fromOutcome != null ? this.fromOutcome.hashCode() : 0);
-        hash = 29 * hash + (this.condition != null ? this.condition.hashCode() : 0);
-        hash = 29 * hash + (this.toViewId != null ? this.toViewId.hashCode() : 0);
-        hash = 29 * hash + (this.toFlowDocumentId != null ? this.toFlowDocumentId.hashCode() : 0);
-        hash = 29 * hash + (this.parameters != null ? this.parameters.hashCode() : 0);
-        hash = 29 * hash + (this.redirect ? 1 : 0);
-        hash = 29 * hash + (this.includeViewParams ? 1 : 0);
+        hash = 29 * hash + (fromViewId != null ? fromViewId.hashCode() : 0);
+        hash = 29 * hash + (fromAction != null ? fromAction.hashCode() : 0);
+        hash = 29 * hash + (fromOutcome != null ? fromOutcome.hashCode() : 0);
+        hash = 29 * hash + (condition != null ? condition.hashCode() : 0);
+        hash = 29 * hash + (toViewId != null ? toViewId.hashCode() : 0);
+        hash = 29 * hash + (toFlowDocumentId != null ? toFlowDocumentId.hashCode() : 0);
+        hash = 29 * hash + (parameters != null ? parameters.hashCode() : 0);
+        hash = 29 * hash + (redirect ? 1 : 0);
+        hash = 29 * hash + (includeViewParams ? 1 : 0);
         return hash;
     }
 
@@ -283,7 +282,7 @@ public class MutableNavigationCase extends NavigationCase {
             sb.append(", toViewId='").append(toViewId).append('\'');
             sb.append(", faces-redirect=").append(redirect);
             sb.append(", includeViewParams=").append(includeViewParams).append('\'');
-            sb.append(", parameters=").append(((parameters != null) ? parameters.toString() : ""));
+            sb.append(", parameters=").append(parameters != null ? parameters.toString() : "");
             sb.append('}');
             toString = sb.toString();
         }

@@ -16,8 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.SystemEvent;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
 
@@ -32,7 +30,7 @@ import jakarta.faces.context.Flash;
  */
 public class PostPutFlashValueEvent extends SystemEvent {
 
-    private static final long serialVersionUID = -6422204761759384353L;;
+    private static final long serialVersionUID = -6422204761759384353L;
 
     // ------------------------------------------------------------ Constructors
 
@@ -42,7 +40,7 @@ public class PostPutFlashValueEvent extends SystemEvent {
      * the flash. If the argument is <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed to the
      * superclass constructor.
      * </p>
-     * 
+     *
      * @param key the key in the flash that was just added.
      *
      */
@@ -56,7 +54,7 @@ public class PostPutFlashValueEvent extends SystemEvent {
      * the flash. If the argument is <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed to the
      * superclass constructor.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param key the key in the flash that was just added.
      *

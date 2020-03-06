@@ -16,17 +16,16 @@
 
 package com.sun.faces.facelets.compiler;
 
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-
-import jakarta.faces.context.FacesContext;
-
 import java.io.IOException;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.context.FacesContext;
+
 interface Instruction {
-    public void write(FacesContext context) throws IOException;
+    void write(FacesContext context) throws IOException;
 
-    public Instruction apply(ExpressionFactory factory, ELContext ctx);
+    Instruction apply(ExpressionFactory factory, ELContext ctx);
 
-    public boolean isLiteral();
+    boolean isLiteral();
 }

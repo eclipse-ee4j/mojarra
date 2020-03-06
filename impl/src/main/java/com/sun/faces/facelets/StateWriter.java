@@ -16,10 +16,10 @@
 
 package com.sun.faces.facelets;
 
-import com.sun.faces.facelets.util.FastWriter;
-
 import java.io.IOException;
 import java.io.Writer;
+
+import com.sun.faces.facelets.util.FastWriter;
 
 /**
  * A class for handling state insertion. Content is written directly to "out" until an attempt to write state; at that
@@ -57,7 +57,7 @@ final class StateWriter extends Writer {
         }
 
         this.initialSize = initialSize;
-        this.out = initialOut;
+        out = initialOut;
 
         CURRENT_WRITER.set(this);
     }
@@ -69,14 +69,14 @@ final class StateWriter extends Writer {
      * state markers.
      */
     public void writingState() {
-        if (!this.writtenState) {
-            this.writtenState = true;
-            this.out = this.fast = new FastWriter(this.initialSize);
+        if (!writtenState) {
+            writtenState = true;
+            out = fast = new FastWriter(initialSize);
         }
     }
 
     public boolean isStateWritten() {
-        return this.writtenState;
+        return writtenState;
     }
 
     @Override
@@ -91,36 +91,36 @@ final class StateWriter extends Writer {
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
-        this.out.write(cbuf, off, len);
+        out.write(cbuf, off, len);
     }
 
     @Override
     public void write(char[] cbuf) throws IOException {
-        this.out.write(cbuf);
+        out.write(cbuf);
     }
 
     @Override
     public void write(int c) throws IOException {
-        this.out.write(c);
+        out.write(c);
     }
 
     @Override
     public void write(String str, int off, int len) throws IOException {
-        this.out.write(str, off, len);
+        out.write(str, off, len);
     }
 
     @Override
     public void write(String str) throws IOException {
-        this.out.write(str);
+        out.write(str);
     }
 
     public String getAndResetBuffer() {
-        if (!this.writtenState) {
+        if (!writtenState) {
             throw new IllegalStateException("Did not write state;  no buffer is available");
         }
 
-        String result = this.fast.toString();
-        this.fast.reset();
+        String result = fast.toString();
+        fast.reset();
         return result;
     }
 

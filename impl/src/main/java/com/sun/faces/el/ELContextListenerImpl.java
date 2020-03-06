@@ -17,10 +17,9 @@
 package com.sun.faces.el;
 
 import jakarta.el.ELContext;
-import jakarta.el.ELContextListener;
 import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
 import jakarta.el.ExpressionFactory;
-
 import jakarta.faces.context.FacesContext;
 
 public class ELContextListenerImpl implements ELContextListener {

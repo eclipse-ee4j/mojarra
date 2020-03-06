@@ -16,10 +16,15 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.facelets.util.ReflectionUtil;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -27,13 +32,12 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 public class PhaseListenerHandler extends TagHandlerImpl {
 
@@ -56,16 +60,16 @@ public class PhaseListenerHandler extends TagHandlerImpl {
             if (faces == null) {
                 return null;
             }
-            if (this.binding != null) {
+            if (binding != null) {
                 instance = (PhaseListener) binding.getValue(faces.getELContext());
             }
             if (instance == null && type != null) {
                 try {
-                    instance = (PhaseListener) ReflectionUtil.forName(this.type).newInstance();
+                    instance = (PhaseListener) ReflectionUtil.forName(type).newInstance();
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                     throw new AbortProcessingException("Couldn't Lazily instantiate PhaseListener", e);
                 }
-                if (this.binding != null) {
+                if (binding != null) {
                     binding.setValue(faces.getELContext(), instance);
                 }
             }
@@ -74,7 +78,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
         @Override
         public void afterPhase(PhaseEvent event) {
-            PhaseListener pl = this.getInstance();
+            PhaseListener pl = getInstance();
             if (pl != null) {
                 pl.afterPhase(event);
             }
@@ -82,7 +86,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
         @Override
         public void beforePhase(PhaseEvent event) {
-            PhaseListener pl = this.getInstance();
+            PhaseListener pl = getInstance();
             if (pl != null) {
                 pl.beforePhase(event);
             }
@@ -90,8 +94,8 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
         @Override
         public PhaseId getPhaseId() {
-            PhaseListener pl = this.getInstance();
-            return (pl != null) ? pl.getPhaseId() : PhaseId.ANY_PHASE;
+            PhaseListener pl = getInstance();
+            return pl != null ? pl.getPhaseId() : PhaseId.ANY_PHASE;
         }
 
         @Override
@@ -136,21 +140,21 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
     public PhaseListenerHandler(TagConfig config) {
         super(config);
-        this.binding = this.getAttribute("binding");
-        this.typeAttribute = this.getAttribute("type");
-        if (null != this.typeAttribute) {
+        binding = getAttribute("binding");
+        typeAttribute = getAttribute("type");
+        if (null != typeAttribute) {
             String stringType = null;
-            if (!this.typeAttribute.isLiteral()) {
+            if (!typeAttribute.isLiteral()) {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                stringType = (String) this.typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
+                stringType = (String) typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
             } else {
-                stringType = this.typeAttribute.getValue();
+                stringType = typeAttribute.getValue();
             }
             checkType(stringType);
-            this.listenerType = stringType;
+            listenerType = stringType;
         } else {
-            this.listenerType = null;
+            listenerType = null;
         }
     }
 
@@ -159,14 +163,14 @@ public class PhaseListenerHandler extends TagHandlerImpl {
         if (ComponentHandler.isNew(parent)) {
             UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
             if (root == null) {
-                throw new TagException(this.tag, "UIViewRoot not available");
+                throw new TagException(tag, "UIViewRoot not available");
             }
             ValueExpression b = null;
-            if (this.binding != null) {
-                b = this.binding.getValueExpression(ctx, PhaseListener.class);
+            if (binding != null) {
+                b = binding.getValueExpression(ctx, PhaseListener.class);
             }
 
-            PhaseListener pl = new LazyPhaseListener(this.listenerType, b);
+            PhaseListener pl = new LazyPhaseListener(listenerType, b);
 
             List<PhaseListener> listeners = root.getPhaseListeners();
             if (!listeners.contains(pl)) {

@@ -16,7 +16,13 @@
 
 package com.sun.faces.lifecycle;
 
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.el.FacesCompositeELResolver;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FactoryFinder;
@@ -28,14 +34,6 @@ import jakarta.faces.event.PhaseListener;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 
-import com.sun.faces.el.ELUtils;
-
-import com.sun.faces.el.FacesCompositeELResolver;
-
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * <p>
  * This class is used to register the JSF <code>ELResolver</code> stack with the JSP container.
@@ -45,12 +43,12 @@ import java.util.logging.Logger;
  * We overload it a bit to set a bit on the ApplicationAssociate stating we've processed a request to indicate the
  * appliation is fully initialized.
  * </p>
- * 
+ *
  * <p>
  * After the first request, this <code>PhaseListener</code> will remove itself from all registered lifecycle instances
  * registered with the application.
  * </p>
- * 
+ *
  * @since 1.2
  */
 public class ELResolverInitPhaseListener implements PhaseListener {

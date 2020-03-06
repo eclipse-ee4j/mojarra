@@ -16,18 +16,22 @@
 
 package com.sun.faces.component.validator;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.util.RequestStateManager;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.PhaseId;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.ValidatorHandler;
-
-import java.util.*;
 
 /**
  * <p>
@@ -76,7 +80,7 @@ public class ComponentValidators {
         Map<Object, Object> attrs = context.getAttributes();
         ComponentValidators componentValidators = (ComponentValidators) attrs.get(COMPONENT_VALIDATORS);
 
-        if ((componentValidators == null) && createIfNull) {
+        if (componentValidators == null && createIfNull) {
             componentValidators = new ComponentValidators();
             attrs.put(COMPONENT_VALIDATORS, componentValidators);
         }
@@ -124,7 +128,7 @@ public class ComponentValidators {
     @SuppressWarnings({ "unchecked" })
     public void addValidators(FacesContext ctx, EditableValueHolder editableValueHolder) {
 
-        if ((validatorStack == null) || validatorStack.isEmpty()) {
+        if (validatorStack == null || validatorStack.isEmpty()) {
             addDefaultValidatorsToComponent(ctx, editableValueHolder);
             return;
         }
@@ -142,7 +146,7 @@ public class ComponentValidators {
         int count = validatorStack.size();
         for (int i = count - 1; i >= 0; i--) {
             ValidatorInfo info = validatorStack.get(i);
-            if (!info.isEnabled() || (disabledIds != null && disabledIds.contains(info.getValidatorId()))) {
+            if (!info.isEnabled() || disabledIds != null && disabledIds.contains(info.getValidatorId())) {
                 if (validatorIds.contains(info.getValidatorId())) {
                     validatorIds.remove(info.getValidatorId());
                 }
@@ -154,7 +158,7 @@ public class ComponentValidators {
         }
 
         // add the validators to the EditableValueHolder.
-        addValidatorsToComponent(ctx, validatorIds, editableValueHolder, ((validatorStack == null || validatorStack.isEmpty()) ? null : validatorStack));
+        addValidatorsToComponent(ctx, validatorIds, editableValueHolder, validatorStack == null || validatorStack.isEmpty() ? null : validatorStack);
 
     }
 
@@ -255,8 +259,8 @@ public class ComponentValidators {
 
             this.owner = owner;
             this.ctx = ctx;
-            this.validatorId = owner.getValidatorId(ctx);
-            this.enabled = !owner.isDisabled(ctx);
+            validatorId = owner.getValidatorId(ctx);
+            enabled = !owner.isDisabled(ctx);
 
         }
 

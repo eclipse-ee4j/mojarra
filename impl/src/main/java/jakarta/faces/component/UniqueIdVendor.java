@@ -16,8 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.NamingContainer;
-
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -42,6 +40,6 @@ public interface UniqueIdVendor {
      * @param seed an optional seed value - e.g. based on the position of the component in the VDL-template
      * @return a unique-id in this component-container
      */
-    public String createUniqueId(FacesContext context, String seed);
+    String createUniqueId(FacesContext context, String seed);
 
 }

@@ -16,8 +16,8 @@
 
 package com.sun.faces.context;
 
-import java.util.Map;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -55,22 +55,22 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
         }
         Map objMap = (Map) obj;
 
-        if (this.size() != objMap.size()) {
+        if (size() != objMap.size()) {
             return false;
         }
-        String[] thisKeys = keySet().toArray(new String[this.size()]);
+        String[] thisKeys = keySet().toArray(new String[size()]);
         Object[] objKeys = objMap.keySet().toArray();
 
         Arrays.sort(thisKeys);
         Arrays.sort(objKeys);
 
-        if (!(Arrays.equals(thisKeys, objKeys))) {
+        if (!Arrays.equals(thisKeys, objKeys)) {
             return false;
         } else {
             for (Object key : thisKeys) {
-                Object[] thisVal = this.get(key);
+                Object[] thisVal = get(key);
                 Object[] objVal = (Object[]) objMap.get(key);
-                if (!(Arrays.equals(thisVal, objVal))) {
+                if (!Arrays.equals(thisVal, objVal)) {
                     return false;
                 }
             }
@@ -92,7 +92,7 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
         for (Object o : entrySet()) {
             Map.Entry entry = (Map.Entry) o;
             hashCode += entry.getKey().hashCode();
-            hashCode += (Arrays.hashCode((Object[]) entry.getValue()));
+            hashCode += Arrays.hashCode((Object[]) entry.getValue());
         }
         return hashCode;
     }

@@ -19,9 +19,6 @@ package jakarta.faces.event;
 import java.io.Serializable;
 import java.util.EventListener;
 
-import jakarta.faces.event.PhaseEvent;
-import jakarta.faces.event.PhaseId;
-
 /**
  * <p>
  * An interface implemented by objects that wish to be notified at the beginning and ending of processing for each
@@ -35,20 +32,20 @@ public interface PhaseListener extends EventListener, Serializable {
      * <p>
      * Handle a notification that the processing for a particular phase has just been completed.
      * </p>
-     * 
+     *
      * @param event the phase event.
      */
-    public void afterPhase(PhaseEvent event);
+    void afterPhase(PhaseEvent event);
 
     /**
      * <p>
      * Handle a notification that the processing for a particular phase of the request processing lifecycle is about to
      * begin.
      * </p>
-     * 
+     *
      * @param event the phase event.
      */
-    public void beforePhase(PhaseEvent event);
+    void beforePhase(PhaseEvent event);
 
     /**
      * <p>
@@ -56,9 +53,9 @@ public interface PhaseListener extends EventListener, Serializable {
      * {@link PhaseEvent} events. Legal values are the singleton instances defined by the {@link PhaseId} class, including
      * <code>PhaseId.ANY_PHASE</code> to indicate an interest in being notified for all standard phases.
      * </p>
-     * 
+     *
      * @return the phase id.
      */
-    public PhaseId getPhaseId();
+    PhaseId getPhaseId();
 
 }

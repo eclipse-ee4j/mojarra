@@ -18,8 +18,6 @@ package jakarta.faces.validator;
 
 import java.util.Collection;
 
-import jakarta.faces.validator.Validator;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 
@@ -52,7 +50,7 @@ public class ValidatorException extends FacesException {
      * </p>
      *
      * @param messages the list of messages for this exception
-     * 
+     *
      * @since 2.0
      */
 
@@ -78,10 +76,10 @@ public class ValidatorException extends FacesException {
      * <p class="changed_added_2_0">
      * Allow this one exception to contain multiple messages, while passing on the root cause to the superclass
      * </p>
-     * 
+     *
      * @param messages the detail messages for this exception
      * @param cause the root cause for this exception
-     * 
+     *
      * @since 2.0
      */
 
@@ -100,8 +98,8 @@ public class ValidatorException extends FacesException {
      * @return the message
      */
     public FacesMessage getFacesMessage() {
-        FacesMessage result = this.message;
-        if (null == result && null != this.messages && !this.messages.isEmpty()) {
+        FacesMessage result = message;
+        if (null == result && null != messages && !messages.isEmpty()) {
             result = messages.iterator().next();
         }
         return result;
@@ -112,14 +110,14 @@ public class ValidatorException extends FacesException {
      * If this instance was created with a constructor that takes <code>Collection&lt;FacesMessage&gt;</code>, this method
      * returns the passed collection, otherwise this method returns <code>null</code>.
      * </p>
-     * 
+     *
      * @since 2.0
      *
      * @return the messages
      */
 
     public Collection<FacesMessage> getFacesMessages() {
-        return this.messages;
+        return messages;
     }
 
     private FacesMessage message;

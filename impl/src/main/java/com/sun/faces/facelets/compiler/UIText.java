@@ -16,14 +16,13 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.el.ELText;
 
+import jakarta.el.ELException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import jakarta.el.ELException;
-
-import java.io.IOException;
 
 /**
  * @author Jacob Hookom
@@ -47,14 +46,14 @@ public final class UIText extends UILeaf {
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        if (this.isRendered()) {
+        if (isRendered()) {
             ResponseWriter out = context.getResponseWriter();
             try {
                 txt.write(out, context.getELContext());
             } catch (ELException e) {
-                throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+                throw new ELException(alias + ": " + e.getMessage(), e.getCause());
             } catch (IOException e) {
-                throw new ELException(this.alias + ": " + e.getMessage(), e);
+                throw new ELException(alias + ": " + e.getMessage(), e);
             }
         }
     }
@@ -71,6 +70,6 @@ public final class UIText extends UILeaf {
 
     @Override
     public String toString() {
-        return this.txt.toString();
+        return txt.toString();
     }
 }

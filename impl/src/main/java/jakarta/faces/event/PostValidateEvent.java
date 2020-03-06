@@ -16,10 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.ComponentSystemEvent;
-import jakarta.faces.event.ComponentSystemEventListener;
-import jakarta.faces.event.SystemEventListener;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -30,13 +26,13 @@ import jakarta.faces.context.FacesContext;
  * {@link ComponentSystemEventListener#processEvent}, the listener implementation may assume that the
  * <code>source</code> of this event instance is the {@link UIComponent} instance that is that has just been validated.
  * </p>
- * 
+ *
  * <p class="changed_added_2_1">
  * Components with children must publish this event after processing their child nodes in
  * {@link UIComponent#processValidators}. This is especially important for iterating components such as
  * <code>UIData</code>, and form components, such as <code>UIForm</code>.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class PostValidateEvent extends ComponentSystemEvent {
@@ -46,13 +42,13 @@ public class PostValidateEvent extends ComponentSystemEvent {
     private static final long serialVersionUID = -4213993829669626297L;
 
     /**
-     * 
+     *
      * <p class="changed_added_2_0">
      * Constructor
      * </p>
-     * 
+     *
      * @param component the <code>UIComponent</code> that is about to be validated.
-     * 
+     *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PostValidateEvent(UIComponent component) {
@@ -63,10 +59,10 @@ public class PostValidateEvent extends ComponentSystemEvent {
      * <p class="changed_added_2_3">
      * Constructor
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the <code>UIComponent</code> that is about to be validated.
-     * 
+     *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PostValidateEvent(FacesContext facesContext, UIComponent component) {

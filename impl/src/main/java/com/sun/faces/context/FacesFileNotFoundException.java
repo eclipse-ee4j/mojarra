@@ -24,7 +24,7 @@ import java.io.FileNotFoundException;
  * originating due to the server side code.  For example it is thrown
  * when the user agent requests a non-existent Facelet page.  It is not
  * thrown when a Facelet template client cannot load it's template.
- * 
+ *
  * The default ExceptionHandler looks for the existence of this
  * exception as a way to tell when it should send an HTTP 404 status
  * code, or an HTTP 500 status code.

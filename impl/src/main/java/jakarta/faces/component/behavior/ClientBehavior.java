@@ -18,12 +18,6 @@ package jakarta.faces.component.behavior;
 
 import java.util.Set;
 
-import jakarta.faces.component.behavior.Behavior;
-import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.behavior.ClientBehaviorContext;
-import jakarta.faces.component.behavior.ClientBehaviorHint;
-import jakarta.faces.component.behavior.ClientBehaviorHolder;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -69,7 +63,7 @@ public interface ClientBehavior extends Behavior {
      *
      * @since 2.0
      */
-    public String getScript(ClientBehaviorContext behaviorContext);
+    String getScript(ClientBehaviorContext behaviorContext);
 
     /**
      * <p class="changed_added_2_0">
@@ -93,7 +87,7 @@ public interface ClientBehavior extends Behavior {
      *
      * @since 2.0
      */
-    public void decode(FacesContext context, UIComponent component);
+    void decode(FacesContext context, UIComponent component);
 
     /**
      * <p class="changed_added_2_0">
@@ -102,10 +96,10 @@ public interface ClientBehavior extends Behavior {
      * <code>ClientBehaviorHint.SUBMITTING</code> is present, the Renderer may choose to alternate the scripts that it
      * generates itself.
      * </p>
-     * 
+     *
      * @return a non-null, unmodifiable collection of ClientBehaviorHints.
      *
      * @since 2.0
      */
-    public Set<ClientBehaviorHint> getHints();
+    Set<ClientBehaviorHint> getHints();
 }

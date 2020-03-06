@@ -16,14 +16,14 @@
 
 package com.sun.faces.context;
 
+import java.util.AbstractCollection;
 import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.AbstractSet;
-import java.util.AbstractCollection;
-import java.util.Enumeration;
 
 /**
  * <p>
@@ -86,7 +86,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
     // ------------------------------------------------------- Protected Methods
 
     protected boolean removeKey(Object key) {
-        return (this.remove(key) != null);
+        return this.remove(key) != null;
     }
 
     protected boolean removeValue(Object value) {
@@ -98,7 +98,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             for (Iterator i = entrySet().iterator(); i.hasNext();) {
                 Map.Entry e = (Map.Entry) i.next();
                 if (value.equals(e.getValue())) {
-                    valueRemoved = (remove(e.getKey()) != null);
+                    valueRemoved = remove(e.getKey()) != null;
                 }
             }
         }
@@ -149,7 +149,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         @Override
         public boolean contains(Object o) {
-            return BaseContextMap.this.containsKey(o);
+            return containsKey(o);
         }
 
         @Override
@@ -221,7 +221,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         @Override
         public Map.Entry<String, V> next() {
             nextKey();
-            return new Entry<V>(currentKey, get(currentKey));
+            return new Entry<>(currentKey, get(currentKey));
         }
     }
 
@@ -299,7 +299,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         @Override
         public int hashCode() {
-            return ((key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode()));
+            return (key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode());
         }
 
         @Override
@@ -312,8 +312,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             Object inputKey = input.getKey();
             Object inputValue = input.getValue();
 
-            if (inputKey == key || (inputKey != null && inputKey.equals(key))) {
-                if (inputValue == value || (inputValue != null && inputValue.equals(value))) {
+            if (inputKey == key || inputKey != null && inputKey.equals(key)) {
+                if (inputValue == value || inputValue != null && inputValue.equals(value)) {
                     return true;
                 }
             }

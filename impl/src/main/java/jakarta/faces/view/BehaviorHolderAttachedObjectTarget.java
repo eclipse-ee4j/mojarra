@@ -23,6 +23,6 @@ package jakarta.faces.view;
  */
 public interface BehaviorHolderAttachedObjectTarget extends AttachedObjectTarget {
 
-    public abstract boolean isDefaultEvent();
+    boolean isDefaultEvent();
 
 }

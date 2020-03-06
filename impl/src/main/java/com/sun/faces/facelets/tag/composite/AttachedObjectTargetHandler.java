@@ -16,19 +16,22 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.application.view.FaceletViewHandlingStrategy;
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.AttachedObjectTarget;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.List;
+
+import com.sun.faces.application.view.FaceletViewHandlingStrategy;
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.AttachedObjectTarget;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
 
@@ -37,8 +40,8 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
 
     public AttachedObjectTargetHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.targets = this.getAttribute("targets");
+        name = getRequiredAttribute("name");
+        targets = getAttribute("targets");
     }
 
     abstract AttachedObjectTargetImpl newAttachedObjectTargetImpl();
@@ -46,20 +49,20 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
-        assert (ctx.getFacesContext().getAttributes().containsKey(FaceletViewHandlingStrategy.IS_BUILDING_METADATA));
+        assert ctx.getFacesContext().getAttributes().containsKey(FaceletViewHandlingStrategy.IS_BUILDING_METADATA);
 
         // only process if it's been created
-        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || null == (parent = parent.getParent()) || !ComponentHandler.isNew(parent)) {
             return;
         }
 
         BeanInfo componentBeanInfo = (BeanInfo) parent.getAttributes().get(UIComponent.BEANINFO_KEY);
         if (null == componentBeanInfo) {
-            throw new TagException(this.tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
+            throw new TagException(tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
         }
         BeanDescriptor componentDescriptor = componentBeanInfo.getBeanDescriptor();
         if (null == componentDescriptor) {
-            throw new TagException(this.tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
+            throw new TagException(tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
         }
 
         List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>) componentDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
@@ -77,7 +80,7 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
             target.setTargetsList(ve);
         }
 
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
 
     }
 

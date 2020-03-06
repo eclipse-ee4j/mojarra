@@ -18,8 +18,6 @@ package jakarta.faces.event;
 
 import java.util.EventObject;
 
-import jakarta.faces.event.PhaseId;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.Lifecycle;
 
@@ -89,7 +87,7 @@ public class PhaseEvent extends EventObject {
      */
     public PhaseId getPhaseId() {
 
-        return (this.phaseId);
+        return phaseId;
 
     }
 

@@ -18,17 +18,16 @@ package com.sun.faces.cdi;
 
 import static com.sun.faces.cdi.CdiUtils.getQualifier;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Produces;
-import jakarta.enterprise.inject.spi.InjectionPoint;
-import jakarta.inject.Inject;
-
 import com.sun.faces.push.WebsocketPushContext;
 import com.sun.faces.push.WebsocketSessionManager;
 import com.sun.faces.push.WebsocketUserManager;
 
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.faces.push.Push;
 import jakarta.faces.push.PushContext;
+import jakarta.inject.Inject;
 
 /**
  * <p class="changed_added_2_3">

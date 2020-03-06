@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -41,6 +40,7 @@ import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProcessor {
 

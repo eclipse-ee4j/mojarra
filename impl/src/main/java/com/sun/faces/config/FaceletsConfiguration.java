@@ -58,7 +58,7 @@ public class FaceletsConfiguration {
 
         String extension = getExtension(alias);
 
-        assert (null != faceletsProcessingMappings);
+        assert null != faceletsProcessingMappings;
         if (faceletsProcessingMappings.containsKey(extension)) {
             String value = faceletsProcessingMappings.get(extension);
             currentModeIsXhtml = value.equals("xhtml");
@@ -72,7 +72,7 @@ public class FaceletsConfiguration {
 
         String extension = getExtension(alias);
 
-        assert (null != faceletsProcessingMappings);
+        assert null != faceletsProcessingMappings;
         if (faceletsProcessingMappings.containsKey(extension)) {
             String value = faceletsProcessingMappings.get(extension);
             currentModeIsHtml5 = value.equals("html5");
@@ -86,7 +86,7 @@ public class FaceletsConfiguration {
 
         String extension = getExtension(alias);
 
-        assert (null != faceletsProcessingMappings);
+        assert null != faceletsProcessingMappings;
         if (faceletsProcessingMappings.containsKey(extension)) {
             String value = faceletsProcessingMappings.get(extension);
             consumeComments = value.equals("xml") || value.equals("jspx");
@@ -101,7 +101,7 @@ public class FaceletsConfiguration {
 
         String extension = getExtension(alias);
 
-        assert (null != faceletsProcessingMappings);
+        assert null != faceletsProcessingMappings;
         if (faceletsProcessingMappings.containsKey(extension)) {
             String value = faceletsProcessingMappings.get(extension);
             consumeCDATA = value.equals("jspx") || value.equals("xml");
@@ -119,7 +119,7 @@ public class FaceletsConfiguration {
 
             String extension = getExtension(context.getViewRoot().getViewId());
 
-            assert (null != faceletsProcessingMappings);
+            assert null != faceletsProcessingMappings;
             if (faceletsProcessingMappings.containsKey(extension)) {
                 String value = faceletsProcessingMappings.get(extension);
                 result = value.equals("xml") || value.equals("xhtml");
@@ -159,7 +159,7 @@ public class FaceletsConfiguration {
             }
         }
 
-        return (ext == null) ? "xhtml" : ext;
+        return ext == null ? "xhtml" : ext;
     }
 
 }

@@ -17,18 +17,10 @@
 package jakarta.faces.bean;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import jakarta.faces.bean.ApplicationScoped;
-import jakarta.faces.bean.CustomScoped;
-import jakarta.faces.bean.NoneScoped;
-import jakarta.faces.bean.RequestScoped;
-import jakarta.faces.bean.SessionScoped;
-import jakarta.faces.bean.ViewScoped;
-
-import java.lang.annotation.Inherited;
 
 /**
  * <p class="changed_added_2_0">
@@ -81,7 +73,7 @@ import java.lang.annotation.Inherited;
  * injection, scopes and naming from the CDI specification. Note that the <em>eager</em> attribute for application
  * scoped beans is replaced specifically by observing the {@code jakarta.enterprise.context.Initialized} event for
  * {@code jakarta.enterprise.context.ApplicationScoped}. See 6.7.3 of the CDI spec for further details.
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

@@ -19,7 +19,9 @@
 package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
+import java.util.Map;
 
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -30,9 +32,6 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import com.sun.faces.config.WebConfiguration;
-import java.util.Map;
 
 /**
  * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput<code> or <code>UIOutput<code>
@@ -58,7 +57,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
     protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
         boolean shouldWriteIdAttribute = false;
         boolean isOutput = false;
 
@@ -78,7 +77,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             } else {
                 writer.writeAttribute("type", "text", null);
             }
-            writer.writeAttribute("name", (component.getClientId(context)), "clientId");
+            writer.writeAttribute("name", component.getClientId(context), "clientId");
 
             // only output the autocomplete attribute if the value
             // is 'off' since its lack of presence will be interpreted
@@ -103,7 +102,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             writer.endElement("input");
 
-        } else if (isOutput = (component instanceof UIOutput)) {
+        } else if (isOutput = component instanceof UIOutput) {
             if (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
                     || (shouldWriteIdAttribute = shouldWriteIdAttribute(component))) {
                 writer.startElement("span", component);
@@ -117,7 +116,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             }
             if (currentValue != null) {
                 Object val = component.getAttributes().get("escape");
-                if ((val != null) && Boolean.valueOf(val.toString())) {
+                if (val != null && Boolean.valueOf(val.toString())) {
                     writer.writeText(currentValue, component, "value");
                 } else {
                     writer.write(currentValue);
@@ -125,7 +124,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             }
         }
         if (isOutput && (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
-                || (shouldWriteIdAttribute))) {
+                || shouldWriteIdAttribute)) {
             writer.endElement("span");
         }
 

@@ -29,12 +29,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.facelets.util.Classpath;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 
 import jakarta.faces.FacesException;
+import jakarta.servlet.ServletContext;
 
 /**
  *

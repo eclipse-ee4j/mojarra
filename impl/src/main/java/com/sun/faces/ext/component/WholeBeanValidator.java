@@ -36,8 +36,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import jakarta.el.ValueExpression;
-import jakarta.validation.ConstraintViolation;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.EditableValueHolder;
@@ -50,6 +48,7 @@ import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
+import jakarta.validation.ConstraintViolation;
 
 class WholeBeanValidator implements Validator<Object> {
 

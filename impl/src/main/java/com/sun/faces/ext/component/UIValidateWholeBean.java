@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.validation.groups.Default;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.PartialStateHolder;
@@ -37,6 +35,7 @@ import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.validator.Validator;
+import jakarta.validation.groups.Default;
 
 public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
 
@@ -138,7 +137,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
         try {
             reverse(parentComponent.getChildren()).stream().forEach((UIComponent childComponent) -> {
                 if (childComponent.isRendered()) {
-                    if ((childComponent instanceof EditableValueHolder) && (!(childComponent instanceof UIValidateWholeBean))) {
+                    if (childComponent instanceof EditableValueHolder && !(childComponent instanceof UIValidateWholeBean)) {
                         throw new IllegalArgumentException(ERROR_MISPLACED_COMPONENT);
                     } else {
                         if (!childComponent.getClientId().equals(clientId)) {
@@ -220,7 +219,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
 
     @Override
     public boolean isTransient() {
-        return this.transientValue;
+        return transientValue;
     }
 
     @Override

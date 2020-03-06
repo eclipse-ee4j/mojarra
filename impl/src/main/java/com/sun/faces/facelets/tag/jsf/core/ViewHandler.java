@@ -16,12 +16,19 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
-
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
@@ -31,21 +38,12 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagConfig;
 
-import jakarta.el.MethodExpression;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Container for all JavaServer Faces core and custom component actions used on a page.
  * <p/>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/view.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -79,16 +77,16 @@ public final class ViewHandler extends TagHandlerImpl {
      */
     public ViewHandler(TagConfig config) {
         super(config);
-        this.locale = this.getAttribute("locale");
-        this.renderKitId = this.getAttribute("renderKitId");
-        this.contentType = this.getAttribute("contentType");
-        this.encoding = this.getAttribute("encoding");
-        TagAttribute testForNull = this.getAttribute("beforePhase");
-        this.beforePhase = (null == testForNull) ? this.getAttribute("beforePhaseListener") : testForNull;
-        testForNull = this.getAttribute("afterPhase");
-        this.afterPhase = (null == testForNull) ? this.getAttribute("afterPhaseListener") : testForNull;
-        this.contracts = this.getAttribute("contracts");
-        this.transientFlag = this.getAttribute("transient");
+        locale = getAttribute("locale");
+        renderKitId = getAttribute("renderKitId");
+        contentType = getAttribute("contentType");
+        encoding = getAttribute("encoding");
+        TagAttribute testForNull = getAttribute("beforePhase");
+        beforePhase = null == testForNull ? getAttribute("beforePhaseListener") : testForNull;
+        testForNull = getAttribute("afterPhase");
+        afterPhase = null == testForNull ? getAttribute("afterPhaseListener") : testForNull;
+        contracts = getAttribute("contracts");
+        transientFlag = getAttribute("transient");
     }
 
     /**
@@ -98,29 +96,29 @@ public final class ViewHandler extends TagHandlerImpl {
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
         if (root != null) {
-            if (this.renderKitId != null) {
-                String v = this.renderKitId.getValue(ctx);
+            if (renderKitId != null) {
+                String v = renderKitId.getValue(ctx);
                 root.setRenderKitId(v);
             }
-            if (this.contentType != null) {
-                String v = this.contentType.getValue(ctx);
+            if (contentType != null) {
+                String v = contentType.getValue(ctx);
                 ctx.getFacesContext().getAttributes().put("facelets.ContentType", v);
             }
-            if (this.encoding != null) {
-                String v = this.encoding.getValue(ctx);
+            if (encoding != null) {
+                String v = encoding.getValue(ctx);
                 ctx.getFacesContext().getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, v);
                 root.getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, v);
             }
-            if (this.beforePhase != null) {
-                MethodExpression m = this.beforePhase.getMethodExpression(ctx, null, LISTENER_SIG);
+            if (beforePhase != null) {
+                MethodExpression m = beforePhase.getMethodExpression(ctx, null, LISTENER_SIG);
                 root.setBeforePhaseListener(m);
             }
-            if (this.afterPhase != null) {
-                MethodExpression m = this.afterPhase.getMethodExpression(ctx, null, LISTENER_SIG);
+            if (afterPhase != null) {
+                MethodExpression m = afterPhase.getMethodExpression(ctx, null, LISTENER_SIG);
                 root.setAfterPhaseListener(m);
             }
 
-            if (this.contracts != null) {
+            if (contracts != null) {
                 /*
                  * JAVASERVERFACES-3139: We are relaxing when the contracts attribute can be used. In Development mode we will still
                  * blurb a message that the user is not using it at the top level, which could cause problems.
@@ -129,15 +127,15 @@ public final class ViewHandler extends TagHandlerImpl {
                         && ctx.getFacesContext().getApplication().getProjectStage().equals(ProjectStage.Development)) {
                     LOGGER.log(Level.INFO, "f:view contracts attribute found, but not used at top level");
                 }
-                String contractsValue = this.contracts.getValue(ctx);
+                String contractsValue = contracts.getValue(ctx);
                 if (contractsValue != null) {
                     List<String> contractList = Arrays.asList(contractsValue.split(","));
                     ctx.getFacesContext().setResourceLibraryContracts(contractList);
                 }
             }
 
-            if (this.transientFlag != null) {
-                Boolean b = Boolean.valueOf(this.transientFlag.getValue(ctx));
+            if (transientFlag != null) {
+                Boolean b = Boolean.valueOf(transientFlag.getValue(ctx));
                 root.setTransient(b);
             }
 
@@ -145,33 +143,33 @@ public final class ViewHandler extends TagHandlerImpl {
 
             // At this point in the lifecycle we should have a non-null/empty
             // view id. The partial state saving check below requires this.
-            assert (null != viewId);
-            assert (0 < viewId.length());
+            assert null != viewId;
+            assert 0 < viewId.length();
 
         }
 
         /*
          * Fixes https://java.net/jira/browse/JAVASERVERFACES-3021.
-         * 
+         *
          * The rational behind moving this here is that we need to make sure we establish the locale in all cases.
          */
-        if (this.locale != null && root != null) {
+        if (locale != null && root != null) {
             try {
-                root.setLocale(ComponentSupport.getLocale(ctx, this.locale));
+                root.setLocale(ComponentSupport.getLocale(ctx, locale));
             } catch (TagAttributeException tae) {
-                Object result = this.locale.getObject(ctx);
+                Object result = locale.getObject(ctx);
                 if (null == result) {
                     Locale l = Locale.getDefault();
                     // Special case for bugdb 13582626
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, "Using {0} for locale because expression {1} returned null.", new Object[] { l, this.locale.toString() });
+                        LOGGER.log(Level.WARNING, "Using {0} for locale because expression {1} returned null.", new Object[] { l, locale.toString() });
                     }
                     root.setLocale(l);
                 }
             }
         }
 
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
     }
 
 }

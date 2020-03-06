@@ -24,7 +24,7 @@ import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -36,13 +36,13 @@ public abstract class MetaTagHandlerImpl extends MetaTagHandler {
 
     /**
      * Extend this method in order to add your own rules.
-     * 
+     *
      * @param type
      */
     @Override
     protected MetaRuleset createMetaRuleset(Class type) {
         Util.notNull("type", type);
-        return new MetaRulesetImpl(this.tag, type);
+        return new MetaRulesetImpl(tag, type);
     }
 
 }

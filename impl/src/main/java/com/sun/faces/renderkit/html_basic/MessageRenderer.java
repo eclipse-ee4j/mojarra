@@ -93,7 +93,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
         boolean mustRender = shouldWriteIdAttribute(component);
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         UIMessage message = (UIMessage) component;
 
@@ -110,7 +110,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
         clientId = augmentIdReference(clientId, component);
         Iterator messageIter = getMessageIter(context, clientId, component);
 
-        assert (messageIter != null);
+        assert messageIter != null;
         if (!messageIter.hasNext()) {
             if (mustRender) {
                 // no message to render, but must render anyway
@@ -133,9 +133,9 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
         // make sure we have a non-null value for summary and
         // detail.
-        String summary = (null != (summary = curMessage.getSummary())) ? summary : "";
+        String summary = null != (summary = curMessage.getSummary()) ? summary : "";
         // Default to summary if we have no detail
-        String detail = (null != (detail = curMessage.getDetail())) ? detail : summary;
+        String detail = null != (detail = curMessage.getDetail()) ? detail : summary;
 
         if (curMessage.getSeverity() == FacesMessage.SEVERITY_INFO) {
             severityStyle = (String) component.getAttributes().get("infoStyle");
@@ -158,23 +158,23 @@ public class MessageRenderer extends HtmlBasicRenderer {
         String title = (String) component.getAttributes().get("title");
 
         // if we have style and severityStyle
-        if ((style != null) && (severityStyle != null)) {
+        if (style != null && severityStyle != null) {
             // severityStyle wins
             style = severityStyle;
         }
         // if we have no style, but do have severityStyle
-        else if ((style == null) && (severityStyle != null)) {
+        else if (style == null && severityStyle != null) {
             // severityStyle wins
             style = severityStyle;
         }
 
         // if we have styleClass and severityStyleClass
-        if ((styleClass != null) && (severityStyleClass != null)) {
+        if (styleClass != null && severityStyleClass != null) {
             // severityStyleClass wins
             styleClass = severityStyleClass;
         }
         // if we have no styleClass, but do have severityStyleClass
-        else if ((styleClass == null) && (severityStyleClass != null)) {
+        else if (styleClass == null && severityStyleClass != null) {
             // severityStyleClass wins
             styleClass = severityStyleClass;
         }
@@ -206,7 +206,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
         }
 
         Object val = component.getAttributes().get("tooltip");
-        boolean isTooltip = (val != null) && Boolean.valueOf(val.toString());
+        boolean isTooltip = val != null && Boolean.valueOf(val.toString());
 
         boolean wroteTooltip = false;
         if ((showSummary || showDetail) && isTooltip) {

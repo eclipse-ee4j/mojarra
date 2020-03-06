@@ -30,10 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.jstl.core.Config;
-
 import com.sun.faces.application.ViewHandlerResponseWrapper;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
@@ -52,6 +48,9 @@ import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.view.StateManagementStrategy;
 import jakarta.faces.view.ViewMetadata;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.jstl.core.Config;
 
 /**
  * This {@link ViewHandlingStrategy} handles JSP-based views.
@@ -281,7 +280,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
     /**
      * Execute the target view. If the HTTP status code range is not 2xx, then return true to indicate the response should
      * be immediately flushed by the caller so that conditions such as 404 are properly handled.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param viewToExecute the view to build
      * @return <code>true</code> if the response should be immediately flushed to the client, otherwise <code>false</code>
@@ -406,7 +405,7 @@ public class JspViewHandlingStrategy extends ViewHandlingStrategy {
      * <p>
      * Simple utility method to wrap the current response with the {@link ViewHandlerResponseWrapper}.
      * </p>
-     * 
+     *
      * @param extContext the {@link ExternalContext} for this request
      * @return the current response wrapped with ViewHandlerResponseWrapper
      */

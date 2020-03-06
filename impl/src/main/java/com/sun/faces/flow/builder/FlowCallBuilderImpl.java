@@ -16,15 +16,15 @@
 
 package com.sun.faces.flow.builder;
 
+import java.util.Map;
+
 import com.sun.faces.flow.FlowCallNodeImpl;
 import com.sun.faces.flow.ParameterImpl;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.flow.FlowCallNode;
 import jakarta.faces.flow.builder.FlowCallBuilder;
-
-import java.util.Map;
-import jakarta.el.ValueExpression;
 
 public class FlowCallBuilderImpl extends FlowCallBuilder {
 
@@ -35,7 +35,7 @@ public class FlowCallBuilderImpl extends FlowCallBuilder {
 
     public FlowCallBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;
-        this.flowCallNodeId = id;
+        flowCallNodeId = id;
     }
 
     @Override

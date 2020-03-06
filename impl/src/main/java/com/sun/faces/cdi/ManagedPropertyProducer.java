@@ -22,7 +22,6 @@ import static com.sun.faces.cdi.CdiUtils.getCurrentInjectionPoint;
 import java.lang.reflect.Type;
 
 import jakarta.enterprise.inject.spi.BeanManager;
-
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -78,7 +77,7 @@ public class ManagedPropertyProducer extends CdiProducer<Object> {
 
         FacesContext context = getBeanReference(beanManager, FacesContext.class);
 
-        return (T) context.getApplication().evaluateExpressionGet(context, expression, expectedClass);
+        return context.getApplication().evaluateExpressionGet(context, expression, expectedClass);
     }
 
 }

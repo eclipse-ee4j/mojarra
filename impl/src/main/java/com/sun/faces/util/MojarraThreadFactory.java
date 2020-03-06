@@ -16,8 +16,8 @@
 
 package com.sun.faces.util;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MojarraThreadFactory implements ThreadFactory {
 
@@ -31,7 +31,7 @@ public class MojarraThreadFactory implements ThreadFactory {
     public MojarraThreadFactory(String factoryName) {
 
         SecurityManager s = System.getSecurityManager();
-        group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        group = s != null ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
         namePrefix = "Mojarra-" + factoryName + '-' + poolNumber.getAndIncrement() + "-thread-";
 
     }

@@ -16,13 +16,13 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import com.sun.faces.config.FaceletsConfiguration;
 
-import jakarta.faces.context.FacesContext;
-
-import java.io.IOException;
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
+import jakarta.faces.context.FacesContext;
 
 final class LiteralTextInstruction implements Instruction {
     private final String text;
@@ -34,9 +34,9 @@ final class LiteralTextInstruction implements Instruction {
     @Override
     public void write(FacesContext context) throws IOException {
         if (FaceletsConfiguration.getInstance(context).isEscapeInlineText(context)) {
-            context.getResponseWriter().writeText(this.text, null);
+            context.getResponseWriter().writeText(text, null);
         } else {
-            context.getResponseWriter().write(this.text);
+            context.getResponseWriter().write(text);
         }
     }
 

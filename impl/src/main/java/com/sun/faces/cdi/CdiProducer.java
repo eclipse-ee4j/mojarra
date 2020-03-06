@@ -36,7 +36,7 @@ import jakarta.enterprise.inject.spi.PassivationCapable;
 
 /**
  * An abstract base class used by the CDI producers for some common functionality.
- * 
+ *
  * @since 2.3
  */
 abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializable {
@@ -60,7 +60,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
      * This is an implementation detail of CDI, where it wants to relocate a particular producer in order to re-inject a
      * value. This is typically used in combination with passivation. Note that this is NOT about the value we're producing,
      * but about the producer itself.
-     * 
+     *
      * @return the ID of this particular instantiation of the producer
      */
     @Override
@@ -201,7 +201,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
 
     @SafeVarargs
     protected static <T> Set<T> asSet(T... a) {
-        return new HashSet<T>(asList(a));
+        return new HashSet<>(asList(a));
     }
 
 }

@@ -16,9 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.BehaviorEvent;
-import jakarta.faces.event.FacesListener;
-
 /**
  * <p class="changed_added_2_0">
  * A generic base interface for event listeners for various types of {@link BehaviorEvent}s. All listener interfaces for

@@ -20,14 +20,13 @@ import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
-
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;
@@ -59,7 +58,7 @@ public class ResourceELResolver extends ELResolver {
      * <code>ELContext.setPropertyResolved(true)</code> and return the result of
      * {@link jakarta.faces.application.Resource#getRequestPath()}</li>
      * </ul>
-     * 
+     *
      * @see ELResolver#getValue(jakarta.el.ELContext, Object, Object)
      */
     @Override
@@ -127,7 +126,7 @@ public class ResourceELResolver extends ELResolver {
 
     /**
      * This is basically a no-op.
-     * 
+     *
      * @throws PropertyNotFoundException if base and property are null
      */
     @Override
@@ -177,7 +176,7 @@ public class ResourceELResolver extends ELResolver {
     private boolean isPropertyValid(String property) {
 
         int idx = property.indexOf(':');
-        return (property.indexOf(':', idx + 1) == -1);
+        return property.indexOf(':', idx + 1) == -1;
 
     }
 

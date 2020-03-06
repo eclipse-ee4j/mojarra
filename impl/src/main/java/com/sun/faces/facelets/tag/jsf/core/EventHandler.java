@@ -16,8 +16,14 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import com.sun.faces.application.ApplicationAssociate;
 
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
@@ -34,13 +40,6 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
 
-import jakarta.el.ELContext;
-import jakarta.el.MethodExpression;
-import jakarta.el.MethodNotFoundException;
-
-import java.io.IOException;
-import java.io.Serializable;
-
 /**
  * This is the TagHandler for the f:event tag.
  */
@@ -50,8 +49,8 @@ public class EventHandler extends TagHandler {
 
     public EventHandler(TagConfig config) {
         super(config);
-        this.type = this.getRequiredAttribute("type");
-        this.listener = this.getRequiredAttribute("listener");
+        type = getRequiredAttribute("type");
+        listener = getRequiredAttribute("listener");
     }
 
     @Override
@@ -73,7 +72,7 @@ public class EventHandler extends TagHandler {
     }
 
     protected Class<? extends SystemEvent> getEventClass(FaceletContext ctx) {
-        String eventType = (String) this.type.getValueExpression(ctx, String.class).getValue(ctx);
+        String eventType = (String) type.getValueExpression(ctx, String.class).getValue(ctx);
         if (eventType == null) {
             throw new FacesException("Attribute 'type' can not be null");
         }
@@ -95,8 +94,8 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
     }
 
     public DeclarativeSystemEventListener(MethodExpression oneArg, MethodExpression noArg) {
-        this.oneArgListener = oneArg;
-        this.noArgListener = noArg;
+        oneArgListener = oneArg;
+        noArgListener = noArg;
     }
 
     @Override

@@ -16,11 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.ComponentSystemEventListener;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.SystemEvent;
-import jakarta.faces.event.SystemEventListener;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -43,11 +38,11 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * Pass the argument <code>component</code> to the superclass constructor.
      * </p>
-     * 
+     *
      * @param component the <code>UIComponent</code> reference to be passed to the superclass constructor.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
-     * 
+     *
      * @since 2.0
      */
     public ComponentSystemEvent(UIComponent component) {
@@ -58,12 +53,12 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      * <p class="changed_added_2_3">
      * Pass the argument <code>component</code> to the superclass constructor.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the <code>UIComponent</code> reference to be passed to the superclass constructor.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
-     * 
+     *
      * @since 2.0
      */
     public ComponentSystemEvent(FacesContext facesContext, UIComponent component) {
@@ -82,7 +77,7 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      */
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
-        boolean result = (listener instanceof ComponentSystemEventListener);
+        boolean result = listener instanceof ComponentSystemEventListener;
         if (!result) {
             result = super.isAppropriateListener(listener);
         }
@@ -128,14 +123,14 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * the source {@link UIComponent} that sent this event.
      * </p>
-     * 
+     *
      * @since 2.0
      *
      * @return the component for this event
      */
     public UIComponent getComponent() {
 
-        return ((UIComponent) getSource());
+        return (UIComponent) getSource();
 
     }
 

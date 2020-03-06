@@ -22,10 +22,10 @@ import jakarta.el.VariableMapper;
 /**
  * Composite VariableMapper that attempts to load the ValueExpression from the first VariableMapper, then the second if
  * <code>null</code>.
- * 
+ *
  * @see jakarta.el.VariableMapper
  * @see jakarta.el.ValueExpression
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -45,9 +45,9 @@ public final class CompositeVariableMapper extends VariableMapper {
      */
     @Override
     public ValueExpression resolveVariable(String name) {
-        ValueExpression ve = this.var0.resolveVariable(name);
+        ValueExpression ve = var0.resolveVariable(name);
         if (ve == null) {
-            return this.var1.resolveVariable(name);
+            return var1.resolveVariable(name);
         }
         return ve;
     }
@@ -57,7 +57,7 @@ public final class CompositeVariableMapper extends VariableMapper {
      */
     @Override
     public ValueExpression setVariable(String name, ValueExpression expression) {
-        return this.var0.setVariable(name, expression);
+        return var0.setVariable(name, expression);
     }
 
 }

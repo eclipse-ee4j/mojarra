@@ -16,16 +16,21 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.util.TimeZone;
+
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ELException;
-
-import java.util.TimeZone;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
 
 /**
  * Register a DateTimeConverter instance on the UIComponent associated with the closest parent UIComponent custom
@@ -33,7 +38,7 @@ import java.util.TimeZone;
  * <p/>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -56,17 +61,17 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
      */
     public ConvertDateTimeHandler(ConverterConfig config) {
         super(config);
-        this.dateStyle = this.getAttribute("dateStyle");
-        this.locale = this.getAttribute("locale");
-        this.pattern = this.getAttribute("pattern");
-        this.timeStyle = this.getAttribute("timeStyle");
-        this.timeZone = this.getAttribute("timeZone");
-        this.type = this.getAttribute("type");
+        dateStyle = getAttribute("dateStyle");
+        locale = getAttribute("locale");
+        pattern = getAttribute("pattern");
+        timeStyle = getAttribute("timeStyle");
+        timeZone = getAttribute("timeZone");
+        type = getAttribute("type");
     }
 
     /**
      * Returns a new DateTimeConverter
-     * 
+     *
      * @see DateTimeConverter
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
@@ -80,34 +85,34 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
     @Override
     public void setAttributes(FaceletContext ctx, Object obj) {
         DateTimeConverter c = (DateTimeConverter) obj;
-        if (this.locale != null) {
-            c.setLocale(ComponentSupport.getLocale(ctx, this.locale));
+        if (locale != null) {
+            c.setLocale(ComponentSupport.getLocale(ctx, locale));
         }
-        if (this.pattern != null) {
-            c.setPattern(this.pattern.getValue(ctx));
+        if (pattern != null) {
+            c.setPattern(pattern.getValue(ctx));
             // JAVASERVERFACES_SPEC_PUBLIC-1370 Allow pattern and type to co-exist
             // for java.time values
-            if (this.type != null) {
-                String typeStr = this.type.getValue(ctx);
+            if (type != null) {
+                String typeStr = type.getValue(ctx);
                 if (isJavaTimeType(typeStr)) {
                     c.setType(typeStr);
                 }
             }
 
         } else {
-            if (this.type != null) {
-                c.setType(this.type.getValue(ctx));
+            if (type != null) {
+                c.setType(type.getValue(ctx));
             }
-            if (this.dateStyle != null) {
-                c.setDateStyle(this.dateStyle.getValue(ctx));
+            if (dateStyle != null) {
+                c.setDateStyle(dateStyle.getValue(ctx));
             }
-            if (this.timeStyle != null) {
-                c.setTimeStyle(this.timeStyle.getValue(ctx));
+            if (timeStyle != null) {
+                c.setTimeStyle(timeStyle.getValue(ctx));
             }
         }
 
-        if (this.timeZone != null) {
-            Object t = this.timeZone.getObject(ctx);
+        if (timeZone != null) {
+            Object t = timeZone.getObject(ctx);
             if (t != null) {
                 if (t instanceof TimeZone) {
                     c.setTimeZone((TimeZone) t);
@@ -115,7 +120,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
                     TimeZone tz = TimeZone.getTimeZone((String) t);
                     c.setTimeZone(tz);
                 } else {
-                    throw new TagAttributeException(this.tag, this.timeZone,
+                    throw new TagAttributeException(tag, timeZone,
                             "Illegal TimeZone, must evaluate to either a java.util.TimeZone or String, is type: " + t.getClass());
                 }
             }

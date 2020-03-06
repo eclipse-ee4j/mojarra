@@ -16,6 +16,14 @@
 
 package com.sun.faces.lifecycle;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
@@ -31,15 +39,6 @@ import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.ClientWindowFactory;
 import jakarta.faces.lifecycle.Lifecycle;
-
-import com.sun.faces.config.WebConfiguration;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
 
 /**
  * <p>
@@ -90,14 +89,14 @@ public class LifecycleImpl extends Lifecycle {
 
         @Override
         public void processEvent(SystemEvent event) throws AbortProcessingException {
-            LifecycleImpl.this.postConstructApplicationInitialization();
+            postConstructApplicationInitialization();
         }
 
     }
 
     private void postConstructApplicationInitialization() {
         String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
-        isClientWindowEnabled = (null != optionValue) && !optionValue.equals(WebConfiguration.WebContextInitParameter.ClientWindowMode.getDefaultValue());
+        isClientWindowEnabled = null != optionValue && !optionValue.equals(WebConfiguration.WebContextInitParameter.ClientWindowMode.getDefaultValue());
     }
 
     // ------------------------------------------------------- Lifecycle Methods

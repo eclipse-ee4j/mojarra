@@ -20,9 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.faces.event.FacesEvent;
-import jakarta.faces.event.PhaseId;
-
 import jakarta.faces.FacesException;
 
 /**
@@ -74,7 +71,7 @@ public class PhaseId implements Comparable {
     @Override
     public int compareTo(Object other) {
 
-        return this.ordinal - ((PhaseId) other).ordinal;
+        return ordinal - ((PhaseId) other).ordinal;
 
     }
 
@@ -87,7 +84,7 @@ public class PhaseId implements Comparable {
      */
     public int getOrdinal() {
 
-        return (this.ordinal);
+        return ordinal;
 
     }
 
@@ -99,31 +96,31 @@ public class PhaseId implements Comparable {
     @Override
     public String toString() {
         if (null == phaseName) {
-            return (String.valueOf(this.ordinal));
+            return String.valueOf(ordinal);
         }
 
-        return (String.valueOf(this.phaseName) + ' ' + this.ordinal);
+        return String.valueOf(phaseName) + ' ' + ordinal;
     }
 
     /**
      * <p class="changed_added_2_2">
      * Return the name of this phase.
      * </p>
-     * 
+     *
      * @since 2.2
      *
      * @return the name
      */
 
     public String getName() {
-        return this.phaseName;
+        return phaseName;
     }
 
     /**
      * <p class="changed_added_2_2">
      * Return a <code>PhaseId</code> representation of the arcument <code>phase</code>.
      * </p>
-     * 
+     *
      * @param phase the String for which the corresponding <code>PhaseId</code> should be returned.
      *
      * @throws NullPointerException if argument <code>phase</code> is <code>null</code>.

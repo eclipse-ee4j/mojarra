@@ -16,14 +16,14 @@
 
 package com.sun.faces.flow;
 
+import java.io.Serializable;
+
 import com.sun.faces.util.Util;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.flow.ReturnNode;
-
-import java.io.Serializable;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.ReturnNode;
 
 public class ReturnNodeImpl extends ReturnNode implements Serializable {
 
@@ -34,7 +34,7 @@ public class ReturnNodeImpl extends ReturnNode implements Serializable {
 
     public ReturnNodeImpl(String id) {
         this.id = id;
-        this.fromOutcome = null;
+        fromOutcome = null;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ReturnNodeImpl extends ReturnNode implements Serializable {
 
         if (null != fromOutcome) {
             Object objResult = fromOutcome.getValue(context.getELContext());
-            result = (null != objResult) ? objResult.toString() : null;
+            result = null != objResult ? objResult.toString() : null;
         }
         return result;
     }

@@ -16,8 +16,19 @@
 
 package com.sun.faces.facelets.el;
 
-import jakarta.el.*;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.VariableMapper;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
@@ -25,16 +36,14 @@ import jakarta.faces.el.PropertyNotFoundException;
 import jakarta.faces.el.PropertyResolver;
 import jakarta.faces.el.VariableResolver;
 
-import java.lang.reflect.Method;
-import java.util.*;
-
 /**
- * 
- * 
+ *
+ *
  * @author Jacob Hookom
  * @version $Id$
  * @deprecated
  */
+@Deprecated
 public final class LegacyELContext extends ELContext {
 
     private static final String[] IMPLICIT_OBJECTS = new String[] { "application", "applicationScope", "cookie", "facesContext", "header", "headerValues",
@@ -50,13 +59,13 @@ public final class LegacyELContext extends ELContext {
 
     public LegacyELContext(FacesContext faces) {
         this.faces = faces;
-        this.resolver = new LegacyELResolver();
-        this.variables = new DefaultVariableMapper();
+        resolver = new LegacyELResolver();
+        variables = new DefaultVariableMapper();
     }
 
     @Override
     public ELResolver getELResolver() {
-        return this.resolver;
+        return resolver;
     }
 
     @Override
@@ -66,11 +75,11 @@ public final class LegacyELContext extends ELContext {
 
     @Override
     public VariableMapper getVariableMapper() {
-        return this.variables;
+        return variables;
     }
 
     public FacesContext getFacesContext() {
-        return this.faces;
+        return faces;
     }
 
     private final class LegacyELResolver extends ELResolver {
@@ -101,13 +110,13 @@ public final class LegacyELContext extends ELContext {
             try {
                 context.setPropertyResolved(true);
                 if (base == null) {
-                    Object obj = this.getVariableResolver().resolveVariable(faces, property.toString());
-                    return (obj != null) ? obj.getClass() : null;
+                    Object obj = getVariableResolver().resolveVariable(faces, property.toString());
+                    return obj != null ? obj.getClass() : null;
                 } else {
                     if (base instanceof List || base.getClass().isArray()) {
-                        return this.getPropertyResolver().getType(base, Integer.parseInt(property.toString()));
+                        return getPropertyResolver().getType(base, Integer.parseInt(property.toString()));
                     } else {
-                        return this.getPropertyResolver().getType(base, property);
+                        return getPropertyResolver().getType(base, property);
                     }
                 }
             } catch (PropertyNotFoundException e) {
@@ -125,12 +134,12 @@ public final class LegacyELContext extends ELContext {
             try {
                 context.setPropertyResolved(true);
                 if (base == null) {
-                    return this.getVariableResolver().resolveVariable(faces, property.toString());
+                    return getVariableResolver().resolveVariable(faces, property.toString());
                 } else {
                     if (base instanceof List || base.getClass().isArray()) {
-                        return this.getPropertyResolver().getValue(base, Integer.parseInt(property.toString()));
+                        return getPropertyResolver().getValue(base, Integer.parseInt(property.toString()));
                     } else {
-                        return this.getPropertyResolver().getValue(base, property);
+                        return getPropertyResolver().getValue(base, property);
                     }
                 }
             } catch (PropertyNotFoundException e) {
@@ -151,9 +160,9 @@ public final class LegacyELContext extends ELContext {
                     return false; // what can I do?
                 } else {
                     if (base instanceof List || base.getClass().isArray()) {
-                        return this.getPropertyResolver().isReadOnly(base, Integer.parseInt(property.toString()));
+                        return getPropertyResolver().isReadOnly(base, Integer.parseInt(property.toString()));
                     } else {
-                        return this.getPropertyResolver().isReadOnly(base, property);
+                        return getPropertyResolver().isReadOnly(base, property);
                     }
                 }
             } catch (PropertyNotFoundException e) {
@@ -174,14 +183,14 @@ public final class LegacyELContext extends ELContext {
                     if (Arrays.binarySearch(IMPLICIT_OBJECTS, property.toString()) >= 0) {
                         throw new PropertyNotWritableException("Implicit Variable Not Setable: " + property);
                     } else {
-                        Map scope = this.resolveScope(property.toString());
-                        this.getPropertyResolver().setValue(scope, property, value);
+                        Map scope = resolveScope(property.toString());
+                        getPropertyResolver().setValue(scope, property, value);
                     }
                 } else {
                     if (base instanceof List || base.getClass().isArray()) {
-                        this.getPropertyResolver().setValue(base, Integer.parseInt(property.toString()), value);
+                        getPropertyResolver().setValue(base, Integer.parseInt(property.toString()), value);
                     } else {
-                        this.getPropertyResolver().setValue(base, property, value);
+                        getPropertyResolver().setValue(base, property, value);
                     }
                 }
             } catch (PropertyNotFoundException e) {

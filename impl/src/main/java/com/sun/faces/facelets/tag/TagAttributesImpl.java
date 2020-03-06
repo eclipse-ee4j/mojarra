@@ -16,7 +16,11 @@
 
 package com.sun.faces.facelets.tag;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -24,7 +28,7 @@ import jakarta.faces.view.facelets.TagAttributes;
 
 /**
  * A set of TagAttributesImpl, usually representing all attributes on a Tag.
- * 
+ *
  * @see jakarta.faces.view.facelets.TagAttribute
  * @author Jacob Hookom
  * @version $Id$
@@ -41,7 +45,7 @@ public final class TagAttributesImpl extends TagAttributes {
     private Tag tag;
 
     /**
-     * 
+     *
      */
     public TagAttributesImpl(TagAttribute[] attrs) {
         this.attrs = attrs;
@@ -52,11 +56,11 @@ public final class TagAttributesImpl extends TagAttributes {
         for (i = 0; i < this.attrs.length; i++) {
             set.add(this.attrs[i].getNamespace());
         }
-        this.ns = (String[]) set.toArray(new String[set.size()]);
+        ns = (String[]) set.toArray(new String[set.size()]);
         Arrays.sort(ns);
 
         // assign attrs
-        this.nsattrs = new ArrayList();
+        nsattrs = new ArrayList();
         for (i = 0; i < ns.length; i++) {
             nsattrs.add(i, new ArrayList());
         }
@@ -73,17 +77,17 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /**
      * Return an array of all TagAttributesImpl in this set
-     * 
+     *
      * @return a non-null array of TagAttributesImpl
      */
     @Override
     public TagAttribute[] getAll() {
-        return this.attrs;
+        return attrs;
     }
 
     /**
      * Using no namespace, find the TagAttribute
-     * 
+     *
      * @see #get(String, String)
      * @param localName tag attribute name
      * @return the TagAttribute found, otherwise null
@@ -95,7 +99,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /**
      * Find a TagAttribute that matches the passed namespace and local name.
-     * 
+     *
      * @param ns namespace of the desired attribute
      * @param localName local name of the attribute
      * @return a TagAttribute found, otherwise null
@@ -105,7 +109,7 @@ public final class TagAttributesImpl extends TagAttributes {
         if (ns != null && localName != null) {
             int idx = Arrays.binarySearch(this.ns, ns);
             if (idx >= 0) {
-                TagAttribute[] uia = (TagAttribute[]) this.nsattrs.get(idx);
+                TagAttribute[] uia = (TagAttribute[]) nsattrs.get(idx);
                 for (int i = 0; i < uia.length; i++) {
                     if (localName.equals(uia[i].getLocalName())) {
                         return uia[i];
@@ -118,7 +122,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /**
      * Get all TagAttributesImpl for the passed namespace
-     * 
+     *
      * @param namespace namespace to search
      * @return a non-null array of TagAttributesImpl
      */
@@ -126,29 +130,29 @@ public final class TagAttributesImpl extends TagAttributes {
     public TagAttribute[] getAll(String namespace) {
         int idx = 0;
         if (namespace == null) {
-            idx = Arrays.binarySearch(this.ns, "");
+            idx = Arrays.binarySearch(ns, "");
         } else {
-            idx = Arrays.binarySearch(this.ns, namespace);
+            idx = Arrays.binarySearch(ns, namespace);
         }
         if (idx >= 0) {
-            return (TagAttribute[]) this.nsattrs.get(idx);
+            return (TagAttribute[]) nsattrs.get(idx);
         }
         return EMPTY;
     }
 
     /**
      * A list of Namespaces found in this set
-     * 
+     *
      * @return a list of Namespaces found in this set
      */
     @Override
     public String[] getNamespaces() {
-        return this.ns;
+        return ns;
     }
 
     @Override
     public Tag getTag() {
-        return this.tag;
+        return tag;
     }
 
     @Override
@@ -161,14 +165,14 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < this.attrs.length; i++) {
-            sb.append(this.attrs[i]);
+        for (int i = 0; i < attrs.length; i++) {
+            sb.append(attrs[i]);
             sb.append(' ');
         }
         if (sb.length() > 1) {

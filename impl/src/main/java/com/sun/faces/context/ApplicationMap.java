@@ -17,12 +17,12 @@
 package com.sun.faces.context;
 
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Iterator;
-
-import jakarta.servlet.ServletContext;
+import java.util.Map;
 
 import com.sun.faces.util.Util;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getApplicationMap()
@@ -38,7 +38,7 @@ public class ApplicationMap extends BaseContextMap<Object> {
     }
 
     public Object getContext() {
-        return this.servletContext;
+        return servletContext;
     }
 
     // -------------------------------------------------------- Methods from Map
@@ -70,7 +70,7 @@ public class ApplicationMap extends BaseContextMap<Object> {
         Util.notNull("key", key);
         Object result = servletContext.getAttribute(key);
         servletContext.setAttribute(key, value);
-        return (result);
+        return result;
     }
 
     @Override
@@ -81,12 +81,12 @@ public class ApplicationMap extends BaseContextMap<Object> {
         String keyString = key.toString();
         Object result = servletContext.getAttribute(keyString);
         servletContext.removeAttribute(keyString);
-        return (result);
+        return result;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return (servletContext.getAttribute(key.toString()) != null);
+        return servletContext.getAttribute(key.toString()) != null;
     }
 
     @Override

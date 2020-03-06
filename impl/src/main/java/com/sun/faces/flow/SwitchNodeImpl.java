@@ -20,9 +20,9 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.SwitchCase;
 import jakarta.faces.flow.SwitchNode;
@@ -39,7 +39,7 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
     public SwitchNodeImpl(String id) {
         this.id = id;
 
-        this.defaultOutcome = null;
+        defaultOutcome = null;
         _cases = new CopyOnWriteArrayList<>();
         cases = Collections.unmodifiableList(_cases);
     }
@@ -53,13 +53,13 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
             return false;
         }
         final SwitchNodeImpl other = (SwitchNodeImpl) obj;
-        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+        if (id == null ? other.id != null : !id.equals(other.id)) {
             return false;
         }
-        if (this.defaultOutcome != other.defaultOutcome && (this.defaultOutcome == null || !this.defaultOutcome.equals(other.defaultOutcome))) {
+        if (defaultOutcome != other.defaultOutcome && (defaultOutcome == null || !defaultOutcome.equals(other.defaultOutcome))) {
             return false;
         }
-        if (this._cases != other._cases && (this._cases == null || !this._cases.equals(other._cases))) {
+        if (_cases != other._cases && (_cases == null || !_cases.equals(other._cases))) {
             return false;
         }
         return true;
@@ -68,9 +68,9 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 47 * hash + (this.defaultOutcome != null ? this.defaultOutcome.hashCode() : 0);
-        hash = 47 * hash + (this._cases != null ? this._cases.hashCode() : 0);
+        hash = 47 * hash + (id != null ? id.hashCode() : 0);
+        hash = 47 * hash + (defaultOutcome != null ? defaultOutcome.hashCode() : 0);
+        hash = 47 * hash + (_cases != null ? _cases.hashCode() : 0);
         return hash;
     }
 
@@ -94,7 +94,7 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
 
         if (null != defaultOutcome) {
             Object objResult = defaultOutcome.getValue(context.getELContext());
-            result = (null != objResult) ? objResult.toString() : null;
+            result = null != objResult ? objResult.toString() : null;
         }
         return result;
     }

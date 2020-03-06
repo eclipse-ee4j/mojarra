@@ -16,14 +16,31 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.RIConstants;
-import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.jsf.ComponentTagHandlerDelegateImpl.CreateComponentDelegate;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.facelets.tag.MetadataTargetImpl;
+import com.sun.faces.facelets.tag.jsf.ComponentTagHandlerDelegateImpl.CreateComponentDelegate;
+import com.sun.faces.facelets.util.ReflectionUtil;
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ProjectStage;
@@ -49,24 +66,6 @@ import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 
-import com.sun.faces.util.FacesLogger;
-import java.beans.BeanDescriptor;
-import jakarta.el.ELException;
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
-
-import java.beans.PropertyDescriptor;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
 /**
  * <p>
  * Facelet handler responsible for, building the component tree representation of a composite component based on the
@@ -84,8 +83,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
     public CompositeComponentTagHandler(Resource ccResource, ComponentConfig config) {
         super(config);
         this.ccResource = ccResource;
-        this.binding = config.getTag().getAttributes().get("binding");
-        ((ComponentTagHandlerDelegateImpl) this.getTagHandlerDelegate()).setCreateCompositeComponentDelegate(this);
+        binding = config.getTag().getAttributes().get("binding");
+        ((ComponentTagHandlerDelegateImpl) getTagHandlerDelegate()).setCreateCompositeComponentDelegate(this);
     }
 
     // ------------------------------------ Methods from CreateComponentDelegate
@@ -165,7 +164,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
     @Override
     public void setCompositeComponent(FacesContext context, UIComponent cc) {
         Map contextMap = context.getAttributes();
-        String key = ccInstanceVariableStandinKey + this.tagId;
+        String key = ccInstanceVariableStandinKey + tagId;
         if (!contextMap.containsKey(key)) {
             contextMap.put(key, cc);
         }
@@ -174,7 +173,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
     @Override
     public UIComponent getCompositeComponent(FacesContext context) {
         Map contextMap = context.getAttributes();
-        String key = ccInstanceVariableStandinKey + this.tagId;
+        String key = ccInstanceVariableStandinKey + tagId;
         UIComponent result = (UIComponent) contextMap.get(key);
 
         return result;
@@ -301,7 +300,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         } else {
             facetComponent = (UIPanel) c.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         }
-        assert (null != facetComponent);
+        assert null != facetComponent;
 
         try {
             VariableMapper wrapper = new VariableMapperWrapper(orig) {
@@ -381,7 +380,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
                 if (compDescriptor != null) {
                     // composite:attribute declaration...
                     Object obj = compDescriptor.getValue("type");
-                    if ((null != obj) && !(obj instanceof Class)) {
+                    if (null != obj && !(obj instanceof Class)) {
                         ValueExpression typeVE = (ValueExpression) obj;
                         String className = (String) typeVE.getValue(FacesContext.getCurrentInstance().getELContext());
                         if (className != null) {
@@ -422,7 +421,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             private String prefix(String className) {
 
                 if (className.indexOf('.') == -1 && Character.isUpperCase(className.charAt(0))) {
-                    return ("java.lang." + className);
+                    return "java.lang." + className;
                 } else {
                     return className;
                 }
@@ -526,7 +525,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
 
                 ValueExpression ve = attr.getValueExpression(ctx, type);
                 UIComponent cc = (UIComponent) instance;
-                assert (UIComponent.isCompositeComponent(cc));
+                assert UIComponent.isCompositeComponent(cc);
                 Map<String, Object> attrs = cc.getAttributes();
                 BeanInfo componentMetadata = (BeanInfo) attrs.get(UIComponent.BEANINFO_KEY);
                 BeanDescriptor desc = componentMetadata.getBeanDescriptor();

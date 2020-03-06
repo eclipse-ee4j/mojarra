@@ -102,7 +102,7 @@ public final class ProvideMetadataToAnnotationScanTask {
 
     public AnnotationScanner getAnnotationScanner() {
         if (containerConnector instanceof AnnotationScanner) {
-            return (AnnotationScanner) this.containerConnector;
+            return (AnnotationScanner) containerConnector;
         }
 
         return null;

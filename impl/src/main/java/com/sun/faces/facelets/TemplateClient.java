@@ -18,14 +18,16 @@ package com.sun.faces.facelets;
 
 import java.io.IOException;
 
+import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
 
 /**
  * FaceletHandlers can implement this contract and push themselves into the FaceletContext for participating in
  * templating. Templates will attempt to resolve content for a specified name until one of the TemplatClients return
  * 'true'.
- * 
+ *
  * @author Jacob Hookom
  */
 public interface TemplateClient {
@@ -34,7 +36,7 @@ public interface TemplateClient {
      * This contract is much like the normal FaceletHandler.apply method, but it takes in an optional String name which
      * tells this instance what fragment/definition it's looking for. If you are a match, apply your logic to the passed
      * UIComponent and return true, otherwise do nothing and return false.
-     * 
+     *
      * @param ctx the FaceletContext of <i>your</i> instance, not the templates'
      * @param parent current UIComponent instance to be applied
      * @param name the String name or null if the whole body should be included
@@ -44,6 +46,6 @@ public interface TemplateClient {
      * @throws FaceletException
      * @throws ELException
      */
-    public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException;
+    boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException;
 
 }

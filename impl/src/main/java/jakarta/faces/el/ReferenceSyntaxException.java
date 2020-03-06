@@ -24,6 +24,7 @@ package jakarta.faces.el;
  * @deprecated This has been replaced by {@link jakarta.el.ELException}.
  */
 
+@Deprecated
 public class ReferenceSyntaxException extends EvaluationException {
 
     private static final long serialVersionUID = -7230574031883380998L;

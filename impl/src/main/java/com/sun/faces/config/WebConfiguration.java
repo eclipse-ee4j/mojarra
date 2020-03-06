@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContext;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.view.FaceletViewHandlingStrategy;
@@ -70,6 +69,7 @@ import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.view.facelets.ResourceResolver;
 import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.ServletContext;
 
 /**
  * Class Documentation
@@ -143,7 +143,7 @@ public class WebConfiguration {
      * Return the WebConfiguration instance for this application passing the result of
      * FacesContext.getCurrentInstance().getExternalContext() to
      * {@link #getInstance(jakarta.faces.context.ExternalContext)}.
-     * 
+     *
      * @return the WebConfiguration for this application or <code>null</code> if no FacesContext is available.
      */
     public static WebConfiguration getInstance() {
@@ -152,7 +152,7 @@ public class WebConfiguration {
 
     /**
      * Return the WebConfiguration instance for this application.
-     * 
+     *
      * @param extContext the ExternalContext for this request
      * @return the WebConfiguration for this application
      */
@@ -168,7 +168,7 @@ public class WebConfiguration {
 
     /**
      * Return the WebConfiguration instance for this application.
-     * 
+     *
      * @param servletContext the ServletContext
      * @return the WebConfiguration for this application or <code>null</code> if no WebConfiguration could be located
      */
@@ -205,7 +205,7 @@ public class WebConfiguration {
 
     /**
      * Obtain the value of the specified boolean parameter
-     * 
+     *
      * @param param the parameter of interest
      * @return the value of the specified boolean parameter
      */
@@ -220,7 +220,7 @@ public class WebConfiguration {
 
     /**
      * Obtain the value of the specified parameter
-     * 
+     *
      * @param param the parameter of interest
      * @return the value of the specified parameter
      */
@@ -256,7 +256,7 @@ public class WebConfiguration {
 
     public Map<String, String> getFacesConfigOptionValue(WebContextInitParameter param, boolean create) {
 
-        assert (facesConfigParameters != null);
+        assert facesConfigParameters != null;
 
         Map<String, String> result = facesConfigParameters.get(param);
         if (result == null) {
@@ -278,7 +278,7 @@ public class WebConfiguration {
     public String[] getOptionValue(WebContextInitParameter param, String sep) {
         String[] result;
 
-        assert (cachedListParams != null);
+        assert cachedListParams != null;
 
         if ((result = cachedListParams.get(param)) == null) {
             String value = getOptionValue(param);
@@ -296,7 +296,7 @@ public class WebConfiguration {
 
     /**
      * Obtain the value of the specified env-entry
-     * 
+     *
      * @param entry the env-entry of interest
      * @return the value of the specified env-entry
      */
@@ -369,7 +369,7 @@ public class WebConfiguration {
         value = value.trim();
         String oldVal = contextParameters.put(param, value);
         cachedListParams.remove(param);
-        if (oldVal != null && LOGGER.isLoggable(FINE) && !(oldVal.equals(value))) {
+        if (oldVal != null && LOGGER.isLoggable(FINE) && !oldVal.equals(value)) {
             LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
         }
     }
@@ -383,7 +383,7 @@ public class WebConfiguration {
         }
 
         // add the HttpMethodRestrictionPhaseListener if the parameter is enabled.
-        boolean enabled = this.isOptionEnabled(BooleanWebContextInitParameter.EnableHttpMethodRestrictionPhaseListener);
+        boolean enabled = isOptionEnabled(BooleanWebContextInitParameter.EnableHttpMethodRestrictionPhaseListener);
         if (enabled) {
             LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
             Iterator<String> ids = factory.getLifecycleIds();
@@ -420,7 +420,7 @@ public class WebConfiguration {
 
         // Scan for "contractMappings" in the web app root
         String contractsDirName = getOptionValue(WebContextInitParameter.WebAppContractsDirectory);
-        assert (null != contractsDirName);
+        assert null != contractsDirName;
         candidates = extContex.getResourcePaths(contractsDirName);
         if (null != candidates) {
             int contractsDirNameLen = contractsDirName.length();
@@ -515,7 +515,7 @@ public class WebConfiguration {
      * <p>
      * Is the configured value valid against the default boolean pattern.
      * </p>
-     * 
+     *
      * @param param the boolean parameter
      * @param value the configured value
      * @return <code>true</code> if the value is valid, otherwise <code>false</code>
@@ -538,7 +538,7 @@ public class WebConfiguration {
      * <p>
      * Process all boolean context initialization parameters.
      * </p>
-     * 
+     *
      * @param servletContext the ServletContext of interest
      * @param contextName the context name
      */
@@ -572,7 +572,7 @@ public class WebConfiguration {
 
                     if (LOGGER.isLoggable(Level.INFO) && alternate != null) {
                         queueLoggingAction(new DeferredBooleanParameterLoggingAction(param, Level.INFO,
-                                ((value) ? "jsf.config.webconfig.configinfo.reset.enabled" : "jsf.config.webconfig.configinfo.reset.disabled"),
+                                value ? "jsf.config.webconfig.configinfo.reset.enabled" : "jsf.config.webconfig.configinfo.reset.disabled",
                                 new Object[] { contextName, alternate.getQualifiedName() }));
                     }
 
@@ -599,7 +599,7 @@ public class WebConfiguration {
                 }
 
                 if (LOGGER.isLoggable(loggingLevel)) {
-                    LOGGER.log(loggingLevel, ((value) ? "jsf.config.webconfig.boolconfiginfo.enabled" : "jsf.config.webconfig.boolconfiginfo.disabled"),
+                    LOGGER.log(loggingLevel, value ? "jsf.config.webconfig.boolconfiginfo.enabled" : "jsf.config.webconfig.boolconfiginfo.disabled",
                             new Object[] { contextName, param.getQualifiedName() });
                 }
 
@@ -613,7 +613,7 @@ public class WebConfiguration {
     /**
      * Adds all com.sun.faces init parameter names to a list. This allows callers to determine if a parameter was explicitly
      * set.
-     * 
+     *
      * @param servletContext the ServletContext of interest
      */
     private void initSetList(ServletContext servletContext) {
@@ -641,7 +641,7 @@ public class WebConfiguration {
      * <p>
      * Process all non-boolean context initialization parameters.
      * </p>
-     * 
+     *
      * @param servletContext the ServletContext of interest
      * @param contextName the context name
      */
@@ -702,7 +702,7 @@ public class WebConfiguration {
      * <p>
      * Process all JNDI entries.
      * </p>
-     * 
+     *
      * @param contextName the context name
      */
     private void processJndiEntries(String contextName) {

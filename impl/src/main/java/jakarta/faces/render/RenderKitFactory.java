@@ -34,7 +34,7 @@ import jakarta.faces.context.FacesContext;
  * There must be one {@link RenderKitFactory} instance per web application that is utilizing Jakarta Server Faces. This
  * instance can be acquired, in a portable manner, by calling:
  * </p>
- * 
+ *
  * <pre>
  * RenderKitFactory factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
  * </pre>

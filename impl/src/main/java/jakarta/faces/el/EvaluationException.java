@@ -27,6 +27,7 @@ import jakarta.faces.FacesException;
  * @deprecated This has been replaced by {@link jakarta.el.ELException}.
  */
 
+@Deprecated
 public class EvaluationException extends FacesException {
 
     private static final long serialVersionUID = 6143696299509378423L;

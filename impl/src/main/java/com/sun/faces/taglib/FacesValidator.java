@@ -18,17 +18,19 @@ package com.sun.faces.taglib;
 
 import java.io.IOException;
 
-import jakarta.servlet.jsp.tagext.PageData;
-import jakarta.servlet.jsp.tagext.TagLibraryValidator;
-import jakarta.servlet.jsp.tagext.ValidationMessage;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.sun.faces.util.Util;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.sun.faces.util.Util;
+
+import jakarta.servlet.jsp.tagext.PageData;
+import jakarta.servlet.jsp.tagext.TagLibraryValidator;
+import jakarta.servlet.jsp.tagext.ValidationMessage;
 
 /**
  * <p>
@@ -239,7 +241,7 @@ public abstract class FacesValidator extends TagLibraryValidator {
             result = vmFromString(ex.toString());
         }
         // Make sure all resources are released
-        this.release();
+        release();
         return result;
     }
 

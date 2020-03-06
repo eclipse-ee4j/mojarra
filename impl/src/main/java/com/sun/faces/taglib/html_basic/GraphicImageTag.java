@@ -1,27 +1,26 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the
  * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
  * version 2 with the GNU Classpath Exception, which is available at
  * https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
 package com.sun.faces.taglib.html_basic;
 
-import jakarta.servlet.jsp.JspException;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
+import jakarta.servlet.jsp.JspException;
 
 /*
  * ******* GENERATED CODE - DO NOT EDIT *******
@@ -213,14 +212,17 @@ public class GraphicImageTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Image";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlGraphicImage";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UIGraphic graphic = null;
@@ -312,6 +314,7 @@ public class GraphicImageTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -324,6 +327,7 @@ public class GraphicImageTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -337,42 +341,43 @@ public class GraphicImageTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 
         // component properties
-        this.url = null;
-        this.value = null;
+        url = null;
+        value = null;
 
         // rendered attributes
-        this.alt = null;
-        this.dir = null;
-        this.height = null;
-        this.ismap = null;
-        this.lang = null;
-        this.library = null;
-        this.longdesc = null;
-        this.name = null;
-        this.onclick = null;
-        this.ondblclick = null;
-        this.onkeydown = null;
-        this.onkeypress = null;
-        this.onkeyup = null;
-        this.onmousedown = null;
-        this.onmousemove = null;
-        this.onmouseout = null;
-        this.onmouseover = null;
-        this.onmouseup = null;
-        this.role = null;
-        this.style = null;
-        this.styleClass = null;
-        this.title = null;
-        this.usemap = null;
-        this.width = null;
+        alt = null;
+        dir = null;
+        height = null;
+        ismap = null;
+        lang = null;
+        library = null;
+        longdesc = null;
+        name = null;
+        onclick = null;
+        ondblclick = null;
+        onkeydown = null;
+        onkeypress = null;
+        onkeyup = null;
+        onmousedown = null;
+        onmousemove = null;
+        onmouseout = null;
+        onmouseover = null;
+        onmouseup = null;
+        role = null;
+        style = null;
+        styleClass = null;
+        title = null;
+        usemap = null;
+        width = null;
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " + this.getClass().getName();
+        return "id: " + getId() + " class: " + this.getClass().getName();
     }
 
 }

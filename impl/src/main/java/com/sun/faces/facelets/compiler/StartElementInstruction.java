@@ -16,12 +16,11 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-
 import jakarta.faces.context.FacesContext;
-
-import java.io.IOException;
 
 final class StartElementInstruction implements Instruction {
     private final String element;
@@ -32,7 +31,7 @@ final class StartElementInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-        context.getResponseWriter().startElement(this.element, null);
+        context.getResponseWriter().startElement(element, null);
     }
 
     @Override

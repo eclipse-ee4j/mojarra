@@ -55,7 +55,7 @@ public class FacetTag extends TagSupport {
      */
     public String getName() {
 
-        return (name);
+        return name;
 
     }
 
@@ -82,7 +82,7 @@ public class FacetTag extends TagSupport {
     public void release() {
 
         super.release();
-        this.name = null;
+        name = null;
 
     }
 
@@ -94,7 +94,7 @@ public class FacetTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
 
-        return (EVAL_BODY_INCLUDE);
+        return EVAL_BODY_INCLUDE;
 
     }
 

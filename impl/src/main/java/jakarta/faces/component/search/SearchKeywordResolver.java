@@ -65,12 +65,12 @@ import jakarta.faces.component.UIComponent;
  *
  * <td>&#64;id(id)</td>
  *
- * 
+ *
  * <td>Resolves to the components with the specified component id (not clientId). This is useful when the exact location
  * of the component tree is unknown, but must be used with caution when there multiple occurrences of the given id
  * within the view.</td>
  *
- * 
+ *
  * <tr>
  *
  * <td>&#64;namingcontainer</td>
@@ -121,7 +121,7 @@ import jakarta.faces.component.UIComponent;
  * {@link jakarta.faces.application.Application#addSearchKeywordResolver(jakarta.faces.component.search.SearchKeywordResolver)}
  * or in the application configuration resources.
  * </p>
- * 
+ *
  * <pre>
  * <code>
  * &lt;application&gt;
@@ -129,7 +129,7 @@ import jakarta.faces.component.UIComponent;
  * &lt;/application&gt;
  * </code>
  * </pre>
- * 
+ *
  * </div>
  *
  * @since 2.3

@@ -53,26 +53,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextAttributeEvent;
-import jakarta.servlet.ServletContextAttributeListener;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.ServletRequestAttributeEvent;
-import jakarta.servlet.ServletRequestAttributeListener;
-import jakarta.servlet.ServletRequestEvent;
-import jakarta.servlet.ServletRequestListener;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionAttributeListener;
-import jakarta.servlet.http.HttpSessionBindingEvent;
-import jakarta.servlet.http.HttpSessionEvent;
-import jakarta.servlet.http.HttpSessionListener;
-import jakarta.servlet.jsp.JspApplicationContext;
-import jakarta.servlet.jsp.JspFactory;
-import jakarta.websocket.server.ServerContainer;
-import jakarta.websocket.server.ServerEndpointConfig;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -100,12 +80,32 @@ import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Timer;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PreDestroyApplicationEvent;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextAttributeEvent;
+import jakarta.servlet.ServletContextAttributeListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletRequestAttributeEvent;
+import jakarta.servlet.ServletRequestAttributeListener;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.ServletRequestListener;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionAttributeListener;
+import jakarta.servlet.http.HttpSessionBindingEvent;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspFactory;
+import jakarta.websocket.server.ServerContainer;
+import jakarta.websocket.server.ServerEndpointConfig;
 
 /**
  * <p>
@@ -785,7 +785,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         /*
          * return true if <distributable /> is present in the web.xml or a fragment.
-         * 
+         *
          */
         public boolean isDistributablePresent() {
             return distributablePresent;
@@ -964,7 +964,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         public WebConfigResourceMonitor(ServletContext sc, Collection<URI> uris) {
 
-            assert (uris != null);
+            assert uris != null;
             this.sc = sc;
             for (URI uri : uris) {
                 if (monitors == null) {
@@ -993,7 +993,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         @Override
         public void run() {
 
-            assert (monitors != null);
+            assert monitors != null;
             boolean reloaded = false;
             for (Iterator<Monitor> i = monitors.iterator(); i.hasNext();) {
                 Monitor m = i.next();
@@ -1031,7 +1031,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             Monitor(URI uri) throws IOException {
 
                 this.uri = uri;
-                this.timestamp = getLastModified();
+                timestamp = getLastModified();
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.log(Level.INFO, "Monitoring {0} for modifications", uri.toURL().toExternalForm());
                 }

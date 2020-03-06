@@ -17,11 +17,10 @@
 package com.sun.faces.taglib.jsf_core;
 
 import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.webapp.UIComponentELTag;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * <p>
@@ -46,7 +45,7 @@ public class VerbatimTag extends UIComponentELTag {
 
     /**
      * Setter for property rendered.
-     * 
+     *
      * @param rendered New value of property rendered.
      */
     @Override
@@ -99,7 +98,7 @@ public class VerbatimTag extends UIComponentELTag {
                 getBodyContent().clearBody();
             }
         }
-        return (getDoAfterBodyValue());
+        return getDoAfterBodyValue();
 
     }
 

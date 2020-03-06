@@ -28,7 +28,7 @@ import jakarta.faces.context.FacesContext;
  * take care of populating the passed UIComponent parent in relation to the create/restore lifecycle of Jakarta Server
  * Faces.
  * </p>
- * 
+ *
  */
 public abstract class Facelet {
 
@@ -37,19 +37,19 @@ public abstract class Facelet {
      * <span class="changed_modified_2_2">The</span> passed UIComponent parent will be populated/restored in accordance with
      * the <span class="changed_modified_2_2">Facelets chapter in the spec prose document.</span>
      * </p>
-     * 
+     *
      * @param facesContext The current FacesContext (Should be the same as FacesContext.getInstance())
      * @param parent The UIComponent to populate in a compositional fashion. In most cases a Facelet will be base a
      * UIViewRoot.
-     * 
+     *
      * @throws IOException if unable to load a file necessary to apply this {@code Facelet}
-     * 
+     *
      * @throws FaceletException if unable to parse the markup loaded in applying this {@code Facelet}
-     * 
+     *
      * @throws jakarta.faces.FacesException if unable to create child <code>UIComponent</code> instances
-     * 
+     *
      * @throws jakarta.el.ELException if any of the expressions in the markup loaded during the apply fail
-     * 
+     *
      */
     public abstract void apply(FacesContext facesContext, UIComponent parent) throws IOException;
 }

@@ -16,26 +16,25 @@
 
 package com.sun.faces.el;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.mgbean.BeanBuilder;
-import com.sun.faces.mgbean.BeanManager;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-import jakarta.el.PropertyNotFoundException;
-
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.mgbean.BeanBuilder;
+import com.sun.faces.mgbean.BeanManager;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 public class ManagedBeanELResolver extends ELResolver {
 
@@ -130,7 +129,7 @@ public class ManagedBeanELResolver extends ELResolver {
                     description = descriptions.get("DEFAULT");
                 }
             }
-            list.add(Util.getFeatureDescriptor(beanName, beanName, (description == null) ? "" : description, false, false, true, builder.getBeanClass(),
+            list.add(Util.getFeatureDescriptor(beanName, beanName, description == null ? "" : description, false, false, true, builder.getBeanClass(),
                     Boolean.TRUE));
         }
 
@@ -150,7 +149,7 @@ public class ManagedBeanELResolver extends ELResolver {
     private static BeanManager getBeanManager() {
 
         ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-        return ((associate != null) ? associate.getBeanManager() : null);
+        return associate != null ? associate.getBeanManager() : null;
 
     }
 
@@ -177,7 +176,7 @@ public class ManagedBeanELResolver extends ELResolver {
                 if (result == null) {
                     result = manager.create(beanName, builder, facesContext);
                 }
-                context.setPropertyResolved(markAsResolvedIfCreated && (result != null));
+                context.setPropertyResolved(markAsResolvedIfCreated && result != null);
             }
         }
 

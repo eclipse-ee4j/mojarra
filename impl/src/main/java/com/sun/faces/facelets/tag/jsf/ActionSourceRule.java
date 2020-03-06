@@ -18,17 +18,20 @@ package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.facelets.el.LegacyMethodBinding;
 
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.MethodExpressionActionListener;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ExpressionFactory;
-import jakarta.el.MethodExpression;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -49,7 +52,7 @@ final class ActionSourceRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource) instance).setAction(new LegacyMethodBinding(this.attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG)));
+            ((ActionSource) instance).setAction(new LegacyMethodBinding(attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG)));
         }
     }
 
@@ -63,7 +66,7 @@ final class ActionSourceRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource2) instance).setActionExpression(this.attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG));
+            ((ActionSource2) instance).setActionExpression(attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG));
         }
 
     }
@@ -79,7 +82,7 @@ final class ActionSourceRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ActionSource) instance)
-                    .setActionListener(new LegacyMethodBinding(this.attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG)));
+                    .setActionListener(new LegacyMethodBinding(attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG)));
         }
 
     }

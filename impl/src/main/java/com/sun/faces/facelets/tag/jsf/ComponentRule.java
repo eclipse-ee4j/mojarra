@@ -16,17 +16,21 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.facelets.el.LegacyValueBinding;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.*;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -44,7 +48,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).getAttributes().put(this.name, this.value);
+            ((UIComponent) instance).getAttributes().put(name, value);
         }
     }
 
@@ -64,7 +68,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueExpression(this.name, this.attr.getValueExpression(ctx, this.type));
+            ((UIComponent) instance).setValueExpression(name, attr.getValueExpression(ctx, type));
         }
 
     }
@@ -85,7 +89,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueBinding(this.name, new LegacyValueBinding(this.attr.getValueExpression(ctx, this.type)));
+            ((UIComponent) instance).setValueBinding(name, new LegacyValueBinding(attr.getValueExpression(ctx, type)));
         }
 
     }

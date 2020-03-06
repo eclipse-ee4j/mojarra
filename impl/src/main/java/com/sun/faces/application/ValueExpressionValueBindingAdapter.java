@@ -25,7 +25,6 @@ import java.io.Serializable;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.ValueBinding;
@@ -46,7 +45,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
     private ValueBinding binding = null;
 
     public ValueExpressionValueBindingAdapter(ValueBinding binding) {
-        assert (null != binding);
+        assert null != binding;
         this.binding = binding;
     }
 
@@ -54,14 +53,15 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
     // Methods from ValueExpression
     //
 
+    @Override
     public Object getValue(ELContext context) throws ELException {
-        assert (null != binding);
+        assert null != binding;
         if (context == null) {
             throw new NullPointerException("ELContext -> null");
         }
         Object result = null;
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        assert (null != facesContext);
+        assert null != facesContext;
         try {
             result = binding.getValue(facesContext);
         } catch (Throwable e) {
@@ -70,13 +70,14 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         return result;
     }
 
+    @Override
     public void setValue(ELContext context, Object value) throws ELException {
-        assert (null != binding);
+        assert null != binding;
         if (context == null) {
             throw new NullPointerException("ELContext -> null");
         }
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        assert (null != facesContext);
+        assert null != facesContext;
         try {
             binding.setValue(facesContext, value);
         } catch (Throwable e) {
@@ -84,14 +85,15 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         }
     }
 
+    @Override
     public boolean isReadOnly(ELContext context) throws ELException {
-        assert (null != binding);
+        assert null != binding;
         if (context == null) {
             throw new NullPointerException("ELContext -> null");
         }
         boolean result = false;
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        assert (null != facesContext);
+        assert null != facesContext;
         try {
             result = binding.isReadOnly(facesContext);
         } catch (Throwable e) {
@@ -100,14 +102,15 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         return result;
     }
 
+    @Override
     public Class<?> getType(ELContext context) throws ELException {
-        assert (null != binding);
+        assert null != binding;
         if (context == null) {
             throw new NullPointerException("ELContext -> null");
         }
         Class result = null;
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        assert (null != facesContext);
+        assert null != facesContext;
         try {
             result = binding.getType(facesContext);
         } catch (Throwable e) {
@@ -122,12 +125,14 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
      * </p>
      */
 
+    @Override
     public boolean isLiteralText() {
         return false;
     }
 
+    @Override
     public Class<?> getExpectedType() {
-        assert (null != binding);
+        assert null != binding;
         Class result = null;
         FacesContext context = FacesContext.getCurrentInstance();
         try {
@@ -139,12 +144,14 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         return result;
     }
 
+    @Override
     public String getExpressionString() {
-        assert (null != binding);
+        assert null != binding;
         return binding.getExpressionString();
 
     }
 
+    @Override
     public boolean equals(Object other) {
 
         if (other == this) {
@@ -153,7 +160,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
 
         if (other instanceof ValueExpressionValueBindingAdapter) {
             ValueBinding vb = ((ValueExpressionValueBindingAdapter) other).getWrapped();
-            return (binding.equals(vb));
+            return binding.equals(vb);
         } else if (other instanceof ValueExpression) {
             FacesContext context = FacesContext.getCurrentInstance();
             ValueExpression otherVE = (ValueExpression) other;
@@ -166,8 +173,9 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
 
     }
 
+    @Override
     public int hashCode() {
-        assert (null != binding);
+        assert null != binding;
 
         return binding.hashCode();
     }
@@ -181,6 +189,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
     // Methods from StateHolder
     //
 
+    @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
             throw new NullPointerException();
@@ -204,6 +213,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         return result;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state) {
         if (context == null) {
             throw new NullPointerException();
@@ -240,10 +250,12 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
 
     private boolean tranzient = false;
 
+    @Override
     public boolean isTransient() {
         return tranzient;
     }
 
+    @Override
     public void setTransient(boolean newTransientValue) {
         tranzient = newTransientValue;
     }

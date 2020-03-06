@@ -76,9 +76,9 @@ public abstract class Lifecycle {
      * {@link ClientWindow#decode(jakarta.faces.context.FacesContext)} on it. Store the new <code>ClientWindow</code> by
      * calling {@link jakarta.faces.context.ExternalContext#setClientWindow(jakarta.faces.lifecycle.ClientWindow)}.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} for this request.
-     * 
+     *
      * @since 2.2
      */
 
@@ -90,7 +90,7 @@ public abstract class Lifecycle {
      * Return the set of registered {@link PhaseListener}s for this {@link Lifecycle} instance. If there are no registered
      * listeners, a zero-length array is returned.
      * </p>
-     * 
+     *
      * @return the set of registered {@link PhaseListener}s
      */
     public abstract PhaseListener[] getPhaseListeners();

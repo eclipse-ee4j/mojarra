@@ -66,7 +66,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
 
         UIMessages messages = (UIMessages) component;
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String clientId = ((UIMessages) component).getFor();
         // if no clientId was included
@@ -81,7 +81,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         // "for" attribute optional for Messages
         Iterator messageIter = getMessageIter(context, clientId, component);
 
-        assert (messageIter != null);
+        assert messageIter != null;
 
         if (!messageIter.hasNext()) {
             if (mustRender) {
@@ -108,7 +108,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         // For layout attribute of "table" render as HTML table.
         // If layout attribute is not present, or layout attribute
         // is "list", render as HTML list.
-        if ((layout != null) && (layout.equals("table"))) {
+        if (layout != null && layout.equals("table")) {
             writer.startElement("table", component);
             wroteTable = true;
         } else {
@@ -135,9 +135,9 @@ public class MessagesRenderer extends HtmlBasicRenderer {
 
             // make sure we have a non-null value for summary and
             // detail.
-            String summary = (null != (summary = curMessage.getSummary())) ? summary : "";
+            String summary = null != (summary = curMessage.getSummary()) ? summary : "";
             // Default to summary if we have no detail
-            String detail = (null != (detail = curMessage.getDetail())) ? detail : summary;
+            String detail = null != (detail = curMessage.getDetail()) ? detail : summary;
 
             if (curMessage.getSeverity() == FacesMessage.SEVERITY_INFO) {
                 severityStyle = (String) component.getAttributes().get("infoStyle");
@@ -174,7 +174,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             }
 
             Object val = component.getAttributes().get("tooltip");
-            boolean isTooltip = (val != null) && Boolean.valueOf(val.toString());
+            boolean isTooltip = val != null && Boolean.valueOf(val.toString());
 
             boolean wroteTooltip = false;
             if (isTooltip) {

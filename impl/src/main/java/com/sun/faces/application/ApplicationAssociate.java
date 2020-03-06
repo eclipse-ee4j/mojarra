@@ -64,12 +64,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import jakarta.el.CompositeELResolver;
-import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.annotation.AnnotationManager;
 import com.sun.faces.application.annotation.FacesComponentUsage;
@@ -101,6 +95,9 @@ import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -108,7 +105,6 @@ import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.search.SearchExpressionHandler;
-import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.PropertyResolver;
@@ -125,6 +121,8 @@ import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.FaceletsResourceResolver;
 import jakarta.faces.view.facelets.ResourceResolver;
 import jakarta.faces.view.facelets.TagDecorator;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -280,7 +278,7 @@ public class ApplicationAssociate {
     }
 
     public void setResourceLibraryContracts(Map<String, List<String>> map) {
-        this.resourceLibraryContracts = map;
+        resourceLibraryContracts = map;
     }
 
     private class PostConstructApplicationListener implements SystemEventListener {
@@ -292,21 +290,21 @@ public class ApplicationAssociate {
 
         @Override
         public void processEvent(SystemEvent event) {
-            ApplicationAssociate.this.initializeFacelets();
+            initializeFacelets();
 
-            if (ApplicationAssociate.this.flowHandler == null) {
+            if (flowHandler == null) {
                 FlowHandlerFactory flowHandlerFactory = (FlowHandlerFactory) FactoryFinder.getFactory(FLOW_HANDLER_FACTORY);
-                ApplicationAssociate.this.flowHandler = flowHandlerFactory.createFlowHandler(FacesContext.getCurrentInstance());
+                flowHandler = flowHandlerFactory.createFlowHandler(FacesContext.getCurrentInstance());
             }
 
-            if (ApplicationAssociate.this.searchExpressionHandler == null) {
-                ApplicationAssociate.this.searchExpressionHandler = new SearchExpressionHandlerImpl();
+            if (searchExpressionHandler == null) {
+                searchExpressionHandler = new SearchExpressionHandlerImpl();
             }
 
             FacesContext context = FacesContext.getCurrentInstance();
             if (isCdiAvailable(context)) {
                 try {
-                    new JavaFlowLoaderHelper().loadFlows(context, ApplicationAssociate.this.flowHandler);
+                    new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
                 } catch (IOException ex) {
                     LOGGER.log(SEVERE, null, ex);
                 }
@@ -469,7 +467,7 @@ public class ApplicationAssociate {
 
     public void installProgrammaticallyAddedResolvers() {
         // Ensure custom resolvers are inserted at the correct place.
-        VariableResolver variableResolver = this.getLegacyVariableResolver();
+        VariableResolver variableResolver = getLegacyVariableResolver();
         if (variableResolver != null) {
             getLegacyVRChainHeadWrapperForJsp().setWrapped(variableResolver);
             getLegacyVRChainHeadWrapperForFaces().setWrapped(variableResolver);
@@ -501,7 +499,7 @@ public class ApplicationAssociate {
      */
     @SuppressWarnings("deprecation")
     public void setLegacyVRChainHead(VariableResolver resolver) {
-        this.legacyVRChainHead = resolver;
+        legacyVRChainHead = resolver;
     }
 
     @SuppressWarnings("deprecation")
@@ -514,7 +512,7 @@ public class ApplicationAssociate {
     }
 
     public void setLegacyVRChainHeadWrapperForJsp(VariableResolverChainWrapper legacyVRChainHeadWrapper) {
-        this.legacyVRChainHeadWrapperForJsp = legacyVRChainHeadWrapper;
+        legacyVRChainHeadWrapperForJsp = legacyVRChainHeadWrapper;
     }
 
     public VariableResolverChainWrapper getLegacyVRChainHeadWrapperForFaces() {
@@ -533,7 +531,7 @@ public class ApplicationAssociate {
      */
     @SuppressWarnings("deprecation")
     public void setLegacyPRChainHead(PropertyResolver resolver) {
-        this.legacyPRChainHead = resolver;
+        legacyPRChainHead = resolver;
     }
 
     @SuppressWarnings("deprecation")
@@ -566,7 +564,7 @@ public class ApplicationAssociate {
     }
 
     public void setELResolversFromFacesConfig(List<ELResolver> resolvers) {
-        this.elResolversFromFacesConfig = resolvers;
+        elResolversFromFacesConfig = resolvers;
     }
 
     public List<ELResolver> getELResolversFromFacesConfig() {
@@ -578,7 +576,7 @@ public class ApplicationAssociate {
     }
 
     public ExpressionFactory getExpressionFactory() {
-        return this.expressionFactory;
+        return expressionFactory;
     }
 
     public CompositeELResolver getApplicationELResolvers() {
@@ -599,12 +597,12 @@ public class ApplicationAssociate {
 
     /**
      * Maintains the PropertyResolver called through Application.setPropertyResolver()
-     * 
+     *
      * @param resolver PropertyResolver
      */
     @SuppressWarnings("deprecation")
     public void setLegacyPropertyResolver(PropertyResolver resolver) {
-        this.legacyPropertyResolver = resolver;
+        legacyPropertyResolver = resolver;
     }
 
     /**
@@ -617,12 +615,12 @@ public class ApplicationAssociate {
 
     /**
      * Maintains the PropertyResolver called through Application.setVariableResolver()
-     * 
+     *
      * @param resolver VariableResolver
      */
     @SuppressWarnings("deprecation")
     public void setLegacyVariableResolver(VariableResolver resolver) {
-        this.legacyVariableResolver = resolver;
+        legacyVariableResolver = resolver;
     }
 
     /**
@@ -637,7 +635,7 @@ public class ApplicationAssociate {
      * Called by application code to indicate we've processed the first request to the application.
      */
     public void setRequestServiced() {
-        this.requestServiced = true;
+        requestServiced = true;
     }
 
     /**
@@ -798,7 +796,7 @@ public class ApplicationAssociate {
         } else {
 
             Set<? extends Class<?>> resourceResolvers = getAnnotatedClasses(ctx).get(FaceletsResourceResolver.class);
-            if ((null != resourceResolvers) && !resourceResolvers.isEmpty()) {
+            if (null != resourceResolvers && !resourceResolvers.isEmpty()) {
                 Class<?> resolverClass = resourceResolvers.iterator().next();
                 if (resourceResolvers.size() > 1 && LOGGER.isLoggable(SEVERE)) {
                     LOGGER.log(SEVERE, "Found more than one class " + "annotated with FaceletsResourceResolver.  Will " + "use {0} and ignore the others",

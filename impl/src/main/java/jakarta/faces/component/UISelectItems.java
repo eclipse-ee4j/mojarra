@@ -80,7 +80,7 @@ public class UISelectItems extends UIComponentBase {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -90,7 +90,7 @@ public class UISelectItems extends UIComponentBase {
      * <p>
      * Returns the <code>value</code> property of the <code>UISelectItems</code>.
      * </p>
-     * 
+     *
      * @return the value.
      */
     public Object getValue() {
@@ -103,7 +103,7 @@ public class UISelectItems extends UIComponentBase {
      * <p>
      * Sets the <code>value</code> property of the <code>UISelectItems</code>.
      * </p>
-     * 
+     *
      * @param value the new value
      */
     public void setValue(Object value) {

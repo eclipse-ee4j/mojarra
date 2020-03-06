@@ -16,14 +16,13 @@
 
 package com.sun.faces.facelets;
 
-import jakarta.el.ELException;
+import java.io.IOException;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
-
-import java.io.IOException;
 
 /**
  *
@@ -33,7 +32,7 @@ public abstract class FaceletContextImplBase extends FaceletContext {
 
     /**
      * Push the passed TemplateClient onto the stack for Definition Resolution
-     * 
+     *
      * @param client
      * @see TemplateClient
      */
@@ -41,7 +40,7 @@ public abstract class FaceletContextImplBase extends FaceletContext {
 
     /**
      * Pop the last added TemplateClient
-     * 
+     *
      * @see TemplateClient
      */
     public abstract void popClient(TemplateClient client);
@@ -51,7 +50,7 @@ public abstract class FaceletContextImplBase extends FaceletContext {
     /**
      * This method will walk through the TemplateClient stack to resolve and apply the definition for the passed name. If
      * it's been resolved and applied, this method will return true.
-     * 
+     *
      * @param parent the UIComponent to apply to
      * @param name name or null of the definition you want to apply
      * @return true if successfully applied, otherwise false

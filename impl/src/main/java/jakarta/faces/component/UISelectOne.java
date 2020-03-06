@@ -17,7 +17,6 @@
 package jakarta.faces.component;
 
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
@@ -96,7 +95,7 @@ public class UISelectOne extends UIInput {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -151,20 +150,17 @@ public class UISelectOne extends UIInput {
             final UIComponent groupContainer = getGroupContainer(context, this);
             final boolean[] alreadySubmittedOrValidatedAsGroup = new boolean[1];
 
-            groupContainer.visitTree(VisitContext.createVisitContext(context), new VisitCallback() {
-                @Override
-                public VisitResult visit(VisitContext visitContext, UIComponent target) {
-                    if (target instanceof UISelectOne) {
-                        UISelectOne radio = (UISelectOne) target;
+            groupContainer.visitTree(VisitContext.createVisitContext(context), (visitContext, target) -> {
+                if (target instanceof UISelectOne) {
+                    UISelectOne radio = (UISelectOne) target;
 
-                        if (isOtherMemberOfSameGroup(context, group, clientId, radio) && isAlreadySubmittedOrValidated(radio)) {
-                            alreadySubmittedOrValidatedAsGroup[0] = true;
-                            return VisitResult.COMPLETE;
-                        }
+                    if (isOtherMemberOfSameGroup(context, group, clientId, radio) && isAlreadySubmittedOrValidated(radio)) {
+                        alreadySubmittedOrValidatedAsGroup[0] = true;
+                        return VisitResult.COMPLETE;
                     }
-
-                    return VisitResult.ACCEPT;
                 }
+
+                return VisitResult.ACCEPT;
             });
 
             if (alreadySubmittedOrValidatedAsGroup[0]) {
@@ -220,7 +216,7 @@ public class UISelectOne extends UIInput {
         super.validateValue(context, value);
 
         // Skip validation if it is not necessary
-        if (!isValid() || (value == null)) {
+        if (!isValid() || value == null) {
             return;
         }
 
@@ -230,7 +226,7 @@ public class UISelectOne extends UIInput {
         boolean isNoSelection = SelectUtils.valueIsNoSelectionOption(getFacesContext(), this, value, new SelectItemsIterator(context, this), getConverter());
 
         // Enqueue an error message if an invalid value was specified
-        if ((!found) || (isRequired() && isNoSelection)) {
+        if (!found || isRequired() && isNoSelection) {
             FacesMessage message = MessageFactory.getMessage(context, INVALID_MESSAGE_ID, MessageFactory.getLabel(context, this));
             context.addMessage(getClientId(context), message);
             setValid(false);

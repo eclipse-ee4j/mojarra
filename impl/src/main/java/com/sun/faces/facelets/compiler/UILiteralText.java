@@ -31,15 +31,15 @@ public final class UILiteralText extends UILeaf {
 
     @Override
     public void encodeBegin(FacesContext faces) throws IOException {
-        if (this.isRendered()) {
+        if (isRendered()) {
             ResponseWriter writer = faces.getResponseWriter();
-            writer.write(this.text);
+            writer.write(text);
         }
     }
 
     @Override
     public String toString() {
-        return this.text;
+        return text;
     }
 
 }

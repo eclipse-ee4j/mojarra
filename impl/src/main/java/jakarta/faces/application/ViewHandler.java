@@ -29,11 +29,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.application.ViewVisitOption;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
@@ -48,10 +43,10 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  * ViewHandler</span></strong> is the pluggablity mechanism for allowing implementations of or applications using the
  * JJakarta Server Faces specification to provide their own handling of the activities in the <em>Render Response</em>
  * and <em>Restore View</em> phases of the request processing lifecycle.
- * 
+ *
  * This allows for implementations to support different response generation technologies, as well as alternative
  * strategies for saving and restoring the state of each view.
- * 
+ *
  * <span class="changed_added_2_0">An implementation of this class must be thread-safe.</span>
  * </p>
  *
@@ -110,7 +105,7 @@ public abstract class ViewHandler {
      * runtime must also consider the facelets.SKIP_COMMENTS param name as an alias to this param name for backwards
      * compatibility with existing facelets tag libraries.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_SKIP_COMMENTS_PARAM_NAME = "jakarta.faces.FACELETS_SKIP_COMMENTS";
@@ -121,7 +116,7 @@ public abstract class ViewHandler {
      * content. If this init parameter is not specified, the default value is taken from the value of the constant
      * {@link #DEFAULT_FACELETS_SUFFIX}
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_SUFFIX_PARAM_NAME = "jakarta.faces.FACELETS_SUFFIX";
@@ -131,7 +126,7 @@ public abstract class ViewHandler {
      * The value to use for the default extension for Facelet based XHTML pages if the webapp is using url extension
      * mapping.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String DEFAULT_FACELETS_SUFFIX = ".xhtml";
@@ -146,7 +141,7 @@ public abstract class ViewHandler {
      * <code>/login.jsp*</code>. The runtime must also consider the <code>facelets.VIEW_MAPPINGS</code> param name as an
      * alias to this param name for backwards compatibility with existing Facelets applications.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "jakarta.faces.FACELETS_VIEW_MAPPINGS";
@@ -159,7 +154,7 @@ public abstract class ViewHandler {
      * the facelets.BUFFER_SIZE param name as an alias to this param name for backwards compatibility with existing facelets
      * tag libraries.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_BUFFER_SIZE_PARAM_NAME = "jakarta.faces.FACELETS_BUFFER_SIZE";
@@ -174,7 +169,7 @@ public abstract class ViewHandler {
      * {@link jakarta.faces.application.ProjectStage} is set to {@code Production} and this value is not otherwise
      * specified, the runtime must act as if it is set to -1.</span>
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_REFRESH_PERIOD_PARAM_NAME = "jakarta.faces.FACELETS_REFRESH_PERIOD";
@@ -188,8 +183,8 @@ public abstract class ViewHandler {
      * facelets.LIBRARIES param name as an alias to this param name for backwards compatibility with existing facelets tag
      * libraries.
      * </p>
-     * 
-     * 
+     *
+     *
      * @since 2.0
      */
     public static final String FACELETS_LIBRARIES_PARAM_NAME = "jakarta.faces.FACELETS_LIBRARIES";
@@ -201,7 +196,7 @@ public abstract class ViewHandler {
      * page compilation.The runtime must also consider the facelets.DECORATORS param name as an alias to this param name for
      * backwards compatibility with existing facelets tag libraries.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String FACELETS_DECORATORS_PARAM_NAME = "jakarta.faces.FACELETS_DECORATORS";
@@ -214,7 +209,7 @@ public abstract class ViewHandler {
      * the default ViewHandler that pertains to handling requests for pages authored in the Jakarta Server Faces View
      * Declaration Language must not be executed by the runtime.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME = "jakarta.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
@@ -238,7 +233,7 @@ public abstract class ViewHandler {
      * into the {@link ExternalContext#setRequestCharacterEncoding} method. If
      * {@link ExternalContext#getRequestCharacterEncoding} returns non-<code>null</code> take no action.
      * </p>
-     * 
+     *
      * @param context the Faces context.
      * @throws FacesException if a problem occurs setting the encoding, such as the
      * <code>UnsupportedEncodingException</code> thrown by the underlying Jakarta Servlet or Portlet technology when the
@@ -296,11 +291,11 @@ public abstract class ViewHandler {
      * view. The argument <code>viewId</code> must be converted to a physical <code>viewId</code> that can refer to an
      * actual resource suitable for use by the <code>ViewDeclarationLanguage</code>
      * {@link ViewDeclarationLanguage#createView}, which must be called by this method.</span>
-     * 
+     *
      * @param context the Faces context.
      * @param viewId the view id.
      * @throws NullPointerException if <code>context</code> is <code>null</code>
-     * 
+     *
      * @return the viewroot.
      */
     public abstract UIViewRoot createView(FacesContext context, String viewId);
@@ -429,7 +424,7 @@ public abstract class ViewHandler {
      * Derive and return the viewId from the current request, or the argument input by following the algorithm defined in
      * specification section JSF.7.6.2.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_3">
      * This method should work correctly when the FacesServlet is invoked via either a <code>path mapping</code>,
      * <code>extension mapping</code> or an <code>exact match</code> (mapping) as defined by Servlet.12.2. Note that
@@ -458,7 +453,7 @@ public abstract class ViewHandler {
      * specification section JSF.7.6.2. Note that unlike <code>deriveViewId()</code>, this method does not require that a
      * physical view be present.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_3">
      * This method should work correctly when the FacesServlet is invoked via either a <code>path mapping</code>,
      * <code>extension mapping</code> or an <code>exact match</code> (mapping) as defined by Servlet.12.2. Note that
@@ -470,7 +465,7 @@ public abstract class ViewHandler {
      * <p>
      * The default implementation of this method simply returns requestViewId unchanged.
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> for this request
      *
      * @param requestViewId the <code>viewId</code> to derive,
@@ -492,7 +487,7 @@ public abstract class ViewHandler {
      * </span><span class="changed_added_2_3"> and the behavior when the current request is to a URL for which the
      * FacesServlet has an exact mapping as defined by Servlet.12.2</span>.
      * </p>
-     * 
+     *
      *
      * @param context {@link FacesContext} for this request
      * @param viewId View identifier of the desired view
@@ -500,7 +495,7 @@ public abstract class ViewHandler {
      * @throws IllegalArgumentException if <code>viewId</code> is not valid for this <code>ViewHandler</code>, or does not
      * start with "/".
      * @throws NullPointerException if <code>context</code> or <code>viewId</code> is <code>null</code>.
-     * 
+     *
      * @return the action url.
      */
     public abstract String getActionURL(FacesContext context, String viewId);
@@ -536,9 +531,9 @@ public abstract class ViewHandler {
      * @param viewId The view identifier of the target page
      * @param parameters A mapping of parameter names to one or more values
      * @param includeViewParams A flag indicating whether view parameters should be encoded into this URL
-     * 
+     *
      * @return the bookmarkable URL.
-     * 
+     *
      * @since 2.0
      */
     public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
@@ -559,7 +554,7 @@ public abstract class ViewHandler {
      *
      * @throws IllegalArgumentException if <code>viewId</code> is not valid for this <code>ViewHandler</code>.
      * @throws NullPointerException if <code>context</code> or <code>path</code> is <code>null</code>.
-     * 
+     *
      * @return the resource URL.
      */
     public abstract String getResourceURL(FacesContext context, String path);
@@ -575,9 +570,9 @@ public abstract class ViewHandler {
      *
      * @param context {@link FacesContext} for the current request.
      * @param channel The channel name of the websocket.
-     * 
+     *
      * @throws NullPointerException if <code>context</code> or <code>channel</code> is <code>null</code>.
-     * 
+     *
      * @return the websocket URL.
      * @see PushContext#URI_PREFIX
      */
@@ -591,7 +586,7 @@ public abstract class ViewHandler {
      * application configuration resources in the current application. The runtime must support calling this method at any
      * time after application startup. The default implementation returns an unmodifiable empty <code>Set</code>.
      * </p>
-     * 
+     *
      * @return the unmodifiable set of protected views.
      * @since 2.2
      */
@@ -606,9 +601,9 @@ public abstract class ViewHandler {
      * argument. The runtime must support calling this method at any time after application startup. The default
      * implementation takes no action.
      * </p>
-     * 
+     *
      * @param urlPattern the url-pattern to add.
-     * 
+     *
      * @since 2.2
      */
     public void addProtectedView(String urlPattern) {
@@ -624,7 +619,7 @@ public abstract class ViewHandler {
      * any time after application startup. Returns <code>true</code> if this <code>Set</code> contained the argument. The
      * default implementation takes no action and returns <code>false</code>.
      * </p>
-     * 
+     *
      * @param urlPattern the url-pattern to remove.
      * @return <code>true</code> if in the <code>Set</code>, <code>false</code> otherwise.
      * @since 2.2
@@ -638,20 +633,20 @@ public abstract class ViewHandler {
      * <span class="changed_modified_2_1">Return</span> the {@link ViewDeclarationLanguage} instance used for this
      * <code>ViewHandler</code> instance.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * The default implementation must use
      * {@link jakarta.faces.view.ViewDeclarationLanguageFactory#getViewDeclarationLanguage} to obtain the appropriate
      * <code>ViewDeclarationLanguage</code> implementation for the argument <code>viewId</code>. Any exceptions thrown as a
      * result of invoking that method must not be swallowed.
      * </p>
-     * 
+     *
      * <p>
      * The default implementation of this method returns null.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param context the <code>FacesContext</code> for this request.
@@ -673,7 +668,7 @@ public abstract class ViewHandler {
      * {@link ViewDeclarationLanguage#getViews(FacesContext, String, int, ViewVisitOption...)}. The elements in the stream
      * are <em>logical</em> view ids.
      * </p>
-     * 
+     *
      * <p>
      * The {@code maxDepth} parameter is the maximum depth of directory levels to visit for each
      * {@code ViewDeclarationLanguage} <em>beyond the initial path</em>, which is always visited. The value is relative to
@@ -682,19 +677,19 @@ public abstract class ViewHandler {
      * {@code /foo/} as depth {@code 2} and {@code /foo/bar/} as depth {@code 3}. A value lower or equal to the depth of the
      * initial path means that only the initial path is visited. A value of {@link Integer#MAX_VALUE MAX_VALUE} may be used
      * to indicate that all levels should be visited.
-     * 
+     *
      * <p>
      * In case more than one active {@code ViewDeclarationLanguage} is present, the order in which view ids from each
      * {@code ViewDeclarationLanguage} appear in the stream is undetermined, except for the guarantee that every individual
      * {@code ViewDeclarationLanguage} is traversed <em>breadth-first</em>.
-     * 
+     *
      * @param facesContext The {@link FacesContext} for this request.
      * @param path The initial path from which to start looking for view ids.
      * @param maxDepth The absolute maximum depth of nested directories to visit counted from the root ({@code /}).
      * @param options The options to influence the traversal. See {@link ViewVisitOption} for details on those.
      *
      * @return the {@link Stream} of view ids
-     * 
+     *
      * @since 2.3
      */
     public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options) {
@@ -709,27 +704,27 @@ public abstract class ViewHandler {
      * {@link ViewDeclarationLanguage#getViews(FacesContext, String, int, ViewVisitOption...)}. The elements in the stream
      * are <em>logical</em> view ids.
      * </p>
-     * 
+     *
      * <p>
      * This method works as if invoking it were equivalent to evaluating the expression: <blockquote>
-     * 
+     *
      * <pre>
      * getViews(facesContext, start, Integer.MAX_VALUE, options)
      * </pre>
-     * 
+     *
      * </blockquote> Put differently, it visits all levels of the view tree.
-     * 
+     *
      * <p>
      * In case more than one active {@code ViewDeclarationLanguage} is present, the order in which view ids from each
      * {@code ViewDeclarationLanguage} appear in the stream is undetermined, except for the guarantee that every individual
      * {@code ViewDeclarationLanguage} is traversed <em>breadth-first</em>.
-     * 
+     *
      * @param facesContext The {@link FacesContext} for this request.
      * @param path The initial path from which to start looking for view ids.
      * @param options The options to influence the traversal. See {@link ViewVisitOption} for details on those.
      *
      * @return the {@link Stream} of view ids
-     * 
+     *
      * @since 2.3
      */
     public Stream<String> getViews(FacesContext facesContext, String path, ViewVisitOption... options) {

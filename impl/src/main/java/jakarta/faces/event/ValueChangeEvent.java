@@ -16,13 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.FacesEvent;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.PhaseId;
-import jakarta.faces.event.ValueChangeEvent;
-import jakarta.faces.event.ValueChangeListener;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -90,12 +83,12 @@ public class ValueChangeEvent extends FacesEvent {
      * <p>
      * Return the previous local value of the source {@link UIComponent}.
      * </p>
-     * 
+     *
      * @return the previous local value
      */
     public Object getOldValue() {
 
-        return (this.oldValue);
+        return oldValue;
 
     }
 
@@ -110,12 +103,12 @@ public class ValueChangeEvent extends FacesEvent {
      * <p>
      * Return the current local value of the source {@link UIComponent}.
      * </p>
-     * 
+     *
      * @return the current local value
      */
     public Object getNewValue() {
 
-        return (this.newValue);
+        return newValue;
 
     }
 
@@ -124,7 +117,7 @@ public class ValueChangeEvent extends FacesEvent {
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
 
-        return (listener instanceof ValueChangeListener);
+        return listener instanceof ValueChangeListener;
 
     }
 

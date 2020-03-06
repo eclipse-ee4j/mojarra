@@ -28,12 +28,11 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.WriteListener;
-
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 
 /**
  * This steam converts byte content to character. This implementation allows us to query whether or not the writer has

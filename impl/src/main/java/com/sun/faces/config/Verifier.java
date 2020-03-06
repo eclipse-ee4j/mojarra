@@ -71,7 +71,7 @@ public class Verifier {
 
     /**
      * Set the <code>Verifier</code> for this thread (typically the same thread that is used to bootstrap the application).
-     * 
+     *
      * @param verifier the <code>Verifier</code> for this web application
      */
     public static void setCurrentInstance(Verifier verifier) {
@@ -104,7 +104,7 @@ public class Verifier {
      * represented by <code>assignableTo</code>
      * </ul>
      * If any of these tests fail, queue a message to be displayed at a later point in time.
-     * 
+     *
      * @param type The type of Faces object we're validating
      * @param className the class name of the Faces object we're validating
      * @param assignableTo the type we expect <code>className</code> to either implement or extend

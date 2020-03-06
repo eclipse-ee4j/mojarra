@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.util.Iterator;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import jakarta.faces.component.UIComponent;
@@ -24,11 +26,9 @@ import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TextHandler;
 
-import java.util.Iterator;
-
 /**
  * Handler for f:verbatim
- * 
+ *
  * @author Adam Winer
  */
 public final class VerbatimHandler extends ComponentHandler {
@@ -39,7 +39,7 @@ public final class VerbatimHandler extends ComponentHandler {
     @Override
     public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent) {
         StringBuffer content = new StringBuffer();
-        Iterator iter = TagHandlerImpl.findNextByType(this.nextHandler, TextHandler.class);
+        Iterator iter = TagHandlerImpl.findNextByType(nextHandler, TextHandler.class);
         while (iter.hasNext()) {
             TextHandler text = (TextHandler) iter.next();
             content.append(text.getText(ctx));

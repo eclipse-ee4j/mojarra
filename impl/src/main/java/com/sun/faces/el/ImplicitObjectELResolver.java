@@ -18,26 +18,24 @@ package com.sun.faces.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.sun.faces.component.CompositeComponentStackManager;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.PropertyNotWritableException;
-
-import com.sun.faces.util.Util;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.FlowHandler;
-
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.component.CompositeComponentStackManager;
-import java.util.HashMap;
 
 public class ImplicitObjectELResolver extends ELResolver implements ELConstants {
 

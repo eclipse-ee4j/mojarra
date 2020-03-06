@@ -16,12 +16,11 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-
 import jakarta.faces.context.FacesContext;
-
-import java.io.IOException;
 
 final class LiteralCommentInstruction implements Instruction {
     private final String text;
@@ -32,7 +31,7 @@ final class LiteralCommentInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-        context.getResponseWriter().writeComment(this.text);
+        context.getResponseWriter().writeComment(text);
     }
 
     @Override

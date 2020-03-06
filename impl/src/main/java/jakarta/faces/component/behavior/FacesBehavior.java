@@ -22,7 +22,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.faces.component.behavior.Behavior;
 import jakarta.inject.Qualifier;
 
 /**
@@ -47,7 +46,7 @@ public @interface FacesBehavior {
      * The value of this annotation attribute is taken to be an indicator that flags whether or not the given converter is a
      * CDI managed converter.
      * </p>
-     * 
+     *
      * @return true if CDI managed, false otherwise.
      */
     boolean managed() default false;

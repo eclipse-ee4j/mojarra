@@ -139,7 +139,7 @@ public class ConverterPropertyEditorFactory {
 
         /**
          * Construct a template info instance based on the supplied class.
-         * 
+         *
          * @param templateClass is a "template" class (but not in the java generics sense) which must extend
          * {@link ConverterPropertyEditorBase} and override the {@link ConverterPropertyEditorBase#getTargetClass} method.
          */
@@ -162,7 +162,7 @@ public class ConverterPropertyEditorFactory {
         /**
          * Check whether the <code>targetBytes</code> match the content of the <code>templateBytes</code> at the given
          * <code>index</code>.
-         * 
+         *
          * @param targetBytes byte array to compare.
          * @param index the index into <code>templateBytes</code> at which to compare.
          * @return true if the bytes from <code>targetBytes</code> match the bytes from <code>templateBytes</code>.
@@ -181,7 +181,7 @@ public class ConverterPropertyEditorFactory {
 
         /**
          * Find an instance of UTF8Info in the source class's constant pool where the text matches the given argument.
-         * 
+         *
          * @param text the text that the UTF8Info must contain.
          * @return A {@link Utf8InfoRef} instance refering to the matched constant pool entry, or <code>null</code> if no match
          * was found.
@@ -226,7 +226,7 @@ public class ConverterPropertyEditorFactory {
 
         /**
          * Obtain the bytes that define the given class by looking for the ".class" resource and loading the binary data.
-         * 
+         *
          * @throws IOException if an error occurs loading the binary data
          */
         private void loadTemplateBytes() throws IOException {
@@ -255,7 +255,7 @@ public class ConverterPropertyEditorFactory {
         /**
          * Generate a class name to use for the generated PropertyEditor class, based on the full name of the target class. This
          * is done by replacing the "XXXX" in the template class name with a version of the target class name.
-         * 
+         *
          * @param targetClass The target class which the PropertyEditor will operate on.
          * @param vmFormat If true, the package name components will be '/' separated. Otherwise they will be '.' separated.
          * @return The full name to use for the generated PropertyEditor class.
@@ -290,7 +290,7 @@ public class ConverterPropertyEditorFactory {
         /**
          * Extract the original target class name from the generated PropertyEditor class name. (This is the reverse of
          * {@link #generateClassNameFor}).
-         * 
+         *
          * @param className name of the generated PropertyEditor class.
          * @return the target class name, or null if the given <code>className</code> was not a generated PropertyEditor name.
          */
@@ -308,7 +308,7 @@ public class ConverterPropertyEditorFactory {
         /**
          * Generate the bytes for a new class based on the <code>templateBytes</code>, but with all the replacements in
          * <code>replacements</code> performed.
-         * 
+         *
          * @param replacements one or more Utf8InfoReplacments
          * @return the bytes for the new class definition.
          */
@@ -335,7 +335,7 @@ public class ConverterPropertyEditorFactory {
 
         /**
          * @return the bytes for a new class with the given name and target class.
-         * 
+         *
          * @param newClassName the binary name of the new class.
          * @param targetClassName the binary name of the PropertyEditor's target class.
          */
@@ -368,7 +368,7 @@ public class ConverterPropertyEditorFactory {
         public DisposableClassLoader(ClassLoader targetLoader) {
             super(targetLoader);
             this.targetLoader = targetLoader;
-            this.myLoader = ConverterPropertyEditorBase.class.getClassLoader();
+            myLoader = ConverterPropertyEditorBase.class.getClassLoader();
         }
 
         /**
@@ -467,7 +467,7 @@ public class ConverterPropertyEditorFactory {
 
     /**
      * Create a <code>ConverterPropertyEditorFactory</code> that uses the specified template class.
-     * 
+     *
      * @param templateClass the template
      */
     public ConverterPropertyEditorFactory(Class<? extends ConverterPropertyEditorBase> templateClass) {
@@ -491,7 +491,7 @@ public class ConverterPropertyEditorFactory {
     /**
      * Return a PropertyEditor class appropriate for editing the given <code>targetClass</code>. The new class will be
      * defined from a DisposableClassLoader.
-     * 
+     *
      * @param targetClass the class of object that the returned property editor class will be editing.
      * @return the dynamically generated PropertyEditor class.
      */
@@ -509,18 +509,13 @@ public class ConverterPropertyEditorFactory {
             DisposableClassLoader loader;
             WeakReference<DisposableClassLoader> loaderRef = classLoaderCache.get(targetClass.getClassLoader());
             if (loaderRef == null || (loader = loaderRef.get()) == null) {
-                loader = (DisposableClassLoader) AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    @Override
-                    public Object run() {
-                        return new DisposableClassLoader(targetClass.getClassLoader());
-                    }
-                });
+                loader = (DisposableClassLoader) AccessController.doPrivileged((PrivilegedAction<Object>) () -> new DisposableClassLoader(targetClass.getClassLoader()));
 
                 if (loader == null) {
                     return null;
                 }
 
-                classLoaderCache.put(targetClass.getClassLoader(), new WeakReference<DisposableClassLoader>(loader));
+                classLoaderCache.put(targetClass.getClassLoader(), new WeakReference<>(loader));
             }
             return (Class<? extends ConverterPropertyEditorBase>) loader.loadClass(className);
         } catch (ClassNotFoundException e) {
@@ -542,7 +537,7 @@ public class ConverterPropertyEditorFactory {
 
     /**
      * Create a UTF8Info constant pool structure for the given text.
-     * 
+     *
      * @param text the text to create the UTF8 constant from.
      * @return the bytes for the UTF8Info constant pool entry, including the tag, length, and utf8 content.
      */
@@ -558,7 +553,7 @@ public class ConverterPropertyEditorFactory {
         }
         byte[] info = new byte[utf8.length + 3];
         info[0] = 1;
-        info[1] = (byte) ((utf8.length >> 8) & 0xff);
+        info[1] = (byte) (utf8.length >> 8 & 0xff);
         info[2] = (byte) (utf8.length & 0xff);
         System.arraycopy(utf8, 0, info, 3, utf8.length);
         return info;

@@ -25,15 +25,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.Producer;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.flow.FlowDiscoveryCDIExtension;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Producer;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;

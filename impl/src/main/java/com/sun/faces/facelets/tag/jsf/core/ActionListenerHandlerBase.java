@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 
@@ -24,9 +26,11 @@ import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ActionSource2AttachedObjectHandler;
-import jakarta.faces.view.facelets.*;
-
-import java.io.IOException;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
@@ -49,12 +53,12 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        if (null == parent || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || !ComponentHandler.isNew(parent)) {
             return;
         }
 
@@ -63,14 +67,14 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
         } else if (parent.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY)) {
             if (null == getFor()) {
                 // PENDING(): I18N
-                throw new TagException(this.tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
+                throw new TagException(tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
             }
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
 
         } else {
-            throw new TagException(this.tag, "Parent is not of type ActionSource, type is: " + parent);
+            throw new TagException(tag, "Parent is not of type ActionSource, type is: " + parent);
         }
     }
 
@@ -80,7 +84,7 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
     @Override
     public String getFor() {
         String result = null;
-        TagAttribute attr = this.getAttribute("for");
+        TagAttribute attr = getAttribute("for");
 
         if (null != attr) {
             if (attr.isLiteral()) {

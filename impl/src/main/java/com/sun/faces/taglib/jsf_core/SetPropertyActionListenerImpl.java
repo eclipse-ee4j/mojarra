@@ -18,15 +18,13 @@ package com.sun.faces.taglib.jsf_core;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
-
-import jakarta.el.ExpressionFactory;
 
 public class SetPropertyActionListenerImpl implements ActionListener, StateHolder {
 
@@ -41,7 +39,7 @@ public class SetPropertyActionListenerImpl implements ActionListener, StateHolde
     public SetPropertyActionListenerImpl(ValueExpression target, ValueExpression value) {
 
         this.target = target;
-        this.source = value;
+        source = value;
 
     }
 

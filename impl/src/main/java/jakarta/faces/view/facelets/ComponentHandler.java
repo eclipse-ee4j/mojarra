@@ -37,23 +37,23 @@ import jakarta.faces.component.UIComponent;
  * order.</span> These actions must only happen the first time this facelet is applied for each user. Subsequent
  * applications must take no action.
  * </p>
- * 
+ *
  * <ol>
- * 
+ *
  * <li>
  * <p>
  * The <code>UIComponent</code> represented by this element is created with the appropriate
  * <code>Application.createComponent()</code> method.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * Each attribute specified in the markup is correctly applied to the component instance, as specified in the VDLDocs
  * for this element.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * If project stage is {@link jakarta.faces.application.ProjectStage#Development}, Put the
@@ -61,7 +61,7 @@ import jakarta.faces.component.UIComponent;
  * given by the value of the symbolic constant {@link jakarta.faces.component.UIComponent#VIEW_LOCATION_KEY}.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * Set the id of the component. If the id is specified manually by the page author, that value must be set as the id.
@@ -71,60 +71,60 @@ import jakarta.faces.component.UIComponent;
  * id.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * The rendererType property of the component is set properly.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * {@link #onComponentCreated} is called.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * {@link UIComponent#pushComponentToEL} is called on the newly created component.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * The next handler in the facelet chain is applied. This will cause the component to be populated with children.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * The component is added to its parent in the view.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * {@link UIComponent#popComponentFromEL} is called on the newly created component.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * Call {@link UIComponent#markInitialState}.
  * </p>
  * </li>
- * 
+ *
  * </ol>
- * 
+ *
  * <div class="changed_added_2_2">
- * 
+ *
  * <p>
  * A common use case for extending this class is to gain access to the process by which the Facelets runtime creates
  * component instances corresponding to markup in a Facelets view. These three methods are useful in such cases.
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * To control the instantiation of the <code>UIComponent</code> instance, subclasses may override
@@ -132,14 +132,14 @@ import jakarta.faces.component.UIComponent;
  * will take the necessary action to instantiate the <code>UIComponent</code>.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * To be notified of creation of the <code>UIComponent</code>instance, subclasses may override
  * {@link #onComponentCreated}.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * To be notified that the freshly created <code>UIComponent</code> instance has been populated with children as a
@@ -148,7 +148,7 @@ import jakarta.faces.component.UIComponent;
  * </li>
  * </ul>
  * </div>
- * 
+ *
  * </div>
  *
  * @since 2.0
@@ -163,14 +163,14 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
      * Leverage the {@link TagHandlerDelegateFactory} provided by the implementation to create an instance of
      * {@link TagHandlerDelegate} designed for use with <code>ComponentHandler</code>.
      * </p>
-     * 
+     *
      * @param config the configuration for this handler.
      *
      * @since 2.0
      */
     public ComponentHandler(ComponentConfig config) {
         super(config);
-        this.componentConfig = config;
+        componentConfig = config;
     }
 
     @Override
@@ -182,7 +182,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
     }
 
     public ComponentConfig getComponentConfig() {
-        return this.componentConfig;
+        return componentConfig;
     }
 
     /**
@@ -191,9 +191,9 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
      * this tag handler my override this method to do so. A <code>null</code> return from this method will cause the
      * <code>TagHandlerDelegate</code> for instance to create the component instead.
      * </p>
-     * 
+     *
      * @param ctx the <code>FaceletContext</code> for this view execution
-     * 
+     *
      * @return the newly created {@link UIComponent}
      *
      * @since 2.2
@@ -210,7 +210,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
      * </p>
      *
      * @param ctx the <code>FaceletContext</code> for this view execution
-     * 
+     *
      * @param c the <code>UIComponent</code> that has just been created.
      *
      * @param parent the parent <code>UIComponent</code> of the component represented by this element instance.
@@ -227,7 +227,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
      * </p>
      *
      * @param ctx the <code>FaceletContext</code> for this view execution
-     * 
+     *
      * @param c the <code>UIComponent</code> that has just been populated with children.
      *
      * @param parent the parent <code>UIComponent</code> of the component represented by this element instance.
@@ -243,12 +243,12 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
      * Determine if the passed component is not null and if it's new to the tree. This operation can be used for determining
      * if attributes should be wired to the component.
      * </p>
-     * 
+     *
      * @param component the component you wish to modify
-     * 
+     *
      * @return true if and only if the argument is not {@code null} and the component is new during this run of the
      * lifecycle.
-     * 
+     *
      * @since 2.0
      */
     public static boolean isNew(UIComponent component) {

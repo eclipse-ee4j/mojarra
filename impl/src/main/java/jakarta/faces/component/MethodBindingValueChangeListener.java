@@ -16,9 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.MethodBindingAdapterBase;
-import jakarta.faces.component.StateHolder;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.MethodBinding;
@@ -75,12 +72,12 @@ class MethodBindingValueChangeListener extends MethodBindingAdapterBase implemen
             FacesContext context = FacesContext.getCurrentInstance();
             methodBinding.invoke(context, new Object[] { actionEvent });
         } catch (EvaluationException ee) {
-            Throwable cause = this.getExpectedCause(AbortProcessingException.class, ee);
+            Throwable cause = getExpectedCause(AbortProcessingException.class, ee);
             if (cause instanceof AbortProcessingException) {
-                throw ((AbortProcessingException) cause);
+                throw (AbortProcessingException) cause;
             }
             if (cause instanceof RuntimeException) {
-                throw ((RuntimeException) cause);
+                throw (RuntimeException) cause;
             }
             throw new IllegalStateException(ee);
         }

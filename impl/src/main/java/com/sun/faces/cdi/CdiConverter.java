@@ -49,7 +49,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Constructor.
-     * 
+     *
      * @param converterId the converter id.
      * @param forClass the for class.
      * @param delegate the delegate.
@@ -62,7 +62,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Get the object.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the UI component.
      * @param value the value.
@@ -75,7 +75,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Get the string representation.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the UI component.
      * @param value the value.
@@ -88,7 +88,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Save the state.
-     * 
+     *
      * @param facesContext the Faces context.
      * @return the saved object.
      */
@@ -99,7 +99,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Restore the state.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param state the state.
      */
@@ -112,7 +112,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Is the converter transient.
-     * 
+     *
      * @return false
      */
     @Override
@@ -122,11 +122,11 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Set the converter to transient.
-     * 
+     *
      * <p>
      * We ignore the call as our proxy is always non-transient.
      * </p>
-     * 
+     *
      * @param transientValue
      */
     @Override
@@ -135,7 +135,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Get the delegate.
-     * 
+     *
      * @param facesContext the Faces context.
      * @return the delegate.
      */

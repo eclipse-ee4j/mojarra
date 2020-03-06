@@ -21,8 +21,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.faces.bean.ManagedBean;
-
 /**
  * <p class="changed_added_2_0">
  * The presence of this annotation on a field of a class annotated with {@link ManagedBean} instructs the system to
@@ -39,7 +37,7 @@ import jakarta.faces.bean.ManagedBean;
  * If this annotation is present on a class that does not have the <code>ManagedBean</code> annotation, the
  * implementation must take no action on this annotation.
  * </p>
- * 
+ *
  * @deprecated This has been replaced by {@code jakarta.faces.annotation.ManagedProperty}, which is a CDI build-in bean
  * with similar semantics
  */

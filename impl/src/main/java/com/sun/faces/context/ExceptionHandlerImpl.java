@@ -16,16 +16,16 @@
 
 package com.sun.faces.context;
 
-import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.logging.Logger;
+import java.util.LinkedList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import jakarta.el.ELException;
-
+import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
@@ -37,8 +37,6 @@ import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
-
-import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <p>
@@ -70,7 +68,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
     public ExceptionHandlerImpl() {
 
-        this.errorPagePresent = true;
+        errorPagePresent = true;
 
     }
 
@@ -138,7 +136,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     @Override
     public boolean isListenerForSource(Object source) {
 
-        return (source instanceof ExceptionQueuedEventContext);
+        return source instanceof ExceptionQueuedEventContext;
 
     }
 
@@ -189,7 +187,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     @Override
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
 
-        return ((unhandledExceptions != null) ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
+        return unhandledExceptions != null ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
     }
 
@@ -199,7 +197,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {
 
-        return ((handledExceptions != null) ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
+        return handledExceptions != null ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
     }
 
@@ -246,13 +244,13 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
      */
     private boolean shouldUnwrap(Class<? extends Throwable> c) {
 
-        return (FacesException.class.equals(c) || ELException.class.equals(c));
+        return FacesException.class.equals(c) || ELException.class.equals(c);
 
     }
 
     private boolean isRethrown(Throwable t) {
 
-        return (!(t instanceof AbortProcessingException));
+        return !(t instanceof AbortProcessingException);
 
     }
 
@@ -269,7 +267,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         Level level = LOGGER.isLoggable(INCIDENT_ERROR) && LOGGER.isLoggable(Level.SEVERE) ? INCIDENT_ERROR : Level.SEVERE;
 
         if (LOGGER.isLoggable(level)) {
-            LOGGER.log(level, key, new Object[] { t.getClass().getName(), phaseId.toString(), ((c != null) ? c.getClientId(exceptionContext.getContext()) : ""),
+            LOGGER.log(level, key, new Object[] { t.getClass().getName(), phaseId.toString(), c != null ? c.getClientId(exceptionContext.getContext()) : "",
                     t.getMessage() });
             if (t.getMessage() != null) {
                 LOGGER.log(level, t.getMessage(), t);

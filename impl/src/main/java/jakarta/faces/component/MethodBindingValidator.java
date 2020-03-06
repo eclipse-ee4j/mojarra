@@ -16,10 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.MethodBindingAdapterBase;
-import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.UIComponent;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.MethodBinding;
@@ -68,12 +64,12 @@ class MethodBindingValidator extends MethodBindingAdapterBase implements Validat
         try {
             methodBinding.invoke(context, new Object[] { context, component, value });
         } catch (EvaluationException ee) {
-            Throwable cause = this.getExpectedCause(ValidatorException.class, ee);
+            Throwable cause = getExpectedCause(ValidatorException.class, ee);
             if (cause instanceof ValidatorException) {
-                throw ((ValidatorException) cause);
+                throw (ValidatorException) cause;
             }
             if (cause instanceof RuntimeException) {
-                throw ((RuntimeException) cause);
+                throw (RuntimeException) cause;
             }
             throw new IllegalStateException(ee);
         }

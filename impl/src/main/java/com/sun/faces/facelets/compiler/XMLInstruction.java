@@ -16,15 +16,14 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.el.ELText;
+import java.io.IOException;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
+import com.sun.faces.facelets.el.ELText;
 
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-
-import java.io.IOException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 public class XMLInstruction implements Instruction {
 
@@ -40,7 +39,7 @@ public class XMLInstruction implements Instruction {
     public void write(FacesContext context) throws IOException {
         ResponseWriter rw = context.getResponseWriter();
         rw.writeText(STOP, 0, 0); // hack to get closing elements
-        this.text.write(rw, context.getELContext());
+        text.write(rw, context.getELContext());
     }
 
     @Override

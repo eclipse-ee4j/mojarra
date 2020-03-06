@@ -22,12 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import jakarta.el.ValueExpression;
-
 import com.sun.faces.util.MessageFactory;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.RequestStateManager;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
@@ -97,7 +96,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
                     logger.log(Level.SEVERE, "Could not instantiate converter for type {0}: {1}", new Object[] { converterType, e.toString() });
                     logger.log(Level.SEVERE, "", e);
                 }
-                return (null);
+                return null;
             }
         } else if (converter == null) {
             // if there is no valueExpression and converter attribute set,
@@ -180,7 +179,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     private boolean hasStringConverter(FacesContext context) {
 
         if (!hasStringConverterSet) {
-            hasStringConverter = (null != context.getApplication().createConverter(String.class));
+            hasStringConverter = null != context.getApplication().createConverter(String.class);
             hasStringConverterSet = true;
         }
         return hasStringConverter;

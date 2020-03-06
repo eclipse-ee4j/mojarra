@@ -21,12 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import jakarta.faces.application.Application;
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.ResourceVisitOption;
-import jakarta.faces.application.ViewResource;
-
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -51,7 +45,7 @@ import jakarta.faces.context.FacesContext;
  * section JSF.2.6.1 of the spec prose document <a href="../../../overview-summary.html#prose_document">linked in the
  * overview summary</a> for the normative specification of packaging resources.
  * </p>
- * 
+ *
  * <p>
  * Briefly, The default implementation must support packaging resources in the web application root under the path
  * </p>
@@ -69,38 +63,38 @@ import jakarta.faces.context.FacesContext;
  * <p>
  * For the default implementation, resources packaged in the classpath must reside under the JAR entry name
  * </p>
- * 
+ *
  * <p>
  * <code>META-INF/resources/&lt;resourceIdentifier&gt;</code>
  * </p>
- * 
+ *
  * <div class="changed_added_2_2">
- * 
+ *
  * <p>
  * In the case of Faces Flows packaged within jar files, resources packaged in the classpath must reside under the jar
  * entry name
  * </p>
- * 
+ *
  * <p>
  * <code>META-INF/flows/&lt;resourceIdentifier&gt;</code>
  * </p>
- * 
+ *
  * </div>
- * 
+ *
  * <p>
  * <code>&lt;resourceIdentifier&gt;</code> consists of several segments, specified as follows.
  * </p>
- * 
+ *
  * <p>
  * <code>[localePrefix/][libraryName/][libraryVersion/]resourceName[/resourceVersion]</code>
  * </p>
- * 
+ *
  * <p class="changed_modified_2_0_rev_a">
  * None of the segments in the resourceIdentifier may be relative paths, such as &#8216;../otherLibraryName&#8217;. The
  * implementation is not required to support the <code>libraryVersion</code> and <code>resourceVersion</code> segments
  * for the JAR packaging case.
  * </p>
- * 
+ *
  * <p>
  * Note that <em>resourceName</em> is the only required segment.
  * </p>
@@ -120,7 +114,7 @@ import jakarta.faces.context.FacesContext;
  * which all call {@link Resource#getRequestPath} to obtain the encoded URI for the resource. See
  * {@link Resource#getRequestPath} and the Standard HTML RenderKit specification for the complete specification.
  * </p>
- * 
+ *
  * <p class="changed_added_2_2">
  * This usage of resources does not apply for resources that correspond to VDL resources.
  * </p>
@@ -139,11 +133,11 @@ import jakarta.faces.context.FacesContext;
  * {@link #handleResourceRequest}, which calls {@link Resource#getInputStream} to obtain bytes of the resource. See
  * {@link #handleResourceRequest} for the complete specification.
  * </p>
- * 
+ *
  * <p class="changed_added_2_2">
  * This usage of resources does not apply for resources that correspond to VDL resources.
  * </p>
- * 
+ *
  * </blockquote>
  *
  * </div>
@@ -186,7 +180,7 @@ public abstract class ResourceHandler {
      * contains multiple contracts, the marker file must be present in each one. See &#8220;constant field values&#8221; for
      * the name of the file that must be placed at that location.
      * </p>
-     * 
+     *
      * @since 2.2
      */
     public static final String RESOURCE_CONTRACT_XML = "jakarta.faces.contract.xml";
@@ -251,9 +245,9 @@ public abstract class ResourceHandler {
      * <code>resourceName</code>. The content-type of the resource is derived by passing the <em>resourceName</em> to
      * {@link jakarta.faces.context.ExternalContext#getMimeType}
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * The algorithm specified in section JSF.2.6.1.4 of the spec prose document
      * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a> must be executed to create
@@ -261,9 +255,9 @@ public abstract class ResourceHandler {
      * specification. For historical reasons, this method operate correctly when the argument {@code resourceName} is of the
      * form {@code libraryName/resourceName}, even when {@code resourceName} contains '/' characters. </span>
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param resourceName the name of the resource.
      *
      * @throws NullPointerException if <code>resourceName</code> is <code>null</code>.
@@ -345,7 +339,7 @@ public abstract class ResourceHandler {
      * yield a {@code ViewResource} when passed into {@link ResourceHandler#createViewResource} as the {@code resourceName}
      * parameter.
      * </p>
-     * 
+     *
      * <p>
      * The {@code maxDepth} parameter is the maximum depth of directory levels to visit <em>beyond the initial path</em>,
      * which is always visited. The value is relative to the root ({@code /}), not to the given initial path. E.g. given
@@ -353,14 +347,14 @@ public abstract class ResourceHandler {
      * {@code /} counts as depth {@code 1}, {@code /foo/} as depth {@code 2} and {@code /foo/bar/} as depth {@code 3}. A
      * value lower or equal to the depth of the initial path means that only the initial path is visited. A value of
      * {@link Integer#MAX_VALUE MAX_VALUE} may be used to indicate that all levels should be visited.
-     * 
+     *
      * @param facesContext The {@link FacesContext} for this request.
      * @param path The initial path from which to start looking for view resources
      * @param maxDepth The absolute maximum depth of nested directories to visit counted from the root ({@code /}).
      * @param options The options to influence the traversal. See {@link ResourceVisitOption} for details on those.
      *
      * @return the {@link Stream} of view resource names
-     * 
+     *
      * @since 2.3
      */
     public Stream<String> getViewResources(FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options) {
@@ -374,22 +368,22 @@ public abstract class ResourceHandler {
      * yield a {@code ViewResource} when passed into {@link ResourceHandler#createViewResource} as the {@code resourceName}
      * parameter.
      * </p>
-     * 
+     *
      * <p>
      * This method works as if invoking it were equivalent to evaluating the expression: <blockquote>
-     * 
+     *
      * <pre>
      * getViewResources(facesContext, start, Integer.MAX_VALUE, options)
      * </pre>
-     * 
+     *
      * </blockquote> Put differently, it visits all levels of the resource tree.
-     * 
+     *
      * @param facesContext The {@link FacesContext} for this request.
      * @param path The initial path from which to start looking for view resources
      * @param options The options to influence the traversal. See {@link ResourceVisitOption} for details on those.
      *
      * @return the {@link Stream} of view resource names
-     * 
+     *
      * @since 2.3
      */
     public Stream<String> getViewResources(FacesContext facesContext, String path, ResourceVisitOption... options) {
@@ -697,7 +691,7 @@ public abstract class ResourceHandler {
      * ensure that {@link #isResourceRendered(FacesContext, String, String)} will return <code>true</code> when the resource
      * has already been rendered during the render response phase of the current view.
      * </p>
-     * 
+     *
      * @param context The {@link FacesContext} for this request.
      * @param resourceName The name of the resource.
      * @param libraryName The name of the library in which the resource resides, may be <code>null</code>.
@@ -716,7 +710,7 @@ public abstract class ResourceHandler {
      * implementation must during the render response phase of the current view return <code>true</code> when the resource
      * has been marked as rendered via {@link #markResourceRendered(FacesContext, String, String)}.
      * </p>
-     * 
+     *
      * @param context The {@link FacesContext} for this request.
      * @param resourceName The name of the resource.
      * @param libraryName The name of the library in which this resource resides, may be <code>null</code>.

@@ -52,8 +52,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
@@ -73,6 +71,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This {@link ViewHandler} implementation handles both JSP-based and Facelets/PDL-based views.
@@ -461,11 +460,11 @@ public class MultiViewHandler extends ViewHandler {
      * If the specified mapping is a prefix mapping, and the provided request URI (usually the value from
      * <code>ExternalContext.getRequestServletPath()</code>) starts with <code>mapping + '/'</code>, prune the mapping from
      * the URI and return it, otherwise, return the original URI.
-     * 
+     *
      * @param uri the servlet request path
      * @param mapping the FacesServlet mapping used for this request
      * @return the URI without additional FacesServlet mappings
-     * 
+     *
      * @since 1.2
      */
     protected String normalizeRequestURI(String uri, String mapping) {
@@ -653,7 +652,7 @@ public class MultiViewHandler extends ViewHandler {
     /**
      * Attempts to find a matching locale based on <code>pref</code> and list of supported locales, using the matching
      * algorithm as described in JSTL 8.3.2.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param pref the preferred locale
      * @return the Locale based on pref and the matching alogritm specified in JSTL 8.3.2
@@ -850,7 +849,7 @@ public class MultiViewHandler extends ViewHandler {
         // extension. If jakarta.faces.DEFAULT_SUFFIX is not explicitly set,
         // we honor the default 1.2 behavior and use ".jsp" as the suffix.
 
-        String extension = (extensionsSet && !(configuredExtensions.length == 0)) ? configuredExtensions[0] : ".jsp";
+        String extension = extensionsSet && !(configuredExtensions.length == 0) ? configuredExtensions[0] : ".jsp";
 
         if (viewId.endsWith(extension)) {
             return viewId;

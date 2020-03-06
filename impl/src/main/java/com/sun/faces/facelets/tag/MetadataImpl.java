@@ -20,7 +20,7 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.Metadata;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -31,13 +31,13 @@ final class MetadataImpl extends Metadata {
 
     public MetadataImpl(Metadata[] mappers) {
         this.mappers = mappers;
-        this.size = mappers.length;
+        size = mappers.length;
     }
 
     @Override
     public void applyMetadata(FaceletContext ctx, Object instance) {
         for (int i = 0; i < size; i++) {
-            this.mappers[i].applyMetadata(ctx, instance);
+            mappers[i].applyMetadata(ctx, instance);
         }
     }
 

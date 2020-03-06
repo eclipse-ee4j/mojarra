@@ -16,10 +16,14 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import com.sun.faces.facelets.util.ReflectionUtil;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
@@ -28,12 +32,12 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
-import java.io.IOException;
-import java.io.Serializable;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 /**
  * Register an ValueChangeListener instance on the UIComponent associated with the closest parent UIComponent custom
@@ -42,7 +46,7 @@ import java.io.Serializable;
  * See
  * <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/valueChangeListener.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  */
 public final class ValueChangeListenerHandler extends TagHandlerImpl implements EditableValueHolderAttachedObjectHandler {
@@ -67,16 +71,16 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
             if (faces == null) {
                 return;
             }
-            if (this.binding != null) {
+            if (binding != null) {
                 instance = (ValueChangeListener) binding.getValue(faces.getELContext());
             }
-            if (instance == null && this.type != null) {
+            if (instance == null && type != null) {
                 try {
-                    instance = (ValueChangeListener) ReflectionUtil.forName(this.type).newInstance();
+                    instance = (ValueChangeListener) ReflectionUtil.forName(type).newInstance();
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                     throw new AbortProcessingException("Couldn't Lazily instantiate ValueChangeListener", e);
                 }
-                if (this.binding != null) {
+                if (binding != null) {
                     binding.setValue(faces.getELContext(), instance);
                 }
             }
@@ -94,21 +98,21 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
 
     public ValueChangeListenerHandler(TagConfig config) {
         super(config);
-        this.binding = this.getAttribute("binding");
-        this.typeAttribute = this.getAttribute("type");
-        if (null != this.typeAttribute) {
+        binding = getAttribute("binding");
+        typeAttribute = getAttribute("type");
+        if (null != typeAttribute) {
             String stringType = null;
-            if (!this.typeAttribute.isLiteral()) {
+            if (!typeAttribute.isLiteral()) {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                stringType = (String) this.typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
+                stringType = (String) typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
             } else {
-                stringType = this.typeAttribute.getValue();
+                stringType = typeAttribute.getValue();
             }
             checkType(stringType);
-            this.listenerType = stringType;
+            listenerType = stringType;
         } else {
-            this.listenerType = null;
+            listenerType = null;
         }
     }
 
@@ -118,7 +122,7 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
-        if (parent == null || !(ComponentHandler.isNew(parent))) {
+        if (parent == null || !ComponentHandler.isNew(parent)) {
             return;
         }
 
@@ -129,7 +133,7 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
         } else {
-            throw new TagException(this.tag, "Parent is not of type EditableValueHolder, type is: " + parent);
+            throw new TagException(tag, "Parent is not of type EditableValueHolder, type is: " + parent);
         }
     }
 
@@ -138,17 +142,17 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
         EditableValueHolder evh = (EditableValueHolder) parent;
         ValueExpression b = null;
-        if (this.binding != null) {
-            b = this.binding.getValueExpression(ctx, ValueChangeListener.class);
+        if (binding != null) {
+            b = binding.getValueExpression(ctx, ValueChangeListener.class);
         }
-        ValueChangeListener listener = new LazyValueChangeListener(this.listenerType, b);
+        ValueChangeListener listener = new LazyValueChangeListener(listenerType, b);
         evh.addValueChangeListener(listener);
     }
 
     @Override
     public String getFor() {
         String result = null;
-        TagAttribute attr = this.getAttribute("for");
+        TagAttribute attr = getAttribute("for");
 
         if (null != attr) {
             if (attr.isLiteral()) {

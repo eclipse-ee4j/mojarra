@@ -23,7 +23,10 @@ import java.util.Set;
 
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.visit.*;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -40,7 +43,7 @@ public class FullVisitContext extends VisitContext {
 
     /**
      * Creates a FullVisitorContext instance.
-     * 
+     *
      * @param facesContext the FacesContext for the current request
      * @throws NullPointerException if {@code facesContext} is {@code null}
      */
@@ -64,7 +67,7 @@ public class FullVisitContext extends VisitContext {
         this.facesContext = facesContext;
 
         // Copy and store hints - ensure unmodifiable and non-empty
-        EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty())) ? EnumSet.noneOf(VisitHint.class) : EnumSet.copyOf(hints);
+        EnumSet<VisitHint> hintsEnumSet = hints == null || hints.isEmpty() ? EnumSet.noneOf(VisitHint.class) : EnumSet.copyOf(hints);
 
         this.hints = Collections.unmodifiableSet(hintsEnumSet);
     }

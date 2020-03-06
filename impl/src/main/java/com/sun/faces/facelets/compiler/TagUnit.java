@@ -25,7 +25,7 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagConfig;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -56,7 +56,7 @@ class TagUnit extends CompilationUnit implements TagConfig {
 
     @Override
     protected void startNotify(CompilationManager manager) {
-        if (this.name.equals("composition") && (this.namespace.equals(RIConstants.FACELET_NAMESPACE) || this.namespace.equals(RIConstants.FACELET_NAMESPACE))) {
+        if (name.equals("composition") && (namespace.equals(RIConstants.FACELET_NAMESPACE) || namespace.equals(RIConstants.FACELET_NAMESPACE))) {
             CompilerPackageCompilationMessageHolder messageHolder = (CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder();
             CompilationManager compositeComponentCompilationManager = messageHolder.getCurrentCompositeComponentCompilationManager();
             if (manager.equals(compositeComponentCompilationManager)) {
@@ -70,27 +70,27 @@ class TagUnit extends CompilationUnit implements TagConfig {
 
     @Override
     public FaceletHandler createFaceletHandler() {
-        return this.library.createTagHandler(this.namespace, this.name, this);
+        return library.createTagHandler(namespace, name, this);
     }
 
     @Override
     public FaceletHandler getNextHandler() {
-        return this.getNextFaceletHandler();
+        return getNextFaceletHandler();
     }
 
     @Override
     public Tag getTag() {
-        return this.tag;
+        return tag;
     }
 
     @Override
     public String getTagId() {
-        return this.id;
+        return id;
     }
 
     @Override
     public String toString() {
-        return this.tag.toString();
+        return tag.toString();
     }
 
 }

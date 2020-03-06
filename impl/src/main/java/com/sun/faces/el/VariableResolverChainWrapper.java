@@ -16,17 +16,19 @@
 
 package com.sun.faces.el;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-import jakarta.el.PropertyNotFoundException;
-
 import java.beans.FeatureDescriptor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.RequestStateManager;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.VariableResolver;
@@ -38,11 +40,11 @@ public class VariableResolverChainWrapper extends ELResolver {
 
     @SuppressWarnings("deprecation")
     public VariableResolverChainWrapper(VariableResolver variableResolver) {
-        this.legacyVR = variableResolver;
+        legacyVR = variableResolver;
     }
 
     public void setWrapped(VariableResolver newVR) {
-        this.legacyVR = newVR;
+        legacyVR = newVR;
     }
 
     @Override

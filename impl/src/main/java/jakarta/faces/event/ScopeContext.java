@@ -37,7 +37,7 @@ public class ScopeContext {
      * <p class="changed_added_2_0">
      * Construct this structure with the supplied arguments.
      * </p>
-     * 
+     *
      * @param scopeName the name of the scope
      * @param scope the scope itself
      */
@@ -54,7 +54,7 @@ public class ScopeContext {
      * <p class="changed_added_2_0">
      * Return the name of this custom scope.
      * </p>
-     * 
+     *
      * @return Return the name of this custom scope.
      */
     public String getScopeName() {
@@ -67,7 +67,7 @@ public class ScopeContext {
      * <p class="changed_modified_2_0">
      * Return the scope itself, exposed as a <code>Map</code>.
      * </p>
-     * 
+     *
      * @return Return the scope itself, exposed as a <code>Map</code>
      */
     public Map<String, Object> getScope() {

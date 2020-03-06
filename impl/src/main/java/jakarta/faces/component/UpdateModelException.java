@@ -16,8 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIInput;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 
@@ -44,7 +42,7 @@ public class UpdateModelException extends FacesException {
      * Store the argument <code>facesMessage</code> so it may be returned from {@link #getFacesMessage} and pass the
      * argument <code>cause</code> to the super constructor.
      * </p>
-     * 
+     *
      * @param facesMessage the message for the exception
      * @param cause the cause of this exception
      *
@@ -70,7 +68,7 @@ public class UpdateModelException extends FacesException {
 
     public FacesMessage getFacesMessage() {
 
-        return this.facesMessage;
+        return facesMessage;
 
     }
 

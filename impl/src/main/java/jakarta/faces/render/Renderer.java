@@ -44,20 +44,20 @@ import jakarta.faces.convert.ConverterException;
  * </p>
  *
  * <div class="changed_added_2_0">
- * 
+ *
  * <p>
  * If the {@link jakarta.faces.event.ListenerFor} annotation is attached to the class definition of a
  * <code>Renderer</code>, that class must also implement {@link jakarta.faces.event.ComponentSystemEventListener}, and
  * the action pertaining to the processing of <code>ResourceDependency</code> on a <code>Renderer</code> described in
  * {@link jakarta.faces.event.ListenerFor} must be taken.
  * </p>
- * 
+ *
  * <p>
  * If the {@link jakarta.faces.application.ResourceDependency} annotation is attached to the class definition of a
  * <code>Renderer</code>, the action pertaining to the processing of <code>ResourceDependency</code> on a
  * <code>Renderer</code> described in {@link UIComponent#getChildren} must be taken.
  * </p>
- * 
+ *
  * </div>
  */
 
@@ -68,7 +68,7 @@ public abstract class Renderer {
      * The key in the component passthrough attributes {@code Map} for the localName of the element corresponding to the
      * component.
      * </p>
-     * 
+     *
      * @since 2.2
      */
     public static final String PASSTHROUGH_RENDERER_LOCALNAME_KEY = "elementName";
@@ -179,10 +179,10 @@ public abstract class Renderer {
      */
     public String convertClientId(FacesContext context, String clientId) {
 
-        if ((context == null) || (clientId == null)) {
+        if (context == null || clientId == null) {
             throw new NullPointerException();
         }
-        return (clientId);
+        return clientId;
 
     }
 
@@ -206,18 +206,18 @@ public abstract class Renderer {
      * conversion is successful, the new value should be returned from this method; if not, a {@link ConverterException}
      * should be thrown.
      * </p>
-     * 
+     *
      * @param context {@link FacesContext} for the request we are processing
      * @param component {@link UIComponent} to be decoded.
      * @param submittedValue a value stored on the component during <code>decode</code>.
-     * 
+     *
      * @throws ConverterException if the submitted value cannot be converted successfully.
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      *
      * @return the converted value
      */
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
-        if ((context == null) || (component == null)) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
         return submittedValue;

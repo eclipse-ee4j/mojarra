@@ -16,6 +16,11 @@
 
 package com.sun.faces.application.resource;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.FacesLogger;
@@ -23,10 +28,6 @@ import com.sun.faces.util.MultiKeyConcurrentHashMap;
 import com.sun.faces.util.Util;
 
 import jakarta.servlet.ServletContext;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <p>
@@ -77,7 +78,7 @@ public class ResourceCache {
 
     // this one is for unit tests
     ResourceCache(long period) {
-        checkPeriod = ((period != -1) ? period * 1000L * 60L : -1);
+        checkPeriod = period != -1 ? period * 1000L * 60L : -1;
         resourceCache = new MultiKeyConcurrentHashMap<>(30);
     }
 
@@ -100,7 +101,7 @@ public class ResourceCache {
         }
         ResourceInfoCheckPeriodProxy proxy = resourceCache.putIfAbsent(info.name, info.libraryName, info.localePrefix, new ArrayList(contracts),
                 new ResourceInfoCheckPeriodProxy(info, checkPeriod));
-        return ((proxy != null) ? proxy.getResourceInfo() : null);
+        return proxy != null ? proxy.getResourceInfo() : null;
 
     }
 
@@ -120,7 +121,7 @@ public class ResourceCache {
             resourceCache.remove(name, libraryName, localePrefix, contracts);
             return null;
         } else {
-            return ((proxy != null) ? proxy.getResourceInfo() : null);
+            return proxy != null ? proxy.getResourceInfo() : null;
         }
 
     }
@@ -145,7 +146,7 @@ public class ResourceCache {
 
         String val = webConfig.getOptionValue(WebContextInitParameter.ResourceUpdateCheckPeriod);
         try {
-            return (Long.parseLong(val));
+            return Long.parseLong(val);
         } catch (NumberFormatException nfe) {
             return Long.parseLong(WebContextInitParameter.ResourceUpdateCheckPeriod.getDefaultValue());
         }
@@ -174,14 +175,14 @@ public class ResourceCache {
         public ResourceInfoCheckPeriodProxy(ResourceInfo resourceInfo, long checkPeriod) {
 
             this.resourceInfo = resourceInfo;
-            if (checkPeriod != -1L && (!(resourceInfo.getHelper() instanceof ClasspathResourceHelper))) {
+            if (checkPeriod != -1L && !(resourceInfo.getHelper() instanceof ClasspathResourceHelper)) {
                 checkTime = System.currentTimeMillis() + checkPeriod;
             }
         }
 
         private boolean needsRefreshed() {
 
-            return (checkTime != null && (checkTime < System.currentTimeMillis()));
+            return checkTime != null && checkTime < System.currentTimeMillis();
 
         }
 

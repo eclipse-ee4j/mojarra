@@ -16,16 +16,16 @@
 
 package com.sun.faces.el;
 
-import com.sun.faces.util.RequestStateManager;
-
-import jakarta.faces.context.FacesContext;
-
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.sun.faces.util.RequestStateManager;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.
@@ -155,7 +155,7 @@ public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver
      * <p>
      * Guarantee that this instance knows of what chain it is a member.
      * </p>
-     * 
+     *
      * @param chainType the ELResolverChainType
      */
     public ChainTypeCompositeELResolver(ELResolverChainType chainType) {

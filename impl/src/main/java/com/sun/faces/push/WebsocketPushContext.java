@@ -30,10 +30,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import jakarta.enterprise.context.SessionScoped;
-
 import com.sun.faces.cdi.CdiUtils;
 
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.push.Push;
 import jakarta.faces.push.PushContext;

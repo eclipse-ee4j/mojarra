@@ -16,14 +16,14 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
-
-import java.io.IOException;
 
 /**
  * @author Jacob Hookom
@@ -37,16 +37,16 @@ public final class CatchHandler extends TagHandlerImpl {
      */
     public CatchHandler(TagConfig config) {
         super(config);
-        this.var = this.getAttribute("var");
+        var = getAttribute("var");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         try {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         } catch (Exception e) {
-            if (this.var != null) {
-                ctx.setAttribute(this.var.getValue(ctx), e);
+            if (var != null) {
+                ctx.setAttribute(var.getValue(ctx), e);
             }
         }
     }

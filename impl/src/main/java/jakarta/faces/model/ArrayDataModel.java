@@ -75,11 +75,11 @@ public class ArrayDataModel<E> extends DataModel<E> {
     public boolean isRowAvailable() {
 
         if (array == null) {
-            return (false);
-        } else if ((index >= 0) && (index < array.length)) {
-            return (true);
+            return false;
+        } else if (index >= 0 && index < array.length) {
+            return true;
         } else {
-            return (false);
+            return false;
         }
 
     }
@@ -96,9 +96,9 @@ public class ArrayDataModel<E> extends DataModel<E> {
     public int getRowCount() {
 
         if (array == null) {
-            return (-1);
+            return -1;
         }
-        return (array.length);
+        return array.length;
 
     }
 
@@ -116,11 +116,11 @@ public class ArrayDataModel<E> extends DataModel<E> {
     public E getRowData() {
 
         if (array == null) {
-            return (null);
+            return null;
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         } else {
-            return ((E) array[index]);
+            return (E) array[index];
         }
 
     }
@@ -131,7 +131,7 @@ public class ArrayDataModel<E> extends DataModel<E> {
     @Override
     public int getRowIndex() {
 
-        return (index);
+        return index;
 
     }
 
@@ -151,7 +151,7 @@ public class ArrayDataModel<E> extends DataModel<E> {
             return;
         }
         DataModelListener[] listeners = getDataModelListeners();
-        if ((old != index) && (listeners != null)) {
+        if (old != index && listeners != null) {
             Object rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
@@ -170,7 +170,7 @@ public class ArrayDataModel<E> extends DataModel<E> {
     @Override
     public Object getWrappedData() {
 
-        return (this.array);
+        return this.array;
 
     }
 

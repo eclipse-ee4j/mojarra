@@ -83,7 +83,7 @@ public class ManagedBeanInfo {
     }
 
     public boolean hasMapEntry() {
-        return (mapEntry != null);
+        return mapEntry != null;
     }
 
     public MapEntry getMapEntry() {
@@ -91,7 +91,7 @@ public class ManagedBeanInfo {
     }
 
     public boolean hasListEntry() {
-        return (listEntry != null);
+        return listEntry != null;
     }
 
     public ListEntry getListEntry() {
@@ -99,7 +99,7 @@ public class ManagedBeanInfo {
     }
 
     public boolean hasManagedProperties() {
-        return (managedProperties != null);
+        return managedProperties != null;
     }
 
     public List<ManagedBeanInfo.ManagedProperty> getManagedProperties() {
@@ -209,7 +209,7 @@ public class ManagedBeanInfo {
         }
 
         public boolean hasPropertyValue() {
-            return (propertyValue != null);
+            return propertyValue != null;
         }
 
         public String getPropertyValue() {
@@ -217,7 +217,7 @@ public class ManagedBeanInfo {
         }
 
         public boolean hasMapEntry() {
-            return (mapEntry != null);
+            return mapEntry != null;
         }
 
         public ManagedBeanInfo.MapEntry getMapEntry() {
@@ -225,7 +225,7 @@ public class ManagedBeanInfo {
         }
 
         public boolean hasListEntry() {
-            return (listEntry != null);
+            return listEntry != null;
         }
 
         public ManagedBeanInfo.ListEntry getListEntry() {

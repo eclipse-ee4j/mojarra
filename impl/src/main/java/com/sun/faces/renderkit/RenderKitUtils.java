@@ -36,8 +36,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ValueExpression;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.ELUtils;
@@ -46,6 +44,7 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -181,7 +180,7 @@ public class RenderKitUtils {
      * <p>
      * Return the {@link RenderKit} for the current request.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} of the current request
      * @return the {@link RenderKit} for the current request.
      */
@@ -204,8 +203,8 @@ public class RenderKitUtils {
      */
     public static ResponseStateManager getResponseStateManager(FacesContext context, String renderKitId) throws FacesException {
 
-        assert (null != renderKitId);
-        assert (null != context);
+        assert null != renderKitId;
+        assert null != context;
 
         RenderKit renderKit = context.getRenderKit();
         if (renderKit == null) {
@@ -280,9 +279,9 @@ public class RenderKitUtils {
      */
     public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] attributes) throws IOException {
 
-        assert (null != context);
-        assert (null != writer);
-        assert (null != component);
+        assert null != context;
+        assert null != writer;
+        assert null != component;
 
         Map<String, List<ClientBehavior>> behaviors = null;
 
@@ -291,7 +290,7 @@ public class RenderKitUtils {
         }
 
         // Don't render behavior scripts if component is disabled
-        if ((null != behaviors) && (behaviors.size() > 0) && Util.componentIsDisabled(component)) {
+        if (null != behaviors && behaviors.size() > 0 && Util.componentIsDisabled(component)) {
             behaviors = null;
         }
 
@@ -316,8 +315,8 @@ public class RenderKitUtils {
     public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] attributes,
             Map<String, List<ClientBehavior>> behaviors) throws IOException {
 
-        assert (null != writer);
-        assert (null != component);
+        assert null != writer;
+        assert null != component;
 
         if (behaviors == null) {
             behaviors = Collections.emptyMap();
@@ -441,7 +440,7 @@ public class RenderKitUtils {
 
     public static String prefixAttribute(final String attrName, final ResponseWriter writer) {
 
-        return (prefixAttribute(attrName, RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType())));
+        return prefixAttribute(attrName, RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType()));
 
     }
 
@@ -470,8 +469,8 @@ public class RenderKitUtils {
      */
     public static void renderXHTMLStyleBooleanAttributes(ResponseWriter writer, UIComponent component) throws IOException {
 
-        assert (writer != null);
-        assert (component != null);
+        assert writer != null;
+        assert component != null;
 
         List<String> excludedAttributes = null;
 
@@ -491,8 +490,8 @@ public class RenderKitUtils {
      */
     public static void renderXHTMLStyleBooleanAttributes(ResponseWriter writer, UIComponent component, List<String> excludedAttributes) throws IOException {
 
-        assert (writer != null);
-        assert (component != null);
+        assert writer != null;
+        assert component != null;
 
         Map<?, ?> attrMap = component.getAttributes();
         for (String attrName : BOOLEAN_ATTRIBUTES) {
@@ -537,7 +536,7 @@ public class RenderKitUtils {
 
         // if best match exits and best match is not some wildcard,
         // return best match
-        if ((matchedInfo[0][1] != null) && !(matchedInfo[0][2].equals("*"))) {
+        if (matchedInfo[0][1] != null && !matchedInfo[0][2].equals("*")) {
             contentType = matchedInfo[0][1] + CONTENT_TYPE_SUBTYPE_DELIMITER + matchedInfo[0][2];
         }
 
@@ -549,8 +548,8 @@ public class RenderKitUtils {
      * @return <code>true</code> if the content type is a known XML-based content type, otherwise, <code>false</code>
      */
     public static boolean isXml(String contentType) {
-        return (RIConstants.XHTML_CONTENT_TYPE.equals(contentType) || RIConstants.APPLICATION_XML_CONTENT_TYPE.equals(contentType)
-                || RIConstants.TEXT_XML_CONTENT_TYPE.equals(contentType));
+        return RIConstants.XHTML_CONTENT_TYPE.equals(contentType) || RIConstants.APPLICATION_XML_CONTENT_TYPE.equals(contentType)
+                || RIConstants.TEXT_XML_CONTENT_TYPE.equals(contentType);
     }
 
     // --------------------------------------------------------- Private Methods
@@ -561,8 +560,8 @@ public class RenderKitUtils {
      * <code>jakarta.faces.component.html</code> packages, otherwise return <code>false</code>
      */
     private static boolean canBeOptimized(UIComponent component, Map<String, List<ClientBehavior>> behaviors) {
-        assert (component != null);
-        assert (behaviors != null);
+        assert component != null;
+        assert behaviors != null;
 
         String name = component.getClass().getName();
         if (name != null && name.startsWith(OPTIMIZED_PACKAGE)) {
@@ -571,7 +570,7 @@ public class RenderKitUtils {
             // it is difficult to optimize, so fall back to the
             // non-optimized code path. Behaviors attached to
             // multiple event handlers should be a fairly rare case.
-            return (behaviors.size() < 2);
+            return behaviors.size() < 2;
         }
 
         return false;
@@ -581,7 +580,7 @@ public class RenderKitUtils {
      * <p>
      * For each attribute in <code>setAttributes</code>, perform a binary search against the array of
      * <code>knownAttributes</code> If a match is found and the value is not <code>null</code>, render the attribute.
-     * 
+     *
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
@@ -594,7 +593,7 @@ public class RenderKitUtils {
             List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
 
         // We should only come in here if we've got zero or one behavior event
-        assert ((behaviors != null) && (behaviors.size() < 2));
+        assert behaviors != null && behaviors.size() < 2;
         String behaviorEventName = getSingleBehaviorEventName(behaviors);
         boolean renderedBehavior = false;
 
@@ -626,7 +625,7 @@ public class RenderKitUtils {
 
         // We did not render out the behavior as part of our optimized
         // attribute rendering. Need to manually render it out now.
-        if ((behaviorEventName != null) && !renderedBehavior) {
+        if (behaviorEventName != null && !renderedBehavior) {
 
             // Note that we can optimize this search by providing
             // an event name -> Attribute inverse look up map.
@@ -634,7 +633,7 @@ public class RenderKitUtils {
             for (int i = 0; i < knownAttributes.length; i++) {
                 Attribute attr = knownAttributes[i];
                 String[] events = attr.getEvents();
-                if ((events != null) && (events.length > 0) && (behaviorEventName.equals(events[0]))) {
+                if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
 
                     renderHandler(context, component, null, attr.getName(), null, behaviorEventName, null, false, false);
                 }
@@ -646,7 +645,7 @@ public class RenderKitUtils {
     /**
      * <p>
      * Loops over all known attributes and attempts to render each one.
-     * 
+     *
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
@@ -664,7 +663,7 @@ public class RenderKitUtils {
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();
             String[] events = attribute.getEvents();
-            boolean hasBehavior = ((events != null) && (events.length > 0) && (behaviors.containsKey(events[0])));
+            boolean hasBehavior = events != null && events.length > 0 && behaviors.containsKey(events[0]);
 
             Object value = attrMap.get(attrName);
 
@@ -752,7 +751,7 @@ public class RenderKitUtils {
      */
     private static String[][] buildTypeArrayFromString(String accept) {
         // return if empty
-        if ((accept == null) || (accept.length() == 0)) {
+        if (accept == null || accept.length() == 0) {
             return new String[0][0];
         }
         // some helper variables
@@ -841,7 +840,7 @@ public class RenderKitUtils {
             arrayAccept[index][2] = subtype;
             arrayAccept[index][3] = level;
         }
-        return (arrayAccept);
+        return arrayAccept;
     }
 
     /**
@@ -876,10 +875,10 @@ public class RenderKitUtils {
                     String browserType = clientContentTypes[cidx][1];
                     if (browserType != null) {
                         // compare them and check for wildcard
-                        if ((browserType.equalsIgnoreCase(serverType)) || (browserType.equals("*"))) {
+                        if (browserType.equalsIgnoreCase(serverType) || browserType.equals("*")) {
                             // types are equal or browser type is wildcard - compare subtypes
-                            if ((clientContentTypes[cidx][2].equalsIgnoreCase(serverSupportedContentTypes[sidx][2]))
-                                    || (clientContentTypes[cidx][2].equals("*"))) {
+                            if (clientContentTypes[cidx][2].equalsIgnoreCase(serverSupportedContentTypes[sidx][2])
+                                    || clientContentTypes[cidx][2].equals("*")) {
                                 // subtypes are equal or browser subtype is wildcard
                                 // found match: multiplicate qualities and add to result array
                                 // if there was a level associated, this gets higher precedence, so
@@ -887,10 +886,10 @@ public class RenderKitUtils {
                                 double cLevel = 0.0;
                                 double sLevel = 0.0;
                                 if (clientContentTypes[cidx][3] != null) {
-                                    cLevel = (Double.parseDouble(clientContentTypes[cidx][3])) * .10;
+                                    cLevel = Double.parseDouble(clientContentTypes[cidx][3]) * .10;
                                 }
                                 if (serverSupportedContentTypes[sidx][3] != null) {
-                                    sLevel = (Double.parseDouble(serverSupportedContentTypes[sidx][3])) * .10;
+                                    sLevel = Double.parseDouble(serverSupportedContentTypes[sidx][3]) * .10;
                                 }
                                 double cQfactor = Double.parseDouble(clientContentTypes[cidx][0]) + cLevel;
                                 double sQfactor = Double.parseDouble(serverSupportedContentTypes[sidx][0]) + sLevel;
@@ -930,8 +929,8 @@ public class RenderKitUtils {
             BigDecimal highestQual = BigDecimal.valueOf(highestQFactor);
             for (int i = 0, len = resultList.size(); i < len; i++) {
                 String[] result = resultList.get(i);
-                if ((BigDecimal.valueOf(Double.parseDouble(result[0])).compareTo(highestQual) == 0) && (result[1]).equals(preferredContentType[0][1])
-                        && (result[2]).equals(preferredContentType[0][2])) {
+                if (BigDecimal.valueOf(Double.parseDouble(result[0])).compareTo(highestQual) == 0 && result[1].equals(preferredContentType[0][1])
+                        && result[2].equals(preferredContentType[0][2])) {
                     match[0][0] = result[0];
                     match[0][1] = result[1];
                     match[0][2] = result[2];
@@ -975,7 +974,7 @@ public class RenderKitUtils {
      * <p>
      * Only install the JSF script resource if it doesn't exist. The resource component will be installed with the target
      * "head".
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      */
     public static void installJsfJsIfNecessary(FacesContext context) {
@@ -996,7 +995,7 @@ public class RenderKitUtils {
      * <p>
      * Renders the Javascript necessary to add and remove request parameters to the current form.
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @throws java.io.IOException if an error occurs writing to the response
      */
@@ -1125,7 +1124,7 @@ public class RenderKitUtils {
     // been triggered either via jsf.ajax.request() or via a submitting
     // behavior.
     public static boolean isPartialOrBehaviorAction(FacesContext context, String clientId) {
-        if ((clientId == null) || (clientId.length() == 0)) {
+        if (clientId == null || clientId.length() == 0) {
             return false;
         }
 
@@ -1137,14 +1136,14 @@ public class RenderKitUtils {
         // First check for a Behavior action event.
         String behaviorEvent = BEHAVIOR_EVENT_PARAM.getValue(context);
         if (null != behaviorEvent) {
-            return ("action".equals(behaviorEvent));
+            return "action".equals(behaviorEvent);
         }
 
         // Not a Behavior-related request. Check for jsf.ajax.request()
         // request params.
         String partialEvent = PARTIAL_EVENT_PARAM.getValue(context);
 
-        return ("click".equals(partialEvent));
+        return "click".equals(partialEvent);
     }
 
     /**
@@ -1251,7 +1250,7 @@ public class RenderKitUtils {
                 return value;
             } else {
                 value = context.getApplication().getViewHandler().getResourceURL(context, value);
-                return (context.getExternalContext().encodeResourceURL(value));
+                return context.getExternalContext().encodeResourceURL(value);
             }
         }
 
@@ -1259,7 +1258,7 @@ public class RenderKitUtils {
 
     /**
      * If view root is instance of naming container, prepend its container client id to namespace given parameter name.
-     * 
+     *
      * @param context Involved faces context.
      * @param name Request parameter name.
      * @return The request parameter name, if necessary namespaced.
@@ -1273,7 +1272,7 @@ public class RenderKitUtils {
     // Appends a script to a jsf.util.chain() call
     private static void appendScriptToChain(StringBuilder builder, String script) {
 
-        if ((script == null) || (script.length() == 0)) {
+        if (script == null || script.length() == 0) {
             return;
         }
 
@@ -1281,8 +1280,9 @@ public class RenderKitUtils {
             builder.append("jsf.util.chain(this,event,");
         }
 
-        if (builder.charAt(builder.length() - 1) != ',')
+        if (builder.charAt(builder.length() - 1) != ',') {
             builder.append(',');
+        }
 
         appendQuotedValue(builder, script);
     }
@@ -1298,12 +1298,14 @@ public class RenderKitUtils {
     // object has already been opened by the caller.
     public static void appendProperty(StringBuilder builder, String name, Object value, boolean quoteValue) {
 
-        if ((null == name) || (name.length() == 0))
+        if (null == name || name.length() == 0) {
             throw new IllegalArgumentException();
+        }
 
         char lastChar = builder.charAt(builder.length() - 1);
-        if ((lastChar != ',') && (lastChar != '{'))
+        if (lastChar != ',' && lastChar != '{') {
             builder.append(',');
+        }
 
         RenderKitUtils.appendQuotedValue(builder, name);
         builder.append(":");
@@ -1342,7 +1344,7 @@ public class RenderKitUtils {
     private static boolean appendBehaviorsToChain(StringBuilder builder, FacesContext context, UIComponent component, List<ClientBehavior> behaviors,
             String behaviorEventName, Collection<ClientBehaviorContext.Parameter> params) {
 
-        if ((behaviors == null) || (behaviors.isEmpty())) {
+        if (behaviors == null || behaviors.isEmpty()) {
             return false;
         }
 
@@ -1352,7 +1354,7 @@ public class RenderKitUtils {
 
         for (ClientBehavior behavior : behaviors) {
             String script = behavior.getScript(bContext);
-            if ((script != null) && (script.length() > 0)) {
+            if (script != null && script.length() > 0) {
                 appendScriptToChain(builder, script);
 
                 if (isSubmitting(behavior)) {
@@ -1368,7 +1370,7 @@ public class RenderKitUtils {
     // for that entry. Or, if no entries, returns null. Used by
     // renderPassThruAttributesOptimized.
     private static String getSingleBehaviorEventName(Map<String, List<ClientBehavior>> behaviors) {
-        assert (behaviors != null);
+        assert behaviors != null;
 
         int size = behaviors.size();
         if (size == 0) {
@@ -1377,10 +1379,10 @@ public class RenderKitUtils {
 
         // If we made it this far, we should have a single
         // entry in the behaviors map.
-        assert (size == 1);
+        assert size == 1;
 
         Iterator<String> keys = behaviors.keySet().iterator();
-        assert (keys.hasNext());
+        assert keys.hasNext();
 
         return keys.next();
     }
@@ -1391,7 +1393,7 @@ public class RenderKitUtils {
 
         String[] events = attr.getEvents();
 
-        return ((behaviorEventName != null) && (events != null) && (events.length > 0) && (behaviorEventName.equals(events[0])));
+        return behaviorEventName != null && events != null && events.length > 0 && behaviorEventName.equals(events[0]);
     }
 
     // Ensures that the user-specified DOM event handler script
@@ -1404,8 +1406,9 @@ public class RenderKitUtils {
             handler = handlerObject.toString();
             handler = handler.trim();
 
-            if (handler.length() == 0)
+            if (handler.length() == 0) {
                 handler = null;
+            }
         }
 
         return handler;
@@ -1442,7 +1445,7 @@ public class RenderKitUtils {
 
         appendProperty(builder, componentClientId, componentClientId);
 
-        if ((null != params) && (!params.isEmpty())) {
+        if (null != params && !params.isEmpty()) {
             for (ClientBehaviorContext.Parameter param : params) {
                 appendProperty(builder, getParameterName(context, param.getName()), param.getValue());
             }
@@ -1475,7 +1478,7 @@ public class RenderKitUtils {
 
         boolean submitting = appendBehaviorsToChain(builder, context, component, behaviors, behaviorEventName, params);
 
-        boolean hasParams = ((null != params) && !params.isEmpty());
+        boolean hasParams = null != params && !params.isEmpty();
 
         // If we've got parameters but we didn't render a "submitting"
         // behavior script, we need to explicitly render a submit script.
@@ -1512,7 +1515,7 @@ public class RenderKitUtils {
 
         String script = behavior.getScript(bContext);
 
-        boolean preventDefault = ((needsSubmit || isSubmitting(behavior)) && (component instanceof ActionSource || component instanceof ActionSource2));
+        boolean preventDefault = (needsSubmit || isSubmitting(behavior)) && (component instanceof ActionSource || component instanceof ActionSource2);
 
         if (script == null) {
             if (needsSubmit) {
@@ -1540,7 +1543,7 @@ public class RenderKitUtils {
     /**
      * Renders a handler script, which may require chaining together the user-specified event handler, any scripts required
      * by attached Behaviors, and also possibly the mojarra.jsfcljs() "submit" script.
-     * 
+     *
      * @param context the FacesContext for this request.
      * @param component the UIComponent that we are rendering
      * @param params any parameters that should be included by "submitting" scripts.
@@ -1561,7 +1564,7 @@ public class RenderKitUtils {
         List<ClientBehavior> behaviors = getClientBehaviors(component, behaviorEventName);
 
         // Don't render behavior scripts if component is disabled
-        if ((null != behaviors) && (behaviors.size() > 0) && Util.componentIsDisabled(component)) {
+        if (null != behaviors && behaviors.size() > 0 && Util.componentIsDisabled(component)) {
             behaviors = null;
         }
 
@@ -1587,7 +1590,7 @@ public class RenderKitUtils {
             handler = getChainedHandler(context, component, behaviors, params, behaviorEventName, userHandler, submitTarget, needsSubmit);
             break;
         default:
-            assert (false);
+            assert false;
         }
 
         writer.writeAttribute(handlerName, handler, null);
@@ -1598,30 +1601,32 @@ public class RenderKitUtils {
     private static HandlerType getHandlerType(List<ClientBehavior> behaviors, Collection<ClientBehaviorContext.Parameter> params, String userHandler,
             boolean needsSubmit, boolean includeExec) {
 
-        if ((behaviors == null) || (behaviors.isEmpty())) {
+        if (behaviors == null || behaviors.isEmpty()) {
 
             // No behaviors and no params means user handler only,
             // if we have a param only because of includeExec while having
             // no behaviors, also, user handler only
-            if ((params.isEmpty() && !needsSubmit) || includeExec)
+            if (params.isEmpty() && !needsSubmit || includeExec) {
                 return HandlerType.USER_HANDLER_ONLY;
+            }
 
             // We've got params. If we've also got a user handler, we need
             // to chain. Otherwise, we only render the submit script.
-            return (userHandler == null) ? HandlerType.SUBMIT_ONLY : HandlerType.CHAIN;
+            return userHandler == null ? HandlerType.SUBMIT_ONLY : HandlerType.CHAIN;
         }
 
         // We've got behaviors. See if we can optimize for the single
         // behavior case. We can only do this if we don't have a user
         // handler.
-        if ((behaviors.size() == 1) && (userHandler == null)) {
+        if (behaviors.size() == 1 && userHandler == null) {
             ClientBehavior behavior = behaviors.get(0);
 
             // If we've got a submitting behavior, then it will handle
             // submitting the params. If not, then we need to use
             // a submit script to handle the params.
-            if (isSubmitting(behavior) || ((params.isEmpty()) && !needsSubmit))
+            if (isSubmitting(behavior) || params.isEmpty() && !needsSubmit) {
                 return HandlerType.SINGLE_BEHAVIOR_ONLY;
+            }
         }
 
         return HandlerType.CHAIN;
@@ -1629,7 +1634,7 @@ public class RenderKitUtils {
 
     // Little utility enum that we use to identify the type of
     // handler that we are going to render.
-    private static enum HandlerType {
+    private enum HandlerType {
 
         // Indicates that we only have a user handler - nothing else
         USER_HANDLER_ONLY,

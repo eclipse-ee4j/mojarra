@@ -21,7 +21,7 @@ package com.sun.faces.spi;
  * This interface defines an integration point for Java EE vendors. Each vendor will need to provide an implementation
  * of this interface which will provide the JSF implementation the necessary hooks to perform resource injection.
  * </p>
- * 
+ *
  * <p>
  * The implementation of this interface *must* be thread-safe and must provider either a no-arg constructor, or a
  * constructor accepting a <code>ServletContext</code> instance.
@@ -38,32 +38,32 @@ public interface InjectionProvider {
      * </p>
      * <p>
      * This method <em>must not</em> invoke any methods annotated with <code>@PostConstruct</code>
-     * 
+     *
      * @param managedBean the target managed bean
      * @throws InjectionProviderException if an error occurs during resource injection
      */
-    public void inject(Object managedBean) throws InjectionProviderException;
+    void inject(Object managedBean) throws InjectionProviderException;
 
     /**
      * <p>
      * The implemenation of this method must invoke any method marked with the <code>@PreDestroy</code> annotation (per the
      * Common Annotations Specification).
-     * 
+     *
      * @param managedBean the target managed bean
      * @throws InjectionProviderException if an error occurs when invoking the method annotated by the
      * <code>@PreDestroy</code> annotation
      */
-    public void invokePreDestroy(Object managedBean) throws InjectionProviderException;
+    void invokePreDestroy(Object managedBean) throws InjectionProviderException;
 
     /**
      * <p>
      * The implemenation of this method must invoke any method marked with the <code>@PostConstruct</code> annotation (per
      * the Common Annotations Specification).
-     * 
+     *
      * @param managedBean the target managed bean
      * @throws InjectionProviderException if an error occurs when invoking the method annotated by the
      * <code>@PostConstruct</code> annotation
      */
-    public void invokePostConstruct(Object managedBean) throws InjectionProviderException;
+    void invokePostConstruct(Object managedBean) throws InjectionProviderException;
 
 }

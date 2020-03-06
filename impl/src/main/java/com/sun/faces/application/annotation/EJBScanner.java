@@ -16,11 +16,13 @@
 
 package com.sun.faces.application.annotation;
 
-import com.sun.faces.util.Util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+
+import com.sun.faces.util.Util;
+
 import jakarta.ejb.EJB;
 
 /**
@@ -72,8 +74,8 @@ class EJBScanner implements Scanner {
             }
         }
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new EJBHandler(fields.toArray(new Field[0]), (EJB[]) fieldAnnotations.toArray(new EJB[0]), methods.toArray(new Method[0]),
-                    (EJB[]) methodAnnotations.toArray(new EJB[0]));
+            handler = new EJBHandler(fields.toArray(new Field[0]), fieldAnnotations.toArray(new EJB[0]), methods.toArray(new Method[0]),
+                    methodAnnotations.toArray(new EJB[0]));
         }
         return handler;
     }

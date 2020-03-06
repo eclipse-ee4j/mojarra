@@ -178,7 +178,7 @@ final class FactoryFinderInstance {
                 return factoryOrList;
             }
 
-            savedFactoryNames.put(factoryName, new ArrayList<String>((List<String>) factoryOrList));
+            savedFactoryNames.put(factoryName, new ArrayList<>((List<String>) factoryOrList));
 
             Object factory = getImplementationInstance(getContextClassLoader2(), factoryName, (List<String>) factoryOrList);
 
@@ -333,7 +333,7 @@ final class FactoryFinderInstance {
 
         // step 3.
         if (implementations != null) {
-            for (len = (implementations.size() - 1); 0 <= len; len--) {
+            for (len = implementations.size() - 1; 0 <= len; len--) {
                 curImplClass = implementations.remove(len);
                 implementation = getImplGivenPreviousImpl(classLoader, factoryName, curImplClass, implementation);
             }

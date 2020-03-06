@@ -16,9 +16,15 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.io.IOException;
+import java.util.List;
+
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.component.behavior.ClientBehavior;
@@ -27,14 +33,12 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.AttachedObjectHandler;
 import jakarta.faces.view.AttachedObjectTarget;
 import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.io.IOException;
-import java.util.List;
+import jakarta.faces.view.facelets.BehaviorHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandlerDelegate;
 
 /**
  *
@@ -75,7 +79,7 @@ class BehaviorTagHandlerDelegateImpl extends TagHandlerDelegate implements Attac
             for (AttachedObjectTarget target : targetList) {
                 if (target instanceof BehaviorHolderAttachedObjectTarget) {
                     BehaviorHolderAttachedObjectTarget behaviorTarget = (BehaviorHolderAttachedObjectTarget) target;
-                    if ((null != eventName && eventName.equals(behaviorTarget.getName())) || (null == eventName && behaviorTarget.isDefaultEvent())) {
+                    if (null != eventName && eventName.equals(behaviorTarget.getName()) || null == eventName && behaviorTarget.isDefaultEvent()) {
                         supportedEvent = true;
                         break;
                     }

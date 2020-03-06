@@ -32,7 +32,7 @@ public class DocumentInfo {
 
     public DocumentInfo(Document document, URI sourceURL) {
         this.document = document;
-        this.sourceURI = sourceURL;
+        sourceURI = sourceURL;
     }
 
     // ---------------------------------------------------------- Public Methods

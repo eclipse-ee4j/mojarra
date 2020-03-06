@@ -16,20 +16,19 @@
 
 package com.sun.faces.facelets.el;
 
-import com.sun.faces.el.ELUtils;
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.view.Location;
@@ -37,7 +36,7 @@ import jakarta.faces.view.Location;
 /**
  * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
  * or <code>#{..}</code>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -46,7 +45,7 @@ public class ELText {
     private static final class LiteralValueExpression extends ValueExpression {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -68,7 +67,7 @@ public class ELText {
 
         @Override
         public String getExpressionString() {
-            return this.text;
+            return text;
         }
 
         @Override
@@ -112,23 +111,23 @@ public class ELText {
 
         @Override
         public void write(Writer out, ELContext ctx) throws ELException, IOException {
-            for (int i = 0; i < this.txt.length; i++) {
-                this.txt[i].write(out, ctx);
+            for (int i = 0; i < txt.length; i++) {
+                txt[i].write(out, ctx);
             }
         }
 
         @Override
         public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
-            for (int i = 0; i < this.txt.length; i++) {
-                this.txt[i].writeText(out, ctx);
+            for (int i = 0; i < txt.length; i++) {
+                txt[i].writeText(out, ctx);
             }
         }
 
         @Override
         public String toString(ELContext ctx) {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < this.txt.length; i++) {
-                sb.append(this.txt[i].toString(ctx));
+            for (int i = 0; i < txt.length; i++) {
+                sb.append(txt[i].toString(ctx));
             }
             return sb.toString();
         }
@@ -141,8 +140,8 @@ public class ELText {
         @Override
         public String toString() {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < this.txt.length; i++) {
-                sb.append(this.txt[i].toString());
+            for (int i = 0; i < txt.length; i++) {
+                sb.append(txt[i].toString());
             }
             return sb.toString();
         }
@@ -154,10 +153,10 @@ public class ELText {
 
         @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx) {
-            int len = this.txt.length;
+            int len = txt.length;
             ELText[] nt = new ELText[len];
             for (int i = 0; i < len; i++) {
-                nt[i] = this.txt[i].apply(factory, ctx);
+                nt[i] = txt[i].apply(factory, ctx);
             }
             return new ELTextComposite(nt);
         }
@@ -179,10 +178,10 @@ public class ELText {
         @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx) {
             ELText result = null;
-            if (this.ve instanceof ContextualCompositeValueExpression) {
+            if (ve instanceof ContextualCompositeValueExpression) {
                 result = new ELTextVariable(ve);
             } else {
-                result = new ELTextVariable(factory.createValueExpression(ctx, this.ve.getExpressionString(), String.class));
+                result = new ELTextVariable(factory.createValueExpression(ctx, ve.getExpressionString(), String.class));
             }
 
             return result;
@@ -190,7 +189,7 @@ public class ELText {
 
         @Override
         public void write(Writer out, ELContext ctx) throws ELException, IOException {
-            Object v = this.ve.getValue(ctx);
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 char[] buffer = new char[1028];
                 HtmlUtils.writeTextForXML(out, v.toString(), buffer);
@@ -199,7 +198,7 @@ public class ELText {
 
         @Override
         public String toString(ELContext ctx) throws ELException {
-            Object v = this.ve.getValue(ctx);
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 return v.toString();
             }
@@ -209,7 +208,7 @@ public class ELText {
 
         @Override
         public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
-            Object v = this.ve.getValue(ctx);
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 out.writeText(v.toString(), null);
             }
@@ -224,7 +223,7 @@ public class ELText {
 
     /**
      * If it's literal text
-     * 
+     *
      * @return true if the String is literal (doesn't contain <code>#{..}</code> or <code>${..}</code>)
      */
     public boolean isLiteral() {
@@ -233,7 +232,7 @@ public class ELText {
 
     /**
      * Return an instance of <code>this</code> that is applicable given the ELContext and ExpressionFactory state.
-     * 
+     *
      * @param factory the ExpressionFactory to use
      * @param ctx the ELContext to use
      * @return an ELText instance
@@ -244,39 +243,39 @@ public class ELText {
 
     /**
      * Allow this instance to write to the passed Writer, given the ELContext state
-     * 
+     *
      * @param out Writer to write to
      * @param ctx current ELContext state
      * @throws ELException
      * @throws IOException
      */
     public void write(Writer out, ELContext ctx) throws ELException, IOException {
-        out.write(this.literal);
+        out.write(literal);
     }
 
     public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
-        out.writeText(this.literal, null);
+        out.writeText(literal, null);
     }
 
     /**
      * Evaluates the ELText to a String
-     * 
+     *
      * @param ctx current ELContext state
      * @throws ELException
      * @return the evaluated String
      */
     public String toString(ELContext ctx) throws ELException {
-        return this.literal;
+        return literal;
     }
 
     @Override
     public String toString() {
-        return this.literal;
+        return literal;
     }
 
     /**
      * Parses the passed string to determine if it's literal or not
-     * 
+     *
      * @param in input String
      * @return true if the String is literal (doesn't contain <code>#{..}</code> or <code>${..}</code>)
      */
@@ -289,7 +288,7 @@ public class ELText {
      * Factory method for creating an unvalidated ELText instance. NOTE: All expressions in the passed String are treated as
      * {@link com.sun.faces.facelets.el.ELText.LiteralValueExpression}, with one exception: composite component expressions.
      * These are treated as ContextualCompositeValueExpressions.
-     * 
+     *
      * @param in String to parse
      * @return ELText instance that knows if the String was literal or not
      * @throws jakarta.el.ELException
@@ -311,7 +310,7 @@ public class ELText {
      * to create a ValueExpression instance, resolving any functions at that time.
      * <p/>
      * Variables and properties will not be evaluated.
-     * 
+     *
      * @param fact ExpressionFactory to use
      * @param ctx ELContext to validate against
      * @param in String to parse
@@ -416,7 +415,7 @@ public class ELText {
                 }
             } else if ('{' == c && !insideString) {
                 nested++;
-            } else if (str == 0 && ('}' == c)) {
+            } else if (str == 0 && '}' == c) {
                 if (nested > 1) {
                     nested--;
                 } else {

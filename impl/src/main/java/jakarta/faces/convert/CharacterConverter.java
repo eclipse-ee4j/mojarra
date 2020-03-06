@@ -16,10 +16,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.MessageFactory;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -81,15 +77,15 @@ public class CharacterConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (value.charAt(0));
+            return value.charAt(0);
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, CHARACTER_ID, value, MessageFactory.getLabel(context, component)), e);
         }
@@ -112,7 +108,7 @@ public class CharacterConverter implements Converter {
         }
 
         try {
-            return (value.toString());
+            return value.toString();
         } catch (Exception e) {
             throw new ConverterException(e);
         }

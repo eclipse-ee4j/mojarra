@@ -16,18 +16,15 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.application.ViewVisitOption;
-
 import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
  * <p class="changed_added_2_3">
  * Defines the view traversal options.
  * </p>
- * 
+ *
  * @since 2.3
- * 
+ *
  * @see ViewHandler#getViews(jakarta.faces.context.FacesContext, String, int, ViewVisitOption...)
  * @see ViewDeclarationLanguage#getViews(jakarta.faces.context.FacesContext, String, int, ViewVisitOption...)
  *
@@ -40,7 +37,7 @@ public enum ViewVisitOption {
      * <p>
      * For example, for the Facelets VDL a view such as <code>/foo/bar.xhtml</code> would be returned as
      * <code>/foo/bar</code>.
-     * 
+     *
      */
     RETURN_AS_MINIMAL_IMPLICIT_OUTCOME
 

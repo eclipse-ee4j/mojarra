@@ -20,17 +20,15 @@ import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.PropertyNotWritableException;
-
-import com.sun.faces.util.Util;
-
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-
-import com.sun.faces.util.MessageUtils;
 
 public class ImplicitObjectELResolverForJsp extends ImplicitObjectELResolver {
 

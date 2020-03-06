@@ -20,6 +20,10 @@ import com.sun.faces.flow.FlowImpl;
 import com.sun.faces.flow.ParameterImpl;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.builder.FlowBuilder;
@@ -29,11 +33,6 @@ import jakarta.faces.flow.builder.NavigationCaseBuilder;
 import jakarta.faces.flow.builder.ReturnBuilder;
 import jakarta.faces.flow.builder.SwitchBuilder;
 import jakarta.faces.flow.builder.ViewBuilder;
-
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.MethodExpression;
-import jakarta.el.ValueExpression;
 
 public class FlowBuilderImpl extends FlowBuilder {
 
@@ -47,10 +46,10 @@ public class FlowBuilderImpl extends FlowBuilder {
     public FlowBuilderImpl(FacesContext context) {
         flow = new FlowImpl();
         this.context = context;
-        this.expressionFactory = context.getApplication().getExpressionFactory();
-        this.elContext = context.getELContext();
-        this.didInit = false;
-        this.hasId = false;
+        expressionFactory = context.getApplication().getExpressionFactory();
+        elContext = context.getELContext();
+        didInit = false;
+        hasId = false;
 
     }
 
@@ -101,7 +100,7 @@ public class FlowBuilderImpl extends FlowBuilder {
         Util.notNull("definingDocumentId", definingDocumentId);
         Util.notNull("flowId", flowId);
         flow.setId(definingDocumentId, flowId);
-        this.hasId = true;
+        hasId = true;
         return this;
     }
 
@@ -160,7 +159,7 @@ public class FlowBuilderImpl extends FlowBuilder {
             String startNodeId = flow.getStartNodeId();
             if (null == startNodeId) {
                 String flowId = flow.getId();
-                this.viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml").markAsStartNode();
+                viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml").markAsStartNode();
             }
             didInit = true;
         }

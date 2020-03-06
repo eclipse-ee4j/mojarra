@@ -154,7 +154,7 @@ public class CoreTagParserImpl implements TagParser {
                 hasBinding = true;
             }
         }
-        if (failed = (!hasBinding && !hasType)) {
+        if (failed = !hasBinding && !hasType) {
             Object[] obj = new Object[1];
             obj[0] = ln;
             ResourceBundle rb = ResourceBundle.getBundle(RIConstants.TLV_RESOURCE_LOCATION);
@@ -186,7 +186,7 @@ public class CoreTagParserImpl implements TagParser {
                 hasBinding = true;
             }
         }
-        if (failed = (!hasBinding && !hasValidatorId)) {
+        if (failed = !hasBinding && !hasValidatorId) {
             Object[] obj = new Object[1];
             obj[0] = ln;
             ResourceBundle rb = ResourceBundle.getBundle(RIConstants.TLV_RESOURCE_LOCATION);
@@ -218,7 +218,7 @@ public class CoreTagParserImpl implements TagParser {
                 hasBinding = true;
             }
         }
-        if (failed = (!hasBinding && !hasConverterId)) {
+        if (failed = !hasBinding && !hasConverterId) {
             Object[] obj = new Object[1];
             obj[0] = ln;
             ResourceBundle rb = ResourceBundle.getBundle(RIConstants.TLV_RESOURCE_LOCATION);

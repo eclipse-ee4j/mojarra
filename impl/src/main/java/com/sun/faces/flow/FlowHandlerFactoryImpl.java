@@ -27,7 +27,7 @@ public class FlowHandlerFactoryImpl extends FlowHandlerFactory {
 
     /**
      * Create the flow handler.
-     * 
+     *
      * @param context the Faces context.
      * @return the flow handler.
      */

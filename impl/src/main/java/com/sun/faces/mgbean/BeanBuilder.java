@@ -16,21 +16,6 @@
 
 package com.sun.faces.mgbean;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.spi.InjectionProvider;
-import com.sun.faces.spi.InjectionProviderException;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.context.FacesContext;
-
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -39,6 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.spi.InjectionProvider;
+import com.sun.faces.spi.InjectionProviderException;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
+
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
@@ -96,7 +94,7 @@ public abstract class BeanBuilder {
 
     public boolean hasMessages() {
 
-        return (messages != null && !messages.isEmpty());
+        return messages != null && !messages.isEmpty();
 
     }
 
@@ -228,7 +226,7 @@ public abstract class BeanBuilder {
             String sk = m.getKey();
             String sv = m.getValue();
 
-            target.put(new Expression(sk, keyClazz), (!sv.equals(ManagedBeanInfo.NULL_VALUE)) ? new Expression(sv, valueClazz) : null);
+            target.put(new Expression(sk, keyClazz), !sv.equals(ManagedBeanInfo.NULL_VALUE) ? new Expression(sv, valueClazz) : null);
         }
 
         return target;
@@ -242,7 +240,7 @@ public abstract class BeanBuilder {
         // noinspection StringBufferWithoutInitialCapacity
         List<Expression> target = new ArrayList<>(entries.size());
         for (String item : entries) {
-            target.add((!ManagedBeanInfo.NULL_VALUE.equals(item)) ? new Expression(item, valueClazz) : null);
+            target.add(!ManagedBeanInfo.NULL_VALUE.equals(item) ? new Expression(item, valueClazz) : null);
         }
 
         return target;
@@ -255,7 +253,7 @@ public abstract class BeanBuilder {
             Expression k = entry.getKey();
             Expression v = entry.getValue();
             // noinspection unchecked
-            target.put(k.evaluate(context.getELContext()), (v != null) ? v.evaluate(context.getELContext()) : null);
+            target.put(k.evaluate(context.getELContext()), v != null ? v.evaluate(context.getELContext()) : null);
         }
 
     }
@@ -265,7 +263,7 @@ public abstract class BeanBuilder {
         for (int i = 0, size = source.size(); i < size; i++) {
             Expression value = source.get(i);
             // noinspection unchecked
-            target.add((value != null) ? value.evaluate(context.getELContext()) : null);
+            target.add(value != null ? value.evaluate(context.getELContext()) : null);
         }
 
     }
@@ -344,7 +342,7 @@ public abstract class BeanBuilder {
 
             if (!hasMessages()) {
                 // class is ok, scan for annotations
-                this.isInjectible = Util.classHasAnnotations(clazz);
+                isInjectible = Util.classHasAnnotations(clazz);
             }
             return clazz;
         }
@@ -421,22 +419,22 @@ public abstract class BeanBuilder {
         // ------------------------------------------------------ Public Methods
 
         public Object evaluate(ELContext context) {
-            if (this.expressionString == null) {
+            if (expressionString == null) {
                 return null;
             }
             if (validateLifespanRuntime) {
-                ELUtils.Scope expScope = ELUtils.getScope(this.expressionString, segment);
+                ELUtils.Scope expScope = ELUtils.getScope(expressionString, segment);
                 validateLifespan(expScope, true);
             }
             if (ve == null) {
-                ve = ((expectedType.isPrimitive()) ? ELUtils.createValueExpression(expressionString, expectedType)
-                        : ELUtils.createValueExpression(expressionString, Object.class));
+                ve = expectedType.isPrimitive() ? ELUtils.createValueExpression(expressionString, expectedType)
+                        : ELUtils.createValueExpression(expressionString, Object.class);
             }
             if (expectedType.isPrimitive()) {
                 return ve.getValue(context);
             } else {
                 Object tmpval = ve.getValue(context);
-                return ((tmpval != null) ? ELUtils.coerce(tmpval, expectedType) : null);
+                return tmpval != null ? ELUtils.coerce(tmpval, expectedType) : null;
             }
         }
 
@@ -445,7 +443,7 @@ public abstract class BeanBuilder {
         private void validateLifespan(ELUtils.Scope expressionScope, boolean runtime) {
             if (ELUtils.isScopeValid(beanInfo.getScope())) {
                 if (!ELUtils.hasValidLifespan(expressionScope, ELUtils.getScope(beanInfo.getScope()))) {
-                    String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_SCOPE_LIFESPAN_ERROR_MESSAGE_ID, this.expressionString,
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_SCOPE_LIFESPAN_ERROR_MESSAGE_ID, expressionString,
                             expressionScope, beanInfo.getName(), beanInfo.getScope());
                     if (runtime) {
                         throw new ManagedBeanCreationException(message);

@@ -26,7 +26,7 @@ import java.util.Set;
 /*
  * Non-thread safe implementation of Set for use when most of the time there
  * is only one element, but sometimes there are more than one.
- * 
+ *
  */
 public class MostlySingletonSet<E> implements Set<E>, Serializable {
 

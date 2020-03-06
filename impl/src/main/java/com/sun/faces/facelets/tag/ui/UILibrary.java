@@ -36,21 +36,21 @@ public final class UILibrary extends AbstractTagLibrary {
     public UILibrary(String namespace) {
         super(namespace);
 
-        this.addTagHandler("include", IncludeHandler.class);
+        addTagHandler("include", IncludeHandler.class);
 
-        this.addTagHandler("composition", CompositionHandler.class);
+        addTagHandler("composition", CompositionHandler.class);
 
         this.addComponent("component", ComponentRef.COMPONENT_TYPE, null, ComponentRefHandler.class);
 
         this.addComponent("fragment", ComponentRef.COMPONENT_TYPE, null, ComponentRefHandler.class);
 
-        this.addTagHandler("define", DefineHandler.class);
+        addTagHandler("define", DefineHandler.class);
 
-        this.addTagHandler("insert", InsertHandler.class);
+        addTagHandler("insert", InsertHandler.class);
 
-        this.addTagHandler("param", ParamHandler.class);
+        addTagHandler("param", ParamHandler.class);
 
-        this.addTagHandler("decorate", DecorateHandler.class);
+        addTagHandler("decorate", DecorateHandler.class);
 
         this.addComponent("repeat", UIRepeat.COMPONENT_TYPE, null, RepeatHandler.class);
 

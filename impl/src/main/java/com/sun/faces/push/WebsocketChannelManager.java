@@ -34,11 +34,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Inject;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.push.Push;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 
 /**
  * <p class="changed_added_2_3">
@@ -74,7 +73,7 @@ public class WebsocketChannelManager implements Serializable {
 
         static Scope of(String value, Serializable user) {
             if (value == null) {
-                return (user == null) ? APPLICATION : SESSION;
+                return user == null ? APPLICATION : SESSION;
             }
 
             for (Scope scope : values()) {
@@ -103,7 +102,7 @@ public class WebsocketChannelManager implements Serializable {
 
     /**
      * Register given channel on given scope and returns the web socket channel identifier.
-     * 
+     *
      * @param context The involved faces context.
      * @param channel The web socket channel.
      * @param scope The web socket scope. Supported values are <code>application</code>, <code>session</code> and
@@ -175,7 +174,7 @@ public class WebsocketChannelManager implements Serializable {
     /**
      * This helps the web socket channel manager to hold view scoped web socket channel identifiers registered by
      * <code>&lt;f:websocket&gt;</code>.
-     * 
+     *
      * @author Bauke Scholtz
      * @see WebsocketChannelManager
      * @since 2.3
@@ -213,7 +212,7 @@ public class WebsocketChannelManager implements Serializable {
      */
     static Map<String, String> getViewScope(boolean create) {
         ViewScope bean = getBeanInstance(ViewScope.class, create);
-        return (bean == null) ? EMPTY_SCOPE : bean.viewScope;
+        return bean == null ? EMPTY_SCOPE : bean.viewScope;
     }
 
     /**

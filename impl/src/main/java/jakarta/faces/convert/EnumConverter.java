@@ -16,10 +16,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.MessageFactory;
-
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -41,7 +37,7 @@ public class EnumConverter implements Converter, PartialStateHolder {
     }
 
     public EnumConverter(Class targetClass) {
-        this.targetClass = (Class<? extends Enum>) targetClass;
+        this.targetClass = targetClass;
     }
 
     // ------------------------------------------------------ Manifest Constants
@@ -114,11 +110,11 @@ public class EnumConverter implements Converter, PartialStateHolder {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
@@ -174,7 +170,7 @@ public class EnumConverter implements Converter, PartialStateHolder {
             throw new NullPointerException();
         }
         if (object != null) {
-            this.targetClass = (Class<? extends Enum>) object;
+            targetClass = (Class<? extends Enum>) object;
         }
     }
 
@@ -184,7 +180,7 @@ public class EnumConverter implements Converter, PartialStateHolder {
             throw new NullPointerException();
         }
         if (!initialStateMarked()) {
-            return this.targetClass;
+            return targetClass;
         }
         return null;
     }

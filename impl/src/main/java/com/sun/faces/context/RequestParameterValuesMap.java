@@ -16,15 +16,15 @@
 
 package com.sun.faces.context;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
-import java.util.Collection;
-import java.util.Iterator;
-
-import jakarta.servlet.ServletRequest;
 
 import com.sun.faces.util.Util;
+
+import jakarta.servlet.ServletRequest;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestParameterValuesMap()
@@ -49,7 +49,7 @@ public class RequestParameterValuesMap extends StringArrayValuesMap {
 
     @Override
     public boolean containsKey(Object key) {
-        return (request.getParameterValues(key.toString()) != null);
+        return request.getParameterValues(key.toString()) != null;
     }
 
     @Override

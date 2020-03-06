@@ -32,8 +32,6 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.util.AnnotationLiteral;
-import jakarta.servlet.jsp.jstl.sql.Result;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -59,6 +57,7 @@ import jakarta.faces.model.ListDataModel;
 import jakarta.faces.model.ResultDataModel;
 import jakarta.faces.model.ResultSetDataModel;
 import jakarta.faces.model.ScalarDataModel;
+import jakarta.servlet.jsp.jstl.sql.Result;
 
 // ------------------------------------------------------------- Private Classes
 // Private class to represent saved state information
@@ -170,7 +169,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         lastId,
 
         /**
-         * 
+         *
          */
         rowStatePreserved
     }
@@ -245,7 +244,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -253,7 +252,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * Return the zero-relative row number of the first row to be displayed.
      * </p>
-     * 
+     *
      * @return the row number.
      */
     public int getFirst() {
@@ -284,7 +283,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * Return the footer facet of this component (if any). A convenience method for <code>getFacet("footer")</code>.
      * </p>
-     * 
+     *
      * @return the footer facet.
      */
     public UIComponent getFooter() {
@@ -312,7 +311,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * Return the header facet of this component (if any). A convenience method for <code>getFacet("header")</code>.
      * </p>
-     * 
+     *
      * @return the header facet.
      */
     public UIComponent getHeader() {
@@ -343,12 +342,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * @return whether the row is available.
-     * 
+     *
      * @throws FacesException if an error occurs getting the row availability
      */
     public boolean isRowAvailable() {
 
-        return (getDataModel().isRowAvailable());
+        return getDataModel().isRowAvailable();
 
     }
 
@@ -362,7 +361,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     public int getRowCount() {
 
-        return (getDataModel().getRowCount());
+        return getDataModel().getRowCount();
 
     }
 
@@ -372,13 +371,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * @return the row data.
-     * 
+     *
      * @throws FacesException if an error occurs getting the row data
      * @throws IllegalArgumentException if now row data is available at the currently specified row index
      */
     public Object getRowData() {
 
-        return (getDataModel().getRowData());
+        return getDataModel().getRowData();
 
     }
 
@@ -389,7 +388,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * @return the row index.
-     * 
+     *
      * @throws FacesException if an error occurs getting the row index
      */
     public int getRowIndex() {
@@ -406,13 +405,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <code>isRowAvailable()</code> method to detect whether row data will be available for use by the
      * <code>getRowData()</code> method.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_1">
      * To support transient state among descendents, please consult the specification for {@link #setRowStatePreserved},
      * which details the requirements for <code>setRowIndex()</code> when the <code>rowStatePreserved</code> JavaBeans
      * property is set to <code>true</code>.
      * </p>
-     * 
+     *
      * <ul>
      * <li>Save current state information for all descendant components (as described below).
      * <li>Store the new row index, and pass it on to the {@link DataModel} associated with this {@link UIData}
@@ -590,7 +589,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Return the number of rows to be displayed, or zero for all remaining rows in the table. The default value of this
      * property is zero.
      * </p>
-     * 
+     *
      * @return the number of rows.
      */
     public int getRows() {
@@ -622,7 +621,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Return the request-scope attribute under which the data object for the current row will be exposed when iterating.
      * This property is <strong>not</strong> enabled for value binding expressions.
      * </p>
-     * 
+     *
      * @return he request-scope attribute.
      */
     public String getVar() {
@@ -650,7 +649,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * @return the value of the <code>rowStatePreserved</code>.
-     * 
+     *
      * @since 2.1
      */
 
@@ -665,9 +664,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * its iterated children will be preserved on a per-row basis. This allows applications to modify component properties,
      * such as the style-class, for a specific row, rather than having such modifications apply to all rows.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_1">
-     * 
+     *
      * <p>
      * To accomplish this, <code>UIData</code> must call {@link StateHolder#saveState} and
      * {@link TransientStateHolder#saveTransientState} on its children to capture their state on exiting each row. When
@@ -675,13 +674,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * called in order to reinitialize the children to the correct state for the new row. All of this action must take place
      * during the processing of {@link #setRowIndex}.
      * </p>
-     * 
+     *
      * <p>
      * Users should consider enabling this feature for cases where it is necessary to modify properties of
      * <code>UIData</code>'s children in a row-specific way. Note, however, that row-level state saving/restoring does add
      * overhead. As such, this feature should be used judiciously.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param preserveComponentState the flag if the state should be preserved.
@@ -712,7 +711,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * All other types will be adapted using the {@link ScalarDataModel} class, which will treat the object as a single row
      * of data.
      * </p>
-     * 
+     *
      * @return the object for the value.
      */
     public Object getValue() {
@@ -751,6 +750,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @throws NullPointerException if <code>name</code> is <code>null</code>
      * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
 
@@ -790,7 +790,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         if (null != name) {
             switch (name) {
             case "value":
-                this.model = null;
+                model = null;
                 break;
             case "var":
             case "rowIndex":
@@ -833,7 +833,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             if (!isNestedWithinIterator()) {
                 clientIdBuilder = new StringBuilder(super.getClientId(context));
                 baseClientId = clientIdBuilder.toString();
-                baseClientIdLength = (baseClientId.length() + 1);
+                baseClientIdLength = baseClientId.length() + 1;
                 clientIdBuilder.append(UINamingContainer.getSeparatorChar(context));
                 clientIdBuilder.setLength(baseClientIdLength);
             } else {
@@ -859,11 +859,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 cid = clientIdBuilder.append(super.getClientId(context)).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
                 clientIdBuilder.setLength(0);
             }
-            return (cid);
+            return cid;
         } else {
             if (!isNestedWithinIterator()) {
                 // Not nested and no row available, so just return our baseClientId
-                return (baseClientId);
+                return baseClientId;
             } else {
                 // nested and no row available, return the result of getClientId().
                 // this is necessary as the client ID will reflect the row that
@@ -910,19 +910,19 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         boolean found = false;
         if (clientId.equals(myId)) {
             try {
-                this.pushComponentToEL(context, compositeParent);
+                pushComponentToEL(context, compositeParent);
                 callback.invokeContextCallback(context, this);
                 return true;
             } catch (Exception e) {
                 throw new FacesException(e);
             } finally {
-                this.popComponentFromEL(context);
+                popComponentFromEL(context);
             }
         }
 
         // check the facets, if any, of UIData
-        if (this.getFacetCount() > 0) {
-            for (UIComponent c : this.getFacets().values()) {
+        if (getFacetCount() > 0) {
+            for (UIComponent c : getFacets().values()) {
                 if (clientId.equals(c.getClientId(context))) {
                     callback.invokeContextCallback(context, c);
                     return true;
@@ -931,8 +931,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
         // check column level facets, if any
-        if (this.getChildCount() > 0) {
-            for (UIComponent column : this.getChildren()) {
+        if (getChildCount() > 0) {
+            for (UIComponent column : getChildren()) {
                 if (column instanceof UIColumn) {
                     if (column.getFacetCount() > 0) {
                         for (UIComponent facet : column.getFacets().values()) {
@@ -948,8 +948,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         /*
          * Check if we are looking for a component that is part of the actual skeleton.
          */
-        if (this.getChildCount() > 0) {
-            for (UIComponent column : this.getChildren()) {
+        if (getChildCount() > 0) {
+            for (UIComponent column : getChildren()) {
                 if (column instanceof UIColumn) {
                     if (column.invokeOnComponent(context, clientId, callback)) {
                         return true;
@@ -958,13 +958,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
 
-        int lastSep, newRow, savedRowIndex = this.getRowIndex();
+        int lastSep, newRow, savedRowIndex = getRowIndex();
         char sepChar = UINamingContainer.getSeparatorChar(context);
         // If we need to strip out the rowIndex from our id
         // PENDING(edburns): is this safe with respect to I18N?
         if (myId.endsWith(sepChar + Integer.toString(savedRowIndex, 10))) {
             lastSep = myId.lastIndexOf(sepChar);
-            assert (-1 != lastSep);
+            assert -1 != lastSep;
             myId = myId.substring(0, lastSep);
         }
 
@@ -988,8 +988,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                 String message = "Trying to extract rowIndex from clientId \'" + clientId + "\' " + ex.getMessage();
                                 throw new NumberFormatException(message);
                             }
-                            this.setRowIndex(newRow);
-                            if (this.isRowAvailable()) {
+                            setRowIndex(newRow);
+                            if (isRowAvailable()) {
                                 found = super.invokeOnComponent(context, clientId, callback);
                             }
                         }
@@ -1000,7 +1000,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             } catch (NumberFormatException e) {
                 throw new FacesException(e);
             } finally {
-                this.setRowIndex(savedRowIndex);
+                setRowIndex(savedRowIndex);
             }
         }
         return found;
@@ -1240,7 +1240,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public String createUniqueId(FacesContext context, String seed) {
         Integer i = (Integer) getStateHelper().get(PropertyKeys.lastId);
-        int lastId = ((i != null) ? i : 0);
+        int lastId = i != null ? i : 0;
         getStateHelper().put(PropertyKeys.lastId, ++lastId);
         return UIViewRoot.UNIQUE_ID_PREFIX + (seed == null ? lastId : seed);
     }
@@ -1252,11 +1252,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * If the {@link UIComponent#isVisitable} method of this instance returns <code>false</code>, take no action and return.
      * </p>
-     * 
+     *
      * <p>
      * Call {@link UIComponent#pushComponentToEL} and invoke the visit callback on this <code>UIData</code> instance as
      * described in {@link UIComponent#visitTree}. Let the result of the invoctaion be <em>visitResult</em>. If
@@ -1266,9 +1266,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * non-empty, let <em>doVisitChildren</em> be <code>true</code>. If <em>doVisitChildren</em> is <code>true</code> and
      * <em>visitResult</em> is {@link VisitResult#ACCEPT}, take the following action.
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * If this component has facets, call {@link UIComponent#getFacets} on this instance and invoke the
@@ -1276,20 +1276,20 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * {@link UIComponent#visitTree}.
      * </p>
      * </li>
-     * 
+     *
      * <li>
-     * 
+     *
      * <div class="changed_modified_2_0_rev_a">
-     * 
+     *
      * <p>
      * If this component has children, for each <code>UIColumn</code> child:
      * </p>
-     * 
+     *
      * <p>
      * Call {@link VisitContext#invokeVisitCallback} on that <code>UIColumn</code> instance. If such a call returns
      * <code>true</code>, terminate visiting and return <code>true</code> from this method.
      * </p>
-     * 
+     *
      * <p>
      * If the child <code>UIColumn</code> has facets, call {@link UIComponent#visitTree} on each one.
      * </p>
@@ -1301,46 +1301,46 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </div></li>
      *
      * <li>
-     * 
+     *
      * <div class="changed_modified_2_0_rev_a">
      *
      * <p>
      * Save aside the result of a call to {@link #getRowIndex}.
      * </p>
-     * 
+     *
      * <p>
      * For each child component of this <code>UIData</code> that is also an instance of {@link UIColumn},
      * </p>
-     * 
+     *
      * <p>
      * Iterate over the rows.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * Let <em>rowsToProcess</em> be the return from {@link #getRows}.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Let <em>rowIndex</em> be the return from {@link #getFirst} - 1.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * While the number of rows processed is less than <em>rowsToProcess</em>, take the following actions.
      * </p>
-     * 
+     *
      * <p>
      * Call {@link #setRowIndex}, passing the current row index.
      * </p>
-     * 
+     *
      * <p>
      * If {@link #isRowAvailable} returns <code>false</code>, take no further action and return <code>false</code>.
      * </p>
@@ -1348,32 +1348,32 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p class="changed_modified_2_0_rev_a">
      * Call {@link UIComponent#visitTree} on each of the children of this <code>UIColumn</code> instance.
      * </p>
-     * 
+     *
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * Call {@link #popComponentFromEL} and restore the saved row index with a call to {@link #setRowIndex}.
      * </p>
-     * 
+     *
      * <p>
      * Return <code>false</code> to allow the visiting to continue.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param context the <code>VisitContext</code> that provides context for performing the visit.
      *
      * @param callback the callback to be invoked for each node encountered in the visit.
-     * 
+     *
      * @throws NullPointerException if any of the parameters are <code>null</code>.
-     * 
-     * 
+     *
+     *
      */
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback) {
@@ -1381,8 +1381,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // First check to see whether we are visitable. If not
         // short-circuit out of this subtree, though allow the
         // visit to proceed through to other subtrees.
-        if (!isVisitable(context))
+        if (!isVisitable(context)) {
             return false;
+        }
 
         FacesContext facesContext = context.getFacesContext();
         // NOTE: that the visitRows local will be obsolete once the
@@ -1407,31 +1408,35 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             VisitResult result = context.invokeVisitCallback(this, callback);
 
             // If the visit is complete, short-circuit out and end the visit
-            if (result == VisitResult.COMPLETE)
+            if (result == VisitResult.COMPLETE) {
                 return true;
+            }
 
             // Visit children, short-circuiting as necessary
             // NOTE: that the visitRows parameter will be obsolete once the
             // appropriate visit hints have been added to the API
-            if ((result == VisitResult.ACCEPT) && doVisitChildren(context, visitRows)) {
+            if (result == VisitResult.ACCEPT && doVisitChildren(context, visitRows)) {
 
                 // First visit facets
                 // NOTE: that the visitRows parameter will be obsolete once the
                 // appropriate visit hints have been added to the API
-                if (visitFacets(context, callback, visitRows))
+                if (visitFacets(context, callback, visitRows)) {
                     return true;
+                }
 
                 // Next column facets
                 // NOTE: that the visitRows parameter will be obsolete once the
                 // appropriate visit hints have been added to the API
-                if (visitColumnsAndColumnFacets(context, callback, visitRows))
+                if (visitColumnsAndColumnFacets(context, callback, visitRows)) {
                     return true;
+                }
 
                 // And finally, visit rows
                 // NOTE: that the visitRows parameter will be obsolete once the
                 // appropriate visit hints have been added to the API
-                if (visitRows(context, callback, visitRows))
+                if (visitRows(context, callback, visitRows)) {
                     return true;
+                }
             }
         } finally {
             // Clean up - pop Jakarta Expression Language and restore old row index
@@ -1582,7 +1587,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     childState = descendantStateIterator.get(component.getClientId(facesContext));
                 }
                 if (descendantFullStateIterator != null && descendantFullStateIterator.hasNext()) {
-                    Object[] object = (Object[]) descendantFullStateIterator.next();
+                    Object[] object = descendantFullStateIterator.next();
                     childInitialState = object[0];
                     descendantInitialState = object[1];
                 }
@@ -1616,7 +1621,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             // reset the client id (see spec 3.1.6)
             component.setId(component.getId());
             if (!component.isTransient()) {
-                component.restoreTransientState(facesContext, (state == null) ? null : state.get(component.getClientId(facesContext)));
+                component.restoreTransientState(facesContext, state == null ? null : state.get(component.getClientId(facesContext)));
 
                 Iterator<UIComponent> childsIterator;
                 if (restoreChildFacets) {
@@ -1713,21 +1718,21 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Return the internal {@link DataModel} object representing the data objects that we will iterate over in this
      * component's rendering.
      * </p>
-     * 
+     *
      * <p>
      * If the model has been cached by a previous call to {@link #setDataModel}, return it. Otherwise call
      * {@link #getValue}. If the result is null, create an empty {@link ListDataModel} and return it. If the result is an
      * instance of {@link DataModel}, return it. Otherwise, adapt the result as described in {@link #getValue} and return
      * it.
      * </p>
-     * 
+     *
      * @return the data model.
      */
     protected DataModel getDataModel() {
 
         // Return any previously cached DataModel instance
-        if (this.model != null) {
-            return (model);
+        if (model != null) {
+            return model;
         }
 
         // Synthesize a DataModel around our current value if possible
@@ -1759,7 +1764,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 setDataModel(new ScalarDataModel(current));
             }
         }
-        return (model);
+        return model;
 
     }
 
@@ -1784,7 +1789,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     private DataModel<?> createDataModel(final Class<?> forClass) {
 
-        List<DataModel<?>> dataModel = new ArrayList<DataModel<?>>(1);
+        List<DataModel<?>> dataModel = new ArrayList<>(1);
         CDI<Object> cdi = CDI.current();
 
         // Scan the map in order, the first class that is a super class or equal to the class for which
@@ -1818,7 +1823,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * is <code>null</code>, the internal <code>DataModel</code> must be reset in a manner so that the next call to
      * {@link #getDataModel} causes lazy instantion of a newly refreshed <code>DataModel</code>.
      * </p>
-     * 
+     *
      * <p>
      * Subclasses might call this method if they either want to restore the internal <code>DataModel</code> during the
      * <em>Restore View</em> phase or if they want to explicitly refresh the current <code>DataModel</code> for the
@@ -1829,7 +1834,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
 
     protected void setDataModel(DataModel dataModel) {
-        this.model = dataModel;
+        model = dataModel;
     }
 
     // ---------------------------------------------------- Private Methods
@@ -1961,7 +1966,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         while (true) {
 
             // Have we processed the requested number of rows?
-            if ((rows > 0) && (++processed > rows)) {
+            if (rows > 0 && ++processed > rows) {
                 break;
             }
 
@@ -2011,10 +2016,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             setRowIndex(-1);
         }
         Collection<String> idsToVisit = context.getSubtreeIdsToVisit(this);
-        assert (idsToVisit != null);
+        assert idsToVisit != null;
 
         // All ids or non-empty collection means we need to visit our children.
-        return (!idsToVisit.isEmpty());
+        return !idsToVisit.isEmpty();
     }
 
 //    // Performs pre-phase initialization before visiting children
@@ -2046,8 +2051,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         if (getFacetCount() > 0) {
             for (UIComponent facet : getFacets().values()) {
-                if (facet.visitTree(context, callback))
+                if (facet.visitTree(context, callback)) {
                     return true;
+                }
             }
         }
 
@@ -2096,7 +2102,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
             // Have we processed the requested number of rows?
             if (visitRows) {
-                if ((rows > 0) && (++processed > rows)) {
+                if (rows > 0 && ++processed > rows) {
                     break;
                 }
                 // Expose the current row in the specified request attribute
@@ -2150,7 +2156,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private boolean keepSaved(FacesContext context) {
 
-        return (contextHasErrorMessages(context) || isNestedWithinIterator());
+        return contextHasErrorMessages(context) || isNestedWithinIterator();
 
     }
 
@@ -2175,7 +2181,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private boolean contextHasErrorMessages(FacesContext context) {
 
         FacesMessage.Severity sev = context.getMaximumSeverity();
-        return (sev != null && (FacesMessage.SEVERITY_ERROR.compareTo(sev) >= 0));
+        return sev != null && FacesMessage.SEVERITY_ERROR.compareTo(sev) >= 0;
 
     }
 
@@ -2216,7 +2222,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             EditableValueHolder input = (EditableValueHolder) component;
             String clientId = component.getClientId(context);
 
-            SavedState state = (saved == null ? null : saved.get(clientId));
+            SavedState state = saved == null ? null : saved.get(clientId);
             if (state == null) {
                 input.resetValue();
             } else {
@@ -2230,7 +2236,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         } else if (component instanceof UIForm) {
             UIForm form = (UIForm) component;
             String clientId = component.getClientId(context);
-            SavedState state = (saved == null ? null : saved.get(clientId));
+            SavedState state = saved == null ? null : saved.get(clientId);
             if (state == null) {
                 // submitted is transient state
                 form.setSubmitted(false);
@@ -2354,7 +2360,7 @@ class SavedState implements Serializable {
     private boolean submitted;
 
     Object getSubmittedValue() {
-        return (this.submittedValue);
+        return submittedValue;
     }
 
     void setSubmittedValue(Object submittedValue) {
@@ -2364,7 +2370,7 @@ class SavedState implements Serializable {
     private boolean valid = true;
 
     boolean isValid() {
-        return (this.valid);
+        return valid;
     }
 
     void setValid(boolean valid) {
@@ -2374,7 +2380,7 @@ class SavedState implements Serializable {
     private Object value;
 
     Object getValue() {
-        return (this.value);
+        return value;
     }
 
     public void setValue(Object value) {
@@ -2384,7 +2390,7 @@ class SavedState implements Serializable {
     private boolean localValueSet;
 
     boolean isLocalValueSet() {
-        return (this.localValueSet);
+        return localValueSet;
     }
 
     public void setLocalValueSet(boolean localValueSet) {
@@ -2392,7 +2398,7 @@ class SavedState implements Serializable {
     }
 
     public boolean getSubmitted() {
-        return this.submitted;
+        return submitted;
     }
 
     public void setSubmitted(boolean submitted) {
@@ -2405,7 +2411,7 @@ class SavedState implements Serializable {
 
     @Override
     public String toString() {
-        return ("submittedValue: " + submittedValue + " value: " + value + " localValueSet: " + localValueSet);
+        return "submittedValue: " + submittedValue + " value: " + value + " localValueSet: " + localValueSet;
     }
 
 }
@@ -2425,26 +2431,26 @@ class WrapperEvent extends FacesEvent {
     private int rowIndex = -1;
 
     public FacesEvent getFacesEvent() {
-        return (this.event);
+        return event;
     }
 
     public int getRowIndex() {
-        return (this.rowIndex);
+        return rowIndex;
     }
 
     @Override
     public PhaseId getPhaseId() {
-        return (this.event.getPhaseId());
+        return event.getPhaseId();
     }
 
     @Override
     public void setPhaseId(PhaseId phaseId) {
-        this.event.setPhaseId(phaseId);
+        event.setPhaseId(phaseId);
     }
 
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
-        return (false);
+        return false;
     }
 
     @Override

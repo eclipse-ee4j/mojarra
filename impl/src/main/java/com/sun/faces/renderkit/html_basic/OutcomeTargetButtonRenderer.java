@@ -16,8 +16,10 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import com.sun.faces.renderkit.AttributeManager;
+import java.io.IOException;
+
 import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
@@ -26,8 +28,6 @@ import jakarta.faces.application.NavigationCase;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.io.IOException;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
@@ -44,7 +44,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);

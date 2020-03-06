@@ -17,13 +17,13 @@
 package com.sun.faces.application.view;
 
 import java.io.Serializable;
+
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Event;
-import jakarta.inject.Inject;
-
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 
 public class ViewScopedCDIEventFireHelperImpl implements Serializable, ViewScopedCDIEventFireHelper {
 

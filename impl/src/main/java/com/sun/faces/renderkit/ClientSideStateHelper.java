@@ -32,6 +32,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Base64;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,8 +49,6 @@ import com.sun.faces.util.Util;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.util.Base64;
 
 /**
  * <p>
@@ -218,8 +217,9 @@ public class ClientSideStateHelper extends StateHelper {
                 byte[] decodedBytes = Base64.getDecoder().decode(bytes);
 
                 bytes = guard.decrypt(ctx, decodedBytes);
-                if (bytes == null)
+                if (bytes == null) {
                     return null;
+                }
                 bis = new ByteArrayInputStream(bytes);
             }
 
@@ -398,7 +398,7 @@ public class ClientSideStateHelper extends StateHelper {
      * set, calculate the elapsed time between the time the client state was written and the time this method was invoked
      * during restore. If the client state has expired, return <code>true</code>. If the client state hasn't expired, or the
      * init parameter wasn't set, return <code>false</code>.
-     * 
+     *
      * @param stateTime the time in milliseconds that the state was written to the client
      * @return <code>false</code> if the client state hasn't timed out, otherwise return <code>true</code>
      */
@@ -406,7 +406,7 @@ public class ClientSideStateHelper extends StateHelper {
 
         if (stateTimeoutEnabled) {
             long elapsed = (System.currentTimeMillis() - stateTime) / 60000;
-            return (elapsed > stateTimeout);
+            return elapsed > stateTimeout;
         } else {
             return false;
         }

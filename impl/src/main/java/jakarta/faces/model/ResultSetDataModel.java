@@ -16,6 +16,10 @@
 
 package jakarta.faces.model;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -29,11 +33,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import jakarta.faces.FacesException;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.NotSerializableException;
-import java.io.ObjectOutputStream;
 
 /**
  * <p>
@@ -103,15 +102,15 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     public boolean isRowAvailable() {
 
         if (resultSet == null) {
-            return (false);
+            return false;
         } else if (index < 0) {
-            return (false);
+            return false;
         }
         try {
             if (resultSet.absolute(index + 1)) {
-                return (true);
+                return true;
             } else {
-                return (false);
+                return false;
             }
         } catch (SQLException e) {
             throw new FacesException(e);
@@ -131,7 +130,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     @Override
     public int getRowCount() {
 
-        return (-1);
+        return -1;
 
     }
 
@@ -148,11 +147,11 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
      * specialized behavior:
      * </p>
      * <ul>
-     * 
+     *
      * <li>The <code>Map</code>, and any supporting objects it returns, must perform all column name comparisons in a
      * case-insensitive manner. This case-insensitivity must be implemented using a case-insensitive
      * <code>Comparator</code>, such as <code>String.CASE_INSENSITIVE_ORDER</code>.</li>
-     * 
+     *
      * <li>The following methods must throw <code>UnsupportedOperationException</code>: <code>clear()</code>,
      * <code>remove()</code>.</li>
      * <li>The <code>entrySet()</code> method must return a <code>Set</code> that has the following behavior:
@@ -183,13 +182,13 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     public Map<String, Object> getRowData() {
 
         if (resultSet == null) {
-            return (null);
+            return null;
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         }
         try {
             getMetaData();
-            return (new ResultSetMap(this, String.CASE_INSENSITIVE_ORDER));
+            return new ResultSetMap(this, String.CASE_INSENSITIVE_ORDER);
         } catch (SQLException e) {
             throw new FacesException(e);
         }
@@ -202,7 +201,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     @Override
     public int getRowIndex() {
 
-        return (index);
+        return index;
 
     }
 
@@ -218,7 +217,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
         }
 
         // Tell the ResultSet that the previous row was updated if necessary
-        if (updated && (resultSet != null)) {
+        if (updated && resultSet != null) {
             try {
                 if (!resultSet.rowDeleted()) {
                     resultSet.updateRow();
@@ -235,7 +234,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
             return;
         }
         DataModelListener[] listeners = getDataModelListeners();
-        if ((old != index) && (listeners != null)) {
+        if (old != index && listeners != null) {
             Object rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
@@ -254,7 +253,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     @Override
     public Object getWrappedData() {
 
-        return (this.resultSet);
+        return resultSet;
 
     }
 
@@ -295,7 +294,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
                 throw new FacesException(e);
             }
         }
-        return (metadata);
+        return metadata;
 
     }
 
@@ -306,7 +305,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
      */
     private void updated() {
 
-        this.updated = true;
+        updated = true;
 
     }
 
@@ -349,30 +348,30 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
                 Object contained = entry.getValue();
                 if (value == null) {
                     if (contained == null) {
-                        return (true);
+                        return true;
                     }
                 } else {
                     if (value.equals(contained)) {
-                        return (true);
+                        return true;
                     }
                 }
             }
-            return (false);
+            return false;
         }
 
         @Override
         public Set<Map.Entry<String, Object>> entrySet() {
-            return (new ResultSetEntries(this));
+            return new ResultSetEntries(this);
         }
 
         @Override
         public Object get(Object key) {
             if (!containsKey(key)) {
-                return (null);
+                return null;
             }
             try {
                 model.resultSet.absolute(index + 1);
-                return (model.resultSet.getObject((String) realKey(key)));
+                return model.resultSet.getObject((String) realKey(key));
             } catch (SQLException e) {
                 throw new FacesException(e);
             }
@@ -380,7 +379,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public Set<String> keySet() {
-            return (new ResultSetKeys(this));
+            return new ResultSetKeys(this);
         }
 
         @Override
@@ -392,14 +391,14 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
             try {
                 model.resultSet.absolute(index + 1);
                 Object previous = model.resultSet.getObject((String) realKey(key));
-                if ((previous == null) && (value == null)) {
-                    return (previous);
-                } else if ((previous != null) && (value != null) && previous.equals(value)) {
-                    return (previous);
+                if (previous == null && value == null) {
+                    return previous;
+                } else if (previous != null && value != null && previous.equals(value)) {
+                    return previous;
                 }
                 model.resultSet.updateObject((String) realKey(key), value);
                 model.updated();
-                return (previous);
+                return previous;
             } catch (SQLException e) {
                 throw new FacesException(e);
             }
@@ -420,15 +419,15 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public Collection<Object> values() {
-            return (new ResultSetValues(this));
+            return new ResultSetValues(this);
         }
 
         Object realKey(Object key) {
-            return (super.get(key));
+            return super.get(key);
         }
 
         Iterator<String> realKeys() {
-            return (super.keySet().iterator());
+            return super.keySet().iterator();
         }
 
         private void writeObject(ObjectOutputStream out) throws IOException {
@@ -475,29 +474,29 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
                 throw new NullPointerException();
             }
             if (!(o instanceof Map.Entry)) {
-                return (false);
+                return false;
             }
             Map.Entry e = (Map.Entry) o;
             Object k = e.getKey();
             Object v = e.getValue();
             if (!map.containsKey(k)) {
-                return (false);
+                return false;
             }
             if (v == null) {
-                return (map.get(k) == null);
+                return map.get(k) == null;
             } else {
-                return (v.equals(map.get(k)));
+                return v.equals(map.get(k));
             }
         }
 
         @Override
         public boolean isEmpty() {
-            return (map.isEmpty());
+            return map.isEmpty();
         }
 
         @Override
         public Iterator<Map.Entry<String, Object>> iterator() {
-            return (new ResultSetEntriesIterator(map));
+            return new ResultSetEntriesIterator(map);
         }
 
         // Removing entries is not allowed
@@ -520,7 +519,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public int size() {
-            return (map.size());
+            return map.size();
         }
 
     }
@@ -531,7 +530,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         public ResultSetEntriesIterator(ResultSetMap map) {
             this.map = map;
-            this.keys = map.keySet().iterator();
+            keys = map.keySet().iterator();
         }
 
         private ResultSetMap map;
@@ -539,13 +538,13 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public boolean hasNext() {
-            return (keys.hasNext());
+            return keys.hasNext();
         }
 
         @Override
         public Map.Entry<String, Object> next() {
             String key = keys.next();
-            return (new ResultSetEntry(map, key));
+            return new ResultSetEntry(map, key);
         }
 
         // Removing entries is not allowed
@@ -571,55 +570,55 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
         @Override
         public boolean equals(Object o) {
             if (o == null) {
-                return (false);
+                return false;
             }
             if (!(o instanceof Map.Entry)) {
-                return (false);
+                return false;
             }
             Map.Entry e = (Map.Entry) o;
             if (key == null) {
                 if (e.getKey() != null) {
-                    return (false);
+                    return false;
                 }
             } else {
                 if (!key.equals(e.getKey())) {
-                    return (false);
+                    return false;
                 }
             }
             Object v = map.get(key);
             if (v == null) {
                 if (e.getValue() != null) {
-                    return (false);
+                    return false;
                 }
             } else {
                 if (!v.equals(e.getValue())) {
-                    return (false);
+                    return false;
                 }
             }
-            return (true);
+            return true;
         }
 
         @Override
         public String getKey() {
-            return (key);
+            return key;
         }
 
         @Override
         public Object getValue() {
-            return (map.get(key));
+            return map.get(key);
         }
 
         @Override
         public int hashCode() {
             Object value = map.get(key);
-            return (((key == null) ? 0 : key.hashCode()) ^ ((value == null) ? 0 : value.hashCode()));
+            return (key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode());
         }
 
         @Override
         public Object setValue(Object value) {
             Object previous = map.get(key);
             map.put(key, value);
-            return (previous);
+            return previous;
         }
 
     }
@@ -654,17 +653,17 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public boolean contains(Object o) {
-            return (map.containsKey(o));
+            return map.containsKey(o);
         }
 
         @Override
         public boolean isEmpty() {
-            return (map.isEmpty());
+            return map.isEmpty();
         }
 
         @Override
         public Iterator<String> iterator() {
-            return (new ResultSetKeysIterator(map));
+            return new ResultSetKeysIterator(map);
         }
 
         // Removing keys is not allowed
@@ -687,7 +686,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public int size() {
-            return (map.size());
+            return map.size();
         }
 
     }
@@ -697,19 +696,19 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     private static class ResultSetKeysIterator implements Iterator<String> {
 
         public ResultSetKeysIterator(ResultSetMap map) {
-            this.keys = map.realKeys();
+            keys = map.realKeys();
         }
 
         private Iterator<String> keys;
 
         @Override
         public boolean hasNext() {
-            return (keys.hasNext());
+            return keys.hasNext();
         }
 
         @Override
         public String next() {
-            return (keys.next());
+            return keys.next();
         }
 
         // Removing keys is not allowed
@@ -747,12 +746,12 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public boolean contains(Object value) {
-            return (map.containsValue(value));
+            return map.containsValue(value);
         }
 
         @Override
         public Iterator<Object> iterator() {
-            return (new ResultSetValuesIterator(map));
+            return new ResultSetValuesIterator(map);
         }
 
         @Override
@@ -772,7 +771,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public int size() {
-            return (map.size());
+            return map.size();
         }
 
     }
@@ -783,7 +782,7 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         public ResultSetValuesIterator(ResultSetMap map) {
             this.map = map;
-            this.keys = map.keySet().iterator();
+            keys = map.keySet().iterator();
         }
 
         private ResultSetMap map;
@@ -791,12 +790,12 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
 
         @Override
         public boolean hasNext() {
-            return (keys.hasNext());
+            return keys.hasNext();
         }
 
         @Override
         public Object next() {
-            return (map.get(keys.next()));
+            return map.get(keys.next());
         }
 
         @Override

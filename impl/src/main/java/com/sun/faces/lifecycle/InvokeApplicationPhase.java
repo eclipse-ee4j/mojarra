@@ -18,8 +18,8 @@
 
 package com.sun.faces.lifecycle;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
 
@@ -50,7 +50,7 @@ public class InvokeApplicationPhase extends Phase {
         }
 
         UIViewRoot root = facesContext.getViewRoot();
-        assert (null != root);
+        assert null != root;
 
         try {
             root.processApplication(facesContext);

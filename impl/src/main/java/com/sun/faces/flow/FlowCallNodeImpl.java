@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import jakarta.el.ValueExpression;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.FlowCallNode;
 import jakarta.faces.flow.Parameter;
@@ -43,16 +43,16 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
         this.id = id;
 
         if (null != calledFlowDocumentId) {
-            this.calledFlowDocumentIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowDocumentId,
+            calledFlowDocumentIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowDocumentId,
                     String.class);
         } else {
-            this.calledFlowDocumentIdVE = null;
+            calledFlowDocumentIdVE = null;
         }
 
         if (null != calledFlowId) {
-            this.calledFlowIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowId, String.class);
+            calledFlowIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowId, String.class);
         } else {
-            this.calledFlowIdVE = null;
+            calledFlowIdVE = null;
         }
 
         _outboundParameters = new ConcurrentHashMap<>();
@@ -74,18 +74,18 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
             return false;
         }
         final FlowCallNodeImpl other = (FlowCallNodeImpl) obj;
-        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+        if (id == null ? other.id != null : !id.equals(other.id)) {
             return false;
         }
-        if (this.calledFlowIdVE != other.calledFlowIdVE && (this.calledFlowIdVE == null || !this.calledFlowIdVE.equals(other.calledFlowIdVE))) {
+        if (calledFlowIdVE != other.calledFlowIdVE && (calledFlowIdVE == null || !calledFlowIdVE.equals(other.calledFlowIdVE))) {
             return false;
         }
-        if (this.calledFlowDocumentIdVE != other.calledFlowDocumentIdVE
-                && (this.calledFlowDocumentIdVE == null || !this.calledFlowDocumentIdVE.equals(other.calledFlowDocumentIdVE))) {
+        if (calledFlowDocumentIdVE != other.calledFlowDocumentIdVE
+                && (calledFlowDocumentIdVE == null || !calledFlowDocumentIdVE.equals(other.calledFlowDocumentIdVE))) {
             return false;
         }
-        if (this._outboundParameters != other._outboundParameters
-                && (this._outboundParameters == null || !this._outboundParameters.equals(other._outboundParameters))) {
+        if (_outboundParameters != other._outboundParameters
+                && (_outboundParameters == null || !_outboundParameters.equals(other._outboundParameters))) {
             return false;
         }
         return true;
@@ -94,10 +94,10 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 59 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 59 * hash + (this.calledFlowIdVE != null ? this.calledFlowIdVE.hashCode() : 0);
-        hash = 59 * hash + (this.calledFlowDocumentIdVE != null ? this.calledFlowDocumentIdVE.hashCode() : 0);
-        hash = 59 * hash + (this._outboundParameters != null ? this._outboundParameters.hashCode() : 0);
+        hash = 59 * hash + (id != null ? id.hashCode() : 0);
+        hash = 59 * hash + (calledFlowIdVE != null ? calledFlowIdVE.hashCode() : 0);
+        hash = 59 * hash + (calledFlowDocumentIdVE != null ? calledFlowDocumentIdVE.hashCode() : 0);
+        hash = 59 * hash + (_outboundParameters != null ? _outboundParameters.hashCode() : 0);
         return hash;
     }
 

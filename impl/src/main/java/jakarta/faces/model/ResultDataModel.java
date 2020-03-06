@@ -17,6 +17,7 @@
 package jakarta.faces.model;
 
 import java.util.SortedMap;
+
 import jakarta.servlet.jsp.jstl.sql.Result;
 
 /**
@@ -82,11 +83,11 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>> {
     public boolean isRowAvailable() {
 
         if (result == null) {
-            return (false);
-        } else if ((index >= 0) && (index < rows.length)) {
-            return (true);
+            return false;
+        } else if (index >= 0 && index < rows.length) {
+            return true;
         } else {
-            return (false);
+            return false;
         }
 
     }
@@ -103,9 +104,9 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>> {
     public int getRowCount() {
 
         if (result == null) {
-            return (-1);
+            return -1;
         }
-        return (rows.length);
+        return rows.length;
 
     }
 
@@ -129,12 +130,12 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>> {
     public SortedMap<String, Object> getRowData() {
 
         if (result == null) {
-            return (null);
+            return null;
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         } else {
             // noinspection unchecked
-            return ((SortedMap<String, Object>) rows[index]);
+            return rows[index];
         }
 
     }
@@ -145,7 +146,7 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>> {
     @Override
     public int getRowIndex() {
 
-        return (index);
+        return index;
 
     }
 
@@ -165,7 +166,7 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>> {
             return;
         }
         DataModelListener[] listeners = getDataModelListeners();
-        if ((old != index) && (listeners != null)) {
+        if (old != index && listeners != null) {
             SortedMap<String, Object> rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
@@ -184,7 +185,7 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>> {
     @Override
     public Object getWrappedData() {
 
-        return (this.result);
+        return result;
 
     }
 

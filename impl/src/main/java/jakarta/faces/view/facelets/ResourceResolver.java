@@ -26,9 +26,9 @@ import java.net.URL;
  * that Facelets loads template files. A default implementation must be provided that satisfies the requirements for
  * loading templates as in Pre-Jakarta Server Faces 2.0 Facelets.
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
- * 
+ *
  * <p>
  * If a <code>&lt;context-param&gt;</code> with the param name equal to the value of
  * {@link #FACELETS_RESOURCE_RESOLVER_PARAM_NAME} exists, the runtime must interpret its value as a fully qualified
@@ -39,9 +39,9 @@ import java.net.URL;
  * the constructor. If it has a zero argument constructor it is invoked directly. In either case, the new
  * <code>ResourceResolver</code> replaces the old one.
  * </p>
- * 
+ *
  * </div>
- * 
+ *
  */
 
 @Deprecated

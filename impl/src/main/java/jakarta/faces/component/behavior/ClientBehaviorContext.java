@@ -19,9 +19,6 @@ package jakarta.faces.component.behavior;
 import java.util.Collection;
 import java.util.Collections;
 
-import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.behavior.ClientBehaviorContext;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -166,7 +163,7 @@ public abstract class ClientBehaviorContext {
             this.eventName = eventName;
             this.sourceId = sourceId;
 
-            this.parameters = (parameters == null) ? Collections.<ClientBehaviorContext.Parameter>emptyList() : parameters;
+            this.parameters = parameters == null ? Collections.<ClientBehaviorContext.Parameter>emptyList() : parameters;
         }
 
         @Override
@@ -213,7 +210,7 @@ public abstract class ClientBehaviorContext {
          * <p class="changed_added_2_0">
          * Creates a Parameter instance.
          * </p>
-         * 
+         *
          * @param name the name of the parameter
          * @param value the value of the parameter
          * @throws NullPointerException if <code>name</code> is null.

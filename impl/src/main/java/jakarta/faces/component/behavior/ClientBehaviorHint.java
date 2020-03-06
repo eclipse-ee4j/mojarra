@@ -16,8 +16,6 @@
 
 package jakarta.faces.component.behavior;
 
-import jakarta.faces.component.behavior.ClientBehavior;
-
 /**
  * <p class="changed_added_2_0">
  * An enum that specifies hints that describes the behavior of ClientBehavior implementations.

@@ -16,14 +16,15 @@
 
 package com.sun.faces.el;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.FunctionMapper;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
-import java.util.Map;
-import java.util.HashMap;
-import java.lang.reflect.Method;
 
 /**
  * Concrete implementation of {@link jakarta.el.ELContext}. ELContext's constructor is protected to control creation of
@@ -41,7 +42,7 @@ public class ELContextImpl extends ELContext {
 
     /**
      * Constructs a new ELContext associated with the given ELResolver.
-     * 
+     *
      * @param resolver the ELResolver to return from {@link #getELResolver()}
      */
     public ELContextImpl(ELResolver resolver) {
@@ -96,7 +97,7 @@ public class ELContextImpl extends ELContext {
 
         @Override
         public ValueExpression setVariable(String s, ValueExpression valueExpression) {
-            return (variables.put(s, valueExpression));
+            return variables.put(s, valueExpression);
         }
     }
 

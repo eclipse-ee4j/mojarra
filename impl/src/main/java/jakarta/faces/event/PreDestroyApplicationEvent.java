@@ -16,8 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.SystemEvent;
-
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 
@@ -68,7 +66,7 @@ public class PreDestroyApplicationEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * The source {@link Application} that sent this event.
      * </p>
-     * 
+     *
      * @return the application.
      * @since 2.0
      */

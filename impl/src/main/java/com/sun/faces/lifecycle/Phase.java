@@ -48,7 +48,7 @@ public abstract class Phase {
 
     /**
      * Performs PhaseListener processing and invokes the execute method of the Phase.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param lifecycle the lifecycle for this request
      */
@@ -57,7 +57,7 @@ public abstract class Phase {
         context.setCurrentPhaseId(getId());
         PhaseEvent event = null;
         if (listeners.hasNext()) {
-            event = new PhaseEvent(context, this.getId(), lifecycle);
+            event = new PhaseEvent(context, getId(), lifecycle);
         }
 
         // start timing - include before and after phase processing
@@ -82,7 +82,7 @@ public abstract class Phase {
             // stop timing
             if (timer != null) {
                 timer.stopTiming();
-                timer.logResult("Execution time for phase (including any PhaseListeners) -> " + this.getId().toString());
+                timer.logResult("Execution time for phase (including any PhaseListeners) -> " + getId().toString());
             }
 
             context.getExceptionHandler().handle();
@@ -126,7 +126,7 @@ public abstract class Phase {
 
     /**
      * Handle <code>afterPhase</code> <code>PhaseListener</code> events.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param listenersIterator a ListIterator for the PhaseListeners that need to be invoked
      * @param event the event to pass to each of the invoked listeners
@@ -143,7 +143,7 @@ public abstract class Phase {
         }
         while (listenersIterator.hasPrevious()) {
             PhaseListener listener = listenersIterator.previous();
-            if (this.getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
+            if (getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
                 try {
                     listener.afterPhase(event);
                 } catch (Exception e) {
@@ -157,7 +157,7 @@ public abstract class Phase {
 
     /**
      * Handle <code>beforePhase</code> <code>PhaseListener</code> events.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param listenersIterator a ListIterator for the PhaseListeners that need to be invoked
      * @param event the event to pass to each of the invoked listeners
@@ -174,7 +174,7 @@ public abstract class Phase {
         }
         while (listenersIterator.hasNext()) {
             PhaseListener listener = listenersIterator.next();
-            if (this.getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
+            if (getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
                 try {
                     listener.beforePhase(event);
                 } catch (Exception e) {
@@ -200,11 +200,11 @@ public abstract class Phase {
     private boolean shouldSkip(FacesContext context) {
 
         if (context.getResponseComplete()) {
-            return (true);
-        } else if (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(this.getId())) {
-            return (true);
+            return true;
+        } else if (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(getId())) {
+            return true;
         } else {
-            return (false);
+            return false;
         }
 
     }

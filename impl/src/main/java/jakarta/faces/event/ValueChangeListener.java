@@ -16,10 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.ValueChangeEvent;
-
 import jakarta.faces.component.UIComponent;
 
 /**
@@ -42,6 +38,6 @@ public interface ValueChangeListener extends FacesListener {
      * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
      * current event should be performed
      */
-    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException;
+    void processValueChange(ValueChangeEvent event) throws AbortProcessingException;
 
 }

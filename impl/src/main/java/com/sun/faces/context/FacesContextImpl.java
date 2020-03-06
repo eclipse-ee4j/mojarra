@@ -27,11 +27,6 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELContextEvent;
-import jakarta.el.ELContextListener;
-import jakarta.el.ExpressionFactory;
-
 import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -39,12 +34,16 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
@@ -99,7 +98,7 @@ public class FacesContextImpl extends FacesContext {
     public FacesContextImpl(ExternalContext ec, Lifecycle lifecycle) {
         Util.notNull("ec", ec);
         Util.notNull("lifecycle", lifecycle);
-        this.externalContext = ec;
+        externalContext = ec;
         setCurrentInstance(this);
         DEFAULT_FACES_CONTEXT.set(this);
         rkFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
@@ -127,7 +126,7 @@ public class FacesContextImpl extends FacesContext {
         }
         ApplicationFactory aFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         application = aFactory.getApplication();
-        assert (null != application);
+        assert null != application;
         return application;
     }
 
@@ -169,18 +168,18 @@ public class FacesContextImpl extends FacesContext {
     public boolean isPostback() {
 
         assertNotReleased();
-        Boolean postback = (Boolean) this.getAttributes().get(POST_BACK_MARKER);
+        Boolean postback = (Boolean) getAttributes().get(POST_BACK_MARKER);
         if (postback == null) {
-            RenderKit rk = this.getRenderKit();
+            RenderKit rk = getRenderKit();
             if (rk != null) {
                 postback = rk.getResponseStateManager().isPostback(this);
             } else {
                 // ViewRoot hasn't been set yet, so calculate the RK
-                ViewHandler vh = this.getApplication().getViewHandler();
+                ViewHandler vh = getApplication().getViewHandler();
                 String rkId = vh.calculateRenderKitId(this);
                 postback = RenderKitUtils.getResponseStateManager(this, rkId).isPostback(this);
             }
-            this.getAttributes().put(POST_BACK_MARKER, postback);
+            getAttributes().put(POST_BACK_MARKER, postback);
         }
 
         return postback;
@@ -224,7 +223,7 @@ public class FacesContextImpl extends FacesContext {
             if (null != exFactory) {
                 elContext.putContext(ExpressionFactory.class, exFactory);
             }
-            UIViewRoot root = this.getViewRoot();
+            UIViewRoot root = getViewRoot();
             if (null != root) {
                 elContext.setLocale(root.getLocale());
             }
@@ -246,7 +245,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public Iterator<String> getClientIdsWithMessages() {
         assertNotReleased();
-        return ((componentMessageLists == null) ? Collections.<String>emptyList().iterator() : componentMessageLists.keySet().iterator());
+        return componentMessageLists == null ? Collections.<String>emptyList().iterator() : componentMessageLists.keySet().iterator();
     }
 
     /**
@@ -256,7 +255,7 @@ public class FacesContextImpl extends FacesContext {
     public Severity getMaximumSeverity() {
         assertNotReleased();
         Severity result = null;
-        if (componentMessageLists != null && !(componentMessageLists.isEmpty())) {
+        if (componentMessageLists != null && !componentMessageLists.isEmpty()) {
             for (Iterator<FacesMessage> i = new ComponentMessagesIterator(componentMessageLists); i.hasNext();) {
                 Severity severity = i.next().getSeverity();
                 if (result == null || severity.compareTo(result) > 0) {
@@ -302,7 +301,7 @@ public class FacesContextImpl extends FacesContext {
             return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
         } else {
             List<FacesMessage> list = componentMessageLists.get(clientId);
-            return Collections.unmodifiableList((list != null) ? list : Collections.<FacesMessage>emptyList());
+            return Collections.unmodifiableList(list != null ? list : Collections.<FacesMessage>emptyList());
         }
 
     }
@@ -315,14 +314,14 @@ public class FacesContextImpl extends FacesContext {
         assertNotReleased();
         if (null == componentMessageLists) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
 
         if (componentMessageLists.size() > 0) {
             return new ComponentMessagesIterator(componentMessageLists);
         } else {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
     }
 
@@ -337,15 +336,15 @@ public class FacesContextImpl extends FacesContext {
         // return an empty List Iterator
         if (null == componentMessageLists) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
 
         List<FacesMessage> list = componentMessageLists.get(clientId);
         if (list == null) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
-        return (list.iterator());
+        return list.iterator();
     }
 
     /**
@@ -356,7 +355,7 @@ public class FacesContextImpl extends FacesContext {
         assertNotReleased();
         UIViewRoot vr = getViewRoot();
         if (vr == null) {
-            return (null);
+            return null;
         }
         String renderKitId = vr.getRenderKitId();
 
@@ -589,7 +588,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public List<String> getResourceLibraryContracts() {
         assertNotReleased();
-        return (null == resourceLibraryContracts) ? Collections.emptyList() : resourceLibraryContracts;
+        return null == resourceLibraryContracts ? Collections.emptyList() : resourceLibraryContracts;
     }
 
     @Override
@@ -673,7 +672,7 @@ public class FacesContextImpl extends FacesContext {
             }
             while (!inner.hasNext()) {
                 outerIndex++;
-                if ((outerIndex) < messagesSize) {
+                if (outerIndex < messagesSize) {
                     inner = messages.get(keys.next()).iterator();
                 } else {
                     return false;
@@ -693,7 +692,7 @@ public class FacesContextImpl extends FacesContext {
                 return inner.next();
             } else {
                 // call this.hasNext() to properly initialize/position 'inner'
-                if (!this.hasNext()) {
+                if (!hasNext()) {
                     throw new NoSuchElementException();
                 } else {
                     return inner.next();

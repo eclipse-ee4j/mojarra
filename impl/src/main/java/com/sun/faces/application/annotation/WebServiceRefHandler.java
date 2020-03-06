@@ -19,9 +19,8 @@ package com.sun.faces.application.annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import jakarta.xml.ws.WebServiceRef;
-
 import jakarta.faces.context.FacesContext;
+import jakarta.xml.ws.WebServiceRef;
 
 /**
  * {@link RuntimeAnnotationHandler} responsible for processing {@link WebServiceRef} annotations.

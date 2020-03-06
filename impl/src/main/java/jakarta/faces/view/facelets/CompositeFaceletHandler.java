@@ -36,7 +36,7 @@ public final class CompositeFaceletHandler implements FaceletHandler {
 
     public CompositeFaceletHandler(FaceletHandler[] children) {
         this.children = children;
-        this.len = children.length;
+        len = children.length;
     }
 
     /**
@@ -52,7 +52,7 @@ public final class CompositeFaceletHandler implements FaceletHandler {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         for (int i = 0; i < len; i++) {
-            this.children[i].apply(ctx, parent);
+            children[i].apply(ctx, parent);
         }
     }
 
@@ -60,10 +60,10 @@ public final class CompositeFaceletHandler implements FaceletHandler {
      * <p class="changed_added_2_0">
      * Returns the array of child handlers contained by this handler.
      * </p>
-     * 
+     *
      * @return Returns the array of child handlers contained by this handler.
      */
     public FaceletHandler[] getHandlers() {
-        return this.children;
+        return children;
     }
 }

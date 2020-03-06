@@ -101,12 +101,12 @@ public class SelectItemGroup extends SelectItem {
      * <p>
      * Return the set of subordinate {@link SelectItem}s for this group.
      * </p>
-     * 
+     *
      * @return the set of subordinate {@link SelectItem}s for this group
      */
     public SelectItem[] getSelectItems() {
 
-        return (this.selectItems);
+        return selectItems;
 
     }
 

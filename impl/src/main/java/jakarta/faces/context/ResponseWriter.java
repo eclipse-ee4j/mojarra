@@ -19,8 +19,6 @@ package jakarta.faces.context;
 import java.io.IOException;
 import java.io.Writer;
 
-import jakarta.faces.context.ResponseWriter;
-
 import jakarta.faces.component.UIComponent;
 
 /**
@@ -91,24 +89,24 @@ public abstract class ResponseWriter extends Writer {
      * <code>writeText()</code>, <code>endElement()</code>, <code>endDocument()</code>, <code>close()</code>,
      * <code>flush()</code>, or <code>write()</code>.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * If the argument component's pass through attributes includes an attribute of the name given by the value of the
      * symbolic constant {@link jakarta.faces.render.Renderer#PASSTHROUGH_RENDERER_LOCALNAME_KEY}, use that as the element
      * name, instead of the value passed as the first parameter to this method. Care must be taken so that this value is not
      * also rendered when any other pass through attributes on this component are rendered.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param name Name of the element to be started
-     * 
+     *
      * @param component The {@link UIComponent} (if any) to which this element corresponds. <span class="changed_added_2_2">
      * This component is inspected for its pass through attributes as described in the standard HTML_BASIC {@code
      *                  RenderKit} specification.</span>
-     * 
+     *
      * @throws IOException if an input/output error occurs
      * @throws NullPointerException if <code>name</code> is <code>null</code>
      */
@@ -122,13 +120,13 @@ public abstract class ResponseWriter extends Writer {
      * </p>
      *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * If the argument component's pass through attributes includes an attribute of the name given by the value of the
      * symbolic constant {@link jakarta.faces.render.Renderer#PASSTHROUGH_RENDERER_LOCALNAME_KEY}, use that as the element
      * name, instead of the value passed as the first parameter to this method.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param name Name of the element to be ended
@@ -180,7 +178,7 @@ public abstract class ResponseWriter extends Writer {
      * Open an XML <code>CDATA</code> block. Note that XML does not allow nested <code>CDATA</code> blocks, though this
      * method does not enforce that constraint. The default implementation of this method takes no action when invoked.
      * </p>
-     * 
+     *
      * @throws IOException if input/output error occures
      */
     public void startCDATA() throws IOException {
@@ -188,11 +186,11 @@ public abstract class ResponseWriter extends Writer {
     }
 
     /**
-     * 
+     *
      * <p class="changed_added_2_0">
      * Close an XML <code>CDATA</code> block. The default implementation of this method takes no action when invoked.
      * </p>
-     * 
+     *
      * @throws IOException if input/output error occures
      */
     public void endCDATA() throws IOException {
@@ -217,16 +215,16 @@ public abstract class ResponseWriter extends Writer {
      * Write a string containing the markup specific preamble. No escaping is performed. The default implementation simply
      * calls through to {@link #write(java.lang.String)} .
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * The implementation makes no checks if this is the correct place in the response to have a preamble, nor does it
      * prevent the preamble from being written more than once.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @since 2.2
      * @param preamble Text content of the preamble
      * @throws IOException if an input/output error occurs
@@ -240,16 +238,16 @@ public abstract class ResponseWriter extends Writer {
      * Write a string containing the markup specific doctype. No escaping is performed. The default implementation simply
      * calls through to {@link #write(java.lang.String)} .
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * The implementation makes no checks if this is the correct place in the response to have a doctype, nor does it
      * prevent the doctype from being written more than once.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @since 2.2
      * @param doctype Text content of the doctype
      * @throws IOException if an input/output error occurs
@@ -280,7 +278,7 @@ public abstract class ResponseWriter extends Writer {
      * {@link #writeText(java.lang.Object,java.lang.String)} but adds a <code>component</code> property to allow custom
      * <code>ResponseWriter</code> implementations to associate a component with an arbitrary portion of text.
      * </p>
-     * 
+     *
      * <p>
      * The default implementation simply ignores the <code>component</code> argument and calls through to
      * {@link #writeText(java.lang.Object,java.lang.String)}

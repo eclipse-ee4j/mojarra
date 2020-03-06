@@ -26,7 +26,7 @@ package jakarta.faces.view.facelets;
  * </p>
  *
  * <div class="changed_added_2_0">
- * 
+ *
  * <pre>
  * <code>&lt;h:inputText value="#{user.userid}"
  * valueChangeListener="#{user.newUserId}" /&gt;</code>
@@ -69,7 +69,7 @@ public abstract class MetaTagHandler extends TagHandler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param config the tag configuration.
      */
     public MetaTagHandler(TagConfig config) {
@@ -94,11 +94,11 @@ public abstract class MetaTagHandler extends TagHandler {
     protected void setAttributes(FaceletContext ctx, Object instance) {
         if (instance != null) {
             Class type = instance.getClass();
-            if (mapper == null || !this.lastType.equals(type)) {
-                this.lastType = type;
-                this.mapper = this.createMetaRuleset(type).finish();
+            if (mapper == null || !lastType.equals(type)) {
+                lastType = type;
+                mapper = createMetaRuleset(type).finish();
             }
-            this.mapper.applyMetadata(ctx, instance);
+            mapper.applyMetadata(ctx, instance);
         }
     }
 }

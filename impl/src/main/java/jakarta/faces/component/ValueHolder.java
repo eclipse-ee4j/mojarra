@@ -17,8 +17,6 @@
 package jakarta.faces.component;
 
 import jakarta.el.ValueExpression;
-import jakarta.faces.component.UIComponent;
-
 import jakarta.faces.convert.Converter;
 
 /**
@@ -37,10 +35,10 @@ public interface ValueHolder {
      * Return the local value of this {@link UIComponent} (if any), without evaluating any associated
      * {@link ValueExpression}.
      * </p>
-     * 
+     *
      * @return the local value.
      */
-    public Object getLocalValue();
+    Object getLocalValue();
 
     /**
      * <p>
@@ -52,10 +50,10 @@ public interface ValueHolder {
      * {@link UIComponent#setValueBinding} requires a call through to {@link UIComponent#setValueExpression}, legacy tags
      * will continue to work.
      * </p>
-     * 
+     *
      * @return the value.
      */
-    public Object getValue();
+    Object getValue();
 
     /**
      * <p>
@@ -64,16 +62,16 @@ public interface ValueHolder {
      *
      * @param value The new local value
      */
-    public void setValue(Object value);
+    void setValue(Object value);
 
     /**
      * <p>
      * Return the {@link Converter} (if any) that is registered for this {@link UIComponent}.
      * </p>
-     * 
+     *
      * @return the converter.
      */
-    public Converter getConverter();
+    Converter getConverter();
 
     /**
      * <p>
@@ -82,5 +80,5 @@ public interface ValueHolder {
      *
      * @param converter New {@link Converter} (or <code>null</code>)
      */
-    public void setConverter(Converter converter);
+    void setConverter(Converter converter);
 }

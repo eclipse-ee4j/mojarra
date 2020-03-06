@@ -19,6 +19,8 @@
 package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.sun.faces.renderkit.Attribute;
@@ -32,9 +34,6 @@ import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHint;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.util.EnumSet;
-import java.util.Set;
 
 /**
  * <p>
@@ -63,7 +62,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String forClientId = null;
         String forValue = (String) component.getAttributes().get("for");
@@ -101,7 +100,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
         if (value != null && value.length() != 0) {
             Object val = component.getAttributes().get("escape");
-            boolean escape = (val != null) && Boolean.valueOf(val.toString());
+            boolean escape = val != null && Boolean.valueOf(val.toString());
 
             if (escape) {
                 writer.writeText(value, component, "value");
@@ -127,7 +126,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         if ("yes".equals(render)) {
             component.getAttributes().remove(RENDER_END_ELEMENT);
             ResponseWriter writer = context.getResponseWriter();
-            assert (writer != null);
+            assert writer != null;
             writer.endElement("label");
         }
 

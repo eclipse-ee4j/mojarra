@@ -16,13 +16,13 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagConfig;
-
-import java.io.IOException;
 
 /**
  * @author Jacob Hookom
@@ -35,7 +35,7 @@ public final class ChooseOtherwiseHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
     }
 
 }

@@ -16,11 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.AjaxBehaviorEvent;
-import jakarta.faces.event.BehaviorEvent;
-import jakarta.faces.event.BehaviorListener;
-
 /**
  * <p class="changed_added_2_0">
  * By implementing this class, an object indicates that it is a listener for one or more kinds of
@@ -40,5 +35,5 @@ public interface AjaxBehaviorListener extends BehaviorListener {
      *
      * @since 2.0
      */
-    public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException;
+    void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException;
 }

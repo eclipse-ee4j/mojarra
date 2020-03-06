@@ -24,7 +24,6 @@ import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.FunctionMapper;
 import jakarta.el.VariableMapper;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -46,9 +45,9 @@ public abstract class FaceletContext extends ELContext {
      * <p class="changed_added_2_0">
      * The current FacesContext bound to this "request". Must not be <code>null</code>.
      * </p>
-     * 
+     *
      * @return The current FacesContext bound to this "request".
-     * 
+     *
      * @since 2.0
      */
     public abstract FacesContext getFacesContext();
@@ -57,11 +56,11 @@ public abstract class FaceletContext extends ELContext {
      * <p class="changed_added_2_0">
      * Generate a unique ID for the passed String
      * </p>
-     * 
+     *
      * @param base the string from which to generate the ID.
      *
      * @return the generated id
-     * 
+     *
      * @since 2.0
      */
     public abstract String generateUniqueId(String base);
@@ -70,9 +69,9 @@ public abstract class FaceletContext extends ELContext {
      * <p class="changed_added_2_0">
      * The ExpressionFactory to use within the Facelet this context is executing upon. Must not be <code>null</code>.
      * </p>
-     * 
+     *
      * @return the {@code ExpressionFactory} for this Facelet.
-     * 
+     *
      * @since 2.0
      */
 
@@ -82,7 +81,7 @@ public abstract class FaceletContext extends ELContext {
      * <p class="changed_added_2_0">
      * Set the VariableMapper to use in EL evaluation/creation.
      * </p>
-     * 
+     *
      * @param varMapper the new <code>VariableMapper</code>
      *
      * @since 2.0
@@ -93,7 +92,7 @@ public abstract class FaceletContext extends ELContext {
      * <p class="changed_added_2_0">
      * Set the FunctionMapper to use in EL evaluation/creation.
      * </p>
-     * 
+     *
      * @param fnMapper the new <code>FunctionMapper</code>
      *
      * @since 2.0
@@ -104,7 +103,7 @@ public abstract class FaceletContext extends ELContext {
      * <p class="changed_added_2_0">
      * Support method which is backed by the current VariableMapper.
      * </p>
-     * 
+     *
      * @param name the name of the attribute
      * @param value the value of the attribute
      *
@@ -117,11 +116,11 @@ public abstract class FaceletContext extends ELContext {
      * Return an attribute set by a previous call to {@link #setAttribute}. Support method which is backed by the current
      * VariableMapper
      * </p>
-     * 
+     *
      * @param name the name of the attribute to return.
-     * 
+     *
      * @return the value of the named attribute
-     * 
+     *
      * @since 2.0
      */
     public abstract Object getAttribute(String name);
@@ -131,16 +130,16 @@ public abstract class FaceletContext extends ELContext {
      * Include another Facelet defined at some path, relative to the executing context, not the current Facelet (same as
      * include directive in Jakarta Server Pages)
      * </p>
-     * 
+     *
      * @param parent the <code>UIComponent</code> that will be the parent of any components in the included facelet.
      * @param relativePath the path of the resource containing the facelet markup, relative to the current markup
-     * 
+     *
      * @throws IOException if unable to load <code>relativePath</code>
-     * 
+     *
      * @throws FaceletException if unable to parse the markup loaded from <code>relativePath</code>
-     * 
+     *
      * @throws jakarta.faces.FacesException if unable to create child <code>UIComponent</code> instances
-     * 
+     *
      * @throws jakarta.el.ELException if any of the expressions in the markup loaded from <code>relativePath</code> fail
      *
      * @since 2.0
@@ -151,19 +150,19 @@ public abstract class FaceletContext extends ELContext {
      * <p class="changed_added_2_0">
      * Include another Facelet defined at some path, absolute to this ClassLoader/OS
      * </p>
-     * 
+     *
      * @param parent the <code>UIComponent</code> that will be the parent of any components in the included facelet.
-     * 
+     *
      * @param absolutePath the absolute path to the resource containing the facelet markup
-     * 
+     *
      * @throws IOException if unable to load <code>relativePath</code>
-     * 
+     *
      * @throws FaceletException if unable to parse the markup loaded from <code>relativePath</code>
-     * 
+     *
      * @throws jakarta.faces.FacesException if unable to create child <code>UIComponent</code> instances
-     * 
+     *
      * @throws jakarta.el.ELException if any of the expressions in the markup loaded from <code>relativePath</code> fail
-     * 
+     *
      */
     public abstract void includeFacelet(UIComponent parent, URL absolutePath) throws IOException;
 

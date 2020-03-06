@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,6 +44,7 @@ import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.Renderer;
+import jakarta.servlet.ServletContext;
 
 /**
  * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/render-kit</code>.

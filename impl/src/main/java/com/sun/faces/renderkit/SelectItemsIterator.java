@@ -16,7 +16,14 @@
 
 package com.sun.faces.renderkit;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import jakarta.faces.component.UIComponent;
@@ -26,14 +33,6 @@ import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
-
-import java.util.Map;
-import java.util.ListIterator;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.Array;
 
 /**
  * <p>
@@ -101,7 +100,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
         if (items != null) {
             if (items.hasNext()) {
-                return (true);
+                return true;
             } else {
                 items = null;
             }
@@ -134,7 +133,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             throw new NoSuchElementException();
         }
         if (items != null) {
-            return (items.next());
+            return items.next();
         }
         return next();
 
@@ -221,7 +220,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     /**
      * Update the <code>singleItemIterator</code> with the provided <code>item</code>
-     * 
+     *
      * @param item the {@link SelectItem} to expose as an Iterator
      */
     private void updateSingeItemIterator(UIComponent selectComponent, SelectItem item) {
@@ -304,7 +303,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
         private MapIterator(Map map, UIComponent parent) {
 
-            this.iterator = map.entrySet().iterator();
+            iterator = map.entrySet().iterator();
             this.parent = parent;
         }
 
@@ -330,8 +329,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
-            item.setLabel(((key != null) ? key.toString() : value.toString()));
-            item.setValue(((value != null) ? value : ""));
+            item.setLabel(key != null ? key.toString() : value.toString());
+            item.setValue(value != null ? value : "");
             return item;
 
         }
@@ -449,11 +448,11 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                     Object itemDisabledResult = attrs.get(ITEM_DISABLED);
                     Object noSelectionValueResult = attrs.get(NO_SELECTION_VALUE);
                     Object noSelectionOptionResult = attrs.get(NO_SELECTION_OPTION);
-                    setValue(((itemValueResult != null) ? itemValueResult : value));
-                    setLabel(((itemLabelResult != null) ? itemLabelResult.toString() : value.toString()));
-                    setDescription(((itemDescriptionResult != null) ? itemDescriptionResult.toString() : null));
-                    setEscape(((itemEscapedResult != null) ? Boolean.valueOf(itemEscapedResult.toString()) : true));
-                    setDisabled(((itemDisabledResult != null) ? Boolean.valueOf(itemDisabledResult.toString()) : false));
+                    setValue(itemValueResult != null ? itemValueResult : value);
+                    setLabel(itemLabelResult != null ? itemLabelResult.toString() : value.toString());
+                    setDescription(itemDescriptionResult != null ? itemDescriptionResult.toString() : null);
+                    setEscape(itemEscapedResult != null ? Boolean.valueOf(itemEscapedResult.toString()) : true);
+                    setDisabled(itemDisabledResult != null ? Boolean.valueOf(itemDisabledResult.toString()) : false);
                     if (null != noSelectionOptionResult) {
                         setNoSelectionOption(Boolean.valueOf(noSelectionOptionResult.toString()));
                     } else if (null != noSelectionValueResult) {
@@ -489,8 +488,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     } // END GenericObjectSelectItemIterator
 
-    private static interface ComponentAwareSelectItemIterator<E extends Object> extends Iterator<E> {
-        public UIComponent currentSelectComponent();
+    private interface ComponentAwareSelectItemIterator<E extends Object> extends Iterator<E> {
+        UIComponent currentSelectComponent();
     }
 
     /**
@@ -522,7 +521,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         @Override
         public boolean hasNext() {
 
-            return (index < count);
+            return index < count;
 
         }
 
@@ -566,7 +565,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
             super(sourceComponent);
             this.ctx = ctx;
-            this.iterator = iterable.iterator();
+            iterator = iterable.iterator();
 
         }
 

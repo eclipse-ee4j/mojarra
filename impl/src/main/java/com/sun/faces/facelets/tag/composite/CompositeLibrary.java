@@ -37,23 +37,23 @@ public final class CompositeLibrary extends AbstractTagLibrary {
         super(namespace);
 
         // The interface section
-        this.addTagHandler("interface", InterfaceHandler.class);
+        addTagHandler("interface", InterfaceHandler.class);
 
         // Things that go insead of the interface section
-        this.addTagHandler("attribute", AttributeHandler.class);
-        this.addTagHandler("extension", ExtensionHandler.class);
-        this.addTagHandler("editableValueHolder", EditableValueHolderAttachedObjectTargetHandler.class);
-        this.addTagHandler("actionSource", ActionSource2AttachedObjectTargetHandler.class);
-        this.addTagHandler("valueHolder", ValueHolderAttachedObjectTargetHandler.class);
-        this.addTagHandler("clientBehavior", BehaviorHolderAttachedObjectTargetHandler.class);
-        this.addTagHandler("facet", DeclareFacetHandler.class);
+        addTagHandler("attribute", AttributeHandler.class);
+        addTagHandler("extension", ExtensionHandler.class);
+        addTagHandler("editableValueHolder", EditableValueHolderAttachedObjectTargetHandler.class);
+        addTagHandler("actionSource", ActionSource2AttachedObjectTargetHandler.class);
+        addTagHandler("valueHolder", ValueHolderAttachedObjectTargetHandler.class);
+        addTagHandler("clientBehavior", BehaviorHolderAttachedObjectTargetHandler.class);
+        addTagHandler("facet", DeclareFacetHandler.class);
 
         // The implementation section
-        this.addTagHandler("implementation", ImplementationHandler.class);
+        addTagHandler("implementation", ImplementationHandler.class);
 
         // Things that go inside of the implementation section
-        this.addTagHandler("insertChildren", InsertChildrenHandler.class);
-        this.addTagHandler("insertFacet", InsertFacetHandler.class);
+        addTagHandler("insertChildren", InsertChildrenHandler.class);
+        addTagHandler("insertFacet", InsertFacetHandler.class);
         this.addComponent("renderFacet", "jakarta.faces.Output", "jakarta.faces.CompositeFacet", RenderFacetHandler.class);
     }
 }

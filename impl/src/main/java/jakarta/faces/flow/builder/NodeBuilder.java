@@ -20,7 +20,7 @@ package jakarta.faces.flow.builder;
  * <p class="changed_added_2_2">
  * Base interface for building all kinds of flow nodes.
  * </p>
- * 
+ *
  * @since 2.2
  */
 
@@ -31,12 +31,12 @@ public interface NodeBuilder {
      * Mark this node as the start node in the flow. Any other node that had been marked as the start node will no longer be
      * the start node.
      * </p>
-     * 
+     *
      * @since 2.2
      *
      * @return the builder instance
      */
 
-    public NodeBuilder markAsStartNode();
+    NodeBuilder markAsStartNode();
 
 }

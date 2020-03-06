@@ -17,7 +17,6 @@
 package com.sun.faces.taglib.jsf_core;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.webapp.UIComponentELTag;
@@ -69,11 +68,11 @@ public class SelectItemTag extends UIComponentELTag {
     //
 
     public void setItemValue(ValueExpression value) {
-        this.itemValue = value;
+        itemValue = value;
     }
 
     public void setItemLabel(ValueExpression label) {
-        this.itemLabel = label;
+        itemLabel = label;
     }
 
     public void setItemDescription(ValueExpression itemDescription) {
@@ -174,16 +173,16 @@ public class SelectItemTag extends UIComponentELTag {
 
     /**
      * Getter for property escape.
-     * 
+     *
      * @return Value of property escape.
      */
     public ValueExpression getEscape() {
-        return this.escape;
+        return escape;
     }
 
     /**
      * Setter for property escape.
-     * 
+     *
      * @param escape New value of property escape.
      */
     public void setEscape(ValueExpression escape) {

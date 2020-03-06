@@ -44,7 +44,7 @@ public class ApplicationResourceBundle {
      * <p>
      * Constructs a new ApplicationResourceBundle
      * </p>
-     * 
+     *
      * @param baseName the base name of the <code>ResourceBundle</code>
      * @param displayNames any display names that were associated with the resource bundle definition in the configuration
      * resource
@@ -59,7 +59,7 @@ public class ApplicationResourceBundle {
         this.baseName = baseName;
         this.displayNames = displayNames;
         this.descriptions = descriptions;
-        this.resources = new HashMap<>(4, 1.0f);
+        resources = new HashMap<>(4, 1.0f);
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -131,7 +131,7 @@ public class ApplicationResourceBundle {
      * <p>
      * Lookup and return the text for the specified <code>Locale</code> from within the specified <code>Map</code>.
      * </p>
-     * 
+     *
      * @param locale <code>Locale</code> if interest
      * @param map a map containing localized text keyed by <code>Locale</code>
      * @return localized text, if any

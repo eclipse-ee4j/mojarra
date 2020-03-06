@@ -19,10 +19,6 @@ package jakarta.faces.event;
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.MethodNotFoundException;
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ValueChangeEvent;
-import jakarta.faces.event.ValueChangeListener;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 
@@ -66,7 +62,7 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
         this.methodExpressionOneArg = methodExpressionOneArg;
         FacesContext context = FacesContext.getCurrentInstance();
         ELContext elContext = context.getELContext();
-        this.methodExpressionZeroArg = context.getApplication().getExpressionFactory().createMethodExpression(elContext,
+        methodExpressionZeroArg = context.getApplication().getExpressionFactory().createMethodExpression(elContext,
                 methodExpressionOneArg.getExpressionString(), Void.class, VALUECHANGE_LISTENER_ZEROARG_SIG);
     }
 
@@ -97,7 +93,7 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
      * <code>MethodExpression</code> passed to the constructor of this instance. <span class="changed_deleted_2_2">If that
      * fails for any reason, throw an {@link AbortProcessingException}, including the cause of the failure.</span></span>
      * </p>
-     * 
+     *
      * @throws NullPointerException if the argument valueChangeEvent is null.
      * @throws AbortProcessingException {@inheritDoc}
      */

@@ -22,17 +22,17 @@ import jakarta.el.ValueExpression;
  * <p class="changed_added_2_2">
  * Create a case in the current switch.
  * </p>
- * 
+ *
  * @since 2.2
  */
 public abstract class SwitchCaseBuilder {
 
     /**
-     * 
+     *
      * <p class="changed_added_2_2">
      * Create a new case in the current switch.
      * </p>
-     * 
+     *
      * @since 2.2
      *
      * @return the builder instance
@@ -40,48 +40,48 @@ public abstract class SwitchCaseBuilder {
     public abstract SwitchCaseBuilder switchCase();
 
     /**
-     * 
+     *
      * <p class="changed_added_2_2">
      * Set the if in the previously created switch case.
      * </p>
-     * 
+     *
      * @param expression the {@code ValueExpression} to be evaluated to see if this case is chosen.
-     * 
+     *
      * @throws NullPointerException if any of the parameters are {@code null}
      * @since 2.2
-     * 
+     *
      * @return the builder instance
      */
     public abstract SwitchCaseBuilder condition(ValueExpression expression);
 
     /**
-     * 
+     *
      * <p class="changed_added_2_2">
      * Set the if in the previously created switch case.
      * </p>
-     * 
+     *
      * @param expression the {@code ValueExpression} String to be evaluated to see if this case is chosen.
-     * 
+     *
      * @throws NullPointerException if any of the parameters are {@code null}
      * @since 2.2
-     * 
+     *
      * @return the builder instance
      */
     public abstract SwitchCaseBuilder condition(String expression);
 
     /**
-     * 
+     *
      * <p class="changed_added_2_2">
      * Set the outcome in the previously created switch case.
      * </p>
-     * 
+     *
      * @param outcome the outcome to be returned if the condition evaluates to {@code true}.
-     * 
+     *
      * @throws NullPointerException if any of the parameters are {@code null}
      * @since 2.2
      *
      * @return the builder instance
-     * 
+     *
      */
     public abstract SwitchCaseBuilder fromOutcome(String outcome);
 

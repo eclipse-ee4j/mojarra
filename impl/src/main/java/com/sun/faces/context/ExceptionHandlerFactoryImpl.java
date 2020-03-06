@@ -44,7 +44,7 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory {
         ApplicationAssociate myAssociate = getAssociate(fc);
 
         ExceptionHandler result = new AjaxNoAjaxExceptionHandler(new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(Boolean.TRUE)),
-                new ExceptionHandlerImpl(((myAssociate != null) ? myAssociate.isErrorPagePresent() : Boolean.TRUE)));
+                new ExceptionHandlerImpl(myAssociate != null ? myAssociate.isErrorPagePresent() : Boolean.TRUE));
         return result;
 
     }

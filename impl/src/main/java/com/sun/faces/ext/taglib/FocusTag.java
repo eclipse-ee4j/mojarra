@@ -17,14 +17,13 @@
 package com.sun.faces.ext.taglib;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
 
 /**
  * Tag to set focus to a given field. Uses a single attribute, for, which is the id of the field which should receive
  * the focus.
- * 
+ *
  * @author driscoll
  */
 public class FocusTag extends UIComponentELTag {

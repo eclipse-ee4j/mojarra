@@ -18,11 +18,10 @@ package jakarta.faces.webapp;
 
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>
@@ -34,6 +33,7 @@ import jakarta.faces.context.FacesContext;
  * @deprecated The Faces implementation must now provide the implementation for this class.
  */
 
+@Deprecated
 public class AttributeTag extends TagSupport {
 
     // ---------------------------------------------------------- Static Members
@@ -117,14 +117,14 @@ public class AttributeTag extends TagSupport {
         if (component.getAttributes().get(nameVal) == null) {
             component.getAttributes().put(nameVal, valueVal);
         }
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
     @Override
     public int doEndTag() throws JspException {
-        this.release();
-        return (EVAL_PAGE);
+        release();
+        return EVAL_PAGE;
     }
 
     /**
@@ -134,8 +134,8 @@ public class AttributeTag extends TagSupport {
     @Override
     public void release() {
 
-        this.name = null;
-        this.value = null;
+        name = null;
+        value = null;
     }
 
 }

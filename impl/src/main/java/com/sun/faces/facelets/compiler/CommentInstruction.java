@@ -16,14 +16,13 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.el.ELText;
+import java.io.IOException;
 
-import jakarta.faces.context.FacesContext;
+import com.sun.faces.facelets.el.ELText;
 
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-
-import java.io.IOException;
+import jakarta.faces.context.FacesContext;
 
 final class CommentInstruction implements Instruction {
     private final ELText text;
@@ -35,12 +34,12 @@ final class CommentInstruction implements Instruction {
     @Override
     public void write(FacesContext context) throws IOException {
         ELContext elContext = context.getELContext();
-        context.getResponseWriter().writeComment(this.text.toString(elContext));
+        context.getResponseWriter().writeComment(text.toString(elContext));
     }
 
     @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx) {
-        ELText t = this.text.apply(factory, ctx);
+        ELText t = text.apply(factory, ctx);
         return new CommentInstruction(t);
     }
 

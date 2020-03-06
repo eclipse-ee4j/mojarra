@@ -16,23 +16,23 @@
 
 package com.sun.faces.facelets.el;
 
+import java.io.Serializable;
+
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.el.MethodNotFoundException;
 
-import java.io.Serializable;
-
 /**
  * For legacy ActionSources
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  * @deprecated
  */
+@Deprecated
 public final class LegacyMethodBinding extends MethodBinding implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +45,7 @@ public final class LegacyMethodBinding extends MethodBinding implements Serializ
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.MethodBinding#getType(jakarta.faces.context.FacesContext)
      */
     @Override
@@ -61,7 +61,7 @@ public final class LegacyMethodBinding extends MethodBinding implements Serializ
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.MethodBinding#invoke(jakarta.faces.context.FacesContext, java.lang.Object[])
      */
     @Override

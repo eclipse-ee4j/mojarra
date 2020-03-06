@@ -25,7 +25,7 @@ import java.io.Serializable;
 public class IterationStatus implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -59,20 +59,20 @@ public class IterationStatus implements Serializable {
         this.first = first;
         this.last = last;
         this.current = current;
-        int iBegin = ((begin != null) ? begin : 0);
-        int iStep = ((step != null) ? step : 1);
-        this.even = ((index - iBegin) / iStep) % 2 == 0;
+        int iBegin = begin != null ? begin : 0;
+        int iStep = step != null ? step : 1;
+        even = (index - iBegin) / iStep % 2 == 0;
         this.iterationCount = iterationCount;
     }
 
     // ---------------------------------------------- Methods from LoopTagStatus
 
     public boolean isFirst() {
-        return this.first;
+        return first;
     }
 
     public boolean isLast() {
-        return this.last;
+        return last;
     }
 
     public Integer getBegin() {

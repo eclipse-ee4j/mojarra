@@ -22,11 +22,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.servlet.ServletRequest;
-
 import com.sun.faces.util.Util;
 
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletRequest;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestParameterMap()
@@ -73,7 +72,7 @@ public class RequestParameterMap extends BaseContextMap<String> {
 
     /**
      * If view root is instance of naming container, return its container client id, suffixed with separator character.
-     * 
+     *
      * @return The naming container prefix, or an empty string if the view root is not an instance of naming container.
      */
     protected String getNamingContainerPrefix() {
@@ -97,7 +96,7 @@ public class RequestParameterMap extends BaseContextMap<String> {
 
     @Override
     public boolean containsKey(Object key) {
-        return (key != null && get(key) != null);
+        return key != null && get(key) != null;
     }
 
     @Override

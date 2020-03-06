@@ -16,6 +16,9 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.util.Map;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import jakarta.faces.component.UIComponent;
@@ -24,16 +27,13 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 
-import java.io.IOException;
-import java.util.Map;
-
 /**
  * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will
  * instead set the ValueExpression on the UIComponent.
  * <p />
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag
  * documentation</a>.
- * 
+ *
  * @see jakarta.faces.component.UIComponent#getAttributes()
  * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, jakarta.el.ValueExpression)
  * @author Jacob Hookom
@@ -49,19 +49,19 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
      */
     public PassThroughAttributeHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.value = this.getRequiredAttribute("value");
+        name = getRequiredAttribute("name");
+        value = getRequiredAttribute("value");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
-            throw new TagException(this.tag, "Parent UIComponent was null");
+            throw new TagException(tag, "Parent UIComponent was null");
         }
 
         // only process if the parent is new to the tree
@@ -69,8 +69,8 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
             Map<String, Object> passThroughAttrs = parent.getPassThroughAttributes(true);
             String attrName;
             Object attrValue;
-            attrName = this.name.getValue(ctx);
-            attrValue = (this.value.isLiteral()) ? this.value.getValue(ctx) : this.value.getValueExpression(ctx, Object.class);
+            attrName = name.getValue(ctx);
+            attrValue = value.isLiteral() ? value.getValue(ctx) : value.getValueExpression(ctx, Object.class);
             passThroughAttrs.put(attrName, attrValue);
         }
     }
@@ -79,6 +79,6 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
     // implementation.
     @Override
     public String getAttributeName(FaceletContext ctxt) {
-        return this.name.getValue(ctxt);
+        return name.getValue(ctxt);
     }
 }

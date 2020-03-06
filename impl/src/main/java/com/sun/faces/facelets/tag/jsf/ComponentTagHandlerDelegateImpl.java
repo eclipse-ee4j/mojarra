@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ValueExpression;
-
 import com.sun.faces.component.CompositeComponentStackManager;
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.component.validator.ComponentValidators;
@@ -39,6 +37,7 @@ import com.sun.faces.facelets.tag.jsf.core.FacetHandler;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.ActionSource;
@@ -79,10 +78,10 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     public ComponentTagHandlerDelegateImpl(ComponentHandler owner) {
         this.owner = owner;
         ComponentConfig config = owner.getComponentConfig();
-        this.componentType = config.getComponentType();
-        this.rendererType = config.getRendererType();
-        this.id = owner.getTagAttribute("id");
-        this.binding = owner.getTagAttribute("binding");
+        componentType = config.getComponentType();
+        rendererType = config.getRendererType();
+        id = owner.getTagAttribute("id");
+        binding = owner.getTagAttribute("binding");
 
     }
 
@@ -149,7 +148,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             // hook method
             c = owner.createComponent(ctx);
             if (c == null) {
-                c = this.createComponent(ctx);
+                c = createComponent(ctx);
             }
 
             doNewComponentActions(ctx, id, c);
@@ -163,7 +162,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         boolean compcompPushed = pushComponentToEL(ctx, c, ccStackManager);
 
         if (ProjectStage.Development == context.getApplication().getProjectStage()) {
-            ComponentSupport.setTagForComponent(context, c, this.owner.getTag());
+            ComponentSupport.setTagForComponent(context, c, owner.getTag());
         }
 
         // If this this a naming container, stop generating unique Ids
@@ -188,7 +187,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             doOrphanedChildCleanup(ctx, parent, c, parentModified);
         }
 
-        this.privateOnComponentPopulated(ctx, c);
+        privateOnComponentPopulated(ctx, c);
         owner.onComponentPopulated(ctx, c, parent);
         // add to the tree afterwards
         // this allows children to determine if it's
@@ -208,7 +207,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     // so, we want to suppress re-creation of this child
     private boolean suppressRemovedChild(UIComponent parent, String childTagId) {
         Collection<String> removedChildren = (Collection<String>) parent.getAttributes().get(ComponentSupport.REMOVED_CHILDREN);
-        return ((removedChildren != null) && removedChildren.contains(childTagId));
+        return removedChildren != null && removedChildren.contains(childTagId);
     }
 
     // Tests whether the specified parent component has had any dynamic
@@ -216,7 +215,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     // during tag re-execution, since we want to preserve the dynamically
     // specified order.
     private boolean isParentChildrenModified(UIComponent parent) {
-        return (parent.getAttributes().get(ComponentSupport.MARK_CHILDREN_MODIFIED) != null);
+        return parent.getAttributes().get(ComponentSupport.MARK_CHILDREN_MODIFIED) != null;
     }
 
     private void adjustIndexOfDynamicChildren(FacesContext context, UIComponent parent) {
@@ -387,7 +386,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             if (root != null) {
                 String uid;
                 IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-                String mid = ((mapper != null) ? mapper.getAliasedId(id) : id);
+                String mid = mapper != null ? mapper.getAliasedId(id) : id;
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
                 if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);
@@ -399,8 +398,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         }
 
-        if (this.rendererType != null) {
-            c.setRendererType(this.rendererType);
+        if (rendererType != null) {
+            c.setRendererType(rendererType);
         }
 
     }
@@ -441,7 +440,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
              * below. This makes IterationIdManager aware of all literal Ids on the page, so that it can ensure Id uniqueness for
              * components added during postback.
              */
-            boolean autoGenerated = (this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue()));
+            boolean autoGenerated = this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue());
 
             /*
              * Repply the id, for the case when the component tree was changed, and the id's are set explicitly.
@@ -464,8 +463,9 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         UIComponent facet = parent.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (facet != null) {
             UIComponent newParent = facet.findComponent((String) parent.getAttributes().get(tagId));
-            if (newParent != null)
+            if (newParent != null) {
                 return ComponentSupport.findChildByTagId(ctx.getFacesContext(), newParent, tagId);
+            }
         }
         return null;
     }
@@ -473,7 +473,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     // ------------------------------------------------- Package Private Methods
 
     void setCreateCompositeComponentDelegate(CreateComponentDelegate createComponentDelegate) {
-        this.createCompositeComponentDelegate = createComponentDelegate;
+        createCompositeComponentDelegate = createComponentDelegate;
     }
 
     /**
@@ -481,7 +481,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * createComponent on the Application, otherwise just pass the componentType String.
      * <p />
      * If the binding was used, then set the ValueExpression "binding" on the created UIComponent.
-     * 
+     *
      * @see Application#createComponent(jakarta.faces.el.ValueBinding, jakarta.faces.context.FacesContext, java.lang.String)
      * @see Application#createComponent(java.lang.String)
      * @param ctx FaceletContext to use in creating a component
@@ -496,15 +496,15 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         UIComponent c;
         FacesContext faces = ctx.getFacesContext();
         Application app = faces.getApplication();
-        if (this.binding != null) {
-            ValueExpression ve = this.binding.getValueExpression(ctx, Object.class);
-            c = app.createComponent(ve, faces, this.componentType, this.rendererType);
+        if (binding != null) {
+            ValueExpression ve = binding.getValueExpression(ctx, Object.class);
+            c = app.createComponent(ve, faces, componentType, rendererType);
             if (c != null) {
                 // Make sure the component supports 1.2
                 c.setValueExpression("binding", ve);
             }
         } else {
-            c = app.createComponent(faces, this.componentType, this.rendererType);
+            c = app.createComponent(faces, componentType, rendererType);
         }
         return c;
     }
@@ -552,11 +552,11 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
     interface CreateComponentDelegate {
 
-        public UIComponent createComponent(FaceletContext ctx);
+        UIComponent createComponent(FaceletContext ctx);
 
-        public void setCompositeComponent(FacesContext context, UIComponent cc);
+        void setCompositeComponent(FacesContext context, UIComponent cc);
 
-        public UIComponent getCompositeComponent(FacesContext context);
+        UIComponent getCompositeComponent(FacesContext context);
 
     }
 

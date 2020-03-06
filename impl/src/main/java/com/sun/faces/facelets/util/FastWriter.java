@@ -35,7 +35,7 @@ public final class FastWriter extends Writer {
         if (initialSize < 0) {
             throw new IllegalArgumentException("Initial Size cannot be less than 0");
         }
-        this.buff = new char[initialSize];
+        buff = new char[initialSize];
     }
 
     @Override
@@ -49,18 +49,18 @@ public final class FastWriter extends Writer {
     }
 
     private void overflow(int len) {
-        if (this.size + len > this.buff.length) {
-            char[] next = new char[(this.size + len) * 2];
-            System.arraycopy(this.buff, 0, next, 0, this.size);
-            this.buff = next;
+        if (size + len > buff.length) {
+            char[] next = new char[(size + len) * 2];
+            System.arraycopy(buff, 0, next, 0, size);
+            buff = next;
         }
     }
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         overflow(len);
-        System.arraycopy(cbuf, off, this.buff, this.size, len);
-        this.size += len;
+        System.arraycopy(cbuf, off, buff, size, len);
+        size += len;
     }
 
     @Override
@@ -70,9 +70,9 @@ public final class FastWriter extends Writer {
 
     @Override
     public void write(int c) throws IOException {
-        this.overflow(1);
-        this.buff[this.size] = (char) c;
-        this.size++;
+        overflow(1);
+        buff[size] = (char) c;
+        size++;
     }
 
     @Override
@@ -86,11 +86,11 @@ public final class FastWriter extends Writer {
     }
 
     public void reset() {
-        this.size = 0;
+        size = 0;
     }
 
     @Override
     public String toString() {
-        return new String(this.buff, 0, this.size);
+        return new String(buff, 0, size);
     }
 }

@@ -16,17 +16,12 @@
 
 package jakarta.faces.event;
 
+import java.util.logging.Logger;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
-
-import java.util.logging.Logger;
 import jakarta.el.MethodNotFoundException;
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ActionEvent;
-import jakarta.faces.event.ActionListener;
-import jakarta.faces.event.ValueChangeListener;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 
@@ -73,7 +68,7 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
         this.methodExpressionOneArg = methodExpressionOneArg;
         FacesContext context = FacesContext.getCurrentInstance();
         ELContext elContext = context.getELContext();
-        this.methodExpressionZeroArg = context.getApplication().getExpressionFactory().createMethodExpression(elContext,
+        methodExpressionZeroArg = context.getApplication().getExpressionFactory().createMethodExpression(elContext,
                 methodExpressionOneArg.getExpressionString(), Void.class, ACTION_LISTENER_ZEROARG_SIG);
 
     }
@@ -97,7 +92,7 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
      * <code>MethodExpression</code> passed to the constructor of this instance. <span class="changed_deleted_2_2">If that
      * fails for any reason, throw an {@link AbortProcessingException}, including the cause of the failure.</span></span>
      * </p>
-     * 
+     *
      * @throws NullPointerException {@inheritDoc}
      * @throws AbortProcessingException {@inheritDoc}
      */
@@ -121,7 +116,7 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
             if (ee.getCause() instanceof AbortProcessingException) {
                 throw (AbortProcessingException) ee.getCause();
             } else {
-                throw (ELException) ee;
+                throw ee;
             }
         }
     }

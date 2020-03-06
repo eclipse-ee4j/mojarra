@@ -16,17 +16,16 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.webapp.UIComponentClassicTagBase;
 import jakarta.faces.webapp.UIComponentELTag;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>
@@ -134,14 +133,14 @@ public class AttributeTag extends TagSupport {
                 component.setValueExpression(nameVal, value);
             }
         }
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
     @Override
     public int doEndTag() throws JspException {
-        this.release();
-        return (EVAL_PAGE);
+        release();
+        return EVAL_PAGE;
     }
 
     /**
@@ -151,8 +150,8 @@ public class AttributeTag extends TagSupport {
     @Override
     public void release() {
 
-        this.name = null;
-        this.value = null;
+        name = null;
+        value = null;
 
     } // END release
 

@@ -38,6 +38,6 @@ interface RuntimeAnnotationHandler {
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param params one or more arguments to the handler instance. The type and number may vary.
      */
-    public void apply(FacesContext ctx, Object... params);
+    void apply(FacesContext ctx, Object... params);
 
 }

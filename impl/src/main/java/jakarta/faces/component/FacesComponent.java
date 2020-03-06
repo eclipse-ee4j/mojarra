@@ -23,8 +23,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.faces.component.UIComponent;
-
 /**
  * <p class="changed_added_2_0">The presence of this annotation on a
  * class automatically registers the class with the runtime as a {@link
@@ -50,7 +48,7 @@ import jakarta.faces.component.UIComponent;
  * <span class="changed_added_2_2">If the <code>createTag</code> attribute is <code>true</code>, the runtime must create
  * a corresponding Facelet tag handler according to the rules specified in the attributes of this annotation.</span>
  * </p>
- * 
+ *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
@@ -74,7 +72,7 @@ public @interface FacesComponent {
      * <code>getSimpleName</code> on the class to which this annotation is attached and lowercasing the first character. If
      * more than one component with this derived name is found, the results are undefined.</span>
      * </p>
-     * 
+     *
      * @return the component type.
      */
     String value() default "";
@@ -85,7 +83,7 @@ public @interface FacesComponent {
      * {@link jakarta.faces.view.facelets.ComponentHandler}, suitable for use in pages under the tag library with namespace
      * given by the value of the {@link #namespace} attribute.
      * </p>
-     * 
+     *
      * @return <code>true</code> to create the Facelet tag handler, <code>false</code> otherwise.
      */
     boolean createTag() default false;
@@ -97,7 +95,7 @@ public @interface FacesComponent {
      * specified on a usage of this annotation, the simple name of the class on which this annotation is declared, with the
      * first character lowercased, is taken to be the value.
      * </p>
-     * 
+     *
      * @return the tag name.
      */
     String tagName() default "";
@@ -107,7 +105,7 @@ public @interface FacesComponent {
      * If the value of the {@link #createTag} attribute is <code>true</code>, the value of this attribute is taken to be the
      * tag library namespace into which this component is placed.
      * </p>
-     * 
+     *
      * @return the namespace.
      */
     String namespace() default NAMESPACE;

@@ -99,7 +99,7 @@ public abstract class JndiHandler implements RuntimeAnnotationHandler {
 
     /**
      * Invoke the method.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param method the method.
      * @param instance the instance.

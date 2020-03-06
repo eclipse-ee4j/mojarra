@@ -19,11 +19,6 @@ package jakarta.faces.context;
 import java.io.IOException;
 import java.util.Map;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.PartialResponseWriter;
-import jakarta.faces.context.ResponseWriter;
-import jakarta.faces.context.ResponseWriterWrapper;
-
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.ResponseStateManager;

@@ -43,16 +43,16 @@ class ViewScopeContextObject implements Serializable {
     }
 
     public String getPassivationCapableId() {
-        return this.passivationCapableId;
+        return passivationCapableId;
     }
 
     /*
      * Get the name.
-     * 
+     *
      * @return the name.
      */
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setPassivationCapableId(String passivationCapableId) {

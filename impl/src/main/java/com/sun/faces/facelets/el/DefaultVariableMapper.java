@@ -16,18 +16,19 @@
 
 package com.sun.faces.facelets.el;
 
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
+
 /**
  * Default instance of a VariableMapper backed by a Map
- * 
+ *
  * @see jakarta.el.VariableMapper
  * @see jakarta.el.ValueExpression
  * @see java.util.Map
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -44,8 +45,8 @@ public final class DefaultVariableMapper extends VariableMapper {
      */
     @Override
     public ValueExpression resolveVariable(String name) {
-        if (this.vars != null) {
-            return (ValueExpression) this.vars.get(name);
+        if (vars != null) {
+            return (ValueExpression) vars.get(name);
         }
         return null;
     }
@@ -55,10 +56,10 @@ public final class DefaultVariableMapper extends VariableMapper {
      */
     @Override
     public ValueExpression setVariable(String name, ValueExpression expression) {
-        if (this.vars == null) {
-            this.vars = new HashMap();
+        if (vars == null) {
+            vars = new HashMap();
         }
-        return (ValueExpression) this.vars.put(name, expression);
+        return (ValueExpression) vars.put(name, expression);
     }
 
 }

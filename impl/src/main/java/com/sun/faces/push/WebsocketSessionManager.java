@@ -18,10 +18,10 @@ package com.sun.faces.push;
 
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.push.WebsocketEndpoint.PARAM_CHANNEL;
+import static jakarta.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
 import static java.lang.String.format;
 import static java.util.Collections.emptySet;
 import static java.util.logging.Level.WARNING;
-import static jakarta.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -34,23 +34,21 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.util.AnnotationLiteral;
-import jakarta.inject.Inject;
-import jakarta.websocket.CloseReason;
-import jakarta.websocket.Session;
 
 import com.sun.faces.util.Json;
 import com.sun.faces.util.Util;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.WebsocketEvent;
 import jakarta.faces.event.WebsocketEvent.Closed;
 import jakarta.faces.event.WebsocketEvent.Opened;
 import jakarta.faces.push.Push;
+import jakarta.inject.Inject;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Session;
 
 /**
  * <p class="changed_added_2_3">
@@ -95,7 +93,7 @@ public class WebsocketSessionManager {
 
     /**
      * Register given channel identifier.
-     * 
+     *
      * @param channelId The channel identifier to register.
      */
     protected void register(String channelId) {
@@ -106,7 +104,7 @@ public class WebsocketSessionManager {
 
     /**
      * Register given channel identifiers.
-     * 
+     *
      * @param channelIds The channel identifiers to register.
      */
     protected void register(Iterable<String> channelIds) {
@@ -119,7 +117,7 @@ public class WebsocketSessionManager {
      * On open, add given web socket session to the mapping associated with its channel identifier and returns
      * <code>true</code> if it's accepted (i.e. the channel identifier is known) and the same session hasn't been added
      * before, otherwise <code>false</code>.
-     * 
+     *
      * @param session The opened web socket session.
      * @return <code>true</code> if given web socket session is accepted and is new, otherwise <code>false</code>.
      */
@@ -144,7 +142,7 @@ public class WebsocketSessionManager {
     /**
      * Encode the given message object as JSON and send it to all open web socket sessions associated with given web socket
      * channel identifier.
-     * 
+     *
      * @param channelId The web socket channel identifier.
      * @param message The push message object.
      * @return The results of the send operation. If it returns an empty set, then there was no open session associated with
@@ -152,7 +150,7 @@ public class WebsocketSessionManager {
      * was successfully delivered and otherwise throw {@link ExecutionException}.
      */
     protected Set<Future<Void>> send(String channelId, Object message) {
-        Collection<Session> sessions = (channelId != null) ? socketSessions.get(channelId) : null;
+        Collection<Session> sessions = channelId != null ? socketSessions.get(channelId) : null;
 
         if (sessions != null && !sessions.isEmpty()) {
             Set<Future<Void>> results = new HashSet<>(sessions.size());
@@ -224,7 +222,7 @@ public class WebsocketSessionManager {
 
     /**
      * On close, remove given web socket session from the mapping.
-     * 
+     *
      * @param session The closed web socket session.
      * @param reason The close reason.
      */
@@ -238,7 +236,7 @@ public class WebsocketSessionManager {
 
     /**
      * Deregister given channel identifiers and explicitly close all open web socket sessions associated with it.
-     * 
+     *
      * @param channelIds The channel identifiers to deregister.
      */
     protected void deregister(Iterable<String> channelIds) {
@@ -287,7 +285,7 @@ public class WebsocketSessionManager {
     private static void fireEvent(Session session, CloseReason reason, AnnotationLiteral<?> qualifier) {
         Serializable user = (Serializable) session.getUserProperties().get("user");
         Util.getCdiBeanManager(FacesContext.getCurrentInstance())
-                .fireEvent(new WebsocketEvent(getChannel(session), user, (reason != null) ? reason.getCloseCode() : null), qualifier);
+                .fireEvent(new WebsocketEvent(getChannel(session), user, reason != null ? reason.getCloseCode() : null), qualifier);
     }
 
 }

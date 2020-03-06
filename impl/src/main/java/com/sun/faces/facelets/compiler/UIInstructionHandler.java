@@ -16,20 +16,19 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import com.sun.faces.facelets.el.ELText;
 import com.sun.faces.facelets.impl.IdMapper;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.facelets.util.FastWriter;
 
+import jakarta.el.ELException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletContext;
-
-import jakarta.el.ELException;
-
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * @author Adam Winer
@@ -54,7 +53,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
         this.id = id;
         this.instructions = instructions;
         this.txt = txt;
-        this.length = txt.toString().length();
+        length = txt.toString().length();
 
         boolean literal = true;
         int size = instructions.length;
@@ -88,16 +87,16 @@ final class UIInstructionHandler extends AbstractUIHandler {
                 ComponentSupport.markForDeletion(c);
             } else {
                 Instruction[] applied;
-                if (this.literal) {
-                    applied = this.instructions;
+                if (literal) {
+                    applied = instructions;
                 } else {
-                    int size = this.instructions.length;
+                    int size = instructions.length;
                     applied = new Instruction[size];
                     // Create a new list with all of the necessary applied
                     // instructions
                     Instruction ins;
                     for (int i = 0; i < size; i++) {
-                        ins = this.instructions[i];
+                        ins = instructions[i];
                         applied[i] = ins.apply(ctx.getExpressionFactory(), ctx);
                     }
                 }
@@ -106,7 +105,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
                 // mark it owned by a facelet instance
                 String uid;
                 IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-                String mid = ((mapper != null) ? mapper.getAliasedId(id) : id);
+                String mid = mapper != null ? mapper.getAliasedId(id) : id;
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
                 if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);
@@ -133,7 +132,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
             if (componentFound && suppressEvents) {
                 context.setProcessingEvents(false);
             }
-            this.addComponent(ctx, parent, c);
+            addComponent(ctx, parent, c);
             if (componentFound && suppressEvents) {
                 context.setProcessingEvents(true);
             }
@@ -142,21 +141,21 @@ final class UIInstructionHandler extends AbstractUIHandler {
 
     @Override
     public String toString() {
-        return this.txt.toString();
+        return txt.toString();
     }
 
     @Override
     public String getText() {
-        return this.txt.toString();
+        return txt.toString();
     }
 
     @Override
     public String getText(FaceletContext ctx) {
-        Writer writer = new FastWriter(this.length);
+        Writer writer = new FastWriter(length);
         try {
-            this.txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
+            txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
         } catch (IOException e) {
-            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+            throw new ELException(alias + ": " + e.getMessage(), e.getCause());
         }
         return writer.toString();
     }

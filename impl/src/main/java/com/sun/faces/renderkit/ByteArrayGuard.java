@@ -16,34 +16,31 @@
 
 package com.sun.faces.renderkit;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.sun.faces.RIConstants;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
-
-import com.sun.faces.RIConstants;
-
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import jakarta.servlet.http.HttpSession;
 
 /**
@@ -51,11 +48,11 @@ import jakarta.servlet.http.HttpSession;
  * This utility class is to provide both encryption and decryption <code>Ciphers</code> to
  * <code>ResponseStateManager</code> implementations wishing to provide encryption support.
  * </p>
- * 
+ *
  * <p>
  * The algorithm used to encrypt byte array is AES with CBC.
  * </p>
- * 
+ *
  * <p>
  * Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit JSF needs.
  * </p>
@@ -95,7 +92,7 @@ public final class ByteArrayGuard {
      * This method: Encrypts bytes using a cipher. Generates MAC for intialization vector of the cipher Generates MAC for
      * encrypted data Returns a byte array consisting of the following concatenated together: |MAC for cnrypted Data | MAC
      * for Init Vector | Encrypted Data |
-     * 
+     *
      * @param bytes The byte array to be encrypted.
      * @return the encrypted byte array.
      */
@@ -131,7 +128,7 @@ public final class ByteArrayGuard {
     /**
      * This method decrypts the provided byte array. The decryption is only performed if the regenerated MAC is the same as
      * the MAC for the received value.
-     * 
+     *
      * @param bytes Encrypted byte array to be decrypted.
      * @return Decrypted byte array.
      */
@@ -222,7 +219,7 @@ public final class ByteArrayGuard {
 
     /**
      * This method concatenates two byte arrays
-     * 
+     *
      * @return a byte array of array1||array2
      * @param array1 first byte array to be concatenated
      * @param array2 second byte array to be concatenated

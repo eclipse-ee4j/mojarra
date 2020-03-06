@@ -16,24 +16,24 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.DateTimeConverter;
-
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * <p>
@@ -114,27 +114,27 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
     //
 
     public void setDateStyle(ValueExpression dateStyle) {
-        this.dateStyleExpression = dateStyle;
+        dateStyleExpression = dateStyle;
     }
 
     public void setLocale(ValueExpression locale) {
-        this.localeExpression = locale;
+        localeExpression = locale;
     }
 
     public void setPattern(ValueExpression pattern) {
-        this.patternExpression = pattern;
+        patternExpression = pattern;
     }
 
     public void setTimeStyle(ValueExpression timeStyle) {
-        this.timeStyleExpression = timeStyle;
+        timeStyleExpression = timeStyle;
     }
 
     public void setTimeZone(ValueExpression timeZone) {
-        this.timeZoneExpression = timeZone;
+        timeZoneExpression = timeZone;
     }
 
     public void setType(ValueExpression type) {
-        this.typeExpression = type;
+        typeExpression = type;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class ConvertDateTimeTag extends AbstractConverterTag {
     protected Converter createConverter() throws JspException {
 
         DateTimeConverter result = (DateTimeConverter) super.createConverter();
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         result.setDateStyle(dateStyle);

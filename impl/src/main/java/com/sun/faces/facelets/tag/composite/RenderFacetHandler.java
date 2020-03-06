@@ -19,7 +19,11 @@ package com.sun.faces.facelets.tag.composite;
 import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.*;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
 
 public class RenderFacetHandler extends ComponentHandler {
 
@@ -40,8 +44,8 @@ public class RenderFacetHandler extends ComponentHandler {
 
     public RenderFacetHandler(ComponentConfig config) {
         super(config);
-        name = this.getRequiredAttribute(NAME_ATTRIBUTE);
-        required = this.getAttribute(REQUIRED_ATTRIBUTE);
+        name = getRequiredAttribute(NAME_ATTRIBUTE);
+        required = getAttribute(REQUIRED_ATTRIBUTE);
     }
 
     // ------------------------------------------------- Methods from TagHandler
@@ -53,8 +57,8 @@ public class RenderFacetHandler extends ComponentHandler {
         if (compositeParent == null) {
             return;
         }
-        boolean requiredValue = ((this.required != null) && this.required.getBoolean(ctx));
-        String nameValue = this.name.getValue(ctx);
+        boolean requiredValue = required != null && required.getBoolean(ctx);
+        String nameValue = name.getValue(ctx);
 
         if (compositeParent.getFacetCount() == 0 && requiredValue) {
             throwRequiredException(ctx, nameValue, compositeParent);
@@ -72,7 +76,7 @@ public class RenderFacetHandler extends ComponentHandler {
 
     private void throwRequiredException(FaceletContext ctx, String name, UIComponent compositeParent) {
 
-        throw new TagException(this.tag, "Unable to find facet named '" + name + "' in parent composite component with id '"
+        throw new TagException(tag, "Unable to find facet named '" + name + "' in parent composite component with id '"
                 + compositeParent.getClientId(ctx.getFacesContext()) + '\'');
 
     }

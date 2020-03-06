@@ -21,9 +21,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceHandler;
-
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.FacesContext;
 

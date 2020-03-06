@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
@@ -54,19 +53,21 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#getExpressionString()
      */
+    @Override
     public String getExpressionString() {
-        assert (null != valueExpression);
+        assert null != valueExpression;
         return valueExpression.getExpressionString();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#getType(jakarta.faces.context.FacesContext)
      */
+    @Override
     public Class getType(FacesContext context) throws EvaluationException, PropertyNotFoundException {
 
         if (context == null) {
@@ -85,9 +86,10 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#getValue(jakarta.faces.context.FacesContext)
      */
+    @Override
     public Object getValue(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         if (context == null) {
             throw new NullPointerException("FacesContext -> null");
@@ -105,9 +107,10 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#isReadOnly(jakarta.faces.context.FacesContext)
      */
+    @Override
     public boolean isReadOnly(FacesContext context) throws EvaluationException, PropertyNotFoundException {
 
         if (context == null) {
@@ -124,9 +127,10 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#setValue(jakarta.faces.context.FacesContext, java.lang.Object)
      */
+    @Override
     public void setValue(FacesContext context, Object value) throws EvaluationException, PropertyNotFoundException {
 
         if (context == null) {
@@ -143,14 +147,17 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
         }
     }
 
+    @Override
     public boolean isTransient() {
-        return this.tranzient;
+        return tranzient;
     }
 
+    @Override
     public void setTransient(boolean tranzient) {
         this.tranzient = tranzient;
     }
 
+    @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
             throw new NullPointerException();
@@ -175,6 +182,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state) {
         if (context == null) {
             throw new NullPointerException();
@@ -209,6 +217,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
         }
     }
 
+    @Override
     public boolean equals(Object other) {
 
         if (other == this) {
@@ -217,7 +226,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
         if (other instanceof ValueBindingValueExpressionAdapter) {
             ValueExpression expr = ((ValueBindingValueExpressionAdapter) other).getWrapped();
-            return (valueExpression.equals(expr));
+            return valueExpression.equals(expr);
         } else if (other instanceof ValueBinding) {
             FacesContext context = FacesContext.getCurrentInstance();
             ValueBinding otherVB = (ValueBinding) other;
@@ -230,8 +239,9 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     }
 
+    @Override
     public int hashCode() {
-        assert (null != valueExpression);
+        assert null != valueExpression;
         return valueExpression.hashCode();
     }
 

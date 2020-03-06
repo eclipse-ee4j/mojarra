@@ -16,19 +16,19 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.facelets.util.FastWriter;
 
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Jacob Hookom
@@ -44,8 +44,8 @@ public final class UIDebug extends UIComponentBase {
 
     public UIDebug() {
         super();
-        this.setTransient(true);
-        this.setRendererType(null);
+        setTransient(true);
+        setRendererType(null);
     }
 
     @Override
@@ -87,7 +87,7 @@ public final class UIDebug extends UIComponentBase {
                     "eval(\"page\" + id + \" = window.open(URL, '\" + id + \"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left = 240,top = 212');\"); };");
             sb.append("(function() { if (typeof jsfFaceletsDebug === 'undefined') { var jsfFaceletsDebug = false; } if (!jsfFaceletsDebug) {");
             sb.append("var faceletsOrigKeyup = document.onkeyup;");
-            sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '" + this.getHotkey()
+            sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '" + getHotkey()
                     + "' & e.shiftKey & e.ctrlKey) faceletsDebug('");
             sb.append(actionId);
             sb.append(actionId.indexOf('?') == -1 ? '?' : '&');
@@ -123,7 +123,7 @@ public final class UIDebug extends UIComponentBase {
 
                 @Override
                 protected boolean removeEldestEntry(Map.Entry eldest) {
-                    return (this.size() > 5);
+                    return size() > 5;
                 }
             };
         }
@@ -143,7 +143,7 @@ public final class UIDebug extends UIComponentBase {
     }
 
     public static boolean debugRequest(FacesContext faces) {
-        String id = (String) faces.getExternalContext().getRequestParameterMap().get(KEY);
+        String id = faces.getExternalContext().getRequestParameterMap().get(KEY);
         if (id != null) {
             Object resp = faces.getExternalContext().getResponse();
             if (!faces.getResponseComplete() && resp instanceof HttpServletResponse) {
@@ -169,10 +169,10 @@ public final class UIDebug extends UIComponentBase {
     }
 
     public String getHotkey() {
-        return this.hotkey;
+        return hotkey;
     }
 
     public void setHotkey(String hotkey) {
-        this.hotkey = (hotkey != null) ? hotkey.toUpperCase() : "";
+        this.hotkey = hotkey != null ? hotkey.toUpperCase() : "";
     }
 }

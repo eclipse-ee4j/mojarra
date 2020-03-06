@@ -21,13 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.el.ELContext;
-import jakarta.faces.context.ExceptionHandler;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.PartialViewContext;
-import jakarta.faces.context.ResponseStream;
-import jakarta.faces.context.ResponseWriter;
-
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -324,7 +317,7 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
      * </p>
      *
      * @see jakarta.faces.context.FacesContext#isReleased
-     * 
+     *
      * @since 2.1
      */
     @Override

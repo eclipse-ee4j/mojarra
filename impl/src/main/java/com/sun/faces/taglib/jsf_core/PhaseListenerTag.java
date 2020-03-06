@@ -16,9 +16,15 @@
 
 package com.sun.faces.taglib.jsf_core;
 
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.AbortProcessingException;
@@ -26,16 +32,9 @@ import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.webapp.UIComponentELTag;
-
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.el.ValueExpression;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <p>
@@ -120,7 +119,7 @@ public class PhaseListenerTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIViewRoot viewRoot = (UIViewRoot) tag.getComponentInstance();
@@ -143,7 +142,7 @@ public class PhaseListenerTag extends TagSupport {
         }
         viewRoot.addPhaseListener(listener);
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
@@ -154,7 +153,7 @@ public class PhaseListenerTag extends TagSupport {
     @Override
     public void release() {
 
-        this.type = null;
+        type = null;
 
     }
 

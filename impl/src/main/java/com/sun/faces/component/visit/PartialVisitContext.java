@@ -30,7 +30,10 @@ import java.util.Set;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
-import jakarta.faces.component.visit.*;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -40,14 +43,14 @@ import jakarta.faces.context.FacesContext;
  * </p>
  *
  * RELEASE_PENDING
- * 
+ *
  * @since 2.0
  */
 public class PartialVisitContext extends VisitContext {
 
     /**
      * Creates a PartialVisitorContext instance.
-     * 
+     *
      * @param facesContext the FacesContext for the current request
      * @param clientIds the client ids of the components to visit
      * @throws NullPointerException if {@code facesContext} is {@code null}
@@ -58,7 +61,7 @@ public class PartialVisitContext extends VisitContext {
 
     /**
      * Creates a PartialVisitorContext instance with the specified hints.
-     * 
+     *
      * @param facesContext the FacesContext for the current request
      * @param clientIds the client ids of the components to visit
      * @param hints a the VisitHints for this visit
@@ -75,7 +78,7 @@ public class PartialVisitContext extends VisitContext {
         initializeCollections(clientIds);
 
         // Copy and store hints - ensure unmodifiable and non-empty
-        EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty())) ? EnumSet.noneOf(VisitHint.class) : EnumSet.copyOf(hints);
+        EnumSet<VisitHint> hintsEnumSet = hints == null || hints.isEmpty() ? EnumSet.noneOf(VisitHint.class) : EnumSet.copyOf(hints);
 
         this.hints = Collections.unmodifiableSet(hintsEnumSet);
     }
@@ -126,8 +129,9 @@ public class PartialVisitContext extends VisitContext {
         String clientId = component.getClientId();
         Collection<String> ids = subtreeClientIds.get(clientId);
 
-        if (ids == null)
+        if (ids == null) {
             return Collections.emptyList();
+        }
 
         return Collections.unmodifiableCollection(ids);
     }
@@ -158,8 +162,9 @@ public class PartialVisitContext extends VisitContext {
 
         // If the unvisited collection is now empty, we are done.
         // Return VisitResult.COMPLETE to terminate the visit.
-        if (unvisitedClientIds.isEmpty())
+        if (unvisitedClientIds.isEmpty()) {
             return VisitResult.COMPLETE;
+        }
 
         // Otherwise, just return the callback's result
         return result;
@@ -220,13 +225,13 @@ public class PartialVisitContext extends VisitContext {
         // perhaps we could pick more intelligent defaults.
 
         // Initialize unvisitedClientIds collection
-        this.unvisitedClientIds = new HashSet<>();
+        unvisitedClientIds = new HashSet<>();
 
         // Initialize ids collection
-        this.ids = new HashSet<>();
+        ids = new HashSet<>();
 
         // Intialize subtreeClientIds collection
-        this.subtreeClientIds = new HashMap<>();
+        subtreeClientIds = new HashMap<>();
 
         // Initialize the clientIds collection. Note that we proxy
         // this collection so that we can trap adds/removes and sync
@@ -247,14 +252,15 @@ public class PartialVisitContext extends VisitContext {
         // for the full client id because getting the full client id
         // is more expensive than just getting the local id.
         String id = component.getId();
-        if ((id != null) && !ids.contains(id))
+        if (id != null && !ids.contains(id)) {
             return null;
+        }
 
         // The id was a match - now check the client id.
         // note that client id should never be null (should be
         // generated even if id is null, so asserting this.)
         String clientId = component.getClientId();
-        assert (clientId != null);
+        assert clientId != null;
 
         return clientIds.contains(clientId) ? clientId : null;
     }
@@ -270,7 +276,7 @@ public class PartialVisitContext extends VisitContext {
 
         if (lastIndex < 0) {
             id = clientId;
-        } else if (lastIndex < (clientId.length() - 1)) {
+        } else if (lastIndex < clientId.length() - 1) {
             id = clientId.substring(lastIndex + 1);
         }
 

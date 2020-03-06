@@ -16,15 +16,15 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+import java.util.Map;
+
 import com.sun.faces.RIConstants;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletHandler;
-
-import java.io.IOException;
-import java.util.Map;
 
 public class EncodingHandler implements FaceletHandler {
 
@@ -42,12 +42,12 @@ public class EncodingHandler implements FaceletHandler {
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         FacesContext context = ctx.getFacesContext();
         Map<Object, Object> ctxAttributes = context.getAttributes();
-        ctxAttributes.put("facelets.compilationMessages", this.messageHolder);
-        this.next.apply(ctx, parent);
+        ctxAttributes.put("facelets.compilationMessages", messageHolder);
+        next.apply(ctx, parent);
         ctxAttributes.remove("facelets.compilationMessages");
-        this.messageHolder.processCompilationMessages(ctx.getFacesContext());
+        messageHolder.processCompilationMessages(ctx.getFacesContext());
         if (!ctxAttributes.containsKey(RIConstants.FACELETS_ENCODING_KEY)) {
-            ctx.getFacesContext().getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, this.encoding);
+            ctx.getFacesContext().getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, encoding);
         }
     }
 

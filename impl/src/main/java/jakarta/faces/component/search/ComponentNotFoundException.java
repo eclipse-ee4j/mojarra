@@ -33,7 +33,7 @@ public class ComponentNotFoundException extends FacesException {
      * <p class="changed_added_2_3">
      * Construct a new exception with no detail message or root cause.
      * </p>
-     * 
+     *
      * @since 2.3
      */
     public ComponentNotFoundException() {
@@ -46,7 +46,7 @@ public class ComponentNotFoundException extends FacesException {
      * </p>
      *
      * @param message The detail message for this exception
-     * 
+     *
      * @since 2.3
      */
     public ComponentNotFoundException(String message) {
@@ -60,7 +60,7 @@ public class ComponentNotFoundException extends FacesException {
      * cause.toString()</code>
      *
      * @param cause The root cause for this exception
-     * 
+     *
      * @since 2.3
      */
     public ComponentNotFoundException(Throwable cause) {
@@ -74,7 +74,7 @@ public class ComponentNotFoundException extends FacesException {
      *
      * @param message The detail message for this exception
      * @param cause The root cause for this exception
-     * 
+     *
      * @since 2.3
      */
     public ComponentNotFoundException(String message, Throwable cause) {

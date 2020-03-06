@@ -26,7 +26,7 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletHandler;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -57,31 +57,31 @@ class CompilationUnit {
     }
 
     public void addChild(CompilationUnit unit) {
-        if (this.children == null) {
-            this.children = new ArrayList();
+        if (children == null) {
+            children = new ArrayList();
         }
-        this.children.add(unit);
+        children.add(unit);
     }
 
     public void removeChildren() {
-        this.children.clear();
+        children.clear();
     }
 
     public FaceletHandler createFaceletHandler() {
-        return this.getNextFaceletHandler();
+        return getNextFaceletHandler();
     }
 
     protected final FaceletHandler getNextFaceletHandler() {
-        if (this.children == null || this.children.size() == 0) {
+        if (children == null || children.size() == 0) {
             return LEAF;
         }
-        if (this.children.size() == 1) {
-            CompilationUnit u = (CompilationUnit) this.children.get(0);
+        if (children.size() == 1) {
+            CompilationUnit u = (CompilationUnit) children.get(0);
             return u.createFaceletHandler();
         }
-        FaceletHandler[] fh = new FaceletHandler[this.children.size()];
+        FaceletHandler[] fh = new FaceletHandler[children.size()];
         for (int i = 0; i < fh.length; i++) {
-            fh[i] = ((CompilationUnit) this.children.get(i)).createFaceletHandler();
+            fh[i] = ((CompilationUnit) children.get(i)).createFaceletHandler();
         }
         return new CompositeFaceletHandler(fh);
     }

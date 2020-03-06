@@ -19,15 +19,14 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.ListIterator;
 
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
 
 /**
  * <p>
@@ -46,7 +45,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
 
     /**
      * Encode the beginning.
-     * 
+     *
      * @param context the Faces context.
      * @param component the UI component.
      * @throws IOException when an I/O error occurs.
@@ -72,7 +71,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         UIViewRoot viewRoot = context.getViewRoot();
-        ListIterator iter = (viewRoot.getComponentResources(context, "body")).listIterator();
+        ListIterator iter = viewRoot.getComponentResources(context, "body").listIterator();
         while (iter.hasNext()) {
             UIComponent resource = (UIComponent) iter.next();
             resource.encodeAll(context);
@@ -83,7 +82,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
 
     /**
      * Do we render our children.
-     * 
+     *
      * @return false.
      */
     @Override

@@ -16,26 +16,25 @@
 
 package com.sun.faces.spi;
 
-import com.sun.faces.util.Util;
-
-import jakarta.faces.FacesException;
-
-import com.sun.faces.util.FacesLogger;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.List;
-import java.util.Enumeration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
 
 /**
  * <p>
@@ -140,7 +139,7 @@ final class ServiceFactoryUtils {
             }
         }
 
-        return ((results != null && !results.isEmpty()) ? results.toArray(new String[results.size()]) : EMPTY_ARRAY);
+        return results != null && !results.isEmpty() ? results.toArray(new String[results.size()]) : EMPTY_ARRAY;
 
     }
 

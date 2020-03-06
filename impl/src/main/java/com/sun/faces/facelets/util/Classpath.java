@@ -54,7 +54,7 @@ public final class Classpath {
 
     public enum SearchAdvice {
         FirstMatchOnly, AllMatches
-    };
+    }
 
     public static URL[] search(String prefix, String suffix) throws IOException {
         return search(Thread.currentThread().getContextClassLoader(), prefix, suffix, SearchAdvice.AllMatches);
@@ -111,8 +111,9 @@ public final class Classpath {
             URL src;
             // protect against Windows JDK bugs for listFiles -
             // if it's null (even though it shouldn't be) return false
-            if (fc == null)
+            if (fc == null) {
                 return false;
+            }
 
             for (int i = 0; i < fc.length; i++) {
                 path = fc[i].getAbsolutePath();
@@ -142,11 +143,11 @@ public final class Classpath {
         boolean done = false;
         InputStream is = getInputStream(url);
         if (is != null) {
-            try (ZipInputStream zis = (is instanceof ZipInputStream) ? (ZipInputStream) is : new ZipInputStream(is)) {
+            try (ZipInputStream zis = is instanceof ZipInputStream ? (ZipInputStream) is : new ZipInputStream(is)) {
                 ZipEntry entry = zis.getNextEntry();
                 // initial entry should not be null
                 // if we assume this is some inner jar
-                done = (entry != null);
+                done = entry != null;
                 while (entry != null) {
                     String entryName = entry.getName();
                     if (entryName.endsWith(suffix)) {

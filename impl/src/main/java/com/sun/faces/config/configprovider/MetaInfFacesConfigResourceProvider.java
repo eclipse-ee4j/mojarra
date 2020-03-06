@@ -16,30 +16,29 @@
 
 package com.sun.faces.config.configprovider;
 
-import com.sun.faces.util.Util;
-
-import jakarta.faces.FacesException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.util.Classpath;
 import com.sun.faces.spi.ConfigurationResourceProvider;
-import java.net.URISyntaxException;
+import com.sun.faces.util.Util;
 
+import jakarta.faces.FacesException;
 import jakarta.servlet.ServletContext;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.Collection;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 /**
  *

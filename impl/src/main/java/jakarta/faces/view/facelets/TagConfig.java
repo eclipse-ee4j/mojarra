@@ -34,7 +34,7 @@ public interface TagConfig {
      *
      * @return the {@code Tag} instance
      */
-    public Tag getTag();
+    Tag getTag();
 
     /**
      * <p class="changed_added_2_0">
@@ -43,7 +43,7 @@ public interface TagConfig {
      *
      * @return the next {@code FaceletHandler} to be applied
      */
-    public FaceletHandler getNextHandler();
+    FaceletHandler getNextHandler();
 
     /**
      * <p class="changed_added_2_0">
@@ -52,5 +52,5 @@ public interface TagConfig {
      *
      * @return the id of this tag, unique within the current document.
      */
-    public String getTagId();
+    String getTagId();
 }

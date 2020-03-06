@@ -29,13 +29,17 @@ import jakarta.faces.view.facelets.TagHandler;
  * This class holds collection of {@link BehaviorHandler} instances, attached to the composite component. Descendant
  * components from that composite uses that collection to substitute actual instance
  * </p>
- * 
+ *
  * @author asmirnov@exadel.com
  *
  */
 @SuppressWarnings("serial")
 public class AttachedBehaviors implements Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 228672860891514377L;
     private Map<String, TagHandler> behaviors = new HashMap<>();
     public static final String COMPOSITE_BEHAVIORS_KEY = "jakarta.faces.view.ClientBehaviors";
 

@@ -38,8 +38,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
-
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -60,6 +58,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -112,7 +111,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     /**
      * <p>
      * Return the text of the specified <code>Node</code>, if any.
-     * 
+     *
      * @param node the <code>Node</code>
      * @return the text of the <code>Node</code> If the length of the text is zero, this method will return
      * <code>null</code>

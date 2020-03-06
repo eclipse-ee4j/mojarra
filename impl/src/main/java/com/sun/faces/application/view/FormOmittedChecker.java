@@ -16,6 +16,10 @@
 
 package com.sun.faces.application.view;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import com.sun.faces.util.MessageUtils;
 
 import jakarta.faces.application.FacesMessage;
@@ -25,15 +29,10 @@ import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
-
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A convenience class that checks for omitted forms.
@@ -67,19 +66,15 @@ class FormOmittedChecker {
                 Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
 
                 VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
-                child.visitTree(visitContext, new VisitCallback() {
+                child.visitTree(visitContext, (visitContext1, component) -> {
+                    VisitResult result = VisitResult.ACCEPT;
 
-                    @Override
-                    public VisitResult visit(VisitContext visitContext, UIComponent component) {
-                        VisitResult result = VisitResult.ACCEPT;
-
-                        if (isForm(component)) {
-                            result = VisitResult.REJECT;
-                        } else if (isInNeedOfForm(component)) {
-                            addFormOmittedMessage(finalContext, component);
-                        }
-                        return result;
+                    if (isForm(component)) {
+                        result = VisitResult.REJECT;
+                    } else if (isInNeedOfForm(component)) {
+                        addFormOmittedMessage(finalContext, component);
                     }
+                    return result;
                 });
             } finally {
                 context.getAttributes().remove(SKIP_ITERATION_HINT);
@@ -100,7 +95,7 @@ class FormOmittedChecker {
      * @return true if it is a form, false otherwise.
      */
     private static boolean isForm(UIComponent component) {
-        return (component instanceof UIForm || (component.getFamily() != null && component.getFamily().endsWith("Form")));
+        return component instanceof UIForm || component.getFamily() != null && component.getFamily().endsWith("Form");
     }
 
     /**
@@ -110,7 +105,7 @@ class FormOmittedChecker {
      * @return true if the component is in need of a form, false otherwise.
      */
     private static boolean isInNeedOfForm(UIComponent component) {
-        return (component instanceof ActionSource || component instanceof ActionSource2 || component instanceof EditableValueHolder);
+        return component instanceof ActionSource || component instanceof ActionSource2 || component instanceof EditableValueHolder;
     }
 
     /**

@@ -27,30 +27,30 @@ import jakarta.faces.render.ResponseStateManager;
  * anything else that can display a {@link jakarta.faces.component.UIComponent} hierarchy rooted at a
  * {@link jakarta.faces.component.UIViewRoot}.
  * </p>
- * 
+ *
  * <div class="changed_added_2_2">
- * 
+ *
  * <p>
  * Modes of Operation
  * </p>
- * 
+ *
  * <blockquote>
- * 
+ *
  * <p>
  * none mode
  * </p>
- * 
+ *
  * <p>
  * The generation of <code>ClientWindow</code> is controlled by the value of the <code>context-param</code> named by the
  * value of {@link #CLIENT_WINDOW_MODE_PARAM_NAME}. If this <code>context-param</code> is not specified, or its value is
  * "none", no <code>ClientWindow</code> instances will be generated, and the entire feature is effectively disabled for
  * the entire application.
  * </p>
- * 
+ *
  * <p>
  * Other modes
  * </p>
- * 
+ *
  * <p>
  * To accomadate the widest possible range of implementation choices to support this feature, explicit names for modes
  * other than "none" and "url" are not specified. However, for all values of {@link #CLIENT_WINDOW_MODE_PARAM_NAME}, the
@@ -59,19 +59,19 @@ import jakarta.faces.render.ResponseStateManager;
  * expires, whichever comes first. A client window is always associated with exactly one <code>UIViewRoot</code>
  * instance at a time, but may display many different <code>UIViewRoot</code>s during its lifetime.
  * </p>
- * 
+ *
  * <p>
  * The <code>ClientWindow</code> instance is associated with the incoming request during the
  * {@link Lifecycle#attachWindow} method. This method will cause a new instance of <code>ClientWindow</code> to be
  * created, assigned an id, and passed to {@link jakarta.faces.context.ExternalContext#setClientWindow}.
  * </p>
- * 
+ *
  * <p>
  * During state saving, regardless of the window id mode, or state saving mode, for ajax and non-ajax requests, a hidden
  * field must be written whose name, id and value are given as specified in
  * {@link jakarta.faces.render.ResponseStateManager#CLIENT_WINDOW_PARAM}.
  * </p>
- * 
+ *
  * <p>
  * In addition to the hidden field already described. The runtime must ensure that any component that renders a
  * hyperlink that causes the user agent to send a GET request to the Faces server when it is clicked has a query
@@ -79,13 +79,13 @@ import jakarta.faces.render.ResponseStateManager;
  * is met by several of the "encode" methods on {@link jakarta.faces.context.ExternalContext}. See
  * {@link jakarta.faces.context.ExternalContext#encodeActionURL(java.lang.String) } for details.
  * </p>
- * 
+ *
  * </blockquote>
- * 
+ *
  * </div>
- * 
+ *
  * @since 2.2
- * 
+ *
  */
 
 public abstract class ClientWindow {
@@ -109,8 +109,8 @@ public abstract class ClientWindow {
      * the rendering of hyperlinks. The returned map must be immutable. The default implementation of this method returns
      * the empty map.
      * </p>
-     * 
-     * 
+     *
+     *
      * @since 2.2
      * @param context the {@code FacesContext} for this request.
      * @return {@code null} or a map of parameters to insert into the URL query string.
@@ -123,9 +123,9 @@ public abstract class ClientWindow {
      * Return a String value that uniquely identifies this <code>ClientWindow</code> within the scope of the current
      * session. See {@link #decode} for the specification of how to derive this value.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @return the id of the {@code ClientWindow}
      */
 
@@ -144,9 +144,9 @@ public abstract class ClientWindow {
      * query parameter. If a value is found, decrypt it using the key from the session and make it available for return from
      * {@link #getId}.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} for this request.
-     * 
+     *
      * @since 2.2
      */
 
@@ -163,9 +163,9 @@ public abstract class ClientWindow {
      * cause a GET request must append the ClientWindow by default. This is specified as a static method because callsites
      * need to access it without having access to an actual {@code ClientWindow} instance.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} for this request.
-     * 
+     *
      * @since 2.2
      */
 
@@ -181,9 +181,9 @@ public abstract class ClientWindow {
      * generated URLs that cause a GET request must append the ClientWindow by default. This is specified as a static method
      * because callsites need to access it without having access to an actual {@code ClientWindow} instance.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} for this request.
-     * 
+     *
      * @since 2.2
      */
 
@@ -200,11 +200,11 @@ public abstract class ClientWindow {
      * must append the ClientWindow by default. This is specified as a static method because callsites need to access it
      * without having access to an actual {@code ClientWindow} instance.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} for this request.
-     * 
+     *
      * @return the result as specified above
-     * 
+     *
      * @since 2.2
      */
 

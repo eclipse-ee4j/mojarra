@@ -134,7 +134,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     @Override
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
 
-        return ((unhandledExceptions != null) ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
+        return unhandledExceptions != null ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
     }
 
@@ -144,7 +144,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {
 
-        return ((handledExceptions != null) ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
+        return handledExceptions != null ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
     }
 
@@ -173,7 +173,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
                     msg = t.getMessage();
                 }
             }
-            writer.write(((msg != null) ? msg : ""));
+            writer.write(msg != null ? msg : "");
             writer.endError();
             writer.endDocument();
 
@@ -194,7 +194,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
 
     private boolean isRethrown(Throwable t) {
 
-        return (!(t instanceof AbortProcessingException));
+        return !(t instanceof AbortProcessingException);
 
     }
 
@@ -208,7 +208,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
         String key = getLoggingKey(beforePhase, afterPhase);
         if (LOGGER.isLoggable(Level.SEVERE)) {
             LOGGER.log(Level.SEVERE, key, new Object[] { t.getClass().getName(), phaseId.toString(),
-                    ((c != null) ? c.getClientId(exceptionContext.getContext()) : ""), t.getMessage() });
+                    c != null ? c.getClientId(exceptionContext.getContext()) : "", t.getMessage() });
             LOGGER.log(Level.SEVERE, t.getMessage(), t);
         }
 

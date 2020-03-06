@@ -17,7 +17,6 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.context.RequestScoped;
-
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.FacesContext;

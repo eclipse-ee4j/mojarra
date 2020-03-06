@@ -16,14 +16,7 @@
 
 package com.sun.faces.application.resource;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.ResourceResolver;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +29,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.impl.DefaultResourceResolver;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ResourceResolver;
 
 /**
  * <p>
@@ -77,13 +77,13 @@ public class WebappResourceHelper extends ResourceHelper {
             return false;
         }
         final WebappResourceHelper other = (WebappResourceHelper) obj;
-        if ((this.BASE_RESOURCE_PATH == null) ? (other.BASE_RESOURCE_PATH != null) : !this.BASE_RESOURCE_PATH.equals(other.BASE_RESOURCE_PATH)) {
+        if (BASE_RESOURCE_PATH == null ? other.BASE_RESOURCE_PATH != null : !BASE_RESOURCE_PATH.equals(other.BASE_RESOURCE_PATH)) {
             return false;
         }
-        if ((this.BASE_CONTRACTS_PATH == null) ? (other.BASE_CONTRACTS_PATH != null) : !this.BASE_CONTRACTS_PATH.equals(other.BASE_CONTRACTS_PATH)) {
+        if (BASE_CONTRACTS_PATH == null ? other.BASE_CONTRACTS_PATH != null : !BASE_CONTRACTS_PATH.equals(other.BASE_CONTRACTS_PATH)) {
             return false;
         }
-        if (this.cacheTimestamp != other.cacheTimestamp) {
+        if (cacheTimestamp != other.cacheTimestamp) {
             return false;
         }
         return true;
@@ -92,9 +92,9 @@ public class WebappResourceHelper extends ResourceHelper {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 37 * hash + (this.BASE_RESOURCE_PATH != null ? this.BASE_RESOURCE_PATH.hashCode() : 0);
-        hash = 37 * hash + (this.BASE_CONTRACTS_PATH != null ? this.BASE_CONTRACTS_PATH.hashCode() : 0);
-        hash = 37 * hash + (this.cacheTimestamp ? 1 : 0);
+        hash = 37 * hash + (BASE_RESOURCE_PATH != null ? BASE_RESOURCE_PATH.hashCode() : 0);
+        hash = 37 * hash + (BASE_CONTRACTS_PATH != null ? BASE_CONTRACTS_PATH.hashCode() : 0);
+        hash = 37 * hash + (cacheTimestamp ? 1 : 0);
         return hash;
     }
 
@@ -251,7 +251,7 @@ public class WebappResourceHelper extends ResourceHelper {
             if (library.getContract() == null) {
                 contracts = Collections.emptyList();
             } else {
-                contracts = new ArrayList<String>(1);
+                contracts = new ArrayList<>(1);
                 contracts.add(library.getContract());
             }
         } else if (root == null) {

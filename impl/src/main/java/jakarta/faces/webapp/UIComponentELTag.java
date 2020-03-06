@@ -16,16 +16,15 @@
 
 package jakarta.faces.webapp;
 
-import jakarta.el.ELException;
 import jakarta.el.ELContext;
+import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.Tag;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * <p>
@@ -117,8 +116,8 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase impleme
     @Override
     public void release() {
 
-        this.binding = null;
-        this.rendered = null;
+        binding = null;
+        rendered = null;
         super.release();
     }
 
@@ -137,7 +136,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase impleme
      * <code>setProperties()</code> method is still called. A typical implementation that supports extra properties
      * <code>foo</code> and <code>bar</code> would look something like this:
      * </p>
-     * 
+     *
      * <pre>
      * protected void setProperties(UIComponent component) {
      *     super.setProperties(component);
@@ -190,7 +189,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase impleme
      * and the {@link ValueExpression} will be stored on the component. Otherwise, {@link Application#createComponent} is
      * called with only the component type. Finally, initialize the components id and other properties.
      * </p>
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param newId id of the component
      */

@@ -16,26 +16,29 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.facelets.util.ReflectionUtil;
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.*;
-
-import java.lang.reflect.Method;
-
-import jakarta.el.ValueExpression;
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.util.ReflectionUtil;
+import com.sun.faces.util.FacesLogger;
+
 import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 public class AttributeHandler extends TagHandlerImpl {
 
@@ -52,20 +55,20 @@ public class AttributeHandler extends TagHandlerImpl {
 
     public AttributeHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
+        name = getRequiredAttribute("name");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
-        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || null == (parent = parent.getParent()) || !ComponentHandler.isNew(parent)) {
             return;
         }
 
         Map<String, Object> attrs = parent.getAttributes();
 
         CompositeComponentBeanInfo componentBeanInfo = (CompositeComponentBeanInfo) attrs.get(UIComponent.BEANINFO_KEY);
-        assert (null != componentBeanInfo);
+        assert null != componentBeanInfo;
         List<PropertyDescriptor> declaredAttributes = componentBeanInfo.getPropertyDescriptorsList();
 
         // Get the value of required the name propertyDescriptor
@@ -91,7 +94,7 @@ public class AttributeHandler extends TagHandlerImpl {
 
         TagAttribute defaultTagAttribute = null;
         PropertyHandler defaultHandler = null;
-        for (TagAttribute tagAttribute : this.tag.getAttributes().getAll()) {
+        for (TagAttribute tagAttribute : tag.getAttributes().getAll()) {
             String attributeName = tagAttribute.getLocalName();
             if ("default".equals(attributeName)) {
                 // store the TagAttribute and the PropertyHandler for later
@@ -123,7 +126,7 @@ public class AttributeHandler extends TagHandlerImpl {
             }
         }
 
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
 
     }
 
@@ -137,7 +140,7 @@ public class AttributeHandler extends TagHandlerImpl {
         public Object getValue(String attributeName) {
             Object result = super.getValue(attributeName);
             if ("type".equals(attributeName)) {
-                if ((null != result) && !(result instanceof Class)) {
+                if (null != result && !(result instanceof Class)) {
                     FacesContext context = FacesContext.getCurrentInstance();
                     ELContext elContext = context.getELContext();
                     String classStr = (String) ((ValueExpression) result).getValue(elContext);
@@ -145,14 +148,14 @@ public class AttributeHandler extends TagHandlerImpl {
                         try {
                             result = ReflectionUtil.forName(classStr);
 
-                            this.setValue(attributeName, result);
+                            setValue(attributeName, result);
                         } catch (ClassNotFoundException ex) {
                             classStr = "java.lang." + classStr;
                             boolean throwException = false;
                             try {
                                 result = ReflectionUtil.forName(classStr);
 
-                                this.setValue(attributeName, result);
+                                setValue(attributeName, result);
                             } catch (ClassNotFoundException ex2) {
                                 throwException = true;
                             }

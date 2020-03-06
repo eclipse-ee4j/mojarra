@@ -19,10 +19,9 @@ package com.sun.faces.flow.builder;
 import com.sun.faces.flow.SwitchNodeImpl;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.flow.builder.SwitchBuilder;
 import jakarta.faces.flow.builder.SwitchCaseBuilder;
-
-import jakarta.el.ValueExpression;
 
 public class SwitchBuilderImpl extends SwitchBuilder {
 
@@ -33,10 +32,10 @@ public class SwitchBuilderImpl extends SwitchBuilder {
 
     SwitchBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;
-        this.switchId = id;
-        this.switchNode = new SwitchNodeImpl(id);
+        switchId = id;
+        switchNode = new SwitchNodeImpl(id);
         root._getFlow()._getSwitches().put(id, switchNode);
-        this.switchCaseBuilder = new SwitchCaseBuilderImpl(this);
+        switchCaseBuilder = new SwitchCaseBuilderImpl(this);
     }
 
     @Override

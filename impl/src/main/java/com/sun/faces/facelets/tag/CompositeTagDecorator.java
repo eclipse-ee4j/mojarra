@@ -24,7 +24,7 @@ import jakarta.faces.view.facelets.TagDecorator;
 /**
  * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses the chain of responsibility pattern to
  * stop processing if any of the TagDecorators return a value other than null.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -37,7 +37,7 @@ public final class CompositeTagDecorator implements TagDecorator {
     public CompositeTagDecorator(TagDecorator[] decorators) {
         Util.notNull("decorators", decorators);
         this.decorators = decorators;
-        this.defaultTagDecorator = new DefaultTagDecorator();
+        defaultTagDecorator = new DefaultTagDecorator();
     }
 
     /**
@@ -54,8 +54,8 @@ public final class CompositeTagDecorator implements TagDecorator {
         }
 
         Tag t = null;
-        for (int i = 0; i < this.decorators.length; i++) {
-            t = this.decorators[i].decorate(tag);
+        for (int i = 0; i < decorators.length; i++) {
+            t = decorators[i].decorate(tag);
             if (t != null) {
                 return t;
             }

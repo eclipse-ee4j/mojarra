@@ -83,7 +83,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         String type = getButtonType(component);
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String label = "";
         Object value = ((UICommand) component).getValue();
@@ -189,7 +189,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
                 String xValue = builder.append(".x").toString();
                 builder.setLength(clientId.length());
                 String yValue = builder.append(".y").toString();
-                return (requestParameterMap.get(xValue) != null && requestParameterMap.get(yValue) != null);
+                return requestParameterMap.get(xValue) != null && requestParameterMap.get(yValue) != null;
             }
             return true;
         }
@@ -201,7 +201,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
      */
     private static boolean isReset(UIComponent component) {
 
-        return ("reset".equals(component.getAttributes().get("type")));
+        return "reset".equals(component.getAttributes().get("type"));
 
     }
 
@@ -209,14 +209,14 @@ public class ButtonRenderer extends HtmlBasicRenderer {
      * <p>
      * If the component's type attribute is null or not equal to <code>reset</code>, <code>submit</code> or
      * <code>button</code>, default to <code>submit</code>.
-     * 
+     *
      * @param component the component of interest
      * @return the type for this button
      */
     private static String getButtonType(UIComponent component) {
 
         String type = (String) component.getAttributes().get("type");
-        if (type == null || (!"reset".equals(type) && !"submit".equals(type) && !"button".equals(type))) {
+        if (type == null || !"reset".equals(type) && !"submit".equals(type) && !"button".equals(type)) {
             type = "submit";
             // This is needed in the decode method
             component.getAttributes().put("type", type);

@@ -18,12 +18,6 @@ package jakarta.faces.event;
 
 import java.util.EventObject;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ComponentSystemEventListener;
-import jakarta.faces.event.FacesEvent;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.SystemEventListener;
-
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -51,7 +45,7 @@ public abstract class SystemEvent extends EventObject {
      * <p class="changed_added_2_0">
      * Pass the argument <code>source</code> to the superclass constructor.
      * </p>
-     * 
+     *
      * @param source the <code>source</code> reference to be passed to the superclass constructor.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
@@ -64,7 +58,7 @@ public abstract class SystemEvent extends EventObject {
      * <p class="changed_added_2_3">
      * Pass the argument <code>source</code> to the superclass constructor.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param source the <code>source</code> reference to be passed to the superclass constructor.
      *
@@ -81,12 +75,12 @@ public abstract class SystemEvent extends EventObject {
      * <p class="changed_added_2_3">
      * Get the Faces context.
      * </p>
-     * 
+     *
      * <p>
      * If the constructor was passed a FacesContext we return it, otherwise we call FacesContext.getCurrentInstance() and
      * return it.
      * </p>
-     * 
+     *
      * @return the Faces context.
      * @since 2.3
      */
@@ -105,12 +99,12 @@ public abstract class SystemEvent extends EventObject {
      * </p>
      *
      * @param listener {@link FacesListener} to evaluate
-     * 
+     *
      * @return the result as specified above
      */
     public boolean isAppropriateListener(FacesListener listener) {
 
-        return (listener instanceof SystemEventListener);
+        return listener instanceof SystemEventListener;
 
     }
 

@@ -16,10 +16,6 @@
 
 package jakarta.faces.context;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.PartialViewContext;
-import jakarta.faces.context.PartialViewContextFactory;
-
 import jakarta.faces.FacesWrapper;
 
 /**
@@ -34,7 +30,7 @@ import jakarta.faces.FacesWrapper;
  * There must be one <code>PartialViewContextFactory</code> instance per web application that is utilizing Jakarta
  * Server Faces. This instance can be acquired, in a portable manner, by calling:
  * </p>
- * 
+ *
  * <pre>
  * PartialViewContextFactory factory = (PartialViewContextFactory) FactoryFinder.getFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
  * </pre>

@@ -23,6 +23,7 @@ import static com.sun.faces.util.MessageUtils.NULL_REQUEST_VIEW_ERROR_MESSAGE_ID
 import static com.sun.faces.util.MessageUtils.RESTORE_VIEW_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getViewHandler;
+import static com.sun.faces.util.Util.isOneOf;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
@@ -37,8 +38,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.MethodExpression;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -46,13 +45,12 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProtectedViewException;
 import jakarta.faces.application.ViewExpiredException;
 import jakarta.faces.application.ViewHandler;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
@@ -70,8 +68,6 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
-
-import static com.sun.faces.util.Util.isOneOf;
 
 /**
  * <B>Lifetime And Scope</B>
@@ -233,7 +229,7 @@ public class RestoreViewPhase extends Phase {
                 }
                 facesContext.setViewRoot(viewRoot);
 
-                assert (viewRoot != null);
+                assert viewRoot != null;
             }
         } catch (Throwable fe) {
             if (fe instanceof FacesException) {
@@ -416,15 +412,11 @@ public class RestoreViewPhase extends Phase {
 
             Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
             VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, hints);
-            root.visitTree(visitContext, new VisitCallback() {
-
-                @Override
-                public VisitResult visit(VisitContext context, UIComponent target) {
-                    postRestoreStateEvent.setComponent(target);
-                    target.processEvent(postRestoreStateEvent);
-                    // noinspection ReturnInsideFinallyBlock
-                    return VisitResult.ACCEPT;
-                }
+            root.visitTree(visitContext, (context, target) -> {
+                postRestoreStateEvent.setComponent(target);
+                target.processEvent(postRestoreStateEvent);
+                // noinspection ReturnInsideFinallyBlock
+                return VisitResult.ACCEPT;
             });
         } catch (AbortProcessingException e) {
             facesContext.getApplication().publishEvent(facesContext, ExceptionQueuedEvent.class,
@@ -441,7 +433,7 @@ public class RestoreViewPhase extends Phase {
 
     /**
      * Notify afterPhase listener that is registered on the View Root.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param lifecycle lifecycle instance
      */
@@ -458,7 +450,7 @@ public class RestoreViewPhase extends Phase {
             } catch (Exception e) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "severe.component.unable_to_process_expression",
-                            new Object[] { afterPhase.getExpressionString(), ("afterPhase") });
+                            new Object[] { afterPhase.getExpressionString(), "afterPhase" });
                 }
                 return;
             }
@@ -480,7 +472,7 @@ public class RestoreViewPhase extends Phase {
      */
     private static boolean isErrorPage(FacesContext context) {
 
-        return (context.getExternalContext().getRequestMap().get(WEBAPP_ERROR_PAGE_MARKER) != null);
+        return context.getExternalContext().getRequestMap().get(WEBAPP_ERROR_PAGE_MARKER) != null;
 
     }
 
@@ -495,7 +487,7 @@ public class RestoreViewPhase extends Phase {
 
     private boolean is11CompatEnabled(FacesContext context) {
 
-        return (getWebConfig(context).isOptionEnabled(BooleanWebContextInitParameter.EnableRestoreView11Compatibility));
+        return getWebConfig(context).isOptionEnabled(BooleanWebContextInitParameter.EnableRestoreView11Compatibility);
 
     }
 

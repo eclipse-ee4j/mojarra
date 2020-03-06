@@ -18,6 +18,10 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
+
 import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.FacesException;
@@ -28,11 +32,6 @@ import jakarta.faces.component.UIForm;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.ConverterException;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
@@ -56,7 +55,7 @@ public class FileRenderer extends TextRenderer {
             clientId = component.getClientId(context);
         }
 
-        assert (clientId != null);
+        assert clientId != null;
         ExternalContext externalContext = context.getExternalContext();
         Map<String, String> requestMap = externalContext.getRequestParameterMap();
 

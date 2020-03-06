@@ -16,19 +16,19 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import java.beans.FeatureDescriptor;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sun.faces.facelets.el.TagValueExpression;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
-
-import jakarta.el.ValueExpression;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
-import java.beans.FeatureDescriptor;
 
 class PropertyHandlerManager {
 
@@ -87,7 +87,7 @@ class PropertyHandlerManager {
         }
 
         PropertyHandler h = managedHandlers.get(name);
-        return ((h != null) ? h : genericHandler);
+        return h != null ? h : genericHandler;
 
     }
 
@@ -185,7 +185,7 @@ class PropertyHandlerManager {
             // Object.class, if no type-attribute was set.
             Class<?> type = Object.class;
             Object obj = target.getValue("type");
-            if ((null != obj) && !(obj instanceof Class)) {
+            if (null != obj && !(obj instanceof Class)) {
                 TagValueExpression typeVE = (TagValueExpression) obj;
                 Object value = typeVE.getValue(ctx);
                 if (value instanceof Class<?>) {

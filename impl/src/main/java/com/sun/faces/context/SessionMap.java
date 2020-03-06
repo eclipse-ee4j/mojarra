@@ -16,21 +16,20 @@
 
 package com.sun.faces.context;
 
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Collections;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.io.Serializable;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.application.ProjectStage;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getSessionMap()
@@ -84,7 +83,7 @@ public class SessionMap extends BaseContextMap<Object> {
     public Object get(Object key) {
         Util.notNull("key", key);
         HttpSession session = getSession(false);
-        return ((session != null) ? session.getAttribute(key.toString()) : null);
+        return session != null ? session.getAttribute(key.toString()) : null;
 
     }
 
@@ -108,7 +107,7 @@ public class SessionMap extends BaseContextMap<Object> {
         if (doSet) {
             session.setAttribute(key, value);
         }
-        return (result);
+        return result;
     }
 
     @Override
@@ -121,7 +120,7 @@ public class SessionMap extends BaseContextMap<Object> {
             String keyString = key.toString();
             Object result = session.getAttribute(keyString);
             session.removeAttribute(keyString);
-            return (result);
+            return result;
         }
         return null;
     }
@@ -129,7 +128,7 @@ public class SessionMap extends BaseContextMap<Object> {
     @Override
     public boolean containsKey(Object key) {
         HttpSession session = getSession(false);
-        return ((session != null) && session.getAttribute(key.toString()) != null);
+        return session != null && session.getAttribute(key.toString()) != null;
     }
 
     @Override
@@ -140,7 +139,7 @@ public class SessionMap extends BaseContextMap<Object> {
     @Override
     public int hashCode() {
         HttpSession session = getSession(false);
-        int hashCode = 7 * ((session != null) ? session.hashCode() : super.hashCode());
+        int hashCode = 7 * (session != null ? session.hashCode() : super.hashCode());
         if (session != null) {
             for (Iterator i = entrySet().iterator(); i.hasNext();) {
                 hashCode += i.next().hashCode();

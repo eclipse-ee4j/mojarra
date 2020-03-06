@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
@@ -44,6 +42,7 @@ import com.sun.faces.util.Util;
 import com.sun.faces.vendor.WebContainerInjectionProvider;
 
 import jakarta.faces.context.ExternalContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -162,7 +161,7 @@ public class InjectionProviderFactory {
      * <p>
      * Determine if the specified class implements the <code>InjectionProvider</code> interfaces.
      * </p>
-     * 
+     *
      * @param clazz the class in question
      * @return <code>true</code> if <code>clazz</code> implements the <code>InjectionProvider</code> interface
      */
@@ -176,7 +175,7 @@ public class InjectionProviderFactory {
      * <p>
      * Determine if the specified class extends the <code>DiscoverableInjectionProvider</code> interfaces.
      * </p>
-     * 
+     *
      * @param clazz the class in question
      * @return <code>true</code> if <code>clazz</code> implements the <code>InjectionProvider</code> interface
      */
@@ -344,7 +343,7 @@ public class InjectionProviderFactory {
             }
         }
 
-        return ((results != null && !results.isEmpty()) ? results.toArray(new String[results.size()]) : EMPTY_ARRAY);
+        return results != null && !results.isEmpty() ? results.toArray(new String[results.size()]) : EMPTY_ARRAY;
 
     }
 
@@ -360,7 +359,7 @@ public class InjectionProviderFactory {
          * <p>
          * This is a no-op.
          * </p>
-         * 
+         *
          * @param managedBean target ManagedBean
          */
         @Override
@@ -377,7 +376,7 @@ public class InjectionProviderFactory {
          * <p>
          * This is a no-op.
          * </p>
-         * 
+         *
          * @param managedBean target ManagedBean
          */
         @Override
@@ -388,7 +387,7 @@ public class InjectionProviderFactory {
          * <p>
          * This is a no-op.
          * </p>
-         * 
+         *
          * @param managedBean target ManagedBean
          */
         @Override

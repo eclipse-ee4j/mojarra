@@ -128,7 +128,7 @@ public class DocumentOrderingWrapper {
      * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document<code>.
      */
     public DocumentOrderingWrapper(DocumentInfo document) {
-        this.documentInfo = document;
+        documentInfo = document;
         init();
     }
 
@@ -219,7 +219,7 @@ public class DocumentOrderingWrapper {
 
     /**
      * Sort the provided array of <code>Document</code>s per the order specified in the List represented by absoluteOrder.
-     * 
+     *
      * @param documents Documents to sort
      * @param absoluteOrder the absolute order as specified in the /WEB-INF/faces-config.xml
      * @return an array of DocumentOrderingWrappers that may be smaller than the input array of wrappers.
@@ -282,7 +282,7 @@ public class DocumentOrderingWrapper {
         } catch (CircularDependencyException re) {
             String msg = "Circular dependencies detected!\nDocument Info\n==================\n";
             for (DocumentOrderingWrapper w : documents) {
-                msg += ("  " + w.toString() + '\n');
+                msg += "  " + w.toString() + '\n';
             }
             throw new ConfigurationException(msg);
         }
@@ -357,7 +357,7 @@ public class DocumentOrderingWrapper {
     }
 
     public static LinkedList<String> getIds(DocumentOrderingWrapper[] documents) {
-        LinkedList<String> ids = new LinkedList<String>();
+        LinkedList<String> ids = new LinkedList<>();
         for (int i = 0; i < documents.length; i++) {
             ids.add(documents[i].getDocumentId());
         }
@@ -375,7 +375,7 @@ public class DocumentOrderingWrapper {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     String msg = "Exceeded maximum number of attempts to sort the application's faces-config documents.\nDocument Info\n==================";
                     for (DocumentOrderingWrapper w : documents) {
-                        msg += ("  " + w.toString() + '\n');
+                        msg += "  " + w.toString() + '\n';
                     }
                     LOGGER.severe(msg);
                 }
@@ -521,14 +521,14 @@ public class DocumentOrderingWrapper {
 
     /**
      * Simple helper method around <code>Arrays.binarySearch()</code>.
-     * 
+     *
      * @param ids an array of IDs
      * @param id the ID to search for
      * @return true if <code>ids</code> contains <code>id</code>
      */
     private static boolean search(String[] ids, String id) {
 
-        return (Arrays.binarySearch(ids, id) >= 0);
+        return Arrays.binarySearch(ids, id) >= 0;
 
     }
 
@@ -562,8 +562,8 @@ public class DocumentOrderingWrapper {
                 }
             }
         }
-        this.beforeIds = ((beforeIds != null) ? beforeIds.toArray(new String[beforeIds.size()]) : new String[0]);
-        this.afterIds = ((afterIds != null) ? afterIds.toArray(new String[afterIds.size()]) : new String[0]);
+        this.beforeIds = beforeIds != null ? beforeIds.toArray(new String[beforeIds.size()]) : new String[0];
+        this.afterIds = afterIds != null ? afterIds.toArray(new String[afterIds.size()]) : new String[0];
         Arrays.sort(this.beforeIds);
         Arrays.sort(this.afterIds);
 
@@ -647,12 +647,12 @@ public class DocumentOrderingWrapper {
             }
         }
 
-        return ((res != null && res.length() != 0) ? res : null);
+        return res != null && res.length() != 0 ? res : null;
 
     }
 
     public static HashMap<String, DocumentOrderingWrapper> getDocumentHashMap(DocumentOrderingWrapper[] documents) {
-        HashMap<String, DocumentOrderingWrapper> configMap = new HashMap<String, DocumentOrderingWrapper>();
+        HashMap<String, DocumentOrderingWrapper> configMap = new HashMap<>();
 
         for (DocumentOrderingWrapper document : documents) {
             String name = document.id;
@@ -665,8 +665,8 @@ public class DocumentOrderingWrapper {
     }
 
     public static void preSort(DocumentOrderingWrapper[] documents) {
-        List<DocumentOrderingWrapper> anonymousAndUnorderedList = new ArrayList<DocumentOrderingWrapper>();
-        Map<Integer, Integer> linkedMap = new LinkedHashMap<Integer, Integer>();
+        List<DocumentOrderingWrapper> anonymousAndUnorderedList = new ArrayList<>();
+        Map<Integer, Integer> linkedMap = new LinkedHashMap<>();
 
         DocumentOrderingWrapper[] copyOfDocuments = new DocumentOrderingWrapper[documents.length];
         System.arraycopy(documents, 0, copyOfDocuments, 0, documents.length);
@@ -678,7 +678,7 @@ public class DocumentOrderingWrapper {
             String[] afs = w.getAfterIds();
             int knowledge = bfs.length + afs.length;
 
-            if ((w.id == null || "".equals(w.id)) && (!w.isOrdered())) {
+            if ((w.id == null || "".equals(w.id)) && !w.isOrdered()) {
                 anonymousAndUnorderedList.add(w);
             } else {
                 linkedMap.put(i, knowledge);
@@ -702,15 +702,10 @@ public class DocumentOrderingWrapper {
     }
 
     public static <K, V extends Comparable<? super V>> Map<K, V> descendingByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            @Override
-            public int compare(Map.Entry<K, V> a, Map.Entry<K, V> b) {
-                return (b.getValue()).compareTo(a.getValue());
-            }
-        });
+        List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
+        Collections.sort(list, (a, b) -> b.getValue().compareTo(a.getValue()));
 
-        Map<K, V> result = new LinkedHashMap<K, V>();
+        Map<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {
             result.put(entry.getKey(), entry.getValue());
         }
@@ -763,6 +758,11 @@ public class DocumentOrderingWrapper {
     private static final class CircularDependencyException extends Exception {
 
         // -------------------------------------------------------- Constructors
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 739253127985795440L;
 
         public CircularDependencyException() {
             super();

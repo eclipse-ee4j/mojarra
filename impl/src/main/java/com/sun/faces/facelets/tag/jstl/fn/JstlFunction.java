@@ -17,11 +17,17 @@
 package com.sun.faces.facelets.tag.jstl.fn;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Implementations of JSTL Functions
- * 
+ *
  * @author Jacob Hookom
  */
 public final class JstlFunction {
@@ -102,9 +108,9 @@ public final class JstlFunction {
             skipDelim = true;
         }
         StringBuilder sb = new StringBuilder();
-        for (int i = 0, len = a.length, delimCount = (len - 1); i < len; i++) {
+        for (int i = 0, len = a.length, delimCount = len - 1; i < len; i++) {
             sb.append(a[i]);
-            if (!skipDelim && (i < delimCount)) {
+            if (!skipDelim && i < delimCount) {
                 sb.append(delim);
             }
         }

@@ -29,13 +29,13 @@ public class BehaviorHolderAttachedObjectTargetHandler extends AttachedObjectTar
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.faces.facelets.tag.composite.AttachedObjectTargetHandler#newAttachedObjectTargetImpl()
      */
     @Override
     AttachedObjectTargetImpl newAttachedObjectTargetImpl() {
         BehaviorHolderAttachedObjectTargetImpl target = new BehaviorHolderAttachedObjectTargetImpl();
-        TagAttribute event = this.getAttribute("event");
+        TagAttribute event = getAttribute("event");
         FaceletContext ctx = null;
 
         if (null != event) {
@@ -48,7 +48,7 @@ public class BehaviorHolderAttachedObjectTargetHandler extends AttachedObjectTar
                 target.setEvent(event.getValue());
             }
         }
-        TagAttribute defaultAttr = this.getAttribute("default");
+        TagAttribute defaultAttr = getAttribute("default");
         if (null != defaultAttr) {
             if (null == ctx) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();

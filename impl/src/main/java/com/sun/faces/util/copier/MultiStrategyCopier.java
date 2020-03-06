@@ -17,6 +17,7 @@
 package com.sun.faces.util.copier;
 
 import static java.util.Arrays.asList;
+
 import java.util.List;
 
 /**

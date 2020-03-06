@@ -27,9 +27,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ELContext;
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.initfacescontext.NoOpELContext;
 import com.sun.faces.config.initfacescontext.NoOpFacesContext;
@@ -38,6 +35,7 @@ import com.sun.faces.context.ApplicationMap;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
@@ -45,6 +43,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * A special, minimal implementation of FacesContext used at application initialization time. The ExternalContext
@@ -173,7 +172,7 @@ public class InitFacesContext extends NoOpFacesContext {
      * Clean up entries from the threadInitContext and initContextServletContext maps using a ServletContext. First remove
      * entry(s) with matching ServletContext from initContextServletContext map. Then remove entries from threadInitContext
      * map where the entry value(s) match the initFacesContext (associated with the ServletContext).
-     * 
+     *
      * @param servletContext
      */
     public static void cleanupInitMaps(ServletContext servletContext) {
@@ -243,7 +242,7 @@ public class InitFacesContext extends NoOpFacesContext {
     // Cactus / unit test only
 
     public void reInitializeExternalContext(ServletContext sc) {
-        assert (Util.isUnitTestModeEnabled());
+        assert Util.isUnitTestModeEnabled();
         servletContextAdapter = new ServletContextAdapter(sc);
     }
 

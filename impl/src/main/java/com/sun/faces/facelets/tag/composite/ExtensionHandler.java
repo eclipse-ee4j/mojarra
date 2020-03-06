@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.compiler.CompilationMessageHolder;
 import com.sun.faces.facelets.compiler.EncodingHandler;
 
@@ -23,8 +25,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
-
-import java.io.IOException;
 
 public class ExtensionHandler extends TagHandler {
 
@@ -36,7 +36,7 @@ public class ExtensionHandler extends TagHandler {
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // extract a prefix from the child content
         if (null != nextHandler) {
-            String content = this.nextHandler.toString().trim();
+            String content = nextHandler.toString().trim();
             if (content.startsWith("<")) {
                 int i;
                 if (-1 != (i = content.indexOf(":"))) {

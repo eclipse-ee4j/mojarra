@@ -30,11 +30,6 @@ import java.util.regex.Pattern;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
-import jakarta.faces.component.behavior.AjaxBehavior;
-import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.behavior.ClientBehaviorBase;
-import jakarta.faces.component.behavior.ClientBehaviorHint;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
@@ -48,13 +43,13 @@ import jakarta.faces.event.AjaxBehaviorListener;
  * The presence of this {@link ClientBehavior} will cause the rendering of JavaScript that produces an <code>Ajax</code>
  * request using the specification public JavaScript API when the component is rendered.
  * </p>
- * 
+ *
  * <p class="changed_modified_2_0_rev_a">
  * If the component is an instance of {@link jakarta.faces.component.EditableValueHolder}, Where at all possible, the
  * component must have the UI register the ajax event when the initial value is changed, not when focus is lost on the
  * component.
  * </p>
- * 
+ *
  * <!-- https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=1219 -->
  *
  * @since 2.0
@@ -115,7 +110,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * that should be run in the event of an error.
      *
      * @return the JavaScript function name of <code>ONERROR</code>.
-     * 
+     *
      * @since 2.0
      */
     public String getOnerror() {
@@ -146,7 +141,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * that should be run on the occurance of a client-side event.
      *
      * @return the JavaScript function name of <code>ONEVENT</code>.
-     * 
+     *
      * @since 2.0
      */
     public String getOnevent() {
@@ -180,9 +175,9 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * Note that the returned collection may be unmodifiable. Modifications should be performed by calling
      * {@link #setExecute}.
      * </p>
-     * 
+     *
      * @return the JavaScript function name of <code>EXECUTE</code>.
-     * 
+     *
      * @since 2.0
      */
     public Collection<String> getExecute() {
@@ -212,9 +207,9 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * <p class="changed_added_2_2">
      * Returns the delay value, or <code>null</code> if no value was set.
      * </p>
-     * 
+     *
      * @return the delay value.
-     * 
+     *
      * @since 2.2
      */
     public String getDelay() {
@@ -281,22 +276,22 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * </p>
      *
      * @return the resetValues status.
-     * 
+     *
      * @since 2.2
      */
 
     public boolean isResetValues() {
         Boolean result = (Boolean) eval(RESET_VALUES, resetValues);
-        return ((result != null) ? result : false);
+        return result != null ? result : false;
     }
 
     /**
      * <p class="changed_added_2_2">
      * Set the resetValues status of this behavior.
      * </p>
-     * 
+     *
      * @param resetValues the resetValues status.
-     * 
+     *
      * @since 2.2
      */
 
@@ -318,7 +313,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
     public boolean isDisabled() {
 
         Boolean result = (Boolean) eval(DISABLED, disabled);
-        return ((result != null) ? result : false);
+        return result != null ? result : false;
     }
 
     /**
@@ -343,12 +338,12 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * </p>
      *
      * @return the immediate status.
-     * 
+     *
      * @since 2.0
      */
     public boolean isImmediate() {
         Boolean result = (Boolean) eval(IMMEDIATE, immediate);
-        return ((result != null) ? result : false);
+        return result != null ? result : false;
     }
 
     /**
@@ -374,13 +369,13 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * back on the parent component's immediate status when immediate is not explicitly specified on the
      * <code>AjaxBehavior</code>.
      * </p>
-     * 
+     *
      * @return the flag whether the immediate attribute is specified.
-     * 
+     *
      * @since 2.0
      */
     public boolean isImmediateSet() {
-        return ((immediate != null) || (getValueExpression(IMMEDIATE) != null));
+        return immediate != null || getValueExpression(IMMEDIATE) != null;
     }
 
     /**
@@ -394,7 +389,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.2
      */
     public boolean isResetValuesSet() {
-        return ((resetValues != null) || (getValueExpression(RESET_VALUES) != null));
+        return resetValues != null || getValueExpression(RESET_VALUES) != null;
     }
 
     /**
@@ -414,7 +409,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
             throw new NullPointerException();
         }
 
-        return ((bindings == null) ? null : bindings.get(name));
+        return bindings == null ? null : bindings.get(name);
     }
 
     /**
@@ -569,7 +564,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
         // shared across components/behaviors/validaters/converters.
 
         if (bindings == null) {
-            return (null);
+            return null;
         }
 
         Object values[] = new Object[2];
@@ -582,7 +577,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
         values[1] = bindingValues;
 
-        return (values);
+        return values;
     }
 
     // Utility for restoring bindings from state
@@ -592,7 +587,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
         // in saveBindings().
 
         if (state == null) {
-            return (null);
+            return null;
         }
         Object values[] = (Object[]) state;
         String names[] = (String[]) values[0];
@@ -601,13 +596,13 @@ public class AjaxBehavior extends ClientBehaviorBase {
         for (int i = 0; i < names.length; i++) {
             bindings.put(names[i], (ValueExpression) UIComponentBase.restoreAttachedState(context, states[i]));
         }
-        return (bindings);
+        return bindings;
     }
 
     // Save the List<String>, either as a String (single element) or as
     // a String[] (multiple elements.
     private static Object saveList(List<String> list) {
-        if ((list == null) || list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             return null;
         }
 
@@ -686,7 +681,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
     // Sets a property, converting it from a literal
     private void setLiteralValue(String propertyName, ValueExpression expression) {
 
-        assert (expression.isLiteralText());
+        assert expression.isLiteralText();
 
         Object value;
         ELContext context = FacesContext.getCurrentInstance().getELContext();
@@ -743,7 +738,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
             // We're stuck splitting up the string.
             String[] values = SPLIT_PATTERN.split(strValue);
-            if ((values == null) || (values.length == 0)) {
+            if (values == null || values.length == 0) {
                 return null;
             }
 
@@ -761,7 +756,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     // Converts a String with no spaces to a singleton list
     private static List<String> toSingletonList(String propertyName, String value) {
-        if ((null == value) || (value.length() == 0)) {
+        if (null == value || value.length() == 0) {
             return null;
         }
 
@@ -787,11 +782,11 @@ public class AjaxBehavior extends ClientBehaviorBase {
     // (to make state saving a bit easier).
     private List<String> copyToList(Collection<String> collection) {
 
-        if ((collection == null) || collection.isEmpty()) {
+        if (collection == null || collection.isEmpty()) {
             return null;
         }
 
-        return Collections.unmodifiableList(new ArrayList<String>(collection));
+        return Collections.unmodifiableList(new ArrayList<>(collection));
     }
 
     // Property name constants

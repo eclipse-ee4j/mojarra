@@ -21,6 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
 import jakarta.inject.Qualifier;
 
 /**
@@ -28,7 +29,7 @@ import jakarta.inject.Qualifier;
  * The presence of this annotation on a CDI producer method indicates that the method will produce a flow. See
  * {@link FlowBuilder} for a usage example.
  * </p>
- * 
+ *
  * @since 2.2
  */
 

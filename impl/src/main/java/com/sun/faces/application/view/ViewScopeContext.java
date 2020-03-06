@@ -20,11 +20,11 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
-
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -108,9 +108,9 @@ public class ViewScopeContext implements Context, Serializable {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext != null) {
                 ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
-                result = (T) manager.getContextManager().getBean(facesContext, contextual);
+                result = manager.getContextManager().getBean(facesContext, contextual);
                 if (result == null) {
-                    result = (T) manager.getContextManager().createBean(facesContext, contextual, creational);
+                    result = manager.getContextManager().createBean(facesContext, contextual, creational);
                 }
             }
         }

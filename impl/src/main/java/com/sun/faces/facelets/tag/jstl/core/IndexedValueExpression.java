@@ -25,7 +25,7 @@ import jakarta.el.ValueExpression;
 public final class IndexedValueExpression extends ValueExpression {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public final class IndexedValueExpression extends ValueExpression {
     private final ValueExpression orig;
 
     /**
-     * 
+     *
      */
     public IndexedValueExpression(ValueExpression orig, int i) {
         this.i = i;
@@ -43,12 +43,12 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
     public Object getValue(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().getValue(context, base, i);
@@ -58,12 +58,12 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object value) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             context.getELResolver().setValue(context, base, i, value);
@@ -72,12 +72,12 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#isReadOnly(jakarta.el.ELContext)
      */
     @Override
     public boolean isReadOnly(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().isReadOnly(context, base, i);
@@ -87,12 +87,12 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
     public Class getType(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().getType(context, base, i);
@@ -102,7 +102,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
@@ -112,37 +112,37 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#getExpressionString()
      */
     @Override
     public String getExpressionString() {
-        return this.orig.getExpressionString();
+        return orig.getExpressionString();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-        return this.orig.equals(obj);
+        return orig.equals(obj);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#hashCode()
      */
     @Override
     public int hashCode() {
-        return this.orig.hashCode();
+        return orig.hashCode();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#isLiteralText()
      */
     @Override

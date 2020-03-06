@@ -77,11 +77,11 @@ public class CollectionDataModel<E> extends DataModel<E> {
     public boolean isRowAvailable() {
 
         if (arrayFromInner == null) {
-            return (false);
-        } else if ((index >= 0) && (index < arrayFromInner.length)) {
-            return (true);
+            return false;
+        } else if (index >= 0 && index < arrayFromInner.length) {
+            return true;
         } else {
-            return (false);
+            return false;
         }
     }
 
@@ -97,9 +97,9 @@ public class CollectionDataModel<E> extends DataModel<E> {
     public int getRowCount() {
 
         if (arrayFromInner == null) {
-            return (-1);
+            return -1;
         }
-        return (arrayFromInner.length);
+        return arrayFromInner.length;
 
     }
 
@@ -116,11 +116,11 @@ public class CollectionDataModel<E> extends DataModel<E> {
     public E getRowData() {
 
         if (arrayFromInner == null) {
-            return (null);
+            return null;
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         } else {
-            return (arrayFromInner[index]);
+            return arrayFromInner[index];
         }
 
     }
@@ -131,7 +131,7 @@ public class CollectionDataModel<E> extends DataModel<E> {
     @Override
     public int getRowIndex() {
 
-        return (index);
+        return index;
 
     }
 
@@ -151,7 +151,7 @@ public class CollectionDataModel<E> extends DataModel<E> {
             return;
         }
         DataModelListener[] listeners = getDataModelListeners();
-        if ((old != index) && (listeners != null)) {
+        if (old != index && listeners != null) {
             Object rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
@@ -170,13 +170,13 @@ public class CollectionDataModel<E> extends DataModel<E> {
     @Override
     public Object getWrappedData() {
 
-        return (this.inner);
+        return this.inner;
 
     }
 
     /**
      * Set the wrapped data.
-     * 
+     *
      * @param data the wrapped data.
      * @throws ClassCastException if <code>data</code> is non-<code>null</code> and is not a <code>Collection</code>
      */

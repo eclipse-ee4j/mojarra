@@ -16,15 +16,15 @@
 
 package com.sun.faces.lifecycle;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
-
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 /**
  * UpdateModelValuesPhase executes <code>processUpdates</code> on each component in the tree so that it may have a
@@ -44,7 +44,7 @@ public class UpdateModelValuesPhase extends Phase {
             LOGGER.fine("Entering UpdateModelValuesPhase");
         }
         UIComponent component = facesContext.getViewRoot();
-        assert (null != component);
+        assert null != component;
 
         try {
             component.processUpdates(facesContext);

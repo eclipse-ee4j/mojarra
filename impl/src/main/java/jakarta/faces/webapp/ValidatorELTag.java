@@ -16,12 +16,11 @@
 
 package jakarta.faces.webapp;
 
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.validator.Validator;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>
@@ -78,7 +77,7 @@ public abstract class ValidatorELTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -101,7 +100,7 @@ public abstract class ValidatorELTag extends TagSupport {
         // Register an instance with the appropriate component
         ((EditableValueHolder) component).addValidator(validator);
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 

@@ -16,17 +16,17 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.util.Map;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
-
-import java.io.IOException;
-import java.util.Map;
-import jakarta.el.ValueExpression;
 
 public final class AttributesHandler extends TagHandlerImpl implements jakarta.faces.view.facelets.AttributeHandler {
 
@@ -34,24 +34,24 @@ public final class AttributesHandler extends TagHandlerImpl implements jakarta.f
 
     public AttributesHandler(TagConfig config) {
         super(config);
-        this.value = this.getRequiredAttribute("value");
+        value = getRequiredAttribute("value");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
-            throw new TagException(this.tag, "Parent UIComponent was null");
+            throw new TagException(tag, "Parent UIComponent was null");
         }
 
         // only process if the parent is new to the tree
         if (parent.getParent() == null) {
 
-            Map<String, Object> tagAttrs = (Map<String, Object>) this.value.getObject(ctx, Map.class);
+            Map<String, Object> tagAttrs = (Map<String, Object>) value.getObject(ctx, Map.class);
             for (Map.Entry<String, Object> cur : tagAttrs.entrySet()) {
                 String n = cur.getKey();
                 Object curVal = cur.getValue();

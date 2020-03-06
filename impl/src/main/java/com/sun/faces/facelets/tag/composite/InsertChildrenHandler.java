@@ -16,6 +16,11 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.util.FacesLogger;
@@ -30,11 +35,6 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 /**
  * This <code>TagHandler</code> is responsible for relocating children defined within a composite component to a
@@ -66,7 +66,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
         UIComponent compositeParent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
         if (compositeParent != null) {
             int count = parent.getChildCount();
-            compositeParent.subscribeToEvent(PostAddToViewEvent.class, new RelocateChildrenListener(ctx, parent, count, this.tag.getLocation()));
+            compositeParent.subscribeToEvent(PostAddToViewEvent.class, new RelocateChildrenListener(ctx, parent, count, tag.getLocation()));
         }
 
     }
@@ -150,7 +150,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
         private int getIdx() {
             Integer idx = (Integer) component.getAttributes().get("idx");
-            return ((idx != null) ? idx : this.idx);
+            return idx != null ? idx : this.idx;
         }
 
         private void throwRequiredException(FaceletContext ctx, UIComponent compositeParent) {
@@ -162,7 +162,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
         private boolean isRequired() {
 
-            return ((required != null) && required.getBoolean(ctx));
+            return required != null && required.getBoolean(ctx);
 
         }
 

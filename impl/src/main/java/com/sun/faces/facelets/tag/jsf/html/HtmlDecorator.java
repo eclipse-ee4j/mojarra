@@ -33,7 +33,7 @@ public final class HtmlDecorator implements TagDecorator {
     public final static HtmlDecorator Instance = new HtmlDecorator();
 
     /**
-     * 
+     *
      */
     public HtmlDecorator() {
         super();
@@ -41,7 +41,7 @@ public final class HtmlDecorator implements TagDecorator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagDecorator#decorate(com.sun.facelets.tag.Tag)
      */
     @Override

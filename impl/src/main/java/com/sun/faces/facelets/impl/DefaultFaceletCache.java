@@ -16,6 +16,12 @@
 
 package com.sun.faces.facelets.impl;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.ConcurrentCache;
 import com.sun.faces.util.ExpiringConcurrentCache;
 import com.sun.faces.util.FacesLogger;
@@ -23,14 +29,6 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.view.facelets.FaceletCache;
-
-import java.io.IOException;
-
-import java.net.URL;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 /**
  * Default FaceletCache implementation.
@@ -41,7 +39,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
 
     /**
      * Constructor
-     * 
+     *
      * @param refreshPeriod cache refresh period (in seconds). 0 means 'always refresh', negative value means 'never
      * refresh'
      */
@@ -51,26 +49,20 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         // Create Factory objects here for the cache. The objects will be delegating to our
         // own instance factories
 
-        final boolean checkExpiry = (refreshPeriod > 0);
+        final boolean checkExpiry = refreshPeriod > 0;
 
-        ConcurrentCache.Factory<URL, Record> faceletFactory = new ConcurrentCache.Factory<URL, Record>() {
-            @Override
-            public Record newInstance(final URL key) throws IOException {
-                // Make sure that the expensive timestamp retrieval is not done
-                // if no expiry check is going to be performed
-                long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
-                return new Record(System.currentTimeMillis(), lastModified, getMemberFactory().newInstance(key), refreshPeriod);
-            }
+        ConcurrentCache.Factory<URL, Record> faceletFactory = key -> {
+            // Make sure that the expensive timestamp retrieval is not done
+            // if no expiry check is going to be performed
+            long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
+            return new Record(System.currentTimeMillis(), lastModified, getMemberFactory().newInstance(key), refreshPeriod);
         };
 
-        ConcurrentCache.Factory<URL, Record> metadataFaceletFactory = new ConcurrentCache.Factory<URL, Record>() {
-            @Override
-            public Record newInstance(final URL key) throws IOException {
-                // Make sure that the expensive timestamp retrieval is not done
-                // if no expiry check is going to be performed
-                long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
-                return new Record(System.currentTimeMillis(), lastModified, getMetadataMemberFactory().newInstance(key), refreshPeriod);
-            }
+        ConcurrentCache.Factory<URL, Record> metadataFaceletFactory = key -> {
+            // Make sure that the expensive timestamp retrieval is not done
+            // if no expiry check is going to be performed
+            long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
+            return new Record(System.currentTimeMillis(), lastModified, getMetadataMemberFactory().newInstance(key), refreshPeriod);
         };
 
         // No caching if refreshPeriod is 0
@@ -78,7 +70,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
             _faceletCache = new NoCache(faceletFactory);
             _metadataFaceletCache = new NoCache(metadataFaceletFactory);
         } else {
-            ExpiringConcurrentCache.ExpiryChecker<URL, Record> checker = (refreshPeriod > 0) ? new ExpiryChecker() : new NeverExpired();
+            ExpiringConcurrentCache.ExpiryChecker<URL, Record> checker = refreshPeriod > 0 ? new ExpiryChecker() : new NeverExpired();
             _faceletCache = new ExpiringConcurrentCache<>(faceletFactory, checker);
             _metadataFaceletCache = new ExpiringConcurrentCache<>(metadataFaceletFactory, checker);
         }
@@ -154,7 +146,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
             _refreshInterval = refreshInterval;
 
             // There is no point in calculating the next refresh time if we are refreshing always/never
-            _nextRefreshTime = (_refreshInterval > 0) ? new AtomicLong(creationTime + refreshInterval) : null;
+            _nextRefreshTime = _refreshInterval > 0 ? new AtomicLong(creationTime + refreshInterval) : null;
         }
 
         DefaultFacelet getFacelet() {
@@ -167,12 +159,12 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
 
         long getNextRefreshTime() {
             // There is no point in calculating the next refresh time if we are refreshing always/never
-            return (_refreshInterval > 0) ? _nextRefreshTime.get() : 0;
+            return _refreshInterval > 0 ? _nextRefreshTime.get() : 0;
         }
 
         long getAndUpdateNextRefreshTime() {
             // There is no point in calculating the next refresh time if we are refreshing always/never
-            return (_refreshInterval > 0) ? _nextRefreshTime.getAndSet(System.currentTimeMillis() + _refreshInterval) : 0;
+            return _refreshInterval > 0 ? _nextRefreshTime.getAndSet(System.currentTimeMillis() + _refreshInterval) : 0;
         }
 
         private final long _lastModified;
@@ -191,7 +183,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
                 long lastModified = Util.getLastModified(url);
                 // The record is considered expired if its original last modified time
                 // is older than the URL's current last modified time
-                return (lastModified > record.getLastModified());
+                return lastModified > record.getLastModified();
             }
             return false;
         }
@@ -215,7 +207,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         @Override
         public Record get(final URL key) throws ExecutionException {
             try {
-                return this.getFactory().newInstance(key);
+                return getFactory().newInstance(key);
             } catch (Exception e) {
                 throw new ExecutionException(e);
             }

@@ -38,7 +38,7 @@ public class TypedCollections {
     /**
      * Dynamically check that the members of the collection are all instances of the given type (or null), and that the
      * collection itself is of the given collection type.
-     * 
+     *
      * @param <E> the collection's element type
      * @param c the collection to cast
      * @param type the class of the collection's element type.
@@ -47,10 +47,12 @@ public class TypedCollections {
      */
     @SuppressWarnings("unchecked")
     public static <E, TypedC extends Collection<E>> TypedC dynamicallyCastCollection(Collection<?> c, Class<E> type, Class<TypedC> collectionType) {
-        if (c == null)
+        if (c == null) {
             return null;
-        if (!collectionType.isInstance(c))
+        }
+        if (!collectionType.isInstance(c)) {
             throw new ClassCastException(c.getClass().getName());
+        }
         assert checkCollectionMembers(c, type) : "The collection contains members with a type other than " + type.getName();
 
         return collectionType.cast(c);
@@ -58,7 +60,7 @@ public class TypedCollections {
 
     /**
      * Dynamically check that the members of the list are all instances of the given type (or null).
-     * 
+     *
      * @param <E> the list's element type
      * @param list the list to cast
      * @param type the class of the list's element type.
@@ -72,7 +74,7 @@ public class TypedCollections {
 
     /**
      * Dynamically check that the members of the set are all instances of the given type (or null).
-     * 
+     *
      * @param <E> the set's element type
      * @param set the set to cast
      * @param type the class of the set's element type.
@@ -86,7 +88,7 @@ public class TypedCollections {
 
     /**
      * Dynamically check that the keys and values in the map are all instances of the correct types (or null).
-     * 
+     *
      * @param <K> the map's key type
      * @param <V> the map's value type
      * @param map the map to cast

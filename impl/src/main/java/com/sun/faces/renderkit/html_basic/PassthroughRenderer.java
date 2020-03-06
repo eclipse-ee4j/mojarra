@@ -16,6 +16,10 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -26,13 +30,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-
 public class PassthroughRenderer extends HtmlBasicRenderer {
 
-// We are purposely piggy backing off the PANELGROUP attributes since they are 
+// We are purposely piggy backing off the PANELGROUP attributes since they are
 // identical for this renderer.
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
 

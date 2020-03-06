@@ -16,15 +16,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.el.ValueExpression;
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.MessageFactory;
-
-import jakarta.faces.component.PartialStateHolder;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.FacesContext;
-
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -32,6 +23,11 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
@@ -61,7 +57,7 @@ import java.util.Locale;
  * parsed. See the JavaDocs for the <code>setParseIntegerOnly()</code> method of the <code>java.text.NumberFormat</code>
  * class for more information.</li>
  * </ul>
- * 
+ *
  * <p>
  * The <code>getAsString()</code> method expects a value of type <code>java.lang.Number</code> (or a subclass), and
  * creates a formatted String according to the following algorithm:
@@ -203,7 +199,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getCurrencyCode() {
 
-        return (this.currencyCode);
+        return currencyCode;
 
     }
 
@@ -226,12 +222,12 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * Return the currency symbol used by <code>getAsString()</code> with a <code>type</code> of <code>currency</code>. If
      * not set, the value used will be based on the formatting <code>Locale</code>.
      * </p>
-     * 
+     *
      * @return the currency symbol
      */
     public String getCurrencySymbol() {
 
-        return (this.currencySymbol);
+        return currencySymbol;
 
     }
 
@@ -259,7 +255,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public boolean isGroupingUsed() {
 
-        return (this.groupingUsed != null ? this.groupingUsed : true);
+        return groupingUsed != null ? groupingUsed : true;
 
     }
 
@@ -282,12 +278,12 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * Return <code>true</code> if only the integer portion of the given value should be returned from
      * <code>getAsObject()</code>. If not modified, the default value is <code>false</code>.
      * </p>
-     * 
+     *
      * @return whether or not this is integer only
      */
     public boolean isIntegerOnly() {
 
-        return (this.integerOnly != null ? this.integerOnly : false);
+        return integerOnly != null ? integerOnly : false;
 
     }
 
@@ -315,7 +311,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMaxFractionDigits() {
 
-        return (this.maxFractionDigits != null ? this.maxFractionDigits : 0);
+        return maxFractionDigits != null ? maxFractionDigits : 0;
 
     }
 
@@ -343,7 +339,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMaxIntegerDigits() {
 
-        return (this.maxIntegerDigits != null ? this.maxIntegerDigits : 0);
+        return maxIntegerDigits != null ? maxIntegerDigits : 0;
 
     }
 
@@ -366,12 +362,12 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * <p>
      * Return the minimum number of digits <code>getAsString()</code> should render in the fraction portion of the result.
      * </p>
-     * 
+     *
      * @return the min fraction digits
      */
     public int getMinFractionDigits() {
 
-        return (this.minFractionDigits != null ? this.minFractionDigits : 0);
+        return minFractionDigits != null ? minFractionDigits : 0;
 
     }
 
@@ -399,7 +395,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public int getMinIntegerDigits() {
 
-        return (this.minIntegerDigits != null ? this.minIntegerDigits : 0);
+        return minIntegerDigits != null ? minIntegerDigits : 0;
 
     }
 
@@ -429,10 +425,10 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public Locale getLocale() {
 
-        if (this.locale == null) {
-            this.locale = getLocale(FacesContext.getCurrentInstance());
+        if (locale == null) {
+            locale = getLocale(FacesContext.getCurrentInstance());
         }
-        return (this.locale);
+        return locale;
 
     }
 
@@ -460,7 +456,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getPattern() {
 
-        return (this.pattern);
+        return pattern;
 
     }
 
@@ -490,7 +486,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     public String getType() {
 
-        return (this.type);
+        return type;
 
     }
 
@@ -530,11 +526,11 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
             // If the specified value is null or zero-length, return null
             if (value == null) {
-                return (null);
+                return null;
             }
             value = value.trim();
             if (value.length() < 1) {
-                return (null);
+                return null;
             }
 
             // Identify the Locale to use for parsing
@@ -542,7 +538,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
             // Create and configure the parser to be used
             parser = getNumberFormat(locale);
-            if (((pattern != null) && pattern.length() != 0) || "currency".equals(type)) {
+            if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
                 configureCurrency(parser);
             }
             parser.setParseIntegerOnly(isIntegerOnly());
@@ -636,13 +632,13 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
             // Create and configure the formatter to be used
             NumberFormat formatter = getNumberFormat(locale);
-            if (((pattern != null) && pattern.length() != 0) || "currency".equals(type)) {
+            if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
                 configureCurrency(formatter);
             }
             configureFormatter(formatter);
 
             // Perform the requested formatting
-            return (formatter.format(value));
+            return formatter.format(value);
 
         } catch (ConverterException e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
@@ -680,7 +676,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * <p>
      * If only "currencyCode" is given, it is used as a currency symbol if java.util.Currency is not defined.
      * </p>
-     * 
+     *
      * <pre>
      * Example:
      * <p/>
@@ -706,22 +702,24 @@ public class NumberConverter implements Converter, PartialStateHolder {
         String code = null;
         String symbol = null;
 
-        if ((currencyCode == null) && (currencySymbol == null)) {
+        if (currencyCode == null && currencySymbol == null) {
             return;
         }
 
-        if ((currencyCode != null) && (currencySymbol != null)) {
-            if (currencyClass != null)
+        if (currencyCode != null && currencySymbol != null) {
+            if (currencyClass != null) {
                 code = currencyCode;
-            else
+            } else {
                 symbol = currencySymbol;
+            }
         } else if (currencyCode == null) {
             symbol = currencySymbol;
         } else {
-            if (currencyClass != null)
+            if (currencyClass != null) {
                 code = currencyCode;
-            else
+            } else {
                 symbol = currencyCode;
+            }
         }
 
         if (code != null) {
@@ -782,25 +780,25 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
     private boolean isMaxIntegerDigitsSet() {
 
-        return (maxIntegerDigits != null);
+        return maxIntegerDigits != null;
 
     }
 
     private boolean isMinIntegerDigitsSet() {
 
-        return (minIntegerDigits != null);
+        return minIntegerDigits != null;
 
     }
 
     private boolean isMaxFractionDigitsSet() {
 
-        return (maxFractionDigits != null);
+        return maxFractionDigits != null;
 
     }
 
     private boolean isMinFractionDigitsSet() {
 
-        return (minFractionDigits != null);
+        return minFractionDigits != null;
 
     }
 
@@ -818,7 +816,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
         if (locale == null) {
             locale = context.getViewRoot().getLocale();
         }
-        return (locale);
+        return locale;
 
     }
 
@@ -841,16 +839,16 @@ public class NumberConverter implements Converter, PartialStateHolder {
         // If pattern is specified, type is ignored
         if (pattern != null) {
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-            return (new DecimalFormat(pattern, symbols));
+            return new DecimalFormat(pattern, symbols);
         }
 
         // Create an instance based on the specified type
         else if (type.equals("currency")) {
-            return (NumberFormat.getCurrencyInstance(locale));
+            return NumberFormat.getCurrencyInstance(locale);
         } else if (type.equals("number")) {
-            return (NumberFormat.getNumberInstance(locale));
+            return NumberFormat.getNumberInstance(locale);
         } else if (type.equals("percent")) {
-            return (NumberFormat.getPercentInstance(locale));
+            return NumberFormat.getPercentInstance(locale);
         } else {
             // PENDING(craigmcc) - i18n
             throw new ConverterException(new IllegalArgumentException(type));
@@ -879,7 +877,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
             values[8] = locale;
             values[9] = pattern;
             values[10] = type;
-            return (values);
+            return values;
         }
         return null;
 
@@ -912,7 +910,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
     @Override
     public boolean isTransient() {
-        return (transientFlag);
+        return transientFlag;
     }
 
     @Override

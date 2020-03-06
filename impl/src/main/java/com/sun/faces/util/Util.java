@@ -39,6 +39,7 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -51,13 +52,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import jakarta.el.ELResolver;
-import jakarta.el.ValueExpression;
-import jakarta.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletRegistration;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParserFactory;
@@ -74,6 +70,9 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.io.FastStringWriter;
 
+import jakarta.el.ELResolver;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -89,6 +88,8 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
 
 /**
  * <B>Util</B> is a class ...
@@ -171,7 +172,7 @@ public class Util {
      * Convenience method for determining if the request associated with the specified <code>FacesContext</code> is a
      * PortletRequest submitted by the JSR-301 bridge.
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> associated with the request.
      */
     public static boolean isPortletRequest(FacesContext context) {
@@ -199,7 +200,7 @@ public class Util {
      * If <code>binding</code> is not <code>null</code> and the evaluation result is not <code>null</code> return that
      * instance. Otherwise try to instantiate an instances based on <code>type</code>.
      * </p>
-     * 
+     *
      * @param type the <code>Listener</code> type
      * @param binding a <code>ValueExpression</code> which resolves to a <code>Listener</code> instance
      * @return a <code>Listener</code> instance based off the provided <code>type</code> and <binding>
@@ -216,7 +217,7 @@ public class Util {
         }
         if (instance == null && type != null) {
             try {
-                instance = ReflectionUtils.newInstance(((String) type.getValue(faces.getELContext())));
+                instance = ReflectionUtils.newInstance((String) type.getValue(faces.getELContext()));
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new AbortProcessingException(e.getMessage(), e);
             }
@@ -335,12 +336,7 @@ public class Util {
         if (System.getSecurityManager() == null) {
             return Thread.currentThread().getContextClassLoader();
         } else {
-            return (ClassLoader) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
-                @Override
-                public java.lang.Object run() {
-                    return Thread.currentThread().getContextClassLoader();
-                }
-            });
+            return (ClassLoader) java.security.AccessController.doPrivileged((PrivilegedAction) () -> Thread.currentThread().getContextClassLoader());
         }
     }
 
@@ -405,7 +401,7 @@ public class Util {
         if (-1 != lastSlash) {
 
             int startOrPreviousSlash = input.lastIndexOf("/", lastSlash - 1);
-            startOrPreviousSlash = (-1 == startOrPreviousSlash) ? 0 : startOrPreviousSlash;
+            startOrPreviousSlash = -1 == startOrPreviousSlash ? 0 : startOrPreviousSlash;
 
             input = input.substring(startOrPreviousSlash, lastSlash);
         }
@@ -530,7 +526,7 @@ public class Util {
 
     /**
      * Returns true if all values are empty, false if at least one value is not empty.
-     * 
+     *
      * @param values the values to be checked on emptiness
      * @return True if all values are empty, false otherwise
      */
@@ -582,7 +578,7 @@ public class Util {
 
     /**
      * Returns <code>true</code> if the given object equals one of the given objects.
-     * 
+     *
      * @param <T> The generic object type.
      * @param object The object to be checked if it equals one of the given objects.
      * @param objects The argument list of objects to be tested for equality.
@@ -632,10 +628,10 @@ public class Util {
 
     /**
      * Returns <code>true</code> if the given string starts with one of the given prefixes.
-     * 
+     *
      * @param string The object to be checked if it starts with one of the given prefixes.
      * @param prefixes The argument list of prefixes to be checked
-     * 
+     *
      * @return <code>true</code> if the given string starts with one of the given prefixes.
      */
     public static boolean startsWithOneOf(String string, String... prefixes) {
@@ -672,9 +668,9 @@ public class Util {
         }
         try {
             Application application = context.getApplication();
-            return (application.createConverter(converterClass));
+            return application.createConverter(converterClass);
         } catch (Exception e) {
-            return (null);
+            return null;
         }
     }
 
@@ -684,14 +680,14 @@ public class Util {
         }
         try {
             Application application = context.getApplication();
-            return (application.createConverter(converterId));
+            return application.createConverter(converterId);
         } catch (Exception e) {
-            return (null);
+            return null;
         }
     }
 
     public static StateManager getStateManager(FacesContext context) throws FacesException {
-        return (context.getApplication().getStateManager());
+        return context.getApplication().getStateManager();
     }
 
     public static Class getTypeFromString(String type) throws ClassNotFoundException {
@@ -738,17 +734,17 @@ public class Util {
     public static ViewHandler getViewHandler(FacesContext context) throws FacesException {
         // Get Application instance
         Application application = context.getApplication();
-        assert (application != null);
+        assert application != null;
 
         // Get the ViewHandler
         ViewHandler viewHandler = application.getViewHandler();
-        assert (viewHandler != null);
+        assert viewHandler != null;
 
         return viewHandler;
     }
 
     public static boolean componentIsDisabled(UIComponent component) {
-        return (Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled"))));
+        return Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled")));
     }
 
     public static boolean componentIsDisabledOrReadonly(UIComponent component) {
@@ -788,7 +784,7 @@ public class Util {
             int j = 0;
 
             // to have a language, the length must be >= 2
-            if ((inputLength >= 2) && ((i = indexOfSet(localeStr, seps, 0)) == -1)) {
+            if (inputLength >= 2 && (i = indexOfSet(localeStr, seps, 0)) == -1) {
                 // we have only Language, no country or variant
                 if (2 != localeStr.length()) {
                     throw new IllegalArgumentException("Illegal locale String: " + localeStr);
@@ -801,7 +797,7 @@ public class Util {
                 lang = localeStr.substring(0, i);
                 // look for the country sep.
                 // to have a country, the length must be >= 5
-                if ((inputLength >= 5) && ((j = indexOfSet(localeStr, seps, i + 1)) == -1)) {
+                if (inputLength >= 5 && (j = indexOfSet(localeStr, seps, i + 1)) == -1) {
                     // no further separators, length must be 5
                     if (inputLength != 5) {
                         throw new IllegalArgumentException("Illegal locale String: " + localeStr);
@@ -931,7 +927,7 @@ public class Util {
      * A slightly more efficient version of <code>String.split()</code> which caches the <code>Pattern</code>s in an LRUMap
      * instead of creating a new <code>Pattern</code> on each invocation.
      * </p>
-     * 
+     *
      * @param appMap the Application Map
      * @param toSplit the string to split
      * @param regex the regex used for splitting
@@ -966,7 +962,7 @@ public class Util {
      * If no mapping can be determined, it most likely means that this particular request wasn't dispatched through the
      * {@link jakarta.faces.webapp.FacesServlet}.
      * <p>
-     * 
+     *
      * <b>NOTE:</b> This method was supposed to be replaced with the "mapping API" from Servlet 4, but this has not been
      * implemented in time for JSF 2.3 to depend on.
      *
@@ -1077,7 +1073,7 @@ public class Util {
      * resource, is an exact mapping.
      * <p>
      * This should be replaced by the Servlet 4 mapping API when/if that becomes available and JSF/Mojarra can depend on it.
-     * 
+     *
      * @param viewId the view id to test
      * @return true if the FacesServlet is exact mapped to the given viewId, false otherwise
      */
@@ -1092,7 +1088,7 @@ public class Util {
      * resource, is an exact mapping.
      * <p>
      * This should be replaced by the Servlet 4 mapping API when/if that becomes available and JSF/Mojarra can depend on it.
-     * 
+     *
      * @param externalContext the external context for this request
      * @param resource the resource to test
      * @return true if the FacesServlet is exact mapped to the given resource, false otherwise
@@ -1172,7 +1168,7 @@ public class Util {
      * <p>
      * Flag the specified {@link UIViewRoot} as populated.
      * </p>
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param viewToRender the {@link UIViewRoot} to mark as populated
      */
@@ -1250,7 +1246,7 @@ public class Util {
 
     /**
      * If view root is instance of naming container, return its container client id, suffixed with separator character.
-     * 
+     *
      * @param context Involved faces context.
      * @return The naming container prefix, or an empty string if the view root is not an instance of naming container.
      */
@@ -1462,7 +1458,7 @@ public class Util {
 
     /**
      * Get the CDI bean manager.
-     * 
+     *
      * @param facesContext the Faces context to consult
      * @return the CDI bean manager.
      */
@@ -1501,7 +1497,7 @@ public class Util {
 
     /**
      * Is CDI available.
-     * 
+     *
      * @param facesContext the Faces context to consult.
      * @return true if available, false otherwise.
      */
@@ -1526,7 +1522,7 @@ public class Util {
 
     /**
      * Is CDI available (ServletContext variant)
-     * 
+     *
      * @param servletContext the servlet context.
      * @return true if available, false otherwise.
      */
@@ -1549,7 +1545,7 @@ public class Util {
 
     /**
      * Is CDI 1.1 or later
-     * 
+     *
      * @param facesContext the Faces context.
      * @return true if CDI 1.1 or later, false otherwise.
      */

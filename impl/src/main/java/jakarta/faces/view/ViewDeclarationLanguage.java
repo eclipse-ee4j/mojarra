@@ -38,15 +38,15 @@ import jakarta.faces.context.FacesContext;
  * </p>
  *
  * <div class="changed_added_2_0">
- * 
+ *
  * <p>
  * Instances of this class are application scoped and must be obtained from the {@link ViewDeclarationLanguageFactory}.
  * </p>
- * 
+ *
  * </div>
- * 
+ *
  * @since 2.0
- * 
+ *
  */
 public abstract class ViewDeclarationLanguage {
 
@@ -127,9 +127,9 @@ public abstract class ViewDeclarationLanguage {
      * <code>UIViewRoot</code> which must have been created via a call to {@link #createView}, to be populated with
      * children.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * The Facelets implementation must insure that markup comprising the view must be executed, with the
      * {@link jakarta.faces.component.UIComponent} instances in the view being encountered in the same depth-first order as
@@ -236,15 +236,15 @@ public abstract class ViewDeclarationLanguage {
      * However, any implementation that is compliant with the version of the specification in which this method was
      * introduced must implement this method.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} for this request
      * @param taglibURI the fully qualified tag library URI that contains the component
      * @param tagName the name of the tag within that library that exposes the component
      * @param attributes any name=value pairs that would otherwise have been given on the markup that would cause the
      * creation of this component or {@code null} if no attributes need be given.
-     * 
+     *
      * @throws NullPointerException if {@code context}, {@code taglibURI}, or {@code tagName} are {@code null}
-     * 
+     *
      * @since 2.2
      *
      * @return the newly created component
@@ -421,12 +421,12 @@ public abstract class ViewDeclarationLanguage {
      * attribute.</em>
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Interpret <em>targets</em> as a space (not tab) separated list of ids. For each entry in the list:
      * </p>
-     * 
+     *
      * <ul>
      *
      * <li>
@@ -526,9 +526,9 @@ public abstract class ViewDeclarationLanguage {
      * </p>
      * </li>
      * </ul>
-     * 
+     *
      * </li>
-     * 
+     *
      * </ul>
      *
      * <p>
@@ -559,10 +559,10 @@ public abstract class ViewDeclarationLanguage {
      * returns {@code null}, but any implementation compliant with the version of the specification in which this method was
      * introduced must implement it as specified in JSF.7.7.2.
      * </p>
-     * 
+     *
      * @param context the {@code FacesContext} for this request
      * @param viewId the view id for which the applicable resource library contracts should be calculated.
-     * 
+     *
      * @since 2.2
      *
      * @return the calculated list of resource library contract names
@@ -617,22 +617,22 @@ public abstract class ViewDeclarationLanguage {
      * Return a {@code Stream} possibly lazily populated by walking the view tree rooted at a given initial path. The view
      * tree is traversed <em>breadth-first</em>, the elements in the stream are <em>logical</em> view ids.
      * </p>
-     * 
+     *
      * <p>
      * This method works as if invoking it were equivalent to evaluating the expression: <blockquote>
-     * 
+     *
      * <pre>
      * getViewResources(facesContext, start, Integer.MAX_VALUE, options)
      * </pre>
-     * 
+     *
      * </blockquote> Put differently, it visits all levels of the resource tree.
-     * 
+     *
      * @param facesContext The {@link FacesContext} for this request.
      * @param path The initial path from which to start looking for views
      * @param options The options to influence the traversal. See {@link ViewVisitOption} for details on those.
      *
      * @return the {@link Stream} of view ids
-     * 
+     *
      * @since 2.3
      */
     public Stream<String> getViews(FacesContext facesContext, String path, ViewVisitOption... options) {
@@ -644,7 +644,7 @@ public abstract class ViewDeclarationLanguage {
      * Return a {@code Stream} possibly lazily populated by walking the view tree rooted at a given initial path. The view
      * tree is traversed <em>breadth-first</em>, the elements in the stream are <em>logical</em> view ids.
      * </p>
-     * 
+     *
      * <p>
      * The {@code maxDepth} parameter is the maximum depth of directory levels to visit <em>beyond the initial path</em>,
      * which is always visited. The value is relative to the root ({@code /}), not to the given initial path. E.g. given
@@ -652,14 +652,14 @@ public abstract class ViewDeclarationLanguage {
      * {@code /} counts as depth {@code 1}, {@code /foo/} as depth {@code 2} and {@code /foo/bar/} as depth {@code 3}. A
      * value lower or equal to the depth of the initial path means that only the initial path is visited. A value of
      * {@link Integer#MAX_VALUE MAX_VALUE} may be used to indicate that all levels should be visited.
-     * 
+     *
      * @param facesContext The {@link FacesContext} for this request.
      * @param path The initial path from which to start looking for views
      * @param maxDepth The absolute maximum depth of nested directories to visit counted from the root ({@code /}).
      * @param options The options to influence the traversal. See {@link ViewVisitOption} for details on those.
      *
      * @return the {@link Stream} of view ids
-     * 
+     *
      * @since 2.3
      */
     public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options) {

@@ -17,14 +17,13 @@
 package jakarta.faces.webapp;
 
 import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>
@@ -59,6 +58,7 @@ import jakarta.faces.convert.ConverterException;
  * the binding facility and the implementation of the {@link #createConverter} method, is now an implementation detail.
  */
 
+@Deprecated
 public class ConverterTag extends TagSupport {
 
     // ---------------------------------------------------------- Static Members
@@ -133,7 +133,7 @@ public class ConverterTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -185,7 +185,7 @@ public class ConverterTag extends TagSupport {
             }
         }
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
@@ -196,7 +196,7 @@ public class ConverterTag extends TagSupport {
     @Override
     public void release() {
 
-        this.converterId = null;
+        converterId = null;
 
     }
 
@@ -208,7 +208,7 @@ public class ConverterTag extends TagSupport {
      * </p>
      *
      * @throws JspException if a new instance cannot be created
-     * 
+     *
      * @return the {@code Converter}
      */
     protected Converter createConverter() throws JspException {

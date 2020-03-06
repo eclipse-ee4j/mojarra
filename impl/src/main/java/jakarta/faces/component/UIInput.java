@@ -23,7 +23,6 @@ import java.util.Map;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -61,19 +60,19 @@ import jakarta.faces.validator.ValidatorException;
  * <code>setSubmittedValue()</code>. If the component wishes to indicate that no particular value was submitted, it can
  * either do nothing, or set the submitted value to <code>null</code>.
  * </p>
- * 
+ *
  * <p>
  * By default, during the <em>Process Validators</em> phase of the request processing lifecycle, the submitted value
  * will be converted to a typesafe object, and, if validation succeeds, stored as a local value using
  * <code>setValue()</code>. However, if the <code>immediate</code> property is set to <code>true</code>, this processing
  * will occur instead at the end of the <em>Apply Request Values</em> phase.
  * </p>
- * 
+ *
  * <p>
  * During the <em>Render Response</em> phase of the request processing lifecycle, conversion for output occurs as for
  * {@link UIOutput}.
  * </p>
- * 
+ *
  * <p>
  * When the <code>validate()</code> method of this {@link UIInput} detects that a value change has actually occurred,
  * and that all validations have been successfully passed, it will queue a {@link ValueChangeEvent}. Later on, the
@@ -83,7 +82,7 @@ import jakarta.faces.validator.ValidatorException;
  * <span class="changed_added_2_0">If the validation fails, the implementation must call
  * {@link FacesContext#validationFailed}.</span>
  * </p>
- * 
+ *
  * <p>
  * By default, the <code>rendererType</code> property must be set to "<code>Text</code>". This value can be changed by
  * calling the <code>setRendererType()</code> method.
@@ -236,7 +235,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -329,7 +328,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public void resetValue() {
         super.resetValue();
-        this.setSubmittedValue(null);
+        setSubmittedValue(null);
         getStateHelper().remove(PropertyKeys.localValueSet);
         getStateHelper().remove(PropertyKeys.valid);
     }
@@ -507,6 +506,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      *
      * @deprecated {@link #getValidators} should be used instead.
      */
+    @Deprecated
     @Override
     public MethodBinding getValidator() {
         MethodBinding result = null;
@@ -543,6 +543,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by creating an instance of
      * {@link jakarta.faces.validator.MethodExpressionValidator}.
      */
+    @Deprecated
     @Override
     public void setValidator(MethodBinding validatorBinding) {
         Validator[] curValidators = getValidators();
@@ -598,6 +599,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument {@link ValueChangeListener} by
      * creating an instance of {@link jakarta.faces.event.MethodExpressionValueChangeListener}.
      */
+    @Deprecated
     @Override
     public void setValueChangeListener(MethodBinding valueChangeListener) {
 
@@ -851,7 +853,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
                 setValid(false);
             }
             if (caught != null) {
-                assert (message != null);
+                assert message != null;
                 // PENDING(edburns): verify this is in the spec.
                 @SuppressWarnings({ "ThrowableInstanceNeverThrown" })
                 UpdateModelException toQueue = new UpdateModelException(message, caught);
@@ -870,22 +872,22 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * <span class="changed_modified_2_0 changed_modified_2_2 changed_modified_2_3">Perform</span> the following algorithm
      * to validate the local value of this {@link UIInput}.
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>Retrieve the submitted value with {@link #getSubmittedValue}. If this returns <code>null</code>,
      * <span class="changed_modified_2_3">and the value of the {@link #ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE}
      * context-param is true (ignoring case), examine the value of the "required" property. If the value of "required" is
      * true, continue as below. If the value of "required" is false or the required attribute is not set, exit without
      * further processing. If the context-param is not set, or is set to false (ignoring case),</span> exit without further
      * processing. (This indicates that no value was submitted for this component.)</li>
-     * 
+     *
      * <li><span class="changed_modified_2_0">If the
      * <code>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</code> context parameter value is
      * <code>true</code> (ignoring case), and <code>getSubmittedValue()</code> returns a zero-length <code>String</code>
      * call <code>{@link #setSubmittedValue}</code>, passing <code>null</code> as the argument and continue processing using
      * <code>null</code> as the current submitted value.</span></li>
-     * 
+     *
      * <li>Convert the submitted value into a "local value" of the appropriate data type by calling
      * {@link #getConvertedValue}.</li>
      * <li><span class="changed_added_2_0_rev_a">If conversion fails</span>:
@@ -895,7 +897,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * <li>Set the <code>valid</code> property on this component to <code>false</code></li>
      * </ul>
      * </li>
-     * 
+     *
      * <li>Validate the property by calling {@link #validateValue}.</li>
      *
      * <li>If the <code>valid</code> property of this component is still <code>true</code>, retrieve the previous value of
@@ -904,7 +906,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * {@code null} as the argument</span>. If the local value is different from the previous value of this component,
      * <span class="changed_modified_2_1">as determined by a call to {@link #compareValues}</span>, fire a
      * {@link ValueChangeEvent} to be broadcast to all interested listeners.</li>
-     * 
+     *
      * </ul>
      * <p>
      * Application components implementing {@link UIInput} that wish to perform validation with logic embedded in the
@@ -935,7 +937,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         // If non-null, an instanceof String, and we're configured to treat
         // zero-length Strings as null:
         // call setSubmittedValue(null)
-        boolean isEmptyStringNull = (considerEmptyStringNull(context) && submittedValue instanceof String && ((String) submittedValue).length() == 0);
+        boolean isEmptyStringNull = considerEmptyStringNull(context) && submittedValue instanceof String && ((String) submittedValue).length() == 0;
         if (isEmptyStringNull) {
             setSubmittedValue(null);
             submittedValue = null;
@@ -1054,19 +1056,19 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * <p>
      * <span class="changed_modified_2_0">Set</span> the "valid" property according to the below algorithm.
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
-     * 
+     *
      * <p>
      * If the <code>valid</code> property on this component is still <code>true</code>, and the <code>required</code>
      * property is also <code>true</code>, ensure that the local value is not empty (where "empty" is defined as
      * <code>null</code> or a zero-length String). If the local value is empty:
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * Enqueue an appropriate error message by calling the <code>addMessage()</code> method on the <code>FacesContext</code>
@@ -1094,7 +1096,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * Otherwise, if the <code>valid</code> property on this component is still <code>true</code>, take the following action
      * to determine if validation of this component should proceed.
      * </p>
-     * 
+     *
      * <ul>
      *
      * <li>
@@ -1102,7 +1104,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * If the value is not empty, validation should proceed.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If the value is empty, but the system has been directed to validate empty fields, validation should proceed. The
@@ -1125,7 +1127,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * <code>validatorBinding</code> property (if any). If any of these validators or the method throws a
      * {@link ValidatorException}, catch the exception, add its message (if any) to the {@link FacesContext}, and set the
      * <code>valid</code> property of this component to false.</li>
-     * 
+     *
      * </ul>
      *
      * @param context the Faces context.
@@ -1202,14 +1204,14 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         boolean result = true;
 
         if (previous == null) {
-            result = (value != null);
+            result = value != null;
         } else if (value == null) {
             result = true;
         } else {
             boolean previousEqualsValue = previous.equals(value);
             if (!previousEqualsValue && previous instanceof Comparable && value instanceof Comparable) {
                 try {
-                    result = !(0 == ((Comparable) previous).compareTo((Comparable) value));
+                    result = !(0 == ((Comparable) previous).compareTo(value));
                 } catch (ClassCastException cce) {
                     // Comparable throws CCE if the types prevent a comparison
                     result = true;
@@ -1256,25 +1258,25 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     public static boolean isEmpty(Object value) {
 
         if (value == null) {
-            return (true);
-        } else if ((value instanceof String) && (((String) value).length() < 1)) {
-            return (true);
+            return true;
+        } else if (value instanceof String && ((String) value).length() < 1) {
+            return true;
         } else if (value.getClass().isArray()) {
             if (0 == java.lang.reflect.Array.getLength(value)) {
-                return (true);
+                return true;
             }
         } else if (value instanceof List) {
             if (((List) value).isEmpty()) {
-                return (true);
+                return true;
             }
         } else if (value instanceof Collection) {
             if (((Collection) value).isEmpty()) {
-                return (true);
+                return true;
             }
-        } else if ((value instanceof Map) && (((Map) value).isEmpty())) {
+        } else if (value instanceof Map && ((Map) value).isEmpty()) {
             return true;
         }
-        return (false);
+        return false;
     }
 
     /**
@@ -1315,7 +1317,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public Validator[] getValidators() {
 
-        return ((validators != null) ? validators.asArray(Validator.class) : EMPTY_VALIDATOR);
+        return validators != null ? validators.asArray(Validator.class) : EMPTY_VALIDATOR;
 
     }
 
@@ -1397,13 +1399,13 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         Object[] result = null;
 
         Object superState = super.saveState(context);
-        Object validatorsState = ((validators != null) ? validators.saveState(context) : null);
+        Object validatorsState = validators != null ? validators.saveState(context) : null;
 
         if (superState != null || validatorsState != null) {
             result = new Object[] { superState, validatorsState };
         }
 
-        return (result);
+        return result;
     }
 
     @Override
@@ -1457,7 +1459,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             Application application = context.getApplication();
             return application.createConverter(converterType);
         } catch (Exception e) {
-            return (null);
+            return null;
         }
     }
 

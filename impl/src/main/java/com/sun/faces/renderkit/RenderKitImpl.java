@@ -18,25 +18,27 @@
 
 package com.sun.faces.renderkit;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableJSStyleHiding;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableScriptInAttributeValue;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PreferXHTMLContentType;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableJSStyleHiding;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableScriptInAttributeValue;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PreferXHTMLContentType;
 import com.sun.faces.renderkit.html_basic.HtmlResponseWriter;
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
@@ -47,8 +49,6 @@ import jakarta.faces.render.ClientBehaviorRenderer;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.render.ResponseStateManager;
-
-import com.sun.faces.util.FacesLogger;
 
 /**
  * <B>RenderKitImpl</B> is a class ...
@@ -73,7 +73,7 @@ public class RenderKitImpl extends RenderKit {
      * values are the Renderer instances themselves.
      */
 
-    private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies = new ConcurrentHashMap<String, HashMap<String, Renderer>>();
+    private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies = new ConcurrentHashMap<>();
 
     /**
      * For Behavior Renderers: Keys are Strings for the behaviorRendererType, and values are the behaviorRenderer instances
@@ -120,10 +120,10 @@ public class RenderKitImpl extends RenderKit {
         Util.notNull("family", family);
         Util.notNull("rendererType", rendererType);
 
-        assert (rendererFamilies != null);
+        assert rendererFamilies != null;
 
         HashMap<String, Renderer> renderers = rendererFamilies.get(family);
-        return ((renderers != null) ? renderers.get(rendererType) : null);
+        return renderers != null ? renderers.get(rendererType) : null;
 
     }
 
@@ -147,7 +147,7 @@ public class RenderKitImpl extends RenderKit {
 
         Util.notNull("behaviorRendererType", behaviorRendererType);
 
-        return ((behaviorRenderers != null) ? behaviorRenderers.get(behaviorRendererType) : null);
+        return behaviorRenderers != null ? behaviorRenderers.get(behaviorRendererType) : null;
 
     }
 
@@ -213,7 +213,7 @@ public class RenderKitImpl extends RenderKit {
 
             if (null != desiredContentTypeList) {
                 desiredContentTypeList = RenderKitUtils.determineContentType(desiredContentTypeList, SUPPORTED_CONTENT_TYPES,
-                        ((preferXhtml()) ? RIConstants.XHTML_CONTENT_TYPE : null));
+                        preferXhtml() ? RIConstants.XHTML_CONTENT_TYPE : null);
                 if (null != desiredContentTypeList) {
                     contentType = findMatch(desiredContentTypeList, SUPPORTED_CONTENT_TYPES_ARRAY);
                 }
@@ -257,7 +257,7 @@ public class RenderKitImpl extends RenderKit {
 
     private String getDefaultContentType() {
 
-        return ((preferXhtml()) ? RIConstants.XHTML_CONTENT_TYPE : RIConstants.HTML_CONTENT_TYPE);
+        return preferXhtml() ? RIConstants.XHTML_CONTENT_TYPE : RIConstants.HTML_CONTENT_TYPE;
 
     }
 

@@ -39,7 +39,7 @@ public class ViewNodeImpl extends ViewNode implements Serializable {
         } else if (vdlDocumentIdIn.startsWith("WEB-INF")) {
             vdlDocumentIdIn = vdlDocumentIdIn.substring(7);
         }
-        this.vdlDocumentId = vdlDocumentIdIn;
+        vdlDocumentId = vdlDocumentIdIn;
 
     }
 

@@ -16,11 +16,16 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import com.sun.faces.facelets.el.LegacyValueBinding;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
-
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.UIComponent;
@@ -30,14 +35,11 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.view.ActionSource2AttachedObjectHandler;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-
-import java.io.IOException;
-import java.io.Serializable;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 public class SetPropertyActionListenerHandler extends TagHandlerImpl implements ActionSource2AttachedObjectHandler {
 
@@ -47,14 +49,14 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
 
     public SetPropertyActionListenerHandler(TagConfig config) {
         super(config);
-        this.value = this.getRequiredAttribute("value");
-        this.target = this.getRequiredAttribute("target");
+        value = getRequiredAttribute("value");
+        target = getRequiredAttribute("target");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
-        if (null == parent || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || !ComponentHandler.isNew(parent)) {
             return;
         }
         if (parent instanceof ActionSource) {
@@ -62,14 +64,14 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         } else if (UIComponent.isCompositeComponent(parent)) {
             if (null == getFor()) {
                 // PENDING(): I18N
-                throw new TagException(this.tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
+                throw new TagException(tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
             }
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
 
         } else {
-            throw new TagException(this.tag, "Parent is not of type ActionSource, type is: " + parent);
+            throw new TagException(tag, "Parent is not of type ActionSource, type is: " + parent);
         }
 
     }
@@ -79,8 +81,8 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
 
         ActionSource src = (ActionSource) parent;
-        ValueExpression valueExpr = this.value.getValueExpression(ctx, Object.class);
-        ValueExpression targetExpr = this.target.getValueExpression(ctx, Object.class);
+        ValueExpression valueExpr = value.getValueExpression(ctx, Object.class);
+        ValueExpression targetExpr = target.getValueExpression(ctx, Object.class);
 
         ActionListener listener;
 
@@ -96,7 +98,7 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
     @Override
     public String getFor() {
         String result = null;
-        TagAttribute attr = this.getAttribute("for");
+        TagAttribute attr = getAttribute("for");
 
         if (null != attr) {
             if (attr.isLiteral()) {
@@ -119,7 +121,7 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         private ValueBinding target;
 
         public LegacySetPropertyListener() {
-        };
+        }
 
         public LegacySetPropertyListener(ValueBinding value, ValueBinding target) {
             this.value = value;
@@ -129,8 +131,8 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         @Override
         public void processAction(ActionEvent evt) throws AbortProcessingException {
             FacesContext faces = FacesContext.getCurrentInstance();
-            Object valueObj = this.value.getValue(faces);
-            this.target.setValue(faces, valueObj);
+            Object valueObj = value.getValue(faces);
+            target.setValue(faces, valueObj);
         }
 
     }
@@ -144,7 +146,7 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         private ValueExpression target;
 
         public SetPropertyListener() {
-        };
+        }
 
         public SetPropertyListener(ValueExpression value, ValueExpression target) {
             this.value = value;
@@ -155,12 +157,12 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         public void processAction(ActionEvent evt) throws AbortProcessingException {
             FacesContext faces = FacesContext.getCurrentInstance();
             ELContext el = faces.getELContext();
-            Object valueObj = this.value.getValue(el);
+            Object valueObj = value.getValue(el);
             if (valueObj != null) {
                 ExpressionFactory factory = faces.getApplication().getExpressionFactory();
                 valueObj = factory.coerceToType(valueObj, target.getType(el));
             }
-            this.target.setValue(el, valueObj);
+            target.setValue(el, valueObj);
         }
 
     }

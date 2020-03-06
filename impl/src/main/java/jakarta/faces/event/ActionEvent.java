@@ -16,12 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ActionEvent;
-import jakarta.faces.event.ActionListener;
-import jakarta.faces.event.FacesEvent;
-import jakarta.faces.event.FacesListener;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -65,7 +59,7 @@ public class ActionEvent extends FacesEvent {
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
 
-        return (listener instanceof ActionListener);
+        return listener instanceof ActionListener;
 
     }
 

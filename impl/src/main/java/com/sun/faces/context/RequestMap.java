@@ -17,12 +17,12 @@
 package com.sun.faces.context;
 
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Iterator;
-
-import jakarta.servlet.ServletRequest;
+import java.util.Map;
 
 import com.sun.faces.util.Util;
+
+import jakarta.servlet.ServletRequest;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestMap()
@@ -66,7 +66,7 @@ public class RequestMap extends BaseContextMap<Object> {
         Util.notNull("key", key);
         Object result = request.getAttribute(key);
         request.setAttribute(key, value);
-        return (result);
+        return result;
     }
 
     @Override
@@ -77,12 +77,12 @@ public class RequestMap extends BaseContextMap<Object> {
         String keyString = key.toString();
         Object result = request.getAttribute(keyString);
         request.removeAttribute(keyString);
-        return (result);
+        return result;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return (request.getAttribute(key.toString()) != null);
+        return request.getAttribute(key.toString()) != null;
     }
 
     @Override

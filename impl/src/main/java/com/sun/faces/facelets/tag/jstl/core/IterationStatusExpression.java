@@ -28,14 +28,14 @@ import jakarta.el.ValueExpression;
 public final class IterationStatusExpression extends ValueExpression {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
     private final IterationStatus status;
 
     /**
-     * 
+     *
      */
     public IterationStatusExpression(IterationStatus status) {
         this.status = status;
@@ -43,17 +43,17 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
     public Object getValue(ELContext context) {
-        return this.status;
+        return status;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
@@ -63,7 +63,7 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#isReadOnly(jakarta.el.ELContext)
      */
     @Override
@@ -73,7 +73,7 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
@@ -83,7 +83,7 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
@@ -93,12 +93,12 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#getExpressionString()
      */
     @Override
     public String getExpressionString() {
-        return this.toString();
+        return toString();
     }
 
     @Override
@@ -110,7 +110,7 @@ public final class IterationStatusExpression extends ValueExpression {
             return false;
         }
         final IterationStatusExpression other = (IterationStatusExpression) obj;
-        if (this.status != other.status && (this.status == null || !this.status.equals(other.status))) {
+        if (status != other.status && (status == null || !status.equals(other.status))) {
             return false;
         }
         return true;
@@ -118,17 +118,17 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#hashCode()
      */
     @Override
     public int hashCode() {
-        return this.status.hashCode();
+        return status.hashCode();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#isLiteralText()
      */
     @Override
@@ -138,7 +138,7 @@ public final class IterationStatusExpression extends ValueExpression {
 
     @Override
     public String toString() {
-        return this.status.toString();
+        return status.toString();
     }
 
 }

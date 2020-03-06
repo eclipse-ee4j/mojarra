@@ -21,8 +21,6 @@ import static java.util.logging.Level.FINE;
 
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,6 +36,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>

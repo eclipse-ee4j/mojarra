@@ -20,7 +20,7 @@ import jakarta.faces.component.UIComponentBase;
 
 /**
  * Component to set a focus on a given field.
- * 
+ *
  * @author driscoll
  */
 public class UIFocus extends UIComponentBase {

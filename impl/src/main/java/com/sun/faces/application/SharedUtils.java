@@ -16,14 +16,13 @@
 
 package com.sun.faces.application;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
-
-import java.util.HashMap;
 
 class SharedUtils {
 
@@ -37,7 +36,7 @@ class SharedUtils {
         }
 
         // if it doesn't start and end with delimiters
-        return (!(expression.startsWith("#{") && expression.endsWith("}"))) && isExpression(expression);
+        return !(expression.startsWith("#{") && expression.endsWith("}")) && isExpression(expression);
 
     }
 
@@ -57,7 +56,7 @@ class SharedUtils {
 
     static Map<String, List<String>> evaluateExpressions(FacesContext context, Map<String, List<String>> map) {
         if (map != null && !map.isEmpty()) {
-            Map<String, List<String>> ret = new HashMap<String, List<String>>(map.size());
+            Map<String, List<String>> ret = new HashMap<>(map.size());
             for (Map.Entry<String, List<String>> entry : map.entrySet()) {
                 ret.put(entry.getKey(), evaluateExpressions(context, entry.getValue()));
             }
@@ -70,7 +69,7 @@ class SharedUtils {
 
     static List<String> evaluateExpressions(FacesContext context, List<String> values) {
         if (!values.isEmpty()) {
-            List<String> ret = new ArrayList<String>(values.size());
+            List<String> ret = new ArrayList<>(values.size());
             Application app = context.getApplication();
             for (String val : values) {
                 if (val != null) {

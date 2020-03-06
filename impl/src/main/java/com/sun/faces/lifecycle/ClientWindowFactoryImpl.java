@@ -53,7 +53,7 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
         @Override
         public void processEvent(SystemEvent event) throws AbortProcessingException {
-            ClientWindowFactoryImpl.this.postConstructApplicationInitialization();
+            postConstructApplicationInitialization();
         }
 
     }
@@ -64,7 +64,7 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
         config = WebConfiguration.getInstance(extContext);
         String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
 
-        isClientWindowEnabled = (null != optionValue) && "url".equals(optionValue);
+        isClientWindowEnabled = null != optionValue && "url".equals(optionValue);
     }
 
     @Override

@@ -21,20 +21,18 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.NumberConverter;
-
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
-import jakarta.el.ExpressionFactory;
 import jakarta.servlet.jsp.JspException;
-
-import com.sun.faces.el.ELUtils;
 
 /**
  * <p>
@@ -144,50 +142,50 @@ public class ConvertNumberTag extends AbstractConverterTag {
     //
 
     public void setCurrencyCode(ValueExpression currencyCode) {
-        this.currencyCodeExpression = currencyCode;
+        currencyCodeExpression = currencyCode;
     }
 
     public void setCurrencySymbol(ValueExpression currencySymbol) {
-        this.currencySymbolExpression = currencySymbol;
+        currencySymbolExpression = currencySymbol;
     }
 
     public void setGroupingUsed(ValueExpression groupingUsed) {
-        this.groupingUsedExpression = groupingUsed;
+        groupingUsedExpression = groupingUsed;
     }
 
     public void setIntegerOnly(ValueExpression integerOnly) {
-        this.integerOnlyExpression = integerOnly;
+        integerOnlyExpression = integerOnly;
     }
 
     public void setMaxFractionDigits(ValueExpression maxFractionDigits) {
-        this.maxFractionDigitsExpression = maxFractionDigits;
-        this.maxFractionDigitsSpecified = true;
+        maxFractionDigitsExpression = maxFractionDigits;
+        maxFractionDigitsSpecified = true;
     }
 
     public void setMaxIntegerDigits(ValueExpression maxIntegerDigits) {
-        this.maxIntegerDigitsExpression = maxIntegerDigits;
-        this.maxIntegerDigitsSpecified = true;
+        maxIntegerDigitsExpression = maxIntegerDigits;
+        maxIntegerDigitsSpecified = true;
     }
 
     public void setMinFractionDigits(ValueExpression minFractionDigits) {
-        this.minFractionDigitsExpression = minFractionDigits;
-        this.minFractionDigitsSpecified = true;
+        minFractionDigitsExpression = minFractionDigits;
+        minFractionDigitsSpecified = true;
     }
 
     public void setMinIntegerDigits(ValueExpression minIntegerDigits) {
-        this.minIntegerDigitsExpression = minIntegerDigits;
+        minIntegerDigitsExpression = minIntegerDigits;
     }
 
     public void setLocale(ValueExpression locale) {
-        this.localeExpression = locale;
+        localeExpression = locale;
     }
 
     public void setPattern(ValueExpression pattern) {
-        this.patternExpression = pattern;
+        patternExpression = pattern;
     }
 
     public void setType(ValueExpression type) {
-        this.typeExpression = type;
+        typeExpression = type;
     }
 
     @Override
@@ -204,7 +202,7 @@ public class ConvertNumberTag extends AbstractConverterTag {
     protected Converter createConverter() throws JspException {
 
         NumberConverter result = (NumberConverter) super.createConverter();
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         result.setCurrencyCode(currencyCode);

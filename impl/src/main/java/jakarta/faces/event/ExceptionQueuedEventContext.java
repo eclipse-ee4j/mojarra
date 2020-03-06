@@ -17,21 +17,13 @@
 package jakarta.faces.event;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.faces.event.ExceptionQueuedEvent;
-import jakarta.faces.event.ExceptionQueuedEventContext;
-import jakarta.faces.event.PhaseId;
-import jakarta.faces.event.SystemEvent;
-import jakarta.faces.event.SystemEventListener;
-import jakarta.faces.event.SystemEventListenerHolder;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-
-import java.util.Collections;
 
 /**
  * <p class="changed_added_2_0">
@@ -95,7 +87,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      * @param thrown the <code>Throwable</code> that is the context for this <code>ExceptionQueuedEventContext</code>
      * instance.
      * @param component the {@link UIComponent} instance to which this <code>ExceptionQueuedEventContext</code> pertains
-     * 
+     *
      */
     public ExceptionQueuedEventContext(FacesContext context, Throwable thrown, UIComponent component) {
 
@@ -110,7 +102,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      * </p>
      *
      * @param context {@link FacesContext} for the current request
-     * 
+     *
      * @param thrown the <code>Throwable</code> that is the context for this <code>ExceptionQueuedEventContext</code>
      * instance.
      *
@@ -123,7 +115,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
         this.context = context;
         this.thrown = thrown;
         this.component = component;
-        this.phaseId = ((phaseId == null) ? context.getCurrentPhaseId() : phaseId);
+        this.phaseId = phaseId == null ? context.getCurrentPhaseId() : phaseId;
 
     }
 
@@ -133,7 +125,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      * <p class="changed_added_2_0">
      * The {@link FacesContext} for this request.
      * </p>
-     * 
+     *
      * @return the {@link FacesContext} used to create this <code>ExceptionQueuedEventContext</code> instance.
      */
     public FacesContext getContext() {
@@ -165,7 +157,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      */
     public UIComponent getComponent() {
 
-        return this.component;
+        return component;
 
     }
 
@@ -179,7 +171,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      */
     public PhaseId getPhaseId() {
 
-        return this.phaseId;
+        return phaseId;
 
     }
 
@@ -241,7 +233,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
 
     private boolean isAttributeDefined(String key) {
 
-        return ((attributes != null) && attributes.containsKey(key));
+        return attributes != null && attributes.containsKey(key);
 
     }
 

@@ -45,7 +45,7 @@ public class HiddenRenderer extends HtmlBasicInputRenderer {
     protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);

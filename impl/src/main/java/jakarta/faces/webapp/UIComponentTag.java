@@ -16,14 +16,13 @@
 
 package jakarta.faces.webapp;
 
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.PageContext;
-import jakarta.servlet.jsp.tagext.Tag;
-
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.ValueBinding;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * <p>
@@ -41,6 +40,7 @@ import jakarta.faces.el.ValueBinding;
  * part of Jakarta Server Pages 2.1.
  */
 
+@Deprecated
 public abstract class UIComponentTag extends UIComponentClassicTagBase implements Tag {
 
     // ------------------------------------------------------------- Properties
@@ -106,7 +106,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
 
     protected boolean isSuppressed() {
 
-        return (suppressed);
+        return suppressed;
 
     }
 
@@ -129,7 +129,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
             throw new NullPointerException();
         }
         int start = value.indexOf("#{");
-        if ((start != -1) && (start < value.indexOf('}', start))) {
+        if (start != -1 && start < value.indexOf('}', start)) {
             return true;
         }
         return false;
@@ -146,9 +146,9 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
     @Override
     public void release() {
 
-        this.suppressed = false;
-        this.binding = null;
-        this.rendered = null;
+        suppressed = false;
+        binding = null;
+        rendered = null;
         super.release();
     }
 
@@ -179,7 +179,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
      * <p>
      * Implement <code>createComponent</code> using Faces 1.1 EL API.
      * </p>
-     * 
+     *
      * @param context {@inheritDoc}
      * @param newId {@inheritDoc}
      */
@@ -218,7 +218,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
         if (!(result instanceof UIComponentTag)) {
             return new UIComponentTagAdapter(result);
         }
-        return ((UIComponentTag) result);
+        return (UIComponentTag) result;
 
     }
 

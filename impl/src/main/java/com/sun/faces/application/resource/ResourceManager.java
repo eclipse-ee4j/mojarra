@@ -127,7 +127,7 @@ public class ResourceManager {
      * @param resourceName the name of the resource
      * @param contentType the content type of the resource. This will be used to determine if the resource is compressable
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
-     * 
+     *
      * @return a {@link ResourceInfo} if a resource if found matching the provided arguments, otherwise, return
      * <code>null</code>
      */
@@ -281,7 +281,7 @@ public class ResourceManager {
         }
 
         String resName = trimLeadingSlash(resourceName);
-        if (nameContainsForbiddenSequence(resName) || (!isViewResource && resName.startsWith("WEB-INF"))) {
+        if (nameContainsForbiddenSequence(resName) || !isViewResource && resName.startsWith("WEB-INF")) {
             return null;
         }
 
@@ -375,7 +375,7 @@ public class ResourceManager {
 
     /**
      * Adds the the specified {@link ResourceInfo} to the cache.
-     * 
+     *
      * @param info the @{link ResourceInfo} to add.
      * @param contracts the contracts
      */
@@ -488,7 +488,7 @@ public class ResourceManager {
             }
         }
         FacesContext context = FacesContext.getCurrentInstance();
-        LibraryInfo info = this.findLibrary(libraryName, null, null, context);
+        LibraryInfo info = findLibrary(libraryName, null, null, context);
         ResourceInfo resourceInfo = this.findResource(info, resourceName, libraryName, true, false, context);
 
         return resourceInfo;
@@ -630,7 +630,7 @@ public class ResourceManager {
      */
     private boolean isPatternValid(String input) {
 
-        return (CONFIG_MIMETYPE_PATTERN.matcher(input).matches());
+        return CONFIG_MIMETYPE_PATTERN.matcher(input).matches();
 
     }
 

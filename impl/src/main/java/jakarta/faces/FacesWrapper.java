@@ -40,6 +40,6 @@ public interface FacesWrapper<T> {
      * @return the wrapped instance.
      * @since 2.0
      */
-    public T getWrapped();
+    T getWrapped();
 
 }

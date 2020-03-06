@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
 /**
@@ -66,7 +65,7 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 
@@ -348,12 +347,12 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
     }
 
     private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
+        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
             if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
                 setAttributes = new ArrayList<>(6);
-                this.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
+                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }
         }
         if (setAttributes != null) {

@@ -14,19 +14,19 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-// ViewHandlerResponseWrapper.java 
+// ViewHandlerResponseWrapper.java
 
 package com.sun.faces.application;
-
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  * <p>
@@ -75,11 +75,11 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public boolean isBytes() {
-        return (null != basos);
+        return null != basos;
     }
 
     public boolean isChars() {
-        return (null != caw);
+        return null != caw;
     }
 
     public byte[] getBytes() {
@@ -110,7 +110,7 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public void flushContentToWrappedResponse() throws IOException {
-        ServletResponse wrapped = this.getResponse();
+        ServletResponse wrapped = getResponse();
         if (null != caw) {
             pw.flush();
             caw.writeTo(wrapped.getWriter());
@@ -148,7 +148,7 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        if (pw != null && (!pw.isComitted() && !isCommitted())) {
+        if (pw != null && !pw.isComitted() && !isCommitted()) {
             throw new IllegalStateException();
         } else if (pw != null && (pw.isComitted() || isCommitted())) {
             return ByteArrayWebOutputStream.NOOP_STREAM;
@@ -161,7 +161,7 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        if (basos != null && (!basos.isCommitted() && !isCommitted())) {
+        if (basos != null && !basos.isCommitted() && !isCommitted()) {
             throw new IllegalStateException();
         } else if (basos != null && (basos.isCommitted() || isCommitted())) {
             return new WebPrintWriter(WebPrintWriter.NOOP_WRITER);

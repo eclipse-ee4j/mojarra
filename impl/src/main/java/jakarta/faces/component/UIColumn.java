@@ -16,11 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIColumn;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIData;
-
 /**
  * <p>
  * <strong>UIColumn</strong> is a {@link UIComponent} that represents a single column of data within a parent
@@ -61,7 +56,7 @@ public class UIColumn extends UIComponentBase {
 
     /**
      * Get the component family.
-     * 
+     *
      * @return the component family.
      */
     @Override
@@ -73,7 +68,7 @@ public class UIColumn extends UIComponentBase {
      * <p>
      * Return the footer facet of the column (if any). A convenience method for <code>getFacet("footer")</code>.
      * </p>
-     * 
+     *
      * @return the footer component.
      */
     public UIComponent getFooter() {
@@ -84,9 +79,9 @@ public class UIColumn extends UIComponentBase {
      * <p>
      * Set the footer facet of the column. A convenience method for <code>getFacets().put("footer", footer)</code>.
      * </p>
-     * 
+     *
      * @param footer the new footer facet
-     * 
+     *
      * @throws NullPointerException if <code>footer</code> is <code>null</code>
      */
     public void setFooter(UIComponent footer) {
@@ -97,7 +92,7 @@ public class UIColumn extends UIComponentBase {
      * <p>
      * Return the header facet of the column (if any). A convenience method for <code>getFacet("header")</code>.
      * </p>
-     * 
+     *
      * @return the header component.
      */
     public UIComponent getHeader() {
@@ -108,9 +103,9 @@ public class UIColumn extends UIComponentBase {
      * <p>
      * Set the header facet of the column. A convenience method for <code>getFacets().put("header", header)</code>.
      * </p>
-     * 
+     *
      * @param header the new header facet
-     * 
+     *
      * @throws NullPointerException if <code>header</code> is <code>null</code>
      */
     public void setHeader(UIComponent header) {

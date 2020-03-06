@@ -16,18 +16,21 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.el.ELText;
-
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ELException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import com.sun.faces.facelets.el.ELText;
+
+import jakarta.el.ELException;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -52,26 +55,26 @@ final class TextUnit extends CompilationUnit {
     public TextUnit(String alias, String id) {
         this.alias = alias;
         this.id = id;
-        this.buffer = new StringBuffer();
-        this.textBuffer = new StringBuffer();
-        this.instructionBuffer = new ArrayList();
-        this.tags = new Stack();
-        this.children = new ArrayList();
-        this.startTagOpen = false;
+        buffer = new StringBuffer();
+        textBuffer = new StringBuffer();
+        instructionBuffer = new ArrayList();
+        tags = new Stack();
+        children = new ArrayList();
+        startTagOpen = false;
     }
 
     @Override
     public FaceletHandler createFaceletHandler() {
-        this.flushBufferToConfig(true);
+        flushBufferToConfig(true);
 
-        if (this.children.size() == 0) {
+        if (children.size() == 0) {
             return LEAF;
         }
 
-        FaceletHandler[] h = new FaceletHandler[this.children.size()];
+        FaceletHandler[] h = new FaceletHandler[children.size()];
         Object obj;
         for (int i = 0; i < h.length; i++) {
-            obj = this.children.get(i);
+            obj = children.get(i);
             if (obj instanceof FaceletHandler) {
                 h[i] = (FaceletHandler) obj;
             } else {
@@ -85,13 +88,13 @@ final class TextUnit extends CompilationUnit {
     }
 
     private void addInstruction(Instruction instruction) {
-        this.flushTextBuffer(false);
-        this.instructionBuffer.add(instruction);
+        flushTextBuffer(false);
+        instructionBuffer.add(instruction);
     }
 
     private void flushTextBuffer(boolean child) {
-        if (this.textBuffer.length() > 0) {
-            String s = this.textBuffer.toString();
+        if (textBuffer.length() > 0) {
+            String s = textBuffer.toString();
 
             if (child) {
                 s = trimRight(s);
@@ -100,100 +103,100 @@ final class TextUnit extends CompilationUnit {
                 ELText txt = ELText.parse(s, alias);
                 if (txt != null) {
                     if (txt.isLiteral()) {
-                        this.instructionBuffer.add(new LiteralTextInstruction(txt.toString()));
+                        instructionBuffer.add(new LiteralTextInstruction(txt.toString()));
                     } else {
-                        this.instructionBuffer.add(new TextInstruction(this.alias, txt));
+                        instructionBuffer.add(new TextInstruction(alias, txt));
                     }
                 }
             }
 
         }
-        this.textBuffer.setLength(0);
+        textBuffer.setLength(0);
     }
 
     public void write(String text) {
-        this.finishStartTag();
-        this.textBuffer.append(text);
-        this.buffer.append(text);
+        finishStartTag();
+        textBuffer.append(text);
+        buffer.append(text);
     }
 
     public void writeInstruction(String text) {
-        this.finishStartTag();
+        finishStartTag();
         ELText el = ELText.parse(text);
         if (el.isLiteral()) {
-            this.addInstruction(new LiteralXMLInstruction(text));
+            addInstruction(new LiteralXMLInstruction(text));
         } else {
-            this.addInstruction(new XMLInstruction(el));
+            addInstruction(new XMLInstruction(el));
         }
-        this.buffer.append(text);
+        buffer.append(text);
     }
 
     public void writeComment(String text) {
-        this.finishStartTag();
+        finishStartTag();
 
         ELText el = ELText.parse(text);
         if (el.isLiteral()) {
-            this.addInstruction(new LiteralCommentInstruction(text));
+            addInstruction(new LiteralCommentInstruction(text));
         } else {
-            this.addInstruction(new CommentInstruction(el));
+            addInstruction(new CommentInstruction(el));
         }
 
-        this.buffer.append("<!--" + text + "-->");
+        buffer.append("<!--" + text + "-->");
     }
 
     public void startTag(Tag tag) {
 
         // finish any previously written tags
-        this.finishStartTag();
+        finishStartTag();
 
         // push this tag onto the stack
-        this.tags.push(tag);
+        tags.push(tag);
 
         // write it out
-        this.buffer.append('<');
-        this.buffer.append(tag.getQName());
+        buffer.append('<');
+        buffer.append(tag.getQName());
 
-        this.addInstruction(new StartElementInstruction(tag.getQName()));
+        addInstruction(new StartElementInstruction(tag.getQName()));
 
         TagAttribute[] attrs = tag.getAttributes().getAll();
         if (attrs.length > 0) {
             for (int i = 0; i < attrs.length; i++) {
                 String qname = attrs[i].getQName();
                 String value = attrs[i].getValue();
-                this.buffer.append(' ').append(qname).append("=\"").append(value).append("\"");
+                buffer.append(' ').append(qname).append("=\"").append(value).append("\"");
 
                 ELText txt = ELText.parse(value);
                 if (txt != null) {
                     if (txt.isLiteral()) {
-                        this.addInstruction(new LiteralAttributeInstruction(qname, txt.toString()));
+                        addInstruction(new LiteralAttributeInstruction(qname, txt.toString()));
                     } else {
-                        this.addInstruction(new AttributeInstruction(this.alias, qname, txt));
+                        addInstruction(new AttributeInstruction(alias, qname, txt));
                     }
                 }
             }
         }
 
         // notify that we have an open tag
-        this.startTagOpen = true;
+        startTagOpen = true;
     }
 
     private void finishStartTag() {
-        if (this.tags.size() > 0 && this.startTagOpen) {
-            this.buffer.append(">");
-            this.startTagOpen = false;
+        if (tags.size() > 0 && startTagOpen) {
+            buffer.append(">");
+            startTagOpen = false;
         }
     }
 
     public void endTag() {
-        Tag tag = (Tag) this.tags.pop();
+        Tag tag = (Tag) tags.pop();
 
-        this.addInstruction(new EndElementInstruction(tag.getQName()));
+        addInstruction(new EndElementInstruction(tag.getQName()));
 
-        if (this.startTagOpen) {
-            this.buffer.append("/>");
-            this.startTagOpen = false;
+        if (startTagOpen) {
+            buffer.append("/>");
+            startTagOpen = false;
         } else {
-            this.buffer.append("</").append(tag.getQName()).append('>');
+            buffer.append("</").append(tag.getQName()).append('>');
         }
     }
 
@@ -201,9 +204,9 @@ final class TextUnit extends CompilationUnit {
     public void addChild(CompilationUnit unit) {
         // if we are adding some other kind of unit
         // then we need to capture our buffer into a UITextHandler
-        this.finishStartTag();
-        this.flushBufferToConfig(true);
-        this.children.add(unit);
+        finishStartTag();
+        flushBufferToConfig(true);
+        children.add(unit);
     }
 
     protected void flushBufferToConfig(boolean child) {
@@ -211,26 +214,27 @@ final class TextUnit extends CompilationUnit {
 //        // NEW IMPLEMENTATION
 //        if (true) {
 
-        this.flushTextBuffer(child);
+        flushTextBuffer(child);
 
-        int size = this.instructionBuffer.size();
+        int size = instructionBuffer.size();
         if (size > 0) {
             try {
-                String s = this.buffer.toString();
-                if (child)
+                String s = buffer.toString();
+                if (child) {
                     s = trimRight(s);
+                }
                 ELText txt = ELText.parse(s);
                 if (txt != null) {
-                    Instruction[] instructions = (Instruction[]) this.instructionBuffer.toArray(new Instruction[size]);
-                    this.children.add(new UIInstructionHandler(this.alias, this.id, instructions, txt));
-                    this.instructionBuffer.clear();
+                    Instruction[] instructions = (Instruction[]) instructionBuffer.toArray(new Instruction[size]);
+                    children.add(new UIInstructionHandler(alias, id, instructions, txt));
+                    instructionBuffer.clear();
                 }
 
             } catch (ELException e) {
-                if (this.tags.size() > 0) {
-                    throw new TagException((Tag) this.tags.peek(), e.getMessage());
+                if (tags.size() > 0) {
+                    throw new TagException((Tag) tags.peek(), e.getMessage());
                 } else {
-                    throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
+                    throw new ELException(alias + ": " + e.getMessage(), e.getCause());
                 }
             }
         }
@@ -268,11 +272,11 @@ final class TextUnit extends CompilationUnit {
 //        }
 
         // ALWAYS CLEAR FOR BOTH IMPL
-        this.buffer.setLength(0);
+        buffer.setLength(0);
     }
 
     public boolean isClosed() {
-        return this.tags.empty();
+        return tags.empty();
     }
 
     private static String trimRight(String s) {
@@ -289,6 +293,6 @@ final class TextUnit extends CompilationUnit {
 
     @Override
     public String toString() {
-        return "TextUnit[" + this.children.size() + "]";
+        return "TextUnit[" + children.size() + "]";
     }
 }

@@ -26,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
@@ -36,6 +35,7 @@ import org.xml.sax.InputSource;
 
 import com.sun.faces.cdi.CdiExtension;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 
@@ -45,7 +45,7 @@ public class Version {
 
     /**
      * Are we running in JSF 2.3
-     * 
+     *
      * @return true if we are, false otherwise.
      */
     public boolean isJsf23() {

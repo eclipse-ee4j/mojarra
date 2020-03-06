@@ -16,10 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.ComponentSystemEvent;
-import jakarta.faces.event.ComponentSystemEventListener;
-import jakarta.faces.event.SystemEventListener;
-
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
@@ -30,7 +26,7 @@ import jakarta.faces.context.FacesContext;
  * {@link ComponentSystemEventListener#processEvent}, the listener implementation may assume that the
  * <code>source</code> of this event instance is the {@link UIViewRoot} instance that is about to be rendered.
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
  *
  * <p>
@@ -52,14 +48,14 @@ public class PreRenderViewEvent extends ComponentSystemEvent {
     private static final long serialVersionUID = -781238104491250220L;
 
     /**
-     * 
+     *
      * <p class="changed_added_2_0">
      * Instantiate a new <code>PreRenderViewEvent</code> that indicates the argument <code>root</code> is about to be
      * rendered.
      * </p>
-     * 
+     *
      * @param root the <code>UIViewRoot</code> that is about to be rendered.
-     * 
+     *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PreRenderViewEvent(UIViewRoot root) {
@@ -71,7 +67,7 @@ public class PreRenderViewEvent extends ComponentSystemEvent {
      * Instantiate a new <code>PreRenderViewEvent</code> that indicates the argument <code>root</code> is about to be
      * rendered.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param root the <code>UIViewRoot</code> that is about to be rendered.
      * @throws IllegalArgumentException if the argument is <code>null</code>.

@@ -16,19 +16,22 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
 import java.beans.BeanDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 public class DeclareFacetHandler extends TagHandlerImpl {
 
@@ -40,7 +43,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
 
     public DeclareFacetHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
+        name = getRequiredAttribute("name");
 
     }
 
@@ -48,7 +51,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
-        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || null == (parent = parent.getParent()) || !ComponentHandler.isNew(parent)) {
             return;
         }
 
@@ -76,7 +79,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
         }
         facetDescriptors.put(strValue, propertyDescriptor);
 
-        for (TagAttribute tagAttribute : this.tag.getAttributes().getAll()) {
+        for (TagAttribute tagAttribute : tag.getAttributes().getAll()) {
             String attributeName = tagAttribute.getLocalName();
             PropertyHandler handler = ATTRIBUTE_MANAGER.getHandler(ctx, attributeName);
             if (handler != null) {
@@ -85,7 +88,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
 
         }
 
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
 
     }
 

@@ -16,18 +16,6 @@
 
 package com.sun.faces.flow;
 
-import com.sun.faces.application.NavigationHandlerImpl;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.application.ConfigurableNavigationHandler;
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.flow.Flow;
-import jakarta.faces.flow.FlowCallNode;
-import jakarta.faces.flow.FlowHandler;
-import jakarta.faces.flow.Parameter;
-
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayDeque;
@@ -37,9 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.sun.faces.application.NavigationHandlerImpl;
+import com.sun.faces.util.Util;
+
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.Parameter;
 
 public class FlowHandlerImpl extends FlowHandler {
 
@@ -264,7 +264,7 @@ public class FlowHandlerImpl extends FlowHandler {
             ValueExpression toSet;
             for (Map.Entry<String, Object> curOutbound : evaluatedParams.entrySet()) {
                 curName = curOutbound.getKey();
-                assert (inboundParameters.containsKey(curName));
+                assert inboundParameters.containsKey(curName);
                 toSet = inboundParameters.get(curName).getValue();
                 toSet.setValue(elContext, curOutbound.getValue());
             }
@@ -303,7 +303,7 @@ public class FlowHandlerImpl extends FlowHandler {
     private void performPops(FacesContext context, Flow sourceFlow, Flow targetFlow) {
         // case 0: sourceFlow is null. There must be nothing to pop.
         if (null == sourceFlow) {
-            assert (null == peekFlow(context));
+            assert null == peekFlow(context);
             return;
         }
 
@@ -337,13 +337,13 @@ public class FlowHandlerImpl extends FlowHandler {
     /*
      * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both
      * operands may be null.
-     * 
+     *
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
         boolean result = false;
         if (flow1 == flow2) {
             result = true;
-        } else if ((null == flow1) || (null == flow2)) {
+        } else if (null == flow1 || null == flow2) {
             result = false;
         } else {
             result = flow1.equals(flow2);
@@ -532,10 +532,10 @@ public class FlowHandlerImpl extends FlowHandler {
             FacesContext context = FacesContext.getCurrentInstance();
             Map<Object, Object> attrs = context.getAttributes();
             if (!attrs.containsKey(FLOW_RETURN_DEPTH_PARAM_NAME)) {
-                attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, (Integer) 1);
+                attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, 1);
             } else {
                 Integer cur = (Integer) attrs.get(FLOW_RETURN_DEPTH_PARAM_NAME);
-                attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, (Integer) cur + 1);
+                attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, cur + 1);
             }
 
         }
@@ -548,7 +548,7 @@ public class FlowHandlerImpl extends FlowHandler {
                 Integer cur = (Integer) attrs.get(FLOW_RETURN_DEPTH_PARAM_NAME);
 
                 if (cur > 1) {
-                    attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, (Integer) cur - 1);
+                    attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, cur - 1);
                 } else {
                     attrs.remove(FLOW_RETURN_DEPTH_PARAM_NAME);
                 }

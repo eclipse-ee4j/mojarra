@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import jakarta.el.ValueExpression;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 
@@ -57,7 +57,7 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
 
         @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 
@@ -67,9 +67,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: Access key that, when pressed, transfers focus to this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getAccesskey() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.accesskey);
@@ -80,9 +80,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>accesskey</code> property.
      * </p>
-     * 
+     *
      * @param accesskey the new property value
-     * 
+     *
      */
     public void setAccesskey(java.lang.String accesskey) {
         getStateHelper().put(PropertyKeys.accesskey, accesskey);
@@ -95,9 +95,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: Alternate textual description of the element rendered by this component.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getAlt() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.alt);
@@ -108,9 +108,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>alt</code> property.
      * </p>
-     * 
+     *
      * @param alt the new property value
-     * 
+     *
      */
     public void setAlt(java.lang.String alt) {
         getStateHelper().put(PropertyKeys.alt, alt);
@@ -126,9 +126,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * the browser should disable its autocomplete feature for this component. This is useful for components that perform
      * autocompletion and do not want the browser interfering. If this attribute is not set or the value is "on", render
      * nothing.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getAutocomplete() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.autocomplete);
@@ -139,9 +139,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>autocomplete</code> property.
      * </p>
-     * 
+     *
      * @param autocomplete the new property value
-     * 
+     *
      */
     public void setAutocomplete(java.lang.String autocomplete) {
         getStateHelper().put(PropertyKeys.autocomplete, autocomplete);
@@ -155,9 +155,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
      * and "RTL" (right-to-left). These attributes are case sensitive when rendering to XHTML, so care must be taken to have
      * the correct case.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getDir() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.dir);
@@ -168,9 +168,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>dir</code> property.
      * </p>
-     * 
+     *
      * @param dir the new property value
-     * 
+     *
      */
     public void setDir(java.lang.String dir) {
         getStateHelper().put(PropertyKeys.dir, dir);
@@ -185,9 +185,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * Contents: Flag indicating that this element must never receive focus or be included in a subsequent submit. A value
      * of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as
      * disabled="disabled".
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public boolean isDisabled() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.disabled, false);
@@ -198,9 +198,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>disabled</code> property.
      * </p>
-     * 
+     *
      * @param disabled the new property value
-     * 
+     *
      */
     public void setDisabled(boolean disabled) {
         getStateHelper().put(PropertyKeys.disabled, disabled);
@@ -212,9 +212,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: A localized user presentable name for this component.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getLabel() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.label);
@@ -225,9 +225,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>label</code> property.
      * </p>
-     * 
+     *
      * @param label the new property value
-     * 
+     *
      */
     public void setLabel(java.lang.String label) {
         getStateHelper().put(PropertyKeys.label, label);
@@ -239,9 +239,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: Code describing the language used in the generated markup for this component.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getLang() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.lang);
@@ -252,9 +252,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>lang</code> property.
      * </p>
-     * 
+     *
      * @param lang the new property value
-     * 
+     *
      */
     public void setLang(java.lang.String lang) {
         getStateHelper().put(PropertyKeys.lang, lang);
@@ -267,9 +267,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: The maximum number of characters that may be entered in this field.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public int getMaxlength() {
         return (java.lang.Integer) getStateHelper().eval(PropertyKeys.maxlength, Integer.MIN_VALUE);
@@ -280,9 +280,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>maxlength</code> property.
      * </p>
-     * 
+     *
      * @param maxlength the new property value
-     * 
+     *
      */
     public void setMaxlength(int maxlength) {
         getStateHelper().put(PropertyKeys.maxlength, maxlength);
@@ -295,9 +295,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when this element loses focus.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnblur() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onblur);
@@ -308,9 +308,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onblur</code> property.
      * </p>
-     * 
+     *
      * @param onblur the new property value
-     * 
+     *
      */
     public void setOnblur(java.lang.String onblur) {
         getStateHelper().put(PropertyKeys.onblur, onblur);
@@ -323,9 +323,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when this element loses focus and its value has been modified since gaining focus.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnchange() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onchange);
@@ -336,9 +336,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onchange</code> property.
      * </p>
-     * 
+     *
      * @param onchange the new property value
-     * 
+     *
      */
     public void setOnchange(java.lang.String onchange) {
         getStateHelper().put(PropertyKeys.onchange, onchange);
@@ -350,9 +350,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a pointer button is clicked over this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onclick);
@@ -363,9 +363,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onclick</code> property.
      * </p>
-     * 
+     *
      * @param onclick the new property value
-     * 
+     *
      */
     public void setOnclick(java.lang.String onclick) {
         getStateHelper().put(PropertyKeys.onclick, onclick);
@@ -378,9 +378,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a pointer button is double clicked over this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOndblclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.ondblclick);
@@ -391,9 +391,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>ondblclick</code> property.
      * </p>
-     * 
+     *
      * @param ondblclick the new property value
-     * 
+     *
      */
     public void setOndblclick(java.lang.String ondblclick) {
         getStateHelper().put(PropertyKeys.ondblclick, ondblclick);
@@ -406,9 +406,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when this element receives focus.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnfocus() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onfocus);
@@ -419,9 +419,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onfocus</code> property.
      * </p>
-     * 
+     *
      * @param onfocus the new property value
-     * 
+     *
      */
     public void setOnfocus(java.lang.String onfocus) {
         getStateHelper().put(PropertyKeys.onfocus, onfocus);
@@ -434,9 +434,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a key is pressed down over this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnkeydown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeydown);
@@ -447,9 +447,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onkeydown</code> property.
      * </p>
-     * 
+     *
      * @param onkeydown the new property value
-     * 
+     *
      */
     public void setOnkeydown(java.lang.String onkeydown) {
         getStateHelper().put(PropertyKeys.onkeydown, onkeydown);
@@ -462,9 +462,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a key is pressed and released over this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnkeypress() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeypress);
@@ -475,9 +475,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onkeypress</code> property.
      * </p>
-     * 
+     *
      * @param onkeypress the new property value
-     * 
+     *
      */
     public void setOnkeypress(java.lang.String onkeypress) {
         getStateHelper().put(PropertyKeys.onkeypress, onkeypress);
@@ -490,9 +490,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a key is released over this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnkeyup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeyup);
@@ -503,9 +503,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onkeyup</code> property.
      * </p>
-     * 
+     *
      * @param onkeyup the new property value
-     * 
+     *
      */
     public void setOnkeyup(java.lang.String onkeyup) {
         getStateHelper().put(PropertyKeys.onkeyup, onkeyup);
@@ -518,9 +518,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a pointer button is pressed down over this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnmousedown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousedown);
@@ -531,9 +531,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onmousedown</code> property.
      * </p>
-     * 
+     *
      * @param onmousedown the new property value
-     * 
+     *
      */
     public void setOnmousedown(java.lang.String onmousedown) {
         getStateHelper().put(PropertyKeys.onmousedown, onmousedown);
@@ -546,9 +546,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a pointer button is moved within this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnmousemove() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousemove);
@@ -559,9 +559,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onmousemove</code> property.
      * </p>
-     * 
+     *
      * @param onmousemove the new property value
-     * 
+     *
      */
     public void setOnmousemove(java.lang.String onmousemove) {
         getStateHelper().put(PropertyKeys.onmousemove, onmousemove);
@@ -574,9 +574,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a pointer button is moved away from this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnmouseout() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseout);
@@ -587,9 +587,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onmouseout</code> property.
      * </p>
-     * 
+     *
      * @param onmouseout the new property value
-     * 
+     *
      */
     public void setOnmouseout(java.lang.String onmouseout) {
         getStateHelper().put(PropertyKeys.onmouseout, onmouseout);
@@ -602,9 +602,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a pointer button is moved onto this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnmouseover() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseover);
@@ -615,9 +615,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onmouseover</code> property.
      * </p>
-     * 
+     *
      * @param onmouseover the new property value
-     * 
+     *
      */
     public void setOnmouseover(java.lang.String onmouseover) {
         getStateHelper().put(PropertyKeys.onmouseover, onmouseover);
@@ -630,9 +630,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when a pointer button is released over this element.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnmouseup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseup);
@@ -643,9 +643,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onmouseup</code> property.
      * </p>
-     * 
+     *
      * @param onmouseup the new property value
-     * 
+     *
      */
     public void setOnmouseup(java.lang.String onmouseup) {
         getStateHelper().put(PropertyKeys.onmouseup, onmouseup);
@@ -658,9 +658,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: JavaScript code executed when text within this element is selected by the user.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getOnselect() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onselect);
@@ -671,9 +671,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>onselect</code> property.
      * </p>
-     * 
+     *
      * @param onselect the new property value
-     * 
+     *
      */
     public void setOnselect(java.lang.String onselect) {
         getStateHelper().put(PropertyKeys.onselect, onselect);
@@ -688,9 +688,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * Contents: Flag indicating that this component will prohibit changes by the user. The element may receive focus unless
      * it has also been disabled. A value of false causes no attribute to be rendered, while a value of true causes the
      * attribute to be rendered as readonly="readonly".
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public boolean isReadonly() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.readonly, false);
@@ -701,9 +701,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>readonly</code> property.
      * </p>
-     * 
+     *
      * @param readonly the new property value
-     * 
+     *
      */
     public void setReadonly(boolean readonly) {
         getStateHelper().put(PropertyKeys.readonly, readonly);
@@ -722,14 +722,14 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * Expression Language Expression that evaluates to, a set of space-separated tokens representing the various WAI-ARIA
      * roles that the element belongs to.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
      * of this attribute.
      * </p>
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getRole() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.role);
@@ -740,9 +740,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>role</code> property.
      * </p>
-     * 
+     *
      * @param role the new property value
-     * 
+     *
      */
     public void setRole(java.lang.String role) {
         getStateHelper().put(PropertyKeys.role, role);
@@ -755,9 +755,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: The number of characters used to determine the width of this field.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public int getSize() {
         return (java.lang.Integer) getStateHelper().eval(PropertyKeys.size, Integer.MIN_VALUE);
@@ -768,9 +768,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>size</code> property.
      * </p>
-     * 
+     *
      * @param size the new property value
-     * 
+     *
      */
     public void setSize(int size) {
         getStateHelper().put(PropertyKeys.size, size);
@@ -783,9 +783,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: CSS style(s) to be applied when this component is rendered.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getStyle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.style);
@@ -796,9 +796,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @param style the new property value
-     * 
+     *
      */
     public void setStyle(java.lang.String style) {
         getStateHelper().put(PropertyKeys.style, style);
@@ -812,9 +812,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
      * passed through as the "class" attribute on generated markup.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getStyleClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.styleClass);
@@ -825,9 +825,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @param styleClass the new property value
-     * 
+     *
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
@@ -840,9 +840,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Contents: Position of this element in the tabbing order for the current document. This value must be an integer
      * between 0 and 32767.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getTabindex() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.tabindex);
@@ -853,9 +853,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>tabindex</code> property.
      * </p>
-     * 
+     *
      * @param tabindex the new property value
-     * 
+     *
      */
     public void setTabindex(java.lang.String tabindex) {
         getStateHelper().put(PropertyKeys.tabindex, tabindex);
@@ -868,9 +868,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * </p>
      * <p>
      * Contents: Advisory title information about markup elements generated for this component.
-     * 
+     *
      * @return the value of the property
-     * 
+     *
      */
     public java.lang.String getTitle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.title);
@@ -881,9 +881,9 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * <p>
      * Set the value of the <code>title</code> property.
      * </p>
-     * 
+     *
      * @param title the new property value
-     * 
+     *
      */
     public void setTitle(java.lang.String title) {
         getStateHelper().put(PropertyKeys.title, title);
@@ -904,12 +904,12 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
     }
 
     private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
+        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
             if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<String>(6);
-                this.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
+                setAttributes = new ArrayList<>(6);
+                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }
         }
         if (setAttributes != null) {
@@ -927,7 +927,7 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
     @Override
     public Object saveState(FacesContext context) {
         Object result;
-        this.resetValue();
+        resetValue();
         result = super.saveState(context);
 
         return result;

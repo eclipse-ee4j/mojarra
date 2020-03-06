@@ -16,16 +16,15 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
-
-import jakarta.el.ValueExpression;
-
-import java.io.IOException;
 
 /**
  * @author Jacob Hookom
@@ -41,19 +40,19 @@ public class ParamHandler extends TagHandlerImpl {
      */
     public ParamHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.value = this.getRequiredAttribute("value");
+        name = getRequiredAttribute("name");
+        value = getRequiredAttribute("value");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        String nameStr = this.name.getValue(ctx);
-        ValueExpression valueVE = this.value.getValueExpression(ctx, Object.class);
+        String nameStr = name.getValue(ctx);
+        ValueExpression valueVE = value.getValueExpression(ctx, Object.class);
         ctx.getVariableMapper().setVariable(nameStr, valueVE);
     }
 

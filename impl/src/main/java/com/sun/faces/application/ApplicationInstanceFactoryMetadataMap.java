@@ -28,7 +28,7 @@ public class ApplicationInstanceFactoryMetadataMap<K, V> extends MetadataWrapper
 
     public enum METADATA {
         hasAnnotations
-    };
+    }
 
     public ApplicationInstanceFactoryMetadataMap(Map<String, Object> toWrap) {
         super(toWrap);

@@ -57,10 +57,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-import jakarta.enterprise.inject.spi.BeanManager;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ConverterPropertyEditorFactory;
 import com.sun.faces.application.ViewMemberInstanceFactoryMetadataMap;
@@ -71,6 +67,9 @@ import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.Resource;
@@ -149,7 +148,7 @@ public class InstanceFactory {
     private BeanManager beanManager;
 
     public InstanceFactory(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
         version = new Version();
 
         componentMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
@@ -709,7 +708,7 @@ public class InstanceFactory {
                 c = this.createComponentApplyAnnotations(ctx, componentType, rendererType, applyAnnotations);
                 componentExpression.setValue(ctx.getELContext(), c);
             } else if (applyAnnotations) {
-                this.applyAnnotations(ctx, rendererType, c);
+                applyAnnotations(ctx, rendererType, c);
             }
         } catch (Exception ex) {
             throw new FacesException(ex);
@@ -903,7 +902,7 @@ public class InstanceFactory {
 
     /**
      * Helper method to convert a value to a type as defined in PropertyDescriptor(s)
-     * 
+     *
      * @param name
      * @param value
      * @param propertyDescriptors
@@ -925,7 +924,7 @@ public class InstanceFactory {
      * To enable EL Coercion to use JSF Custom converters, this method will call
      * <code>PropertyEditorManager.registerEditor()</code>, passing the <code>ConverterPropertyEditor</code> class for the
      * <code>targetClass</code> if the target class is not one of the standard by-type converter target classes.
-     * 
+     *
      * @param targetClass the target class for which a PropertyEditory may or may not be created
      */
     private void addPropertyEditorIfNecessary(Class<?> targetClass) {
@@ -1077,7 +1076,7 @@ public class InstanceFactory {
 
     /**
      * Get the bean manager.
-     * 
+     *
      * @return the bean manager.
      */
     private BeanManager getBeanManager() {

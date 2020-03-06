@@ -17,12 +17,11 @@
 package jakarta.faces.convert;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.Inherited;
 
-import jakarta.faces.convert.Converter;
 import jakarta.inject.Qualifier;
 
 /**
@@ -42,9 +41,9 @@ import jakarta.inject.Qualifier;
  * The implementation must guarantee that all such calls to <code>addConverter()</code> happen during application
  * startup time and before any requests are serviced.
  * </p>
- * 
+ *
  * <div class="changed_added_2_2">
- * 
+ *
  * <p>
  * The preceding text contains an important subtlety which application users should understand. It is not possible to
  * use a single {@code @FacesConverter} annotation to register a single {@code Converter} implementation both in the
@@ -54,15 +53,15 @@ import jakarta.inject.Qualifier;
  * each with a {@code @FacesConverter} annotation. One sub-class has a {@code value} attribute but no {@code forClass}
  * attribute, and the other sub-class has the converse.
  * </p>
- * 
+ *
  * <p>
  * Please see the ViewDeclarationLanguage documentation for {@code
  * <h:selectManyListBox>} for another important subtlety regarding converters and collections.
  * </p>
- * 
+ *
  * </div>
  *
- * 
+ *
  */
 
 @Retention(RetentionPolicy.RUNTIME)

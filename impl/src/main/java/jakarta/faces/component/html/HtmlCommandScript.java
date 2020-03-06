@@ -1,26 +1,26 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the
  * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
  * version 2 with the GNU Classpath Exception, which is available at
  * https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 package jakarta.faces.component.html;
 
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.el.ValueExpression;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UICommand;
 
 /**
@@ -61,8 +61,9 @@ public class HtmlCommandScript extends UICommand {
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 
@@ -70,7 +71,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Return the value of the <code>autorun</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Whether to execute declared JavaScript function during <code>load</code> event of the <code>window</code>.
@@ -85,7 +86,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Set the value of the <code>autorun</code> property.
      * </p>
-     * 
+     *
      * @param autorun the new property value
      */
     public void setAutorun(boolean autorun) {
@@ -96,7 +97,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Return the value of the <code>execute</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: This is a space separated list of client identifiers of components that will participate in the "execute"
@@ -113,7 +114,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Set the value of the <code>execute</code> property.
      * </p>
-     * 
+     *
      * @param execute the new property value
      */
     public void setExecute(java.lang.String execute) {
@@ -124,7 +125,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Return the value of the <code>name</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Name of JavaScript function to be declared, e.g. <code>name="functionName"</code>. This can be a namespaced
@@ -139,7 +140,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Set the value of the <code>name</code> property.
      * </p>
-     * 
+     *
      * @param name the new property value
      */
     public void setName(java.lang.String name) {
@@ -150,7 +151,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Return the value of the <code>onerror</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: The name of the JavaScript function that will handle errors.
@@ -164,7 +165,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Set the value of the <code>onerror</code> property.
      * </p>
-     * 
+     *
      * @param onerror the new property value
      */
     public void setOnerror(java.lang.String onerror) {
@@ -175,7 +176,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Return the value of the <code>onevent</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: The name of the JavaScript function that will handle UI events.
@@ -189,7 +190,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Set the value of the <code>onevent</code> property.
      * </p>
-     * 
+     *
      * @param onevent the new property value
      */
     public void setOnevent(java.lang.String onevent) {
@@ -200,7 +201,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Return the value of the <code>render</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: This is a space separated list of client identifiers of components that will participate in the "render"
@@ -217,7 +218,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Set the value of the <code>render</code> property.
      * </p>
-     * 
+     *
      * @param render the new property value
      */
     public void setRender(java.lang.String render) {
@@ -228,7 +229,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Return the value of the <code>resetValues</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Reset specific input values. Interpret the value of the <code>render</code> attribute as a space separated
@@ -246,7 +247,7 @@ public class HtmlCommandScript extends UICommand {
      * <p>
      * Set the value of the <code>resetValues</code> property.
      * </p>
-     * 
+     *
      * @param resetValues the new property value
      */
     public void setResetValues(java.lang.Boolean resetValues) {
@@ -254,12 +255,12 @@ public class HtmlCommandScript extends UICommand {
     }
 
     private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
+        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
             if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<String>(6);
-                this.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
+                setAttributes = new ArrayList<>(6);
+                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }
         }
         if (setAttributes != null) {

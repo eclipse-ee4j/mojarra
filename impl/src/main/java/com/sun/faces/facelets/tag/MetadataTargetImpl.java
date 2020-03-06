@@ -27,7 +27,7 @@ import java.util.Map;
 import jakarta.faces.view.facelets.MetadataTarget;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -38,17 +38,17 @@ public class MetadataTargetImpl extends MetadataTarget {
 
     public MetadataTargetImpl(Class type) throws IntrospectionException {
         this.type = type;
-        this.pd = new HashMap();
+        pd = new HashMap();
         BeanInfo info = Introspector.getBeanInfo(type);
         PropertyDescriptor[] pda = info.getPropertyDescriptors();
         for (int i = 0; i < pda.length; i++) {
-            this.pd.put(pda[i].getName(), pda[i]);
+            pd.put(pda[i].getName(), pda[i]);
         }
     }
 
     @Override
     public PropertyDescriptor getProperty(String name) {
-        return (PropertyDescriptor) this.pd.get(name);
+        return (PropertyDescriptor) pd.get(name);
     }
 
     @Override
@@ -58,12 +58,12 @@ public class MetadataTargetImpl extends MetadataTarget {
 
     @Override
     public Class getTargetClass() {
-        return this.type;
+        return type;
     }
 
     @Override
     public Class getPropertyType(String name) {
-        PropertyDescriptor pd = this.getProperty(name);
+        PropertyDescriptor pd = getProperty(name);
         if (pd != null) {
             return pd.getPropertyType();
         }
@@ -72,7 +72,7 @@ public class MetadataTargetImpl extends MetadataTarget {
 
     @Override
     public Method getWriteMethod(String name) {
-        PropertyDescriptor pd = this.getProperty(name);
+        PropertyDescriptor pd = getProperty(name);
         if (pd != null) {
             return pd.getWriteMethod();
         }
@@ -81,7 +81,7 @@ public class MetadataTargetImpl extends MetadataTarget {
 
     @Override
     public Method getReadMethod(String name) {
-        PropertyDescriptor pd = this.getProperty(name);
+        PropertyDescriptor pd = getProperty(name);
         if (pd != null) {
             return pd.getReadMethod();
         }

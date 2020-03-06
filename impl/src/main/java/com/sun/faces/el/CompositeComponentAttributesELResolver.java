@@ -16,32 +16,30 @@
 
 package com.sun.faces.el;
 
+import static com.sun.faces.component.CompositeComponentStackManager.StackType.Evaluation;
+import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
+
+import java.beans.BeanInfo;
 import java.beans.FeatureDescriptor;
+import java.beans.PropertyDescriptor;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
-import jakarta.el.ELResolver;
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
-import jakarta.el.MethodExpression;
-
+import com.sun.faces.component.CompositeComponentStackManager;
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.CompositeComponentExpressionHolder;
-
-import com.sun.faces.component.CompositeComponentStackManager;
-import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
-import static com.sun.faces.component.CompositeComponentStackManager.StackType.Evaluation;
-import com.sun.faces.util.FacesLogger;
-
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
 
 /**
  * <p>
@@ -96,7 +94,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         Util.notNull("context", context);
 
-        if (base != null && (base instanceof UIComponent) && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
+        if (base != null && base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
 
             String propertyName = property.toString();
             if (COMPOSITE_COMPONENT_ATTRIBUTES_NAME.equals(propertyName)) {
@@ -149,14 +147,14 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
             FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
             UIComponent cc = UIComponent.getCurrentCompositeComponent(facesContext);
             BeanInfo metadata = (BeanInfo) cc.getAttributes().get(UIComponent.BEANINFO_KEY);
-            assert (null != metadata);
+            assert null != metadata;
             PropertyDescriptor[] attributes = metadata.getPropertyDescriptors();
             if (null != attributes) {
                 for (PropertyDescriptor cur : attributes) {
                     if (property.equals(cur.getName())) {
                         Object type = cur.getValue("type");
                         if (null != type) {
-                            assert (type instanceof Class);
+                            assert type instanceof Class;
                             metaType = (Class) type;
                             break;
                         }
@@ -291,11 +289,11 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         ExpressionEvalMap(FacesContext ctx, UIComponent cc) {
 
             this.cc = cc;
-            this.attributesMap = cc.getAttributes();
-            BeanInfo metadata = (BeanInfo) this.attributesMap.get(UIComponent.BEANINFO_KEY);
+            attributesMap = cc.getAttributes();
+            BeanInfo metadata = (BeanInfo) attributesMap.get(UIComponent.BEANINFO_KEY);
             if (null != metadata) {
-                this.declaredAttributes = metadata.getPropertyDescriptors();
-                this.declaredDefaultValues = new HashMap<>(5);
+                declaredAttributes = metadata.getPropertyDescriptors();
+                declaredDefaultValues = new HashMap<>(5);
             }
             this.ctx = ctx;
 
@@ -306,7 +304,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
         @Override
         public ValueExpression getExpression(String name) {
             Object ve = cc.getValueExpression(name);
-            return ((ve instanceof ValueExpression) ? (ValueExpression) ve : null);
+            return ve instanceof ValueExpression ? (ValueExpression) ve : null;
         }
 
         // ---------------------------------------------------- Methods from Map

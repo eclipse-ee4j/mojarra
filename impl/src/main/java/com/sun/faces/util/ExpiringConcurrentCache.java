@@ -43,17 +43,17 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
     public interface ExpiryChecker<K, V> {
         /**
          * Checks whether a cached object expired
-         * 
+         *
          * @param key cache key
          * @param value cached value
          * @return true if the value expired and should be removed from the cache, false otherwise
          */
-        public boolean isExpired(K key, V value);
+        boolean isExpired(K key, V value);
     }
 
     /**
      * Public constructor.
-     * 
+     *
      * @param f used to create new instances of objects that are not already available
      * @param checker used to check whether an object in the cache has expired
      */
@@ -72,12 +72,7 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
 
             Future<V> f = _cache.get(key);
             if (f == null) {
-                Callable<V> callable = new Callable<V>() {
-                    @Override
-                    public V call() throws Exception {
-                        return getFactory().newInstance(key);
-                    }
-                };
+                Callable<V> callable = () -> getFactory().newInstance(key);
                 FutureTask<V> ft = new FutureTask<>(callable);
                 // here is the real beauty of the concurrent utilities.
                 // 1. putIfAbsent() is atomic

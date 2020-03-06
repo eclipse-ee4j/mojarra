@@ -29,9 +29,9 @@ public interface BehaviorHolderAttachedObjectHandler extends AttachedObjectHandl
      * </p>
      *
      * @since 2.0
-     * 
+     *
      * @return the client event name for this behavior
      */
-    public String getEventName();
+    String getEventName();
 
 }

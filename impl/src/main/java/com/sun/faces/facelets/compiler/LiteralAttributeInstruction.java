@@ -16,12 +16,11 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-
 import jakarta.faces.context.FacesContext;
-
-import java.io.IOException;
 
 final class LiteralAttributeInstruction implements Instruction {
     private final String attr;
@@ -35,7 +34,7 @@ final class LiteralAttributeInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-        context.getResponseWriter().writeAttribute(this.attr, this.text, null);
+        context.getResponseWriter().writeAttribute(attr, text, null);
     }
 
     @Override

@@ -19,6 +19,8 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,16 +31,13 @@ import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import jakarta.el.ValueExpression;
 
 /**
  * <p>
@@ -161,8 +160,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     private static final char[] ESCAPEDSTART = ("&lt;" + BREAKCDATA + "![").toCharArray();
     private static final char[] ESCAPEDEND = ("]" + BREAKCDATA + "]>").toCharArray();
 
-    private static final int CLOSEBRACKET = (int) ']';
-    private static final int LT = (int) '<';
+    private static final int CLOSEBRACKET = ']';
+    private static final int LT = '<';
 
     static final Pattern CDATA_START_SLASH_SLASH;
 
@@ -242,20 +241,20 @@ public class HtmlResponseWriter extends ResponseWriter {
         WebConfiguration webConfig = null;
         if (isScriptHidingEnabled == null) {
             webConfig = getWebConfiguration(webConfig);
-            isScriptHidingEnabled = (null == webConfig) ? BooleanWebContextInitParameter.EnableJSStyleHiding.getDefaultValue()
+            isScriptHidingEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableJSStyleHiding.getDefaultValue()
                     : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableJSStyleHiding);
         }
 
         if (isScriptInAttributeValueEnabled == null) {
             webConfig = getWebConfiguration(webConfig);
-            isScriptInAttributeValueEnabled = (null == webConfig) ? BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue()
+            isScriptInAttributeValueEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue()
                     : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableScriptInAttributeValue);
         }
 
         if (disableUnicodeEscaping == null) {
             webConfig = getWebConfiguration(webConfig);
             disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping
-                    .getByValue((null == webConfig) ? WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping.getDefaultValue()
+                    .getByValue(null == webConfig ? WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping.getDefaultValue()
                             : webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping));
             if (disableUnicodeEscaping == null) {
                 disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping.False;
@@ -268,7 +267,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         this.isScriptInAttributeValueEnabled = isScriptInAttributeValueEnabled;
         this.disableUnicodeEscaping = disableUnicodeEscaping;
 
-        this.attributesBuffer = new FastStringWriter(128);
+        attributesBuffer = new FastStringWriter(128);
 
         // Check the character encoding
         if (!HtmlUtils.validateEncoding(encoding)) {
@@ -367,8 +366,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         try {
             HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(), isScriptHidingEnabled,
                     isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
-            responseWriter.dontEscape = this.dontEscape;
-            responseWriter.writingCdata = this.writingCdata;
+            responseWriter.dontEscape = dontEscape;
+            responseWriter.writingCdata = writingCdata;
             return responseWriter;
 
         } catch (FacesException e) {
@@ -451,20 +450,20 @@ public class HtmlResponseWriter extends ResponseWriter {
                             writer.write(trim.substring(start, end));
                         }
                         // case 2 start is // end is /* */
-                        else if ((null != cdataStartSlashSlash.reset() && cdataStartSlashSlash.find()) && cdataEndSlashStar.find()) {
+                        else if (null != cdataStartSlashSlash.reset() && cdataStartSlashSlash.find() && cdataEndSlashStar.find()) {
                             start = cdataStartSlashSlash.end() - cdataStartSlashSlash.start();
                             end = trimLen - (cdataEndSlashStar.end() - cdataEndSlashStar.start());
                             writer.write(trim.substring(start, end));
                         }
                         // case 3 start is /* */ end is /* */
-                        else if (cdataStartSlashStar.find() && (null != cdataEndSlashStar.reset() && cdataEndSlashStar.find())) {
+                        else if (cdataStartSlashStar.find() && null != cdataEndSlashStar.reset() && cdataEndSlashStar.find()) {
                             start = cdataStartSlashStar.end() - cdataStartSlashStar.start();
                             end = trimLen - (cdataEndSlashStar.end() - cdataEndSlashStar.start());
                             writer.write(trim.substring(start, end));
                         }
                         // case 4 start is /* */ end is //
-                        else if ((null != cdataStartSlashStar.reset() && cdataStartSlashStar.find())
-                                && (null != cdataEndSlashStar.reset() && cdataEndSlashSlash.find())) {
+                        else if (null != cdataStartSlashStar.reset() && cdataStartSlashStar.find()
+                                && null != cdataEndSlashStar.reset() && cdataEndSlashSlash.find()) {
                             start = cdataStartSlashStar.end() - cdataStartSlashStar.start();
                             end = trimLen - (cdataEndSlashSlash.end() - cdataEndSlashSlash.start());
                             writer.write(trim.substring(start, end));
@@ -942,8 +941,9 @@ public class HtmlResponseWriter extends ResponseWriter {
         closeStartIfNecessary();
 
         // optimize away zero length write, called by Facelets to close tags
-        if (len == 0)
+        if (len == 0) {
             return;
+        }
 
         if (dontEscape) {
             if (writingCdata) {
@@ -1038,7 +1038,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * This method automatically closes a previous element (if not already closed).
-     * 
+     *
      * @throws IOException if an error occurs writing
      */
     private void closeStartIfNecessary() throws IOException {
@@ -1076,7 +1076,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private void considerPassThroughAttributes(Map<String, Object> toCopy) {
-        assert (null != toCopy && !toCopy.isEmpty());
+        assert null != toCopy && !toCopy.isEmpty();
 
         if (null != passthroughAttributes) {
             throw new IllegalStateException("Error, this method should only be called once per instance.");
@@ -1114,7 +1114,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (totalLength != 0) {
             int curIdx = 0;
             while (curIdx < totalLength) {
-                if ((totalLength - curIdx) > buffer.length) {
+                if (totalLength - curIdx > buffer.length) {
                     int end = curIdx + buffer.length;
                     b.getChars(curIdx, end, buffer, 0);
                     writer.write(buffer);
@@ -1209,11 +1209,11 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         }
 
-        return (isScript || isStyle);
+        return isScript || isStyle;
     }
 
     private boolean isScriptOrStyle() {
-        return (isScript || isStyle);
+        return isScript || isStyle;
     }
 
     /*
@@ -1269,7 +1269,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             } else {
                 appendBuffer(cbuf[i]);
             }
-            if (i == (offset + length - 1)) {
+            if (i == offset + length - 1) {
                 last = true;
             }
         }
@@ -1366,7 +1366,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             } else {
                 appendBuffer(cbuf[i]);
             }
-            if (i == (offset + length - 1)) {
+            if (i == offset + length - 1) {
                 last = true;
             }
         }

@@ -16,28 +16,28 @@
 
 package com.sun.faces.facelets.el;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.PropertyNotWritableException;
-import jakarta.el.ValueExpression;
-
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.EvaluationException;
-import jakarta.faces.el.PropertyNotFoundException;
-import jakarta.faces.el.ValueBinding;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.ValueBinding;
+
 /**
- * 
- * 
+ *
+ *
  * @author Jacob Hookom
  * @version $Id$
  * @deprecated
  */
+@Deprecated
 public final class LegacyValueBinding extends ValueBinding implements Externalizable {
 
     private static final long serialVersionUID = 1L;
@@ -49,14 +49,14 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
     }
 
     public LegacyValueBinding(ValueExpression ve) {
-        this.delegate = ve;
+        delegate = ve;
     }
 
     @Override
     public Object getValue(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         ELContext ctx = context.getELContext();
         try {
-            return this.delegate.getValue(ctx);
+            return delegate.getValue(ctx);
         } catch (jakarta.el.PropertyNotFoundException e) {
             throw new PropertyNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
@@ -68,7 +68,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
     public void setValue(FacesContext context, Object value) throws EvaluationException, PropertyNotFoundException {
         ELContext ctx = context.getELContext();
         try {
-            this.delegate.setValue(ctx, value);
+            delegate.setValue(ctx, value);
         } catch (PropertyNotWritableException | jakarta.el.PropertyNotFoundException e) {
             throw new PropertyNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
@@ -80,7 +80,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
     public boolean isReadOnly(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         ELContext ctx = context.getELContext();
         try {
-            return this.delegate.isReadOnly(ctx);
+            return delegate.isReadOnly(ctx);
         } catch (jakarta.el.PropertyNotFoundException e) {
             throw new PropertyNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
@@ -92,7 +92,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
     public Class getType(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         ELContext ctx = context.getELContext();
         try {
-            return this.delegate.getType(ctx);
+            return delegate.getType(ctx);
         } catch (jakarta.el.PropertyNotFoundException e) {
             throw new PropertyNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
@@ -102,16 +102,16 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.delegate = (ValueExpression) in.readObject();
+        delegate = (ValueExpression) in.readObject();
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(this.delegate);
+        out.writeObject(delegate);
     }
 
     @Override
     public String getExpressionString() {
-        return this.delegate.getExpressionString();
+        return delegate.getExpressionString();
     }
 }

@@ -27,7 +27,7 @@ public class IterationIdManager {
 
     /**
      * Registers a literal Id with this manager and determines whether the same Id has been seen before
-     * 
+     *
      * @param ctx Facelets Context
      * @param id literal Id
      * @return true if the same Id is already being tracked, false otherwise
@@ -77,7 +77,7 @@ public class IterationIdManager {
         @SuppressWarnings("unchecked")
         Deque<Set<String>> iterationIds = (Deque<Set<String>>) context.getAttribute(_STACK_OF_TRACKED_IDS);
 
-        return ((iterationIds != null) && (iterationIds.peek() != null));
+        return iterationIds != null && iterationIds.peek() != null;
     }
 
     private static Deque<Set<String>> _getStackOfTrackedIds(FaceletContext ctx) {

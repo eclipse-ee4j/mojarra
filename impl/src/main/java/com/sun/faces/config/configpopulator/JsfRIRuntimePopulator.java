@@ -1,7 +1,5 @@
 package com.sun.faces.config.configpopulator;
 
-import java.lang.Override;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

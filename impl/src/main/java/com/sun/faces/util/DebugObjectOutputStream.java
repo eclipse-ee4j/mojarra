@@ -17,16 +17,16 @@
 
 package com.sun.faces.util;
 
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * From: http://blog.crazybob.org/2007/02/debugging-serialization.html
- * 
+ *
  * Usage example:
 
                 DebugObjectOutputStream out =
@@ -36,14 +36,14 @@ import java.util.ArrayList;
                 } catch (Exception e) {
                     DebugUtil.printState((Map)stateToWrite[1], LOGGER);
                     throw new FacesException(
-                            "Serialization error. Path to offending instance: " 
+                            "Serialization error. Path to offending instance: "
                             + out.getStack(), e);
-                }            
+                }
 
- 
- 
- * 
- * 
+
+
+ *
+ *
  */
 
 public class DebugObjectOutputStream extends ObjectOutputStream {
@@ -108,7 +108,7 @@ public class DebugObjectOutputStream extends ObjectOutputStream {
      */
     private int currentDepth() {
         try {
-            Integer oneBased = ((Integer) DEPTH_FIELD.get(this));
+            Integer oneBased = (Integer) DEPTH_FIELD.get(this);
             return oneBased - 1;
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);

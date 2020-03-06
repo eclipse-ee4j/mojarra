@@ -84,7 +84,7 @@ public class ViewMetadataImpl extends ViewMetadata {
             if (faceletFactory == null) {
                 ApplicationAssociate associate = ApplicationAssociate.getInstance(context.getExternalContext());
                 faceletFactory = associate.getFaceletFactory();
-                assert (faceletFactory != null);
+                assert faceletFactory != null;
             }
             ViewHandler vh = context.getApplication().getViewHandler();
             result = vh.createView(context, viewId);
@@ -172,7 +172,7 @@ public class ViewMetadataImpl extends ViewMetadata {
 
     /**
      * Collect constants of the given type. That are, all public static final fields of the given type.
-     * 
+     *
      * @param type The fully qualified name of the type to collect constants for.
      * @return Constants of the given type.
      */
@@ -197,7 +197,7 @@ public class ViewMetadataImpl extends ViewMetadata {
 
     /**
      * Convert the given type, which should represent a fully qualified name, to a concrete {@link Class} instance.
-     * 
+     *
      * @param type The fully qualified name of the class.
      * @return The concrete {@link Class} instance.
      * @throws IllegalArgumentException When it is missing in the classpath.

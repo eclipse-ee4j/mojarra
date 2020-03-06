@@ -20,19 +20,19 @@ import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -44,11 +44,11 @@ import jakarta.faces.FacesException;
  * This utility class is to provide both encryption and decryption <code>Ciphers</code> to
  * <code>ResponseStateManager</code> implementations wishing to provide encryption support.
  * </p>
- * 
+ *
  * <p>
  * The algorithm used to encrypt byte array is AES with CBC.
  * </p>
- * 
+ *
  * <p>
  * Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit JSF needs.
  * </p>
@@ -88,7 +88,7 @@ public final class ByteArrayGuardAESCTR {
      * This method: Encrypts bytes using a cipher. Generates MAC for intialization vector of the cipher Generates MAC for
      * encrypted data Returns a byte array consisting of the following concatenated together: |MAC for cnrypted Data | MAC
      * for Init Vector | Encrypted Data |
-     * 
+     *
      * @param bytes The byte array to be encrypted.
      * @return the encrypted byte array.
      */
@@ -201,7 +201,7 @@ public final class ByteArrayGuardAESCTR {
 
     /**
      * This method concatenates two byte arrays
-     * 
+     *
      * @return a byte array of array1||array2
      * @param array1 first byte array to be concatenated
      * @param array2 second byte array to be concatenated

@@ -16,10 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.ComponentSystemEvent;
-import jakarta.faces.event.ComponentSystemEventListener;
-import jakarta.faces.event.SystemEventListener;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -40,14 +36,14 @@ public class PostRestoreStateEvent extends ComponentSystemEvent {
     // ------------------------------------------------------------ Constructors
 
     /**
-     * 
+     *
      * <p class="changed_added_2_0">
      * Instantiate a new <code>PostRestoreStateEvent</code> that indicates the argument <code>component</code> just had its
      * state restored.
      * </p>
-     * 
+     *
      * @param component the <code>UIComponent</code> whose state was just restored.
-     * 
+     *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PostRestoreStateEvent(UIComponent component) {
@@ -59,10 +55,10 @@ public class PostRestoreStateEvent extends ComponentSystemEvent {
      * Instantiate a new <code>PostRestoreStateEvent</code> that indicates the argument <code>component</code> just had its
      * state restored.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the <code>UIComponent</code> whose state was just restored.
-     * 
+     *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PostRestoreStateEvent(FacesContext facesContext, UIComponent component) {
@@ -70,7 +66,7 @@ public class PostRestoreStateEvent extends ComponentSystemEvent {
     }
 
     public void setComponent(UIComponent newComponent) {
-        this.source = newComponent;
+        source = newComponent;
     }
 
 }

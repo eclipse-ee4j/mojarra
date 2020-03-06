@@ -16,6 +16,9 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.annotation.FacesComponentUsage;
 import com.sun.faces.util.FacesLogger;
@@ -27,9 +30,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
-
-import java.util.List;
-import java.util.logging.Logger;
 
 public class FacesComponentTagLibrary extends LazyTagLibrary {
 
@@ -50,7 +50,7 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
         Util.notNull("namespace", ns);
         Util.notNull("tagName", localName);
 
-        if (!ns.equals(this.getNamespace())) {
+        if (!ns.equals(getNamespace())) {
             return false;
         }
 
@@ -70,7 +70,7 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
         Util.notNull("namespace", ns);
         Util.notNull("tagName", localName);
 
-        if (!ns.equals(this.getNamespace())) {
+        if (!ns.equals(getNamespace())) {
             return result;
         }
         List<FacesComponentUsage> componentsForNamespace = appAss.getComponentsForNamespace(ns);
@@ -100,7 +100,7 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
 
     @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
-        assert (containsTagHandler(ns, localName));
+        assert containsTagHandler(ns, localName);
         TagHandler result = super.createTagHandler(ns, localName, tag);
         if (null == result) {
             FacesComponentUsage facesComponentUsage = findFacesComponentUsageForLocalName(ns, localName);

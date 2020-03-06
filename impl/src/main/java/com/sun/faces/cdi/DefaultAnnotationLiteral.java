@@ -21,7 +21,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * An annotation literal for @Default.
- * 
+ *
  * @since 2.3
  */
 @SuppressWarnings("all")

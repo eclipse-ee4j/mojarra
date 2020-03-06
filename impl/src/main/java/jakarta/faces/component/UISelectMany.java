@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -75,14 +74,14 @@ import jakarta.faces.el.ValueBinding;
  * {@link jakarta.faces.convert.Converter} for this primitive type.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * An array of objects (such as <code>Integer[]</code> or <code>String[]</code>). Look up the registered by-class
  * {@link jakarta.faces.convert.Converter} for the underlying element type.
  * </p>
  * </li>
- * 
+ *
  * <li class="changed_added_2_0">
  * <p>
  * A <code>java.util.Collection</code>. Do not convert the values. <span class="changed_modified_2_3">Instead, convert
@@ -96,37 +95,37 @@ import jakarta.faces.el.ValueBinding;
  * <p>
  * If for any reason a <code>Converter</code> cannot be found, assume the type to be a String array.
  * </p>
- * 
+ *
  * </blockquote>
- * 
+ *
  * <p>
  * Use the selected {@link jakarta.faces.convert.Converter} (if any) to convert each element in the values array from
  * the request to the proper type, <span class="changed_added_2_0">and store the result of each conversion in a data
  * structure, called <em>targetForConvertedValues</em> for discussion. Create <em>targetForConvertedValues</em> using
  * the following algorithm.</span>
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * If the component has a <code>ValueExpression</code> for <code>value</code> and the type of the expression is an
  * array, let <em>targetForConvertedValues</em> be a new array of the expected type.
  * </p>
  * </li>
- * 
- * 
+ *
+ *
  * <li>
  * <p>
  * If the component has a <code>ValueExpression</code> for <code>value</code>, let <em>modelType</em> be the type of the
  * value expression. If <em>modelType</em> is a <code>Collection</code>, do the following to arrive at
  * <em>targetForConvertedValues</em>:
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * Ask the component for its attribute under the key "<code>collectionType</code>", without the quotes. If there is a
@@ -141,7 +140,7 @@ import jakarta.faces.el.ValueBinding;
  * this case would only arise from developer error, rather than end-user error.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * If there is no "<code>collectionType</code>" attribute, call <code>getValue()</code> on the component. The result
@@ -151,7 +150,7 @@ import jakarta.faces.el.ValueBinding;
  * message and proceed to the next step.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * If <em>modelType</em> is a concrete class, let <em>targetForConvertedValues</em> be a new instance of that class.
@@ -159,71 +158,71 @@ import jakarta.faces.el.ValueBinding;
  * in the <code>java.util</code> package. All collections must be created with an initial capacity equal to the length
  * of the values array from the request.
  * </p>
- * 
+ *
  * <table border="1">
  * <caption>modelType to targetForConvertedValues mapping</caption>
- * 
+ *
  * <tr>
- * 
+ *
  * <th>If <em>modelType</em> is an instance of</th>
- * 
+ *
  * <th>then <em>targetForConvertedValues</em> must be an instance of</th>
- * 
+ *
  * </tr>
- * 
+ *
  * <tr>
- * 
+ *
  * <td><code>SortedSet</code></td>
- * 
+ *
  * <td><code>TreeSet</code></td>
- * 
+ *
  * </tr>
- * 
+ *
  * <tr>
- * 
+ *
  * <td><code>Queue</code></td>
- * 
+ *
  * <td><code>LinkedList</code></td>
- * 
+ *
  * </tr>
- * 
+ *
  * <tr>
- * 
+ *
  * <td><code>Set</code></td>
- * 
+ *
  * <td><code>HashSet</code></td>
- * 
+ *
  * </tr>
- * 
+ *
  * <tr>
- * 
+ *
  * <td>anything else</td>
- * 
+ *
  * <td><code>ArrayList</code></td>
- * 
+ *
  * </tr>
- * 
+ *
  * </table>
- * 
+ *
  * </li>
- * 
+ *
  * </ul>
- * 
+ *
  * <li>
  * <p>
  * If the component does not have a <code>ValueExpression</code> for <code>value</code>, let
  * <em>targetForConvertedValues</em> be an array of type <code>Object</code>.
  * </p>
- * 
+ *
  * </ul>
- * 
+ *
  * </div>
- * 
+ *
  * <p>
  * Return <em>targetForConvertedValues</em> after populating it with the converted values.
  * </p>
  *
- * 
+ *
  */
 
 public class UISelectMany extends UIInput {
@@ -270,7 +269,7 @@ public class UISelectMany extends UIInput {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -284,7 +283,7 @@ public class UISelectMany extends UIInput {
      */
     public Object[] getSelectedValues() {
 
-        return ((Object[]) getValue());
+        return (Object[]) getValue();
 
     }
 
@@ -321,13 +320,14 @@ public class UISelectMany extends UIInput {
      *
      * @deprecated this has been replaced by {@link #getValueExpression(java.lang.String)}.
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name) {
 
         if ("selectedValues".equals(name)) {
-            return (super.getValueBinding("value"));
+            return super.getValueBinding("value");
         } else {
-            return (super.getValueBinding(name));
+            return super.getValueBinding(name);
         }
 
     }
@@ -350,6 +350,7 @@ public class UISelectMany extends UIInput {
      *
      * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
 
@@ -376,9 +377,9 @@ public class UISelectMany extends UIInput {
     public ValueExpression getValueExpression(String name) {
 
         if ("selectedValues".equals(name)) {
-            return (super.getValueExpression("value"));
+            return super.getValueExpression("value");
         } else {
-            return (super.getValueExpression(name));
+            return super.getValueExpression(name);
         }
 
     }
@@ -422,12 +423,12 @@ public class UISelectMany extends UIInput {
     @Override
     protected boolean compareValues(Object previous, Object value) {
 
-        if ((previous == null) && (value != null)) {
-            return (true);
-        } else if ((previous != null) && (value == null)) {
-            return (true);
-        } else if ((previous == null)) {
-            return (false);
+        if (previous == null && value != null) {
+            return true;
+        } else if (previous != null && value == null) {
+            return true;
+        } else if (previous == null) {
+            return false;
         }
 
         boolean valueChanged = false;
@@ -503,7 +504,7 @@ public class UISelectMany extends UIInput {
 
     /**
      * Convert an array of primitives to an array of boxed objects.
-     * 
+     *
      * @param primitiveArray object containing the primitive values
      * @return an Object array, or null if the incoming value is not in fact an array at all.
      */
@@ -549,13 +550,13 @@ public class UISelectMany extends UIInput {
      * This method must explicitly support a value argument that is a single value or a value argument that is a
      * <code>Collection</code> or Array of values.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * If {@link #isRequired} returns <code>true</code>, and the current value is equal to the value of an inner
      * {@link UISelectItem} whose {@link UISelectItem#isNoSelectionOption} method returns <code>true</code>, enqueue an
      * error message and set the <code>valid</code> property to <code>false</code>.
      * </p>
-     * 
+     *
      * @param context The {@link FacesContext} for the current request
      *
      * @param value The converted value to test for membership.
@@ -568,7 +569,7 @@ public class UISelectMany extends UIInput {
         super.validateValue(context, value);
 
         // Skip validation if it is not necessary
-        if (!isValid() || (value == null)) {
+        if (!isValid() || value == null) {
             return;
         }
 
@@ -616,7 +617,7 @@ public class UISelectMany extends UIInput {
         if (value instanceof Collection) {
             return ((Collection) value).iterator();
         } else {
-            return (new ArrayIterator(value));
+            return new ArrayIterator(value);
         }
 
     }
@@ -645,7 +646,7 @@ public class UISelectMany extends UIInput {
 
         @Override
         public boolean hasNext() {
-            return (idx < length);
+            return idx < length;
         }
 
         @Override

@@ -31,7 +31,6 @@ import jakarta.el.MethodExpression;
 import jakarta.el.MethodInfo;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
@@ -58,6 +57,7 @@ public class MethodBindingMethodExpressionAdapter extends MethodBinding implemen
         this.methodExpression = methodExpression;
     }
 
+    @Override
     public Object invoke(FacesContext context, Object params[]) throws EvaluationException, MethodNotFoundException {
         if (context == null) {
             throw new NullPointerException("FacesConext -> null");
@@ -78,6 +78,7 @@ public class MethodBindingMethodExpressionAdapter extends MethodBinding implemen
         }
     }
 
+    @Override
     public Class<?> getType(FacesContext context) throws MethodNotFoundException {
 
         if (context == null) {
@@ -91,10 +92,12 @@ public class MethodBindingMethodExpressionAdapter extends MethodBinding implemen
         }
     }
 
+    @Override
     public String getExpressionString() {
         return methodExpression.getExpressionString();
     }
 
+    @Override
     public boolean equals(Object other) {
         if (this == other) {
             return true;
@@ -112,7 +115,7 @@ public class MethodBindingMethodExpressionAdapter extends MethodBinding implemen
             int idx = expr.indexOf('.');
             String target = expr.substring(0, idx).substring(2);
             String t = expr.substring(idx + 1);
-            String method = t.substring(0, (t.length() - 1));
+            String method = t.substring(0, t.length() - 1);
 
             FacesContext context = FacesContext.getCurrentInstance();
             ELContext elContext = context.getELContext();
@@ -152,18 +155,22 @@ public class MethodBindingMethodExpressionAdapter extends MethodBinding implemen
         return false;
     }
 
+    @Override
     public int hashCode() {
         return methodExpression.hashCode();
     }
 
+    @Override
     public boolean isTransient() {
-        return this.tranzient;
+        return tranzient;
     }
 
+    @Override
     public void setTransient(boolean tranzient) {
         this.tranzient = tranzient;
     }
 
+    @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
             throw new NullPointerException();
@@ -189,6 +196,7 @@ public class MethodBindingMethodExpressionAdapter extends MethodBinding implemen
         return result;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state) {
         if (context == null) {
             throw new NullPointerException();

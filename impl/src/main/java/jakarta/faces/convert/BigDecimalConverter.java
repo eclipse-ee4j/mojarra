@@ -18,10 +18,6 @@ package jakarta.faces.convert;
 
 import java.math.BigDecimal;
 
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.MessageFactory;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -84,15 +80,15 @@ public class BigDecimalConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (new BigDecimal(value));
+            return new BigDecimal(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, DECIMAL_ID, value, "198.23", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -124,7 +120,7 @@ public class BigDecimalConverter implements Converter {
         }
 
         try {
-            return (value.toString());
+            return value.toString();
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

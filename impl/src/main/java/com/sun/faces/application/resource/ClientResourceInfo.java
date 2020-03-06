@@ -47,7 +47,7 @@ public class ClientResourceInfo extends ResourceInfo {
     /**
      * Constructs a new <code>ClientResourceInfo</code> using the specified details. The {@link ResourceHelper} of the
      * resource will be the same as the {@link ResourceHelper} of the {@link LibraryInfo}.
-     * 
+     *
      * @param library the library containing this resource
      * @param name the resource name
      * @param version the version of this resource (if any)
@@ -63,13 +63,13 @@ public class ClientResourceInfo extends ResourceInfo {
         this.compressible = compressible;
         this.supportsEL = supportsEL;
         this.isDevStage = isDevStage;
-        this.cacheTimestamp = (!isDevStage && cacheTimestamp);
+        this.cacheTimestamp = !isDevStage && cacheTimestamp;
         initPath(isDevStage);
     }
 
     /**
      * Constructs a new <code>ClientResourceInfo</code> using the specified details.
-     * 
+     *
      * @param name the resource name
      * @param version the version of the resource
      * @param localePrefix the locale prefix for this resource (if any)
@@ -90,29 +90,29 @@ public class ClientResourceInfo extends ResourceInfo {
         this.compressible = compressible;
         this.supportsEL = supportsEL;
         this.isDevStage = isDevStage;
-        this.cacheTimestamp = (!isDevStage && cacheTimestamp);
+        this.cacheTimestamp = !isDevStage && cacheTimestamp;
         initPath(isDevStage);
     }
 
     ClientResourceInfo(ClientResourceInfo other, boolean copyLocalePrefix) {
         super(other, copyLocalePrefix);
-        this.cacheTimestamp = other.cacheTimestamp;
-        this.compressedPath = other.compressedPath;
-        this.compressible = other.compressible;
-        this.isDevStage = other.isDevStage;
-        this.lastModified = other.lastModified;
-        this.supportsEL = other.supportsEL;
+        cacheTimestamp = other.cacheTimestamp;
+        compressedPath = other.compressedPath;
+        compressible = other.compressible;
+        isDevStage = other.isDevStage;
+        lastModified = other.lastModified;
+        supportsEL = other.supportsEL;
         initPath(isDevStage);
     }
 
     public void copy(ClientResourceInfo other) {
         super.copy(other);
-        this.cacheTimestamp = other.cacheTimestamp;
-        this.compressedPath = other.compressedPath;
-        this.compressible = other.compressible;
-        this.isDevStage = other.isDevStage;
-        this.lastModified = other.lastModified;
-        this.supportsEL = other.supportsEL;
+        cacheTimestamp = other.cacheTimestamp;
+        compressedPath = other.compressedPath;
+        compressible = other.compressible;
+        isDevStage = other.isDevStage;
+        lastModified = other.lastModified;
+        supportsEL = other.supportsEL;
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -144,7 +144,7 @@ public class ClientResourceInfo extends ResourceInfo {
      * Disables EL evaluation for this resource.
      */
     public void disableEL() {
-        this.supportsEL = false;
+        supportsEL = false;
     }
 
     /**
@@ -176,9 +176,9 @@ public class ClientResourceInfo extends ResourceInfo {
 
     @Override
     public String toString() {
-        return "ResourceInfo{" + "name='" + name + '\'' + ", version=\'" + ((version != null) ? version : "NONE") + '\'' + ", libraryName='" + libraryName
+        return "ResourceInfo{" + "name='" + name + '\'' + ", version=\'" + (version != null ? version : "NONE") + '\'' + ", libraryName='" + libraryName
                 + '\'' + ", contractInfo='" + (contract != null ? contract.contract : "NONE") + '\'' + ", libraryVersion='"
-                + ((library != null) ? library.getVersion() : "NONE") + '\'' + ", localePrefix='" + ((localePrefix != null) ? localePrefix : "NONE") + '\''
+                + (library != null ? library.getVersion() : "NONE") + '\'' + ", localePrefix='" + (localePrefix != null ? localePrefix : "NONE") + '\''
                 + ", path='" + path + '\'' + ", compressible='" + compressible + '\'' + ", compressedPath=" + compressedPath + '}';
     }
 
@@ -226,11 +226,11 @@ public class ClientResourceInfo extends ResourceInfo {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE,
                             "File ({0}) referenced by jakarta.servlet.context.tempdir attribute is null, or was is not a directory.  Compression for {1} will be unavailable.",
-                            new Object[] { ((servletTmpDir == null) ? "null" : servletTmpDir.toString()), path });
+                            new Object[] { servletTmpDir == null ? "null" : servletTmpDir.toString(), path });
                 }
                 compressible = false;
             } else {
-                String tPath = ((path.charAt(0) == '/') ? path : '/' + path);
+                String tPath = path.charAt(0) == '/' ? path : '/' + path;
                 File newDir = new File(servletTmpDir, COMPRESSED_CONTENT_DIRECTORY + tPath);
 
                 try {

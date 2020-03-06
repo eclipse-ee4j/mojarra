@@ -17,17 +17,16 @@
 package jakarta.faces.component;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.view.ViewMetadata;
 
 /**
  * <div class="changed_added_2_3">
- * 
+ *
  * <p>
  * <strong>UIImportConstants</strong> imports a mapping of all constant field values of the given type in the current
  * view.
  * </p>
- * 
+ *
  * <p>
  * The {@link jakarta.faces.view.ViewDeclarationLanguage} implementation must cause an instance of this component to be
  * placed in the view for each occurrence of an <code>&lt;f:importConstants /&gt;</code> element placed inside of an
@@ -35,54 +34,54 @@ import jakarta.faces.view.ViewMetadata;
  * the <code>UIViewRoot</code>. The {@link ViewMetadata#createMetadataView(jakarta.faces.context.FacesContext)} must
  * take care of actual task of importing the constants.
  * </p>
- * 
+ *
  * <p>
  * Instances of this class participate in the regular Jakarta Server Faces lifecycle, including on Ajax requests.
  * </p>
- * 
+ *
  * <p>
  * The purpose of this component is to provide a mapping of all constant field values of the given type in the current
  * view. Constant field values are all <code>public static final</code> fields of the given type. The map key represents
  * the constant field name as <code>String</code>. The map value represents the actual constant field value. This works
  * for classes, interfaces and enums.
  * </p>
- * 
+ *
  * <h3 id="usage">Usage</h3>
- * 
+ *
  * <p>
  * The below constant fields:
  * </p>
- * 
+ *
  * <pre>
  * package com.example;
- * 
+ *
  * public class Foo {
  *     public static final String FOO1 = "foo1";
  *     public static final String FOO2 = "foo2";
  * }
  * </pre>
- * 
+ *
  * <pre>
  * package com.example;
- * 
+ *
  * public interface Bar {
  *     public static final String BAR1 = "bar1";
  *     public static final String BAR2 = "bar2";
  * }
  * </pre>
- * 
+ *
  * <pre>
  * package com.example;
- * 
+ *
  * public enum Baz {
  *     BAZ1, BAZ2;
  * }
  * </pre>
- * 
+ *
  * <p>
  * Can be imported as below:
  * </p>
- * 
+ *
  * <pre>
  * &lt;f:metadata&gt;
  *     &lt;f:importConstants type="com.example.Foo" /&gt;
@@ -90,23 +89,23 @@ import jakarta.faces.view.ViewMetadata;
  *     &lt;f:importConstants type="com.example.Baz" /&gt;
  * &lt;/f:metadata&gt;
  * </pre>
- * 
+ *
  * <p>
  * And can be referenced as below:
  * </p>
- * 
+ *
  * <pre>
  * #{Foo.FOO1}, #{Foo.FOO2}, #{Barrr.BAR1}, #{Barrr.BAR2}, #{Baz.BAZ1}, #{Baz.BAZ2}
  * </pre>
- * 
+ *
  * <pre>
  * &lt;h:selectOneMenu value="#{bean.baz}" &gt;
  *     &lt;f:selectItems value="#{Baz}" /&gt;
  * &lt;/h:selectOneMenu&gt;
  * </pre>
- * 
+ *
  * </div>
- * 
+ *
  * @since 2.3
  */
 public class UIImportConstants extends UIComponentBase {
@@ -156,7 +155,7 @@ public class UIImportConstants extends UIComponentBase {
      * <p>
      * Returns the fully qualified name of the type to import the constant field values for.
      * </p>
-     * 
+     *
      * @return The fully qualified name of the type to import the constant field values for.
      */
     public String getType() {
@@ -167,7 +166,7 @@ public class UIImportConstants extends UIComponentBase {
      * <p>
      * Sets the fully qualified name of the type to import the constant field values for.
      * </p>
-     * 
+     *
      * @param type The fully qualified name of the type to import the constant field values for.
      */
     public void setType(final String type) {
@@ -178,7 +177,7 @@ public class UIImportConstants extends UIComponentBase {
      * <p>
      * Returns name of request scope attribute under which constants will be exposed as a Map.
      * </p>
-     * 
+     *
      * @return Name of request scope attribute under which constants will be exposed as a Map.
      */
     public String getVar() {
@@ -189,7 +188,7 @@ public class UIImportConstants extends UIComponentBase {
      * <p>
      * Sets name of request scope attribute under which constants will be exposed as a Map.
      * </p>
-     * 
+     *
      * @param var Name of request scope attribute under which constants will be exposed as a Map.
      */
     public void setVar(final String var) {

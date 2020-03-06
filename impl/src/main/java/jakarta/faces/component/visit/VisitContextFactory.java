@@ -74,7 +74,7 @@ public abstract class VisitContextFactory implements FacesWrapper<VisitContextFa
      * <p class="changed_added_2_0">
      * Return a new {@link VisitContext} instance.
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> for this request.
      * @param ids a <code>Collection</code> of clientIds to visit. If <code>null</code> all components will be visited.
      * @param hints the <code>VisitHints</code> that apply to this visit.

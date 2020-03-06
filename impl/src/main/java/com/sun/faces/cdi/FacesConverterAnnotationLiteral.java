@@ -17,7 +17,6 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.util.AnnotationLiteral;
-
 import jakarta.faces.convert.FacesConverter;
 
 /**
@@ -47,7 +46,7 @@ class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> 
 
     /**
      * Constructor.
-     * 
+     *
      * @param value the value attribute.
      * @param forClass the forClass attribute.
      */
@@ -58,7 +57,7 @@ class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> 
 
     /**
      * Get the value attribute.
-     * 
+     *
      * @return the value attribute.
      */
     @Override
@@ -68,7 +67,7 @@ class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> 
 
     /**
      * Get the forClass attribute.
-     * 
+     *
      * @return the forClass attribute.
      */
     @Override
@@ -78,7 +77,7 @@ class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> 
 
     /**
      * Get the managed attribute.
-     * 
+     *
      * @return true.
      */
     @Override

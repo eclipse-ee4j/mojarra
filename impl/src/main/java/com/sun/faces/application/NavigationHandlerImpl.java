@@ -32,7 +32,6 @@ import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -46,10 +45,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jakarta.el.ELContext;
-import jakarta.el.MethodExpression;
-import jakarta.el.ValueExpression;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.flow.FlowHandlerImpl;
@@ -59,6 +54,9 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.FacesMessage;
@@ -205,7 +203,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     /*
      * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both
      * operands may be null.
-     * 
+     *
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
         boolean result = false;
@@ -229,16 +227,16 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
         if (caseStruct != null) {
             ExternalContext extContext = context.getExternalContext();
             ViewHandler viewHandler = Util.getViewHandler(context);
-            assert (null != viewHandler);
+            assert null != viewHandler;
             Flash flash = extContext.getFlash();
             boolean isUIViewActionBroadcastAndViewdsDiffer = false;
 
             if (isProcessingBroadcast(context)) {
                 flash.setKeepMessages(true);
                 String viewIdBefore = context.getViewRoot().getViewId();
-                viewIdBefore = (null == viewIdBefore) ? "" : viewIdBefore;
+                viewIdBefore = null == viewIdBefore ? "" : viewIdBefore;
                 String viewIdAfter = caseStruct.navCase.getToViewId(context);
-                viewIdAfter = (null == viewIdAfter) ? "" : viewIdAfter; // NOPMD
+                viewIdAfter = null == viewIdAfter ? "" : viewIdAfter; // NOPMD
                 isUIViewActionBroadcastAndViewdsDiffer = !viewIdBefore.equals(viewIdAfter);
             }
 
@@ -418,7 +416,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     private NavigationInfo getNavigationInfo(FacesContext context, String toFlowDocumentId, String flowId) {
         NavigationInfo result = null;
-        assert (null != navigationMaps);
+        assert null != navigationMaps;
         result = navigationMaps.get(toFlowDocumentId + flowId);
         if (null == result) {
             FlowHandler fh = context.getApplication().getFlowHandler();
@@ -455,7 +453,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             // PENDING: When JAVASERVERFACES-2580 is done, the eager case will
             // no longer be necessary and can be removed.
 
-            assert (null != navigationMaps);
+            assert null != navigationMaps;
             initializeNavigationFromFlowThreadSafe(toInspect);
         }
 
@@ -542,7 +540,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         UIViewRoot root = ctx.getViewRoot();
 
-        String viewId = (root != null ? root.getViewId() : null);
+        String viewId = root != null ? root.getViewId() : null;
 
         // if viewIdToTest is not null, use its value to find
         // a navigation match, otherwise look for a match
@@ -566,7 +564,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
         // If the preceding steps found a match, but it was a flow call...
         if (null != caseStruct && caseStruct.isFlowEntryFromExplicitRule) {
             // Override the toFlowDocumentId with the value from the navigation-case, if present
-            toFlowDocumentId = (null != caseStruct.navCase.getToFlowDocumentId()) ? caseStruct.navCase.getToFlowDocumentId() : toFlowDocumentId;
+            toFlowDocumentId = null != caseStruct.navCase.getToFlowDocumentId() ? caseStruct.navCase.getToFlowDocumentId() : toFlowDocumentId;
             // and try to call into the flow
             caseStruct = findFacesFlowCallMatch(ctx, fromAction, convertToViewIdToFlowOrNodeId(ctx, caseStruct), toFlowDocumentId);
         } else if (null != caseStruct && fh != null && fh.getCurrentFlow() != null) {
@@ -833,7 +831,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
         String queryString;
         if (-1 != questionMark) {
             int viewIdLen = viewIdToTest.length();
-            if (viewIdLen <= (questionMark + 1)) {
+            if (viewIdLen <= questionMark + 1) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "jsf.navigation_invalid_query_string", viewIdToTest);
                 }
@@ -1187,7 +1185,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                         String startNodeId = newFlow.getStartNodeId();
                         result = synthesizeCaseStruct(context, newFlow, fromAction, startNodeId);
                         if (null == result) {
-                            assert (null != currentFlow);
+                            assert null != currentFlow;
                             // If no CaseStruct can be synthesized, we must execute the
                             // navigation handler algorithm to try to find the CaseStruct
                             // for the start node. However, in order to do that, we
@@ -1218,7 +1216,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 String startNodeId = newFlow.getStartNodeId();
                 result = synthesizeCaseStruct(context, newFlow, fromAction, startNodeId);
                 if (null == result) {
-                    assert (null == currentFlow);
+                    assert null == currentFlow;
                     // If no CaseStruct can be synthesized, we must execute the
                     // navigation handler algorithm to try to find the CaseStruct
                     // for the start node. However, in order to do that, we
@@ -1341,7 +1339,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     /**
      * This method will attempt to find the <code>view</code> identifier based on action reference and outcome. Refer to
      * section 7.4.2 of the specification for more details.
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param caseSet The list of navigation cases.
      * @param fromAction The action reference string.
@@ -1359,13 +1357,13 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             boolean cncHasCondition = cnc.hasCondition();
             String cncToViewId = cnc.getToViewId(ctx);
 
-            if ((cncFromAction != null && cncFromAction.equals(fromAction)) && (cncFromOutcome != null && cncFromOutcome.equals(outcome))) {
+            if (cncFromAction != null && cncFromAction.equals(fromAction) && cncFromOutcome != null && cncFromOutcome.equals(outcome)) {
                 match = true;
-            } else if ((cncFromAction == null) && (cncFromOutcome != null && cncFromOutcome.equals(outcome))) {
+            } else if (cncFromAction == null && cncFromOutcome != null && cncFromOutcome.equals(outcome)) {
                 match = true;
-            } else if ((cncFromAction != null && cncFromAction.equals(fromAction)) && (cncFromOutcome == null) && (outcome != null || cncHasCondition)) {
+            } else if (cncFromAction != null && cncFromAction.equals(fromAction) && cncFromOutcome == null && (outcome != null || cncHasCondition)) {
                 match = true;
-            } else if ((cncFromAction == null) && (cncFromOutcome == null) && (outcome != null || cncHasCondition)) {
+            } else if (cncFromAction == null && cncFromOutcome == null && (outcome != null || cncHasCondition)) {
                 match = true;
             }
 
@@ -1375,7 +1373,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 if (cncHasCondition && Boolean.FALSE.equals(cnc.getCondition(ctx))) {
                     match = false;
                 } else {
-                    toFlowDocumentId = (null != cnc.getToFlowDocumentId()) ? cnc.getToFlowDocumentId() : toFlowDocumentId;
+                    toFlowDocumentId = null != cnc.getToFlowDocumentId() ? cnc.getToFlowDocumentId() : toFlowDocumentId;
                     if (null != toFlowDocumentId) {
                         FlowHandler fh = ctx.getApplication().getFlowHandler();
                         if (null != outcome) {
@@ -1392,7 +1390,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     /**
      * To look for the Flow or Node by the id, the '/' in the id got from navCase should be trimmed.
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param caseStruct the {@link CaseStruct} to look for the to view id
      * @return id of possible Node or Flow without '/' in the string
@@ -1421,12 +1419,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     private static final class NavigationMap extends AbstractMap<String, Set<NavigationCase>> {
 
         private HashMap<String, Set<NavigationCase>> mapToLookForNavCase = new HashMap<>();
-        private TreeSet<String> wildcardMatchList = new TreeSet<>(new Comparator<String>() {
-            @Override
-            public int compare(String fromViewId1, String fromViewId2) {
-                return -(fromViewId1.compareTo(fromViewId2));
-            }
-        });
+        private TreeSet<String> wildcardMatchList = new TreeSet<>((fromViewId1, fromViewId2) -> -fromViewId1.compareTo(fromViewId2));
 
         // ---------------------------------------------------- Methods from Map
 

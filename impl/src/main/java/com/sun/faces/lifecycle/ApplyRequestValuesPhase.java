@@ -16,8 +16,8 @@
 
 package com.sun.faces.lifecycle;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
 
@@ -45,7 +45,7 @@ public class ApplyRequestValuesPhase extends Phase {
         }
 
         UIComponent component = facesContext.getViewRoot();
-        assert (null != component);
+        assert null != component;
 
         try {
             component.processDecodes(facesContext);

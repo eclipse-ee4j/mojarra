@@ -16,12 +16,6 @@
 
 package com.sun.faces.context;
 
-import com.sun.faces.util.Util;
-
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.lifecycle.ClientWindow;
-import jakarta.faces.render.ResponseStateManager;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -31,6 +25,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.faces.util.Util;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
+
 /**
  * <p>
  * The <strong>UrlBuilder</strong> provides a convenient way to assemble a URL. It follows the standard Builder Pattern.
@@ -38,7 +38,7 @@ import java.util.Map;
  * to createUrl() assembles the parts into a relative URL. This class should be extended if the developer wishes to have
  * it deal with absolute URLs.
  * </p>
- * 
+ *
  * <p>
  * Note that this class is optimized to parse the query string lazily so as to avoid unnecessary work if the seed URL
  * differs little from the URL to be built.

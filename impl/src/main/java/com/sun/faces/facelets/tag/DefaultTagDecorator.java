@@ -16,6 +16,9 @@
 
 package com.sun.faces.facelets.tag;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sun.faces.facelets.tag.jsf.PassThroughAttributeLibrary;
 import com.sun.faces.facelets.tag.jsf.PassThroughElementLibrary;
 import com.sun.faces.facelets.tag.jsf.html.HtmlLibrary;
@@ -28,15 +31,12 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributes;
 import jakarta.faces.view.facelets.TagDecorator;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * A simple tag decorator to enable jsf: syntax
  */
 class DefaultTagDecorator implements TagDecorator {
 
-    private static enum Mapper {
+    private enum Mapper {
         a(new ElementConverter("h:commandLink", "jsf:action"), new ElementConverter("h:commandLink", "jsf:actionListener"),
                 new ElementConverter("h:outputLink", "jsf:value"), new ElementConverter("h:link", "jsf:outcome")),
 
@@ -62,9 +62,9 @@ class DefaultTagDecorator implements TagDecorator {
 
         private Mapper(final ElementConverter... elementConverters) {
             if (elementConverters.length == 1) {
-                this.elementConverter = elementConverters[0];
+                elementConverter = elementConverters[0];
             } else {
-                this.elementConverter = new ElementConverter() {
+                elementConverter = new ElementConverter() {
                     @Override
                     public Tag decorate(Tag tag) {
                         for (ElementConverter converter : elementConverters) {
@@ -84,7 +84,7 @@ class DefaultTagDecorator implements TagDecorator {
         }
     }
 
-    private static enum Namespace {
+    private enum Namespace {
         p(PassThroughAttributeLibrary.Namespace), jsf(PassThroughElementLibrary.Namespace), h(HtmlLibrary.Namespace);
 
         private String uri;
@@ -145,13 +145,13 @@ class DefaultTagDecorator implements TagDecorator {
 
         private ElementConverter(String faceletsTag, String arbiterAttributeName) {
             String[] strings = faceletsTag.split(":");
-            this.namespace = Namespace.valueOf(strings[0]);
-            this.localName = strings[1];
+            namespace = Namespace.valueOf(strings[0]);
+            localName = strings[1];
             this.arbiterAttributeName = arbiterAttributeName;
 
             if (arbiterAttributeName != null && arbiterAttributeName.indexOf(':') > 0) {
                 strings = arbiterAttributeName.split(":");
-                this.arbiterAttributeNamespace = Namespace.valueOf(strings[0]).uri;
+                arbiterAttributeNamespace = Namespace.valueOf(strings[0]).uri;
                 this.arbiterAttributeName = strings[1];
             }
         }
@@ -188,7 +188,7 @@ class DefaultTagDecorator implements TagDecorator {
             String myLocalName = additionalMappings.get(arbiterAttribute.getValue());
 
             if (myLocalName == null) {
-                myLocalName = this.localName;
+                myLocalName = localName;
             }
 
             return convertTag(tag, namespace, myLocalName);

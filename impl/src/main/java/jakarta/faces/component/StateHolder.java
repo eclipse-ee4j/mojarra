@@ -69,13 +69,13 @@ public interface StateHolder {
      * <p>
      * The return from this method must be <code>Serializable</code>
      * </p>
-     * 
+     *
      * @param context the Faces context.
      * @return the saved state.
      * @throws NullPointerException if <code>context</code> is null
      */
 
-    public Object saveState(FacesContext context);
+    Object saveState(FacesContext context);
 
     /**
      *
@@ -89,38 +89,38 @@ public interface StateHolder {
      * <code>UIComponent</code> with event handlers, validators, etc.) this method must call the {@link #restoreState}
      * method on all those instances as well.
      * </p>
-     * 
+     *
      * <p class="changed_modified_2_0_rev_a">
      * If the <code>state</code> argument is <code>null</code>, take no action and return.
      * </p>
-     * 
+     *
      * @param context the Faces context.
      * @param state the state.
      * @throws NullPointerException if <code>context</code> is null.
      */
 
-    public void restoreState(FacesContext context, Object state);
+    void restoreState(FacesContext context, Object state);
 
     /**
      *
      * <p>
      * If true, the Object implementing this interface must not participate in state saving or restoring.
      * </p>
-     * 
+     *
      * @return <code>true</code> if transient, <code>false</code> otherwise.
      */
 
-    public boolean isTransient();
+    boolean isTransient();
 
     /**
      * <p>
      * <span class="changed_modified_2_0_rev_a">Denotes</span> whether or not the Object implementing this interface must or
      * must not participate in state saving or restoring.
      * </p>
-     * 
+     *
      * @param newTransientValue boolean pass <code>true</code> if this Object <span class="changed_modified_2_0_rev_a">will
      * not participate</span> in state saving or restoring, otherwise pass <code>false</code>.
      */
-    public void setTransient(boolean newTransientValue);
+    void setTransient(boolean newTransientValue);
 
 }

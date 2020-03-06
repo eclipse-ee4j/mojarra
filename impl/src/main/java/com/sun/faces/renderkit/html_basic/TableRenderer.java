@@ -16,6 +16,13 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.util.Util;
@@ -25,13 +32,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -101,7 +101,7 @@ public class TableRenderer extends BaseTableRenderer {
         int rowIndex = data.getFirst() - 1;
         int rows = data.getRows();
         List<Integer> bodyRows = getBodyRows(context.getExternalContext().getApplicationMap(), data);
-        boolean hasBodyRows = (bodyRows != null && !bodyRows.isEmpty());
+        boolean hasBodyRows = bodyRows != null && !bodyRows.isEmpty();
         boolean wroteTableBody = false;
         if (!hasBodyRows) {
             renderTableBodyStart(context, component, writer);
@@ -110,7 +110,7 @@ public class TableRenderer extends BaseTableRenderer {
         while (true) {
 
             // Have we displayed the requested number of rows?
-            if ((rows > 0) && (++processed > rows)) {
+            if (rows > 0 && ++processed > rows) {
                 break;
             }
             // Select the current row
@@ -142,7 +142,7 @@ public class TableRenderer extends BaseTableRenderer {
 
         // fill an empty tbody, if no row has been rendered
         if (!renderedRow) {
-            this.renderEmptyTableRow(writer, data);
+            renderEmptyTableRow(writer, data);
         }
         renderTableBodyEnd(context, component, writer);
 
@@ -368,7 +368,7 @@ public class TableRenderer extends BaseTableRenderer {
     private void renderEmptyTableBody(final ResponseWriter writer, final UIComponent component) throws IOException {
 
         writer.startElement("tbody", component);
-        this.renderEmptyTableRow(writer, component);
+        renderEmptyTableRow(writer, component);
         writer.endElement("tbody");
 
     }
@@ -401,7 +401,7 @@ public class TableRenderer extends BaseTableRenderer {
         if (childCount > 0) {
             List<UIColumn> results = new ArrayList<>(childCount);
             for (UIComponent kid : table.getChildren()) {
-                if ((kid instanceof UIColumn) && kid.isRendered()) {
+                if (kid instanceof UIColumn && kid.isRendered()) {
                     results.add((UIColumn) kid);
                 }
             }

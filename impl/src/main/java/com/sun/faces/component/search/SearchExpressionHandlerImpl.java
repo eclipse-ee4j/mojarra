@@ -171,7 +171,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
         public ResolveComponentCallback(ContextCallback callback) {
             this.callback = callback;
-            this.invoked = false;
+            invoked = false;
         }
 
         @Override
@@ -217,7 +217,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
         public ResolveComponentsCallback(ContextCallback callback) {
             this.callback = callback;
-            this.invoked = false;
+            invoked = false;
         }
 
         @Override
@@ -276,12 +276,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
                     final String finalRemainingExpression = remainingExpression;
 
-                    invokeKeywordResolvers(searchExpressionContext, previous, keyword, remainingExpression, new ContextCallback() {
-                        @Override
-                        public void invokeContextCallback(FacesContext facesContext, UIComponent target) {
-                            handler.invokeOnComponent(searchExpressionContext, target, finalRemainingExpression, callback);
-                        }
-                    });
+                    invokeKeywordResolvers(searchExpressionContext, previous, keyword, remainingExpression, (facesContext1, target) -> handler.invokeOnComponent(searchExpressionContext, target, finalRemainingExpression, callback));
                 }
             } else {
                 String id = command;
@@ -462,7 +457,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
     /**
      * Extract the first command from the expression. @child(1):myId => @child(1) myId:@parent => myId
-     * 
+     *
      * @param facesContext
      * @param expression
      * @return

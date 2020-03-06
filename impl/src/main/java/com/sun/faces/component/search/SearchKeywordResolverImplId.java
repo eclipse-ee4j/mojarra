@@ -25,7 +25,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHint;
 import jakarta.faces.component.search.SearchKeywordContext;
-import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
@@ -46,20 +45,17 @@ public class SearchKeywordResolverImplId extends AbstractSearchKeywordResolverIm
             findWithId(facesContext, id, current, searchKeywordContext.getCallback());
         } else {
             current.visitTree(VisitContext.createVisitContext(facesContext, null, searchKeywordContext.getSearchExpressionContext().getVisitHints()),
-                    new VisitCallback() {
-                        @Override
-                        public VisitResult visit(VisitContext context, UIComponent target) {
-                            if (id.equals(target.getId())) {
-                                searchKeywordContext.invokeContextCallback(target);
+                    (context, target) -> {
+                        if (id.equals(target.getId())) {
+                            searchKeywordContext.invokeContextCallback(target);
 
-                                if (isHintSet(searchKeywordContext.getSearchExpressionContext(), SearchExpressionHint.RESOLVE_SINGLE_COMPONENT)) {
-                                    return VisitResult.COMPLETE;
-                                }
-
-                                return VisitResult.ACCEPT;
-                            } else {
-                                return VisitResult.ACCEPT;
+                            if (isHintSet(searchKeywordContext.getSearchExpressionContext(), SearchExpressionHint.RESOLVE_SINGLE_COMPONENT)) {
+                                return VisitResult.COMPLETE;
                             }
+
+                            return VisitResult.ACCEPT;
+                        } else {
+                            return VisitResult.ACCEPT;
                         }
                     });
         }

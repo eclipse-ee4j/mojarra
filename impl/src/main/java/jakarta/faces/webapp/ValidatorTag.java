@@ -17,13 +17,12 @@
 package jakarta.faces.webapp;
 
 import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>
@@ -58,6 +57,7 @@ import jakarta.faces.validator.Validator;
  * the binding facility and the implementation of the {@link #createValidator} method, is now an implementation detail.
  */
 
+@Deprecated
 public class ValidatorTag extends TagSupport {
 
     // ---------------------------------------------------------- Static Members
@@ -132,7 +132,7 @@ public class ValidatorTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -168,7 +168,7 @@ public class ValidatorTag extends TagSupport {
         // Register an instance with the appropriate component
         ((EditableValueHolder) component).addValidator(validator);
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
@@ -179,7 +179,7 @@ public class ValidatorTag extends TagSupport {
     @Override
     public void release() {
 
-        this.id = null;
+        id = null;
 
     }
 

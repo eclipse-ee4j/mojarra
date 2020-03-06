@@ -65,7 +65,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
      */
     public ResetValuesHandler(TagConfig config) {
         super(config);
-        this.render = this.getAttribute("render");
+        render = getAttribute("render");
     }
 
     @Override
@@ -89,7 +89,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
 
         // We're stuck splitting up the string.
         String[] values = SPLIT_PATTERN.split(strValue);
-        if ((values == null) || (values.length == 0)) {
+        if (values == null || values.length == 0) {
             return null;
         }
 

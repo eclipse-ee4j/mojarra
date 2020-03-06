@@ -18,7 +18,9 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,9 +43,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.ClientBehaviorRenderer;
-
-import java.util.EnumSet;
-import java.util.Set;
 
 /*
  *<b>AjaxBehaviorRenderer</b> renders Ajax behavior for a component.
@@ -174,7 +173,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
             }
         }
 
-        HtmlCommandScript commandScript = (component instanceof HtmlCommandScript) ? (HtmlCommandScript) component : null;
+        HtmlCommandScript commandScript = component instanceof HtmlCommandScript ? (HtmlCommandScript) component : null;
 
         if (commandScript != null) {
             String name = commandScript.getName();
@@ -223,7 +222,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
         ajaxCommand.append(",");
         appendIds(behaviorContext.getFacesContext(), component, ajaxCommand, render);
 
-        if ((onevent != null) || (onerror != null) || (delay != null) || (resetValues != null) || !params.isEmpty()) {
+        if (onevent != null || onerror != null || delay != null || resetValues != null || !params.isEmpty()) {
 
             ajaxCommand.append(",{");
 
@@ -280,7 +279,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
     // Appends an ids argument to the ajax command
     private static void appendIds(FacesContext facesContext, UIComponent component, StringBuilder builder, Collection<String> ids) {
 
-        if ((null == ids) || ids.isEmpty()) {
+        if (null == ids || ids.isEmpty()) {
             builder.append('0');
             return;
         }

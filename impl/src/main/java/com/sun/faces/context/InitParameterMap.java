@@ -16,15 +16,15 @@
 
 package com.sun.faces.context;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
-import java.util.Collection;
-import java.util.Iterator;
-
-import jakarta.servlet.ServletContext;
 
 import com.sun.faces.util.Util;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getInitParameterMap()
@@ -65,7 +65,7 @@ public class InitParameterMap extends BaseContextMap<String> {
 
     @Override
     public boolean containsKey(Object key) {
-        return (servletContext.getInitParameter(key.toString()) != null);
+        return servletContext.getInitParameter(key.toString()) != null;
     }
 
     @Override

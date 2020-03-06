@@ -17,8 +17,8 @@
 package jakarta.faces.view.facelets;
 
 import java.io.IOException;
-import jakarta.el.ELException;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIComponent;
@@ -42,8 +42,8 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
 
     public DelegatingMetaTagHandler(TagConfig config) {
         super(config);
-        this.binding = this.getAttribute("binding");
-        this.disabled = this.getAttribute("disabled");
+        binding = getAttribute("binding");
+        disabled = getAttribute("disabled");
         delegateFactory = (TagHandlerDelegateFactory) FactoryFinder.getFactory(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY);
     }
 
@@ -51,13 +51,13 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
      * <p class="changed_added_2_3">
      * Get the tag handler delegate.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_3">
      * Code that extends from DelegatingMetaTagHandler (directly or indirectly, as through extending ComponentHandler) must
      * take care to decorate, not replace, the TagHandlerDelegate instance returned by this method. Failure to do so may
      * produce unexpected results.
      * </p>
-     * 
+     *
      * @return the tag handler delegate.
      */
     protected abstract TagHandlerDelegate getTagHandlerDelegate();
@@ -69,15 +69,15 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
     }
 
     public TagAttribute getBinding() {
-        return this.binding;
+        return binding;
     }
 
     public Tag getTag() {
-        return this.tag;
+        return tag;
     }
 
     public String getTagId() {
-        return this.tagId;
+        return tagId;
     }
 
     public TagAttribute getTagAttribute(String localName) {
@@ -115,21 +115,21 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
      * @param ctx the <code>FaceletContext</code> for this view execution
      *
      * @param c the <code>UIComponent</code> of the component represented by this element instance.
-     * 
+     *
      * @throws IOException if thrown by the next {@link FaceletHandler}
-     * 
+     *
      * @throws FaceletException if thrown by the next {@link FaceletHandler}
-     * 
+     *
      * @throws jakarta.faces.FacesException if thrown by the next {@link FaceletHandler}
-     * 
+     *
      * @throws jakarta.el.ELException if thrown by the next {@link FaceletHandler}
-     * 
+     *
      * @since 2.0
      */
 
     public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException, FacesException, ELException {
         // first allow c to get populated
-        this.nextHandler.apply(ctx, c);
+        nextHandler.apply(ctx, c);
     }
 
     /**

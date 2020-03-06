@@ -42,17 +42,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ValueExpression;
-import jakarta.servlet.http.HttpServletResponse;
-
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * <p>
@@ -115,7 +114,7 @@ public abstract class ResourceHelper {
      * Implementation Note: If any exception occurs trying to return a stream to the compressed content, log the exception,
      * and instead try to return a stream to the original content.
      * </p>
-     * 
+     *
      * @param toStream the resource to obtain an InputStream to
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @return an <code>InputStream</code> to the resource, or <code>null</code> if no resource is found
@@ -243,7 +242,7 @@ public abstract class ResourceHelper {
      * {@link ResourceHelper#getURL(ResourceInfo, jakarta.faces.context.FacesContext)} and leverage the URL to obtain the
      * date information of the resource and return the value of <code>URLConnection.getLastModified()</code>
      * </p>
-     * 
+     *
      * @param resource the resource in question
      * @param ctx the {@link FacesContext} for the current request
      * @return the date of the resource in milliseconds (since epoch), or <code>0</code> if the date cannot be determined
@@ -277,7 +276,7 @@ public abstract class ResourceHelper {
      * <p>
      * Given a collection of path names:
      * </p>
-     * 
+     *
      * <pre>
      *   1.1, scripts, images, 1.2
      * </pre>
@@ -413,7 +412,7 @@ public abstract class ResourceHelper {
                     gzipFound = true;
                     break;
                 }
-                if (value.contains("*") && (!value.contains("*;q=0,") && !value.endsWith("*;q=0"))) {
+                if (value.contains("*") && !value.contains("*;q=0,") && !value.endsWith("*;q=0")) {
                     // gzip not explictly listed, but client sent *
                     // meaning gzip is implicitly acceptable
                     // keep looping to ensure we don't come across a
@@ -466,8 +465,8 @@ public abstract class ResourceHelper {
 
         ExternalContext extContext = ctx.getExternalContext();
         String contentType = extContext.getMimeType(resourceName);
-        boolean result = (contentType != null && (Arrays.binarySearch(EL_CONTENT_TYPES, contentType) >= 0)) || (null != resourceName && null != libraryName
-                && JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) && JSF_SCRIPT_RESOURCE_NAME.equals(resourceName));
+        boolean result = contentType != null && Arrays.binarySearch(EL_CONTENT_TYPES, contentType) >= 0 || null != resourceName && null != libraryName
+                && JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) && JSF_SCRIPT_RESOURCE_NAME.equals(resourceName);
         return result;
 
     }
@@ -519,9 +518,9 @@ public abstract class ResourceHelper {
         String extension = null;
         if (isResource) {
             Matcher m = RESOURCE_VERSION_PATTERN.matcher(path);
-            return ((m.matches()) ? new VersionInfo(m.group(1), m.group(2)) : null);
+            return m.matches() ? new VersionInfo(m.group(1), m.group(2)) : null;
         } else {
-            return ((LIBRARY_VERSION_PATTERN.matcher(path).matches()) ? new VersionInfo(path, extension) : null);
+            return LIBRARY_VERSION_PATTERN.matcher(path).matches() ? new VersionInfo(path, extension) : null;
         }
 
     }
@@ -679,7 +678,7 @@ public abstract class ResourceHelper {
             expressionEvaluated = true;
             ValueExpression ve = ctx.getApplication().getExpressionFactory().createValueExpression(elContext, "#{" + expressionBody + "}", String.class);
             Object value = ve.getValue(elContext);
-            String expressionResult = ((value != null) ? value.toString() : "");
+            String expressionResult = value != null ? value.toString() : "";
             buf.clear();
             for (int i = 0, len = expressionResult.length(); i < len; i++) {
                 buf.add((int) expressionResult.charAt(i));
@@ -699,7 +698,7 @@ public abstract class ResourceHelper {
 
         private boolean isPropertyValid(String property) {
             int idx = property.indexOf(':');
-            return (property.indexOf(':', idx + 1) == -1);
+            return property.indexOf(':', idx + 1) == -1;
         }
 
     } // END ELEvaluatingInputStream

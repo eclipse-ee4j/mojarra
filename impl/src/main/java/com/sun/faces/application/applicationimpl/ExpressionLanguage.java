@@ -30,15 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.CompositeELResolver;
-import jakarta.el.ELContextListener;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.MethodExpression;
-import jakarta.el.ValueExpression;
-import jakarta.enterprise.inject.spi.BeanManager;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
@@ -50,6 +41,14 @@ import com.sun.faces.el.VariableResolverImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.el.PropertyResolver;
@@ -75,7 +74,7 @@ public class ExpressionLanguage {
     private Version version = new Version();
 
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
 
         propertyResolver = new PropertyResolverImpl();
         variableResolver = new VariableResolverImpl();

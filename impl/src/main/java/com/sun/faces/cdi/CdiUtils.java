@@ -29,6 +29,9 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -39,10 +42,6 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.util.TypeLiteral;
-
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -127,7 +126,7 @@ public final class CdiUtils {
 
     /**
      * Create a behavior using the FacesBehavior value attribute.
-     * 
+     *
      * @param beanManager the bean manager.
      * @param value the value attribute.
      * @return the behavior, or null if we could not match one.
@@ -204,7 +203,7 @@ public final class CdiUtils {
 
     /**
      * Returns concrete (non-proxied) bean instance of given class in current context.
-     * 
+     *
      * @param type the required bean type the instance must have
      * @param create whether to auto-create bean if not exist
      * @return a bean instance adhering to the required type
@@ -229,7 +228,7 @@ public final class CdiUtils {
 
     /**
      * Finds an annotation in an Annotated, taking stereo types into account
-     * 
+     *
      * @param beanManager the current bean manager
      * @param annotated the Annotated in which to search
      * @param annotationType the type of the annotation to search for
@@ -275,7 +274,7 @@ public final class CdiUtils {
 
     public static DataModel<?> createDataModel(final Class<?> forClass) {
 
-        List<DataModel<?>> dataModel = new ArrayList<DataModel<?>>(1);
+        List<DataModel<?>> dataModel = new ArrayList<>(1);
         CDI<Object> cdi = CDI.current();
 
         // Scan the map in order, the first class that is a super class or equal to the class for which

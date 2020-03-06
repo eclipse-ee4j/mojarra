@@ -16,9 +16,15 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.tag.composite.CompositeLibrary;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
@@ -28,11 +34,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.ComponentConfig;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CompositeComponentTagLibrary extends LazyTagLibrary {
 
@@ -44,7 +45,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
             throw new NullPointerException();
         }
         this.ns = ns;
-        this.init();
+        init();
     }
 
     public CompositeComponentTagLibrary(String ns, String compositeLibraryName) {
@@ -57,7 +58,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
             throw new NullPointerException();
         }
         this.compositeLibraryName = compositeLibraryName;
-        this.init();
+        init();
 
     }
 
@@ -79,7 +80,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
         if (null != (ccResource = getCompositeComponentResource(ns, localName))) {
 
             try (InputStream componentStream = ccResource.getInputStream();) {
-                result = (componentStream != null);
+                result = componentStream != null;
             } catch (IOException ex) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, ex.toString(), ex);
@@ -148,7 +149,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
         InputStream is = null;
         try {
             is = scriptComponentResource.getInputStream();
-            result = (null != scriptComponentResource) && (null != is);
+            result = null != scriptComponentResource && null != is;
         } catch (IOException ex) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ex.toString(), ex);

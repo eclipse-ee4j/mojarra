@@ -16,17 +16,16 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.webapp.UIComponentClassicTagBase;
 import jakarta.faces.webapp.UIComponentELTag;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>
@@ -125,7 +124,7 @@ public class SetPropertyActionListenerTag extends TagSupport {
 
         // Nothing to do unless this tag created a component
         if (!tag.getCreated()) {
-            return (SKIP_BODY);
+            return SKIP_BODY;
         }
 
         UIComponent component = tag.getComponentInstance();
@@ -140,7 +139,7 @@ public class SetPropertyActionListenerTag extends TagSupport {
         ActionListener handler = new SetPropertyActionListenerImpl(target, value);
         ((ActionSource) component).addActionListener(handler);
 
-        return (SKIP_BODY);
+        return SKIP_BODY;
 
     }
 
@@ -151,8 +150,8 @@ public class SetPropertyActionListenerTag extends TagSupport {
     @Override
     public void release() {
 
-        this.value = null;
-        this.target = null;
+        value = null;
+        target = null;
 
     }
 

@@ -25,10 +25,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.spi.ConfigurationResourceProvider;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -46,7 +46,7 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
 
     /**
      * Constructs a new <code>URITask</code> instance.
-     * 
+     *
      * @param provider the <code>ConfigurationResourceProvider</code> from which zero or more <code>URL</code>s will be
      * returned
      * @param servletContext the <code>ServletContext</code> of the current application

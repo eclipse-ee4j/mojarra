@@ -17,12 +17,11 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.util.AnnotationLiteral;
-
 import jakarta.faces.annotation.ViewMap;
 
 /**
  * An annotation literal for @ViewMap.
- * 
+ *
  * @since 2.3
  */
 @SuppressWarnings("all")

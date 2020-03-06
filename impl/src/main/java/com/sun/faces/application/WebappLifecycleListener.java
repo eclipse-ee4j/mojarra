@@ -16,27 +16,19 @@
 
 package com.sun.faces.application;
 
-import com.sun.faces.application.view.ViewScopeManager;
 import static com.sun.faces.application.view.ViewScopeManager.ACTIVE_VIEW_MAPS;
-import com.sun.faces.config.InitFacesContext;
-import com.sun.faces.config.WebConfiguration;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextAttributeEvent;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletRequestAttributeEvent;
-import jakarta.servlet.ServletRequestEvent;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionBindingEvent;
-import jakarta.servlet.http.HttpSessionEvent;
+
+import com.sun.faces.application.view.ViewScopeManager;
+import com.sun.faces.config.InitFacesContext;
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.flow.FlowCDIContext;
 import com.sun.faces.io.FastStringWriter;
@@ -50,6 +42,16 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextAttributeEvent;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletRequestAttributeEvent;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionBindingEvent;
+import jakarta.servlet.http.HttpSessionEvent;
 
 /**
  * <p>
@@ -102,13 +104,13 @@ public class WebappLifecycleListener {
     // ------------------------------------------------------------ Constructors
 
     public WebappLifecycleListener() {
-        this.activeSessions = new ActiveSessions();
+        activeSessions = new ActiveSessions();
     }
 
     public WebappLifecycleListener(ServletContext servletContext) {
 
         this.servletContext = servletContext;
-        this.activeSessions = new ActiveSessions();
+        activeSessions = new ActiveSessions();
 
     }
 
@@ -172,7 +174,7 @@ public class WebappLifecycleListener {
 
     /**
      * Notfication that a session has been created.
-     * 
+     *
      * @param event the notification event
      */
     public void sessionCreated(HttpSessionEvent event) {
@@ -216,7 +218,7 @@ public class WebappLifecycleListener {
     /**
      * Notification that an existing attribute has been removed from the servlet request. Called after the attribute is
      * removed.
-     * 
+     *
      * @param event the notification event
      */
     public void attributeRemoved(ServletRequestAttributeEvent event) {
@@ -334,8 +336,8 @@ public class WebappLifecycleListener {
      * @param event the notification event
      */
     public void contextInitialized(ServletContextEvent event) {
-        if (this.servletContext == null) {
-            this.servletContext = event.getServletContext();
+        if (servletContext == null) {
+            servletContext = event.getServletContext();
         }
     }
 
@@ -351,7 +353,7 @@ public class WebappLifecycleListener {
             String beanName = (String) e.nextElement();
             handleAttributeEvent(beanName, servletContext.getAttribute(beanName), ELUtils.Scope.APPLICATION);
         }
-        this.applicationAssociate = null;
+        applicationAssociate = null;
 
     }
 

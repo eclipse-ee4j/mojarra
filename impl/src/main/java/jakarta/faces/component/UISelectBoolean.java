@@ -17,10 +17,6 @@
 package jakarta.faces.component;
 
 import jakarta.el.ValueExpression;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIInput;
-import jakarta.faces.component.UISelectBoolean;
-
 import jakarta.faces.el.ValueBinding;
 
 /**
@@ -77,7 +73,7 @@ public class UISelectBoolean extends UIInput {
      * Return the local value of the selected state of this component. This method is a typesafe alias for
      * <code>getValue()</code>.
      * </p>
-     * 
+     *
      * @return true if selected, false otherwise.
      */
     public boolean isSelected() {
@@ -164,6 +160,7 @@ public class UISelectBoolean extends UIInput {
      *
      * @deprecated This has been replaced by {@link #getValueExpression}.
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name) {
         if ("selected".equals(name)) {
@@ -191,6 +188,7 @@ public class UISelectBoolean extends UIInput {
      *
      * @deprecated This has been replaced by {@link #setValueExpression}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
         if ("selected".equals(name)) {

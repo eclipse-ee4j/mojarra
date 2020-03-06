@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * The presence of this annotation on a class automatically registers the class with the runtime as a
  * {@link ResourceResolver}.
  * </p>
- * 
+ *
  */
 
 @Retention(RetentionPolicy.RUNTIME)

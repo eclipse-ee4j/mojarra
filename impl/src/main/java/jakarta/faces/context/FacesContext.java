@@ -24,20 +24,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.el.ELContext;
-import jakarta.faces.context.ExceptionHandler;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.FacesContextFactory;
-import jakarta.faces.context.PartialViewContext;
-import jakarta.faces.context.PartialViewContextFactory;
-import jakarta.faces.context.ResponseStream;
-import jakarta.faces.context.ResponseWriter;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
@@ -59,7 +50,7 @@ import jakarta.faces.render.RenderKit;
  * referenced from any thread other than the one upon which the Jakarta Servlet container executing this web application
  * utilizes for the processing of this request.
  * </p>
- * 
+ *
  * <p class="changed_added_2_3">
  * A FacesContext can be injected into a request scoped bean using <code>@Inject FacesContext facesContext;</code>
  * </p>
@@ -100,14 +91,14 @@ public abstract class FacesContext {
      * <span class="changed_modified_2_0">Return</span> the {@link Application} instance associated with this web
      * application.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called during application startup or
      * shutdown, returns the correct current {@link jakarta.faces.application.Application} instance.
      * </p>
-     * 
+     *
      * @return the <code>Application</code> instance associated with this web application.
-     * 
+     *
      * @throws IllegalStateException if this method is called after this instance has been released
      */
     public abstract Application getApplication();
@@ -121,22 +112,22 @@ public abstract class FacesContext {
      * <code>Map</code> does not cause any events to fire, as is the case with the other maps: for request, session, and
      * application scope. When {@link #release()} is invoked, the attributes must be cleared.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * The <code>Map</code> returned by this method is not associated with the request. If you would like to get or set
      * request attributes, see {@link ExternalContext#getRequestMap}.
-     * 
+     *
      * <p>
      * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
      * not breaking existing applications that extend this class.
      * </p>
      *
      * </div>
-     * 
+     *
      * @return mutable <code>Map</code> representing the attributes associated wth this <code>FacesContext</code> instance.
-     * 
+     *
      * @throws IllegalStateException if this method is called after this instance has been released
      *
      * @since 2.0
@@ -166,9 +157,9 @@ public abstract class FacesContext {
      * processing) and the rendering of specified components (known as partial rendering). This method must return a new
      * {@link PartialViewContext} if one does not already exist.
      * </p>
-     * 
+     *
      * @return the instance of <code>PartialViewContext</code> for this request.
-     * 
+     *
      * @throws IllegalStateException if this method is called after this instance has been released
      *
      * @since 2.0
@@ -257,7 +248,7 @@ public abstract class FacesContext {
      * <p class="changed_added_2_0">
      * Return the {@link ExceptionHandler} for this request.
      * </p>
-     * 
+     *
      * @return instance of <code>ExceptionHandler</code>.
      */
     public ExceptionHandler getExceptionHandler() {
@@ -292,15 +283,15 @@ public abstract class FacesContext {
      * <span class="changed_modified_2_0">Return</span> the {@link ExternalContext} instance for this
      * <code>FacesContext</code> instance.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called during application startup or
      * shutdown, this method returns an {@link ExternalContext} instance with the special behaviors indicated in the javadoc
      * for that class. Methods document as being valid to call during application startup or shutdown must be supported.
      * </p>
-     * 
+     *
      * @return instance of <code>ExternalContext</code>
-     * 
+     *
      * @throws IllegalStateException if this method is called after this instance has been released
      */
     public abstract ExternalContext getExternalContext();
@@ -399,7 +390,7 @@ public abstract class FacesContext {
      *
      * @param clientId The client identifier for which messages are requested, or <code>null</code> for messages not
      * associated with any client identifier
-     * 
+     *
      * @return <code>Iterator</code> over the <code>FacesMessage</code>s.
      *
      * @throws IllegalStateException if this method is called after this instance has been released
@@ -412,9 +403,9 @@ public abstract class FacesContext {
      * Note that this enables accessing the value of this property from the Jakarta Expression Language expression
      * <code>#{facesContext.namingContainerSeparatorChar}</code>.
      * </p>
-     * 
+     *
      * @return the separator char.
-     * 
+     *
      */
 
     public char getNamingContainerSeparatorChar() {
@@ -465,9 +456,9 @@ public abstract class FacesContext {
      * implementation is provided that returns an empty list. Implementations compliant with the version in which this
      * method was introduced must implement this method as specified.
      * </p>
-     * 
+     *
      * @return the list of resource library contracts.
-     * 
+     *
      * @throws IllegalStateException if this method is called after this instance has been released
      *
      * @since 2.2
@@ -487,12 +478,12 @@ public abstract class FacesContext {
      * with implementations of the specification prior to when this method was introduced, an implementation is provided
      * that takes no action. Implementations compliant with the version in which this method was introduced must implement
      * this method as specified.
-     * 
+     *
      * </p>
-     * 
+     *
      * @param contracts The new contracts to be returned, as an immutable {@code List}. from a subsequent call to
      * {@link #getResourceLibraryContracts}.
-     * 
+     *
      * @throws IllegalStateException if this method is called after this instance has been released
      *
      * @since 2.2
@@ -506,9 +497,9 @@ public abstract class FacesContext {
      * <p class="changed_added_2_0">
      * Return <code>true</code> if the <code>validationFailed()</code> method has been called for the current request.
      * </p>
-     * 
+     *
      * @return boolean indicating if the <code>validationFailed()</code> method has been called for the current request
-     * 
+     *
      * @throws IllegalStateException if this method is called after this instance has been released
      */
     public boolean isValidationFailed() {
@@ -570,7 +561,7 @@ public abstract class FacesContext {
      * <p>
      * <span class="changed_modified_2_0">Return</span> the root component that is associated with the this request.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called during application startup or
      * shutdown, this method returns a new <code>UIViewRoot</code> with its locale set to <code>Locale.getDefault()</code>.
@@ -586,7 +577,7 @@ public abstract class FacesContext {
      * <p>
      * <span class="changed_modified_2_0 changed_modified_2_1">Set</span> the root component that is associated with this
      * request.
-     * 
+     *
      * <p class="changed_modified_2_1">
      * This method can be called by the application handler (or a class that the handler calls), during the <em>Invoke
      * Application</em> phase of the request processing lifecycle and during the <em>Restore View</em> phase of the request
@@ -594,7 +585,7 @@ public abstract class FacesContext {
      * implementations are not required to enforce this restriction, though a future version of the specification may
      * require enforcement.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * If the current <code>UIViewRoot</code> is non-<code>null</code>, and calling <code>equals()</code> on the argument
      * <code>root</code>, passing the current <code>UIViewRoot</code> returns <code>false</code>, the <code>clear</code>
@@ -629,7 +620,7 @@ public abstract class FacesContext {
      * <p class="changed_added_2_1">
      * Return a flag indicating if the resources associated with this <code>FacesContext</code> instance have been released.
      * </p>
-     * 
+     *
      * @return <code>true</code> if the resources have been released.
      *
      * @since 2.1
@@ -650,13 +641,13 @@ public abstract class FacesContext {
      * <code>FacesContext</code> instance (until the <code>FacesContext</code> instance has been recycled by the
      * implementation for re-use), calling any other methods will cause an <code>IllegalStateException</code> to be thrown.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * If a call was made to {@link #getAttributes} during the processing for this request, the implementation must call
      * <code>clear()</code> on the <code>Map</code> returned from <code>getAttributes()</code>, and then de-allocate the
      * data-structure behind that <code>Map</code>.
      * </p>
-     * 
+     *
      * <p>
      * The implementation must call {@link #setCurrentInstance} passing <code>null</code> to remove the association between
      * this thread and this dead <code>FacesContext</code> instance.
@@ -687,9 +678,9 @@ public abstract class FacesContext {
      * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
      * not breaking existing applications that extend this class.
      * </p>
-     * 
+     *
      * @return the boolean indicating whether this request is a post one.
-     * 
+     *
      * @throws IllegalStateException if this method is called after this instance has been released
      *
      * @since 2.0
@@ -750,7 +741,7 @@ public abstract class FacesContext {
             return defaultFacesContext.getCurrentPhaseId();
         }
         if (!isCreatedFromValidFactory) {
-            return this.currentPhaseIdForInvalidFactoryConstruction;
+            return currentPhaseIdForInvalidFactoryConstruction;
         }
         throw new UnsupportedOperationException();
 
@@ -761,7 +752,7 @@ public abstract class FacesContext {
      * The implementation must call this method at the earliest possble point in time after entering into a new phase in the
      * request processing lifecycle.
      * </p>
-     * 
+     *
      * @param currentPhaseId The {@link jakarta.faces.event.PhaseId} for the current phase.
      *
      * @throws IllegalStateException if this method is called after this instance has been released
@@ -773,7 +764,7 @@ public abstract class FacesContext {
         if (defaultFacesContext != null) {
             defaultFacesContext.setCurrentPhaseId(currentPhaseId);
         } else if (!isCreatedFromValidFactory) {
-            this.currentPhaseIdForInvalidFactoryConstruction = currentPhaseId;
+            currentPhaseIdForInvalidFactoryConstruction = currentPhaseId;
         } else {
             throw new UnsupportedOperationException();
         }
@@ -799,11 +790,11 @@ public abstract class FacesContext {
      * <p class="changed_added_2_0">
      * Returns a flag indicating whether or not the runtime should publish events when asked to do so.
      * </p>
-     * 
+     *
      * @return <code>true</code> if events should be published, otherwise <code>false</code>
      */
     public boolean isProcessingEvents() {
-        return this.processingEvents;
+        return processingEvents;
     }
 
     /**
@@ -811,9 +802,9 @@ public abstract class FacesContext {
      * Return <code>true</code> if the current {@link ProjectStage} as returned by the {@link Application} instance is equal
      * to <code>stage</code>, otherwise return <code>false</code>
      * </p>
-     * 
+     *
      * @param stage the {@link ProjectStage} to check
-     * 
+     *
      * @return boolean indicating whether the application has the same stage.
      *
      * @throws IllegalStateException if this method is called after this instance has been released
@@ -824,7 +815,7 @@ public abstract class FacesContext {
         if (stage == null) {
             throw new NullPointerException();
         }
-        return (stage.equals(getApplication().getProjectStage()));
+        return stage.equals(getApplication().getProjectStage());
 
     }
 
@@ -838,7 +829,7 @@ public abstract class FacesContext {
     private static ThreadLocal<FacesContext> instance = new ThreadLocal<FacesContext>() {
         @Override
         protected FacesContext initialValue() {
-            return (null);
+            return null;
         }
     };
 
@@ -849,7 +840,7 @@ public abstract class FacesContext {
      * startup or shutdown" must be supported during application startup or shutdown time. The result of calling a method
      * during application startup or shutdown time that does not have this designation is undefined.
      * </p>
-     * 
+     *
      * @return the instance of <code>FacesContext</code>.
      */
     public static FacesContext getCurrentInstance() {

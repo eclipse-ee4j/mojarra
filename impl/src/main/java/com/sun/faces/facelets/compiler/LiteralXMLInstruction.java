@@ -16,13 +16,12 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.io.IOException;
 
 final class LiteralXMLInstruction implements Instruction {
 
@@ -32,15 +31,15 @@ final class LiteralXMLInstruction implements Instruction {
     private final int len;
 
     public LiteralXMLInstruction(String literal) {
-        this.instruction = literal.toCharArray();
-        this.len = this.instruction.length;
+        instruction = literal.toCharArray();
+        len = instruction.length;
     }
 
     @Override
     public void write(FacesContext context) throws IOException {
         ResponseWriter rw = context.getResponseWriter();
         rw.writeText(STOP, 0, 0); // hack to get closing elements
-        rw.write(this.instruction, 0, this.len);
+        rw.write(instruction, 0, len);
     }
 
     @Override

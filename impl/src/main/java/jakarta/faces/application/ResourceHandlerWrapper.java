@@ -19,11 +19,6 @@ package jakarta.faces.application;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.ResourceVisitOption;
-import jakarta.faces.application.ViewResource;
-
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.FacesContext;
 
@@ -143,6 +138,7 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
      *
      * @since 2.3
      */
+    @Override
     public Stream<String> getViewResources(FacesContext facesContext, String path, ResourceVisitOption... options) {
         return getWrapped().getViewResources(facesContext, path, options);
     }

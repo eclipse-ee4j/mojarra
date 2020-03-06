@@ -16,8 +16,12 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import com.sun.faces.renderkit.AttributeManager;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
@@ -26,10 +30,6 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
@@ -82,8 +82,8 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
-        String endElement = ((Util.componentIsDisabled(component) || context.getAttributes().remove(NO_NAV_CASE) != null) ? "span" : "a");
+        assert writer != null;
+        String endElement = Util.componentIsDisabled(component) || context.getAttributes().remove(NO_NAV_CASE) != null ? "span" : "a";
         writer.endElement(endElement);
 
     }
@@ -93,7 +93,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
     protected void renderAsDisabled(FacesContext context, UIComponent component, boolean failedToResolveNavigationCase) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("span", component);
         writeIdAndNameAttributes(context, writer, component);
@@ -113,7 +113,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
     protected void renderAsActive(FacesContext context, NavigationCase navCase, UIComponent component) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.startElement("a", component);
         writeIdAndNameAttributes(context, writer, component);

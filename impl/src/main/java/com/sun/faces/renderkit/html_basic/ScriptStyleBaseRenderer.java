@@ -62,7 +62,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
      * to make it so that when an element with a name given by the value of the optional "target" component attribute is
      * encountered, this component can be called upon to render itself. This method will add the component (associated with
      * this Renderer) to a facet in the view only if a "target" component attribute is set.
-     * 
+     *
      */
     @Override
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
@@ -129,7 +129,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
 
         String name = (String) attributes.get("name");
         int childCount = component.getChildCount();
-        boolean renderChildren = (0 < childCount);
+        boolean renderChildren = 0 < childCount;
 
         // If we have no "name" attribute...
         if (null == name) {
@@ -192,7 +192,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         String resourceUrl = "RES_NOT_FOUND";
 
         ResponseWriter writer = context.getResponseWriter();
-        this.startExternalElement(writer, component);
+        startExternalElement(writer, component);
 
         WebConfiguration webConfig = WebConfiguration.getInstance();
 
@@ -212,12 +212,12 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         } else {
             resourceUrl = resource.getRequestPath();
             if (query != null) {
-                resourceUrl = resourceUrl + ((resourceUrl.indexOf("?") > -1) ? "&amp;" : "?") + query;
+                resourceUrl = resourceUrl + (resourceUrl.indexOf("?") > -1 ? "&amp;" : "?") + query;
             }
             resourceUrl = context.getExternalContext().encodeResourceURL(resourceUrl);
         }
 
-        this.endExternalElement(writer, component, resourceUrl);
+        endExternalElement(writer, component, resourceUrl);
         resourceHandler.markResourceRendered(context, name, library);
 
         // Remove the key to prevent issues with state saving.
@@ -253,7 +253,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
                 break;
             }
         }
-        return (result);
+        return result;
 
     }
 

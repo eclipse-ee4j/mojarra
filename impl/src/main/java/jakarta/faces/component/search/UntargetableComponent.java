@@ -19,9 +19,9 @@ package jakarta.faces.component.search;
 /**
  * <div class="changed_added_2_3">Components implementing this interface are ignored by the algorithm - especially in
  * the implementation of <code>@child(n)</code>, <code>@next</code> and <code>@previous</code>.
- * 
+ *
  * If you suppose this case, markup/literal components must implement {@link UntargetableComponent}:
- * 
+ *
  * <pre>
  * &lt;table&gt;
  *      &lt;tr&gt;
@@ -34,20 +34,20 @@ package jakarta.faces.component.search;
  *      &lt;/tr&gt;
  * &lt;/table&gt;
  * </pre>
- * 
+ *
  * <code>@next</code> would otherwise actually target the markup:
- * 
+ *
  * <pre>
  *  &lt;/td&gt;
  *  &lt;td&gt;
  * </pre>
- * 
+ *
  * and not desired component:
- * 
+ *
  * <pre>
  *  &lt;h:inputText id="input" value="#{bean.name} /&gt;
  * </pre>
- * 
+ *
  * </div>
  *
  * @since 2.3

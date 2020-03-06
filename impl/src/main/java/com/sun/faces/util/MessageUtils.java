@@ -187,7 +187,7 @@ public class MessageUtils {
      * <p>
      * Creates a new <code>FacesMessage</code> instance using the specified #messageId.
      * </p>
-     * 
+     *
      * @param messageId the message ID
      * @param params an array of substitution parameters
      * @return a new <code>FacesMessage</code> based on the provided <code>messageId</code>
@@ -202,7 +202,7 @@ public class MessageUtils {
      * <p>
      * Returns the localized message for the specified #messageId.
      * </p>
-     * 
+     *
      * @param messageId the message ID
      * @param params an array of substitution parameters
      * @return the localized message for the specified <code>messageId</code>

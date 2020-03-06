@@ -16,21 +16,19 @@
 
 package com.sun.faces.taglib.jsf_core;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.webapp.ConverterELTag;
-
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.el.ValueExpression;
-import jakarta.el.ELContext;
 import jakarta.servlet.jsp.JspException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <p>

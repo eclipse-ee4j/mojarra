@@ -16,10 +16,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.MessageFactory;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -82,15 +78,15 @@ public class FloatConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (Float.valueOf(value));
+            return Float.valueOf(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, FLOAT_ID, value, "2000000000", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -121,7 +117,7 @@ public class FloatConverter implements Converter {
         }
 
         try {
-            return (Float.toString(((Number) value).floatValue()));
+            return Float.toString(((Number) value).floatValue());
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

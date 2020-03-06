@@ -16,16 +16,16 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.facelets.util.ReflectionUtil;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.context.FacesContext;
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+
+import com.sun.faces.facelets.util.ReflectionUtil;
+
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A property descriptor for a composite component attribute.
@@ -39,7 +39,7 @@ public class CompositeAttributePropertyDescriptor extends PropertyDescriptor {
     @Override
     public Object getValue(String attributeName) {
         Object result = super.getValue(attributeName);
-        if ("type".equals(attributeName) && (null != result) && !(result instanceof Class)) {
+        if ("type".equals(attributeName) && null != result && !(result instanceof Class)) {
             FacesContext context = FacesContext.getCurrentInstance();
             ELContext elContext = context.getELContext();
             String classStr = (String) ((ValueExpression) result).getValue(elContext);
@@ -47,14 +47,14 @@ public class CompositeAttributePropertyDescriptor extends PropertyDescriptor {
                 try {
                     result = ReflectionUtil.forName(classStr);
 
-                    this.setValue(attributeName, result);
+                    setValue(attributeName, result);
                 } catch (ClassNotFoundException ex) {
                     classStr = "java.lang." + classStr; // NOPMD
                     boolean throwException = false;
                     try {
                         result = ReflectionUtil.forName(classStr);
 
-                        this.setValue(attributeName, result);
+                        setValue(attributeName, result);
                     } catch (ClassNotFoundException ex2) {
                         throwException = true;
                     }

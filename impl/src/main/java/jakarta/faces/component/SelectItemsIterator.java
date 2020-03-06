@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 
@@ -96,7 +95,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
         if (items != null) {
             if (items.hasNext()) {
-                return (true);
+                return true;
             } else {
                 items = null;
             }
@@ -129,7 +128,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
             throw new NoSuchElementException();
         }
         if (items != null) {
-            return (items.next());
+            return items.next();
         }
         return next();
 
@@ -210,7 +209,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
     /**
      * Update the <code>singleItemIterator</code> with the provided <code>item</code>
-     * 
+     *
      * @param item the {@link SelectItem} to expose as an Iterator
      */
     private void updateSingeItemIterator(SelectItem item) {
@@ -283,7 +282,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
         private MapIterator(Map map) {
 
-            this.iterator = map.entrySet().iterator();
+            iterator = map.entrySet().iterator();
 
         }
 
@@ -302,8 +301,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
-            item.setLabel(((key != null) ? key.toString() : value.toString()));
-            item.setValue(((value != null) ? value : ""));
+            item.setLabel(key != null ? key.toString() : value.toString());
+            item.setValue(value != null ? value : "");
             return item;
 
         }
@@ -448,12 +447,12 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
                     Object itemEscapedResult = attrs.get(ITEM_ESCAPED);
                     Object itemDisabledResult = attrs.get(ITEM_DISABLED);
                     Object noSelectionOptionResult = attrs.get(NO_SELECTION_OPTION);
-                    setValue(((itemValueResult != null) ? itemValueResult : value));
-                    setLabel(((itemLabelResult != null) ? itemLabelResult.toString() : value.toString()));
-                    setDescription(((itemDescriptionResult != null) ? itemDescriptionResult.toString() : null));
-                    setEscape(((itemEscapedResult != null) ? Boolean.valueOf(itemEscapedResult.toString()) : true));
-                    setDisabled(((itemDisabledResult != null) ? Boolean.valueOf(itemDisabledResult.toString()) : false));
-                    setNoSelectionOption(((noSelectionOptionResult != null) ? Boolean.valueOf(noSelectionOptionResult.toString()) : false));
+                    setValue(itemValueResult != null ? itemValueResult : value);
+                    setLabel(itemLabelResult != null ? itemLabelResult.toString() : value.toString());
+                    setDescription(itemDescriptionResult != null ? itemDescriptionResult.toString() : null);
+                    setEscape(itemEscapedResult != null ? Boolean.valueOf(itemEscapedResult.toString()) : true);
+                    setDisabled(itemDisabledResult != null ? Boolean.valueOf(itemDisabledResult.toString()) : false);
+                    setNoSelectionOption(noSelectionOptionResult != null ? Boolean.valueOf(noSelectionOptionResult.toString()) : false);
                 } finally {
                     if (var != null) {
                         if (oldVarValue != null) {
@@ -513,7 +512,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
         @Override
         public boolean hasNext() {
 
-            return (index < count);
+            return index < count;
 
         }
 
@@ -557,7 +556,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
             super(sourceComponent);
             this.ctx = ctx;
-            this.iterator = iterable.iterator();
+            iterator = iterable.iterator();
 
         }
 

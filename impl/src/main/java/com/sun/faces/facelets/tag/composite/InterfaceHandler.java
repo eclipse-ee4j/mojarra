@@ -16,12 +16,22 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import com.sun.faces.application.view.FaceletViewHandlingStrategy;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;
@@ -33,16 +43,6 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
-
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import jakarta.el.ValueExpression;
 
 public class InterfaceHandler extends TagHandlerImpl {
 
@@ -65,7 +65,7 @@ public class InterfaceHandler extends TagHandlerImpl {
         // Do not process if we're simply building metadata
         if (FaceletViewHandlingStrategy.isBuildingMetadata(context)) {
             imbueComponentWithMetadata(ctx, parent);
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         } else {
             if (ProjectStage.Development == context.getApplication().getProjectStage()) {
                 validateComponent(context, parent);
@@ -113,14 +113,14 @@ public class InterfaceHandler extends TagHandlerImpl {
                 // Is the attribute a method expression?
                 if (null != cur.getValue("method-signature") && null == cur.getValue("type")) {
                     // Yes, look for it as an EL expression.
-                    found = (null != cc.getValueExpression(key));
+                    found = null != cc.getValueExpression(key);
                 } else {
                     // No, look for it as an actual attribute
                     found = attrs.containsKey(key);
                     // Special case: nested composite components
                     if (!found) {
                         // Check if an EL expression was given.
-                        found = (null != cc.getValueExpression(key));
+                        found = null != cc.getValueExpression(key);
                     }
                 }
                 if (!found) {
@@ -177,7 +177,7 @@ public class InterfaceHandler extends TagHandlerImpl {
     @SuppressWarnings({ "unchecked" })
     private void imbueComponentWithMetadata(FaceletContext ctx, UIComponent parent) {
         // only process if it's been created
-        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
+        if (null == parent || null == (parent = parent.getParent()) || !ComponentHandler.isNew(parent)) {
             return;
         }
 
@@ -194,7 +194,7 @@ public class InterfaceHandler extends TagHandlerImpl {
             // per the javadocs for ViewDeclarationLanguage.getComponentMetadata()
             componentBeanInfo.setBeanDescriptor(componentDescriptor);
 
-            for (TagAttribute tagAttribute : this.tag.getAttributes().getAll()) {
+            for (TagAttribute tagAttribute : tag.getAttributes().getAll()) {
                 String attributeName = tagAttribute.getLocalName();
                 PropertyHandler handler = INTERFACE_HANDLERS.getHandler(ctx, attributeName);
                 if (handler != null) {

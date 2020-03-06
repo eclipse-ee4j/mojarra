@@ -29,9 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import jakarta.el.ELException;
-import jakarta.el.ValueExpression;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
@@ -40,6 +37,8 @@ import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UISelectItem;
@@ -131,7 +130,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             clientId = radio.getClientId(context);
         }
 
-        assert (clientId != null);
+        assert clientId != null;
         Map<String, String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
         String newValue = requestParameterMap.get(group.getClientName());
         String prefix = clientId + UINamingContainer.getSeparatorChar(context);
@@ -174,7 +173,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         boolean disabled = Util.componentIsDisabled(radio);
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         renderInput(context, writer, radio, clientId, itemValue, converter, checked, disabled, group);
 
@@ -204,7 +203,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             } else if (Collection.class.isAssignableFrom(type)) {
                 Iterator<?> valueIter = ((Collection<?>) currentValue).iterator();
 
-                if ((null != valueIter) && valueIter.hasNext()) {
+                if (null != valueIter && valueIter.hasNext()) {
                     currentValue = valueIter.next();
 
                     if (null != currentValue) {
@@ -225,7 +224,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             newValue = itemValue;
         }
 
-        return (newValue != null) && newValue.equals(currentValue);
+        return newValue != null && newValue.equals(currentValue);
     }
 
     @Override
@@ -233,7 +232,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             Object[] submittedValues, boolean alignVertical, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         UISelectOne selectOne = (UISelectOne) component;
         Object curValue = curItem.getValue();
@@ -278,7 +277,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             writer.writeAttribute("checked", Boolean.TRUE, null);
         }
 
-        Object value = (getFormattedValue(context, component, itemValue, converter));
+        Object value = getFormattedValue(context, component, itemValue, converter);
 
         if (group == null) {
             writer.writeAttribute("name", component.getClientId(context), "clientId");
@@ -378,7 +377,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
         public Group(FacesContext context, String clientName) {
             this.clientName = clientName;
-            this.clientIds = new ArrayList<>();
+            clientIds = new ArrayList<>();
         }
 
         public String getClientName() {
@@ -428,8 +427,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
                 }
 
                 if (!iterator.hasNext()) {
-                    throw new IllegalStateException(MessageFormat.format("UISelectOne component id=\"{0}\" group=\"{1}\" has no UISelectItem",
-                            new Object[] { radio.getId(), radio.getGroup() }));
+                    throw new IllegalStateException(MessageFormat.format("UISelectOne component id=\"{0}\" group=\"{1}\" has no UISelectItem", radio.getId(), radio.getGroup()));
                 }
 
                 selectItem = iterator.next();

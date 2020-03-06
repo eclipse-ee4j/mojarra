@@ -16,10 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.SystemEvent;
-
 /**
  * <p class="changed_added_2_0">
  * By implementing this class, an object indicates that it is a listener for one or more kinds of {@link SystemEvent}s.
@@ -42,7 +38,7 @@ public interface SystemEventListener extends FacesListener {
      *
      * @throws AbortProcessingException if lifecycle processing should cease for this request.
      */
-    public void processEvent(SystemEvent event) throws AbortProcessingException;
+    void processEvent(SystemEvent event) throws AbortProcessingException;
 
     /**
      * <p>
@@ -51,9 +47,9 @@ public interface SystemEventListener extends FacesListener {
      * </p>
      *
      * @param source the source that is inquiring about the appropriateness of sending an event to this listener instance.
-     * 
+     *
      * @return the value as specified above
      */
-    public boolean isListenerForSource(Object source);
+    boolean isListenerForSource(Object source);
 
 }

@@ -21,10 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import jakarta.faces.validator.MessageFactory;
-import jakarta.faces.validator.Validator;
-import jakarta.faces.validator.ValidatorException;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
@@ -35,7 +31,7 @@ import jakarta.faces.context.FacesContext;
  * <span class="changed_modified_2_0_rev_a">A Validator</span> that checks against a Regular Expression (which is the
  * pattern property). The pattern must resolve to a String that follows the java.util.regex standards.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class RegexValidator implements Validator, PartialStateHolder {
@@ -82,7 +78,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
      */
     public void setPattern(String pattern) {
         clearInitialState();
-        this.regex = pattern;
+        regex = pattern;
     }
 
     /**
@@ -94,23 +90,23 @@ public class RegexValidator implements Validator, PartialStateHolder {
      */
 
     public String getPattern() {
-        return this.regex;
+        return regex;
     }
 
     /**
-     * 
+     *
      * <p>
      * Validate a String against a regular expression pattern. The full regex pattern must be matched in order to pass the
      * validation.
      * </p>
-     * 
+     *
      * @param context {@inheritDoc}
      * @param component {@inheritDoc}
      * @param value {@inheritDoc}
-     * 
+     *
      * @throws NullPointerException {@inheritDoc}
      * @throws ValidatorException {@inheritDoc}
-     * 
+     *
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) {
@@ -161,7 +157,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
             Object values[] = new Object[1];
             values[0] = regex;
 
-            return (values);
+            return values;
         }
         return null;
 
@@ -185,7 +181,7 @@ public class RegexValidator implements Validator, PartialStateHolder {
     @Override
     public boolean isTransient() {
 
-        return (this.transientValue);
+        return transientValue;
 
     }
 

@@ -16,11 +16,13 @@
 
 package com.sun.faces.application.annotation;
 
-import com.sun.faces.util.Util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+
+import com.sun.faces.util.Util;
+
 import jakarta.annotation.Resource;
 
 /**
@@ -73,8 +75,8 @@ class ResourceScanner implements Scanner {
         }
 
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new ResourceHandler(fields.toArray(new Field[0]), (Resource[]) fieldAnnotations.toArray(new Resource[0]), methods.toArray(new Method[0]),
-                    (Resource[]) methodAnnotations.toArray(new Resource[0]));
+            handler = new ResourceHandler(fields.toArray(new Field[0]), fieldAnnotations.toArray(new Resource[0]), methods.toArray(new Method[0]),
+                    methodAnnotations.toArray(new Resource[0]));
         }
         return handler;
     }

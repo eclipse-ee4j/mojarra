@@ -17,12 +17,11 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.util.AnnotationLiteral;
-
 import jakarta.faces.annotation.ApplicationMap;
 
 /**
  * An annotation literal for <code>@ApplicationMap.</code>
- * 
+ *
  * @since 2.3
  * @see ApplicationMap
  */

@@ -18,16 +18,15 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
-import jakarta.el.ExpressionFactory;
-import jakarta.servlet.jsp.JspException;
-
 import com.sun.faces.el.ELUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.LongRangeValidator;
 import jakarta.faces.validator.Validator;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * ValidateLongRangeTag is the tag handler class for <code>validate_longrange</code> tag.
@@ -48,7 +47,7 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
 // Relationship Instance Variables
 
 //
-// Constructors and Initializers    
+// Constructors and Initializers
 //
 
     public ValidateLongRangeTag() {
@@ -84,7 +83,7 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
         return super.doStartTag();
     }
 
-// 
+//
 // Methods from ValidatorTag
 //
 
@@ -92,7 +91,7 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
     protected Validator createValidator() throws JspException {
 
         LongRangeValidator result = (LongRangeValidator) super.createValidator();
-        assert (null != result);
+        assert null != result;
 
         evaluateExpressions();
         if (maximumSet) {

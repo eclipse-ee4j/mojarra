@@ -44,7 +44,7 @@ public class Cache<K, V> {
 
     /**
      * Constructs this cache using the specified <code>Factory</code>.
-     * 
+     *
      * @param factory
      */
     public Cache(Factory<K, V> factory) {
@@ -80,8 +80,9 @@ public class Cache<K, V> {
             // an existing entry
             V oldResult = cache.putIfAbsent(key, result);
 
-            if (oldResult != null)
+            if (oldResult != null) {
                 result = oldResult;
+            }
         }
 
         return result;

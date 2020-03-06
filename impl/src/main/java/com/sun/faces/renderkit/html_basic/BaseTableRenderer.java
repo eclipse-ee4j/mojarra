@@ -17,9 +17,9 @@
 package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.sun.faces.renderkit.Attribute;
@@ -41,7 +41,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Called to render the opening/closing <code>thead</code> elements and any content nested between.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -51,7 +51,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Called to render the opening/closing <code>tfoot</code> elements and any content nested between.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -61,7 +61,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Call to render the content that should be included between opening and closing <code>tr</code> elements.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param row the current row (if any - an implmenetation may not need this)
@@ -73,7 +73,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     /**
      * Renders the start of a table and applies the value of <code>styleClass</code> if available and renders any pass
      * through attributes that may be specified.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -95,7 +95,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Renders the closing <code>table</code> element.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -112,7 +112,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     /**
      * Renders the caption of the table applying the values of <code>captionClass</code> as the class and
      * <code>captionStyle</code> as the style if either are present.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -139,7 +139,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Renders the starting <code>tbody</code> element.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -155,7 +155,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Renders the closing <code>tbody</code> element.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -171,7 +171,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Renders the starting <code>tr</code> element applying any values from the <code>rowClasses</code> attribute.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -205,7 +205,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Renders the closing <code>rt</code> element.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @param writer the current writer
@@ -222,7 +222,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     /**
      * Returns a <code>TableMetaInfo</code> object containing details such as row and column classes, columns, and a
      * mechanism for scrolling through the row/column classes.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @return the <code>TableMetaInfo</code> for provided table
@@ -242,7 +242,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     /**
      * Removes the cached TableMetaInfo from the specified component.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table from which the TableMetaInfo will be removed
      */
@@ -305,7 +305,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         /**
          * Obtain the column class based on the current counter. Calling this method automatically moves the pointer to the next
          * style. If the counter is larger than the number of total classes, the counter will be reset.
-         * 
+         *
          * @return the current style
          */
         public String getCurrentColumnClass() {
@@ -314,14 +314,14 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             if (columnStyleCounter < columnClasses.length && columnStyleCounter <= columnCount) {
                 style = columnClasses[columnStyleCounter++];
             }
-            return ((style != null && style.length() > 0) ? style : null);
+            return style != null && style.length() > 0 ? style : null;
 
         }
 
         /**
          * Obtain the row class based on the current counter. Calling this method automatically moves the pointer to the next
          * style. If the counter is larger than the number of total classes, the counter will be reset.
-         * 
+         *
          * @return the current style
          */
         public String getCurrentRowClass() {
@@ -372,7 +372,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
                 if (childCount > 0) {
                     List<UIColumn> results = new ArrayList<>(childCount);
                     for (UIComponent kid : table.getChildren()) {
-                        if ((kid instanceof UIColumn) && kid.isRendered()) {
+                        if (kid instanceof UIColumn && kid.isRendered()) {
                             results.add((UIColumn) kid);
                         }
                     }
@@ -383,8 +383,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             } else {
                 int count;
                 Object value = table.getAttributes().get("columns");
-                if ((value != null) && (value instanceof Integer)) {
-                    count = ((Integer) value);
+                if (value != null && value instanceof Integer) {
+                    count = (Integer) value;
                 } else {
                     count = 2;
                 }
@@ -440,7 +440,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
             String values = (String) table.getAttributes().get("rowClasses");
             if (values == null) {
-                return (EMPTY_STRING_ARRAY);
+                return EMPTY_STRING_ARRAY;
             }
             Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
             return Util.split(appMap, values.trim(), ",");

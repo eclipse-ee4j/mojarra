@@ -16,13 +16,14 @@
 
 package com.sun.faces.taglib.html_basic;
 
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+
+import org.xml.sax.Attributes;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.taglib.TagParser;
 import com.sun.faces.taglib.ValidatorInfo;
-import org.xml.sax.Attributes;
-
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 /**
  * <p>
@@ -147,7 +148,7 @@ public class CommandTagParserImpl implements TagParser {
                 hasBinding = true;
             }
         }
-        if (failed = (!hasBinding && !(hasValue || hasImage))) {
+        if (failed = !hasBinding && !(hasValue || hasImage)) {
             Object[] obj = new Object[1];
             obj[0] = ln;
             ResourceBundle rb = ResourceBundle.getBundle(RIConstants.TLV_RESOURCE_LOCATION);

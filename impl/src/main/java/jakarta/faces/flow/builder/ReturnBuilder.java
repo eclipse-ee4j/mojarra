@@ -22,7 +22,7 @@ import jakarta.el.ValueExpression;
  * <p class="changed_added_2_2">
  * Create a return node in the current {@link jakarta.faces.flow.Flow}.
  * </p>
- * 
+ *
  * @since 2.2
  */
 public abstract class ReturnBuilder implements NodeBuilder {
@@ -31,10 +31,10 @@ public abstract class ReturnBuilder implements NodeBuilder {
      * <p class="changed_added_2_2">
      * Set the outcome of the current return node.
      * </p>
-     * 
+     *
      * @param outcome A {@code ValueExpression} String {@code String} that will be the outcome of the return.
      * @throws NullPointerException if any of the parameters are {@code null}
-     * 
+     *
      * @since 2.2
      *
      * @return the builder instance
@@ -45,10 +45,10 @@ public abstract class ReturnBuilder implements NodeBuilder {
      * <p class="changed_added_2_2">
      * Set the outcome of the current return node.
      * </p>
-     * 
+     *
      * @param outcome A {@code ValueExpression} {@code String} that will be the outcome of the return.
      * @throws NullPointerException if any of the parameters are {@code null}
-     * 
+     *
      * @since 2.2
      *
      * @return the builder instance

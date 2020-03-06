@@ -28,8 +28,6 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.http.HttpSession;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.SerializationProvider;
@@ -43,6 +41,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.ResponseStateManager;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Common code for the default <code>StateHelper</code> implementations.
@@ -187,7 +186,7 @@ public abstract class StateHelper {
      * If a custom <code>RenderKit</code> is used, write out the ID of the <code>RenderKit</code> out as a hidden field.
      * This will be used when restoring the view state.
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param writer the <code>ResponseWriter</code> to write to
      * @throws IOException if an error occurs writing to the client
@@ -212,7 +211,7 @@ public abstract class StateHelper {
 
     /**
      * Write the client window state field.
-     * 
+     *
      * @param context the Faces context.
      * @param writer the response writer.
      * @throws IOException when an I/O error occurs.

@@ -16,10 +16,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-import jakarta.faces.convert.MessageFactory;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -82,15 +78,15 @@ public class ShortConverter implements Converter {
 
         // If the specified value is null or zero-length, return null
         if (value == null) {
-            return (null);
+            return null;
         }
         value = value.trim();
         if (value.length() < 1) {
-            return (null);
+            return null;
         }
 
         try {
-            return (Short.valueOf(value));
+            return Short.valueOf(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, SHORT_ID, value, "32456", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -122,7 +118,7 @@ public class ShortConverter implements Converter {
         }
 
         try {
-            return (Short.toString(((Number) value).shortValue()));
+            return Short.toString(((Number) value).shortValue());
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

@@ -16,16 +16,15 @@
 
 package com.sun.faces.application.annotation;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
-
-import jakarta.el.ValueExpression;
+import java.util.Map;
+import java.util.Set;
 
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.RequestStateManager;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.UIComponent;
@@ -54,7 +53,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
                 // Take special action to resolve the "this" library name
                 if ("this".equals(lib)) {
                     String thisLibrary = (String) attrs.get(com.sun.faces.application.ApplicationImpl.THIS_LIBRARY);
-                    assert (null != thisLibrary);
+                    assert null != thisLibrary;
                     lib = thisLibrary;
                 }
 
@@ -88,7 +87,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     /**
      * Adds the specified {@link UIComponent} as a component resource to the {@link jakarta.faces.component.UIViewRoot}
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param c the component resource
      */
@@ -109,7 +108,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
     private boolean hasBeenProcessed(FacesContext ctx, ResourceDependency dep) {
 
         Set<ResourceDependency> dependencies = (Set<ResourceDependency>) RequestStateManager.get(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES);
-        return ((dependencies != null) && dependencies.contains(dep));
+        return dependencies != null && dependencies.contains(dep);
 
     }
 
@@ -141,7 +140,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     /**
      * Indicates that the specified ResourceDependency has been processed.
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param dep the {@link ResourceDependency}
      */

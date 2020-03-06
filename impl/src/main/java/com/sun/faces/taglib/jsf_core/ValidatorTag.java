@@ -18,13 +18,12 @@ package com.sun.faces.taglib.jsf_core;
 
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
-
-import jakarta.el.ValueExpression;
 import jakarta.servlet.jsp.JspException;
 
 /**
@@ -99,8 +98,8 @@ public class ValidatorTag extends AbstractValidatorTag {
             }
             this.state = (Object[]) state;
             if (this.state != null) {
-                this.validatorId = (ValueExpression) this.state[0];
-                this.binding = (ValueExpression) this.state[1];
+                validatorId = (ValueExpression) this.state[0];
+                binding = (ValueExpression) this.state[1];
             }
 
         }

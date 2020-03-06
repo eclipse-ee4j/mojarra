@@ -30,9 +30,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Map;
-import java.security.SecureRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -164,7 +164,7 @@ public class ServerSideStateHelper extends StateHelper {
 
                     String idInLogicalMap = (String) RequestStateManager.get(ctx, RequestStateManager.LOGICAL_VIEW_MAP);
                     if (idInLogicalMap == null) {
-                        idInLogicalMap = ((generateUniqueStateIds) ? createRandomId() : createIncrementalRequestId(ctx));
+                        idInLogicalMap = generateUniqueStateIds ? createRandomId() : createIncrementalRequestId(ctx);
                     }
                     String idInActualMap = null;
                     if (ctx.getPartialViewContext().isPartialRequest()) {
@@ -173,7 +173,7 @@ public class ServerSideStateHelper extends StateHelper {
                         idInActualMap = (String) RequestStateManager.get(ctx, RequestStateManager.ACTUAL_VIEW_MAP);
                     }
                     if (null == idInActualMap) {
-                        idInActualMap = ((generateUniqueStateIds) ? createRandomId() : createIncrementalRequestId(ctx));
+                        idInActualMap = generateUniqueStateIds ? createRandomId() : createIncrementalRequestId(ctx);
                     }
                     Map<String, Object[]> actualMap = TypedCollections.dynamicallyCastMap(logicalMap.get(idInLogicalMap), String.class, Object[].class);
                     if (actualMap == null) {
@@ -250,8 +250,8 @@ public class ServerSideStateHelper extends StateHelper {
         }
 
         int sep = compoundId.indexOf(':');
-        assert (sep != -1);
-        assert (sep < compoundId.length());
+        assert sep != -1;
+        assert sep < compoundId.length();
 
         String idInLogicalMap = compoundId.substring(0, sep);
         String idInActualMap = compoundId.substring(sep + 1);
@@ -302,7 +302,7 @@ public class ServerSideStateHelper extends StateHelper {
      * <p>
      * Utility method for obtaining the <code>Integer</code> based configuration values used to change the behavior of the
      * <code>ServerSideStateHelper</code>.
-     * 
+     *
      * @param param the paramter to parse
      * @return the Integer representation of the parameter value
      */
@@ -342,7 +342,7 @@ public class ServerSideStateHelper extends StateHelper {
             ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
             ObjectOutputStream oas = null;
             try {
-                oas = serialProvider.createObjectOutputStream(((compressViewState) ? new GZIPOutputStream(baos, 1024) : baos));
+                oas = serialProvider.createObjectOutputStream(compressViewState ? new GZIPOutputStream(baos, 1024) : baos);
                 // noinspection NonSerializableObjectPassedToObjectStream
                 oas.writeObject(state);
                 oas.flush();
@@ -376,7 +376,7 @@ public class ServerSideStateHelper extends StateHelper {
 
         if (webConfig.isOptionEnabled(SerializeServerStateDeprecated) || webConfig.isOptionEnabled(SerializeServerState)) {
             try (ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
-                    ObjectInputStream ois = serialProvider.createObjectInputStream(((compressViewState) ? new GZIPInputStream(bais, 1024) : bais));) {
+                    ObjectInputStream ois = serialProvider.createObjectInputStream(compressViewState ? new GZIPInputStream(bais, 1024) : bais);) {
                 return ois.readObject();
             } catch (Exception e) {
                 throw new FacesException(e);
@@ -401,7 +401,7 @@ public class ServerSideStateHelper extends StateHelper {
 
         // always call put/setAttribute as we may be in a clustered environment.
         sm.put(STATEMANAGED_SERIAL_ID_KEY, idgen);
-        return (UIViewRoot.UNIQUE_ID_PREFIX + idgen.getAndIncrement());
+        return UIViewRoot.UNIQUE_ID_PREFIX + idgen.getAndIncrement();
 
     }
 
@@ -413,7 +413,7 @@ public class ServerSideStateHelper extends StateHelper {
 
     /**
      * Is stateless.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param viewId the view id.
      * @return true if stateless, false otherwise.

@@ -1,26 +1,26 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the
  * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
  * version 2 with the GNU Classpath Exception, which is available at
  * https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 package jakarta.faces.component.html;
 
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.el.ValueExpression;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIOutput;
 
 /**
@@ -63,8 +63,9 @@ public class HtmlOutputFormat extends UIOutput {
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
-            return ((toString != null) ? toString : super.toString());
+            return toString != null ? toString : super.toString();
         }
     }
 
@@ -72,7 +73,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Return the value of the <code>dir</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
@@ -88,7 +89,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Set the value of the <code>dir</code> property.
      * </p>
-     * 
+     *
      * @param dir the new property value
      */
     public void setDir(java.lang.String dir) {
@@ -100,7 +101,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Return the value of the <code>escape</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag is set
@@ -115,7 +116,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Set the value of the <code>escape</code> property.
      * </p>
-     * 
+     *
      * @param escape the new property value
      */
     public void setEscape(boolean escape) {
@@ -126,7 +127,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Return the value of the <code>lang</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Code describing the language used in the generated markup for this component.
@@ -140,7 +141,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Set the value of the <code>lang</code> property.
      * </p>
-     * 
+     *
      * @param lang the new property value
      */
     public void setLang(java.lang.String lang) {
@@ -152,7 +153,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Return the value of the <code>role</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents:
@@ -163,7 +164,7 @@ public class HtmlOutputFormat extends UIOutput {
      * that evaluates to, a set of space-separated tokens representing the various WAI-ARIA roles that the element belongs
      * to.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
      * of this attribute.
@@ -178,7 +179,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Set the value of the <code>role</code> property.
      * </p>
-     * 
+     *
      * @param role the new property value
      */
     public void setRole(java.lang.String role) {
@@ -190,7 +191,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Return the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style(s) to be applied when this component is rendered.
@@ -204,7 +205,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Set the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -216,7 +217,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Return the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
@@ -231,7 +232,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Set the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
@@ -242,7 +243,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Return the value of the <code>title</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Advisory title information about markup elements generated for this component.
@@ -256,7 +257,7 @@ public class HtmlOutputFormat extends UIOutput {
      * <p>
      * Set the value of the <code>title</code> property.
      * </p>
-     * 
+     *
      * @param title the new property value
      */
     public void setTitle(java.lang.String title) {
@@ -265,12 +266,12 @@ public class HtmlOutputFormat extends UIOutput {
     }
 
     private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
+        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
             if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<String>(6);
-                this.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
+                setAttributes = new ArrayList<>(6);
+                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }
         }
         if (setAttributes != null) {

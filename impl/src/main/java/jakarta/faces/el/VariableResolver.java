@@ -28,6 +28,7 @@ import jakarta.faces.context.FacesContext;
  * <code>base</code> argument.
  */
 
+@Deprecated
 public abstract class VariableResolver {
 
     /**

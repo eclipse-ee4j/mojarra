@@ -18,6 +18,7 @@ package com.sun.faces.facelets.tag.jstl.core;
 
 import java.util.Collection;
 import java.util.Iterator;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.PropertyNotWritableException;
@@ -120,7 +121,7 @@ public final class IteratedValueExpression extends ValueExpression {
      */
     @Override
     public String getExpressionString() {
-        return this.orig.getExpressionString();
+        return orig.getExpressionString();
     }
 
     /*
@@ -130,7 +131,7 @@ public final class IteratedValueExpression extends ValueExpression {
      */
     @Override
     public boolean equals(Object obj) {
-        return this.orig.equals(obj);
+        return orig.equals(obj);
     }
 
     /*
@@ -140,7 +141,7 @@ public final class IteratedValueExpression extends ValueExpression {
      */
     @Override
     public int hashCode() {
-        return this.orig.hashCode();
+        return orig.hashCode();
     }
 
     /*

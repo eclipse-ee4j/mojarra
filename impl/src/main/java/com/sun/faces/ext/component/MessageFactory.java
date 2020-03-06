@@ -22,7 +22,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
@@ -32,7 +31,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.ValueBinding;
 
 /**
- * 
+ *
  * <p>
  * supported filters: <code>package</code> and <code>protection</code>.
  * </p>
@@ -168,7 +167,7 @@ public class MessageFactory {
         // At this point, we have a summary and a bundle.
         FacesMessage ret = new BindingFacesMessage(locale, summary, detail, params);
         ret.setSeverity(FacesMessage.SEVERITY_ERROR);
-        return (ret);
+        return ret;
     }
 
     /**
@@ -204,7 +203,7 @@ public class MessageFactory {
             return message;
         }
         locale = Locale.getDefault();
-        return (getMessage(locale, messageId, params));
+        return getMessage(locale, messageId, params);
     }
 
     /**
@@ -220,7 +219,7 @@ public class MessageFactory {
     public static Object getLabel(FacesContext context, UIComponent component) {
 
         Object o = component.getAttributes().get("label");
-        if (o == null || (o instanceof String && ((String) o).length() == 0)) {
+        if (o == null || o instanceof String && ((String) o).length() == 0) {
             o = component.getValueExpression("label");
         }
         // Use the "clientId" if there was no label specified.
@@ -233,10 +232,10 @@ public class MessageFactory {
     protected static Application getApplication() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (context != null) {
-            return (FacesContext.getCurrentInstance().getApplication());
+            return FacesContext.getCurrentInstance().getApplication();
         }
         ApplicationFactory afactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        return (afactory.getApplication());
+        return afactory.getApplication();
     }
 
     protected static ClassLoader getCurrentLoader(Class fallbackClass) {
@@ -255,6 +254,10 @@ public class MessageFactory {
      * the expression to be evaluated when that property is available.
      */
     static class BindingFacesMessage extends FacesMessage {
+        /**
+         *
+         */
+        private static final long serialVersionUID = 7020392746585505562L;
         BindingFacesMessage(Locale locale, String messageFormat, String detailMessageFormat,
                 // array of parameters, both Strings and ValueBindings
                 Object[] parameters) {
@@ -267,12 +270,14 @@ public class MessageFactory {
             }
         }
 
+        @Override
         public String getSummary() {
             String pattern = super.getSummary();
             resolveBindings();
             return getFormattedString(pattern, resolvedParameters);
         }
 
+        @Override
         public String getDetail() {
             String pattern = super.getDetail();
             resolveBindings();

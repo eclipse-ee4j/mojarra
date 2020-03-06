@@ -16,17 +16,16 @@
 
 package com.sun.faces.config.configprovider;
 
-import com.sun.faces.spi.ConfigurationResourceProvider;
-
-import jakarta.faces.FacesException;
-
 import java.net.URI;
-import java.net.URL;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.sun.faces.spi.ConfigurationResourceProvider;
+
+import jakarta.faces.FacesException;
 import jakarta.servlet.ServletContext;
 
 /**

@@ -73,7 +73,7 @@ import jakarta.faces.context.FacesContext;
  * instance. Otherwise the "GMT" timezone is used.</li>
  * <li>In all cases, parsing must be non-lenient; the given string must strictly adhere to the parsing format.</li>
  * </ul>
- * 
+ *
  * <p>
  * The <code>getAsString()</code> method expects a value of type <code>java.util.Date</code> (or a subclass), and
  * creates a formatted String according to the following algorithm:
@@ -85,7 +85,7 @@ import jakarta.faces.context.FacesContext;
  * use the <code>Locale</code> from the <code>UIViewRoot</code>.</li>
  * <li>If a <code>timezone</code> has been specified, it must be passed to the underlying <code>DateFormat</code>
  * instance. Otherwise the "GMT" timezone is used.</li>
- * 
+ *
  * <li>If a <code>pattern</code> has been specified, its syntax must conform the rules specified by
  * <code>java.text.SimpleDateFormat</code> <span class="changed_added_2_3">or {@code
  * java.time.format.DateTimeFormatter}. Which of these two formatters is used depends on the value of
@@ -95,7 +95,7 @@ import jakarta.faces.context.FacesContext;
  * DateTimeFormatter.ofPattern(String, Locale)} must be called, passing the value of {@code pattern} as the first
  * argument and the current {@code Locale} as the second argument, and this formatter must be used to format the
  * outgoing value.</span></li>
- * 
+ *
  * <li>If a <code>pattern</code> has not been specified, formatting will be based on the <code>type</code> property,
  * which includes a date value, a time value, both or into the formatted String. Any date and time values included will
  * be formatted in accordance to the styles specified by <code>dateStyle</code> and <code>timeStyle</code>,
@@ -192,7 +192,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public String getDateStyle() {
 
-        return (this.dateStyle);
+        return dateStyle;
 
     }
 
@@ -222,10 +222,10 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public Locale getLocale() {
 
-        if (this.locale == null) {
-            this.locale = getLocale(FacesContext.getCurrentInstance());
+        if (locale == null) {
+            locale = getLocale(FacesContext.getCurrentInstance());
         }
-        return (this.locale);
+        return locale;
 
     }
 
@@ -254,7 +254,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public String getPattern() {
 
-        return (this.pattern);
+        return pattern;
 
     }
 
@@ -284,7 +284,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public String getTimeStyle() {
 
-        return (this.timeStyle);
+        return timeStyle;
 
     }
 
@@ -314,7 +314,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public TimeZone getTimeZone() {
 
-        return (this.timeZone);
+        return timeZone;
 
     }
 
@@ -342,7 +342,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     public String getType() {
 
-        return (this.type);
+        return type;
 
     }
 
@@ -386,11 +386,11 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
 
             // If the specified value is null or zero-length, return null
             if (value == null) {
-                return (null);
+                return null;
             }
             value = value.trim();
             if (value.length() < 1) {
-                return (null);
+                return null;
             }
 
             // Identify the Locale to use for parsing
@@ -437,29 +437,29 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         private final TemporalQuery from;
 
         private FormatWrapper(DateFormat wrapped) {
-            this.df = wrapped;
-            this.dtf = null;
-            this.from = null;
+            df = wrapped;
+            dtf = null;
+            from = null;
         }
 
         private FormatWrapper(DateTimeFormatter dtf, TemporalQuery from) {
-            this.df = null;
+            df = null;
             this.dtf = dtf;
             this.from = from;
         }
 
         private Object parse(CharSequence text) throws ParseException {
-            Object result = (null != df) ? df.parse((String) text) : dtf.parse(text, from);
+            Object result = null != df ? df.parse((String) text) : dtf.parse(text, from);
 
             return result;
         }
 
         private String format(Object obj) {
-            return (null != df) ? df.format(obj) : dtf.format((TemporalAccessor) obj);
+            return null != df ? df.format(obj) : dtf.format((TemporalAccessor) obj);
         }
 
         private String formatNow() {
-            return (null != df) ? df.format(new Date()) : dtf.format(ZonedDateTime.now());
+            return null != df ? df.format(new Date()) : dtf.format(ZonedDateTime.now());
         }
 
         private void setTimeZone(TimeZone zone) {
@@ -503,7 +503,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             }
 
             // Perform the requested formatting
-            return (formatter.format(value));
+            return formatter.format(value);
 
         } catch (ConverterException e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
@@ -622,7 +622,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         if (locale == null) {
             locale = context.getViewRoot().getLocale();
         }
-        return (locale);
+        return locale;
 
     }
 
@@ -639,15 +639,15 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         if (null != name) {
             switch (name) {
             case "default":
-                return (DateFormat.DEFAULT);
+                return DateFormat.DEFAULT;
             case "short":
-                return (DateFormat.SHORT);
+                return DateFormat.SHORT;
             case "medium":
-                return (DateFormat.MEDIUM);
+                return DateFormat.MEDIUM;
             case "long":
-                return (DateFormat.LONG);
+                return DateFormat.LONG;
             case "full":
-                return (DateFormat.FULL);
+                return DateFormat.FULL;
             }
         }
         // PENDING(craigmcc) - i18n
@@ -659,13 +659,13 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             switch (name) {
             case "default":
             case "medium":
-                return (FormatStyle.MEDIUM);
+                return FormatStyle.MEDIUM;
             case "short":
-                return (FormatStyle.SHORT);
+                return FormatStyle.SHORT;
             case "long":
-                return (FormatStyle.LONG);
+                return FormatStyle.LONG;
             case "full":
-                return (FormatStyle.FULL);
+                return FormatStyle.FULL;
             }
         }
         // PENDING(craigmcc) - i18n
@@ -689,7 +689,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             values[3] = timeStyle;
             values[4] = timeZone;
             values[5] = type;
-            return (values);
+            return values;
         }
         return null;
 
@@ -717,7 +717,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
 
     @Override
     public boolean isTransient() {
-        return (transientFlag);
+        return transientFlag;
     }
 
     @Override

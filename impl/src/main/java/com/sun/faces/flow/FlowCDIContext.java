@@ -16,20 +16,8 @@
 
 package com.sun.faces.flow;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.flow.Flow;
-import jakarta.faces.flow.FlowHandler;
-import jakarta.faces.flow.FlowScoped;
-import jakarta.faces.lifecycle.ClientWindow;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +27,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.Contextual;
@@ -48,6 +41,12 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeShutdown;
 import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowScoped;
+import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 
@@ -72,10 +71,10 @@ public class FlowCDIContext implements Context, Serializable {
                 return false;
             }
             final FlowBeanInfo other = (FlowBeanInfo) obj;
-            if ((this.definingDocumentId == null) ? (other.definingDocumentId != null) : !this.definingDocumentId.equals(other.definingDocumentId)) {
+            if (definingDocumentId == null ? other.definingDocumentId != null : !definingDocumentId.equals(other.definingDocumentId)) {
                 return false;
             }
-            if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+            if (id == null ? other.id != null : !id.equals(other.id)) {
                 return false;
             }
             return true;
@@ -84,8 +83,8 @@ public class FlowCDIContext implements Context, Serializable {
         @Override
         public int hashCode() {
             int hash = 7;
-            hash = 79 * hash + (this.definingDocumentId != null ? this.definingDocumentId.hashCode() : 0);
-            hash = 79 * hash + (this.id != null ? this.id.hashCode() : 0);
+            hash = 79 * hash + (definingDocumentId != null ? definingDocumentId.hashCode() : 0);
+            hash = 79 * hash + (id != null ? id.hashCode() : 0);
             return hash;
         }
 
@@ -111,7 +110,7 @@ public class FlowCDIContext implements Context, Serializable {
 
     /*
      * Encapsulate access to the two maps we need to provide.
-     * 
+     *
      */
     private static class FlowScopeMapHelper {
         // <editor-fold defaultstate="collapsed">
@@ -121,7 +120,7 @@ public class FlowCDIContext implements Context, Serializable {
 
         private FlowScopeMapHelper(FacesContext facesContext) {
             ExternalContext extContext = facesContext.getExternalContext();
-            this.sessionMap = extContext.getSessionMap();
+            sessionMap = extContext.getSessionMap();
 
             Flow currentFlow = getCurrentFlow(facesContext);
             int currentFlowDepth = FlowHandlerImpl.getFlowStack(facesContext).getCurrentFlowDepth();
@@ -131,7 +130,7 @@ public class FlowCDIContext implements Context, Serializable {
 
         private FlowScopeMapHelper(FacesContext facesContext, Flow flow, int flowDepth) {
             ExternalContext extContext = facesContext.getExternalContext();
-            this.sessionMap = extContext.getSessionMap();
+            sessionMap = extContext.getSessionMap();
 
             generateKeyForCDIBeansBelongToAFlow(facesContext, flow, flowDepth);
         }
@@ -159,7 +158,7 @@ public class FlowCDIContext implements Context, Serializable {
         }
 
         private boolean isFlowExists() {
-            return (null != flowBeansForClientWindowKey && null != creationalForClientWindowKey);
+            return null != flowBeansForClientWindowKey && null != creationalForClientWindowKey;
         }
 
         public String getCreationalForClientWindowKey() {
@@ -327,9 +326,9 @@ public class FlowCDIContext implements Context, Serializable {
         FlowScopeMapHelper mapHelper = new FlowScopeMapHelper(facesContext, currentFlow, depth);
         Map<String, Object> flowScopedBeanMap = mapHelper.getFlowScopedBeanMapForCurrentFlow();
         Map<String, CreationalContext<?>> creationalMap = mapHelper.getFlowScopedCreationalMapForCurrentFlow();
-        assert (!flowScopedBeanMap.isEmpty());
-        assert (!creationalMap.isEmpty());
-        BeanManager beanManager = (BeanManager) Util.getCdiBeanManager(facesContext);
+        assert !flowScopedBeanMap.isEmpty();
+        assert !creationalMap.isEmpty();
+        BeanManager beanManager = Util.getCdiBeanManager(facesContext);
 
         for (Entry<String, Object> entry : flowScopedBeanMap.entrySet()) {
             String passivationCapableId = entry.getKey();
@@ -387,7 +386,7 @@ public class FlowCDIContext implements Context, Serializable {
                 }
             }
             if (null != flowCDIEventFireHelperImplClass) {
-                BeanManager beanManager = (BeanManager) Util.getCdiBeanManager(facesContext);
+                BeanManager beanManager = Util.getCdiBeanManager(facesContext);
                 Set<Bean<?>> availableBeans = beanManager.getBeans(flowCDIEventFireHelperImplClass);
                 if (null != availableBeans && !availableBeans.isEmpty()) {
                     Bean<?> bean = beanManager.resolve(availableBeans);

@@ -16,19 +16,6 @@
 
 package com.sun.faces.facelets.tag;
 
-import com.sun.faces.facelets.FaceletContextImplBase;
-import com.sun.faces.facelets.TemplateClient;
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.ui.DefineHandler;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.FaceletContext;
-import jakarta.faces.view.facelets.TagAttribute;
-import jakarta.faces.view.facelets.TagConfig;
-import jakarta.faces.view.facelets.TagException;
-
-import jakarta.el.VariableMapper;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -36,10 +23,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sun.faces.facelets.FaceletContextImplBase;
+import com.sun.faces.facelets.TemplateClient;
+import com.sun.faces.facelets.el.VariableMapperWrapper;
+import com.sun.faces.facelets.tag.ui.DefineHandler;
+
+import jakarta.el.VariableMapper;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+
 /**
  * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before
  * including the targeted Facelet file.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -56,7 +55,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
      */
     public UserTagHandler(TagConfig config, URL location) {
         super(config);
-        this.vars = this.tag.getAttributes().getAll();
+        vars = tag.getAttributes().getAll();
         this.location = location;
         Iterator itr = this.findNextByType(DefineHandler.class);
         if (itr.hasNext()) {
@@ -65,7 +64,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
             DefineHandler d = null;
             while (itr.hasNext()) {
                 d = (DefineHandler) itr.next();
-                this.handlers.put(d.getName(), d);
+                handlers.put(d.getName(), d);
             }
         } else {
             handlers = null;
@@ -75,7 +74,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
     /**
      * Iterate over all TagAttributes and set them on the FaceletContext's VariableMapper, then include the target Facelet.
      * Finally, replace the old VariableMapper.
-     * 
+     *
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
      * @see VariableMapper
      * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
@@ -87,10 +86,10 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         VariableMapper orig = ctx.getVariableMapper();
 
         // setup a variable map
-        if (this.vars.length > 0) {
+        if (vars.length > 0) {
             VariableMapper varMapper = new VariableMapperWrapper(orig);
-            for (int i = 0; i < this.vars.length; i++) {
-                varMapper.setVariable(this.vars[i].getLocalName(), this.vars[i].getValueExpression(ctx, Object.class));
+            for (int i = 0; i < vars.length; i++) {
+                varMapper.setVariable(vars[i].getLocalName(), vars[i].getValueExpression(ctx, Object.class));
             }
             ctx.setVariableMapper(varMapper);
         }
@@ -98,9 +97,9 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         // eval include
         try {
             ctx.pushClient(this);
-            ctx.includeFacelet(parent, this.location);
+            ctx.includeFacelet(parent, location);
         } catch (FileNotFoundException e) {
-            throw new TagException(this.tag, e.getMessage());
+            throw new TagException(tag, e.getMessage());
         } finally {
 
             // make sure we undo our changes
@@ -112,10 +111,10 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
     @Override
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
         if (name != null) {
-            if (this.handlers == null) {
+            if (handlers == null) {
                 return false;
             }
-            DefineHandler handler = (DefineHandler) this.handlers.get(name);
+            DefineHandler handler = (DefineHandler) handlers.get(name);
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;
@@ -123,7 +122,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
                 return false;
             }
         } else {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
             return true;
         }
     }

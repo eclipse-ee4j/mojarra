@@ -36,6 +36,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.cdi.CdiExtension;
+import com.sun.faces.context.flash.FlashELResolver;
+import com.sun.faces.mgbean.BeanManager;
+import com.sun.faces.util.MessageUtils;
+
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
@@ -46,16 +52,6 @@ import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.jsp.JspApplicationContext;
-import jakarta.servlet.jsp.JspFactory;
-
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.cdi.CdiExtension;
-import com.sun.faces.context.flash.FlashELResolver;
-import com.sun.faces.mgbean.BeanManager;
-import com.sun.faces.util.MessageUtils;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -64,6 +60,9 @@ import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.PropertyResolver;
 import jakarta.faces.el.ReferenceSyntaxException;
 import jakarta.faces.el.VariableResolver;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspFactory;
 
 /**
  * <p>
@@ -181,7 +180,7 @@ public class ELUtils {
      * <p>
      * Create the <code>ELResolver</code> chain for programmatic EL calls.
      * </p>
-     * 
+     *
      * @param composite a <code>CompositeELResolver</code>
      * @param associate our ApplicationAssociate
      */
@@ -217,7 +216,7 @@ public class ELUtils {
      * <p>
      * Create the <code>ELResolver</code> chain for JSP.
      * </p>
-     * 
+     *
      * @param composite a <code>CompositeELResolver</code>
      * @param associate our ApplicationAssociate
      */
@@ -491,7 +490,7 @@ public class ELUtils {
 
     /**
      * Create a <code>ValueExpression</code> with the expected type of <code>Object.class</code>
-     * 
+     *
      * @param expression an EL expression
      * @return a new <code>ValueExpression</code> instance based off the provided <code>valueRef</code>
      */
@@ -548,7 +547,7 @@ public class ELUtils {
      * <p>
      * Add any <code>PropertyResolver</code>s to the specified <code>CompositeELResolver</code>.
      * </p>
-     * 
+     *
      * @param target the <code>CompositeELResolver</code> to which the <code>PropertyResolver</code>s will be added.
      * @param associate our ApplicationAssociate
      */
@@ -566,7 +565,7 @@ public class ELUtils {
      * <p>
      * Add any <code>VariableResolver</code>s to the specified <code>CompositeELResolver</code>.
      * </p>
-     * 
+     *
      * @param target the <code>CompositeELResolver</code> to which the <code>VariableResolver</code>s will be added.
      * @param associate our ApplicationAssociate
      */
@@ -619,7 +618,7 @@ public class ELUtils {
     @SuppressWarnings("deprecation")
     private static String stripBracketsIfNecessary(String expression) throws ReferenceSyntaxException {
 
-        assert (null != expression);
+        assert null != expression;
 
         // look for invalid expressions
         if (expression.charAt(0) == '#') {
@@ -640,9 +639,9 @@ public class ELUtils {
     public static Scope getScopeForExpression(String expression) {
 
         if (SharedUtils.isMixedExpression(expression)) {
-            return (getNarrowestScopeFromExpression(expression));
+            return getNarrowestScopeFromExpression(expression);
         } else {
-            return (getScopeForSingleExpression(expression));
+            return getScopeForSingleExpression(expression);
         }
 
     }
@@ -684,7 +683,7 @@ public class ELUtils {
         // "session", "application", or "none" scopes. One of the previous decision
         // statements must be true.
         // noinspection ConstantConditions
-        assert (false);
+        assert false;
         return false;
     }
 
@@ -759,7 +758,7 @@ public class ELUtils {
 
     /*
      * First look in the ApplicationAssociate. If that fails, try the Jsp engine. If that fails, return null;
-     * 
+     *
      */
     public static ExpressionFactory getDefaultExpressionFactory(FacesContext facesContext) {
         ExpressionFactory result;

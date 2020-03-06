@@ -28,10 +28,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-import jakarta.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,6 +54,9 @@ import com.sun.faces.flow.ParameterImpl;
 import com.sun.faces.flow.builder.FlowBuilderImpl;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -75,6 +74,7 @@ import jakarta.faces.flow.builder.FlowCallBuilder;
 import jakarta.faces.flow.builder.MethodCallBuilder;
 import jakarta.faces.flow.builder.NavigationCaseBuilder;
 import jakarta.faces.flow.builder.SwitchBuilder;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -110,11 +110,11 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     /*
      * Implement the requirements of 11.4.3.3
-     * 
+     *
      * @param uri
-     * 
+     *
      * @param toPopulate
-     * 
+     *
      * @return
      */
     public static Document synthesizeEmptyFlowDefinition(URI uri) throws ParserConfigurationException {
@@ -207,7 +207,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     private List<FlowDefinitionDocument> getSavedFlowDefinitions(FacesContext context) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
         List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
-        return (null != def) ? def : Collections.EMPTY_LIST;
+        return null != def ? def : Collections.EMPTY_LIST;
     }
 
     private void clearSavedFlowDefinitions(FacesContext context) {
@@ -232,8 +232,8 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         }
 
         public void clear() {
-            this.definingDocumentURI = null;
-            this.flowDefinitions = null;
+            definingDocumentURI = null;
+            flowDefinitions = null;
         }
 
     }
@@ -249,16 +249,16 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         public void processEvent(SystemEvent event) throws AbortProcessingException {
             FacesContext facesContext = event.getFacesContext();
 
-            for (FlowDefinitionDocument flowDefinition : FacesFlowDefinitionConfigProcessor.this.getSavedFlowDefinitions(facesContext)) {
+            for (FlowDefinitionDocument flowDefinition : getSavedFlowDefinitions(facesContext)) {
                 try {
-                    FacesFlowDefinitionConfigProcessor.this.processFacesFlowDefinitions(facesContext, flowDefinition.definingDocumentURI,
+                    processFacesFlowDefinitions(facesContext, flowDefinition.definingDocumentURI,
                             flowDefinition.flowDefinitions);
                 } catch (XPathExpressionException ex) {
                     throw new FacesException(ex);
                 }
             }
 
-            FacesFlowDefinitionConfigProcessor.this.clearSavedFlowDefinitions(facesContext);
+            clearSavedFlowDefinitions(facesContext);
         }
     }
 

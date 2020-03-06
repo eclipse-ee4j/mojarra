@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -39,19 +38,19 @@ import jakarta.faces.validator.Validator;
  * </p>
  *
  * <div class="changed_added_2_0">
- * 
+ *
  * <p>
  * The {@link jakarta.faces.view.ViewDeclarationLanguage} implementation must cause an instance of this component to
  * appear in the view for each occurrence of an <code>&lt;f:viewParam /&gt;</code> element placed inside of an
  * <code>&lt;f:metadata /&gt;</code> element. The user must place this facet within the <code>UIViewRoot</code>.
  * </p>
- * 
+ *
  * <p>
  * Because this class extends <code>UIInput</code> any actions that one would normally take on a <code>UIInput</code>
  * instance are valid for instances of this class. Instances of this class participate in the regular Jakarta Server
  * Faces lifecycle, including on Ajax requests.
  * </p>
- * 
+ *
  * </div>
  *
  * @since 2.0
@@ -115,7 +114,7 @@ public class UIViewParameter extends UIInput {
     @Override
     public String getFamily() {
 
-        return (COMPONENT_FAMILY);
+        return COMPONENT_FAMILY;
 
     }
 
@@ -123,7 +122,7 @@ public class UIViewParameter extends UIInput {
      * <p class="changed_added_2_0">
      * Return the request parameter name from which the value is retrieved.
      * </p>
-     * 
+     *
      * @return the name.
      * @since 2.0
      */
@@ -152,7 +151,7 @@ public class UIViewParameter extends UIInput {
      * Return <code>false</code>. The immediate setting is not relevant for view parameters and must be assumed to be
      * <code>false</code>.
      * </p>
-     * 
+     *
      * @return <code>true</code> if immediate, <code>false</code> otherwise.
      * @since 2.0
      */
@@ -166,7 +165,7 @@ public class UIViewParameter extends UIInput {
      * <span class="changed_modified_2_2">Assume</span> that the submitted value is always a string,
      * <span class="changed_added_2_2">but the return type from this method is <code>Object</code>.</span>.
      * </p>
-     * 
+     *
      * @return the submitted value.
      * @since 2.0
      */
@@ -177,7 +176,7 @@ public class UIViewParameter extends UIInput {
 
     /**
      * PENDING (docs) Interesting that submitted value isn't saved by the parent
-     * 
+     *
      * @param submittedValue The new submitted value
      */
     @Override
@@ -197,7 +196,7 @@ public class UIViewParameter extends UIInput {
      * Override behavior from superclass to pull a value from the incoming request parameter map under the name given by
      * {@link #getName} and store it with a call to {@link UIInput#setSubmittedValue}.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     @Override
@@ -229,7 +228,7 @@ public class UIViewParameter extends UIInput {
      * context parameter is true and the value is {@code null}, call {@link UIInput#setSubmittedValue} passing the empty
      * string as the argument. This will cause the normal validation processing to happen, including bean validation.</span>
      * </p>
-     * 
+     *
      * @param context the Faces context.
      * @since 2.0
      */
@@ -290,7 +289,7 @@ public class UIViewParameter extends UIInput {
 
     /*
      * JAVASERVERFACES-3058. Handle the nested requiredValidator case explicitly in the case of <f:viewParam>.
-     * 
+     *
      */
     private boolean isRequiredViaNestedRequiredValidator() {
         boolean result = false;
@@ -312,7 +311,7 @@ public class UIViewParameter extends UIInput {
                     // if they are not submitted. I'm not sure if that's
                     // correct, but let's put this in and see how
                     // the community responds.
-                    this.setSubmittedValue("");
+                    setSubmittedValue("");
                 }
                 break;
             }
@@ -327,7 +326,7 @@ public class UIViewParameter extends UIInput {
      * request scope if and only if the value is not a value expression, is valid, and the local value was set on this
      * lifecycle execution.
      * </p>
-     * 
+     *
      * @since 2.0
      */
 
@@ -348,7 +347,7 @@ public class UIViewParameter extends UIInput {
      * Called specially by {@link UIViewRoot#encodeEnd}, this method simply sets the submitted value to be the return from
      * {@link #getStringValue}.
      * </p>
-     * 
+     *
      * @throws IOException when an I/O error occurs.
      * @since 2.0
      */
@@ -380,7 +379,7 @@ public class UIViewParameter extends UIInput {
         if (hasValueExpression()) {
             result = getStringValueFromModel(context);
         } else {
-            result = (null != rawValue) ? rawValue : (String) getValue();
+            result = null != rawValue ? rawValue : (String) getValue();
         }
         return result;
     }
@@ -458,7 +457,7 @@ public class UIViewParameter extends UIInput {
             RenderKit standard = rkf.getRenderKit(context, RenderKitFactory.HTML_BASIC_RENDER_KIT);
             inputTextRenderer = standard.getRenderer("jakarta.faces.Input", "jakarta.faces.Text");
         }
-        assert (null != inputTextRenderer);
+        assert null != inputTextRenderer;
         return inputTextRenderer;
     }
 
@@ -473,7 +472,7 @@ public class UIViewParameter extends UIInput {
      * Inner class to encapsulate a <code>UIViewParameter</code> instance so that it may be safely referenced regardless of
      * whether or not the current view is the same as the view in which this <code>UIViewParameter</code> resides.
      * </p>
-     * 
+     *
      * @since 2.0
      */
 
@@ -498,7 +497,7 @@ public class UIViewParameter extends UIInput {
          * @since 2.0
          */
         public Reference(FacesContext context, UIViewParameter param, int indexInParent, String viewIdAtTimeOfConstruction) {
-            this.saver = new StateHolderSaver(context, param);
+            saver = new StateHolderSaver(context, param);
             this.indexInParent = indexInParent;
             this.viewIdAtTimeOfConstruction = viewIdAtTimeOfConstruction;
         }
@@ -520,13 +519,13 @@ public class UIViewParameter extends UIInput {
             UIViewParameter result = null;
             UIViewRoot root = context.getViewRoot();
             // If the view root is the same as when we were constructed...
-            if (this.viewIdAtTimeOfConstruction.equals(root.getViewId())) {
+            if (viewIdAtTimeOfConstruction.equals(root.getViewId())) {
                 // get the actual view parameter from the tree...
                 UIComponent metadataFacet = root.getFacet(UIViewRoot.METADATA_FACET_NAME);
                 result = (UIViewParameter) metadataFacet.getChildren().get(indexInParent);
             } else {
                 // otherwise, use the saved one
-                result = (UIViewParameter) this.saver.restore(context);
+                result = (UIViewParameter) saver.restore(context);
             }
 
             return result;

@@ -16,14 +16,14 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
-
-import java.io.IOException;
 
 /**
  * @author Jacob Hookom
@@ -34,15 +34,15 @@ public final class ChooseWhenHandler extends TagHandlerImpl {
 
     public ChooseWhenHandler(TagConfig config) {
         super(config);
-        this.test = this.getRequiredAttribute("test");
+        test = getRequiredAttribute("test");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        this.nextHandler.apply(ctx, parent);
+        nextHandler.apply(ctx, parent);
     }
 
     public boolean isTestTrue(FaceletContext ctx) {
-        return this.test.getBoolean(ctx);
+        return test.getBoolean(ctx);
     }
 }

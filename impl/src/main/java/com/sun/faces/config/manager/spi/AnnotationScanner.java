@@ -18,6 +18,17 @@ package com.sun.faces.config.manager.spi;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.AnnotationScanPackages;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.AnnotationProvider;
 import com.sun.faces.util.FacesLogger;
@@ -32,18 +43,6 @@ import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.view.facelets.FaceletsResourceResolver;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jakarta.servlet.ServletContext;
 
 /**
@@ -175,7 +174,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
     // --------------------------------------------------------- Protected Methods
 
     protected boolean processJar(String entry) {
-        return (classpathPackages == null || (classpathPackages.containsKey(entry) || classpathPackages.containsKey(WILDCARD)));
+        return classpathPackages == null || classpathPackages.containsKey(entry) || classpathPackages.containsKey(WILDCARD);
     }
 
     /**
@@ -236,7 +235,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
             }
         }
 
-        return ((annotatedClasses != null) ? annotatedClasses : Collections.<Class<? extends Annotation>, Set<Class<?>>>emptyMap());
+        return annotatedClasses != null ? annotatedClasses : Collections.<Class<? extends Annotation>, Set<Class<?>>>emptyMap();
     }
 
     protected boolean isAnnotationScanPackagesSet() {

@@ -195,7 +195,7 @@ public class RequestStateManager {
      * <p>
      * Remove all request state attributes associated that need to be cleared on change of view.
      * </p>
-     * 
+     *
      * @param ctx the <code>FacesContext</code> for the current request
      */
     public static void clearAttributesOnChangeOfView(FacesContext ctx) {
@@ -234,7 +234,7 @@ public class RequestStateManager {
     @SuppressWarnings("unchecked")
     public static Map<String, Object> getStateMap(FacesContext ctx) {
 
-        assert (ctx != null); // all callers guard against a null context
+        assert ctx != null; // all callers guard against a null context
         Map<Object, Object> contextMap = ctx.getAttributes();
         Map<String, Object> reqState = (Map<String, Object>) contextMap.get(KEY);
         if (reqState == null) {

@@ -114,7 +114,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
             clientId = component.getClientId(context);
         }
 
-        assert (clientId != null);
+        assert clientId != null;
         Map<String, String> requestMap = context.getExternalContext().getRequestParameterMap();
         // Don't overwrite the value unless you have to!
         String newValue = requestMap.get(clientId);
@@ -137,7 +137,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String currentValue = getCurrentValue(context, component);
         if (logger.isLoggable(Level.FINE)) {
@@ -202,7 +202,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
      */
     protected boolean isBehaviorSource(FacesContext ctx, String behaviorSourceId, String componentClientId) {
 
-        return (behaviorSourceId != null && behaviorSourceId.equals(componentClientId));
+        return behaviorSourceId != null && behaviorSourceId.equals(componentClientId);
 
     }
 
@@ -345,11 +345,11 @@ public abstract class HtmlBasicRenderer extends Renderer {
         UIComponent facet = null;
         if (component.getFacetCount() > 0) {
             facet = component.getFacet(name);
-            if ((facet != null) && !facet.isRendered()) {
+            if (facet != null && !facet.isRendered()) {
                 facet = null;
             }
         }
-        return (facet);
+        return facet;
 
     }
 
@@ -409,7 +409,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
     /**
      * Overloads getFormattedValue to take a advantage of a previously obtained converter.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param component UIComponent of interest
      * @param currentValue the current value of <code>component</code>
@@ -518,7 +518,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
                     UIParameter uiParam = (UIParameter) kid;
                     if (!uiParam.isDisable()) {
                         Object value = uiParam.getValue();
-                        Param param = new Param(uiParam.getName(), (value == null ? null : value.toString()));
+                        Param param = new Param(uiParam.getName(), value == null ? null : value.toString());
                         parameterList.add(param);
                     }
                 }
@@ -598,8 +598,8 @@ public abstract class HtmlBasicRenderer extends Renderer {
         // may need access to the id (AjaxBehavior certainly does).
 
         String id;
-        return (null != (id = component.getId()) && (!id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)
-                || ((component instanceof ClientBehaviorHolder) && !((ClientBehaviorHolder) component).getClientBehaviors().isEmpty())));
+        return null != (id = component.getId()) && (!id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)
+                || component instanceof ClientBehaviorHolder && !((ClientBehaviorHolder) component).getClientBehaviors().isEmpty());
     }
 
     protected String writeIdAttributeIfNecessary(FacesContext context, ResponseWriter writer, UIComponent component) {
@@ -695,7 +695,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
             // If the behavior map only contains behaviors for non-pass
             // thru attributes, return null.
-            if ((size == 1 && (hasDomBehavior || hasComponentBehavior)) || (size == 2 && hasDomBehavior && hasComponentBehavior)) {
+            if (size == 1 && (hasDomBehavior || hasComponentBehavior) || size == 2 && hasDomBehavior && hasComponentBehavior) {
                 return null;
             }
         }
@@ -784,12 +784,12 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
         public OptionComponentInfo(UIComponent component) {
             Map<String, Object> attributes = component.getAttributes();
-            this.disabledClass = (String) attributes.get("disabledClass");
-            this.enabledClass = (String) attributes.get("enabledClass");
-            this.selectedClass = (String) attributes.get("selectedClass");
-            this.unselectedClass = (String) attributes.get("unselectedClass");
-            this.disabled = Util.componentIsDisabled(component);
-            this.hideNoSelection = MenuRenderer.isHideNoSelection(component);
+            disabledClass = (String) attributes.get("disabledClass");
+            enabledClass = (String) attributes.get("enabledClass");
+            selectedClass = (String) attributes.get("selectedClass");
+            unselectedClass = (String) attributes.get("unselectedClass");
+            disabled = Util.componentIsDisabled(component);
+            hideNoSelection = MenuRenderer.isHideNoSelection(component);
         }
 
         public String getDisabledClass() {

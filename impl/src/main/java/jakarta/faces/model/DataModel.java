@@ -66,7 +66,7 @@ public abstract class DataModel<E> implements Iterable<E> {
      * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row availability
-     * 
+     *
      * @return true if and only if there is data available at the current index, false otherwise.
      */
     public abstract boolean isRowAvailable();
@@ -78,7 +78,7 @@ public abstract class DataModel<E> implements Iterable<E> {
      * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row count
-     * 
+     *
      * @return the number of rows of data represented by this {@code DataModel}
      */
     public abstract int getRowCount();
@@ -91,7 +91,7 @@ public abstract class DataModel<E> implements Iterable<E> {
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row data
      * @throws IllegalArgumentException if now row data is available at the currently specified row index
-     * 
+     *
      * @return an object representing the data for the currently selected row index
      */
     public abstract E getRowData();
@@ -103,7 +103,7 @@ public abstract class DataModel<E> implements Iterable<E> {
      * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row index
-     * 
+     *
      * @return the index of the currently selected row
      */
     public abstract int getRowIndex();
@@ -134,7 +134,7 @@ public abstract class DataModel<E> implements Iterable<E> {
      * <p>
      * Return the object representing the data wrapped by this {@link DataModel}, if any.
      * </p>
-     * 
+     *
      * @return the {@code Object} that this model wraps.
      */
     public abstract Object getWrappedData();
@@ -197,7 +197,7 @@ public abstract class DataModel<E> implements Iterable<E> {
      * Return the set of {@link DataModelListener}s interested in notifications from this {@link DataModel}. If there are no
      * such listeners, an empty array is returned.
      * </p>
-     * 
+     *
      * @return the listeners for this instance, or an empty array
      */
     public DataModelListener[] getDataModelListeners() {
@@ -237,7 +237,7 @@ public abstract class DataModel<E> implements Iterable<E> {
      * <p class="changed_added_2_0">
      * Return a read-only <code>Iterator</code> over the row data for this model.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     @Override
@@ -293,7 +293,7 @@ public abstract class DataModel<E> implements Iterable<E> {
 
         /**
          * Unsupported.
-         * 
+         *
          * @see java.util.Iterator#remove()
          */
         @Override

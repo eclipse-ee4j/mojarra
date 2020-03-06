@@ -26,7 +26,7 @@ import jakarta.faces.context.FacesContext;
  * is required to return <code>null</code> for Jakarta Server Pages views and non-<code>null</code> for views authored
  * in Facelets for Jakarta Server Faces 2, this specification only applies to Facelets for Jakarta Server Faces 2.
  * </p>
- * 
+ *
  * <p class="changed_added_2_2">
  * Implementations must call {@link jakarta.faces.component.UIComponent#visitTree} on the
  * {@link jakarta.faces.component.UIViewRoot} to perform the saving and restoring of the view in the {@link #saveView}
@@ -47,23 +47,23 @@ public abstract class StateManagementStrategy {
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <ol>
-     * 
+     *
      * <li>
      * <p>
      * If the <code>UIViewRoot</code> of the current view is marked <code>transient</code>, return <code>null</code>
      * immediately.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Traverse the view and verify that each of the client ids are unique. Throw <code>IllegalStateException</code> if more
      * than one client id are the same.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Visit the tree using {@link jakarta.faces.component.UIComponent#visitTree}. For each node, call
@@ -72,25 +72,25 @@ public abstract class StateManagementStrategy {
      * or deleted programmatically during this lifecycle traversal, rather than by the VDL.
      * </p>
      * </li>
-     * 
+     *
      * </ol>
-     * 
+     *
      * <p>
      * The implementation must ensure that the {@link jakarta.faces.component.UIComponent#saveState} method is called for
      * each node in the tree.
      * </p>
-     * 
+     *
      * <p>
      * The data structure used to save the state obtained by executing the above algorithm must be
      * <code>Serializable</code>, and all of the elements within the data structure must also be <code>Serializable</code>.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param context the <code>FacesContext</code> for this request.
      *
      * @since 2.0
-     * 
+     *
      * @return the saved view state
      */
 
@@ -103,11 +103,11 @@ public abstract class StateManagementStrategy {
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <ol>
-     * 
+     *
      * <li>
-     * 
+     *
      * <p class="changed_added_2_2">
      * As in the case of restore view on an initial request, the view metadata must be restored and properly handled as
      * well. Obtain the {@link ViewMetadata} for the current <code>viewId</code>, and from that call
@@ -115,25 +115,25 @@ public abstract class StateManagementStrategy {
      * the state of the <code>UIViewRoot</code> from the state <code>Object</code> returned from
      * {@link jakarta.faces.render.ResponseStateManager#getState} and pass that to {@link UIViewRoot#restoreViewScopeState}.
      * </p>
-     * 
-     * 
+     *
+     *
      * <p>
      * Build the view from the markup. For all components in the view that do not have an explicitly assigned id in the
      * markup, the values of those ids must be the same as on an initial request for this view. This view will not contain
      * any components programmatically added during the previous lifecycle run, and it <b>will</b> contain components that
      * were programmatically deleted on the previous lifecycle run. Both of these cases must be handled.
      * </p>
-     * 
-     * 
+     *
+     *
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Call {@link jakarta.faces.render.ResponseStateManager#getState} to obtain the data structure returned from the
      * previous call to {@link #saveView}.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Visit the tree using {@link jakarta.faces.component.UIComponent#visitTree}. For each node, call
@@ -141,34 +141,34 @@ public abstract class StateManagementStrategy {
      * id.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Ensure that any programmatically deleted components are removed.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Ensure any programmatically added components are added.
      * </p>
      * </li>
-     * 
+     *
      * </ol>
-     * 
+     *
      * <p>
      * The implementation must ensure that the {@link jakarta.faces.component.UIComponent#restoreState} method is called for
      * each node in the tree, except for those that were programmatically deleted on the previous run through the lifecycle.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param context the <code>FacesContext</code> for this request
-     * 
+     *
      * @param viewId the view identifier for which the state should be restored
-     * 
+     *
      * @param renderKitId the render kit id for this state.
-     * 
+     *
      * @since 2.0
      *
      * @return the root of the restored view

@@ -16,17 +16,17 @@
 
 package com.sun.faces.flow.builder;
 
-import com.sun.faces.util.Util;
-
-import jakarta.faces.application.NavigationCase;
-import jakarta.faces.flow.builder.NavigationCaseBuilder;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import com.sun.faces.util.Util;
+
 import jakarta.el.ValueExpression;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.flow.builder.NavigationCaseBuilder;
 
 public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
 
@@ -109,7 +109,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
         public RedirectBuilder parameter(String name, String value) {
             Util.notNull("name", name);
             Util.notNull("value", value);
-            Map<String, List<String>> redirectParams = NavigationCaseBuilderImpl.this.navCase.getParameters();
+            Map<String, List<String>> redirectParams = navCase.getParameters();
             List<String> values = redirectParams.get(name);
             if (null == values) {
                 values = new CopyOnWriteArrayList<>();
@@ -121,7 +121,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
 
         @Override
         public RedirectBuilder includeViewParams() {
-            NavigationCaseBuilderImpl.this.navCase.isIncludeViewParams();
+            navCase.isIncludeViewParams();
             return this;
         }
 

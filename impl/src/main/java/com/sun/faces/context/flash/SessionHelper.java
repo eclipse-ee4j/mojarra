@@ -19,10 +19,9 @@ package com.sun.faces.context.flash;
 import java.io.Serializable;
 import java.util.Map;
 
+import jakarta.faces.context.ExternalContext;
 import jakarta.servlet.http.HttpSessionActivationListener;
 import jakarta.servlet.http.HttpSessionEvent;
-
-import jakarta.faces.context.ExternalContext;
 
 class SessionHelper implements Serializable, HttpSessionActivationListener {
 
