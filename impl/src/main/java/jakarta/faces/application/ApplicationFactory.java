@@ -32,7 +32,7 @@ import jakarta.faces.FacesWrapper;
  * There must be one {@link ApplicationFactory} instance per web application that is utilizing Jakarta Server Faces.
  * This instance can be acquired, in a portable manner, by calling:
  * </p>
- * 
+ *
  * <pre>
  * ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
  * </pre>
@@ -95,7 +95,7 @@ public abstract class ApplicationFactory implements FacesWrapper<ApplicationFact
      * </p>
      *
      * @throws NullPointerException if <code>application</code> is <code>null</code>.
-     * 
+     *
      * @param application The replacement {@link Application} instance
      */
     public abstract void setApplication(Application application);

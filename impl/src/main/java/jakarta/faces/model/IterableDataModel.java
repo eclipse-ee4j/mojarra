@@ -31,7 +31,7 @@ import jakarta.faces.model.ListDataModel;
  * <p class="changed_added_2_3">
  * <strong>IterableDataModel</strong> is an implementation of {@link DataModel} that wraps an <code>Iterable</code>.
  * </p>
- * 
+ *
  * <p>
  * This can be used to encapsulate nearly every collection type, including {@link Collection} derived types such as
  * {@link List} and {@link Set}. As such this specific DataModel can be used instead of more specific DataModels like
@@ -223,7 +223,7 @@ public class IterableDataModel<E> extends DataModel<E> {
      * available or if there is no <code>rowData</code>available at the current <code>rowIndex</code>, return
      * <code>null</code>.
      * </p>
-     * 
+     *
      * @return data for the currently selected row index, or null if there's no data
      */
     private E getRowDataOrNull() {
@@ -236,7 +236,7 @@ public class IterableDataModel<E> extends DataModel<E> {
 
     /**
      * Notifies all DataModelListeners
-     * 
+     *
      * @param oldRowIndex the previous index
      * @param rowIndex The current zero-relative index (must be non-negative)
      */

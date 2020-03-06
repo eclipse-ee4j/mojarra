@@ -95,7 +95,7 @@ public class WebsocketSessionManager {
 
     /**
      * Register given channel identifier.
-     * 
+     *
      * @param channelId The channel identifier to register.
      */
     protected void register(String channelId) {
@@ -106,7 +106,7 @@ public class WebsocketSessionManager {
 
     /**
      * Register given channel identifiers.
-     * 
+     *
      * @param channelIds The channel identifiers to register.
      */
     protected void register(Iterable<String> channelIds) {
@@ -119,7 +119,7 @@ public class WebsocketSessionManager {
      * On open, add given web socket session to the mapping associated with its channel identifier and returns
      * <code>true</code> if it's accepted (i.e. the channel identifier is known) and the same session hasn't been added
      * before, otherwise <code>false</code>.
-     * 
+     *
      * @param session The opened web socket session.
      * @return <code>true</code> if given web socket session is accepted and is new, otherwise <code>false</code>.
      */
@@ -144,7 +144,7 @@ public class WebsocketSessionManager {
     /**
      * Encode the given message object as JSON and send it to all open web socket sessions associated with given web socket
      * channel identifier.
-     * 
+     *
      * @param channelId The web socket channel identifier.
      * @param message The push message object.
      * @return The results of the send operation. If it returns an empty set, then there was no open session associated with
@@ -224,7 +224,7 @@ public class WebsocketSessionManager {
 
     /**
      * On close, remove given web socket session from the mapping.
-     * 
+     *
      * @param session The closed web socket session.
      * @param reason The close reason.
      */
@@ -238,7 +238,7 @@ public class WebsocketSessionManager {
 
     /**
      * Deregister given channel identifiers and explicitly close all open web socket sessions associated with it.
-     * 
+     *
      * @param channelIds The channel identifiers to deregister.
      */
     protected void deregister(Iterable<String> channelIds) {

@@ -42,7 +42,7 @@ public class PostKeepFlashValueEvent extends SystemEvent {
      * the flash. If the argument is <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed to the
      * superclass constructor.
      * </p>
-     * 
+     *
      * @param key the key in the flash that was just kept.
      *
      */
@@ -56,7 +56,7 @@ public class PostKeepFlashValueEvent extends SystemEvent {
      * the flash. If the argument is <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed to the
      * superclass constructor.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param key the key in the flash that was just kept.
      *

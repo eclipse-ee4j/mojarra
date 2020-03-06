@@ -144,7 +144,7 @@ import java.util.logging.Level;
  * </code>
  * </pre>
  *
- * 
+ *
  */
 
 public abstract class UIComponentClassicTagBase extends UIComponentTagBase implements JspIdConsumer, BodyTag {
@@ -477,7 +477,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * Create a new child component using <code>createComponent</code>, initialize its properties, and add it to its parent
      * as a child.
      * </p>
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param parent Parent {@link UIComponent} for the new child
      * @param componentId Component identifier for the new child, or <code>null</code> for no explicit identifier
@@ -500,7 +500,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * Create a new child component using <code>createComponent</code>, initialize its properties, and add it to its parent
      * as a facet.
      * </p>
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param parent Parent {@link UIComponent} of the new facet
      * @param name Name of the new facet
@@ -841,7 +841,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     /**
      * Similar to List.indexOf, except that we start searching from a specific index and then wrap aroud. For this to be
      * performant, the List should implement RandomAccess.
-     * 
+     *
      * @param <T>
      * @param list List to seatch
      * @param startIndex index to start searching for value from
@@ -1092,7 +1092,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * is added to the list at the position immediatly preceding <i>component</i>.
      * </p>
      *
-     * 
+     *
      * @param parentTag the parent tag
      *
      * @param verbatim the verbatim to add before the component
@@ -1507,7 +1507,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * <p>
      * Return result from {@link #getDoAfterBodyValue}
      * </p>
-     * 
+     *
      * @throws JspException if an error is encountered
      */
     @Override
@@ -1865,7 +1865,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * <code>setProperties()</code> method is still called. A typical implementation that supports extra properties
      * <code>foo</code> and <code>bar</code> would look something like this:
      * </p>
-     * 
+     *
      * <pre>
      * protected void setProperties(UIComponent component) {
      *     super.setProperties(component);
@@ -1899,7 +1899,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * expression will be stored on the component. Otherwise, {@link Application#createComponent} is called with only the
      * component type. Finally, initialize the components id and other properties.
      * </p>
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param newId id of the component
      *

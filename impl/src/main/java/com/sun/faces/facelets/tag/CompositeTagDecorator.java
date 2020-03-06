@@ -24,7 +24,7 @@ import jakarta.faces.view.facelets.TagDecorator;
 /**
  * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses the chain of responsibility pattern to
  * stop processing if any of the TagDecorators return a value other than null.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */

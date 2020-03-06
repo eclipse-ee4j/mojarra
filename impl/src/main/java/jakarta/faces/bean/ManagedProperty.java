@@ -39,7 +39,7 @@ import jakarta.faces.bean.ManagedBean;
  * If this annotation is present on a class that does not have the <code>ManagedBean</code> annotation, the
  * implementation must take no action on this annotation.
  * </p>
- * 
+ *
  * @deprecated This has been replaced by {@code jakarta.faces.annotation.ManagedProperty}, which is a CDI build-in bean
  * with similar semantics
  */

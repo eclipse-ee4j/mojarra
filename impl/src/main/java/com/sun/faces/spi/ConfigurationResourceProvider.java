@@ -41,7 +41,7 @@ public interface ConfigurationResourceProvider {
 
     /**
      * Parameter to force the XML validation of the JSF configuration files returned by getResources.
-     * 
+     *
      * @param uri the URI for which Mojarra asks if validation is needed. Should always be one as returned by getResources
      * @param globalValidateXml the global (application level) value of the validateXml parameter
      * @return true if Mojarra should validate the given URI file, false if not

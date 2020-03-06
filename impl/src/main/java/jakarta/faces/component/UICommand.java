@@ -45,7 +45,7 @@ import jakarta.faces.render.Renderer;
  * this control has been activated, it will queue an {@link ActionEvent}. Later on, the <code>broadcast()</code> method
  * will ensure that this event is broadcast to all interested listeners.
  * </p>
- * 
+ *
  * <p>
  * Listeners will be invoked in the following order:
  * <ol>
@@ -55,7 +55,7 @@ import jakarta.faces.render.Renderer;
  * <li>The default {@link ActionListener}, retrieved from the {@link Application} - and therefore, any attached "action"
  * {@link MethodExpression}.
  * </ol>
- * 
+ *
  * <p>
  * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Button</code>". This value can
  * be changed by calling the <code>setRendererType()</code> method.
@@ -127,7 +127,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      * <p>
      * Returns the <code>value</code> property of the <code>UICommand</code>. This is most often rendered as a label.
      * </p>
-     * 
+     *
      * @return The object representing the value of this component.
      */
     public Object getValue() {
@@ -217,7 +217,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
     }
 
     /**
-     * 
+     *
      * <p>
      * Intercept <code>queueEvent</code> and take the following action. If the event is an <code>{@link ActionEvent}</code>,
      * obtain the <code>UIComponent</code> instance from the event. If the component is an <code>{@link ActionSource}</code>
@@ -225,7 +225,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      * <code>PhaseId.APPLY_REQUEST_VALUES</code> otherwise, mark the phaseId to be <code>PhaseId.INVOKE_APPLICATION</code>.
      * The event must be passed on to <code>super.queueEvent()</code> before returning from this method.
      * </p>
-     * 
+     *
      */
     @Override
     public void queueEvent(FacesEvent event) {
@@ -287,7 +287,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @deprecated Use {@link #getActionListeners} instead.
      */
     @Override
@@ -297,7 +297,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @deprecated This has been replaced by {@link #addActionListener(jakarta.faces.event.ActionListener)}.
      */
     @Override

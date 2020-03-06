@@ -785,7 +785,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         /*
          * return true if <distributable /> is present in the web.xml or a fragment.
-         * 
+         *
          */
         public boolean isDistributablePresent() {
             return distributablePresent;

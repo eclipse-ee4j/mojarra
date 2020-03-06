@@ -39,9 +39,9 @@ import java.util.logging.Logger;
 
 /**
  * Compilation unit for managing the creation of a single FaceletHandler based on events from an XML parser.
- * 
+ *
  * @see {@link com.sun.faces.facelets.compiler.Compiler}
- * 
+ *
  * @author Jacob Hookom
  */
 final class CompilationManager {
@@ -475,7 +475,7 @@ final class CompilationManager {
     }
 
     /**
-     * 
+     *
      * @param units the compilation units.
      * @return Get the view
      */

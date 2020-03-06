@@ -24,7 +24,7 @@ import java.net.URL;
  * <span class="changed_modified_2_3">This</span> API defines the facility by which the Facelets
  * {@link jakarta.faces.view.ViewDeclarationLanguage} creates and caches instances of Facelets.
  * </p>
- * 
+ *
  * <p class="changed_added_2_1">
  * The cache handles two different kinds of Facelets: View Facelets and View Metadata Facelets. The former is the usual
  * Facelet that provides for the construction of a <code>UIComponent</code> tree. This kind of Facelet is accessed via
@@ -32,7 +32,7 @@ import java.net.URL;
  * corresponds to {@link jakarta.faces.view.ViewDeclarationLanguage#getViewMetadata}. This kind of Facelet is accessed
  * via the {@link #getViewMetadataFacelet} and {@link #isViewMetadataFaceletCached} methods.
  * </p>
- * 
+ *
  * @since 2.1
  */
 
@@ -49,13 +49,13 @@ public abstract class FaceletCache<V> {
          * <p class="changed_added_2_1">
          * Create a Facelet or View Metadata Facelet (depending on the type of factory this is) for the argument URL.
          * </p>
-         * 
+         *
          * @param key the <code>URL</code> that will be used as the key for the instance being created.
          *
          * @throws NullPointerException if argument <code>key</code> is <code>null</code>.
-         * 
+         *
          * @throws IOException if unable to load a file necessary to respond to service this method.
-         * 
+         *
          * @return the newly created {@code Facelet} or View Metadata {@code Facelet}
          */
         public V newInstance(final URL key) throws IOException;
@@ -66,32 +66,32 @@ public abstract class FaceletCache<V> {
      * Returns a cached Facelet instance. If no instance is available, it will be created using the Facelet
      * {@link MemberFactory} and stored in the cache.
      * </p>
-     * 
+     *
      * @param url <code>URL</code> for the Facelet being retrieved
-     * 
+     *
      * @throws NullPointerException if argument <code>url</code> is <code>null</code>.
-     * 
+     *
      * @throws IOException if unable to load a file necessary to respond to service this method.
-     * 
+     *
      * @return a cached or new {@code Facelet}
-     * 
+     *
      */
 
     public abstract V getFacelet(URL url) throws IOException;
 
     /**
-     * 
+     *
      * <p class="changed_added_2_1">
      * Determines whether a cached Facelet instance exists for this URL. Returns true if a cached instance exists, false
      * otherwise
      * </p>
-     * 
+     *
      * @param url <code>URL</code> for the Facelet
-     * 
+     *
      * @throws NullPointerException if argument <code>url</code> is <code>null</code>.
-     * 
+     *
      * @return true if a cached instance exists, false otherwise
-     * 
+     *
      */
 
     public abstract boolean isFaceletCached(URL url);
@@ -101,15 +101,15 @@ public abstract class FaceletCache<V> {
      * Returns a cached View Metadata Facelet instance. If no instance is available, it will be created using the View
      * Metadata Facelet {@link MemberFactory} and stored in the cache.
      * </p>
-     * 
+     *
      * @param url <code>URL</code> for the View Metadata Facelet being retrieved
-     * 
+     *
      * @throws NullPointerException if argument <code>url</code> is <code>null</code>.
-     * 
+     *
      * @throws IOException if unable to load a file necessary to respond to service this method.
-     * 
+     *
      * @return a cached or new View Metadata {@code Facelet} instance
-     * 
+     *
      */
 
     public abstract V getViewMetadataFacelet(URL url) throws IOException;
@@ -119,32 +119,32 @@ public abstract class FaceletCache<V> {
      * Determines whether a cached View Metadata Facelet instance exists for this URL. Returns true if a cached instance
      * exists, false otherwise
      * </p>
-     * 
+     *
      * @param url <code>URL</code> for the View Metadata Facelet
-     * 
+     *
      * @throws NullPointerException if argument <code>url</code> is <code>null</code>.
-     * 
+     *
      * @return true if a cached instance exists, false otherwise
      */
 
     public abstract boolean isViewMetadataFaceletCached(URL url);
 
     /**
-     * 
+     *
      * <p class="changed_added_2_3">
      * This must be called by the runtime at startup time, before any requests are serviced, and allows for the
      * <code>FaceletCache</code> implementation to provide the {@link MemberFactory} instances that will be used to create
      * instances of Facelets and View Metadata Facelets. The default implementation calls through to
      * {@link #setMemberFactories(jakarta.faces.view.facelets.FaceletCache.MemberFactory, jakarta.faces.view.facelets.FaceletCache.MemberFactory)}.
      * </p>
-     * 
+     *
      * @param faceletFactory the {@link MemberFactory} instance that will be used to create instances of Facelets.
-     * 
+     *
      * @param viewMetadataFaceletFactory the {@link MemberFactory} instance that will be used to create instances of
      * metadata Facelets.
-     * 
+     *
      * @throws NullPointerException if either argument is <code>null</code>
-     * 
+     *
      * @since 2.3
      */
     public void setCacheFactories(MemberFactory<V> faceletFactory, MemberFactory<V> viewMetadataFaceletFactory) {
@@ -159,14 +159,14 @@ public abstract class FaceletCache<V> {
      * </p>
      *
      * @param faceletFactory the {@link MemberFactory} instance that will be used to create instances of Facelets.
-     * 
+     *
      * @param viewMetadataFaceletFactory the {@link MemberFactory} instance that will be used to create instances of
      * metadata Facelets.
-     * 
+     *
      * @throws NullPointerException if either argument is <code>null</code>
-     * 
+     *
      * @deprecated
-     * 
+     *
      */
     @Deprecated
     protected void setMemberFactories(MemberFactory<V> faceletFactory, MemberFactory<V> viewMetadataFaceletFactory) {
@@ -185,7 +185,7 @@ public abstract class FaceletCache<V> {
      * <p class="changed_added_2_1">
      * Returns the {@link MemberFactory} passed to {@link #setMemberFactories} for the purpose of creating Facelet instance.
      * </p>
-     * 
+     *
      * @return the {@link MemberFactory} passed to {@link #setMemberFactories} for the purpose of creating Facelet instance.
      */
     protected MemberFactory<V> getMemberFactory() {
@@ -197,7 +197,7 @@ public abstract class FaceletCache<V> {
      * Returns the {@link MemberFactory} passed to {@link #setMemberFactories} for the purpose of creating View Metadata
      * Facelet instance.
      * </p>
-     * 
+     *
      * @return the {@link MemberFactory} passed to {@link #setMemberFactories} for the purpose of creating View Metadata
      * Facelet instance.
      */

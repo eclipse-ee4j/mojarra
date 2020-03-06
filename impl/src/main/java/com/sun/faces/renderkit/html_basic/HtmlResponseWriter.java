@@ -1038,7 +1038,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * This method automatically closes a previous element (if not already closed).
-     * 
+     *
      * @throws IOException if an error occurs writing
      */
     private void closeStartIfNecessary() throws IOException {

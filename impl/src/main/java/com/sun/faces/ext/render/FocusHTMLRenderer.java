@@ -25,7 +25,7 @@ import jakarta.faces.render.Renderer;
 
 /**
  * Renderer class that emits HTML and JavaScript to set the focus to a given field.
- * 
+ *
  * @author driscoll
  */
 public class FocusHTMLRenderer extends Renderer {

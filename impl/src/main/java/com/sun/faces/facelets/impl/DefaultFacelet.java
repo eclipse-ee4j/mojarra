@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 /**
  * Default Facelet implementation.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -189,7 +189,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Return the alias name for error messages and logging
-     * 
+     *
      * @return alias name
      */
     public String getAlias() {
@@ -198,7 +198,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Return this Facelet's ExpressionFactory instance
-     * 
+     *
      * @return internal ExpressionFactory instance
      */
     public ExpressionFactory getExpressionFactory() {
@@ -207,7 +207,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * The time when this Facelet was created, NOT the URL source code
-     * 
+     *
      * @return final timestamp of when this Facelet was created
      */
     public long getCreateTime() {
@@ -216,7 +216,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Delegates resolution to DefaultFaceletFactory reference. Also, caches URLs for relative paths.
-     * 
+     *
      * @param path a relative url path
      * @return URL pointing to destination
      * @throws IOException if there is a problem creating the URL for the path specified
@@ -227,7 +227,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * The URL this Facelet was created from.
-     * 
+     *
      * @return the URL this Facelet was created from
      */
     public URL getSource() {
@@ -236,7 +236,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Given the passed FaceletContext, apply our child FaceletHandlers to the passed parent
-     * 
+     *
      * @see FaceletHandler#apply(FaceletContext, UIComponent)
      * @param ctx the FaceletContext to use for applying our FaceletHandlers
      * @param parent the parent component to apply changes to
@@ -255,7 +255,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
      * getRelativePath(String)}, then calls
      * {@link #include(DefaultFaceletContext, jakarta.faces.component.UIComponent, String)}.
-     * 
+     *
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx FaceletContext to pass to the included Facelet
      * @param parent UIComponent to apply changes to
@@ -285,7 +285,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Grabs a DefaultFacelet from referenced DefaultFaceletFacotry
-     * 
+     *
      * @see DefaultFaceletFactory#getFacelet(URL)
      * @param ctx FaceletContext to pass to the included Facelet
      * @param parent UIComponent to apply changes to

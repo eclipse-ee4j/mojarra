@@ -322,7 +322,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
 
     /**
      * Create the associated data in the session (if any).
-     * 
+     *
      * @param se the HTTP session event.
      */
     @Override

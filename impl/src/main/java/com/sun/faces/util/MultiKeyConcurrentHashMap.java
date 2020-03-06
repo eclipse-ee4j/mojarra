@@ -876,14 +876,14 @@ public class MultiKeyConcurrentHashMap<K, V> {
 
     /**
      * If the specified key is not already associated with a value, associate it with the given value. This is equivalent to
-     * 
+     *
      * <pre>
      * if (!map.containsKey(key))
      *     return map.put(key, value);
      * else
      *     return map.get(key);
      * </pre>
-     * 
+     *
      * Except that the action is performed atomically.
      *
      * @param key key with which the specified value is to be associated.
@@ -970,7 +970,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
 
     /**
      * Replace entry for key only if currently mapped to given value. Acts as
-     * 
+     *
      * <pre>
      * if (map.get(key).equals(oldValue)) {
      *     map.put(key, newValue);
@@ -978,7 +978,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * } else
      *     return false;
      * </pre>
-     * 
+     *
      * except that the action is performed atomically.
      *
      * @param key key with which the specified value is associated.
@@ -999,13 +999,13 @@ public class MultiKeyConcurrentHashMap<K, V> {
 
     /**
      * Replace entry for key only if currently mapped to some value. Acts as
-     * 
+     *
      * <pre>
      *  if ((map.containsKey(key)) {
      *     return map.put(key, value);
      * } else return null;
      * </pre>
-     * 
+     *
      * except that the action is performed atomically.
      *
      * @param key key with which the specified value is associated.

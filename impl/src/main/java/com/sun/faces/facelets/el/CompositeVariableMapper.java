@@ -22,10 +22,10 @@ import jakarta.el.VariableMapper;
 /**
  * Composite VariableMapper that attempts to load the ValueExpression from the first VariableMapper, then the second if
  * <code>null</code>.
- * 
+ *
  * @see jakarta.el.VariableMapper
  * @see jakarta.el.ValueExpression
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */

@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 /**
  * Simplified implementation of c:set
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */

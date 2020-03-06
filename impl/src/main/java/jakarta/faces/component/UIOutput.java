@@ -126,7 +126,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
      * <p class="changed_added_2_2">
      * Return the value property.
      * </p>
-     * 
+     *
      * @since 2.2
      */
     @Override
@@ -143,7 +143,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
      * <p class="changed_added_2_2">
      * Convenience method to reset this component's value to the un-initialized state.
      * </p>
-     * 
+     *
      * @since 2.2
      */
     public void resetValue() {

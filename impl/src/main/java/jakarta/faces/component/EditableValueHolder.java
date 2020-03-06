@@ -42,7 +42,7 @@ public interface EditableValueHolder extends ValueHolder {
      * non-<code>null</code> is determined based on the value of the
      * <code>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</code>context-param.</span>
      * </p>
-     * 
+     *
      * @return the submitted value.
      */
     public Object getSubmittedValue();
@@ -65,7 +65,7 @@ public interface EditableValueHolder extends ValueHolder {
      * non-<code>null</code> is determined based on the value of the
      * <code>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</code>context-param.</span>
      * </p>
-     * 
+     *
      * @param submittedValue The new submitted value
      */
     public void setSubmittedValue(Object submittedValue);
@@ -73,14 +73,14 @@ public interface EditableValueHolder extends ValueHolder {
     /**
      * Return the "local value set" state for this component. Calls to <code>setValue()</code> automatically reset this
      * property to <code>true</code>.
-     * 
+     *
      * @return <code>true</code> if the local value is set, <code>false</code> otherwise.
      */
     public boolean isLocalValueSet();
 
     /**
      * Sets the "local value set" state for this component.
-     * 
+     *
      * @param localValueSet the "local value set" boolean.
      */
     public void setLocalValueSet(boolean localValueSet);
@@ -89,7 +89,7 @@ public interface EditableValueHolder extends ValueHolder {
      * <p>
      * Return a flag indicating whether the local value of this component is valid (no conversion error has occurred).
      * </p>
-     * 
+     *
      * @return <code>true</code> if valid, <code>false</code> otherwise.
      */
     public boolean isValid();
@@ -107,7 +107,7 @@ public interface EditableValueHolder extends ValueHolder {
      * <p>
      * Return the "required field" state for this component.
      * </p>
-     * 
+     *
      * @return <code>true</code> if required, <code>false</code> otherwise.
      */
     public boolean isRequired();
@@ -125,7 +125,7 @@ public interface EditableValueHolder extends ValueHolder {
      * <p>
      * Return the "immediate" state for this component.
      * </p>
-     * 
+     *
      * @return <code>true</code> if is immediate, <code>false</code> otherwise.
      */
     public boolean isImmediate();
@@ -157,7 +157,7 @@ public interface EditableValueHolder extends ValueHolder {
      * Return the set of registered {@link Validator}s for this component instance. If there are no registered validators, a
      * zero-length array is returned.
      * </p>
-     * 
+     *
      * @return the validators, or a zero-length array.
      */
     public Validator[] getValidators();
@@ -189,7 +189,7 @@ public interface EditableValueHolder extends ValueHolder {
      * Return the set of registered {@link ValueChangeListener}s for this component instance. If there are no registered
      * listeners, a zero-length array is returned.
      * </p>
-     * 
+     *
      * @return the value change listeners, or a zero-length array.
      */
     public ValueChangeListener[] getValueChangeListeners();
@@ -243,7 +243,7 @@ public interface EditableValueHolder extends ValueHolder {
      * </p>
      *
      * @param validatorBinding The new <code>MethodBinding</code> instance
-     * 
+     *
      * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by creating an instance of
      * {@link jakarta.faces.validator.MethodExpressionValidator}.
      */

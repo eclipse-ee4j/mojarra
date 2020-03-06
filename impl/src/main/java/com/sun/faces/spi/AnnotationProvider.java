@@ -68,7 +68,7 @@ import jakarta.servlet.ServletContext;
  * <p>
  * <code>public AnnotationProvider(ServletContext sc, AnnotationProvider parent)</code>
  * </p>
- * 
+ *
  * <p>
  * If decoration is not desired, then the custom provider must have a constructor that takes one paramer, a
  * <code>ServletContext</code>:
@@ -80,7 +80,7 @@ import jakarta.servlet.ServletContext;
  * <p>
  * All customer providers must extend this class.
  * </p>
- * 
+ *
  */
 public abstract class AnnotationProvider {
 

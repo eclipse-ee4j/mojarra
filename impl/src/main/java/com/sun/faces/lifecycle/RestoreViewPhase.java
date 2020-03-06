@@ -441,7 +441,7 @@ public class RestoreViewPhase extends Phase {
 
     /**
      * Notify afterPhase listener that is registered on the View Root.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param lifecycle lifecycle instance
      */

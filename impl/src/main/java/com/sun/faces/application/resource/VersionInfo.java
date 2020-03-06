@@ -28,7 +28,7 @@ public class VersionInfo implements Comparable {
 
     /**
      * Constructs a new VersionInfo instance.
-     * 
+     *
      * @param version the version
      * @param extension the extension (only pertains to versioned resources, not libraries, and thus may be
      * <code>null</code>)

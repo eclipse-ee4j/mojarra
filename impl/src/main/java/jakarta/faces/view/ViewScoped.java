@@ -32,9 +32,9 @@ import jakarta.enterprise.context.NormalScope;
  * with a viewId that is different than the viewId of the current view. Any injections and notifications required by CDI
  * and the Java EE platform must occur as usual at the expected time.
  * </p>
- * 
+ *
  * <div class="changed_added_2_2">
- * 
+ *
  * <p>
  * If <code>ProjectStage</code> is not <code>ProjectStage.Production</code>, verify that the current
  * {@link jakarta.faces.component.UIViewRoot} does not have its {@code transient} property set to {@code true}. If so,
@@ -43,39 +43,39 @@ import jakarta.enterprise.context.NormalScope;
  * message to the log. If <code>ProjectStage</code> <strong>is</strong> <code>ProjectStage.Production</code>, do not do
  * this verification.
  * </p>
- * 
+ *
  * <p>
  * The bean must be stored in the map returned from {@link jakarta.faces.component.UIViewRoot#getViewMap(boolean)}.
  * </p>
- * 
+ *
  * <p>
  * Use of this annotation requires that any beans stored in view scope must be serializable and proxyable as defined in
  * the CDI specification.
  * </p>
- * 
+ *
  * <p>
  * The runtime must ensure that any methods on the bean annotated with {@code PostConstruct} or {@code PreDestroy} are
  * called when the scope begins and ends, respectively. Two circumstances can cause the scope to end.
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * {@link jakarta.faces.context.FacesContext#setViewRoot} is called with the new {@code UIViewRoot} being different than
  * the current one.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * The session, that happened to be active when the bean was created, expires. If no session existed when the bean was
  * created, then this circumstance does not apply.
  * </p>
  * </li>
- * 
+ *
  * </ul>
- * 
+ *
  * <p>
  * In the session expiration case, the runtime must ensure that
  * {@link jakarta.faces.context.FacesContext#getCurrentInstance} returns a valid instance if it is called during the
@@ -87,11 +87,11 @@ import jakarta.enterprise.context.NormalScope;
  * are valid to call. In addition, the method {@link jakarta.faces.context.ExternalContext#getSessionMap} is also valid
  * to call.
  * </p>
- * 
- * 
- * 
+ *
+ *
+ *
  * </div>
- * 
+ *
  * @since 2.2
  */
 @NormalScope(passivating = true)

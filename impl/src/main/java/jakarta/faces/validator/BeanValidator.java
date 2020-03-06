@@ -53,7 +53,7 @@ import jakarta.faces.context.FacesContext;
  * <span class="changed_modified_2_0_rev_a changed_modified_2_3">A Validator</span> that delegates validation of the
  * bean property to the Bean Validation API.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class BeanValidator implements Validator, PartialStateHolder {
@@ -120,7 +120,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * Setting this parameter to <code>true</code> will have the effect of disabling the automatic installation of Bean
      * Validation to every input component in every view in the application, though manual installation is still possible.
      * </p>
-     * 
+     *
      */
     public static final String DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME = "jakarta.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR";
 
@@ -130,7 +130,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * {@code true} take the additional actions relating to <code>&lt;validateWholeBean /&gt;</code> specified in
      * {@link #validate}.
      * </p>
-     * 
+     *
      * @since 2.3
      */
     public static final String ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME = "jakarta.faces.validator.ENABLE_VALIDATE_WHOLE_BEAN";
@@ -181,7 +181,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * attribute is omitted or empty, the validation groups will be inherited from the branch defaults, or if there are no
      * branch defaults, the {@link jakarta.validation.groups.Default} group will be used.
      * </p>
-     * 
+     *
      * @return the value of the {@code validatinGroups} attribute.
      */
     public String getValidationGroups() {
@@ -195,19 +195,19 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * Obtain a {@link ValidatorFactory} instance by calling
      * {@link jakarta.validation.Validation#buildDefaultValidatorFactory}.
      * </p>
-     * 
+     *
      * <p>
      * Let <em>validationGroupsArray</em> be a <code>Class []</code> representing validator groups set on the component by
      * the tag handler for this validator. The first search component terminates the search for the validation groups value.
      * If no such value is found use the class name of {@link jakarta.validation.groups.Default} as the value of the
      * validation groups.
      * </p>
-     * 
+     *
      * <p>
      * Let <em>valueExpression</em> be the return from calling {@link UIComponent#getValueExpression} on the argument
      * <em>component</em>, passing the literal string &#8220;value&#8221; (without the quotes) as an argument. If this
@@ -218,40 +218,40 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * appropriate methods to inspect <em>valueExpression</em> and derive values for <em>valueBaseClass</em> and
      * <em>valueProperty</em>.
      * </p>
-     * 
+     *
      * <p>
      * If no <code>ValueReference</code> can be obtained, take no action and return.
      * </p>
-     * 
+     *
      * <p>
      * If <code>ValueReference.getBase()</code> return <code>null</code>, take no action and return.
      * </p>
-     * 
+     *
      * <p>
      * Obtain the {@link ValidatorContext} from the {@link ValidatorFactory}.
      * </p>
-     * 
+     *
      * <p>
      * Decorate the {@link MessageInterpolator} returned from {@link ValidatorFactory#getMessageInterpolator} with one that
      * leverages the <code>Locale</code> returned from {@link jakarta.faces.component.UIViewRoot#getLocale}, and store it in
      * the <code>ValidatorContext</code> using {@link ValidatorContext#messageInterpolator}.
      * </p>
-     * 
+     *
      * <p>
      * Obtain the {@link jakarta.validation.Validator} instance from the <code>validatorContext</code>.
      * </p>
-     * 
+     *
      * <p>
      * Obtain a <code>jakarta.validation.BeanDescriptor</code> from the <code>jakarta.validation.Validator</code>. If
      * <code>hasConstraints()</code> on the <code>BeanDescriptor</code> returns false, take no action and return. Otherwise
      * proceed.
      * </p>
-     * 
+     *
      * <p>
      * Call {@link jakarta.validation.Validator#validateValue}, passing <em>valueBaseClass</em>, <em>valueProperty</em>, the
      * <em>value</em> argument, and <em>validatorGroupsArray</em> as arguments.
      * </p>
-     * 
+     *
      * <p>
      * If the returned <code>Set&lt;{@link
      * ConstraintViolation}&gt;</code> is non-empty, for each element in the <code>Set</code>, create a {@link FacesMessage}
@@ -264,7 +264,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * class-level validation for the bean for which this particular field is a property. Regardless of whether or not
      * {@link #ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} is set, throw the new exception.</span>
      * </p>
-     * 
+     *
      * <p class="changed_added_2_3">
      * If the returned {@code Set} is empty, the {@link #ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} application parameter is
      * enabled and this {@code Validator} instance has validation groups other than or in addition to the {@code Default}
@@ -272,9 +272,9 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * component later in the tree is able to allow class-level validation for the bean for which this particular field is a
      * property.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param context {@inheritDoc}
      * @param component {@inheritDoc}
      * @param value {@inheritDoc}

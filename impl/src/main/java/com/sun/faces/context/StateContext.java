@@ -80,7 +80,7 @@ public class StateContext {
 
     /**
      * Release the state context.
-     * 
+     *
      * @param facesContext the Faces context.
      */
     public static void release(FacesContext facesContext) {
@@ -181,7 +181,7 @@ public class StateContext {
 
     /**
      * Toggles the current modification tracking status.
-     * 
+     *
      * @param trackMods if <code>true</code> and the listener installed by
      * {@link #startTrackViewModifications(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot) is
      * present, then view modifications will be tracked. If <code>false</code>, then modification events will be ignored.
@@ -253,7 +253,7 @@ public class StateContext {
 
     /**
      * Get the hash map of dynamic components.
-     * 
+     *
      * @return the hash map of dynamic components.
      */
     public HashMap<String, UIComponent> getDynamicComponents() {
@@ -275,7 +275,7 @@ public class StateContext {
 
         /**
          * Constructor.
-         * 
+         *
          * @param context the Faces context.
          */
         protected AddRemoveListener(FacesContext context) {
@@ -284,21 +284,21 @@ public class StateContext {
 
         /**
          * Get the list of adds/removes.
-         * 
+         *
          * @return the list of adds/removes.
          */
         abstract public List<ComponentStruct> getDynamicActions();
 
         /**
          * Get the hash map of dynamic components.
-         * 
+         *
          * @return the hash map of dynamic components.
          */
         abstract public HashMap<String, UIComponent> getDynamicComponents();
 
         /**
          * Process the add/remove event.
-         * 
+         *
          * @param event the add/remove event.
          * @throws AbortProcessingException when processing should be aborted.
          */
@@ -320,11 +320,11 @@ public class StateContext {
 
         /**
          * Are we listening for these particular changes.
-         * 
+         *
          * <p>
          * Note we are only interested in UIComponent adds/removes that are not the UIViewRoot itself.
          * </p>
-         * 
+         *
          * @param source the source object we might be listening for.
          * @return true if the source is OK, false otherwise.
          */
@@ -335,7 +335,7 @@ public class StateContext {
 
         /**
          * Handle the remove.
-         * 
+         *
          * @param context the Faces context.
          * @param component the UI component to add to the list as a REMOVE.
          */
@@ -343,7 +343,7 @@ public class StateContext {
 
         /**
          * Handle the add.
-         * 
+         *
          * @param context the Faces context.
          * @param component the UI component to add to the list as an ADD.
          */
@@ -539,7 +539,7 @@ public class StateContext {
 
         /**
          * Constructor.
-         * 
+         *
          * @param context the Faces context.
          */
         public DynamicAddRemoveListener(FacesContext context) {
@@ -548,7 +548,7 @@ public class StateContext {
 
         /**
          * Get the list of adds/removes.
-         * 
+         *
          * @return the list of adds/removes.
          */
         @Override
@@ -563,7 +563,7 @@ public class StateContext {
 
         /**
          * Get the hash map of dynamic components.
-         * 
+         *
          * @return the hash map of dynamic components.
          */
         @Override
@@ -578,7 +578,7 @@ public class StateContext {
 
         /**
          * Handle the remove.
-         * 
+         *
          * @param context the Faces context.
          * @param component the UI component to add to the list as a REMOVE.
          */
@@ -593,7 +593,7 @@ public class StateContext {
 
         /**
          * Handle the add.
-         * 
+         *
          * @param context the Faces context.
          * @param component the UI component to add to the list as an ADD.
          */
@@ -635,7 +635,7 @@ public class StateContext {
 
         /**
          * Return the facet name for the given component or null if the component is not the value of a facets map entry.
-         * 
+         *
          * @param component the component to look for in the facets map entry value.
          * @return the facet name or null if the component is not the value of a facets map entry.
          */
@@ -659,13 +659,13 @@ public class StateContext {
          *  the component yet then add it to the dynamic action list, regardless
          *  whether or not if was an ADD or REMOVE.
          * </pre>
-         * 
+         *
          * <pre>
-         *  Else if you add a component and it is already in the dynamic action 
-         *  list and it is the only action for that client id in the dynamic 
+         *  Else if you add a component and it is already in the dynamic action
+         *  list and it is the only action for that client id in the dynamic
          *  action list then:
          *   1) If the previous action was an ADD then
-         *      a) If the current action is a REMOVE then remove the component 
+         *      a) If the current action is a REMOVE then remove the component
          *         out of the dynamic action list.
          *      b) If the current action is an ADD then throw a FacesException.
          *   2) If the previous action was a REMOVE then
@@ -673,14 +673,14 @@ public class StateContext {
          *         action list.
          *      b) If the current action is a REMOVE then throw a FacesException.
          * </pre>
-         * 
+         *
          * <pre>
          *  Else if a REMOVE and ADD where captured before then:
-         *   1) If the current action is REMOVE then remove the last dynamic 
+         *   1) If the current action is REMOVE then remove the last dynamic
          *      action out of the dynamic action list.
          *   2) If the current action is ADD then throw a FacesException.
          * </pre>
-         * 
+         *
          * @param component the UI component.
          * @param struct the dynamic action.
          */

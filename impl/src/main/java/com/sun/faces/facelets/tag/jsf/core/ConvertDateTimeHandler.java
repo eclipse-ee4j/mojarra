@@ -33,7 +33,7 @@ import java.util.TimeZone;
  * <p/>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -66,7 +66,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
 
     /**
      * Returns a new DateTimeConverter
-     * 
+     *
      * @see DateTimeConverter
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {

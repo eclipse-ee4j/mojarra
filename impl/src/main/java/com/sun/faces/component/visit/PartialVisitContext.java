@@ -40,14 +40,14 @@ import jakarta.faces.context.FacesContext;
  * </p>
  *
  * RELEASE_PENDING
- * 
+ *
  * @since 2.0
  */
 public class PartialVisitContext extends VisitContext {
 
     /**
      * Creates a PartialVisitorContext instance.
-     * 
+     *
      * @param facesContext the FacesContext for the current request
      * @param clientIds the client ids of the components to visit
      * @throws NullPointerException if {@code facesContext} is {@code null}
@@ -58,7 +58,7 @@ public class PartialVisitContext extends VisitContext {
 
     /**
      * Creates a PartialVisitorContext instance with the specified hints.
-     * 
+     *
      * @param facesContext the FacesContext for the current request
      * @param clientIds the client ids of the components to visit
      * @param hints a the VisitHints for this visit

@@ -53,7 +53,7 @@ public enum SearchExpressionHint {
      *
      * This hint is important if a {@link SearchKeywordResolver} uses {@link UIComponent#visitTree}, as the tree visit can
      * be terminated after the first component was resolved.
-     * 
+     *
      * This hint will be automatically added internally if
      * {@link SearchExpressionHandler#resolveClientId(jakarta.faces.component.search.SearchExpressionContext, java.lang.String)}
      * or
@@ -71,7 +71,7 @@ public enum SearchExpressionHint {
      * the keyword. For example: The AJAX client- and server-side is able to handle @all or @form. So it's not necessary at
      * all to resolve them to their clientId's on the server side.
      * </p>
-     * 
+     *
      * @see SearchKeywordResolver#isPassthrough(jakarta.faces.component.search.SearchExpressionContext, java.lang.String)
      *
      * @since 2.3

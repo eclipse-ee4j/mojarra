@@ -31,9 +31,9 @@ public abstract class ViewNode extends FlowNode {
      * Return the immutable VDL document id for this view node. This is normally the path to the VDL page that defines this
      * view node. This must be unique within the flow.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @return the VDL document id
      */
     public abstract String getVdlDocumentId();

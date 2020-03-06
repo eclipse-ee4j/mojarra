@@ -81,7 +81,7 @@ import java.lang.annotation.Inherited;
  * @since 2.0
  * @deprecated This has been replaced by {@code jakarta.faces.view.ViewScoped}. The functionality of this corresponding
  * annotation is identical to this one, but it is implemented as a CDI custom scope.
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

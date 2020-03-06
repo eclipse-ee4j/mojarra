@@ -42,14 +42,14 @@ public class PreRenderComponentEvent extends ComponentSystemEvent {
     private static final long serialVersionUID = -938817831518520795L;
 
     /**
-     * 
+     *
      * <p class="changed_added_2_0">
      * Instantiate a new <code>PreRenderComponentEvent</code> that indicates the argument <code>component</code> is about to
      * be rendered.
      * </p>
-     * 
+     *
      * @param component the <code>UIComponent</code> that is about to be rendered.
-     * 
+     *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PreRenderComponentEvent(UIComponent component) {
@@ -61,7 +61,7 @@ public class PreRenderComponentEvent extends ComponentSystemEvent {
      * Instantiate a new <code>PreRenderComponentEvent</code> that indicates the argument <code>component</code> is about to
      * be rendered.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the <code>UIComponent</code> that is about to be rendered.
      * @throws IllegalArgumentException if the argument is <code>null</code>.

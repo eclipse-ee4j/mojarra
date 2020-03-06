@@ -21,7 +21,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * An annotation literal for @Any.
- * 
+ *
  */
 @SuppressWarnings("all")
 class AnyAnnotationLiteral extends AnnotationLiteral<Any> implements Any {

@@ -24,7 +24,7 @@ package jakarta.faces.view.facelets;
  * </p>
  *
  * @since 2.0
- * 
+ *
  */
 public interface ConverterConfig extends TagConfig {
 
@@ -32,7 +32,7 @@ public interface ConverterConfig extends TagConfig {
      * <p class="changed_added_2_0">
      * Return the converter id to be used in instantiating this converter
      * </p>
-     * 
+     *
      * @return the converter id to be used in instantiating this converter
      */
     public String getConverterId();

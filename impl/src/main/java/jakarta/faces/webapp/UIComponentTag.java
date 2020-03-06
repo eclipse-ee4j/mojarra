@@ -179,7 +179,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase implement
      * <p>
      * Implement <code>createComponent</code> using Faces 1.1 EL API.
      * </p>
-     * 
+     *
      * @param context {@inheritDoc}
      * @param newId {@inheritDoc}
      */

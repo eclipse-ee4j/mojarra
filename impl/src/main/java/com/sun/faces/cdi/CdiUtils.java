@@ -127,7 +127,7 @@ public final class CdiUtils {
 
     /**
      * Create a behavior using the FacesBehavior value attribute.
-     * 
+     *
      * @param beanManager the bean manager.
      * @param value the value attribute.
      * @return the behavior, or null if we could not match one.
@@ -204,7 +204,7 @@ public final class CdiUtils {
 
     /**
      * Returns concrete (non-proxied) bean instance of given class in current context.
-     * 
+     *
      * @param type the required bean type the instance must have
      * @param create whether to auto-create bean if not exist
      * @return a bean instance adhering to the required type
@@ -229,7 +229,7 @@ public final class CdiUtils {
 
     /**
      * Finds an annotation in an Annotated, taking stereo types into account
-     * 
+     *
      * @param beanManager the current bean manager
      * @param annotated the Annotated in which to search
      * @param annotationType the type of the annotation to search for

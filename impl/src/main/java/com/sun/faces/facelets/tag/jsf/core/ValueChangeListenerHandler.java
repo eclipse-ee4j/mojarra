@@ -42,7 +42,7 @@ import java.io.Serializable;
  * See
  * <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/valueChangeListener.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  */
 public final class ValueChangeListenerHandler extends TagHandlerImpl implements EditableValueHolderAttachedObjectHandler {

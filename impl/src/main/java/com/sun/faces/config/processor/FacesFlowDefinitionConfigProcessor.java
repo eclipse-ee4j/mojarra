@@ -110,11 +110,11 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     /*
      * Implement the requirements of 11.4.3.3
-     * 
+     *
      * @param uri
-     * 
+     *
      * @param toPopulate
-     * 
+     *
      * @return
      */
     public static Document synthesizeEmptyFlowDefinition(URI uri) throws ParserConfigurationException {

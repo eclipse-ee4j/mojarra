@@ -33,7 +33,7 @@ public final class TagAttributeException extends FaceletException {
 
     /**
      * Constructor.
-     * 
+     *
      * @param attr the {@link TagAttribute}.
      */
     public TagAttributeException(TagAttribute attr) {
@@ -42,7 +42,7 @@ public final class TagAttributeException extends FaceletException {
 
     /**
      * Constructor.
-     * 
+     *
      * @param attr the {@link TagAttribute}.
      * @param message the message.
      */
@@ -52,7 +52,7 @@ public final class TagAttributeException extends FaceletException {
 
     /**
      * Constructor.
-     * 
+     *
      * @param attr the {@link TagAttribute}.
      * @param cause the cause.
      */
@@ -62,7 +62,7 @@ public final class TagAttributeException extends FaceletException {
 
     /**
      * Constructor.
-     * 
+     *
      * @param attr the {@link TagAttribute}.
      * @param message the message.
      * @param cause the cause.
@@ -87,7 +87,7 @@ public final class TagAttributeException extends FaceletException {
 
     /**
      * Constructor.
-     * 
+     *
      * @param tag the {@link Tag}.
      * @param attr the {@link TagAttribute}.
      * @param message the message.
@@ -98,7 +98,7 @@ public final class TagAttributeException extends FaceletException {
 
     /**
      * Constructor.
-     * 
+     *
      * @param tag the {@link Tag}.
      * @param attr the {@link TagAttribute}.
      * @param cause the cause.

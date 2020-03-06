@@ -24,7 +24,7 @@ import jakarta.faces.view.facelets.TagAttributes;
 
 /**
  * A set of TagAttributesImpl, usually representing all attributes on a Tag.
- * 
+ *
  * @see jakarta.faces.view.facelets.TagAttribute
  * @author Jacob Hookom
  * @version $Id$
@@ -41,7 +41,7 @@ public final class TagAttributesImpl extends TagAttributes {
     private Tag tag;
 
     /**
-     * 
+     *
      */
     public TagAttributesImpl(TagAttribute[] attrs) {
         this.attrs = attrs;
@@ -73,7 +73,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /**
      * Return an array of all TagAttributesImpl in this set
-     * 
+     *
      * @return a non-null array of TagAttributesImpl
      */
     @Override
@@ -83,7 +83,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /**
      * Using no namespace, find the TagAttribute
-     * 
+     *
      * @see #get(String, String)
      * @param localName tag attribute name
      * @return the TagAttribute found, otherwise null
@@ -95,7 +95,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /**
      * Find a TagAttribute that matches the passed namespace and local name.
-     * 
+     *
      * @param ns namespace of the desired attribute
      * @param localName local name of the attribute
      * @return a TagAttribute found, otherwise null
@@ -118,7 +118,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /**
      * Get all TagAttributesImpl for the passed namespace
-     * 
+     *
      * @param namespace namespace to search
      * @return a non-null array of TagAttributesImpl
      */
@@ -138,7 +138,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /**
      * A list of Namespaces found in this set
-     * 
+     *
      * @return a list of Namespaces found in this set
      */
     @Override
@@ -161,7 +161,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

@@ -181,7 +181,7 @@ public class ELUtils {
      * <p>
      * Create the <code>ELResolver</code> chain for programmatic EL calls.
      * </p>
-     * 
+     *
      * @param composite a <code>CompositeELResolver</code>
      * @param associate our ApplicationAssociate
      */
@@ -217,7 +217,7 @@ public class ELUtils {
      * <p>
      * Create the <code>ELResolver</code> chain for JSP.
      * </p>
-     * 
+     *
      * @param composite a <code>CompositeELResolver</code>
      * @param associate our ApplicationAssociate
      */
@@ -491,7 +491,7 @@ public class ELUtils {
 
     /**
      * Create a <code>ValueExpression</code> with the expected type of <code>Object.class</code>
-     * 
+     *
      * @param expression an EL expression
      * @return a new <code>ValueExpression</code> instance based off the provided <code>valueRef</code>
      */
@@ -548,7 +548,7 @@ public class ELUtils {
      * <p>
      * Add any <code>PropertyResolver</code>s to the specified <code>CompositeELResolver</code>.
      * </p>
-     * 
+     *
      * @param target the <code>CompositeELResolver</code> to which the <code>PropertyResolver</code>s will be added.
      * @param associate our ApplicationAssociate
      */
@@ -566,7 +566,7 @@ public class ELUtils {
      * <p>
      * Add any <code>VariableResolver</code>s to the specified <code>CompositeELResolver</code>.
      * </p>
-     * 
+     *
      * @param target the <code>CompositeELResolver</code> to which the <code>VariableResolver</code>s will be added.
      * @param associate our ApplicationAssociate
      */
@@ -759,7 +759,7 @@ public class ELUtils {
 
     /*
      * First look in the ApplicationAssociate. If that fails, try the Jsp engine. If that fails, return null;
-     * 
+     *
      */
     public static ExpressionFactory getDefaultExpressionFactory(FacesContext facesContext) {
         ExpressionFactory result;

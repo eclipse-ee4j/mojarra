@@ -177,7 +177,7 @@ public class FacesMessage implements Serializable {
      * Construct a new {@link jakarta.faces.application.FacesMessage} with just a summary. The detail is <code>null</code>,
      * the severity is set to <code>Severity.INFO</code>.
      * </p>
-     * 
+     *
      * @param summary the summary.
      */
     public FacesMessage(String summary) {
@@ -227,7 +227,7 @@ public class FacesMessage implements Serializable {
      * Return the localized detail text. If no localized detail text has been defined for this message, return the localized
      * summary text instead.
      * </p>
-     * 
+     *
      * @return the localized detail text.
      */
     public String getDetail() {
@@ -254,7 +254,7 @@ public class FacesMessage implements Serializable {
      * <p>
      * Return the severity level.
      * </p>
-     * 
+     *
      * @return the severity level.
      */
     public Severity getSeverity() {
@@ -283,7 +283,7 @@ public class FacesMessage implements Serializable {
      * <p>
      * Return the localized summary text.
      * </p>
-     * 
+     *
      * @return the localized summary text.
      */
     public String getSummary() {
@@ -326,9 +326,9 @@ public class FacesMessage implements Serializable {
      * Persist {@link jakarta.faces.application.FacesMessage} artifacts, including the non serializable
      * <code>Severity</code>.
      * </p>
-     * 
+     *
      * @param out The target stream to which the object will be written.
-     * 
+     *
      * @throws IOException Any of the usual Input/Output related exceptions.
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -343,12 +343,12 @@ public class FacesMessage implements Serializable {
      * <p>
      * Reconstruct {@link jakarta.faces.application.FacesMessage} from serialized artifacts.
      * </p>
-     * 
+     *
      * @param in The binary input of the object to be read
-     * 
+     *
      * @throws IOException Any of the usual Input/Output related exceptions.
      * @throws ClassNotFoundException Class of a serialized object cannot be found.
-     * 
+     *
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -425,7 +425,7 @@ public class FacesMessage implements Serializable {
          * <p>
          * Return the ordinal value of this {@link FacesMessage.Severity} instance.
          * </p>
-         * 
+         *
          * @return the ordinal.
          */
         public int getOrdinal() {

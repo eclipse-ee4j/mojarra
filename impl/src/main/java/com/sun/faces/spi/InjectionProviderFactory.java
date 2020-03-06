@@ -162,7 +162,7 @@ public class InjectionProviderFactory {
      * <p>
      * Determine if the specified class implements the <code>InjectionProvider</code> interfaces.
      * </p>
-     * 
+     *
      * @param clazz the class in question
      * @return <code>true</code> if <code>clazz</code> implements the <code>InjectionProvider</code> interface
      */
@@ -176,7 +176,7 @@ public class InjectionProviderFactory {
      * <p>
      * Determine if the specified class extends the <code>DiscoverableInjectionProvider</code> interfaces.
      * </p>
-     * 
+     *
      * @param clazz the class in question
      * @return <code>true</code> if <code>clazz</code> implements the <code>InjectionProvider</code> interface
      */
@@ -360,7 +360,7 @@ public class InjectionProviderFactory {
          * <p>
          * This is a no-op.
          * </p>
-         * 
+         *
          * @param managedBean target ManagedBean
          */
         @Override
@@ -377,7 +377,7 @@ public class InjectionProviderFactory {
          * <p>
          * This is a no-op.
          * </p>
-         * 
+         *
          * @param managedBean target ManagedBean
          */
         @Override
@@ -388,7 +388,7 @@ public class InjectionProviderFactory {
          * <p>
          * This is a no-op.
          * </p>
-         * 
+         *
          * @param managedBean target ManagedBean
          */
         @Override

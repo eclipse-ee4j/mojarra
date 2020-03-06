@@ -32,7 +32,7 @@ public enum VisitResult {
      * <p class="changed_added_2_0">
      * This result indicates that the tree visit should descend into current component's subtree.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     ACCEPT,

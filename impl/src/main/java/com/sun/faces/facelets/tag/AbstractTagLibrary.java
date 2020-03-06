@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * Base class for defining TagLibraries in Java
- * 
+ *
  * @author Jacob Hookom
  */
 public abstract class AbstractTagLibrary implements TagLibrary {
@@ -109,7 +109,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         /**
          * <p class="changed_added_2_0">
          * </p>
-         * 
+         *
          * @param parent
          * @param behaviorId
          */
@@ -121,7 +121,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         /**
          * <p class="changed_added_2_0">
          * </p>
-         * 
+         *
          * @return the behaviorId
          */
         @Override
@@ -132,7 +132,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         /**
          * <p class="changed_added_2_0">
          * </p>
-         * 
+         *
          * @return
          * @see jakarta.faces.view.facelets.TagConfig#getNextHandler()
          */
@@ -144,7 +144,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         /**
          * <p class="changed_added_2_0">
          * </p>
-         * 
+         *
          * @return
          * @see jakarta.faces.view.facelets.TagConfig#getTag()
          */
@@ -156,7 +156,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         /**
          * <p class="changed_added_2_0">
          * </p>
-         * 
+         *
          * @return
          * @see jakarta.faces.view.facelets.TagConfig#getTagId()
          */
@@ -362,7 +362,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         /**
          * <p class="changed_added_2_0">
          * </p>
-         * 
+         *
          * @param behaviorId
          */
         public BehaviorHandlerFactory(String behaviorId) {
@@ -485,7 +485,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Add a ComponentHandlerImpl with the specified componentType and rendererType, aliased by the tag name.
-     * 
+     *
      * @see jakarta.faces.application.Application#createComponent(java.lang.String)
      * @param name name to use, "foo" would be &lt;my:foo />
      * @param componentType componentType to use
@@ -498,7 +498,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     /**
      * Add a ComponentHandlerImpl with the specified componentType and rendererType, aliased by the tag name. The Facelet
      * will be compiled with the specified HandlerType (which must extend AbstractComponentHandler).
-     * 
+     *
      * @param name name to use, "foo" would be &lt;my:foo />
      * @param componentType componentType to use
      * @param rendererType rendererType to use
@@ -510,7 +510,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Add a ConverterHandler for the specified converterId
-     * 
+     *
      * @see ConverterHandler
      * @see jakarta.faces.application.Application#createConverter(java.lang.String)
      * @param name name to use, "foo" would be &lt;my:foo />
@@ -522,7 +522,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Add a ConverterHandler for the specified converterId of a TagHandler type
-     * 
+     *
      * @see ConverterHandler
      * @see ConverterConfig
      * @see jakarta.faces.application.Application#createConverter(java.lang.String)
@@ -536,7 +536,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Add a ValidatorHandler for the specified validatorId
-     * 
+     *
      * @see ValidatorHandler
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
      * @param name name to use, "foo" would be &lt;my:foo />
@@ -548,7 +548,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Add a ValidatorHandler for the specified validatorId
-     * 
+     *
      * @see ValidatorHandler
      * @see ValidatorConfig
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
@@ -563,7 +563,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     /**
      * <p class="changed_added_2_0">
      * </p>
-     * 
+     *
      * @param name
      * @param behaviorId
      */
@@ -577,7 +577,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Use the specified HandlerType in compiling Facelets. HandlerType must extend TagHandler.
-     * 
+     *
      * @see TagHandler
      * @param name name to use, "foo" would be &lt;my:foo />
      * @param handlerType must extend TagHandler
@@ -588,7 +588,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Add a UserTagHandler specified a the URL source.
-     * 
+     *
      * @see UserTagHandler
      * @param name name to use, "foo" would be &lt;my:foo />
      * @param source source where the Facelet (Tag) source is
@@ -599,7 +599,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Add a CompositeComponentTagHandler for the specified resource.
-     * 
+     *
      * @see UserTagHandler
      * @param name name to use, "foo" would be &lt;my:foo />
      * @param resourceId source where the Facelet (Tag) source is
@@ -610,9 +610,9 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * Add a Method to be used as a Function at Compilation.
-     * 
+     *
      * @see jakarta.el.FunctionMapper
-     * 
+     *
      * @param name (suffix) of function name
      * @param method method instance
      */
@@ -622,7 +622,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.TagLibrary#containsNamespace(java.lang.String)
      */
     @Override
@@ -632,7 +632,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
      */
     @Override
@@ -647,7 +647,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.TagLibrary#createTagHandler(java.lang.String, java.lang.String, com.sun.facelets.TagConfig)
      */
     @Override
@@ -663,7 +663,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.TagLibrary#containsFunction(java.lang.String, java.lang.String)
      */
     @Override
@@ -676,7 +676,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.TagLibrary#createFunction(java.lang.String, java.lang.String)
      */
     @Override
@@ -689,7 +689,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -699,7 +699,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override

@@ -56,7 +56,7 @@ public final class InsertHandler extends TagHandlerImpl implements TemplateClien
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override

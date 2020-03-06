@@ -60,7 +60,7 @@ public final class WebsocketEvent implements Serializable {
 
     /**
      * Returns the <code>&lt;f:websocket channel&gt;</code>.
-     * 
+     *
      * @return The web socket channel name.
      */
     public String getChannel() {
@@ -69,7 +69,7 @@ public final class WebsocketEvent implements Serializable {
 
     /**
      * Returns the <code>&lt;f:websocket user&gt;</code>, if any.
-     * 
+     *
      * @param <S> The generic type of the user identifier.
      * @return The web socket user identifier, if any.
      * @throws ClassCastException When <code>S</code> is of wrong type.
@@ -82,7 +82,7 @@ public final class WebsocketEvent implements Serializable {
     /**
      * Returns the close code. If this returns <code>null</code>, then it was {@link Opened}. If this returns
      * non-<code>null</code>, then it was {@link Closed}.
-     * 
+     *
      * @return The close code.
      */
     public CloseCode getCloseCode() {

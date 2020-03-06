@@ -196,7 +196,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * If {@link UIDebug#debugRequest(jakarta.faces.context.FacesContext)}} is <code>true</code>, simply return a new
      * UIViewRoot(), otherwise, call the default logic.
      * </p>
-     * 
+     *
      * @see ViewDeclarationLanguage#restoreView(jakarta.faces.context.FacesContext, java.lang.String)
      */
     @Override
@@ -419,7 +419,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             /*
              * Make sure we have a session here if we are using server state saving. The WriteBehindStateWriter needs an active
              * session when it writes out state to a server session.
-             * 
+             *
              * Note if you flag a view as transient then we won't acquire the session as you are stating it does not need one.
              */
             if (isServerStateSaving() && !viewToRender.isTransient()) {
@@ -514,7 +514,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * Called by Application._createComponent(Resource).
-     * 
+     *
      * This method creates two temporary UIComponent instances to aid in the creation of the compcomp metadata. These
      * instances no longer needed after the method returns and can be safely garbage collected.
      *
@@ -1495,7 +1495,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         /**
          * Lookup/return a <code>MethodRetargetHandler</code> appropriate to the provided attribute name
-         * 
+         *
          * @param attrName the attribute name
          * @return a <code>MethodRetargetHandler</code> that can properly handle retargeting expressions for the specified
          * attribute, or </code>null</code> if there is no handler available.
@@ -1937,7 +1937,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * Are we saving state server side?
-     * 
+     *
      * @return true if we are, false otherwise.
      */
     private boolean isServerStateSaving() {
@@ -1950,7 +1950,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * Get a session (if we are using server state saving).
-     * 
+     *
      * @param context the Faces context.
      * @return the session, or null if we are not using server state saving.
      */
@@ -1965,7 +1965,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * Gets and if needed initializes the faceletFactory
-     * 
+     *
      * @return the default faceletFactorys
      */
     private DefaultFaceletFactory getFaceletFactory() {
@@ -2001,7 +2001,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * Maps the element in the passed in stream of views according to the given options.
-     * 
+     *
      * @param views The stream of views to potentially map
      * @param options Options telling if and if so how to map
      * @return The stream with views, possibly mapped if needed

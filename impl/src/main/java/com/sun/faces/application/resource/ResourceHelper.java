@@ -115,7 +115,7 @@ public abstract class ResourceHelper {
      * Implementation Note: If any exception occurs trying to return a stream to the compressed content, log the exception,
      * and instead try to return a stream to the original content.
      * </p>
-     * 
+     *
      * @param toStream the resource to obtain an InputStream to
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @return an <code>InputStream</code> to the resource, or <code>null</code> if no resource is found
@@ -243,7 +243,7 @@ public abstract class ResourceHelper {
      * {@link ResourceHelper#getURL(ResourceInfo, jakarta.faces.context.FacesContext)} and leverage the URL to obtain the
      * date information of the resource and return the value of <code>URLConnection.getLastModified()</code>
      * </p>
-     * 
+     *
      * @param resource the resource in question
      * @param ctx the {@link FacesContext} for the current request
      * @return the date of the resource in milliseconds (since epoch), or <code>0</code> if the date cannot be determined
@@ -277,7 +277,7 @@ public abstract class ResourceHelper {
      * <p>
      * Given a collection of path names:
      * </p>
-     * 
+     *
      * <pre>
      *   1.1, scripts, images, 1.2
      * </pre>

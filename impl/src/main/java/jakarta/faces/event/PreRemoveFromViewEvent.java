@@ -33,7 +33,7 @@ import jakarta.faces.context.FacesContext;
  * view. Therefore, the implementation may assume it is safe to call {@link UIComponent#getParent},
  * {@link UIComponent#getClientId}, and other methods that depend upon the component instance being added into the view.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class PreRemoveFromViewEvent extends ComponentSystemEvent {
@@ -47,7 +47,7 @@ public class PreRemoveFromViewEvent extends ComponentSystemEvent {
      * Instantiate a new <code>BeforeRemoveFromView</code> that indicates the argument <code>component</code> is about to be
      * removed from the view.
      * </p>
-     * 
+     *
      * @param component the <code>UIComponent</code> that is about to be removed from the view.
      *
      * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
@@ -63,7 +63,7 @@ public class PreRemoveFromViewEvent extends ComponentSystemEvent {
      * Instantiate a new <code>BeforeRemoveFromView</code> that indicates the argument <code>component</code> is about to be
      * removed from the view.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the <code>UIComponent</code> that is about to be removed from the view.
      * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
@@ -79,7 +79,7 @@ public class PreRemoveFromViewEvent extends ComponentSystemEvent {
      * Returns <code>true</code> if and only if the argument <code>listener</code> is an instance of
      * {@link SystemEventListener}.
      * </p>
-     * 
+     *
      * @param listener the faces listener.
      * @return true if the listener is an appropriate one, false otherwise.
      */

@@ -28,7 +28,7 @@ import jakarta.inject.Qualifier;
  * The presence of this annotation on a CDI producer method indicates that the method will produce a flow. See
  * {@link FlowBuilder} for a usage example.
  * </p>
- * 
+ *
  * @since 2.2
  */
 

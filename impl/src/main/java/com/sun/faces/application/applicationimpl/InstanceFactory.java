@@ -903,7 +903,7 @@ public class InstanceFactory {
 
     /**
      * Helper method to convert a value to a type as defined in PropertyDescriptor(s)
-     * 
+     *
      * @param name
      * @param value
      * @param propertyDescriptors
@@ -925,7 +925,7 @@ public class InstanceFactory {
      * To enable EL Coercion to use JSF Custom converters, this method will call
      * <code>PropertyEditorManager.registerEditor()</code>, passing the <code>ConverterPropertyEditor</code> class for the
      * <code>targetClass</code> if the target class is not one of the standard by-type converter target classes.
-     * 
+     *
      * @param targetClass the target class for which a PropertyEditory may or may not be created
      */
     private void addPropertyEditorIfNecessary(Class<?> targetClass) {
@@ -1077,7 +1077,7 @@ public class InstanceFactory {
 
     /**
      * Get the bean manager.
-     * 
+     *
      * @return the bean manager.
      */
     private BeanManager getBeanManager() {

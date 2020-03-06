@@ -409,7 +409,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
     /**
      * Overloads getFormattedValue to take a advantage of a previously obtained converter.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param component UIComponent of interest
      * @param currentValue the current value of <code>component</code>

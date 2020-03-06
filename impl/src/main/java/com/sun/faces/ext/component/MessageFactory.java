@@ -32,7 +32,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.ValueBinding;
 
 /**
- * 
+ *
  * <p>
  * supported filters: <code>package</code> and <code>protection</code>.
  * </p>

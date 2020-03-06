@@ -398,7 +398,7 @@ public class ClientSideStateHelper extends StateHelper {
      * set, calculate the elapsed time between the time the client state was written and the time this method was invoked
      * during restore. If the client state has expired, return <code>true</code>. If the client state hasn't expired, or the
      * init parameter wasn't set, return <code>false</code>.
-     * 
+     *
      * @param stateTime the time in milliseconds that the state was written to the client
      * @return <code>false</code> if the client state hasn't timed out, otherwise return <code>true</code>
      */

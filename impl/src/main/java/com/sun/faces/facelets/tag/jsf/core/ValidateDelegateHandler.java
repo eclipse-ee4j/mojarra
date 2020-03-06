@@ -23,7 +23,7 @@ import jakarta.faces.view.facelets.*;
  * <p/>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/validator.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -39,7 +39,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler {
     /**
      * Resolve the validator id from the attribute "validatorId", which is then used to create a new Validator instance from
      * the Application.
-     * 
+     *
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
      */
     protected String getValidator(FaceletContext ctx) {

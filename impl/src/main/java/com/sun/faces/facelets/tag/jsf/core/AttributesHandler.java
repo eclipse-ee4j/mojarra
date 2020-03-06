@@ -39,7 +39,7 @@ public final class AttributesHandler extends TagHandlerImpl implements jakarta.f
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override

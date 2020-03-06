@@ -45,9 +45,9 @@ import jakarta.faces.event.SystemEventListener;
  * {@link ActionSource2} and {@link EditableValueHolder} components are placed inside a form.
  * ValidateFormComponentNesting is installed automatically if {@link ProjectStage#Development} is active.
  * </p>
- * 
+ *
  * @author dueni
- * 
+ *
  */
 public class ValidateComponentNesting implements SystemEventListener {
 
@@ -111,7 +111,7 @@ public class ValidateComponentNesting implements SystemEventListener {
 
     /**
      * method for adding a message regarding missing ancestor to context
-     * 
+     *
      * @param ctx
      * @param clientId
      */

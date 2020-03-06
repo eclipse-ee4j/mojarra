@@ -22,7 +22,7 @@ import jakarta.faces.FacesException;
  * <p class="changed_added_2_2">
  * This exception is thrown by the runtime when a violation of the view protection mechanism is encountered.
  * </p>
- * 
+ *
  * @since 2.2
  */
 

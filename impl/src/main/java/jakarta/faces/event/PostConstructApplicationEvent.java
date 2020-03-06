@@ -42,7 +42,7 @@ public class PostConstructApplicationEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * Constructs a new <code>PostConstructApplicationEvent</code> for this application.
      * </p>
-     * 
+     *
      * @param application the application that has been configured
      * @since 2.0
      */
@@ -55,7 +55,7 @@ public class PostConstructApplicationEvent extends SystemEvent {
      * <p class="changed_added_2_3">
      * Constructs a new <code>PostConstructApplicationEvent</code> for this application.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param application the application that has been configured
      * @since 2.0
@@ -69,7 +69,7 @@ public class PostConstructApplicationEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * The source {@link Application} that sent this event.
      * </p>
-     * 
+     *
      * @return the application.
      * @since 2.0
      */

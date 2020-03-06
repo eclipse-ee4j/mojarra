@@ -39,7 +39,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * @author Roland Huss
- * 
+ *
  */
 public final class Resource {
 
@@ -47,19 +47,19 @@ public final class Resource {
 
     /**
      * Get an URL of an internal resource.
-     * 
+     *
      * <p>
      * First, {@link jakarta.faces.context.ExternalContext#getResource(String)} is checked for an non-null URL return value.
      * In the case of a null return value (as it is the case for Weblogic 8.1 for a packed war), a URL with a special URL
      * handler is constructed, which can be used for <em>opening</em> a servlet resource later.
-     * 
+     *
      * <p>
      * Internally, this special URL handler will call {@link ServletContext#getResourceAsStream(String)} when an inputstream
      * is requested. This even works on Weblogic 8.1
-     * 
+     *
      * @param ctx the faces context from which to retrieve the resource
      * @param path an URL path
-     * 
+     *
      * @return an url representing the URL and on which getInputStream() can be called to get the resource
      * @throws MalformedURLException
      */

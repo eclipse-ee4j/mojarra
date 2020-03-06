@@ -56,7 +56,7 @@ public final class MappedValueExpression extends ValueExpression {
     }
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -65,7 +65,7 @@ public final class MappedValueExpression extends ValueExpression {
     private final ValueExpression orig;
 
     /**
-     * 
+     *
      */
     public MappedValueExpression(ValueExpression orig, Map.Entry entry) {
         this.orig = orig;
@@ -74,7 +74,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
@@ -90,7 +90,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
@@ -104,7 +104,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#isReadOnly(jakarta.el.ELContext)
      */
     @Override
@@ -119,7 +119,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
@@ -134,7 +134,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
@@ -144,7 +144,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#getExpressionString()
      */
     @Override
@@ -154,7 +154,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#equals(java.lang.Object)
      */
     @Override
@@ -164,7 +164,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#hashCode()
      */
     @Override
@@ -174,7 +174,7 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)eturn new Map.Entry<K, V>
-     * 
+     *
      * @see jakarta.el.Expression#isLiteralText()
      */
     @Override

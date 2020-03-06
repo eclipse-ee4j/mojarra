@@ -32,7 +32,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * 
+ *
  * <p>
  * supported filters: <code>package</code> and <code>protection</code>.
  * </p>

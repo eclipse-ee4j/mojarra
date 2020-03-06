@@ -35,16 +35,16 @@ import jakarta.faces.application.ResourceHandler;
  * added so that the named resource will be present in user agent's view of the <code>UIViewRoot</code> in which this
  * component or renderer is used.
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
- * 
+ *
  * <p>
  * The default implementation must support attaching this annotation to {@link jakarta.faces.component.UIComponent} or
  * {@link jakarta.faces.render.Renderer} classes. In both cases, the event that precipitates the processing of this
  * annotation is the insertion of a <code>UIComponent</code> instance into the view hierarchy on an initial request for
  * a view. When that event happens, the following action must be taken.
  * </p>
- * 
+ *
  * <ol>
  * <li>
  * <p>
@@ -124,18 +124,18 @@ import jakarta.faces.application.ResourceHandler;
  * </p>
  * </li>
  * </ol>
- * 
+ *
  * <p>
  * Example:
  * </p>
- * 
+ *
  * <pre>
  * <code>
   &#0064;ResourceDependency(library="corporate", name="colorAndMedia.css"),
 </code>
  * </pre>
- * 
- * 
+ *
+ *
  * </div>
  *
  * @since 2.0
@@ -152,7 +152,7 @@ public @interface ResourceDependency {
      * Jakarta Expression Language Expressions in the value of this attribute, as long as the expression resolves to an
      * instance of the expected type.
      * </p>
-     * 
+     *
      * @return the name.
      */
     public String name();
@@ -163,7 +163,7 @@ public @interface ResourceDependency {
      * specified, defaults to the empty string. It is valid to have Jakarta Expression Language Expressions in the value of
      * this attribute, as long as the expression resolves to an instance of the expected type.
      * </p>
-     * 
+     *
      * @return the library.
      */
     public String library() default "";
@@ -177,7 +177,7 @@ public @interface ResourceDependency {
      * must be called instead, as described above. It is valid to have Jakarta Expression Language Expressions in the value
      * of this attribute, as long as the expression resolves to an instance of the expected type.
      * </p>
-     * 
+     *
      * @return the target.
      */
     public String target() default "";

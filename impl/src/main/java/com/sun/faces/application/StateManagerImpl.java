@@ -92,7 +92,7 @@ public class StateManagerImpl extends StateManager {
 
     /**
      * Restores the view.
-     * 
+     *
      * @param context the Faces context.
      * @param viewId the view id.
      * @param renderKitId the render kit id.

@@ -49,7 +49,7 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override

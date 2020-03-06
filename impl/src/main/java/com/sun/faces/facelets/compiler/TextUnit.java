@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */

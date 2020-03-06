@@ -130,7 +130,7 @@ public abstract class ConverterELTag extends TagSupport {
      * </p>
      *
      * @throws JspException if a new instance cannot be created
-     * 
+     *
      * @return the {@code Converter}
      */
     protected abstract Converter createConverter() throws JspException;

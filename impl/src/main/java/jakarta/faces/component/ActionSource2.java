@@ -48,7 +48,7 @@ public interface ActionSource2 extends ActionSource {
      * <code>MethodBinding</code> instance whith was set by a call to {@link ActionSource#setAction}. This makes it possible
      * for the default {@link ActionListener} to continue to work properly with older components.
      * </p>
-     * 
+     *
      * @return the action expression.
      */
     public MethodExpression getActionExpression();

@@ -47,7 +47,7 @@ public class ClientResourceInfo extends ResourceInfo {
     /**
      * Constructs a new <code>ClientResourceInfo</code> using the specified details. The {@link ResourceHelper} of the
      * resource will be the same as the {@link ResourceHelper} of the {@link LibraryInfo}.
-     * 
+     *
      * @param library the library containing this resource
      * @param name the resource name
      * @param version the version of this resource (if any)
@@ -69,7 +69,7 @@ public class ClientResourceInfo extends ResourceInfo {
 
     /**
      * Constructs a new <code>ClientResourceInfo</code> using the specified details.
-     * 
+     *
      * @param name the resource name
      * @param version the version of the resource
      * @param localePrefix the locale prefix for this resource (if any)

@@ -30,8 +30,8 @@ import jakarta.faces.context.FacesContext;
  * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Message</code>". This value
  * can be changed by calling the <code>setRendererType()</code> method.
  * </p>
- * 
- * 
+ *
+ *
  */
 
 public class UIMessage extends UIComponentBase {
@@ -102,7 +102,7 @@ public class UIMessage extends UIComponentBase {
      * Otherwise, it must be an absolute component identifier (starting with ":"). See the {@link UIComponent#findComponent}
      * for more information.</span>
      * </p>
-     * 
+     *
      * @return the for client identifier.
      */
     public String getFor() {
@@ -130,7 +130,7 @@ public class UIMessage extends UIComponentBase {
      * Return the flag indicating whether the <code>detail</code> property of the associated message(s) should be displayed.
      * Defaults to <code>true</code>.
      * </p>
-     * 
+     *
      * @return <code>true</code> if detail is to be shown, <code>false</code> otherwise.
      */
     public boolean isShowDetail() {
@@ -157,7 +157,7 @@ public class UIMessage extends UIComponentBase {
      * Return the flag indicating whether the <code>summary</code> property of the associated message(s) should be
      * displayed. Defaults to <code>false</code>.
      * </p>
-     * 
+     *
      * @return <code>true</code> if the summary is to be shown, <code>false</code> otherwise.
      */
     public boolean isShowSummary() {

@@ -41,7 +41,7 @@ final class NamespaceManager {
     private final List namespaces;
 
     /**
-     * 
+     *
      */
     public NamespaceManager() {
         this.namespaces = new ArrayList();

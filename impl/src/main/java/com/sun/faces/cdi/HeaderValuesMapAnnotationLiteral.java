@@ -22,7 +22,7 @@ import jakarta.faces.annotation.HeaderValuesMap;
 
 /**
  * An annotation literal for @HeaderMap.
- * 
+ *
  * @since 2.3
  */
 @SuppressWarnings("all")

@@ -37,7 +37,7 @@ public interface ValueHolder {
      * Return the local value of this {@link UIComponent} (if any), without evaluating any associated
      * {@link ValueExpression}.
      * </p>
-     * 
+     *
      * @return the local value.
      */
     public Object getLocalValue();
@@ -52,7 +52,7 @@ public interface ValueHolder {
      * {@link UIComponent#setValueBinding} requires a call through to {@link UIComponent#setValueExpression}, legacy tags
      * will continue to work.
      * </p>
-     * 
+     *
      * @return the value.
      */
     public Object getValue();
@@ -70,7 +70,7 @@ public interface ValueHolder {
      * <p>
      * Return the {@link Converter} (if any) that is registered for this {@link UIComponent}.
      * </p>
-     * 
+     *
      * @return the converter.
      */
     public Converter getConverter();

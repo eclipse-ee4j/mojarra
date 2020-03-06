@@ -79,7 +79,7 @@ public class DebugUtil {
 // Relationship Instance Variables
 
 //
-// Constructors and Initializers    
+// Constructors and Initializers
 //
 
     public DebugUtil() {
@@ -331,7 +331,7 @@ public class DebugUtil {
     }
 
 //    /**
-//     * Output of printTree() as a String. 
+//     * Output of printTree() as a String.
 //     * Useful when used with a Logger. For example:
 //     *    logger.log(DebugUtil.printTree(root));
 //     */
@@ -342,7 +342,7 @@ public class DebugUtil {
 //    }
 //
 //    /**
-//     * Output of printTree() to a PrintStream. 
+//     * Output of printTree() to a PrintStream.
 //     * Usage:
 //     *    DebugUtil.printTree(root, System.out);
 //     */

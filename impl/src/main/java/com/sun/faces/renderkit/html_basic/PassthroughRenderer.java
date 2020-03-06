@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class PassthroughRenderer extends HtmlBasicRenderer {
 
-// We are purposely piggy backing off the PANELGROUP attributes since they are 
+// We are purposely piggy backing off the PANELGROUP attributes since they are
 // identical for this renderer.
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
 

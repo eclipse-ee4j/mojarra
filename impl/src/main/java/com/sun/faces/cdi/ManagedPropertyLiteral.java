@@ -22,7 +22,7 @@ import jakarta.faces.annotation.ManagedProperty;
 
 /**
  * An annotation literal for {@link ManagedProperty}
- * 
+ *
  */
 @SuppressWarnings("all")
 class ManagedPropertyLiteral extends AnnotationLiteral<ManagedProperty> implements ManagedProperty {

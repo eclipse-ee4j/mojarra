@@ -54,7 +54,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#getExpressionString()
      */
     public String getExpressionString() {
@@ -64,7 +64,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#getType(jakarta.faces.context.FacesContext)
      */
     public Class getType(FacesContext context) throws EvaluationException, PropertyNotFoundException {
@@ -85,7 +85,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#getValue(jakarta.faces.context.FacesContext)
      */
     public Object getValue(FacesContext context) throws EvaluationException, PropertyNotFoundException {
@@ -105,7 +105,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#isReadOnly(jakarta.faces.context.FacesContext)
      */
     public boolean isReadOnly(FacesContext context) throws EvaluationException, PropertyNotFoundException {
@@ -124,7 +124,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.ValueBinding#setValue(jakarta.faces.context.FacesContext, java.lang.Object)
      */
     public void setValue(FacesContext context, Object value) throws EvaluationException, PropertyNotFoundException {

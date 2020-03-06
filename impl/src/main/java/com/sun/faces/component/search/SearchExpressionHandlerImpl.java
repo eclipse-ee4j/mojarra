@@ -462,7 +462,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
     /**
      * Extract the first command from the expression. @child(1):myId => @child(1) myId:@parent => myId
-     * 
+     *
      * @param facesContext
      * @param expression
      * @return

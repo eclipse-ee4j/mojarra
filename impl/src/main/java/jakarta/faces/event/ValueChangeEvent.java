@@ -90,7 +90,7 @@ public class ValueChangeEvent extends FacesEvent {
      * <p>
      * Return the previous local value of the source {@link UIComponent}.
      * </p>
-     * 
+     *
      * @return the previous local value
      */
     public Object getOldValue() {
@@ -110,7 +110,7 @@ public class ValueChangeEvent extends FacesEvent {
      * <p>
      * Return the current local value of the source {@link UIComponent}.
      * </p>
-     * 
+     *
      * @return the current local value
      */
     public Object getNewValue() {

@@ -118,7 +118,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior {
      * {@link ClientBehaviorRenderer} to use, or should override {@link #getScript} and perform script rendering locally in
      * the {@link ClientBehavior} implementation.
      * </p>
-     * 
+     *
      * @return the default renderer type, which is null.
      *
      * @since 2.0
@@ -132,7 +132,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior {
      * Default implementation of {@link ClientBehavior#getHints()}. By default, no hints are specified, and this method
      * returns an empty, umodifiable set.
      * </p>
-     * 
+     *
      * @return an empty, unmodifiable set of {@link ClientBehaviorHint}s.
      *
      * @since 2.0
@@ -147,7 +147,7 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior {
      * Convenience method to return the {@link ClientBehaviorRenderer} instance associated with this {@link ClientBehavior},
      * if any; otherwise, return <code>null</code>.
      * </p>
-     * 
+     *
      * @param context {@link FacesContext} for the request we are processing
      * @return {@link ClientBehaviorRenderer} instance from the current {@link RenderKit} or null.
      *

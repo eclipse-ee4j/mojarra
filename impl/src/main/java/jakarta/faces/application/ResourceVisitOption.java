@@ -23,9 +23,9 @@ import jakarta.faces.application.ResourceVisitOption;
  * <p class="changed_added_2_3">
  * Defines the resource traversal options.
  * </p>
- * 
+ *
  * @since 2.3
- * 
+ *
  * @see ResourceHandler#getViewResources(jakarta.faces.context.FacesContext, String, int, ResourceVisitOption...)
  *
  */

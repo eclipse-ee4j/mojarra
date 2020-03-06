@@ -64,7 +64,7 @@ public abstract class ConfigurableNavigationHandler extends NavigationHandler {
      * {@link #getNavigationCase(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String)}, ignoring the
      * {@code toFlowDocumentId} parameter.
      * </p>
-     * 
+     *
      * @param context The {@link FacesContext} for the current request
      * @param fromAction The action binding expression that was evaluated to retrieve the specified outcome, or
      * <code>null</code> if the outcome was acquired by some other means
@@ -98,7 +98,7 @@ public abstract class ConfigurableNavigationHandler extends NavigationHandler {
      * outcome. When the NavigationHandler is invoked, the current viewId is treated as the "from viewId" and the "from
      * action" is null.
      * </p>
-     * 
+     *
      * @param outcome the provided outcome.
      * @throws IllegalStateException if this method is called after this instance has been released
      */
@@ -111,7 +111,7 @@ public abstract class ConfigurableNavigationHandler extends NavigationHandler {
      * Called by the flow system to cause the flow to be inspected for navigation rules. For backward compatibility with
      * earlier implementations, an empty method is provided.
      * </p>
-     * 
+     *
      * @param context the Faces context.
      * @param flow the flow.
      * @since 2.2

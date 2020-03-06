@@ -219,7 +219,7 @@ public class DocumentOrderingWrapper {
 
     /**
      * Sort the provided array of <code>Document</code>s per the order specified in the List represented by absoluteOrder.
-     * 
+     *
      * @param documents Documents to sort
      * @param absoluteOrder the absolute order as specified in the /WEB-INF/faces-config.xml
      * @return an array of DocumentOrderingWrappers that may be smaller than the input array of wrappers.
@@ -521,7 +521,7 @@ public class DocumentOrderingWrapper {
 
     /**
      * Simple helper method around <code>Arrays.binarySearch()</code>.
-     * 
+     *
      * @param ids an array of IDs
      * @param id the ID to search for
      * @return true if <code>ids</code> contains <code>id</code>

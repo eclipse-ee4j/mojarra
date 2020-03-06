@@ -94,7 +94,7 @@ public class UIGraphic extends UIComponentBase {
      * <p>
      * Return the image URL for this {@link UIGraphic}. This method is a typesafe alias for <code>getValue()</code>.
      * </p>
-     * 
+     *
      * @return the url.
      */
     public String getUrl() {
@@ -120,7 +120,7 @@ public class UIGraphic extends UIComponentBase {
      * <p>
      * Returns the <code>value</code> property of the <code>UIGraphic</code>. This will typically be rendered as an URL.
      * </p>
-     * 
+     *
      * @return the value.
      */
     public Object getValue() {
@@ -133,7 +133,7 @@ public class UIGraphic extends UIComponentBase {
      * <p>
      * Sets the <code>value</code> property of the <code>UIGraphic</code>. This will typically be rendered as an URL.
      * </p>
-     * 
+     *
      * @param value the new value
      */
     public void setValue(Object value) {

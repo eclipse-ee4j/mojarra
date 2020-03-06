@@ -29,7 +29,7 @@ import jakarta.faces.application.ResourceDependency;
  * <p class="changed_added_2_0">
  * Container annotation to specify multiple {@link ResourceDependency} annotations on a single class. Example:
  * </p>
- * 
+ *
  * <pre>
  * <code>
 &#0064;ResourceDependencies( {
@@ -44,15 +44,15 @@ import jakarta.faces.application.ResourceDependency;
                        })
 </code>
  * </pre>
- * 
- * 
+ *
+ *
  * <div class="changed_added_2_0">
- * 
+ *
  * <p>
  * The action described in {@link ResourceDependency} must be taken for each <code>&#0064;ResourceDependency</code>
  * present in the container annotation.
  * </p>
- * 
+ *
  * </div>
  */
 @Retention(RUNTIME)

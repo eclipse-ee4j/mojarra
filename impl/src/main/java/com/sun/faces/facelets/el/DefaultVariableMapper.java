@@ -23,11 +23,11 @@ import java.util.Map;
 
 /**
  * Default instance of a VariableMapper backed by a Map
- * 
+ *
  * @see jakarta.el.VariableMapper
  * @see jakarta.el.ValueExpression
  * @see java.util.Map
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */

@@ -62,7 +62,7 @@ public abstract class FacesEvent extends EventObject {
      * <p class="changed_added_2_3">
      * Construct a new event object from the Faces context and specified source component.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component Source {@link UIComponent} for this event.
      * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
@@ -78,7 +78,7 @@ public abstract class FacesEvent extends EventObject {
     /**
      * <p>
      * Return the source {@link UIComponent} that sent this event.
-     * 
+     *
      * @return the source UI component.
      */
     public UIComponent getComponent() {
@@ -91,12 +91,12 @@ public abstract class FacesEvent extends EventObject {
      * <p class="changed_added_2_3">
      * Get the Faces context.
      * </p>
-     * 
+     *
      * <p>
      * If the constructor was passed a FacesContext we return it, otherwise we call FacesContext.getCurrentInstance() and
      * return it.
      * </p>
-     * 
+     *
      * @return the Faces context.
      * @since 2.3
      */
@@ -121,7 +121,7 @@ public abstract class FacesEvent extends EventObject {
      * the singleton instances defined by the {@link PhaseId} class, including <code>PhaseId.ANY_PHASE</code>, which is the
      * default value.
      * </p>
-     * 
+     *
      * @return the phase id.
      */
     public PhaseId getPhaseId() {
@@ -132,7 +132,7 @@ public abstract class FacesEvent extends EventObject {
      * <p>
      * Set the {@link PhaseId} during which this event will be delivered.
      * </p>
-     * 
+     *
      * @param phaseId the phase id.
      * @throws IllegalArgumentException phaseId is null.
      */

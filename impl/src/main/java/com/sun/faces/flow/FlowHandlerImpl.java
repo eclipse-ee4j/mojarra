@@ -337,7 +337,7 @@ public class FlowHandlerImpl extends FlowHandler {
     /*
      * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both
      * operands may be null.
-     * 
+     *
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
         boolean result = false;

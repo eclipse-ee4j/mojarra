@@ -34,7 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * <p>
  * supported filters: <code>package</code> and <code>protection</code>.
  * </p>

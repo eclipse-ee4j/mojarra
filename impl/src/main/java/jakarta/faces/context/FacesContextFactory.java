@@ -39,7 +39,7 @@ import jakarta.faces.lifecycle.Lifecycle;
  * There must be one <code>FacesContextFactory</code> instance per web application that is utilizing Jakarta Server
  * Faces. This instance can be acquired, in a portable manner, by calling:
  * </p>
- * 
+ *
  * <pre>
  * FacesContextFactory factory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
  * </pre>
@@ -99,12 +99,12 @@ public abstract class FacesContextFactory implements FacesWrapper<FacesContextFa
      * {@link FacesContext}, from the same thread that called this method, will return the same {@link FacesContext}
      * instance until the <code>release()</code> method is called on that instance.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * The implementation must call {@link ExternalContextFactory#getExternalContext} to produce the {@link ExternalContext}
      * for the {@link FacesContext} instance.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * The default implementation must call {@link ExceptionHandlerFactory#getExceptionHandler} and make it so the return
      * from that method is what gets returned from a call to {@link FacesContext#getExceptionHandler} on the returned

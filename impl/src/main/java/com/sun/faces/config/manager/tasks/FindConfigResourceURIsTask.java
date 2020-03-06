@@ -46,7 +46,7 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
 
     /**
      * Constructs a new <code>URITask</code> instance.
-     * 
+     *
      * @param provider the <code>ConfigurationResourceProvider</code> from which zero or more <code>URL</code>s will be
      * returned
      * @param servletContext the <code>ServletContext</code> of the current application

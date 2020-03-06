@@ -22,7 +22,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 /*
  * This interface will only ever be loaded and accessed in CDI 1.1 or greater
  * runtimes.
- * 
+ *
  */
 
 public interface CDIUtil {
@@ -30,10 +30,10 @@ public interface CDIUtil {
     /*
      * Allow for the programmatic instantiation of a CDI bean "on demand", so to speak. This is in contrast to the usual way
      * of CDI beans, where instantiation happens lazily.
-     * 
+     *
      * Two clients of this interface are the CDI extensions for ViewScoped and FlowScoped so that they may fire the
      * Initialized and Destroyed events as necessary.
-     * 
+     *
      */
     Bean createHelperBean(BeanManager beanManager, Class beanClass);
 

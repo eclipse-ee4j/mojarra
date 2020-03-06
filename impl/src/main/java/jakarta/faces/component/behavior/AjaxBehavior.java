@@ -48,13 +48,13 @@ import jakarta.faces.event.AjaxBehaviorListener;
  * The presence of this {@link ClientBehavior} will cause the rendering of JavaScript that produces an <code>Ajax</code>
  * request using the specification public JavaScript API when the component is rendered.
  * </p>
- * 
+ *
  * <p class="changed_modified_2_0_rev_a">
  * If the component is an instance of {@link jakarta.faces.component.EditableValueHolder}, Where at all possible, the
  * component must have the UI register the ajax event when the initial value is changed, not when focus is lost on the
  * component.
  * </p>
- * 
+ *
  * <!-- https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=1219 -->
  *
  * @since 2.0
@@ -115,7 +115,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * that should be run in the event of an error.
      *
      * @return the JavaScript function name of <code>ONERROR</code>.
-     * 
+     *
      * @since 2.0
      */
     public String getOnerror() {
@@ -146,7 +146,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * that should be run on the occurance of a client-side event.
      *
      * @return the JavaScript function name of <code>ONEVENT</code>.
-     * 
+     *
      * @since 2.0
      */
     public String getOnevent() {
@@ -180,9 +180,9 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * Note that the returned collection may be unmodifiable. Modifications should be performed by calling
      * {@link #setExecute}.
      * </p>
-     * 
+     *
      * @return the JavaScript function name of <code>EXECUTE</code>.
-     * 
+     *
      * @since 2.0
      */
     public Collection<String> getExecute() {
@@ -212,9 +212,9 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * <p class="changed_added_2_2">
      * Returns the delay value, or <code>null</code> if no value was set.
      * </p>
-     * 
+     *
      * @return the delay value.
-     * 
+     *
      * @since 2.2
      */
     public String getDelay() {
@@ -281,7 +281,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * </p>
      *
      * @return the resetValues status.
-     * 
+     *
      * @since 2.2
      */
 
@@ -294,9 +294,9 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * <p class="changed_added_2_2">
      * Set the resetValues status of this behavior.
      * </p>
-     * 
+     *
      * @param resetValues the resetValues status.
-     * 
+     *
      * @since 2.2
      */
 
@@ -343,7 +343,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * </p>
      *
      * @return the immediate status.
-     * 
+     *
      * @since 2.0
      */
     public boolean isImmediate() {
@@ -374,9 +374,9 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * back on the parent component's immediate status when immediate is not explicitly specified on the
      * <code>AjaxBehavior</code>.
      * </p>
-     * 
+     *
      * @return the flag whether the immediate attribute is specified.
-     * 
+     *
      * @since 2.0
      */
     public boolean isImmediateSet() {

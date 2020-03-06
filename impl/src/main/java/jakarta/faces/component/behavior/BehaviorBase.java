@@ -180,7 +180,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
      * typesafe APIs for registering listeners of the required type, and the implementation of those registration methods
      * will delegate to this method. For example:
      * </p>
-     * 
+     *
      * <pre>
      * public class AjaxBehaviorEvent extends BehaviorEvent { ... }
      *

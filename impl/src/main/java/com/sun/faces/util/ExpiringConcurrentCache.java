@@ -43,7 +43,7 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
     public interface ExpiryChecker<K, V> {
         /**
          * Checks whether a cached object expired
-         * 
+         *
          * @param key cache key
          * @param value cached value
          * @return true if the value expired and should be removed from the cache, false otherwise
@@ -53,7 +53,7 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
 
     /**
      * Public constructor.
-     * 
+     *
      * @param f used to create new instances of objects that are not already available
      * @param checker used to check whether an object in the cache has expired
      */

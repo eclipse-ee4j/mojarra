@@ -45,12 +45,12 @@ import java.util.logging.Logger;
  * We overload it a bit to set a bit on the ApplicationAssociate stating we've processed a request to indicate the
  * appliation is fully initialized.
  * </p>
- * 
+ *
  * <p>
  * After the first request, this <code>PhaseListener</code> will remove itself from all registered lifecycle instances
  * registered with the application.
  * </p>
- * 
+ *
  * @since 1.2
  */
 public class ELResolverInitPhaseListener implements PhaseListener {

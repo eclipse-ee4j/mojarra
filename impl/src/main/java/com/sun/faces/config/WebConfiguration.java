@@ -143,7 +143,7 @@ public class WebConfiguration {
      * Return the WebConfiguration instance for this application passing the result of
      * FacesContext.getCurrentInstance().getExternalContext() to
      * {@link #getInstance(jakarta.faces.context.ExternalContext)}.
-     * 
+     *
      * @return the WebConfiguration for this application or <code>null</code> if no FacesContext is available.
      */
     public static WebConfiguration getInstance() {
@@ -152,7 +152,7 @@ public class WebConfiguration {
 
     /**
      * Return the WebConfiguration instance for this application.
-     * 
+     *
      * @param extContext the ExternalContext for this request
      * @return the WebConfiguration for this application
      */
@@ -168,7 +168,7 @@ public class WebConfiguration {
 
     /**
      * Return the WebConfiguration instance for this application.
-     * 
+     *
      * @param servletContext the ServletContext
      * @return the WebConfiguration for this application or <code>null</code> if no WebConfiguration could be located
      */
@@ -205,7 +205,7 @@ public class WebConfiguration {
 
     /**
      * Obtain the value of the specified boolean parameter
-     * 
+     *
      * @param param the parameter of interest
      * @return the value of the specified boolean parameter
      */
@@ -220,7 +220,7 @@ public class WebConfiguration {
 
     /**
      * Obtain the value of the specified parameter
-     * 
+     *
      * @param param the parameter of interest
      * @return the value of the specified parameter
      */
@@ -296,7 +296,7 @@ public class WebConfiguration {
 
     /**
      * Obtain the value of the specified env-entry
-     * 
+     *
      * @param entry the env-entry of interest
      * @return the value of the specified env-entry
      */
@@ -515,7 +515,7 @@ public class WebConfiguration {
      * <p>
      * Is the configured value valid against the default boolean pattern.
      * </p>
-     * 
+     *
      * @param param the boolean parameter
      * @param value the configured value
      * @return <code>true</code> if the value is valid, otherwise <code>false</code>
@@ -538,7 +538,7 @@ public class WebConfiguration {
      * <p>
      * Process all boolean context initialization parameters.
      * </p>
-     * 
+     *
      * @param servletContext the ServletContext of interest
      * @param contextName the context name
      */
@@ -613,7 +613,7 @@ public class WebConfiguration {
     /**
      * Adds all com.sun.faces init parameter names to a list. This allows callers to determine if a parameter was explicitly
      * set.
-     * 
+     *
      * @param servletContext the ServletContext of interest
      */
     private void initSetList(ServletContext servletContext) {
@@ -641,7 +641,7 @@ public class WebConfiguration {
      * <p>
      * Process all non-boolean context initialization parameters.
      * </p>
-     * 
+     *
      * @param servletContext the ServletContext of interest
      * @param contextName the context name
      */
@@ -702,7 +702,7 @@ public class WebConfiguration {
      * <p>
      * Process all JNDI entries.
      * </p>
-     * 
+     *
      * @param contextName the context name
      */
     private void processJndiEntries(String contextName) {

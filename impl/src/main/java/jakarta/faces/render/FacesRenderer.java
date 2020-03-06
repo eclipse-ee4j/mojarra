@@ -33,17 +33,17 @@ import java.lang.annotation.Inherited;
  * taken as the <em>component-family</em>. The implementation must guarantee that for each class annotated with
  * <code>FacesRenderer</code>, found with the algorithm in section JSF.11.5, the following actions are taken.
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * Obtain a reference to the {@link RenderKitFactory} for this application.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * See if a <code>RenderKit</code> exists for <em>render-kit-id</em>. If so, let that instance be <em>renderKit</em> for
@@ -51,13 +51,13 @@ import java.lang.annotation.Inherited;
  * and the application must not be placed in service.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * Create an instance of this class using the public zero-argument constructor.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * Call {@link RenderKit#addRenderer} on <em>renderKit</em>, passing <em>component-family</em> as the first argument,
@@ -65,12 +65,12 @@ import java.lang.annotation.Inherited;
  * argument.
  * </p>
  * </li>
- * 
+ *
  * </ul>
- * 
- * 
+ *
+ *
  * </div>
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -82,7 +82,7 @@ public @interface FacesRenderer {
      * The value of this annotation attribute is taken to be the <em>render-kit-id</em> in which an instance of this class
      * of <code>Renderer</code> must be installed.
      * </p>
-     * 
+     *
      * @return the <em>render-kit-id</em>
      */
 
@@ -94,7 +94,7 @@ public @interface FacesRenderer {
      * {@link #componentFamily} can be used to obtain a reference to an instance of this {@link Renderer} by calling
      * {@link jakarta.faces.render.RenderKit#getRenderer(java.lang.String, java.lang.String)}.
      * </p>
-     * 
+     *
      * @return the <em>renderer-type</em>
      */
 
@@ -106,7 +106,7 @@ public @interface FacesRenderer {
      * {@link #rendererType} can be used to obtain a reference to an instance of this {@link Renderer} by calling
      * {@link jakarta.faces.render.RenderKit#getRenderer(java.lang.String, java.lang.String)}.
      * </p>
-     * 
+     *
      * @return the <em>component-family</em>
      */
 

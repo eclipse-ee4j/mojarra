@@ -85,7 +85,7 @@ class SelectUtils {
 
     /**
      * Returns true iff component has a {@link UISelectItem} child whose itemValue exactly matches the argument value
-     * 
+     *
      * @param ctx
      * @param component
      * @param value

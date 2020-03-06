@@ -37,7 +37,7 @@ public interface AttachedObjectHandler {
      * Take the argument <code>parent</code> and apply this attached object to it. The action taken varies with class that
      * implements one of the subinterfaces of this interface.
      * </p>
-     * 
+     *
      * @param context The <code>FacesContext</code> for this request
      * @param parent The <code>UIComponent</code> to which this particular attached object must be applied.
      */
@@ -48,7 +48,7 @@ public interface AttachedObjectHandler {
      * Return the value of the "for" attribute specified by the <em>page author</em> on the tag for this
      * <code>AttachedObjectHandler</code>.
      * </p>
-     * 
+     *
      * @return the value of the "for" attribute for this attached object
      */
     public String getFor();

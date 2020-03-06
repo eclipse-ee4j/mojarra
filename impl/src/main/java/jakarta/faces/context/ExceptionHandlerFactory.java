@@ -28,7 +28,7 @@ import jakarta.faces.FacesWrapper;
  * </p>
  *
  * <div class="changed_added_2_0">
- * 
+ *
  * <p>
  * There must be one <code>ExceptionHandlerFactory</code> instance per web application that is utilizing Jakarta Server
  * Faces. This instance can be acquired, in a portable manner, by calling:
@@ -41,7 +41,7 @@ import jakarta.faces.FacesWrapper;
  * </code>
  * </pre>
  *
- * 
+ *
  * </div>
  *
  * <p class="changed_added_2_3">

@@ -33,7 +33,7 @@ import jakarta.faces.FacesWrapper;
  * There must be one <code>LifecycleFactory</code> instance per web application that is utilizing Jakarta Server Faces.
  * This instance can be acquired, in a portable manner, by calling:
  * </p>
- * 
+ *
  * <pre>
  * LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
  * </pre>

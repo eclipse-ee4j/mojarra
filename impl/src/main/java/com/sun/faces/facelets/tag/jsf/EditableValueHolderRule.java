@@ -27,7 +27,7 @@ import jakarta.faces.validator.MethodExpressionValidator;
 import jakarta.faces.view.facelets.*;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  */
 public final class EditableValueHolderRule extends MetaRule {

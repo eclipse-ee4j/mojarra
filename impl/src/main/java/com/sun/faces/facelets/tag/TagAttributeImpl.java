@@ -42,7 +42,7 @@ import jakarta.el.ELContext;
 
 /**
  * Representation of a Tag's attribute in a Facelet File
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -93,7 +93,7 @@ public class TagAttributeImpl extends TagAttribute {
      * If literal,return {@link Boolean#valueOf(java.lang.String) Boolean.valueOf(java.lang.String)} passing our value,
      * otherwise call {@link #getObject(FaceletContext, Class) getObject(FaceletContext, Class)}.
      * </p>
-     * 
+     *
      * @see Boolean#valueOf(java.lang.String)
      * @see #getObject(FaceletContext, Class)
      * @param ctx FaceletContext to use
@@ -115,7 +115,7 @@ public class TagAttributeImpl extends TagAttribute {
     /**
      * If literal, call {@link Integer#parseInt(java.lang.String) Integer.parseInt(String)}, otherwise call
      * {@link #getObject(FaceletContext, Class) getObject(FaceletContext, Class)}.
-     * 
+     *
      * @see Integer#parseInt(java.lang.String)
      * @see #getObject(FaceletContext, Class)
      * @param ctx FaceletContext to use
@@ -132,7 +132,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * Local name of this attribute
-     * 
+     *
      * @return local name of this attribute
      */
     @Override
@@ -142,7 +142,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * The location of this attribute in the FaceletContext
-     * 
+     *
      * @return the TagAttributeImpl's location
      */
     @Override
@@ -152,7 +152,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * Create a MethodExpression, using this attribute's value as the expression String.
-     * 
+     *
      * @see ExpressionFactory#createMethodExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class,
      * java.lang.Class[])
      * @see MethodExpression
@@ -194,7 +194,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * The resolved Namespace for this attribute
-     * 
+     *
      * @return resolved Namespace
      */
     @Override
@@ -204,7 +204,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * Delegates to getObject with Object.class as a param
-     * 
+     *
      * @see #getObject(FaceletContext, Class)
      * @param ctx FaceletContext to use
      * @return Object representation of this attribute's value
@@ -216,7 +216,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * The qualified name for this attribute
-     * 
+     *
      * @return the qualified name for this attribute
      */
     @Override
@@ -236,7 +236,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * Return the literal value of this attribute
-     * 
+     *
      * @return literal value
      */
     @Override
@@ -246,7 +246,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * If literal, then return our value, otherwise delegate to getObject, passing String.class.
-     * 
+     *
      * @see #getObject(FaceletContext, Class)
      * @param ctx FaceletContext to use
      * @return String value of this attribute
@@ -263,7 +263,7 @@ public class TagAttributeImpl extends TagAttribute {
     /**
      * If literal, simply coerce our String literal value using an ExpressionFactory, otherwise create a ValueExpression and
      * evaluate it.
-     * 
+     *
      * @see ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
      * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)
      * @see ValueExpression
@@ -295,7 +295,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * Create a ValueExpression, using this attribute's literal value and the passed expected type.
-     * 
+     *
      * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)
      * @see ValueExpression
      * @param ctx FaceletContext to use
@@ -309,7 +309,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * If this TagAttributeImpl is literal (not #{..} or ${..})
-     * 
+     *
      * @return true if this attribute is literal
      */
     @Override
@@ -319,7 +319,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

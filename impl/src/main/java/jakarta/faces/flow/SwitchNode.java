@@ -28,7 +28,7 @@ import jakarta.faces.context.FacesContext;
  * traversal. If none of the cases returned {@code true} let {@link #getDefaultOutcome} be used to determine where to go
  * next in the flow graph.
  * </p>
- * 
+ *
  * @since 2.2
  */
 public abstract class SwitchNode extends FlowNode {
@@ -37,9 +37,9 @@ public abstract class SwitchNode extends FlowNode {
      * <p class="changed_added_2_2">
      * Return the cases in this switch.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @return the cases in this switch
      */
     public abstract List<SwitchCase> getCases();
@@ -48,11 +48,11 @@ public abstract class SwitchNode extends FlowNode {
      * <p class="changed_added_2_2">
      * Return the default outcome in this switch.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @param context the {@link FacesContext} for this request
-     * 
+     *
      * @return the default outcome in this switch
      */
     public abstract String getDefaultOutcome(FacesContext context);

@@ -213,7 +213,7 @@ public abstract class ClientBehaviorContext {
          * <p class="changed_added_2_0">
          * Creates a Parameter instance.
          * </p>
-         * 
+         *
          * @param name the name of the parameter
          * @param value the value of the parameter
          * @throws NullPointerException if <code>name</code> is null.

@@ -61,7 +61,7 @@ public class SerializationProviderFactory {
      * <p>
      * Creates a new instance of the class specified by the <code>com.sun.faces.InjectionProvider</code> system property. If
      * this propery is not defined, then a default, no-op, <code>InjectionProvider</code> will be returned.
-     * 
+     *
      * @param extContext the ExternalContext for this application
      * @return an implementation of the <code>InjectionProvider</code> interfaces
      */
@@ -110,7 +110,7 @@ public class SerializationProviderFactory {
      * <p>
      * Determine if the specified class implements the <code>SerializationProvider</code> interfaces.
      * </p>
-     * 
+     *
      * @param clazz the class in question
      * @return <code>true</code> if <code>clazz</code> implements the <code>SerializationProvider</code> interface
      */

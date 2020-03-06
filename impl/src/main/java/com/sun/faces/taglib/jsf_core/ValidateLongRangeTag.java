@@ -48,7 +48,7 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
 // Relationship Instance Variables
 
 //
-// Constructors and Initializers    
+// Constructors and Initializers
 //
 
     public ValidateLongRangeTag() {
@@ -84,7 +84,7 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
         return super.doStartTag();
     }
 
-// 
+//
 // Methods from ValidatorTag
 //
 

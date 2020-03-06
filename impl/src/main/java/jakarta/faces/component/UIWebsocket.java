@@ -39,12 +39,12 @@ import jakarta.faces.push.PushContext;
  * client side which can be reached from server side via {@link PushContext} interface injected in any CDI/container
  * managed artifact via <code>&#64;</code>{@link Push} annotation.
  * </p>
- * 
+ *
  * <p>
  * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Websocket</code>". This value
  * can be changed by calling the <code>setRendererType()</code> method.
  * </p>
- * 
+ *
  * <p>
  * For detailed usage instructions, see <code>&#64;</code>{@link Push} javadoc.
  * </p>
@@ -94,7 +94,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * <p>
      * Create a new {@link UIWebsocket} instance with default property values.
      * </p>
-     * 
+     *
      * @throws IllegalStateException When Websocket endpoint is not enabled.
      */
     public UIWebsocket() {
@@ -173,7 +173,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Returns the name of the websocket channel.
-     * 
+     *
      * @return The name of the websocket channel.
      */
     public String getChannel() {
@@ -184,7 +184,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * Sets the name of the websocket channel. It may not be an Jakarta Expression Language expression and it may only
      * contain alphanumeric characters, hyphens, underscores and periods. All open websockets on the same channel will
      * receive the same push message from the server.
-     * 
+     *
      * @param channel The name of the websocket channel.
      * @throws IllegalArgumentException When the value does not represent a valid channel name.
      */
@@ -198,7 +198,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Returns the scope of the websocket channel.
-     * 
+     *
      * @return The scope of the websocket channel.
      */
     public String getScope() {
@@ -213,7 +213,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * session will receive the same push message. When the value is <code>view</code>, then only the channel in the current
      * view will receive the push message. The default scope is <code>application</code>. When the <code>user</code>
      * attribute is specified, then the default scope is <code>session</code>.
-     * 
+     *
      * @param scope The scope of the websocket channel.
      */
     public void setScope(String scope) {
@@ -222,7 +222,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Returns the user identifier of the websocket channel.
-     * 
+     *
      * @return The user identifier of the websocket channel.
      */
     public Serializable getUser() {
@@ -234,7 +234,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * websockets on the same channel and user will receive the same push message from the server. It must implement
      * <code>Serializable</code> and preferably have low memory footprint. Suggestion: use
      * <code>#{request.remoteUser}</code> or <code>#{someLoggedInUser.id}</code>.
-     * 
+     *
      * @param user The user identifier of the websocket channel.
      */
     public void setUser(Serializable user) {
@@ -243,7 +243,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Returns the JavaScript event handler function that is invoked when the websocket is opened.
-     * 
+     *
      * @return The JavaScript event handler function that is invoked when the websocket is opened.
      */
     public String getOnopen() {
@@ -253,7 +253,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
     /**
      * Sets the JavaScript event handler function that is invoked when the websocket is opened. The function will be invoked
      * with one argument: the channel name.
-     * 
+     *
      * @param onopen The JavaScript event handler function that is invoked when the websocket is opened.
      */
     public void setOnopen(String onopen) {
@@ -262,7 +262,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Returns the JavaScript event handler function that is invoked when a push message is received from the server.
-     * 
+     *
      * @return The JavaScript event handler function that is invoked when a push message is received from the server.
      */
     public String getOnmessage() {
@@ -272,7 +272,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
     /**
      * Sets the JavaScript event handler function that is invoked when a push message is received from the server. The
      * function will be invoked with three arguments: the push message, the channel name and the raw MessageEvent itself.
-     * 
+     *
      * @param onmessage The JavaScript event handler function that is invoked when a push message is received from the
      * server.
      */
@@ -282,7 +282,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Returns the JavaScript event handler function that is invoked when the websocket is closed.
-     * 
+     *
      * @return The JavaScript event handler function that is invoked when the websocket is closed.
      */
     public String getOnclose() {
@@ -295,7 +295,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * this will also be invoked on errors and that you can inspect the close reason code if an error occurred and which one
      * (i.e. when the code is not 1000). See also <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455
      * section 7.4.1</a> and {@link CloseCodes} API for an elaborate list of all close codes.
-     * 
+     *
      * @param onclose The JavaScript event handler function that is invoked when the websocket is closed.
      */
     public void setOnclose(String onclose) {
@@ -304,7 +304,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
 
     /**
      * Returns whether to (auto)connect the websocket or not.
-     * 
+     *
      * @return Whether to (auto)connect the websocket or not.
      */
     public boolean isConnected() {
@@ -316,7 +316,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * instruction whether to open or close the websocket push connection. Note that this attribute is re-evaluated on every
      * ajax request. You can also explicitly set it to <code>false</code> and then manually control in JavaScript by
      * <code>OmniFaces.Push.open("channelName")</code> and <code>OmniFaces.Push.close("channelName")</code>.
-     * 
+     *
      * @param connected Whether to (auto)connect the websocket or not.
      */
     public void setConnected(boolean connected) {

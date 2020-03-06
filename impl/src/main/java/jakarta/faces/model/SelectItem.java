@@ -167,7 +167,7 @@ public class SelectItem implements Serializable {
     /**
      * <p>
      * Return a description of this item, for use in development tools.
-     * 
+     *
      * @return a description of this item, for use in development tools
      */
     public String getDescription() {
@@ -194,7 +194,7 @@ public class SelectItem implements Serializable {
      * Return the disabled flag for this item, which should modify the rendered output to make this item unavailable for
      * selection by the user if set to <code>true</code>.
      * </p>
-     * 
+     *
      * @return the disabled flag for this item
      */
     public boolean isDisabled() {
@@ -220,7 +220,7 @@ public class SelectItem implements Serializable {
     /**
      * <p>
      * Return the label of this item, to be rendered visibly for the user.
-     * 
+     *
      * @return the label of this item
      */
     public String getLabel() {
@@ -244,7 +244,7 @@ public class SelectItem implements Serializable {
     /**
      * <p>
      * Return the value of this item, to be delivered to the model if this item is selected by the user.
-     * 
+     *
      * @return the value of this item
      */
     public Object getValue() {
@@ -285,7 +285,7 @@ public class SelectItem implements Serializable {
      * <p class="changed_added_2_0_rev_a">
      * Set the value of the escape property. See {@link #isEscape}.
      * </p>
-     * 
+     *
      * @param escape the new value of the escape property
      *
      * @since 2.0
@@ -304,7 +304,7 @@ public class SelectItem implements Serializable {
      * </p>
      *
      * @return the value of the <code>noSelectionOption</code> property
-     * 
+     *
      * @since 2.0
      */
 
@@ -316,7 +316,7 @@ public class SelectItem implements Serializable {
      * <p class="changed_added_2_0">
      * Set the value of the <code>noSelectionOption</code> property.
      * </p>
-     * 
+     *
      * @param noSelectionOption the new value of the {@code noSelectionOption} property
      *
      * @since 2.0

@@ -27,12 +27,12 @@ import jakarta.faces.event.PhaseListener;
  * subclassed by developers wishing to provide specialized behavior to an existing {@link Lifecycle} instance. The
  * default implementation of all methods is to call through to the wrapped {@link Lifecycle}.
  * </p>
- * 
+ *
  * <p class="changed_added_2_3">
  * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
  * access the instance being wrapped.
  * </p>
- * 
+ *
  * @since 2.2
  */
 

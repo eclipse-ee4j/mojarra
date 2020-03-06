@@ -97,7 +97,7 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
      * <code>MethodExpression</code> passed to the constructor of this instance. <span class="changed_deleted_2_2">If that
      * fails for any reason, throw an {@link AbortProcessingException}, including the cause of the failure.</span></span>
      * </p>
-     * 
+     *
      * @throws NullPointerException if the argument valueChangeEvent is null.
      * @throws AbortProcessingException {@inheritDoc}
      */

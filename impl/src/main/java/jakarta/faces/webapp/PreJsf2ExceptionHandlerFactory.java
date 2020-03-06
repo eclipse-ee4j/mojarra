@@ -44,15 +44,15 @@ import jakarta.faces.event.SystemEvent;
  * must meet the following requirements
  * </p>
  * <div class="changed_added_2_0">
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * Any exceptions thrown before or after phase execution will be logged and swallowed.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * The implementation must examine the <code>Exception</code> within each of the unhandled exception events. If the
@@ -62,9 +62,9 @@ import jakarta.faces.event.SystemEvent;
  * call to {@link FacesContext#addMessage(java.lang.String, jakarta.faces.application.FacesMessage)}
  * </p>
  * </li>
- * 
+ *
  * </ul>
- * 
+ *
  * </div>
  *
  * @since 2.0
@@ -117,8 +117,8 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory {
         }
 
         /**
-         * 
-         * 
+         *
+         *
          * @since 2.0
          */
         @Override

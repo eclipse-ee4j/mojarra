@@ -57,7 +57,7 @@ public class SearchKeywordContext {
      * </p>
      *
      * @param target the resolved {@link UIComponent}.
-     * 
+     *
      * @since 2.3
      */
     public void invokeContextCallback(UIComponent target) {
@@ -69,9 +69,9 @@ public class SearchKeywordContext {
      * <p class="changed_added_2_3">
      * Returns the {@link SearchExpressionContext} for the current request.
      * </p>
-     * 
+     *
      * @return the {@link SearchExpressionContext}.
-     * 
+     *
      * @since 2.3
      */
     public SearchExpressionContext getSearchExpressionContext() {
@@ -82,9 +82,9 @@ public class SearchKeywordContext {
      * <p class="changed_added_2_3">
      * Returns the {@link ContextCallback} for the current request.
      * </p>
-     * 
+     *
      * @return the {@link ContextCallback}.
-     * 
+     *
      * @since 2.3
      */
     public ContextCallback getCallback() {
@@ -95,9 +95,9 @@ public class SearchKeywordContext {
      * <p class="changed_added_2_3">
      * Returns the remaining expression for the current request.
      * </p>
-     * 
+     *
      * @return the remaining expression.
-     * 
+     *
      * @since 2.3
      */
     public String getRemainingExpression() {
@@ -108,9 +108,9 @@ public class SearchKeywordContext {
      * <p class="changed_added_2_3">
      * Returns if the keyword was resolved.
      * </p>
-     * 
+     *
      * @return if the keyword was resolved.
-     * 
+     *
      * @since 2.3
      */
     public boolean isKeywordResolved() {
@@ -121,9 +121,9 @@ public class SearchKeywordContext {
      * <p class="changed_added_2_3">
      * Sets if the keyword was resolved.
      * </p>
-     * 
+     *
      * @param keywordResolved if the keyword was resolved.
-     * 
+     *
      * @since 2.3
      */
     public void setKeywordResolved(boolean keywordResolved) {

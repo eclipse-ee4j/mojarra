@@ -46,7 +46,7 @@ public class VerbatimTag extends UIComponentELTag {
 
     /**
      * Setter for property rendered.
-     * 
+     *
      * @param rendered New value of property rendered.
      */
     @Override

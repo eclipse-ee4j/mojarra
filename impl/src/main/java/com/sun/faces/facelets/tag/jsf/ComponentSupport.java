@@ -47,7 +47,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -95,7 +95,7 @@ public final class ComponentSupport {
 
     /**
      * Used in conjunction with markForDeletion where any UIComponent marked will be removed.
-     * 
+     *
      * @param c UIComponent to finalize
      */
     public static void finalizeForDeletion(UIComponent c) {
@@ -168,7 +168,7 @@ public final class ComponentSupport {
 
     /**
      * A lighter-weight version of UIComponent's findChild.
-     * 
+     *
      * @param parent parent to start searching from
      * @param id to match to
      * @return UIComponent found or null
@@ -219,7 +219,7 @@ public final class ComponentSupport {
 
     /**
      * By TagId, find Child
-     * 
+     *
      * @param parent the parent UI component
      * @param id the id
      * @return the UI component
@@ -284,7 +284,7 @@ public final class ComponentSupport {
     /**
      * According to JSF 1.2 tag specs, this helper method will use the TagAttribute passed in determining the Locale
      * intended.
-     * 
+     *
      * @param ctx FaceletContext to evaluate from
      * @param attr TagAttribute representing a Locale
      * @return Locale found
@@ -310,7 +310,7 @@ public final class ComponentSupport {
     /**
      * Tries to walk up the parent to find the UIViewRoot, if not found, then go to FaceletContext's FacesContext for the
      * view root.
-     * 
+     *
      * @param ctx FaceletContext
      * @param parent UIComponent to search from
      * @return UIViewRoot instance for this evaluation
@@ -329,7 +329,7 @@ public final class ComponentSupport {
 
     /**
      * Marks all direct children and Facets with an attribute for deletion.
-     * 
+     *
      * @see #finalizeForDeletion(UIComponent)
      * @param c UIComponent to mark
      */

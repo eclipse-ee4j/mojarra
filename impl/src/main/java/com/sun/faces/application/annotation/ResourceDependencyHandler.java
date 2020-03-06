@@ -88,7 +88,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     /**
      * Adds the specified {@link UIComponent} as a component resource to the {@link jakarta.faces.component.UIViewRoot}
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param c the component resource
      */
@@ -141,7 +141,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     /**
      * Indicates that the specified ResourceDependency has been processed.
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param dep the {@link ResourceDependency}
      */

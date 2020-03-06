@@ -25,7 +25,7 @@ public class InjectionProviderException extends Exception {
 
     /**
      * Creates a new <code>InjectionProviderException</code> with the root cause of the error.
-     * 
+     *
      * @param cause the root cause
      */
     public InjectionProviderException(Throwable cause) {
@@ -34,7 +34,7 @@ public class InjectionProviderException extends Exception {
 
     /**
      * Creates a new <code>InjectionProviderException</code> with a descriptive message and the root cause of the error.
-     * 
+     *
      * @param message descriptive message
      * @param cause the root cause
      */

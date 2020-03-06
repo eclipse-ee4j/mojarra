@@ -62,7 +62,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
      * to make it so that when an element with a name given by the value of the optional "target" component attribute is
      * encountered, this component can be called upon to render itself. This method will add the component (associated with
      * this Renderer) to a facet in the view only if a "target" component attribute is set.
-     * 
+     *
      */
     @Override
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {

@@ -1,18 +1,18 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the
  * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
  * version 2 with the GNU Classpath Exception, which is available at
  * https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 package jakarta.faces.component.html;
@@ -24,7 +24,7 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIMessages;
 
 /**
- * 
+ *
  * <p>
  * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Messages</code>". This value
  * can be changed by calling the <code>setRendererType()</code> method.
@@ -67,7 +67,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>dir</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
@@ -83,7 +83,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>dir</code> property.
      * </p>
-     * 
+     *
      * @param dir the new property value
      */
     public void setDir(java.lang.String dir) {
@@ -95,7 +95,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>errorClass</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style class to apply to any message with a severity class of "ERROR".
@@ -109,7 +109,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>errorClass</code> property.
      * </p>
-     * 
+     *
      * @param errorClass the new property value
      */
     public void setErrorClass(java.lang.String errorClass) {
@@ -120,7 +120,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>errorStyle</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style(s) to apply to any message with a severity class of "ERROR".
@@ -134,7 +134,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>errorStyle</code> property.
      * </p>
-     * 
+     *
      * @param errorStyle the new property value
      */
     public void setErrorStyle(java.lang.String errorStyle) {
@@ -145,7 +145,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>fatalClass</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style class to apply to any message with a severity class of "FATAL".
@@ -159,7 +159,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>fatalClass</code> property.
      * </p>
-     * 
+     *
      * @param fatalClass the new property value
      */
     public void setFatalClass(java.lang.String fatalClass) {
@@ -170,7 +170,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>fatalStyle</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style(s) to apply to any message with a severity class of "FATAL".
@@ -184,7 +184,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>fatalStyle</code> property.
      * </p>
-     * 
+     *
      * @param fatalStyle the new property value
      */
     public void setFatalStyle(java.lang.String fatalStyle) {
@@ -195,7 +195,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>infoClass</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style class to apply to any message with a severity class of "INFO".
@@ -209,7 +209,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>infoClass</code> property.
      * </p>
-     * 
+     *
      * @param infoClass the new property value
      */
     public void setInfoClass(java.lang.String infoClass) {
@@ -220,7 +220,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>infoStyle</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style(s) to apply to any message with a severity class of "INFO".
@@ -234,7 +234,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>infoStyle</code> property.
      * </p>
-     * 
+     *
      * @param infoStyle the new property value
      */
     public void setInfoStyle(java.lang.String infoStyle) {
@@ -245,7 +245,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>lang</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Code describing the language used in the generated markup for this component.
@@ -259,7 +259,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>lang</code> property.
      * </p>
-     * 
+     *
      * @param lang the new property value
      */
     public void setLang(java.lang.String lang) {
@@ -271,7 +271,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>layout</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: The type of layout markup to use when rendering error messages. Valid values are "table" (an HTML table)
@@ -286,7 +286,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>layout</code> property.
      * </p>
-     * 
+     *
      * @param layout the new property value
      */
     public void setLayout(java.lang.String layout) {
@@ -297,7 +297,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>role</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents:
@@ -308,7 +308,7 @@ public class HtmlMessages extends UIMessages {
      * that evaluates to, a set of space-separated tokens representing the various WAI-ARIA roles that the element belongs
      * to.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
      * of this attribute.
@@ -323,7 +323,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>role</code> property.
      * </p>
-     * 
+     *
      * @param role the new property value
      */
     public void setRole(java.lang.String role) {
@@ -335,7 +335,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style(s) to be applied when this component is rendered.
@@ -349,7 +349,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -361,7 +361,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
@@ -376,7 +376,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
@@ -387,7 +387,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>title</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Advisory title information about markup elements generated for this component.
@@ -401,7 +401,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>title</code> property.
      * </p>
-     * 
+     *
      * @param title the new property value
      */
     public void setTitle(java.lang.String title) {
@@ -413,7 +413,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>tooltip</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Flag indicating whether the detail portion of the message should be displayed as a tooltip.
@@ -427,7 +427,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>tooltip</code> property.
      * </p>
-     * 
+     *
      * @param tooltip the new property value
      */
     public void setTooltip(boolean tooltip) {
@@ -438,7 +438,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>warnClass</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style class to apply to any message with a severity class of "WARN".
@@ -452,7 +452,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>warnClass</code> property.
      * </p>
-     * 
+     *
      * @param warnClass the new property value
      */
     public void setWarnClass(java.lang.String warnClass) {
@@ -463,7 +463,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Return the value of the <code>warnStyle</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style(s) to apply to any message with a severity class of "WARN".
@@ -477,7 +477,7 @@ public class HtmlMessages extends UIMessages {
      * <p>
      * Set the value of the <code>warnStyle</code> property.
      * </p>
-     * 
+     *
      * @param warnStyle the new property value
      */
     public void setWarnStyle(java.lang.String warnStyle) {

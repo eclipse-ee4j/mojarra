@@ -40,7 +40,7 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.faces.FacesException;
 
 /**
- * 
+ *
  */
 public abstract class BaseWebConfigResourceProvider implements ConfigurationResourceProvider {
 

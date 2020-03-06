@@ -79,7 +79,7 @@ public class UISelectItem extends UIComponentBase {
      * <p>
      * Return the description for this selection item.
      * </p>
-     * 
+     *
      * @return the item description.
      */
     public String getItemDescription() {
@@ -101,7 +101,7 @@ public class UISelectItem extends UIComponentBase {
      * <p>
      * Return the disabled setting for this selection item.
      * </p>
-     * 
+     *
      * @return <code>true</code> is the item disabled, <code>false</code> otherwise.
      */
     public boolean isItemDisabled() {
@@ -123,7 +123,7 @@ public class UISelectItem extends UIComponentBase {
      * <p>
      * Return the escape setting for the label of this selection item.
      * </p>
-     * 
+     *
      * @return <code>true</code> if the item is escaped, <code>false</code> otherwise.
      */
     public boolean isItemEscaped() {
@@ -145,7 +145,7 @@ public class UISelectItem extends UIComponentBase {
      * <p>
      * Return the localized label for this selection item.
      * </p>
-     * 
+     *
      * @return the item label.
      */
     public String getItemLabel() {
@@ -167,7 +167,7 @@ public class UISelectItem extends UIComponentBase {
      * <p>
      * Return the server value for this selection item.
      * </p>
-     * 
+     *
      * @return the item value.
      */
     public Object getItemValue() {
@@ -189,7 +189,7 @@ public class UISelectItem extends UIComponentBase {
      * <p>
      * Returns the <code>value</code> property of the <code>UISelectItem</code>.
      * </p>
-     * 
+     *
      * @return the value.
      */
     public Object getValue() {
@@ -200,7 +200,7 @@ public class UISelectItem extends UIComponentBase {
      * <p>
      * Sets the <code>value</code> property of the <code>UISelectItem</code>.
      * </p>
-     * 
+     *
      * @param value the new value
      */
     public void setValue(Object value) {

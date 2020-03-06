@@ -45,7 +45,7 @@ public class Version {
 
     /**
      * Are we running in JSF 2.3
-     * 
+     *
      * @return true if we are, false otherwise.
      */
     public boolean isJsf23() {

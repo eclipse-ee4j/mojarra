@@ -263,7 +263,7 @@ public final class ReflectionUtils {
      * This method <em>MUST</em> be called when <code>ConfigureListener
      * .contextDestroyed()</code> is called.
      * </p>
-     * 
+     *
      * @param loader the <code>ClassLoader</code> whose associated cache should be cleared
      */
     public static synchronized void clearCache(ClassLoader loader) {
@@ -280,7 +280,7 @@ public final class ReflectionUtils {
      * <p>
      * Returns the <code>Constructor</code> appropriate to the specified Class and parameters.
      * </p>
-     * 
+     *
      * @param clazz the Class of interest
      * @param params the parameters for the constructor of the provided Class
      * @return a Constructor that can be invoked with the specified parameters
@@ -299,7 +299,7 @@ public final class ReflectionUtils {
      * <p>
      * Returns the <code>Method</code> appropriate to the specified object instance, method name, and parameters.
      * </p>
-     * 
+     *
      * @param object the Object instance of interest
      * @param methodName the name of the method
      * @param params the parameters for the specified method
@@ -321,7 +321,7 @@ public final class ReflectionUtils {
      * <p>
      * Returns the <code>Method</code> appropriate to the specified Class, method name, and parameters.
      * </p>
-     * 
+     *
      * @param clazz the Class of interest
      * @param methodName the name of the method
      * @param params the parameters for the specified method
@@ -341,7 +341,7 @@ public final class ReflectionUtils {
      * <p>
      * Constructs a new object instance based off the provided class name.
      * </p>
-     * 
+     *
      * @param className the class of the object to instantiate
      * @return a new instances of said class
      * @throws InstantiationException if the class cannot be instantiated
@@ -361,7 +361,7 @@ public final class ReflectionUtils {
      * <p>
      * Obtain a <code>Class</code> instance based on the provided String name.
      * </p>
-     * 
+     *
      * @param className the class to look up
      * @return the <code>Class</code> corresponding to <code>className</code>
      */
@@ -416,11 +416,11 @@ public final class ReflectionUtils {
      * <p>
      * Return the <code>MetaData</code> for the specified Class.
      * </p>
-     * 
+     *
      * <p>
      * This will check the cache associated with the specified <code>ClassLoader</code>. If there is no cache hit, then a
      * new <code>MetaData</code> instance will be created and stored.
-     * 
+     *
      * @param loader <code>ClassLoader</code>
      * @param clazz the Class of interest
      * @return a <code>MetaData</code> object for the specified Class
@@ -498,7 +498,7 @@ public final class ReflectionUtils {
          * <p>
          * Constructs a new <code>MetaData</code> instance for the specified class.
          * </p>
-         * 
+         *
          * @param clazz class to construct a new MetaData instance from.
          */
         public MetaData(Class<?> clazz) {
@@ -559,7 +559,7 @@ public final class ReflectionUtils {
          * <p>
          * Looks up a <code>Constructor</code> based off the specified <code>params</code>.
          * </p>
-         * 
+         *
          * @param params constructor parameters
          * @return the <code>Constructor</code> appropriate to the specified parameters or <code>null</code>
          */
@@ -571,7 +571,7 @@ public final class ReflectionUtils {
          * <p>
          * Looks up a <code>Method</code> based off the specified method name and <code>params</code>.
          * </p>
-         * 
+         *
          * @param name the name of the <cod>Method</code>
          * @param params the <code>Method</code> parameters
          * @return the <code>Method</code> appropriate to the specified name and parameters or <code>null</code>
@@ -595,7 +595,7 @@ public final class ReflectionUtils {
          * <p>
          * Looks up the class for this MetaData instance.
          * </p>
-         * 
+         *
          * @return the <code>Class</code> for this MetaData instance
          */
         public Class<?> lookupClass() {
@@ -646,7 +646,7 @@ public final class ReflectionUtils {
 
         /**
          * Return a hashcode of all the class parameters.
-         * 
+         *
          * @param params the parameters to a <code>Constructor</code> or a <code>Method</code> instance
          * @return the result of <code>Arrays.deepHashCode</code>
          */

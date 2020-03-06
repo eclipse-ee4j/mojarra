@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * <p class="changed_added_2_0">
  * </p>
- * 
+ *
  * @author asmirnov@exadel.com
  *
  */

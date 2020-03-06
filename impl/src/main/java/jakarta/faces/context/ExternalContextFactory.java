@@ -33,7 +33,7 @@ import jakarta.faces.FacesWrapper;
  * There must be one <code>ExternalContextFactory</code> instance per web application that is utilizing Jakarta Server
  * Faces. This instance can be acquired, in a portable manner, by calling:
  * </p>
- * 
+ *
  * <pre>
  * ExternalContextFactory factory = (ExternalContextFactory) FactoryFinder.getFactory(FactoryFinder.EXTERNAL_CONTEXT_FACTORY);
  * </pre>

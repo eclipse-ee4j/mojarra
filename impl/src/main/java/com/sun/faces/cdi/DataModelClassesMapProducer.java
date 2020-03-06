@@ -29,7 +29,7 @@ import jakarta.faces.model.DataModel;
  * need a DataModel wrapper for a given type to obtain a Map of types to DataModel implementations capable of wrapping
  * that type.
  * </p>
- * 
+ *
  * <p>
  * Components can obtain this Map by querying the bean manager for beans named "comSunFacesDataModelClassesMap".
  * </p>

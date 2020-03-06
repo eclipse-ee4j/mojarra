@@ -34,7 +34,7 @@ public class LibraryInfo {
 
     /**
      * Constructs a new <code>LibraryInfo</code> using the specified details.
-     * 
+     *
      * @param name the name of the library
      * @param version the version of the library, if any
      * @param contract

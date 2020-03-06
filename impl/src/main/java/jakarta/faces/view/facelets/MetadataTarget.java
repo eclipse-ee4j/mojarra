@@ -53,7 +53,7 @@ public abstract class MetadataTarget {
      * <p class="changed_added_2_0">
      * Return the <code>Class</code> of the metadata target.
      * </p>
-     * 
+     *
      * @return the target Class.
      */
     public abstract Class getTargetClass();

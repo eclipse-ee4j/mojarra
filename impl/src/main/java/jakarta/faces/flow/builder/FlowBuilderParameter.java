@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * The presence of this annotation on a CDI producer method for the {@link FlowDefinition} annotation causes the
  * {@link FlowBuilder} to be passed to that method. See {@link FlowBuilder} for a usage example.
  * </p>
- * 
+ *
  * @since 2.2
  */
 

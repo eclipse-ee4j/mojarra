@@ -172,7 +172,7 @@ public class WebappLifecycleListener {
 
     /**
      * Notfication that a session has been created.
-     * 
+     *
      * @param event the notification event
      */
     public void sessionCreated(HttpSessionEvent event) {
@@ -216,7 +216,7 @@ public class WebappLifecycleListener {
     /**
      * Notification that an existing attribute has been removed from the servlet request. Called after the attribute is
      * removed.
-     * 
+     *
      * @param event the notification event
      */
     public void attributeRemoved(ServletRequestAttributeEvent event) {

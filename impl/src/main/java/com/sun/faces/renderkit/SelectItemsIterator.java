@@ -221,7 +221,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     /**
      * Update the <code>singleItemIterator</code> with the provided <code>item</code>
-     * 
+     *
      * @param item the {@link SelectItem} to expose as an Iterator
      */
     private void updateSingeItemIterator(UIComponent selectComponent, SelectItem item) {

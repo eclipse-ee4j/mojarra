@@ -29,7 +29,7 @@ import jakarta.inject.Qualifier;
 
 /**
  * Classifier for obtaining the map that {@link DataModelClassesMapProducer} producer produces
- * 
+ *
  * @since 2.3
  *
  */

@@ -29,7 +29,7 @@ import jakarta.faces.view.facelets.TagHandler;
  * This class holds collection of {@link BehaviorHandler} instances, attached to the composite component. Descendant
  * components from that composite uses that collection to substitute actual instance
  * </p>
- * 
+ *
  * @author asmirnov@exadel.com
  *
  */

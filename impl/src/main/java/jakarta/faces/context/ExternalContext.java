@@ -53,14 +53,14 @@ import jakarta.faces.lifecycle.ClientWindow;
  * &quot;prose document&quot;, <a href="../../../overview-summary.html#overview_description">linked from the
  * javadocs</a>, for a reference.
  * </p>
- * 
+ *
  * <p class="changed_added_2_0">
  * If a reference to an <code>ExternalContext</code> is obtained during application startup or shutdown time, any method
  * documented as "valid to call this method during application startup or shutdown" must be supported during application
  * startup or shutdown time. The result of calling a method during application startup or shutdown time that does not
  * have this designation is undefined.
  * </p>
- * 
+ *
  * <p class="changed_added_2_3">
  * An ExternalContext can be injected into a CDI managed bean using
  * <code>@Inject ExternalContext externalContext;</code>
@@ -251,13 +251,13 @@ public abstract class ExternalContext {
      * <span class="changed_modified_2_2">Return</span> the input URL, after performing any rewriting needed to ensure that
      * it will correctly identify an addressable action in the current application.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * Encoding the {@link jakarta.faces.lifecycle.ClientWindow}
      * </p>
      *
      * <blockquote>
-     * 
+     *
      * <p class="changed_added_2_2">
      * Call
      * {@link jakarta.faces.lifecycle.ClientWindow#isClientWindowRenderModeEnabled(jakarta.faces.context.FacesContext) }. If
@@ -266,17 +266,17 @@ public abstract class ExternalContext {
      * {@link jakarta.faces.lifecycle.ClientWindow#getId()} and append the id to the query string of the URL, making the
      * necessary allowances for a pre-existing query string or no query-string.
      * </p>
-     * 
+     *
      * <p>
      * Call {@link jakarta.faces.lifecycle.ClientWindow#getQueryURLParameters}. If the result is non-{@code null}, for each
      * parameter in the map, unconditionally add that parameter to the URL.
      * </p>
-     * 
+     *
      * <p>
      * The name of the query string parameter is given by the value of the constant
      * {@link jakarta.faces.render.ResponseStateManager#CLIENT_WINDOW_URL_PARAM}.
      * </p>
-     * 
+     *
      * </blockquote>
      *
      * <p>
@@ -285,7 +285,7 @@ public abstract class ExternalContext {
      * </p>
      *
      * @param url The input URL to be encoded
-     * 
+     *
      * @return the encoded URL.
      *
      * @throws NullPointerException if <code>url</code> is <code>null</code>
@@ -303,9 +303,9 @@ public abstract class ExternalContext {
      * </p>
      *
      * @param name Name to be encoded
-     * 
+     *
      * @return the unique name prefixed with namespace.
-     * 
+     *
      * <!-- Removed the throws clause in 2.2 -->
      *
      */
@@ -316,16 +316,16 @@ public abstract class ExternalContext {
      * Return the input URL, after performing any rewriting needed to ensure that it will correctly identify an addressable
      * resource in the current application.
      * </p>
-     * 
+     *
      * <p>
      * <em>Jakarta Servlet:</em> This must be the value returned by the
      * <code>jakarta.servlet.http.HttpServletResponse</code> method <code>encodeURL(url)</code>.
      * </p>
      *
      * @param url The input URL to be encoded
-     * 
+     *
      * @return the encoded resource URL.
-     * 
+     *
      * @throws NullPointerException if <code>url</code> is <code>null</code>
      */
     // PENDING(craigmcc) - Currently identical to encodeActionURL()
@@ -336,18 +336,18 @@ public abstract class ExternalContext {
      * Return the websocket URL, after performing any rewriting needed to ensure that it will correctly identify an
      * addressable websocket in the current application.
      * </p>
-     * 
+     *
      * <p>
      * <em>Jakarta Servlet:</em> This must ensure that the input URL is prefixed with the correct websocket scheme, domain
      * and port and then encoded by {@link #encodeResourceURL(String)}.
      * </p>
      *
      * @param url The input URL to be encoded.
-     * 
+     *
      * @return the encoded websocket URL.
-     * 
+     *
      * @throws NullPointerException if <code>url</code> is <code>null</code>.
-     * 
+     *
      * @since 2.3
      */
     public abstract String encodeWebsocketURL(String url);
@@ -371,7 +371,7 @@ public abstract class ExternalContext {
      * exception thrown by the <code>PreDestroy</code> annotated methods must by caught and not rethrown. The exception may
      * be logged.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called at startup or shutdown time, this
      * method returns a <code>Map</code> that is backed by the same container context instance (<code>ServletContext</code>
@@ -433,16 +433,16 @@ public abstract class ExternalContext {
      * Returns the MIME type of the specified file or <code>null</code> if the MIME type is not known. The MIME type is
      * determined by the container.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called during application startup or
      * shutdown, this method calls through to the <code>getMimeType()</code> method on the same container context instance
      * (<code>ServletContext</code> or <code>PortletContext</code>) as the one used when calling <code>getMimeType()</code>
      * on the <code>ExternalContext</code> returned by the <code>FacesContext</code> during an actual request.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * <em>Jakarta Servlet:</em> This must be the value returned by the <code>jakarta.servlet.ServletContext</code> method
      * <code>getMimeType()</code>.
@@ -471,7 +471,7 @@ public abstract class ExternalContext {
      * <span class="changed_modified_2_0">Return</span> the application environment object instance for the current
      * appication.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called during application startup or
      * shutdown, this returns the same container context instance (<code>ServletContext</code> or
@@ -479,7 +479,7 @@ public abstract class ExternalContext {
      * <code>ExternalContext</code> returned by the <code>FacesContext</code> during an actual request.
      * </p>
      *
-     * 
+     *
      * <p>
      * <em>Jakarta Servlet:</em> This must be the current application's <code>jakarta.servlet.ServletContext</code>
      * instance.
@@ -491,7 +491,7 @@ public abstract class ExternalContext {
     public abstract Object getContext();
 
     /**
-     * 
+     *
      * <p class="changed_added_2_0">
      * Return the name of the container context for this application.
      * </p>
@@ -520,7 +520,7 @@ public abstract class ExternalContext {
     }
 
     /**
-     * 
+     *
      * <p class="changed_added_2_2">
      * Return the name of the container context for this application.
      * </p>
@@ -529,7 +529,7 @@ public abstract class ExternalContext {
      * <em>Jakarta Servlet:</em> Return the result of calling <code>getContextPath()</code> on the
      * <code>ServletContext</code> instance for this application.
      * </p>
-     * 
+     *
      * <p>
      * It is valid to call this method during application startup or shutdown.
      * </p>
@@ -569,13 +569,13 @@ public abstract class ExternalContext {
      * It is valid to call this method during application startup or shutdown. If called during application startup or
      * shutdown, this method calls through to the actual container context to return the init parameter value.
      * </p>
-     * 
+     *
      * @param name Name of the requested initialization parameter
      *
      * @throws NullPointerException if <code>name</code> is <code>null</code>
-     * 
+     *
      * @return the value of the specified parameter.
-     * 
+     *
      */
     public abstract String getInitParameter(String name);
 
@@ -778,7 +778,7 @@ public abstract class ExternalContext {
      * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
      * not breaking existing applications that extend this class.
      * </p>
-     * 
+     *
      * @param encoding the encoding name to be set.
      *
      * @throws java.io.UnsupportedEncodingException if this is not a valid encoding
@@ -807,7 +807,7 @@ public abstract class ExternalContext {
      * (<code>ServletContext</code> or <code>PortletContext</code>) as the one used when calling <code>getRealPath()</code>
      * on the <code>ExternalContext</code> returned by the <code>FacesContext</code> during an actual request.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
      *
      * <p>
@@ -1148,7 +1148,7 @@ public abstract class ExternalContext {
      * <em>Jakarta Servlet:</em> This must return the value returned by the <code>jakarta.servlet.ServletResponse</code>
      * method <code>getCharacterEncoding()</code>.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_3">
      * Portlet: if this method is called during a lifecycle phase other than RENDER_RESPONSE, this must return
      * <code>null</code>. If called during RENDER_RESPONSE, return the response encoding of the portlet response.
@@ -1215,7 +1215,7 @@ public abstract class ExternalContext {
      * (<code>ServletContext</code> or <code>PortletContext</code>) as the one used when calling <code>getResource()</code>
      * on the <code>ExternalContext</code> returned by the <code>FacesContext</code> during an actual request.
      * </p>
-     * 
+     *
      * <p>
      * <em>Jakarta Servlet:</em> This must be the value returned by the <code>jakarta.servlet.ServletContext</code> method
      * <code>getResource(path)</code>.
@@ -1235,7 +1235,7 @@ public abstract class ExternalContext {
      * <span class="changed_modified_2_0">Return</span> an <code>InputStream</code> for an application resource mapped to
      * the specified path, if it exists; otherwise, return <code>null</code>.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called during application startup or
      * shutdown, this method calls through to the <code>getResourceAsStream()</code> method on the same container context
@@ -1270,7 +1270,7 @@ public abstract class ExternalContext {
      * <code>getResourcePaths()</code> on the <code>ExternalContext</code> returned by the <code>FacesContext</code> during
      * an actual request.
      * </p>
-     * 
+     *
      * <p>
      * <em>Jakarta Servlet:</em> This must be the value returned by the <code>jakarta.servlet.ServletContext</code> method
      * <code>getResourcePaths(path).</code>
@@ -1378,7 +1378,7 @@ public abstract class ExternalContext {
      * </div>
      *
      * @return the <code>Writer</code> for the current response.
-     * 
+     *
      * @throws IOException any IO related exception.
      *
      * @since 2.0
@@ -1471,7 +1471,7 @@ public abstract class ExternalContext {
      *
      * @param create Flag indicating whether or not a new session should be created if there is no session associated with
      * the current request
-     * 
+     *
      * @return the session object of the current request.
      */
     public abstract Object getSession(boolean create);
@@ -1481,7 +1481,7 @@ public abstract class ExternalContext {
      * Return the id of the current session or the empty string if no session has been created and the <code>create</code>
      * parameter is <code>false</code>.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
      *
      * <p>
@@ -1490,14 +1490,14 @@ public abstract class ExternalContext {
      * obtain a reference to the current session, if one exists, and return its id. If no session exists, return the empty
      * string.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @param create Flag indicating whether or not a new session should be created if there is no session associated with
      * the current request
-     * 
+     *
      * @return the session id for the current request.
      */
     public String getSessionId(boolean create) {
@@ -1587,7 +1587,7 @@ public abstract class ExternalContext {
      * <em>Jakarta Servlet:</em> This must be the value returned by the <code>jakarta.servlet.http.HttpServletRequest</code>
      * method <code>getUserPrincipal()</code>.
      * </p>
-     * 
+     *
      * @return the <code>Principal</code> object.
      */
     public abstract Principal getUserPrincipal();
@@ -1597,7 +1597,7 @@ public abstract class ExternalContext {
      * Return the {@link ClientWindow} set in a preceding call to {@link #setClientWindow}, or <code>null</code> if no such
      * call has been made.
      * </p>
-     * 
+     *
      * @since 2.2
      *
      * @return the instance of the <code>ClientWindow</code>.
@@ -1656,7 +1656,7 @@ public abstract class ExternalContext {
      * @param role Logical role name to be checked
      *
      * @return the flag indicating whether the current user is in the specified role.
-     * 
+     *
      * @throws NullPointerException if <code>role</code> is <code>null</code>
      */
     public abstract boolean isUserInRole(String role);
@@ -1689,7 +1689,7 @@ public abstract class ExternalContext {
      * <p>
      * <span class="changed_modified_2_0">Log</span> the specified message and exception to the application object.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called during application startup or
      * shutdown, this calls the <code>log()</code> method on the same container context instance
@@ -1851,7 +1851,7 @@ public abstract class ExternalContext {
      * </p>
      *
      * @since 2.0
-     * 
+     *
      * @return the buffer size of the response.
      */
     public int getResponseBufferSize() {
@@ -1880,7 +1880,7 @@ public abstract class ExternalContext {
      * </p>
      *
      * @since 2.0
-     * 
+     *
      * @return the flag indicating whether the current response has been committed.
      */
     public boolean isResponseCommitted() {
@@ -1938,7 +1938,7 @@ public abstract class ExternalContext {
      * @param message an option message to detail the cause of the code
      *
      * @since 2.0
-     * 
+     *
      * @throws IOException any IO related exceptions.
      */
     public void responseSendError(int statusCode, String message) throws IOException {
@@ -2017,9 +2017,9 @@ public abstract class ExternalContext {
      * <p class="changed_added_2_2">
      * Associate this instance with a {@link ClientWindow}.
      * </p>
-     * 
+     *
      * @param window the window with which this instance is associated.
-     * 
+     *
      * @since 2.2
      */
 
@@ -2048,7 +2048,7 @@ public abstract class ExternalContext {
      * </p>
      *
      * @since 2.0
-     * 
+     *
      * @throws IOException any IO related exception.
      */
     public void responseFlushBuffer() throws IOException {
@@ -2100,7 +2100,7 @@ public abstract class ExternalContext {
      * ExternalContext implementation to override this method in any way that would make the URL bookmarkable in that
      * environment.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * See {@link #encodeActionURL(java.lang.String)} for the required specification of how to encode the
      * {@link jakarta.faces.lifecycle.ClientWindow}.
@@ -2115,9 +2115,9 @@ public abstract class ExternalContext {
      * contain query parameters.
      * @param parameters The collection of Parameter objects, representing name=value pairs that are used to produce a query
      * string
-     * 
+     *
      * @return the result of encoding.
-     * 
+     *
      * @since 2.0
      */
     public String encodeBookmarkableURL(String baseUrl, Map<String, List<String>> parameters) {
@@ -2136,7 +2136,7 @@ public abstract class ExternalContext {
      * parameter values should be encoded appropriately for the environment so that the resulting URL can be used as the
      * target of a redirect. It's possible for an ExternalContext implementation to override this method to accomodate the
      * definition of redirect for that environment.
-     * 
+     *
      * <p class="changed_added_2_2">
      * See {@link #encodeActionURL(java.lang.String)} for the required specification of how to encode the
      * {@link jakarta.faces.lifecycle.ClientWindow}.
@@ -2146,7 +2146,7 @@ public abstract class ExternalContext {
      * contain query parameters.
      * @param parameters The collection of Parameter objects, representing name=value pairs that are used to produce a query
      * string
-     * 
+     *
      * @return the result of encoding.
      * @since 2.0
      */

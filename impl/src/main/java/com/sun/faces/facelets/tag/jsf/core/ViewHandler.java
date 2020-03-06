@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  * <p/>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/view.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -152,7 +152,7 @@ public final class ViewHandler extends TagHandlerImpl {
 
         /*
          * Fixes https://java.net/jira/browse/JAVASERVERFACES-3021.
-         * 
+         *
          * The rational behind moving this here is that we need to make sure we establish the locale in all cases.
          */
         if (this.locale != null && root != null) {

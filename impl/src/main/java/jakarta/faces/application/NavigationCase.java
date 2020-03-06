@@ -198,7 +198,7 @@ public class NavigationCase {
      * Return the <code>&lt;from-view-id&gt;</code> of the <code>&lt;navigation-rule&gt;</code> inside which this
      * <code>&lt;navigation-case&gt;</code> is nested.
      * </p>
-     * 
+     *
      * @return the from viedId.
      */
     public String getFromViewId() {
@@ -209,7 +209,7 @@ public class NavigationCase {
      * <p class="changed_added_2_0">
      * Return the <code>&lt;from-action&gt;</code> for this <code>&lt;navigation-case&gt;</code>
      * </p>
-     * 
+     *
      * @return the from action.
      */
     public String getFromAction() {
@@ -220,7 +220,7 @@ public class NavigationCase {
      * <p class="changed_added_2_0">
      * Return the <code>&lt;from-outcome&gt;</code> for this <code>&lt;navigation-case&gt;</code>
      * </p>
-     * 
+     *
      * @return the from outcome.
      */
     public String getFromOutcome() {
@@ -305,7 +305,7 @@ public class NavigationCase {
      * <code>null</code> will be returned. The keys in the <code>Map</code> are parameter names. For each key, the
      * corresponding value is a <code>List</code> of unconverted values.
      * </p>
-     * 
+     *
      * @return the list of parameters, or <code>null</code>
      */
     public Map<String, List<String>> getParameters() {
@@ -318,7 +318,7 @@ public class NavigationCase {
      * <code>true</code> if the new view should be navigated to via a
      * {@link jakarta.faces.context.ExternalContext#redirect(String)}
      * </p>
-     * 
+     *
      * @return <code>true</code> if this is a redirect, <code>false</code> otherwise.
      */
     public boolean isRedirect() {
@@ -330,7 +330,7 @@ public class NavigationCase {
      * Return the <code>&lt;redirect&gt;</code> value for this <code>&lt;navigation-case&gt;</code>. This will be
      * <code>true</code> if the view parametets should be encoded into the redirect URL (only applies to redirect case)
      * </p>
-     * 
+     *
      * @return <code>true</code> if view parameters are to be included, <code>false</code> otherwise.
      */
     public boolean isIncludeViewParams() {

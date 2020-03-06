@@ -28,7 +28,7 @@ import java.io.Serializable;
 
 /**
  * For legacy ActionSources
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  * @deprecated
@@ -45,7 +45,7 @@ public final class LegacyMethodBinding extends MethodBinding implements Serializ
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.MethodBinding#getType(jakarta.faces.context.FacesContext)
      */
     @Override
@@ -61,7 +61,7 @@ public final class LegacyMethodBinding extends MethodBinding implements Serializ
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.el.MethodBinding#invoke(jakarta.faces.context.FacesContext, java.lang.Object[])
      */
     @Override

@@ -45,24 +45,24 @@ import jakarta.faces.context.FacesContext;
  * {@link jakarta.faces.event.PhaseId#RESTORE_VIEW}. When both of those conditions are met,
  * {@link jakarta.faces.application.Application#publishEvent} must not be called.
  * </p>
- * 
+ *
  * </div>
- * 
+ *
  * <div class="changed_added_2_2">
- * 
+ *
  * <p>
  * The implementation must guarantee that {@link jakarta.faces.application.Application#publishEvent} is called in the
  * following cases.
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * Upon the initial construction of the view, when each instance is added to the view.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * On a non-initial rendering of the view, if a component is added to the view by the View Declaration Language
@@ -71,17 +71,17 @@ import jakarta.faces.context.FacesContext;
  * of the view.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * If a component is programmatically added to the view using the Java API directly. For example, user code manually
  * adds children using <code>comp.getChildren().add()</code>, where <code>comp</code> is a <code>UIComponent</code>.
  * </p>
  * </li>
- * 
+ *
  * </ul>
- * 
- * 
+ *
+ *
  * </div>
  *
  * @since 2.0
@@ -97,7 +97,7 @@ public class PostAddToViewEvent extends ComponentSystemEvent {
      * Instantiate a new <code>PostAddToViewEvent</code> that indicates the argument <code>component</code> was just added
      * to the view.
      * </p>
-     * 
+     *
      * @param component the <code>UIComponent</code> that has just been added to the view.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
@@ -113,7 +113,7 @@ public class PostAddToViewEvent extends ComponentSystemEvent {
      * Instantiate a new <code>PostAddToViewEvent</code> that indicates the argument <code>component</code> was just added
      * to the view.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the <code>UIComponent</code> that has just been added to the view.
      * @throws IllegalArgumentException if the argument is <code>null</code>.
@@ -129,7 +129,7 @@ public class PostAddToViewEvent extends ComponentSystemEvent {
      * Returns <code>true</code> if and only if the argument <code>listener</code> is an instance of
      * {@link SystemEventListener}.
      * </p>
-     * 
+     *
      * @param listener the faces listener.
      * @return true if it is an appropriate listener, false otherwise.
      */

@@ -35,7 +35,7 @@ public class ReflectionUtil {
             short.class, Void.TYPE };
 
     /**
-     * 
+     *
      */
     private ReflectionUtil() {
         super();
@@ -70,7 +70,7 @@ public class ReflectionUtil {
 
     /**
      * Converts an array of Class names to Class types
-     * 
+     *
      * @param s the array of class names.
      * @return the array of classes.
      * @throws ClassNotFoundException
@@ -87,7 +87,7 @@ public class ReflectionUtil {
 
     /**
      * Converts an array of Class types to Class names
-     * 
+     *
      * @param c the array of classes.
      * @return the array of class names.
      */

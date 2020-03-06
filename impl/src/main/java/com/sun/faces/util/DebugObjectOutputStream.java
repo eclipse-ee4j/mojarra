@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 /*
  * From: http://blog.crazybob.org/2007/02/debugging-serialization.html
- * 
+ *
  * Usage example:
 
                 DebugObjectOutputStream out =
@@ -36,14 +36,14 @@ import java.util.ArrayList;
                 } catch (Exception e) {
                     DebugUtil.printState((Map)stateToWrite[1], LOGGER);
                     throw new FacesException(
-                            "Serialization error. Path to offending instance: " 
+                            "Serialization error. Path to offending instance: "
                             + out.getStack(), e);
-                }            
+                }
 
- 
- 
- * 
- * 
+
+
+ *
+ *
  */
 
 public class DebugObjectOutputStream extends ObjectOutputStream {

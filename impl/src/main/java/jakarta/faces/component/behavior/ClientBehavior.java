@@ -102,7 +102,7 @@ public interface ClientBehavior extends Behavior {
      * <code>ClientBehaviorHint.SUBMITTING</code> is present, the Renderer may choose to alternate the scripts that it
      * generates itself.
      * </p>
-     * 
+     *
      * @return a non-null, unmodifiable collection of ClientBehaviorHints.
      *
      * @since 2.0

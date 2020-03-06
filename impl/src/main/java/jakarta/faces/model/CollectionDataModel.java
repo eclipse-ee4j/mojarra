@@ -176,7 +176,7 @@ public class CollectionDataModel<E> extends DataModel<E> {
 
     /**
      * Set the wrapped data.
-     * 
+     *
      * @param data the wrapped data.
      * @throws ClassCastException if <code>data</code> is non-<code>null</code> and is not a <code>Collection</code>
      */

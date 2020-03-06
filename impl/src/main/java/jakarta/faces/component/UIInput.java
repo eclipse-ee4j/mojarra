@@ -61,19 +61,19 @@ import jakarta.faces.validator.ValidatorException;
  * <code>setSubmittedValue()</code>. If the component wishes to indicate that no particular value was submitted, it can
  * either do nothing, or set the submitted value to <code>null</code>.
  * </p>
- * 
+ *
  * <p>
  * By default, during the <em>Process Validators</em> phase of the request processing lifecycle, the submitted value
  * will be converted to a typesafe object, and, if validation succeeds, stored as a local value using
  * <code>setValue()</code>. However, if the <code>immediate</code> property is set to <code>true</code>, this processing
  * will occur instead at the end of the <em>Apply Request Values</em> phase.
  * </p>
- * 
+ *
  * <p>
  * During the <em>Render Response</em> phase of the request processing lifecycle, conversion for output occurs as for
  * {@link UIOutput}.
  * </p>
- * 
+ *
  * <p>
  * When the <code>validate()</code> method of this {@link UIInput} detects that a value change has actually occurred,
  * and that all validations have been successfully passed, it will queue a {@link ValueChangeEvent}. Later on, the
@@ -83,7 +83,7 @@ import jakarta.faces.validator.ValidatorException;
  * <span class="changed_added_2_0">If the validation fails, the implementation must call
  * {@link FacesContext#validationFailed}.</span>
  * </p>
- * 
+ *
  * <p>
  * By default, the <code>rendererType</code> property must be set to "<code>Text</code>". This value can be changed by
  * calling the <code>setRendererType()</code> method.
@@ -870,22 +870,22 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * <span class="changed_modified_2_0 changed_modified_2_2 changed_modified_2_3">Perform</span> the following algorithm
      * to validate the local value of this {@link UIInput}.
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>Retrieve the submitted value with {@link #getSubmittedValue}. If this returns <code>null</code>,
      * <span class="changed_modified_2_3">and the value of the {@link #ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE}
      * context-param is true (ignoring case), examine the value of the "required" property. If the value of "required" is
      * true, continue as below. If the value of "required" is false or the required attribute is not set, exit without
      * further processing. If the context-param is not set, or is set to false (ignoring case),</span> exit without further
      * processing. (This indicates that no value was submitted for this component.)</li>
-     * 
+     *
      * <li><span class="changed_modified_2_0">If the
      * <code>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</code> context parameter value is
      * <code>true</code> (ignoring case), and <code>getSubmittedValue()</code> returns a zero-length <code>String</code>
      * call <code>{@link #setSubmittedValue}</code>, passing <code>null</code> as the argument and continue processing using
      * <code>null</code> as the current submitted value.</span></li>
-     * 
+     *
      * <li>Convert the submitted value into a "local value" of the appropriate data type by calling
      * {@link #getConvertedValue}.</li>
      * <li><span class="changed_added_2_0_rev_a">If conversion fails</span>:
@@ -895,7 +895,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * <li>Set the <code>valid</code> property on this component to <code>false</code></li>
      * </ul>
      * </li>
-     * 
+     *
      * <li>Validate the property by calling {@link #validateValue}.</li>
      *
      * <li>If the <code>valid</code> property of this component is still <code>true</code>, retrieve the previous value of
@@ -904,7 +904,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * {@code null} as the argument</span>. If the local value is different from the previous value of this component,
      * <span class="changed_modified_2_1">as determined by a call to {@link #compareValues}</span>, fire a
      * {@link ValueChangeEvent} to be broadcast to all interested listeners.</li>
-     * 
+     *
      * </ul>
      * <p>
      * Application components implementing {@link UIInput} that wish to perform validation with logic embedded in the
@@ -1054,19 +1054,19 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * <p>
      * <span class="changed_modified_2_0">Set</span> the "valid" property according to the below algorithm.
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
-     * 
+     *
      * <p>
      * If the <code>valid</code> property on this component is still <code>true</code>, and the <code>required</code>
      * property is also <code>true</code>, ensure that the local value is not empty (where "empty" is defined as
      * <code>null</code> or a zero-length String). If the local value is empty:
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * Enqueue an appropriate error message by calling the <code>addMessage()</code> method on the <code>FacesContext</code>
@@ -1094,7 +1094,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * Otherwise, if the <code>valid</code> property on this component is still <code>true</code>, take the following action
      * to determine if validation of this component should proceed.
      * </p>
-     * 
+     *
      * <ul>
      *
      * <li>
@@ -1102,7 +1102,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * If the value is not empty, validation should proceed.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * If the value is empty, but the system has been directed to validate empty fields, validation should proceed. The
@@ -1125,7 +1125,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * <code>validatorBinding</code> property (if any). If any of these validators or the method throws a
      * {@link ValidatorException}, catch the exception, add its message (if any) to the {@link FacesContext}, and set the
      * <code>valid</code> property of this component to false.</li>
-     * 
+     *
      * </ul>
      *
      * @param context the Faces context.

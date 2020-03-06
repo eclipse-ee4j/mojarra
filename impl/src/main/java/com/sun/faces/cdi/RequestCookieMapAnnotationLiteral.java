@@ -22,7 +22,7 @@ import jakarta.faces.annotation.RequestCookieMap;
 
 /**
  * An annotation literal for @RequestCookieMap.
- * 
+ *
  * @since 2.3
  */
 @SuppressWarnings("all")

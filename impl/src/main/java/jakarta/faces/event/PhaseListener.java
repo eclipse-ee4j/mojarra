@@ -35,7 +35,7 @@ public interface PhaseListener extends EventListener, Serializable {
      * <p>
      * Handle a notification that the processing for a particular phase has just been completed.
      * </p>
-     * 
+     *
      * @param event the phase event.
      */
     public void afterPhase(PhaseEvent event);
@@ -45,7 +45,7 @@ public interface PhaseListener extends EventListener, Serializable {
      * Handle a notification that the processing for a particular phase of the request processing lifecycle is about to
      * begin.
      * </p>
-     * 
+     *
      * @param event the phase event.
      */
     public void beforePhase(PhaseEvent event);
@@ -56,7 +56,7 @@ public interface PhaseListener extends EventListener, Serializable {
      * {@link PhaseEvent} events. Legal values are the singleton instances defined by the {@link PhaseId} class, including
      * <code>PhaseId.ANY_PHASE</code> to indicate an interest in being notified for all standard phases.
      * </p>
-     * 
+     *
      * @return the phase id.
      */
     public PhaseId getPhaseId();

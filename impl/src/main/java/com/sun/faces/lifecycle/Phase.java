@@ -48,7 +48,7 @@ public abstract class Phase {
 
     /**
      * Performs PhaseListener processing and invokes the execute method of the Phase.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param lifecycle the lifecycle for this request
      */
@@ -126,7 +126,7 @@ public abstract class Phase {
 
     /**
      * Handle <code>afterPhase</code> <code>PhaseListener</code> events.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param listenersIterator a ListIterator for the PhaseListeners that need to be invoked
      * @param event the event to pass to each of the invoked listeners
@@ -157,7 +157,7 @@ public abstract class Phase {
 
     /**
      * Handle <code>beforePhase</code> <code>PhaseListener</code> events.
-     * 
+     *
      * @param context the FacesContext for the current request
      * @param listenersIterator a ListIterator for the PhaseListeners that need to be invoked
      * @param event the event to pass to each of the invoked listeners

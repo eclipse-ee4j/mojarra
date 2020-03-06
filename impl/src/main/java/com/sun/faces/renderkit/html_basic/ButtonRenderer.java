@@ -209,7 +209,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
      * <p>
      * If the component's type attribute is null or not equal to <code>reset</code>, <code>submit</code> or
      * <code>button</code>, default to <code>submit</code>.
-     * 
+     *
      * @param component the component of interest
      * @return the type for this button
      */

@@ -174,7 +174,7 @@ public class SelectItemTag extends UIComponentELTag {
 
     /**
      * Getter for property escape.
-     * 
+     *
      * @return Value of property escape.
      */
     public ValueExpression getEscape() {
@@ -183,7 +183,7 @@ public class SelectItemTag extends UIComponentELTag {
 
     /**
      * Setter for property escape.
-     * 
+     *
      * @param escape New value of property escape.
      */
     public void setEscape(ValueExpression escape) {

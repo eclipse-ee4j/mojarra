@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
 
 /**
  * Compiler implementation that uses SAX
- * 
+ *
  * @author Jacob Hookom
  * @see Compiler
  * @version $Id$

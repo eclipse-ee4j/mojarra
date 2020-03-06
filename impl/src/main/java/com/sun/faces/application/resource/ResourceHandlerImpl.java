@@ -388,7 +388,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     /**
      * This method is leveraged by {@link ResourceImpl} to detemine if a resource has been upated. In short, a resource has
      * been updated if the timestamp is newer than the timestamp of the ResourceHandler creation time.
-     * 
+     *
      * @return the time when the ResourceHandler was instantiated (in milliseconds)
      */
     @SuppressWarnings({ "UnusedDeclaration" })
@@ -398,7 +398,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     /**
      * This method is here soley for the purpose of unit testing and will not be invoked during normal runtime.
-     * 
+     *
      * @param creationTime the time in milliseconds
      */
     @SuppressWarnings({ "UnusedDeclaration" })
@@ -408,7 +408,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     /**
      * Utility method leveraged by ResourceImpl to reduce the cost of looking up the WebConfiguration per-instance.
-     * 
+     *
      * @return the {@link WebConfiguration} for this application
      */
     @SuppressWarnings({ "UnusedDeclaration" })
@@ -494,7 +494,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * Normalize the request path to exclude JSF invocation information. If the FacesServlet servicing this request was
      * prefix mapped, then the path to the FacesServlet will be removed. If the FacesServlet servicing this request was
      * extension mapped, then the extension will be trimmed off.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @return the request path without JSF invocation information
      */

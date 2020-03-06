@@ -68,7 +68,7 @@ public class PreDestroyApplicationEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * The source {@link Application} that sent this event.
      * </p>
-     * 
+     *
      * @return the application.
      * @since 2.0
      */

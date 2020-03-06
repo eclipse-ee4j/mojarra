@@ -40,7 +40,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * This <code>ConfigProcessor</code> handles all elements defined under <code>/protected-views</code>.
- * 
+ *
  */
 public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
 

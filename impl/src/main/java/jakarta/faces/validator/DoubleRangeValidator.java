@@ -32,7 +32,7 @@ import jakarta.faces.convert.Converter;
  * that checks the value of the corresponding component against specified minimum and maximum values. The following
  * algorithm is implemented:
  * </p>
- * 
+ *
  * <ul>
  * <li>If the passed value is <code>null</code>, exit immediately.</li>
  * <li>If the current component value is not a floating point type, or a String that is convertible to double, throw a
@@ -47,7 +47,7 @@ import jakarta.faces.convert.Converter;
  * against this limit. If the component value is less than the specified minimum, throw a {@link ValidatorException}
  * containing a MINIMUM_MESSAGE_ID message.</li>
  * </ul>
- * 
+ *
  * <p>
  * For all of the above cases that cause a {@link ValidatorException} to be thrown, if there are parameters to the
  * message that match up with validator parameters, the values of these parameters must be converted using the
@@ -266,7 +266,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
      * Overrides the default equals method to take the minimum and maximum into account when comparing DoubleRangeValidator
      * instances.
      * </p>
-     * 
+     *
      * @param otherObj the object to compare against.
      * @return true if equal, false otherwise.
      */
@@ -286,7 +286,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
      * <p class="changed_modified_2_3">
      * Overrides the default hash code method to take the minimum and maximum into account when generating the hash code.
      * </p>
-     * 
+     *
      * @return the hash code.
      */
     @Override

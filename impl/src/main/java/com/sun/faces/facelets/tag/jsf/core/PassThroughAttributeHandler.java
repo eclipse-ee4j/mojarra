@@ -33,7 +33,7 @@ import java.util.Map;
  * <p />
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag
  * documentation</a>.
- * 
+ *
  * @see jakarta.faces.component.UIComponent#getAttributes()
  * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, jakarta.el.ValueExpression)
  * @author Jacob Hookom
@@ -55,7 +55,7 @@ public final class PassThroughAttributeHandler extends TagHandlerImpl implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override

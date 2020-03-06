@@ -85,7 +85,7 @@ public class ViewHandlingStrategyManager {
     /**
      * Update the {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations to be applied when processing
      * JSF requests.
-     * 
+     *
      * @param stratagies the new view handling strategies
      */
     public synchronized void setViewHandlingStrategies(ViewHandlingStrategy[] stratagies) {

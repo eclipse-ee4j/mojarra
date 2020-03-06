@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 
 /**
  * A Compiler instance may handle compiling multiple sources
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -68,7 +68,7 @@ public abstract class Compiler {
     private final Map features = new HashMap();
 
     /**
-     * 
+     *
      */
     public Compiler() {
 

@@ -22,7 +22,7 @@ import jakarta.faces.annotation.RequestParameterValuesMap;
 
 /**
  * An annotation literal for @RequestParameterValuesMap
- * 
+ *
  * @since 2.3
  */
 @SuppressWarnings("all")

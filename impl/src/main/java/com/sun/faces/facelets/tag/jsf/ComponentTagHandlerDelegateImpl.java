@@ -481,7 +481,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * createComponent on the Application, otherwise just pass the componentType String.
      * <p />
      * If the binding was used, then set the ValueExpression "binding" on the created UIComponent.
-     * 
+     *
      * @see Application#createComponent(jakarta.faces.el.ValueBinding, jakarta.faces.context.FacesContext, java.lang.String)
      * @see Application#createComponent(java.lang.String)
      * @param ctx FaceletContext to use in creating a component

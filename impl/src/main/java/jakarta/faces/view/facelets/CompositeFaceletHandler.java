@@ -60,7 +60,7 @@ public final class CompositeFaceletHandler implements FaceletHandler {
      * <p class="changed_added_2_0">
      * Returns the array of child handlers contained by this handler.
      * </p>
-     * 
+     *
      * @return Returns the array of child handlers contained by this handler.
      */
     public FaceletHandler[] getHandlers() {

@@ -32,7 +32,7 @@ public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHan
      * <p>
      * Call through to super
      * </p>
-     * 
+     *
      * @param config configure this handler instance
      */
     public FaceletsAttachedObjectHandler(TagConfig config) {
@@ -55,7 +55,7 @@ public abstract class FaceletsAttachedObjectHandler extends DelegatingMetaTagHan
      * Take the necessary actions to apply the attached object represented by the tag for the concrete subclass of this
      * class to the argument <code>parent</code>.
      * </p>
-     * 
+     *
      * @param ctx the <code>FacesContext</code> for this request
      * @param parent The <code>UIComponent</code> to which this attached object must be applied.
      */

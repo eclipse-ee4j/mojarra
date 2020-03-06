@@ -23,15 +23,15 @@ package jakarta.faces.view.facelets;
  * </p>
  *
  * @since 2.0
- * 
+ *
  */
 public interface ComponentConfig extends TagConfig {
     /**
      * <p class="changed_added_2_0">
      * ComponentType to pass to the <code>Application</code>. Cannot be <code>null</code>.
-     * 
+     *
      * @return the component type to pass to the {@code Application}.
-     * 
+     *
      * @since 2.0
      */
     public String getComponentType();
@@ -41,7 +41,7 @@ public interface ComponentConfig extends TagConfig {
      * RendererType to set on created <code>UIComponent</code> instances.
      *
      * @return the renderer type to pass to the {@code Application}.
-     * 
+     *
      * @since 2.0
      */
     public String getRendererType();

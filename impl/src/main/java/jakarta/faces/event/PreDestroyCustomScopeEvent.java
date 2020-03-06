@@ -30,7 +30,7 @@ import jakarta.faces.context.FacesContext;
  * on {@link PostConstructCustomScopeEvent} for a usage example, replacing classes as appropriate to make sense for this
  * class.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class PreDestroyCustomScopeEvent extends SystemEvent {
@@ -44,11 +44,11 @@ public class PreDestroyCustomScopeEvent extends SystemEvent {
      * An instance of this event indicates that the custom scope enclosed within the argument <code>scopeContext</code> is
      * about to end.
      * </p>
-     * 
+     *
      * @param scopeContext A structure that contains the name of the scope and the scope itself exposed as a
      * <code>Map&lt;String,
      * Object&gt;</code>.
-     * 
+     *
      */
     public PreDestroyCustomScopeEvent(ScopeContext scopeContext) {
 
@@ -61,7 +61,7 @@ public class PreDestroyCustomScopeEvent extends SystemEvent {
      * An instance of this event indicates that the custom scope enclosed within the argument <code>scopeContext</code> is
      * about to end.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param scopeContext A structure that contains the name of the scope and the scope itself exposed as a
      * <code>Map&lt;String,
@@ -77,7 +77,7 @@ public class PreDestroyCustomScopeEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * Return the <code>ScopeContext</code> for this event.
      * </p>
-     * 
+     *
      * @return the scope context.
      */
     public ScopeContext getContext() {

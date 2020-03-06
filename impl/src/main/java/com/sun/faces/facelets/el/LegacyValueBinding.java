@@ -32,8 +32,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 /**
- * 
- * 
+ *
+ *
  * @author Jacob Hookom
  * @version $Id$
  * @deprecated

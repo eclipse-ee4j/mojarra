@@ -1,18 +1,18 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the
  * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
  * version 2 with the GNU Classpath Exception, which is available at
  * https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 package jakarta.faces.component.html;
@@ -75,7 +75,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>layout</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: The type of layout markup to use when rendering this group. If the value is "block" the renderer must
@@ -90,7 +90,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>layout</code> property.
      * </p>
-     * 
+     *
      * @param layout the new property value
      */
     public void setLayout(java.lang.String layout) {
@@ -101,7 +101,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onclick</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is clicked over this element.
@@ -115,7 +115,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onclick</code> property.
      * </p>
-     * 
+     *
      * @param onclick the new property value
      */
     public void setOnclick(java.lang.String onclick) {
@@ -127,7 +127,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>ondblclick</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is double clicked over this element.
@@ -141,7 +141,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>ondblclick</code> property.
      * </p>
-     * 
+     *
      * @param ondblclick the new property value
      */
     public void setOndblclick(java.lang.String ondblclick) {
@@ -153,7 +153,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onkeydown</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a key is pressed down over this element.
@@ -167,7 +167,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onkeydown</code> property.
      * </p>
-     * 
+     *
      * @param onkeydown the new property value
      */
     public void setOnkeydown(java.lang.String onkeydown) {
@@ -179,7 +179,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onkeypress</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a key is pressed and released over this element.
@@ -193,7 +193,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onkeypress</code> property.
      * </p>
-     * 
+     *
      * @param onkeypress the new property value
      */
     public void setOnkeypress(java.lang.String onkeypress) {
@@ -205,7 +205,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onkeyup</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a key is released over this element.
@@ -219,7 +219,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onkeyup</code> property.
      * </p>
-     * 
+     *
      * @param onkeyup the new property value
      */
     public void setOnkeyup(java.lang.String onkeyup) {
@@ -231,7 +231,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmousedown</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is pressed down over this element.
@@ -245,7 +245,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmousedown</code> property.
      * </p>
-     * 
+     *
      * @param onmousedown the new property value
      */
     public void setOnmousedown(java.lang.String onmousedown) {
@@ -257,7 +257,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmousemove</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is moved within this element.
@@ -271,7 +271,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmousemove</code> property.
      * </p>
-     * 
+     *
      * @param onmousemove the new property value
      */
     public void setOnmousemove(java.lang.String onmousemove) {
@@ -283,7 +283,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmouseout</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is moved away from this element.
@@ -297,7 +297,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmouseout</code> property.
      * </p>
-     * 
+     *
      * @param onmouseout the new property value
      */
     public void setOnmouseout(java.lang.String onmouseout) {
@@ -309,7 +309,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmouseover</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is moved onto this element.
@@ -323,7 +323,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmouseover</code> property.
      * </p>
-     * 
+     *
      * @param onmouseover the new property value
      */
     public void setOnmouseover(java.lang.String onmouseover) {
@@ -335,7 +335,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>onmouseup</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Javascript code executed when a pointer button is released over this element.
@@ -349,7 +349,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>onmouseup</code> property.
      * </p>
-     * 
+     *
      * @param onmouseup the new property value
      */
     public void setOnmouseup(java.lang.String onmouseup) {
@@ -361,7 +361,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: CSS style(s) to be applied when this component is rendered.
@@ -375,7 +375,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>style</code> property.
      * </p>
-     * 
+     *
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -387,7 +387,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Return the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @return the property value
      * <p>
      * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
@@ -402,7 +402,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      * <p>
      * Set the value of the <code>styleClass</code> property.
      * </p>
-     * 
+     *
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {

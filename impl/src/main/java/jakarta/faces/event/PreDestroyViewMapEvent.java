@@ -40,7 +40,7 @@ public class PreDestroyViewMapEvent extends ComponentSystemEvent {
      * Instantiate a new <code>ViewMapDestroydEvent</code> that indicates the argument <code>root</code> just had its
      * associated view map destroyed.
      * </p>
-     * 
+     *
      * @param root the <code>UIViewRoot</code> for which the view map has just been destroyed.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
@@ -54,7 +54,7 @@ public class PreDestroyViewMapEvent extends ComponentSystemEvent {
      * Instantiate a new <code>ViewMapDestroydEvent</code> that indicates the argument <code>root</code> just had its
      * associated view map destroyed.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param root the <code>UIViewRoot</code> for which the view map has just been destroyed.
      * @throws IllegalArgumentException if the argument is <code>null</code>.

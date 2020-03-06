@@ -56,7 +56,7 @@ public class AnnotationManager {
     private static final Scanner LISTENER_FOR_SCANNER = new ListenerForScanner();
     /*
      * This code is the prototype implementation for @EJB, @Resource, ..... support.
-     * 
+     *
      * private static final Scanner EJB_SCANNER = new DelegatedEJBScanner(); private static final Scanner RESOURCE_SCANNER =
      * new DelegatedResourceScanner(); private static final Scanner WEBSERVICE_REF_SCANNER = new
      * DelegatedWebServiceRefScanner(); private static final Scanner PERSISTENCE_UNIT_SCANNER = new
@@ -177,7 +177,7 @@ public class AnnotationManager {
 
     /**
      * Apply annotations relevant to {@link jakarta.faces.component.behavior.Behavior} instances.
-     * 
+     *
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param b the target <code>Behavior</code> to process
      */
@@ -200,7 +200,7 @@ public class AnnotationManager {
 
     /**
      * Apply annotations relevant to {@link jakarta.faces.render.ClientBehaviorRenderer} instances.
-     * 
+     *
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param b the target <code>ClientBehaviorRenderer</code> to process
      */
@@ -212,7 +212,7 @@ public class AnnotationManager {
 
     /**
      * Apply annotations relevant to {@link jakarta.faces.component.UIComponent} instances.
-     * 
+     *
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param c the target <code>UIComponent</code> to process
      */
@@ -224,7 +224,7 @@ public class AnnotationManager {
 
     /**
      * Apply annotations relevant to {@link jakarta.faces.validator.Validator} instances.
-     * 
+     *
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param v the target <code>Validator</code> to process
      */
@@ -236,7 +236,7 @@ public class AnnotationManager {
 
     /**
      * Apply annotations relevant to {@link jakarta.faces.convert.Converter} instances.
-     * 
+     *
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param c the target <code>Converter</code> to process
      */
@@ -248,7 +248,7 @@ public class AnnotationManager {
 
     /**
      * Apply annotations relevent to {@link jakarta.faces.render.Renderer} instances.
-     * 
+     *
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param r the <code>Renderer</code> to process
      * @param c the <code>UIComponent</code> instances that is associated with this <code>Renderer</code>
@@ -307,7 +307,7 @@ public class AnnotationManager {
 
     /**
      * Helper method to look up cached annotation metadata.
-     * 
+     *
      * @param targetClass class of the <code>processingTarget</code>
      * @param processingTarget the type of component being processed
      * @return a Map keyed by Annotation class with an AnnotationHandler as the value

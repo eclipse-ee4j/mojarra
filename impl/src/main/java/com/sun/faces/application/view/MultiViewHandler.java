@@ -461,11 +461,11 @@ public class MultiViewHandler extends ViewHandler {
      * If the specified mapping is a prefix mapping, and the provided request URI (usually the value from
      * <code>ExternalContext.getRequestServletPath()</code>) starts with <code>mapping + '/'</code>, prune the mapping from
      * the URI and return it, otherwise, return the original URI.
-     * 
+     *
      * @param uri the servlet request path
      * @param mapping the FacesServlet mapping used for this request
      * @return the URI without additional FacesServlet mappings
-     * 
+     *
      * @since 1.2
      */
     protected String normalizeRequestURI(String uri, String mapping) {
@@ -653,7 +653,7 @@ public class MultiViewHandler extends ViewHandler {
     /**
      * Attempts to find a matching locale based on <code>pref</code> and list of supported locales, using the matching
      * algorithm as described in JSTL 8.3.2.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param pref the preferred locale
      * @return the Locale based on pref and the matching alogritm specified in JSTL 8.3.2

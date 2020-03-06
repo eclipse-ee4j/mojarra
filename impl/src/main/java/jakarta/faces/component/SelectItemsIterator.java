@@ -210,7 +210,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
 
     /**
      * Update the <code>singleItemIterator</code> with the provided <code>item</code>
-     * 
+     *
      * @param item the {@link SelectItem} to expose as an Iterator
      */
     private void updateSingeItemIterator(SelectItem item) {

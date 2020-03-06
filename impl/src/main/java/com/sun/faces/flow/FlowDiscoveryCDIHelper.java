@@ -31,9 +31,9 @@ import jakarta.inject.Named;
 /*
  * This is an application scoped bean named with a well-defined,
  * but Mojarra private, name.  ApplicationAssociate.loadFlowsFromJars()
- * uses this class to cause any flows defined in this way to be 
+ * uses this class to cause any flows defined in this way to be
  * built using the FlowBuilder API.
- * 
+ *
  * A better way is to @Inject the extension directly but this doesn't
  * seem to work in the version of weld we have.
  */

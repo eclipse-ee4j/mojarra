@@ -599,7 +599,7 @@ public class ApplicationAssociate {
 
     /**
      * Maintains the PropertyResolver called through Application.setPropertyResolver()
-     * 
+     *
      * @param resolver PropertyResolver
      */
     @SuppressWarnings("deprecation")
@@ -617,7 +617,7 @@ public class ApplicationAssociate {
 
     /**
      * Maintains the PropertyResolver called through Application.setVariableResolver()
-     * 
+     *
      * @param resolver VariableResolver
      */
     @SuppressWarnings("deprecation")

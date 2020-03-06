@@ -77,7 +77,7 @@ public class UISelectBoolean extends UIInput {
      * Return the local value of the selected state of this component. This method is a typesafe alias for
      * <code>getValue()</code>.
      * </p>
-     * 
+     *
      * @return true if selected, false otherwise.
      */
     public boolean isSelected() {

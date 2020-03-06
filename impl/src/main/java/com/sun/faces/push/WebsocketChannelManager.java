@@ -103,7 +103,7 @@ public class WebsocketChannelManager implements Serializable {
 
     /**
      * Register given channel on given scope and returns the web socket channel identifier.
-     * 
+     *
      * @param context The involved faces context.
      * @param channel The web socket channel.
      * @param scope The web socket scope. Supported values are <code>application</code>, <code>session</code> and
@@ -175,7 +175,7 @@ public class WebsocketChannelManager implements Serializable {
     /**
      * This helps the web socket channel manager to hold view scoped web socket channel identifiers registered by
      * <code>&lt;f:websocket&gt;</code>.
-     * 
+     *
      * @author Bauke Scholtz
      * @see WebsocketChannelManager
      * @since 2.3

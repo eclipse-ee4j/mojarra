@@ -78,7 +78,7 @@ public abstract class NavigationHandler {
      * {@link #handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String)}, ignoring the
      * {@code toFlowDocumentId} parameter.
      * </p>
-     * 
+     *
      * @param context The {@link FacesContext} for the current request
      * @param fromAction The action binding expression that was evaluated to retrieve the specified outcome, or
      * <code>null</code> if the outcome was acquired by some other means

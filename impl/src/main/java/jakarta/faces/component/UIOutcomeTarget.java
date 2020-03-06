@@ -107,9 +107,9 @@ public class UIOutcomeTarget extends UIOutput {
      * <p class="changed_added_2_2">
      * Set whether or not the client window should be encoded into the target url.
      * </p>
-     * 
+     *
      * @param disableClientWindow if @{code true}, the client window will not be included in this outcome target.
-     * 
+     *
      * @since 2.2
      */
     public void setDisableClientWindow(boolean disableClientWindow) {

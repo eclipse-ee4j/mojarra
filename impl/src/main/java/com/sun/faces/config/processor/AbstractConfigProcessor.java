@@ -112,7 +112,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     /**
      * <p>
      * Return the text of the specified <code>Node</code>, if any.
-     * 
+     *
      * @param node the <code>Node</code>
      * @return the text of the <code>Node</code> If the length of the text is zero, this method will return
      * <code>null</code>

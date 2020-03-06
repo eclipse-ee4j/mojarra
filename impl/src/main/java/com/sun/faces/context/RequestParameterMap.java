@@ -73,7 +73,7 @@ public class RequestParameterMap extends BaseContextMap<String> {
 
     /**
      * If view root is instance of naming container, return its container client id, suffixed with separator character.
-     * 
+     *
      * @return The naming container prefix, or an empty string if the view root is not an instance of naming container.
      */
     protected String getNamingContainerPrefix() {

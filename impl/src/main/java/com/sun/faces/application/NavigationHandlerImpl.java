@@ -205,7 +205,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     /*
      * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both
      * operands may be null.
-     * 
+     *
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
         boolean result = false;
@@ -1341,7 +1341,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     /**
      * This method will attempt to find the <code>view</code> identifier based on action reference and outcome. Refer to
      * section 7.4.2 of the specification for more details.
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param caseSet The list of navigation cases.
      * @param fromAction The action reference string.
@@ -1392,7 +1392,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     /**
      * To look for the Flow or Node by the id, the '/' in the id got from navCase should be trimmed.
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param caseStruct the {@link CaseStruct} to look for the to view id
      * @return id of possible Node or Flow without '/' in the string

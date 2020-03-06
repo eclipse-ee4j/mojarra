@@ -53,7 +53,7 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
 // Relationship Instance Variables
 
 //
-// Constructors and Initializers    
+// Constructors and Initializers
 //
 
     public ValidateDoubleRangeTag() {
@@ -89,7 +89,7 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
         return super.doStartTag();
     }
 
-// 
+//
 // Methods from ValidatorTag
 //
 

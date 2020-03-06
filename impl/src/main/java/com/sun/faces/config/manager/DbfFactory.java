@@ -456,7 +456,7 @@ public class DbfFactory {
 
     /**
      * Get the schema map from the servlet context (or create it).
-     * 
+     *
      * @param servletContext the servlet context.
      * @return the schema map.
      */
@@ -475,7 +475,7 @@ public class DbfFactory {
 
     /**
      * Remove the schema map from the servlet context.
-     * 
+     *
      * @param servletContext the servlet context.
      */
     public static void removeSchemaMap(ServletContext servletContext) {
@@ -484,7 +484,7 @@ public class DbfFactory {
 
     /**
      * Load the schema for the given schema id.
-     * 
+     *
      * @param schemaMap the schema map.
      * @param schemaId the schema id.
      */

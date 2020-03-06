@@ -41,7 +41,7 @@ public class ELContextImpl extends ELContext {
 
     /**
      * Constructs a new ELContext associated with the given ELResolver.
-     * 
+     *
      * @param resolver the ELResolver to return from {@link #getELResolver()}
      */
     public ELContextImpl(ELResolver resolver) {

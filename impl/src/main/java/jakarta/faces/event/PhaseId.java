@@ -109,7 +109,7 @@ public class PhaseId implements Comparable {
      * <p class="changed_added_2_2">
      * Return the name of this phase.
      * </p>
-     * 
+     *
      * @since 2.2
      *
      * @return the name
@@ -123,7 +123,7 @@ public class PhaseId implements Comparable {
      * <p class="changed_added_2_2">
      * Return a <code>PhaseId</code> representation of the arcument <code>phase</code>.
      * </p>
-     * 
+     *
      * @param phase the String for which the corresponding <code>PhaseId</code> should be returned.
      *
      * @throws NullPointerException if argument <code>phase</code> is <code>null</code>.

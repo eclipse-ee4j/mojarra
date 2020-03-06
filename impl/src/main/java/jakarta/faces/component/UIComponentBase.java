@@ -89,7 +89,7 @@ import jakarta.faces.render.Renderer;
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_added_2_1">UIComponentBase</strong> is a
  * convenience base class that implements the default concrete behavior of all methods defined by {@link UIComponent}.
  * </p>
- * 
+ *
  * <p>
  * By default, this class defines <code>getRendersChildren()</code> to find the renderer for this component and call its
  * <code>getRendersChildren()</code> method. The default implementation on the <code>Renderer</code> returns
@@ -599,7 +599,7 @@ public abstract class UIComponentBase extends UIComponent {
      * typesafe APIs for registering listeners of the required type, and the implementation of those registration methods
      * will delegate to this method. For example:
      * </p>
-     * 
+     *
      * <pre>
      * public class FooEvent extends FacesEvent {
      *   ...
@@ -611,11 +611,11 @@ public abstract class UIComponentBase extends UIComponent {
      *   }
      *   ...
      * }
-     * 
+     *
      * public interface FooListener extends FacesListener {
      *   public void processFoo(FooEvent event);
      * }
-     * 
+     *
      * public class FooComponent extends UIComponentBase {
      *   ...
      *   public void addFooListener(FooListener listener) {
@@ -812,7 +812,7 @@ public abstract class UIComponentBase extends UIComponent {
      * </p>
      *
      * @param eventClass the <code>Class</code> of event for which the listeners must be returned.
-     * 
+     *
      * @throws NullPointerException if argument <code>eventClass</code> is <code>null</code>.
      *
      * @since 2.1
@@ -1057,7 +1057,7 @@ public abstract class UIComponentBase extends UIComponent {
      * For each of the attached objects on this instance that implement {@link PartialStateHolder}, call
      * {@link PartialStateHolder#markInitialState} on the attached object.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     @Override
@@ -1090,7 +1090,7 @@ public abstract class UIComponentBase extends UIComponent {
      * For each of the attached objects on this instance that implement {@link PartialStateHolder}, call
      * {@link PartialStateHolder#clearInitialState} on the attached object.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     @Override
@@ -1255,7 +1255,7 @@ public abstract class UIComponentBase extends UIComponent {
      * {@link StateHolder} interface. Using this method implies the use of {@link #restoreAttachedState} to restore the
      * attached objects.
      * </p>
-     * 
+     *
      * <p>
      * This method supports saving attached objects of the following type: <code>Object</code>s, <code>null</code> values,
      * and <code
@@ -1269,7 +1269,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @param attachedObject the object, which may be a <code>List</code> instance, or an Object. The
      * <code>attachedObject</code> (or the elements that comprise <code>attachedObject</code> may implement
      * {@link StateHolder}.
-     * 
+     *
      * @return The state object to be saved.
      * @throws NullPointerException if the context argument is null.
      */
@@ -1346,16 +1346,16 @@ public abstract class UIComponentBase extends UIComponent {
      * This method is called by {@link UIComponent} subclasses that need to restore the objects they saved using
      * {@link #saveAttachedState}. This method is tightly coupled with {@link #saveAttachedState}.
      * </p>
-     * 
+     *
      * <p>
      * This method supports restoring all attached objects types supported by {@link #saveAttachedState}.
      * </p>
      *
      * @param context the {@link FacesContext} for this request
      * @param stateObj the opaque object returned from {@link #saveAttachedState}
-     * 
+     *
      * @return the object restored from <code>stateObj</code>.
-     * 
+     *
      * @throws NullPointerException if context is null.
      * @throws IllegalStateException if the object is not previously returned by {@link #saveAttachedState}.
      */
@@ -1636,7 +1636,7 @@ public abstract class UIComponentBase extends UIComponent {
      * subclass implements {@link jakarta.faces.component.behavior.ClientBehaviorHolder}, and must add an implementation of
      * {@link jakarta.faces.component.behavior.ClientBehaviorHolder#getEventNames}.
      * </p>
-     * 
+     *
      * @return behaviors associated with this component.
      * @since 2.0
      */
@@ -1659,7 +1659,7 @@ public abstract class UIComponentBase extends UIComponent {
      * {@link jakarta.faces.component.behavior.ClientBehaviorHolder}, and must provide an implementation of
      * {@link jakarta.faces.component.behavior.ClientBehaviorHolder#getEventNames}.
      * </p>
-     * 
+     *
      * @return the default event name.
      */
     public String getDefaultEventName() {
@@ -1673,7 +1673,7 @@ public abstract class UIComponentBase extends UIComponent {
      * {@link UIComponentBase} has stub methods from the {@link ClientBehaviorHolder} interface, but these method should be
      * used only with componets that really implement holder interface. For an any other classes this method throws
      * {@link IllegalStateException}
-     * 
+     *
      * @throws IllegalStateException
      */
     private void assertClientBehaviorHolder() {
@@ -1692,7 +1692,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     /**
      * Save state of the behaviors map.
-     * 
+     *
      * @param context the {@link FacesContext} for this request.
      * @return map converted to the array of <code>Object</code> or null if no behaviors have been set.
      */

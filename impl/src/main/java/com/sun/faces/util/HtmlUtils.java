@@ -885,7 +885,7 @@ public class HtmlUtils {
 
         /**
          * Obtain access to the underlying byte array to prevent unecessary temp object creation.
-         * 
+         *
          * @return <code>buf</code>
          */
         public byte[] getBuf() {

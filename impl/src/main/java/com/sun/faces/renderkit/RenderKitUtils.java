@@ -181,7 +181,7 @@ public class RenderKitUtils {
      * <p>
      * Return the {@link RenderKit} for the current request.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} of the current request
      * @return the {@link RenderKit} for the current request.
      */
@@ -581,7 +581,7 @@ public class RenderKitUtils {
      * <p>
      * For each attribute in <code>setAttributes</code>, perform a binary search against the array of
      * <code>knownAttributes</code> If a match is found and the value is not <code>null</code>, render the attribute.
-     * 
+     *
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
@@ -646,7 +646,7 @@ public class RenderKitUtils {
     /**
      * <p>
      * Loops over all known attributes and attempts to render each one.
-     * 
+     *
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
@@ -975,7 +975,7 @@ public class RenderKitUtils {
      * <p>
      * Only install the JSF script resource if it doesn't exist. The resource component will be installed with the target
      * "head".
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      */
     public static void installJsfJsIfNecessary(FacesContext context) {
@@ -996,7 +996,7 @@ public class RenderKitUtils {
      * <p>
      * Renders the Javascript necessary to add and remove request parameters to the current form.
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @throws java.io.IOException if an error occurs writing to the response
      */
@@ -1259,7 +1259,7 @@ public class RenderKitUtils {
 
     /**
      * If view root is instance of naming container, prepend its container client id to namespace given parameter name.
-     * 
+     *
      * @param context Involved faces context.
      * @param name Request parameter name.
      * @return The request parameter name, if necessary namespaced.
@@ -1540,7 +1540,7 @@ public class RenderKitUtils {
     /**
      * Renders a handler script, which may require chaining together the user-specified event handler, any scripts required
      * by attached Behaviors, and also possibly the mojarra.jsfcljs() "submit" script.
-     * 
+     *
      * @param context the FacesContext for this request.
      * @param component the UIComponent that we are rendering
      * @param params any parameters that should be included by "submitting" scripts.

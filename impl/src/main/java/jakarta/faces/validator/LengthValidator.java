@@ -32,7 +32,7 @@ import jakarta.faces.convert.Converter;
  * characters in the String representation of the value of the associated component. The following algorithm is
  * implemented:
  * </p>
- * 
+ *
  * <ul>
  * <li>Convert the passed value to a String, if necessary, by calling its <code>toString()</code> method.</li>
  * <li>If a <code>maximum</code> property has been configured on this {@link Validator}, check the length of the
@@ -42,7 +42,7 @@ import jakarta.faces.convert.Converter;
  * converted String against this limit. If the String length is less than the specified minimum, throw a
  * {@link ValidatorException} containing a a MINIMUM_MESSAGE_ID message.</li>
  * </ul>
- * 
+ *
  * <p>
  * For all of the above cases that cause a {@link ValidatorException} to be thrown, if there are parameters to the
  * message that match up with validator parameters, the values of these parameters must be converted using the
@@ -138,7 +138,7 @@ public class LengthValidator implements Validator, PartialStateHolder {
      * Return the maximum length to be enforced by this {@link Validator}, or <code>0</code> if the maximum has not been
      * set.
      * </p>
-     * 
+     *
      * @return the maximum
      */
     public int getMaximum() {

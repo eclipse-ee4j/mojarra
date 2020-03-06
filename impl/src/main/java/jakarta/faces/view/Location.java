@@ -25,7 +25,7 @@ import java.io.Serializable;
  * </p>
  *
  * @since 2.0
- * 
+ *
  */
 public class Location implements Serializable {
 
@@ -47,7 +47,7 @@ public class Location implements Serializable {
      * <p class="changed_added_2_0">
      * Return the estimated character column.
      * </p>
-     * 
+     *
      * @return the column
      */
     public int getColumn() {
@@ -60,7 +60,7 @@ public class Location implements Serializable {
      * </p>
      *
      * @return the line number
-     * 
+     *
      */
     public int getLine() {
         return line;
@@ -72,7 +72,7 @@ public class Location implements Serializable {
      * </p>
      *
      * @return the file path
-     * 
+     *
      */
     public String getPath() {
         return path;

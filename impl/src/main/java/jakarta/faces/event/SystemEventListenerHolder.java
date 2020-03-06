@@ -50,7 +50,7 @@ public interface SystemEventListenerHolder {
      * </div>
      *
      * @param facesEventClass the class for which listeners are to be returned
-     * 
+     *
      * @return the listeners for the argument class
      *
      */

@@ -32,7 +32,7 @@ public interface FacetHandler {
      * </p>
      *
      * @param ctx the <code>FaceletContext</code> for this view execution
-     * 
+     *
      * @return the resolved literal String value of the facet name.
      */
     public String getFacetName(FaceletContext ctx);

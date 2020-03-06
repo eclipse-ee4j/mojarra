@@ -38,7 +38,7 @@ import java.util.Map;
  * to createUrl() assembles the parts into a relative URL. This class should be extended if the developer wishes to have
  * it deal with absolute URLs.
  * </p>
- * 
+ *
  * <p>
  * Note that this class is optimized to parse the query string lazily so as to avoid unnecessary work if the seed URL
  * differs little from the URL to be built.

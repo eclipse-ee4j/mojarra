@@ -22,7 +22,7 @@ import jakarta.faces.annotation.FlowMap;
 
 /**
  * An annotation literal for <code>@FlowMap</code>.
- * 
+ *
  * @since 2.3
  */
 @SuppressWarnings("all")

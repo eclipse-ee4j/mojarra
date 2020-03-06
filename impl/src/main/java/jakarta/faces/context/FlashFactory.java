@@ -28,24 +28,24 @@ import jakarta.faces.FacesWrapper;
  * needed) and returns {@link Flash} instances. Implementations of Jakarta Server Faces must provide at least a default
  * implementation of {@link Flash}.
  * </p>
- * 
+ *
  * <div class="changed_added_2_2">
  *
  * <p>
  * There must be one {@link FlashFactory} instance per web application that is utilizing Jakarta Server Faces. This
  * instance can be acquired, in a portable manner, by calling:
  * </p>
- * 
+ *
  * <pre>
  * FlashFactory factory = (FlashFactory) FactoryFinder.getFactory(FactoryFinder.FLASH_FACTORY);
  * </pre>
- * 
+ *
  * <p>
  * The common way to access the flash instance from Java code is still via {@link ExternalContext#getFlash}. The common
  * way to access the flash from Faces views is the implicit Jakarta Expression Language object "flash". The runtime must
  * ensure that the <code>FlashFactory</code> is used to instantiate the flash.
  * </p>
- * 
+ *
  * </div>
  *
  * <p class="changed_added_2_3">

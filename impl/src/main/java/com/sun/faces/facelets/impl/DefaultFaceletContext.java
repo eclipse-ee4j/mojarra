@@ -46,11 +46,11 @@ import java.util.Set;
 
 /**
  * Default FaceletContext implementation.
- * 
+ *
  * A single FaceletContext is used for all Facelets involved in an invocation of
  * {@link com.sun.faces.facelets.Facelet#apply(FacesContext, UIComponent) Facelet#apply(FacesContext, UIComponent)}.
  * This means that included Facelets are treated the same as the JSP include directive.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id: DefaultFaceletContext.java,v 1.4.4.3 2006/03/25 01:01:53 jhook Exp $
  */
@@ -106,7 +106,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#getFacesContext()
      */
     @Override
@@ -116,7 +116,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#getExpressionFactory()
      */
     @Override
@@ -126,7 +126,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#setVariableMapper(jakarta.el.VariableMapper)
      */
     @Override
@@ -137,7 +137,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#setFunctionMapper(jakarta.el.FunctionMapper)
      */
     @Override
@@ -148,7 +148,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(jakarta.faces.component.UIComponent, java.lang.String)
      */
     @Override
@@ -158,7 +158,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ELContext#getFunctionMapper()
      */
     @Override
@@ -168,7 +168,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ELContext#getVariableMapper()
      */
     @Override
@@ -178,7 +178,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ELContext#getContext(java.lang.Class)
      */
     @Override
@@ -188,7 +188,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ELContext#putContext(java.lang.Class, java.lang.Object)
      */
     @Override
@@ -198,7 +198,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#generateUniqueId(java.lang.String)
      */
     @Override
@@ -246,7 +246,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#getAttribute(java.lang.String)
      */
     @Override
@@ -262,7 +262,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#setAttribute(java.lang.String, java.lang.Object)
      */
     @Override
@@ -278,7 +278,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(jakarta.faces.component.UIComponent, java.net.URL)
      */
     @Override

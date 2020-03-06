@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Defines a concurrent cache with a factory for creating new object instances.
- * 
+ *
  * This (combined with ExpiringConcurrentCache) offers functionality similar to com.sun.faces.util.Cache. Two
  * differences:
  *
@@ -44,7 +44,7 @@ public abstract class ConcurrentCache<K, V> {
 
     /**
      * Constructs this cache using the specified <code>Factory</code>.
-     * 
+     *
      * @param f
      */
     public ConcurrentCache(Factory<K, V> f) {
@@ -62,7 +62,7 @@ public abstract class ConcurrentCache<K, V> {
 
     /**
      * Tests whether the cache contains a value for the specified key
-     * 
+     *
      * @param key key to test
      * @return true if the value for the specified key is already cached, false otherwise
      */
@@ -70,7 +70,7 @@ public abstract class ConcurrentCache<K, V> {
 
     /**
      * Retrieves a <code>Factory</code> instance aasociated with this cache
-     * 
+     *
      * @return <code>Factory</code> instance
      */
     protected final Factory<K, V> getFactory() {

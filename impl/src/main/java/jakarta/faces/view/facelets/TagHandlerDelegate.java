@@ -26,7 +26,7 @@ import jakarta.faces.component.UIComponent;
  * instances. This abstraction enables implementation details to be hidden by the Jakarta Server Faces implementation
  * while still allowing concrete classes to be defined for extension by users.
  * </p>
- * 
+ *
  * @since 2.0
  */
 
@@ -39,7 +39,7 @@ public abstract class TagHandlerDelegate {
      * </p>
      *
      * @param type the <code>Class</code> for which the <code>MetaRuleset</code> must be created.
-     * 
+     *
      * @return a {@link MetaRuleset} particular to this kind of tag handler.
      *
      * @since 2.0
@@ -52,7 +52,7 @@ public abstract class TagHandlerDelegate {
      * <span class="changed_modified_2_2">Called</span> by classes that implement
      * {@link jakarta.faces.view.facelets.FaceletHandler} in their implementation of <code>apply()</code>.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * If the argument {@code comp} is new to the view, for each tag attribute declared to be in the pass through attribute
      * namespace, set the name and value of the attribute into the pass through attributes map of the component. See
@@ -64,7 +64,7 @@ public abstract class TagHandlerDelegate {
      * @param ctx the <code>FaceletContext</code> for this request
      *
      * @param comp the <code>UIComponent</code> that corresponds to this element.
-     * 
+     *
      * @throws IOException if any files necessary to apply this tag handler have any difficulty while loading
      *
      */

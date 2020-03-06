@@ -775,7 +775,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
     /**
      * <p>
      * Create a collection from the provided hint.
-     * 
+     *
      * @param collectionTypeHint the Collection type as either a String or Class
      * @return a new Collection instance
      */

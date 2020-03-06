@@ -22,7 +22,7 @@ import jakarta.faces.annotation.RequestMap;
 
 /**
  * An annotation literal for <code>@RequestMap</code>.
- * 
+ *
  * @since 2.3
  * @see RequestMap
  */

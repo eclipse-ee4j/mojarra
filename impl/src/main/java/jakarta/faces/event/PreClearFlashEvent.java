@@ -42,7 +42,7 @@ public class PreClearFlashEvent extends SystemEvent {
      * Instantiate a new <code>PreClearFlashEvent</code> that indicates the argument <code>key</code> was just put to the
      * flash.
      * </p>
-     * 
+     *
      * @param source Map containing the values about to be cleared This need not be the actual
      * {@link jakarta.faces.context.Flash} instance.
      *
@@ -57,7 +57,7 @@ public class PreClearFlashEvent extends SystemEvent {
      * Instantiate a new <code>PreClearFlashEvent</code> that indicates the argument <code>key</code> was just put to the
      * flash.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param source Map containing the values about to be cleared This need not be the actual
      * {@link jakarta.faces.context.Flash} instance.

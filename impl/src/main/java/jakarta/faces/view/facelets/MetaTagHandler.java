@@ -26,7 +26,7 @@ package jakarta.faces.view.facelets;
  * </p>
  *
  * <div class="changed_added_2_0">
- * 
+ *
  * <pre>
  * <code>&lt;h:inputText value="#{user.userid}"
  * valueChangeListener="#{user.newUserId}" /&gt;</code>
@@ -69,7 +69,7 @@ public abstract class MetaTagHandler extends TagHandler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param config the tag configuration.
      */
     public MetaTagHandler(TagConfig config) {

@@ -27,7 +27,7 @@ import jakarta.faces.validator.Validator;
 /**
  * Tag for the Regular Expression Validator. Can accept a regex pattern as a property - this will be used to validate
  * against.
- * 
+ *
  * @author driscoll
  */
 public class RegexValidatorTag extends AbstractValidatorTag {
@@ -48,7 +48,7 @@ public class RegexValidatorTag extends AbstractValidatorTag {
 
     /**
      * Set the Regular Expression to use for validation.
-     * 
+     *
      * @param pattern A regular expression - needs to be escaped, @see java.util.regex .
      */
     public void setPattern(ValueExpression pattern) {

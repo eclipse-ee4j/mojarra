@@ -56,7 +56,7 @@ public abstract class ResponseStateManager {
      * and a number that is guaranteed to be unique with respect to all the other instances of this kind of client parameter
      * in the view.</span>
      * </p>
-     * 
+     *
      * <p class="changed_added_2_0">
      * It is strongly recommend that implementations guard against cross site scripting attacks by at least making the value
      * of this parameter difficult to predict.
@@ -77,9 +77,9 @@ public abstract class ResponseStateManager {
      * client parameter in the view. The value of this parameter is the return from
      * {@link jakarta.faces.lifecycle.ClientWindow#getId}.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      */
 
     public static final String CLIENT_WINDOW_PARAM = "jakarta.faces.ClientWindow";
@@ -91,7 +91,7 @@ public abstract class ResponseStateManager {
      * is given by the constant value of this field. The value of this parameter is the return from
      * {@link jakarta.faces.lifecycle.ClientWindow#getId}.
      * </p>
-     * 
+     *
      * @since 2.2
      */
 
@@ -103,7 +103,7 @@ public abstract class ResponseStateManager {
      * safety of an incoming non-postback request with respect to the currently configured <code>Set</code> of protected
      * views for this application.
      * </p>
-     * 
+     *
      * @since 2.2
      */
 
@@ -114,7 +114,7 @@ public abstract class ResponseStateManager {
      * <span class="changed_modified_2_2">Take</span> the argument <code>state</code> and write it into the output using the
      * current {@link ResponseWriter}, which must be correctly positioned already.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * Call {@link FacesContext#getViewRoot()}. If {@link jakarta.faces.component.UIComponent#isTransient()} returns
      * {@code true}, take implementation specific action so that the following call to {@link #isStateless} returns
@@ -139,7 +139,7 @@ public abstract class ResponseStateManager {
      * <code>Ajax</code> request {@link jakarta.faces.context.PartialViewContext#isAjaxRequest} returns <code>true</code>),
      * use the current view state identifier if it is available (do not generate a new identifier).
      * </p>
-     * 
+     *
      * <p>
      * Write out the render kit identifier associated with this <code>ResponseStateManager</code> implementation with the
      * name as the value of the <code>String</code> constant <code>ResponseStateManager.RENDER_KIT_ID_PARAM</code>. The
@@ -161,7 +161,7 @@ public abstract class ResponseStateManager {
      * stores the state as the treeStructure, and passes it to
      * {@link #writeState(jakarta.faces.context.FacesContext,jakarta.faces.application.StateManager.SerializedView)}.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * The {@link jakarta.faces.lifecycle.ClientWindow} must be written using these steps. Call
      * {@link jakarta.faces.context.ExternalContext#getClientWindow}. If the result is <code>null</code>, take no further
@@ -236,7 +236,7 @@ public abstract class ResponseStateManager {
      * element <code>Object</code> array with the first element being the return from calling
      * {@link SerializedView#getStructure}, and the second being the return from {@link SerializedView#getState}. It then
      * passes this <code>Object</code> array to {@link #writeState}.
-     * 
+     *
      * @param context The {@link FacesContext} instance for the current request
      * @param state The serialized state information previously saved
      *
@@ -257,28 +257,28 @@ public abstract class ResponseStateManager {
      * return {@code true}. If the preceding call to {@code writeState()} was stateful, return {@code false}. Otherwise
      * throw {@code IllegalStateException}.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_2">
-     * 
+     *
      * <p>
      * To preserve backward compatibility with custom implementations that may have extended from an earlier version of this
      * class, an implementation is provided that returns <code>false</code>. A compliant implementation must override this
      * method to take the specified action.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * @param context The {@link FacesContext} instance for the current request
      * @param viewId View identifier of the view to be restored
      * @throws NullPointerException if the argument {@code context} is {@code null}.
      * @throws IllegalStateException if this method is invoked and the statefulness of the preceding call to
      * {@link #writeState(jakarta.faces.context.FacesContext, java.lang.Object)} cannot be determined.
-     * 
+     *
      * @since 2.2
      *
-     * 
+     *
      * @return the value of the statelessness of this run through the lifecycle.
-     * 
+     *
      */
 
     public boolean isStateless(FacesContext context, String viewId) {
@@ -291,7 +291,7 @@ public abstract class ResponseStateManager {
      * representing the tree structure and component state passed in to a previous invocation of
      * {@link #writeState(jakarta.faces.context.FacesContext,java.lang.Object)}.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * If the state saving method for this application is
      * {@link jakarta.faces.application.StateManager#STATE_SAVING_METHOD_CLIENT}, <code>writeState()</code> will have
@@ -346,7 +346,7 @@ public abstract class ResponseStateManager {
      * @deprecated This method has been replaced by {@link #getState}. The default implementation returns <code>null</code>.
      *
      * @param context The {@link FacesContext} instance for the current request
-     * 
+     *
      * @return the component state portion of the state
      *
      */
@@ -378,7 +378,7 @@ public abstract class ResponseStateManager {
      * @param context the {@code FacesContext} for the current request.
      *
      * @return the value as specified above
-     * 
+     *
      * @since 1.2
      */
 
@@ -391,7 +391,7 @@ public abstract class ResponseStateManager {
      * Return the specified state as a <code>String</code> without any markup related to the rendering technology supported
      * by this ResponseStateManager.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} for the current request
      * @param state the state from which the String version will be generated from
      * @return the view state for this request without any markup specifics
@@ -408,9 +408,9 @@ public abstract class ResponseStateManager {
      * For backwards compatability with earlier revisions, a default implementation is provided that simply returns
      * <code>null</code>.
      * </p>
-     * 
+     *
      * @param context the {@link FacesContext} for the current request
-     * 
+     *
      * @return a cryptographically strong value
      *
      * @since 2.2

@@ -43,11 +43,11 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * Pass the argument <code>component</code> to the superclass constructor.
      * </p>
-     * 
+     *
      * @param component the <code>UIComponent</code> reference to be passed to the superclass constructor.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
-     * 
+     *
      * @since 2.0
      */
     public ComponentSystemEvent(UIComponent component) {
@@ -58,12 +58,12 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      * <p class="changed_added_2_3">
      * Pass the argument <code>component</code> to the superclass constructor.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the <code>UIComponent</code> reference to be passed to the superclass constructor.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
-     * 
+     *
      * @since 2.0
      */
     public ComponentSystemEvent(FacesContext facesContext, UIComponent component) {
@@ -128,7 +128,7 @@ public abstract class ComponentSystemEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * the source {@link UIComponent} that sent this event.
      * </p>
-     * 
+     *
      * @since 2.0
      *
      * @return the component for this event

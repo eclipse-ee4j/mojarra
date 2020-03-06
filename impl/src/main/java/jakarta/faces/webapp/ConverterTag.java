@@ -208,7 +208,7 @@ public class ConverterTag extends TagSupport {
      * </p>
      *
      * @throws JspException if a new instance cannot be created
-     * 
+     *
      * @return the {@code Converter}
      */
     protected Converter createConverter() throws JspException {

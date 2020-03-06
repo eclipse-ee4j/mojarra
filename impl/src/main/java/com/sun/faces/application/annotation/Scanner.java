@@ -38,7 +38,7 @@ interface Scanner {
 
     /**
      * Scan the target class for the {@link java.lang.annotation.Annotation}s this scanner handles.
-     * 
+     *
      * @param clazz the target class
      * @return a new {@link RuntimeAnnotationHandler} instance capable of processing the annotations defined on this class.
      * If no relevant {@link java.lang.annotation.Annotation}s are found, return <code>null</code>.

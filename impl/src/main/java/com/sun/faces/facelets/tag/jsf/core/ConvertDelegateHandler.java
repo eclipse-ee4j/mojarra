@@ -27,7 +27,7 @@ import jakarta.faces.view.facelets.*;
  * <p/>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  */
 public final class ConvertDelegateHandler extends ConverterHandler {
@@ -44,7 +44,7 @@ public final class ConvertDelegateHandler extends ConverterHandler {
 
     /**
      * Uses the specified "converterId" to pull an instance from the Application
-     * 
+     *
      * @see jakarta.faces.application.Application#createComponent(java.lang.String)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {

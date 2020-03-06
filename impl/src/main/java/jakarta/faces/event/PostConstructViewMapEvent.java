@@ -42,7 +42,7 @@ public class PostConstructViewMapEvent extends ComponentSystemEvent {
      * Instantiate a new <code>PostConstructViewMapEvent</code> that indicates the argument <code>root</code> was just
      * associated with its view map.
      * </p>
-     * 
+     *
      * @param root the <code>UIViewRoot</code> for which a view map has just been created.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
@@ -56,7 +56,7 @@ public class PostConstructViewMapEvent extends ComponentSystemEvent {
      * Instantiate a new <code>PostConstructViewMapEvent</code> that indicates the argument <code>root</code> was just
      * associated with its view map.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param root the <code>UIViewRoot</code> for which a view map has just been created.
      *

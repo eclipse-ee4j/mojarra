@@ -35,7 +35,7 @@ import jakarta.faces.context.FacesContext;
  * <span class="changed_modified_2_0_rev_a">A Validator</span> that checks against a Regular Expression (which is the
  * pattern property). The pattern must resolve to a String that follows the java.util.regex standards.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class RegexValidator implements Validator, PartialStateHolder {
@@ -98,19 +98,19 @@ public class RegexValidator implements Validator, PartialStateHolder {
     }
 
     /**
-     * 
+     *
      * <p>
      * Validate a String against a regular expression pattern. The full regex pattern must be matched in order to pass the
      * validation.
      * </p>
-     * 
+     *
      * @param context {@inheritDoc}
      * @param component {@inheritDoc}
      * @param value {@inheritDoc}
-     * 
+     *
      * @throws NullPointerException {@inheritDoc}
      * @throws ValidatorException {@inheritDoc}
-     * 
+     *
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) {

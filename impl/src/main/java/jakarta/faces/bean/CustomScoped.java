@@ -52,7 +52,7 @@ public @interface CustomScoped {
 
     /**
      * Get the value.
-     * 
+     *
      * @return the value.
      */
     public String value();

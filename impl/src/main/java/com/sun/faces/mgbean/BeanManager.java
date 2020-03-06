@@ -560,7 +560,7 @@ public class BeanManager implements SystemEventListener {
                  * storing the bean into the Map causes an Exception, the exception is allowed to flow up to the ExceptionHandler. If
                  * the ValueExpression does not evaluate to a Map, a FacesException must be thrown with a message that includes the
                  * expression string, the toString() of the value, and the type of the value.
-                 * 
+                 *
                  */
 
                 if (scopeMap != null) {

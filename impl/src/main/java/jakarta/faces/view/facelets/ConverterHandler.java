@@ -30,7 +30,7 @@ import jakarta.faces.view.ValueHolderAttachedObjectHandler;
  * Will only set/create <code>Converter</code> if the passed <code>UIComponent</code>'s <code>parent</code> is
  * <code>null</code>, signifying that it wasn't restored from an existing tree.
  * </p>
- * 
+ *
  */
 public class ConverterHandler extends FaceletsAttachedObjectHandler implements ValueHolderAttachedObjectHandler {
 

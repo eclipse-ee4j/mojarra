@@ -46,7 +46,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
 
     /**
      * Encode the beginning.
-     * 
+     *
      * @param context the Faces context.
      * @param component the UI component.
      * @throws IOException when an I/O error occurs.
@@ -83,7 +83,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
 
     /**
      * Do we render our children.
-     * 
+     *
      * @return false.
      */
     @Override

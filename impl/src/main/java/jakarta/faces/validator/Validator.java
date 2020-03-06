@@ -33,24 +33,24 @@ import jakarta.faces.context.FacesContext;
  * can be associated with each {@link jakarta.faces.component.EditableValueHolder} in the view, and are called during
  * the <em>Process Validations</em> phase of the request processing lifecycle.
  * </p>
- * 
+ *
  * <p>
  * Individual {@link Validator}s should examine the value and component that they are passed, and throw a
  * {@link ValidatorException} containing a {@link jakarta.faces.application.FacesMessage}, documenting any failures to
  * conform to the required rules.
- * 
+ *
  * <p>
  * For maximum generality, {@link Validator} instances may be configurable based on properties of the {@link Validator}
  * implementation class. For example, a range check {@link Validator} might support configuration of the minimum and
  * maximum values to be used.
  * </p>
- * 
+ *
  * <p>
  * {@link Validator} implementations must have a zero-arguments public constructor. In addition, if the
  * {@link Validator} class wishes to have configuration property values saved and restored with the view, the
  * implementation must also implement {@link jakarta.faces.component.StateHolder}.
  * </p>
- * 
+ *
  * <p class="changed_added_2_0">
  * If the class implementing <code>Validator</code> has a {@link jakarta.faces.application.ResourceDependency}
  * annotation, the action described in <code>ResourceDependency</code> must be taken when
@@ -59,7 +59,7 @@ import jakarta.faces.context.FacesContext;
  * in <code>ResourceDependencies</code> must be taken when
  * {@link jakarta.faces.component.EditableValueHolder#addValidator} is called.
  * </p>
- * 
+ *
  * @param <T> The generic type of object value to validate.
  */
 

@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before
  * including the targeted Facelet file.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -75,7 +75,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
     /**
      * Iterate over all TagAttributes and set them on the FaceletContext's VariableMapper, then include the target Facelet.
      * Finally, replace the old VariableMapper.
-     * 
+     *
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
      * @see VariableMapper
      * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,

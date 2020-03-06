@@ -114,7 +114,7 @@ public class ComponentStruct implements StateHolder {
 
     /**
      * Hash code.
-     * 
+     *
      * @return the hashcode.
      */
     @Override

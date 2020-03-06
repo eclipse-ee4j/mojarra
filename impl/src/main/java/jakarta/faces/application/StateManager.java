@@ -34,7 +34,7 @@ import jakarta.faces.render.ResponseStateManager;
  * <span class="changed_added_2_0">An implementation of this class must be thread-safe.</span> The {@link StateManager}
  * instance for an application is retrieved from the {@link Application} instance, and thus cannot know any details of
  * the markup language created by the {@link RenderKit} being used to render a view.
- * 
+ *
  * The {@link StateManager} utilizes a helper object ({@link ResponseStateManager}), that is provided by the
  * {@link RenderKit} implementation and is therefore aware of the markup language details.
  * </p>
@@ -49,7 +49,7 @@ public abstract class StateManager {
      * should be saved. Valid values are given as the values of the constants: {@link #STATE_SAVING_METHOD_CLIENT} or
      * {@link #STATE_SAVING_METHOD_SERVER}.
      * </p>
-     * 
+     *
      * <p>
      * If this parameter is not specified, the default value is the value of the constant
      * {@link #STATE_SAVING_METHOD_CLIENT}.
@@ -62,36 +62,36 @@ public abstract class StateManager {
      * The <code>ServletContext</code> init parameter consulted by the runtime to determine if the partial state saving
      * mechanism should be used.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * If undefined, the runtime must determine the version level of the application.
      * </p>
      *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * For applications versioned at 1.2 and under, the runtime must not use the partial state saving mechanism.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * For applications versioned at 2.0 and above, the runtime must use the partial state saving mechanism.
      * </p>
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * If this parameter is defined, and the application is versioned at 1.2 and under, the runtime must not use the partial
      * state saving mechanism. Otherwise, If this param is defined, and calling <code>toLowerCase().equals("true")</code> on
      * a <code>String</code> representation of its value returns <code>true</code>, the runtime must use partial state
      * mechanism. Otherwise the partial state saving mechanism must not be used.
      * </p>
-     * 
+     *
      * </div>
      *
      * @since 2.0
@@ -121,9 +121,9 @@ public abstract class StateManager {
      * <code>markInitialState()</code> method of iterating components such as {@link jakarta.faces.component.UIData} could
      * recognize this fact and save the initial state of descendents.
      * </p>
-     * 
+     *
      * @since 2.1
-     * 
+     *
      */
     public final static String IS_BUILDING_INITIAL_STATE = "jakarta.faces.IS_BUILDING_INITIAL_STATE";
 
@@ -135,7 +135,7 @@ public abstract class StateManager {
      * parameter is to ensure that the act of writing out the state to an ObjectOutputStream would not throw a
      * NotSerializableException, but the runtime is not required verify this before saving the state.
      * </p>
-     * 
+     *
      * @since 2.2
      */
     public static final String SERIALIZE_SERVER_STATE_PARAM_NAME = "jakarta.faces.SERIALIZE_SERVER_STATE";
@@ -168,13 +168,13 @@ public abstract class StateManager {
      * {@link FacesContext} instance as an object of type <code>StateManager.SerializedView</code>. If there is no state
      * information to be saved, return <code>null</code> instead.
      * </p>
-     * 
+     *
      * <p>
      * Components may opt out of being included in the serialized view by setting their <code>transient</code> property to
      * <code>true</code>. This must cause the component itself, as well as all of that component's children and facets, to
      * be omitted from the saved tree structure and component state information.
      * </p>
-     * 
+     *
      * <p>
      * This method must also enforce the rule that, for components with non-null <code>id</code>s, all components that are
      * descendants of the same nearest {@link NamingContainer} must have unique identifiers.
@@ -188,7 +188,7 @@ public abstract class StateManager {
      * inspects the return. If the return is an <code>Object []</code>, it casts the result to an <code>Object []</code>
      * wrapping the first and second elements in an instance of {@link SerializedView}, which it then returns. Otherwise, it
      * returns <code>null</code>
-     * 
+     *
      */
     public SerializedView saveSerializedView(FacesContext context) {
 
@@ -219,18 +219,18 @@ public abstract class StateManager {
      * request. The returned object must implement <code>java.io.Serializable</code>. If there is no state information to be
      * saved, return <code>null</code> instead.
      * </p>
-     * 
+     *
      * <p>
      * Components may opt out of being included in the serialized view by setting their <code>transient</code> property to
      * <code>true</code>. This must cause the component itself, as well as all of that component's children and facets, to
      * be omitted from the saved tree structure and component state information.
      * </p>
-     * 
+     *
      * <p>
      * This method must also enforce the rule that, for components with non-null <code>id</code>s, all components that are
      * descendants of the same nearest {@link NamingContainer} must have unique identifiers.
      * </p>
-     * 
+     *
      * <p>
      * For backwards compatability with existing <code>StateManager</code> implementations, the default implementation of
      * this method calls {@link #saveSerializedView} and creates and returns a two element <code>Object</code> array with
@@ -264,7 +264,7 @@ public abstract class StateManager {
      * <code>Serializable</code> object that represents the structure of the entire component tree (including children and
      * facets) of this view.
      * </p>
-     * 
+     *
      * <p>
      * Components may opt-out of being included in the tree structure by setting their <code>transient</code> property to
      * <code>true</code>. This must cause the component itself, as well as all of that component's children and facets, to
@@ -286,7 +286,7 @@ public abstract class StateManager {
      * <code>Serializable</code> object that represents the state of all component properties, attributes, and attached
      * objects, for the entire component tree (including children and facets) of this view.
      * </p>
-     * 
+     *
      * <p>
      * Components may opt-out of being included in the component state by setting their <code>transient</code> property to
      * <code>true</code>. This must cause the component itself, as well as all of that component's children and facets, to
@@ -307,14 +307,14 @@ public abstract class StateManager {
      * Save the state represented in the specified state <code>Object</code> instance, in an implementation dependent
      * manner.
      * </p>
-     * 
+     *
      * <p>
      * This method will typically simply delegate the actual writing to the <code>writeState()</code> method of the
      * {@link ResponseStateManager} instance provided by the {@link RenderKit} being used to render this view. This method
      * assumes that the caller has positioned the {@link ResponseWriter} at the correct position for the saved state to be
      * written.
      * </p>
-     * 
+     *
      * <p>
      * For backwards compatability with existing <code>StateManager</code> implementations, the default implementation of
      * this method checks if the argument is an instance of <code>Object []</code> of length greater than or equal to two.
@@ -344,13 +344,13 @@ public abstract class StateManager {
      * Save the state represented in the specified <code>SerializedView</code> isntance, in an implementation dependent
      * manner.
      * </p>
-     * 
+     *
      * <p>
      * This method must consult the context initialization parameter named by the symbolic constant
      * <code>StateManager.STATE_SAVING_METHOD_PARAM_NAME</code> to determine whether state should be saved on the client or
      * the server. If not present, client side state saving is assumed.
      * </p>
-     * 
+     *
      * <p>
      * If the init parameter indicates that client side state saving should be used, this method must delegate the actual
      * writing to the <code>writeState()</code> method of the {@link ResponseStateManager} instance provided by the
@@ -384,13 +384,13 @@ public abstract class StateManager {
      * restored {@link UIViewRoot}. If there is no saved state information available for this <code>viewId</code>, return
      * <code>null</code> instead.
      * </p>
-     * 
+     *
      * <p>
      * This method must consult the context initialization parameter named by the symbolic constant
      * <code>StateManager.STATE_SAVING_METHOD_PARAM_NAME</code> to determine whether state should be saved on the client or
      * the server. If not present, client side state saving is assumed.
      * </p>
-     * 
+     *
      * <p>
      * If the init parameter indicates that client side state saving should be used, this method must call the
      * <code>getTreeStructureToRestore()</code> and (if the previous method call returned a non-null value)
@@ -448,7 +448,7 @@ public abstract class StateManager {
      * <p>
      * <span class="changed_modified_2_3">Method</span> to determine if the state is saved on the client.
      * </p>
-     * 
+     *
      * @param context the Faces context.
      * @return <code>true</code> if and only if the value of the <code>ServletContext</code> init parameter named by the
      * value of the constant {@link #STATE_SAVING_METHOD_PARAM_NAME} is equal <span class="changed_modified_2_3">(ignoring

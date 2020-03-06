@@ -259,12 +259,12 @@ final class WriteBehindStateWriter extends Writer {
 
     /**
      * Get the state.
-     * 
+     *
      * <p>
      * In JSF 2.2 it is required by the specification that the view state hidden input in each h:form has a unique id. So we
      * have to call this method multiple times as each h:form needs to generate the element id for itself.
      * </p>
-     * 
+     *
      * @param stateManager the state manager.
      * @param origWriter the original response writer.
      * @return the state.

@@ -362,7 +362,7 @@ public class ViewHandlerImpl extends ViewHandler {
     /**
      * Execute the target view. If the HTTP status code range is not 2xx, then return true to indicate the response should
      * be immediately flushed by the caller so that conditions such as 404 are properly handled.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param viewToExecute the view to build
      * @return <code>true</code> if the response should be immediately flushed to the client, otherwise <code>false</code>
@@ -491,7 +491,7 @@ public class ViewHandlerImpl extends ViewHandler {
     /**
      * Attempts to find a matching locale based on <code>pref</code> and list of supported locales, using the matching
      * algorithm as described in JSTL 8.3.2.
-     * 
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param pref the preferred locale
      * @return the Locale based on pref and the matching alogritm specified in JSTL 8.3.2
@@ -634,7 +634,7 @@ public class ViewHandlerImpl extends ViewHandler {
      * if the specified mapping is a prefix mapping, and the provided request URI (usually the value from
      * <code>ExternalContext.getRequestServletPath()</code>) starts with <code>mapping + '/'</code>, prune the mapping from
      * the URI and return it, otherwise, return the original URI.
-     * 
+     *
      * @param uri the servlet request path
      * @param mapping the FacesServlet mapping used for this request
      * @return the URI without additional FacesServlet mappings
@@ -825,7 +825,7 @@ public class ViewHandlerImpl extends ViewHandler {
          * <p>
          * Write directly from our FastStringWriter to the provided writer.
          * </p>
-         * 
+         *
          * @throws IOException if an error occurs
          */
         public void flushToWriter() throws IOException {

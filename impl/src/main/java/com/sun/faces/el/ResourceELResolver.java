@@ -59,7 +59,7 @@ public class ResourceELResolver extends ELResolver {
      * <code>ELContext.setPropertyResolved(true)</code> and return the result of
      * {@link jakarta.faces.application.Resource#getRequestPath()}</li>
      * </ul>
-     * 
+     *
      * @see ELResolver#getValue(jakarta.el.ELContext, Object, Object)
      */
     @Override
@@ -127,7 +127,7 @@ public class ResourceELResolver extends ELResolver {
 
     /**
      * This is basically a no-op.
-     * 
+     *
      * @throws PropertyNotFoundException if base and property are null
      */
     @Override

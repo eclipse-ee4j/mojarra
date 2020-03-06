@@ -30,7 +30,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
  * places in the flash will be exposed to the next view encountered by the same user session and then cleared out. It is
  * important to note that &#8220;next view&#8221; may have the same view id as the previous view.
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
  *
  * <p>
@@ -40,7 +40,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
  * <p>
  * The flash is a <span class="changed_modified_2_0_a">session</span> scoped object that must be thread safe.
  * </p>
- * 
+ *
  * <p>
  * The implementation requirements will be described in terms of the runtime traversing the Jakarta Server Faces
  * lifecycle. The flash exposes a <code>Map</code> interface over two logical maps. The choice of which logical map is
@@ -94,7 +94,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
  * <p>
  * Jakarta Expression Language Usage Example
  * </p>
- * 
+ *
  * <blockquote>
  *
  * <p>
@@ -110,7 +110,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
 
 </code>
  * </pre>
- * 
+ *
  * <p>
  * Next page
  * </p>
@@ -125,25 +125,25 @@ import jakarta.faces.event.PostPutFlashValueEvent;
 
 </code>
  * </pre>
- * 
+ *
  * </blockquote>
  *
  * <p>
  * The same usage syntax must be available in Jakarta Server Pages.
  * </p>
- * 
+ *
  * <p>
  * Note that extra action must be taken when using the flash in concert with output components that cause the browser to
  * issue a GET request when clicked, such as <code>h:button</code> and <code>h:link</code>. The following example
  * illustrates one way to use the flash in such circumstances.
  * </p>
- * 
+ *
  * <blockquote>
- * 
+ *
  * <p>
  * First page
  * </p>
- * 
+ *
  * <pre>
  * <code>
 &lt;h:button id="nextButton" value="Next (button)" outcome="next.xhtml"&gt;
@@ -151,11 +151,11 @@ import jakarta.faces.event.PostPutFlashValueEvent;
 &lt;/h:button&gt;
 </code>
  * </pre>
- * 
+ *
  * <p>
  * Next page
  * </p>
- * 
+ *
  * <pre>
  * <code>
 &lt;html xmlns="http://www.w3.org/1999/xhtml"
@@ -170,18 +170,18 @@ foo = #{flash.foo}
 &lt;/html&gt;
 </code>
  * </pre>
- * 
+ *
  * </blockquote>
- * 
+ *
  * <p>
  * Note that this example uses <code>#{flash.now}</code> on the second page. This is because the value doesn't actuall
  * enter the flash until the server is processing the GET request sent by the browser due to the button being clicked.
  * </p>
- * 
+ *
  * </div>
  *
  * @since 2.0
- * 
+ *
  */
 public abstract class Flash implements Map<String, Object> {
 
@@ -202,14 +202,14 @@ public abstract class Flash implements Map<String, Object> {
      * <code>Map</code> accesses for the special key &#8220;<code>keepMessages</code>&#8221; must return the value of this
      * JavaBeans property.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
      *
-     * 
+     *
      * <p>
      * Jakarta Expression Language Usage Example
      * </p>
-     * 
+     *
      * <blockquote>
      *
      * <p>
@@ -222,10 +222,10 @@ public abstract class Flash implements Map<String, Object> {
           xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"&gt;
     &lt;!-- extra code removed --&gt;
       &lt;c:set target="#{flash}" property="keepMessages" value="true" /&gt;
-    
+
     </code>
      * </pre>
-     * 
+     *
      * <p>
      * Next page
      * </p>
@@ -235,12 +235,12 @@ public abstract class Flash implements Map<String, Object> {
     &lt;html xmlns="http://www.w3.org/1999/xhtml"
           xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
     &lt;!-- extra code removed --&gt;
-      &lt;h:messages /&gt; Any messages present on the first page must be displayed on 
+      &lt;h:messages /&gt; Any messages present on the first page must be displayed on
       this page.
-    
+
     </code>
      * </pre>
-     * 
+     *
      * </blockquote>
      *
      * </div>
@@ -267,10 +267,10 @@ public abstract class Flash implements Map<String, Object> {
      * <p class="changed_added_2_0">
      * Return the value of this property for the flash for this session. This must be <code>false</code> unless:
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
      *
-     * 
+     *
      * <ul>
      *
      * <li>
@@ -301,13 +301,13 @@ public abstract class Flash implements Map<String, Object> {
      * specific URI. The implementation must insure that reading the value of this property on that request will return
      * <code>true</code>.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * Jakarta Expression Language Usage Example
      * </p>
-     * 
+     *
      * <blockquote>
      *
      * <pre>
@@ -316,15 +316,15 @@ public abstract class Flash implements Map<String, Object> {
           xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"&gt;
     &lt;!-- extra code removed --&gt;
       &lt;c:set target="#{flash}" property="redirect" value="true" /&gt;
-    
+
     </code>
      * </pre>
-     * 
+     *
      * </blockquote>
      *
      * </div>
-     * 
-     * 
+     *
+     *
      * @param newValue the new value for this property on this session.
      *
      * @since 2.0
@@ -340,11 +340,11 @@ public abstract class Flash implements Map<String, Object> {
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * Jakarta Expression Language Usage Example
      * </p>
-     * 
+     *
      * <blockquote>
      *
      * <pre>
@@ -353,24 +353,24 @@ public abstract class Flash implements Map<String, Object> {
           xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"&gt;
     &lt;!-- extra code removed --&gt;
       &lt;c:set target="#{flash.now}" property="bar" value="barValue" /&gt;
-    
+
       &lt;p&gt;Value of \#{flash.now.bar}, should be barValue.&lt;/p&gt;
-    
+
       &lt;h:outputText value="#{flash.now.bar}" /&gt;
-    
+
     </code>
      * </pre>
-     * 
+     *
      * </blockquote>
      *
      * </div>
      *
      * @param key the key for this entry
-     * 
+     *
      * @param value the value for this entry
-     * 
+     *
      * @since 2.0
-     * 
+     *
      */
 
     public abstract void putNow(String key, Object value);

@@ -69,112 +69,112 @@ import jakarta.faces.lifecycle.LifecycleFactory;
  * implementation of the {@link jakarta.servlet.ServletContainerInitializer} interface that declares the following
  * classes in its {@link jakarta.servlet.annotation.HandlesTypes} annotation.
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li class="changed_added_2_3">{@link jakarta.faces.annotation.FacesConfig}</li>
- * 
+ *
  * <li>{@link jakarta.faces.application.ResourceDependencies}</li>
- * 
+ *
  * <li>{@link jakarta.faces.application.ResourceDependency}</li>
- * 
+ *
  * <li>jakarta.faces.bean.ManagedBean</li>
- * 
+ *
  * <li>{@link jakarta.faces.component.FacesComponent}</li>
- * 
+ *
  * <li>{@link jakarta.faces.component.UIComponent}</li>
- * 
+ *
  * <li>{@link jakarta.faces.convert.Converter}</li>
- * 
+ *
  * <li>{@link jakarta.faces.convert.FacesConverter}</li>
- * 
+ *
  * <li>{@link jakarta.faces.event.ListenerFor}</li>
- * 
+ *
  * <li>{@link jakarta.faces.event.ListenersFor}</li>
- * 
+ *
  * <li>{@link jakarta.faces.render.FacesBehaviorRenderer}</li>
- * 
+ *
  * <li>{@link jakarta.faces.render.Renderer}</li>
- * 
+ *
  * <li>{@link jakarta.faces.validator.FacesValidator}</li>
- * 
+ *
  * <li>{@link jakarta.faces.validator.Validator}</li>
- * 
+ *
  * </ul>
- * 
+ *
  * <p>
  * This Jakarta Servlet servlet must automatically be mapped if it is <strong>not</strong> explicitly mapped in
  * <code>web.xml</code> or <code>web-fragment.xml</code> and one or more of the following conditions are true.
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * A <code>faces-config.xml</code> file is found in <code>WEB-INF</code>
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * A <code>faces-config.xml</code> file is found in the <code>META-INF</code> directory of a jar in the application's
  * classpath.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * A filename ending in <code>.faces-config.xml</code> is found in the <code>META-INF</code> directory of a jar in the
  * application's classpath.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * The <code>jakarta.faces.CONFIG_FILES</code> context param is declared in <code>web.xml</code> or
  * <code>web-fragment.xml</code>.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * The <code>Set</code> of classes passed to the <code>onStartup()</code> method of the
  * <code>ServletContainerInitializer</code> implementation is not empty.
  * </p>
  * </li>
- * 
+ *
  * </ul>
- * 
+ *
  * <p>
  * If the runtime determines that the servlet must be automatically mapped, it must be mapped to the following
  * &lt;<code>url-pattern</code>&gt; entries.
  * </p>
- * 
+ *
  * <ul>
  * <li>/faces/*</li>
  * <li>*.jsf</li>
  * <li>*.faces</li>
  * <li class="changed_added_2_3">*.xhtml</li>
  * </ul>
- * 
+ *
  * </div>
  *
  * <p class="changed_added_2_3">
  * Note that the automatic mapping to {@code *.xhtml} can be disabled with the context param
  * {@link #DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME}.
  * </p>
- * 
+ *
  * <div class="changed_added_2_2">
  *
  * <p>
  * This class must be annotated with {@code jakarta.servlet.annotation.MultipartConfig}. This causes the Jakarta Servlet
  * container in which the Jakarta Server Faces implementation is running to correctly handle multipart form data.
  * </p>
- * 
+ *
  * <p>
  * <strong>Some security considerations relating to this class</strong>
  * </p>
- * 
+ *
  * <p>
  * The topic of web application security is a cross-cutting concern and every aspect of the specification address it.
  * However, as with any framework, the application developer needs to pay careful attention to security. Please consider
@@ -183,11 +183,11 @@ import jakarta.faces.lifecycle.LifecycleFactory;
  * </p>
  *
  * <blockquote>
- * 
+ *
  * <p>
  * <strong>Prefix mappings and the <code>FacesServlet</code></strong>
  * </p>
- * 
+ *
  * <p>
  * If the <code>FacesServlet</code> is mapped using a prefix <code>&lt;url-pattern&gt;</code>, such as
  * <code>&lt;url-pattern&gt;/faces/*&lt;/url-pattern&gt;</code>, something must be done to prevent access to the view
@@ -196,11 +196,11 @@ import jakarta.faces.lifecycle.LifecycleFactory;
  * Descriptor</strong> chapter of the Jakarta Servlet Specification for more information the use of
  * &lt;security-constraint&gt;.
  * </p>
- * 
+ *
  * <p>
  * <strong>Allowable HTTP Methods</strong>
  * </p>
- * 
+ *
  * <p>
  * The Jakarta Server Faces specification only requires the use of the GET and POST http methods. If your web
  * application does not require any other http methods, such as PUT and DELETE, please consider restricting the
@@ -208,8 +208,8 @@ import jakarta.faces.lifecycle.LifecycleFactory;
  * <strong>Security</strong> sections of the Jakarta Servlet Specification for more information about the use of these
  * elements.
  * </p>
- * 
- * 
+ *
+ *
  * </blockquote>
  *
  * </div>
@@ -362,44 +362,44 @@ public final class FacesServlet implements Servlet {
      * /META-INF
      * </code>
      * </pre>
-     * 
+     *
      * <p>
      * If none of the cases described above in the specification for this method apply to the servicing of this request, the
      * following action must be taken to service the request.
      * </p>
-     * 
+     *
      * <p>
      * Acquire a {@link FacesContext} instance for this request.
      * </p>
-     * 
+     *
      * <p>
      * Acquire the <code>ResourceHandler</code> for this request by calling
      * {@link jakarta.faces.application.Application#getResourceHandler}. Call
      * {@link jakarta.faces.application.ResourceHandler#isResourceRequest}.
-     * 
+     *
      * If this returns <code>true</code> call {@link jakarta.faces.application.ResourceHandler#handleResourceRequest}.
-     * 
+     *
      * If this returns <code>false</code>, <span class="changed_added_2_2">call
      * {@link jakarta.faces.lifecycle.Lifecycle#attachWindow} followed by </span>
      * {@link jakarta.faces.lifecycle.Lifecycle#execute} followed by {@link jakarta.faces.lifecycle.Lifecycle#render}.
-     * 
+     *
      * If a {@link jakarta.faces.FacesException} is thrown in either case, extract the cause from the
      * <code>FacesException</code>.
-     * 
+     *
      * If the cause is <code>null</code> extract the message from the <code>FacesException</code>, put it inside of a new
      * <code>ServletException</code> instance, and pass the <code>FacesException</code> instance as the root cause, then
      * rethrow the <code>ServletException</code> instance. If the cause is an instance of <code>ServletException</code>,
      * rethrow the cause. If the cause is an instance of <code>IOException</code>, rethrow the cause.
-     * 
+     *
      * Otherwise, create a new <code>ServletException</code> instance, passing the message from the cause, as the first
      * argument, and the cause itself as the second argument.
      * </p>
-     * 
+     *
      * <p class="changed_modified_2_0_rev_a">
      * The implementation must make it so {@link jakarta.faces.context.FacesContext#release} is called within a finally
      * block as late as possible in the processing for the Jakarta Server Faces related portion of this request.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param req The Jakarta Servlet request we are processing
@@ -407,7 +407,7 @@ public final class FacesServlet implements Servlet {
      *
      * @throws IOException if an input/output error occurs during processing
      * @throws ServletException if a Jakarta Servlet error occurs during processing
-     * 
+     *
      */
     @Override
     public void service(ServletRequest req, ServletResponse resp) throws IOException, ServletException {

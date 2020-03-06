@@ -148,11 +148,11 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
      * specialized behavior:
      * </p>
      * <ul>
-     * 
+     *
      * <li>The <code>Map</code>, and any supporting objects it returns, must perform all column name comparisons in a
      * case-insensitive manner. This case-insensitivity must be implemented using a case-insensitive
      * <code>Comparator</code>, such as <code>String.CASE_INSENSITIVE_ORDER</code>.</li>
-     * 
+     *
      * <li>The following methods must throw <code>UnsupportedOperationException</code>: <code>clear()</code>,
      * <code>remove()</code>.</li>
      * <li>The <code>entrySet()</code> method must return a <code>Set</code> that has the following behavior:

@@ -48,7 +48,7 @@ class ViewScopeContextObject implements Serializable {
 
     /*
      * Get the name.
-     * 
+     *
      * @return the name.
      */
     public String getName() {

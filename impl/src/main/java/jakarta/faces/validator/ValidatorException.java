@@ -52,7 +52,7 @@ public class ValidatorException extends FacesException {
      * </p>
      *
      * @param messages the list of messages for this exception
-     * 
+     *
      * @since 2.0
      */
 
@@ -78,10 +78,10 @@ public class ValidatorException extends FacesException {
      * <p class="changed_added_2_0">
      * Allow this one exception to contain multiple messages, while passing on the root cause to the superclass
      * </p>
-     * 
+     *
      * @param messages the detail messages for this exception
      * @param cause the root cause for this exception
-     * 
+     *
      * @since 2.0
      */
 
@@ -112,7 +112,7 @@ public class ValidatorException extends FacesException {
      * If this instance was created with a constructor that takes <code>Collection&lt;FacesMessage&gt;</code>, this method
      * returns the passed collection, otherwise this method returns <code>null</code>.
      * </p>
-     * 
+     *
      * @since 2.0
      *
      * @return the messages

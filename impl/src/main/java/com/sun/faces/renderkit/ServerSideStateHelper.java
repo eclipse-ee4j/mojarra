@@ -302,7 +302,7 @@ public class ServerSideStateHelper extends StateHelper {
      * <p>
      * Utility method for obtaining the <code>Integer</code> based configuration values used to change the behavior of the
      * <code>ServerSideStateHelper</code>.
-     * 
+     *
      * @param param the paramter to parse
      * @return the Integer representation of the parameter value
      */
@@ -413,7 +413,7 @@ public class ServerSideStateHelper extends StateHelper {
 
     /**
      * Is stateless.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param viewId the view id.
      * @return true if stateless, false otherwise.

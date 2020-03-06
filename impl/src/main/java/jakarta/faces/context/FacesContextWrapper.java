@@ -324,7 +324,7 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
      * </p>
      *
      * @see jakarta.faces.context.FacesContext#isReleased
-     * 
+     *
      * @since 2.1
      */
     @Override

@@ -73,7 +73,7 @@ import jakarta.faces.context.FacesContext;
  * instance. Otherwise the "GMT" timezone is used.</li>
  * <li>In all cases, parsing must be non-lenient; the given string must strictly adhere to the parsing format.</li>
  * </ul>
- * 
+ *
  * <p>
  * The <code>getAsString()</code> method expects a value of type <code>java.util.Date</code> (or a subclass), and
  * creates a formatted String according to the following algorithm:
@@ -85,7 +85,7 @@ import jakarta.faces.context.FacesContext;
  * use the <code>Locale</code> from the <code>UIViewRoot</code>.</li>
  * <li>If a <code>timezone</code> has been specified, it must be passed to the underlying <code>DateFormat</code>
  * instance. Otherwise the "GMT" timezone is used.</li>
- * 
+ *
  * <li>If a <code>pattern</code> has been specified, its syntax must conform the rules specified by
  * <code>java.text.SimpleDateFormat</code> <span class="changed_added_2_3">or {@code
  * java.time.format.DateTimeFormatter}. Which of these two formatters is used depends on the value of
@@ -95,7 +95,7 @@ import jakarta.faces.context.FacesContext;
  * DateTimeFormatter.ofPattern(String, Locale)} must be called, passing the value of {@code pattern} as the first
  * argument and the current {@code Locale} as the second argument, and this formatter must be used to format the
  * outgoing value.</span></li>
- * 
+ *
  * <li>If a <code>pattern</code> has not been specified, formatting will be based on the <code>type</code> property,
  * which includes a date value, a time value, both or into the formatted String. Any date and time values included will
  * be formatted in accordance to the styles specified by <code>dateStyle</code> and <code>timeStyle</code>,

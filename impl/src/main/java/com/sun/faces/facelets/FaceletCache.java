@@ -33,7 +33,7 @@ public abstract class FaceletCache<V> {
 
     /**
      * Retrieves a cached Facelet
-     * 
+     *
      * @param url URL for the Facelet being retrieved
      * @return cached Facelet instance, If no instance is available, it will be created using the Facelet InstanceFactory
      * and stored in the cache
@@ -42,7 +42,7 @@ public abstract class FaceletCache<V> {
 
     /**
      * Determines whether a cached Facelet instance exists for this URL
-     * 
+     *
      * @param url URL for the Facelet
      * @return true if a cached instance exists, false otherwise
      */
@@ -50,7 +50,7 @@ public abstract class FaceletCache<V> {
 
     /**
      * Retrieves a cached Metadata Facelet
-     * 
+     *
      * @param url URL for the Metadata Facelet being retrieved
      * @return cached Metadata Facelet instance, If no instance is available, it will be created using the Metadata Facelet
      * InstanceFactory and stored in the cache
@@ -59,7 +59,7 @@ public abstract class FaceletCache<V> {
 
     /**
      * Determines whether a cached Metadata Facelet instance exists for this URL
-     * 
+     *
      * @param url URL for the Metadata Facelet
      * @return true if a cached instance exists, false otherwise
      */
@@ -67,7 +67,7 @@ public abstract class FaceletCache<V> {
 
     /**
      * Initializes this cache instance.
-     * 
+     *
      * @param faceletFactory <code>InstanceFactory</code> for creating Facelet instances
      * @param metafaceletFactory <code>InstanceFactory</code> for creating Metadata Facelet instances
      */
@@ -78,7 +78,7 @@ public abstract class FaceletCache<V> {
 
     /**
      * Retrieves InstanceFactory for creating Facelets
-     * 
+     *
      * @return factory for creating Facelets
      */
     protected final InstanceFactory<V> getFaceletInstanceFactory() {
@@ -87,7 +87,7 @@ public abstract class FaceletCache<V> {
 
     /**
      * Retrieves InstanceFactory for creating Metadata Facelets
-     * 
+     *
      * @return factory for creating MetadataFacelets
      */
     protected final InstanceFactory<V> getMetadataFaceletInstanceFactory() {

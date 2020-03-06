@@ -395,7 +395,7 @@ public class PartialViewContextImpl extends PartialViewContext {
      * Unwraps {@link PartialVisitContext} from a chain of {@link VisitContextWrapper}s.
      *
      * If no {@link PartialVisitContext} is found in the chain, null is returned instead.
-     * 
+     *
      * @param visitContext the visit context.
      * @return the (unwrapped) partial visit context.
      */

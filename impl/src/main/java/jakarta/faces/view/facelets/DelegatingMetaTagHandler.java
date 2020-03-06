@@ -51,13 +51,13 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
      * <p class="changed_added_2_3">
      * Get the tag handler delegate.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_3">
      * Code that extends from DelegatingMetaTagHandler (directly or indirectly, as through extending ComponentHandler) must
      * take care to decorate, not replace, the TagHandlerDelegate instance returned by this method. Failure to do so may
      * produce unexpected results.
      * </p>
-     * 
+     *
      * @return the tag handler delegate.
      */
     protected abstract TagHandlerDelegate getTagHandlerDelegate();
@@ -115,15 +115,15 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
      * @param ctx the <code>FaceletContext</code> for this view execution
      *
      * @param c the <code>UIComponent</code> of the component represented by this element instance.
-     * 
+     *
      * @throws IOException if thrown by the next {@link FaceletHandler}
-     * 
+     *
      * @throws FaceletException if thrown by the next {@link FaceletHandler}
-     * 
+     *
      * @throws jakarta.faces.FacesException if thrown by the next {@link FaceletHandler}
-     * 
+     *
      * @throws jakarta.el.ELException if thrown by the next {@link FaceletHandler}
-     * 
+     *
      * @since 2.0
      */
 

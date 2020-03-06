@@ -25,7 +25,7 @@ import jakarta.el.ValueExpression;
 public final class IndexedValueExpression extends ValueExpression {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public final class IndexedValueExpression extends ValueExpression {
     private final ValueExpression orig;
 
     /**
-     * 
+     *
      */
     public IndexedValueExpression(ValueExpression orig, int i) {
         this.i = i;
@@ -43,7 +43,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
@@ -58,7 +58,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
@@ -72,7 +72,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#isReadOnly(jakarta.el.ELContext)
      */
     @Override
@@ -87,7 +87,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
@@ -102,7 +102,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
@@ -112,7 +112,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#getExpressionString()
      */
     @Override
@@ -122,7 +122,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#equals(java.lang.Object)
      */
     @Override
@@ -132,7 +132,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#hashCode()
      */
     @Override
@@ -142,7 +142,7 @@ public final class IndexedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.el.Expression#isLiteralText()
      */
     @Override

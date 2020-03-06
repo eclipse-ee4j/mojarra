@@ -36,7 +36,7 @@ public interface NamingContainer {
      * <p class="changed_modified_2_0">
      * The separator character used in component identifiers to demarcate navigation to a child naming container.
      * </p>
-     * 
+     *
      * @deprecated use {@link UINamingContainer#getSeparatorChar(jakarta.faces.context.FacesContext)}
      */
     public static final char SEPARATOR_CHAR = ':';

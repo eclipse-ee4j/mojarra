@@ -24,7 +24,7 @@ import jakarta.faces.view.facelets.TagHandler;
 
 /**
  * Delegate class for TagLibraries
- * 
+ *
  * @see TagLibrary
  * @author Jacob Hookom
  * @version $Id$
@@ -32,7 +32,7 @@ import jakarta.faces.view.facelets.TagHandler;
 interface TagHandlerFactory {
     /**
      * A new TagHandler instantiated with the passed TagConfig
-     * 
+     *
      * @param cfg TagConfiguration information
      * @return a new TagHandler
      * @throws FacesException

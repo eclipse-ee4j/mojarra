@@ -21,7 +21,7 @@ import java.util.*;
 
 /**
  * Implementations of JSTL Functions
- * 
+ *
  * @author Jacob Hookom
  */
 public final class JstlFunction {

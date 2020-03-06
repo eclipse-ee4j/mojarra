@@ -195,7 +195,7 @@ public class RequestStateManager {
      * <p>
      * Remove all request state attributes associated that need to be cleared on change of view.
      * </p>
-     * 
+     *
      * @param ctx the <code>FacesContext</code> for the current request
      */
     public static void clearAttributesOnChangeOfView(FacesContext ctx) {

@@ -76,7 +76,7 @@ public abstract class RenderKit {
      * @param rendererType Renderer type of the requested {@link Renderer} instance
      *
      * @throws NullPointerException if <code>family</code> or <code>rendererType</code> is <code>null</code>
-     * 
+     *
      * @return the {@link Renderer} instance
      */
     public abstract Renderer getRenderer(String family, String rendererType);
@@ -86,7 +86,7 @@ public abstract class RenderKit {
      * Return an instance of {@link ResponseStateManager} to handle rendering technology specific state management
      * decisions.
      * </p>
-     * 
+     *
      * @return the {@link ResponseStateManager}
      */
     public abstract ResponseStateManager getResponseStateManager();
@@ -150,7 +150,7 @@ public abstract class RenderKit {
      * </p>
      *
      * @since 2.0
-     * 
+     *
      * @return Return an <code>Iterator</code> over the component-family entries
      *
      */
@@ -178,9 +178,9 @@ public abstract class RenderKit {
      * @param componentFamily one of the members of the <code>Iterator</code> returned by {@link #getComponentFamilies}.
      *
      * @since 2.0
-     * 
+     *
      * @return an <code>Iterator</code> over the renderer-type
-     * 
+     *
      */
     public Iterator<String> getRendererTypes(String componentFamily) {
 
@@ -218,7 +218,7 @@ public abstract class RenderKit {
      * @throws NullPointerException if <code>type</code> is <code>null</code>
      *
      * @since 2.0
-     * 
+     *
      * @return the {@link ClientBehaviorRenderer} instance
      */
     public ClientBehaviorRenderer getClientBehaviorRenderer(String type) {
@@ -231,7 +231,7 @@ public abstract class RenderKit {
      * </p>
      *
      * @since 2.0
-     * 
+     *
      * @return an <code>Iterator</code> over the {@link ClientBehaviorRenderer}
      */
     public Iterator<String> getClientBehaviorRendererTypes() {

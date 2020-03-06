@@ -38,7 +38,7 @@ public abstract class TagHandlerImpl extends TagHandler {
     /**
      * Searches child handlers, starting at the 'nextHandler' for all instances of the passed type. This process will stop
      * searching a branch if an instance is found.
-     * 
+     *
      * @param type Class type to search for
      * @return iterator over instances of FaceletHandlers of the matching type
      */

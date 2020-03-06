@@ -36,7 +36,7 @@ import jakarta.faces.event.PreValidateEvent;
  * presented to the user, and whose child components represent (among other things) the input fields to be included when
  * the form is submitted.
  * </p>
- * 
+ *
  * <p>
  * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Form</code>". This value can
  * be changed by calling the <code>setRendererType()</code> method.
@@ -106,11 +106,11 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      * <span class="changed_modified_2_1">Returns</span> the current value of the <code>submitted</code> property. The
      * default value is <code>false</code>. See {@link #setSubmitted} for details.
      * </p>
-     * 
+     *
      * <p class="changed_modified_2_1">
      * This property must be kept as a transient property using the {@link UIComponent#getTransientStateHelper}.
      * </p>
-     * 
+     *
      * @return <code>true</code> if the form was submitted, <code>false</code> otherwise.
      */
     public boolean isSubmitted() {
@@ -126,15 +126,15 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      * be called, with <code>false</code> as the argument, during the {@link UIComponent#decode} for this
      * <code>UIForm</code> instance.
      * </p>
-     * 
+     *
      * <p>
      * The value of a <code>UIForm</code>'s submitted property must not be saved as part of its state.
      * </p>
-     * 
+     *
      * <p class="changed_modified_2_1">
      * This property must be kept as a transient property using the {@link UIComponent#getTransientStateHelper}.
      * </p>
-     * 
+     *
      * @param submitted the new value of the submitted flag.
      */
     public void setSubmitted(boolean submitted) {
@@ -143,7 +143,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     /**
      * Is the id prepended.
-     * 
+     *
      * @return <code>true</code> if it is, <code>false</code> otherwise.
      */
     public boolean isPrependId() {

@@ -41,7 +41,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
 
     /**
      * Constructor
-     * 
+     *
      * @param refreshPeriod cache refresh period (in seconds). 0 means 'always refresh', negative value means 'never
      * refresh'
      */

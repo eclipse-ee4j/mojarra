@@ -76,7 +76,7 @@ public @interface FacesValidator {
      * The value of this annotation attribute is taken to be an indicator that flags whether or not the given converter is a
      * CDI managed converter.
      * </p>
-     * 
+     *
      * @return true if CDI managed, false otherwise.
      */
 

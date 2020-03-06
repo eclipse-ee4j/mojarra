@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */

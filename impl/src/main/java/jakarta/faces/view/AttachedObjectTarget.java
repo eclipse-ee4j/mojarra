@@ -28,20 +28,20 @@ import jakarta.faces.component.UIComponent;
  * {@link ViewDeclarationLanguage#getComponentMetadata} for the context in which implementations of this interface are
  * used.
  * </p>
- * 
+ *
  * <p class="changed_added_2_0">
  * The implementation must ensure that this instance is thread safe and may be shared among different component trees.
  * </p>
- * 
+ *
  * <div class="changed_added_2_0">
- * 
+ *
  * <p>
  * Subinterfaces are provided for the common behavioral interfaces: {@link jakarta.faces.component.behavior.Behavior},
  * {@link jakarta.faces.component.ValueHolder}, {@link jakarta.faces.component.EditableValueHolder} and
  * {@link jakarta.faces.component.ActionSource2}. The default VDL implementation must provide a corresponding Facelets
  * tag handler for each of the subinterfaces of this interface.
  * </p>
- * 
+ *
  * </div>
  *
  * @since 2.0
@@ -79,7 +79,7 @@ public interface AttachedObjectTarget {
      *
      *
      * @return the name of the attached object target
-     * 
+     *
      */
     public String getName();
 

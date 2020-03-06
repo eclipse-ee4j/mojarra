@@ -90,7 +90,7 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override

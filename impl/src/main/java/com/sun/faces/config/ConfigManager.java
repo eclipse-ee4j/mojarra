@@ -344,7 +344,7 @@ public class ConfigManager {
 
     /**
      * Execute the Task responsible for finding annotation classes
-     * 
+     *
      */
     private void findAnnotations(DocumentInfo[] facesDocuments, InjectionProvider containerConnector, ServletContext servletContext, InitFacesContext context,
             ExecutorService executor) {
@@ -417,7 +417,7 @@ public class ConfigManager {
     /**
      * Utility method to check if JSF 2.0 Facelets should be disabled, but that doesn't perform <em>the</em> check unless
      * <code>lastFacesConfigInfo</code> is indeed *the* WEB-INF/faces-config.xml
-     * 
+     *
      * @param webConfig configuration for this application
      * @param lastFacesConfigInfo object representing WEB-INF/faces-config.xml
      * @return <code>true</code> if Facelets should be disabled
@@ -432,7 +432,7 @@ public class ConfigManager {
 
     /**
      * Utility method to check if JSF 2.0 Facelets should be disabled.
-     * 
+     *
      * <p>
      * If it's not explicitly disabled by the context init parameter, then check the version of the WEB-INF/faces-config.xml
      * document. If the version is less than 2.0, then override the default value for the context init parameter so that
@@ -539,7 +539,7 @@ public class ConfigManager {
 
     /**
      * This method will remove any information about the application.
-     * 
+     *
      * @param facesContext the <code>FacesContext</code> for the application that needs to be removed
      * @param servletContext the <code>ServletContext</code> for the application that needs to be removed
      */

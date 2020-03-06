@@ -171,7 +171,7 @@ public class Util {
      * Convenience method for determining if the request associated with the specified <code>FacesContext</code> is a
      * PortletRequest submitted by the JSR-301 bridge.
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> associated with the request.
      */
     public static boolean isPortletRequest(FacesContext context) {
@@ -199,7 +199,7 @@ public class Util {
      * If <code>binding</code> is not <code>null</code> and the evaluation result is not <code>null</code> return that
      * instance. Otherwise try to instantiate an instances based on <code>type</code>.
      * </p>
-     * 
+     *
      * @param type the <code>Listener</code> type
      * @param binding a <code>ValueExpression</code> which resolves to a <code>Listener</code> instance
      * @return a <code>Listener</code> instance based off the provided <code>type</code> and <binding>
@@ -530,7 +530,7 @@ public class Util {
 
     /**
      * Returns true if all values are empty, false if at least one value is not empty.
-     * 
+     *
      * @param values the values to be checked on emptiness
      * @return True if all values are empty, false otherwise
      */
@@ -582,7 +582,7 @@ public class Util {
 
     /**
      * Returns <code>true</code> if the given object equals one of the given objects.
-     * 
+     *
      * @param <T> The generic object type.
      * @param object The object to be checked if it equals one of the given objects.
      * @param objects The argument list of objects to be tested for equality.
@@ -632,10 +632,10 @@ public class Util {
 
     /**
      * Returns <code>true</code> if the given string starts with one of the given prefixes.
-     * 
+     *
      * @param string The object to be checked if it starts with one of the given prefixes.
      * @param prefixes The argument list of prefixes to be checked
-     * 
+     *
      * @return <code>true</code> if the given string starts with one of the given prefixes.
      */
     public static boolean startsWithOneOf(String string, String... prefixes) {
@@ -931,7 +931,7 @@ public class Util {
      * A slightly more efficient version of <code>String.split()</code> which caches the <code>Pattern</code>s in an LRUMap
      * instead of creating a new <code>Pattern</code> on each invocation.
      * </p>
-     * 
+     *
      * @param appMap the Application Map
      * @param toSplit the string to split
      * @param regex the regex used for splitting
@@ -966,7 +966,7 @@ public class Util {
      * If no mapping can be determined, it most likely means that this particular request wasn't dispatched through the
      * {@link jakarta.faces.webapp.FacesServlet}.
      * <p>
-     * 
+     *
      * <b>NOTE:</b> This method was supposed to be replaced with the "mapping API" from Servlet 4, but this has not been
      * implemented in time for JSF 2.3 to depend on.
      *
@@ -1077,7 +1077,7 @@ public class Util {
      * resource, is an exact mapping.
      * <p>
      * This should be replaced by the Servlet 4 mapping API when/if that becomes available and JSF/Mojarra can depend on it.
-     * 
+     *
      * @param viewId the view id to test
      * @return true if the FacesServlet is exact mapped to the given viewId, false otherwise
      */
@@ -1092,7 +1092,7 @@ public class Util {
      * resource, is an exact mapping.
      * <p>
      * This should be replaced by the Servlet 4 mapping API when/if that becomes available and JSF/Mojarra can depend on it.
-     * 
+     *
      * @param externalContext the external context for this request
      * @param resource the resource to test
      * @return true if the FacesServlet is exact mapped to the given resource, false otherwise
@@ -1172,7 +1172,7 @@ public class Util {
      * <p>
      * Flag the specified {@link UIViewRoot} as populated.
      * </p>
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param viewToRender the {@link UIViewRoot} to mark as populated
      */
@@ -1250,7 +1250,7 @@ public class Util {
 
     /**
      * If view root is instance of naming container, return its container client id, suffixed with separator character.
-     * 
+     *
      * @param context Involved faces context.
      * @return The naming container prefix, or an empty string if the view root is not an instance of naming container.
      */
@@ -1462,7 +1462,7 @@ public class Util {
 
     /**
      * Get the CDI bean manager.
-     * 
+     *
      * @param facesContext the Faces context to consult
      * @return the CDI bean manager.
      */
@@ -1501,7 +1501,7 @@ public class Util {
 
     /**
      * Is CDI available.
-     * 
+     *
      * @param facesContext the Faces context to consult.
      * @return true if available, false otherwise.
      */
@@ -1526,7 +1526,7 @@ public class Util {
 
     /**
      * Is CDI available (ServletContext variant)
-     * 
+     *
      * @param servletContext the servlet context.
      * @return true if available, false otherwise.
      */
@@ -1549,7 +1549,7 @@ public class Util {
 
     /**
      * Is CDI 1.1 or later
-     * 
+     *
      * @param facesContext the Faces context.
      * @return true if CDI 1.1 or later, false otherwise.
      */

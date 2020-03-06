@@ -40,7 +40,7 @@ public interface ActionListener extends FacesListener {
      * to
      * {@link jakarta.faces.application.NavigationHandler#handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String, java.lang.String)}.
      * </p>
-     * 
+     *
      */
     public static final String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
 

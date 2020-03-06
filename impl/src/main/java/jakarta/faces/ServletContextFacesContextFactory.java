@@ -30,17 +30,17 @@ import jakarta.faces.lifecycle.Lifecycle;
 
 /*
  * Bug 20458755
- 
+
  * This class provides a utility method to look up the current FacesContext
  * without performing the additional check introduced in FacesContext.getCurrentInstance()
  * by this bug fix.
 
- * This class also is a FacesContextFactory implementation that ignores 
+ * This class also is a FacesContextFactory implementation that ignores
  * all arguments and is able to look up the FacesContext corresponding
  * to the ServletContext corresponding to the current Thread context ClassLoader.
 
  * This FacesContextFactory implementation is used by FacesContext.getCurrentInstance()
- * so that the init FacesContext can be correctly looked up regardless of 
+ * so that the init FacesContext can be correctly looked up regardless of
  * thread re-use.
  */
 final class ServletContextFacesContextFactory extends FacesContextFactory {

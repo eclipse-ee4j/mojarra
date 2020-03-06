@@ -21,7 +21,7 @@ package jakarta.faces.view.facelets;
  * <p class="changed_added_2_0">
  * An Exception caused by a {@link Tag}
  * </p>
- * 
+ *
  * @since 2.0
  */
 public final class TagException extends FaceletException {
@@ -32,7 +32,7 @@ public final class TagException extends FaceletException {
      * <p class="changed_added_2_0">
      * Wrap the argument <code>tag</code> so the exception can reference its information.
      * </p>
-     * 
+     *
      * @param tag the <code>Tag</code> that caused this exception.
      */
     public TagException(Tag tag) {
@@ -43,7 +43,7 @@ public final class TagException extends FaceletException {
      * <p class="changed_added_2_0">
      * Wrap the argument <code>tag</code> so the exception can reference its information.
      * </p>
-     * 
+     *
      * @param tag the <code>Tag</code> that caused this exception.
      * @param message a message describing the exception
      */
@@ -55,7 +55,7 @@ public final class TagException extends FaceletException {
      * <p class="changed_added_2_0">
      * Wrap the argument <code>tag</code> so the exception can reference its information.
      * </p>
-     * 
+     *
      * @param tag the <code>Tag</code> that caused this exception.
      * @param cause the root cause for this exception.
      */
@@ -67,7 +67,7 @@ public final class TagException extends FaceletException {
      * <p class="changed_added_2_0">
      * Wrap the argument <code>tag</code> so the exception can reference its information.
      * </p>
-     * 
+     *
      * @param tag the <code>Tag</code> that caused this exception.
      * @param message a message describing the exception
      * @param cause the root cause for this exception.

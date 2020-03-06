@@ -43,17 +43,17 @@ public class RequiredValidator implements Validator {
     public static final String VALIDATOR_ID = "jakarta.faces.Required";
 
     /**
-     * 
+     *
      * <p>
      * Verify that the converted object value is not null.
      * </p>
-     * 
+     *
      * @param context {@inheritDoc}
      * @param component {@inheritDoc}
      * @param value {@inheritDoc}
-     * 
+     *
      * @throws ValidatorException {@inheritDoc}
-     * 
+     *
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) {

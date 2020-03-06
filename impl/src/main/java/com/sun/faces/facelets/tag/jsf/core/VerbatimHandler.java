@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 /**
  * Handler for f:verbatim
- * 
+ *
  * @author Adam Winer
  */
 public final class VerbatimHandler extends ComponentHandler {

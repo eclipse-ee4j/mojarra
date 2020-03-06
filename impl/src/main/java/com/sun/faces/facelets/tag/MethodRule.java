@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
 
 /**
  * Optional Rule for binding Method[Binding|Expression] properties
- * 
+ *
  * @author Mike Kienenberger
  * @author Jacob Hookom
  */

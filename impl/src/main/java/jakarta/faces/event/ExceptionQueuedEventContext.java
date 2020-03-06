@@ -95,7 +95,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      * @param thrown the <code>Throwable</code> that is the context for this <code>ExceptionQueuedEventContext</code>
      * instance.
      * @param component the {@link UIComponent} instance to which this <code>ExceptionQueuedEventContext</code> pertains
-     * 
+     *
      */
     public ExceptionQueuedEventContext(FacesContext context, Throwable thrown, UIComponent component) {
 
@@ -110,7 +110,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      * </p>
      *
      * @param context {@link FacesContext} for the current request
-     * 
+     *
      * @param thrown the <code>Throwable</code> that is the context for this <code>ExceptionQueuedEventContext</code>
      * instance.
      *
@@ -133,7 +133,7 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      * <p class="changed_added_2_0">
      * The {@link FacesContext} for this request.
      * </p>
-     * 
+     *
      * @return the {@link FacesContext} used to create this <code>ExceptionQueuedEventContext</code> instance.
      */
     public FacesContext getContext() {

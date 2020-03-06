@@ -24,7 +24,7 @@ package jakarta.faces.view.facelets;
  * attributes</a> to Facelets. See the <a href="#TagHandler(jakarta.faces.view.facelets.TagConfig)">constructor</a>
  * documentation for more details.
  * </p>
- * 
+ *
  *
  * @since 2.0
  */
@@ -75,7 +75,7 @@ public abstract class TagHandler implements FaceletHandler {
 
     /**
      * Utility method for fetching the appropriate TagAttribute
-     * 
+     *
      * @param localName name of attribute
      * @return TagAttribute if found, otherwise null
      */
@@ -85,7 +85,7 @@ public abstract class TagHandler implements FaceletHandler {
 
     /**
      * Utility method for fetching a required TagAttribute
-     * 
+     *
      * @param localName name of the attribute
      * @return TagAttribute if found, otherwise error
      * @throws TagException if the attribute was not found

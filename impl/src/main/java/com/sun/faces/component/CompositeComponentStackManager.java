@@ -156,7 +156,7 @@ public class CompositeComponentStackManager {
 
     /**
      * @param stackType the stack to push to the component to
-     * 
+     *
      * @return the top-level component from the specified stack without removing the element
      */
     public UIComponent peek(StackType stackType) {

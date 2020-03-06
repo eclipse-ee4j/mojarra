@@ -162,7 +162,7 @@ public class ResourceImpl extends Resource implements Externalizable {
      * {@link ResourceHandler#isResourceRequest(jakarta.faces.context.FacesContext)} returns <code>true</code>). If we're
      * not servicing a resource request, an empty Map will be returned and the values added are effectively thrown away.
      * </p>
-     * 
+     *
      * @see jakarta.faces.application.Resource#getResponseHeaders()
      */
     @Override

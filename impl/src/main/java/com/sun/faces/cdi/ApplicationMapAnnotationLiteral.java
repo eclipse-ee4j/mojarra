@@ -22,7 +22,7 @@ import jakarta.faces.annotation.ApplicationMap;
 
 /**
  * An annotation literal for <code>@ApplicationMap.</code>
- * 
+ *
  * @since 2.3
  * @see ApplicationMap
  */

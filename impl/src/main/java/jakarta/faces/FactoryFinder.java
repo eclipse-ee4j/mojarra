@@ -25,16 +25,16 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  * specified in the Jakarta Server Faces APIs. For a given factory class name, a corresponding implementation class is
  * searched for based on the following algorithm. Items are listed in order of decreasing search precedence:
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * If the Jakarta Server Faces configuration file bundled into the <code>WEB-INF</code> directory of the webapp contains
  * a <code>factory</code> entry of the given factory class name, that factory is used.
  * <p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * If the Jakarta Server Faces configuration files named by the <code>jakarta.faces.CONFIG_FILES</code>
@@ -42,7 +42,7 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  * those injectionProvider are used, with the last one taking precedence.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * If there are any Jakarta Server Faces configuration files bundled into the <code>META-INF</code> directory of any
@@ -50,7 +50,7 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  * name in those files are used, with the last one taking precedence.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * If a <code>META-INF/services/{factory-class-name}</code> resource is visible to the web application class loader for
@@ -58,15 +58,15 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  * line is read and assumed to be the name of the factory implementation class to use.
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * If none of the above steps yield a match, the Jakarta Server Faces implementation specific class is used.
  * </p>
  * </li>
- * 
+ *
  * </ul>
- * 
+ *
  * <p>
  * If any of the injectionProvider found on any of the steps above happen to have a one-argument constructor, with
  * argument the type being the abstract factory class, that constructor is invoked, and the previous match is passed to
@@ -78,12 +78,12 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  * constructor, passing the implementation of <code>FacesContextFactory</code> provided by the Jakarta Server Faces
  * implementation.
  * </p>
- * 
+ *
  * <p>
  * If a Factory implementation does not provide a proper one-argument constructor, it must provide a zero-arguments
  * constructor in order to be successfully instantiated.
  * </p>
- * 
+ *
  * <p>
  * Once the name of the factory implementation class is located, the web application class loader for the calling
  * application is requested to load this class, and a corresponding instance of the class will be created. A side effect
@@ -115,7 +115,7 @@ public final class FactoryFinder {
      * <p>
      * The property name for the {@link jakarta.faces.lifecycle.ClientWindowFactory} class name.
      * </p>
-     * 
+     *
      * @since 2.2
      */
     public final static String CLIENT_WINDOW_FACTORY = "jakarta.faces.lifecycle.ClientWindowFactory";

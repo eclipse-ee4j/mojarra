@@ -81,7 +81,7 @@ import java.lang.annotation.Inherited;
  * injection, scopes and naming from the CDI specification. Note that the <em>eager</em> attribute for application
  * scoped beans is replaced specifically by observing the {@code jakarta.enterprise.context.Initialized} event for
  * {@code jakarta.enterprise.context.ApplicationScoped}. See 6.7.3 of the CDI spec for further details.
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

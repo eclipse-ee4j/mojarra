@@ -40,7 +40,7 @@ public class FullVisitContext extends VisitContext {
 
     /**
      * Creates a FullVisitorContext instance.
-     * 
+     *
      * @param facesContext the FacesContext for the current request
      * @throws NullPointerException if {@code facesContext} is {@code null}
      */

@@ -28,16 +28,16 @@ import jakarta.faces.context.FacesContext;
  * invoke any <code>PostConstruct</code> annotated methods on any of the beans in this scope as appropriate. The
  * following code can be used as a template for publishing such an event.
  * </p>
- * 
+ *
  * <pre>
  * <code>
 
-Map&lt;String, Object&gt; myScope = getMyScope(); 
+Map&lt;String, Object&gt; myScope = getMyScope();
 ScopeContext scopeContext = new ScopeContext("myScope", myScope);
 applicationPublishEvent(PostConstructCustomScopeEvent.class, scopeContext);
 </code>
  * </pre>
- * 
+ *
  * @since 2.0
  */
 public class PostConstructCustomScopeEvent extends SystemEvent {
@@ -51,11 +51,11 @@ public class PostConstructCustomScopeEvent extends SystemEvent {
      * An instance of this event indicates that the custom scope enclosed within the argument <code>scopeContext</code> was
      * just created.
      * </p>
-     * 
+     *
      * @param scopeContext A structure that contains the name of the scope and the scope itself exposed as a
      * <code>Map&lt;String,
      * Object&gt;</code>.
-     * 
+     *
      */
     public PostConstructCustomScopeEvent(ScopeContext scopeContext) {
 
@@ -68,7 +68,7 @@ public class PostConstructCustomScopeEvent extends SystemEvent {
      * An instance of this event indicates that the custom scope enclosed within the argument <code>scopeContext</code> was
      * just created.
      * </p>
-     * 
+     *
      * @param facesContext the Faces context.
      * @param scopeContext A structure that contains the name of the scope and the scope itself exposed as a
      * <code>Map&lt;String,
@@ -84,7 +84,7 @@ public class PostConstructCustomScopeEvent extends SystemEvent {
      * <p class="changed_added_2_0">
      * Return the <code>ScopeContext</code> for this event.
      * </p>
-     * 
+     *
      * @return the scope context.
      */
     public ScopeContext getContext() {

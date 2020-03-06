@@ -61,7 +61,7 @@ import java.util.Locale;
  * parsed. See the JavaDocs for the <code>setParseIntegerOnly()</code> method of the <code>java.text.NumberFormat</code>
  * class for more information.</li>
  * </ul>
- * 
+ *
  * <p>
  * The <code>getAsString()</code> method expects a value of type <code>java.lang.Number</code> (or a subclass), and
  * creates a formatted String according to the following algorithm:
@@ -226,7 +226,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * Return the currency symbol used by <code>getAsString()</code> with a <code>type</code> of <code>currency</code>. If
      * not set, the value used will be based on the formatting <code>Locale</code>.
      * </p>
-     * 
+     *
      * @return the currency symbol
      */
     public String getCurrencySymbol() {
@@ -282,7 +282,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * Return <code>true</code> if only the integer portion of the given value should be returned from
      * <code>getAsObject()</code>. If not modified, the default value is <code>false</code>.
      * </p>
-     * 
+     *
      * @return whether or not this is integer only
      */
     public boolean isIntegerOnly() {
@@ -366,7 +366,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * <p>
      * Return the minimum number of digits <code>getAsString()</code> should render in the fraction portion of the result.
      * </p>
-     * 
+     *
      * @return the min fraction digits
      */
     public int getMinFractionDigits() {
@@ -680,7 +680,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * <p>
      * If only "currencyCode" is given, it is used as a currency symbol if java.util.Currency is not defined.
      * </p>
-     * 
+     *
      * <pre>
      * Example:
      * <p/>

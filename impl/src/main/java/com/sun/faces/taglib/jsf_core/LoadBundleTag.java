@@ -82,7 +82,7 @@ public class LoadBundleTag extends TagSupport {
      * <p>
      * Set the base name of the <code>ResourceBundle</code> to be loaded.
      * </p>
-     * 
+     *
      * @param basename the ValueExpression which will resolve the basename
      */
     public void setBasename(ValueExpression basename) {
@@ -96,7 +96,7 @@ public class LoadBundleTag extends TagSupport {
      * Set the name of the attribute in the request scope under which to store the <code>ResourceBundle</code>
      * <code>Map</code>.
      * </p>
-     * 
+     *
      * @param var the variable name to export the loaded ResourceBundle to
      */
     public void setVar(String var) {

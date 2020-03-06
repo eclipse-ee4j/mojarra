@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the chain of responsibility pattern to stop
  * searching as soon as one of the children handles the requested method.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -57,7 +57,7 @@ public final class CompositeTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#containsNamespace(java.lang.String)
      */
     @Override
@@ -122,7 +122,7 @@ public final class CompositeTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
      */
     @Override
@@ -137,7 +137,7 @@ public final class CompositeTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String,
      * com.sun.facelets.tag.TagConfig)
      */
@@ -153,7 +153,7 @@ public final class CompositeTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#containsFunction(java.lang.String, java.lang.String)
      */
     @Override
@@ -168,7 +168,7 @@ public final class CompositeTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#createFunction(java.lang.String, java.lang.String)
      */
     @Override

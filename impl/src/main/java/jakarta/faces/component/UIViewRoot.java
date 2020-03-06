@@ -76,90 +76,90 @@ import jakarta.faces.webapp.FacesServlet;
  * <p>
  * For each of the following lifecycle phase methods:
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * {@link #processDecodes}
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * {@link #processValidators}
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * {@link #processUpdates}
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * {@link #processApplication}
  * </p>
  * </li>
- * 
+ *
  * <li>
  * <p>
  * RenderResponse, via {@link #encodeBegin} and {@link #encodeEnd}
  * </p>
  * </li>
- * 
+ *
  * </ul>
- * 
+ *
  * <p>
  * Take the following action regarding <code>PhaseListener</code>s.
  * </p>
- * 
+ *
  * <blockquote>
- * 
+ *
  * <p>
  * Initialize a state flag to <code>false</code>.
  * </p>
- * 
+ *
  * <p>
  * If {@link #getBeforePhaseListener} returns non-<code>null</code>, invoke the listener, passing in the correct
  * corresponding {@link PhaseId} for this phase.
  * </p>
- * 
+ *
  * <p>
  * Upon return from the listener, call {@link FacesContext#getResponseComplete} and
  * {@link FacesContext#getRenderResponse}. If either return <code>true</code> set the internal state flag to
  * <code>true</code>.
  * </p>
- * 
+ *
  * <p>
  * If or one or more listeners have been added by a call to {@link #addPhaseListener}, invoke the
  * <code>beforePhase</code> method on each one whose {@link PhaseListener#getPhaseId} matches the current phaseId,
  * passing in the same <code>PhaseId</code> as in the previous step.
  * </p>
- * 
+ *
  * <p>
  * Upon return from each listener, call {@link FacesContext#getResponseComplete} and
  * {@link FacesContext#getRenderResponse}. If either return <code>true</code> set the internal state flag to
  * <code>true</code>.
  * </p>
- * 
- * 
+ *
+ *
  * <p>
  * Execute any processing for this phase if the internal state flag was not set.
  * </p>
- * 
+ *
  * <p>
  * If {@link #getAfterPhaseListener} returns non-<code>null</code>, invoke the listener, passing in the correct
  * corresponding {@link PhaseId} for this phase.
  * </p>
- * 
+ *
  * <p>
  * If or one or more listeners have been added by a call to {@link #addPhaseListener}, invoke the
  * <code>afterPhase</code> method on each one whose {@link PhaseListener#getPhaseId} matches the current phaseId,
  * passing in the same <code>PhaseId</code> as in the previous step.
  * </p>
- * 
+ *
  * </blockquote>
  */
 
@@ -199,7 +199,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * exceptions thrown by {@link PhaseListener}s installed on the {@code UIViewRoot} are queued to the
      * {@link jakarta.faces.context.ExceptionHandler} instead of being logged and swallowed.
      * </p>
-     * 
+     *
      * @since 2.3
      */
     public static final String VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME = "jakarta.faces.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS";
@@ -322,7 +322,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * explicitly set, as in {@link jakarta.faces.application.ViewHandler#createView}, the returned value will be
      * <code>null.</code>
      * </p>
-     * 
+     *
      * @return the render kit id, or <code>null</code>.
      */
     public String getRenderKitId() {
@@ -351,7 +351,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <p>
      * Return the view identifier for this view.
      * </p>
-     * 
+     *
      * @return the view id.
      */
     public String getViewId() {
@@ -395,7 +395,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <span class="changed_modified_2_0_rev_a">except {@link PhaseId#RESTORE_VIEW}. Unlike a true {@link PhaseListener},
      * this approach doesn't allow for only receiving {@link PhaseEvent}s for a given phase.</span>
      * </p>
-     * 
+     *
      * <p>
      * The method must conform to the signature of {@link PhaseListener#beforePhase}.
      * </p>
@@ -443,7 +443,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <p>
      * If the argument <code>toRemove</code> is in the list of {@link PhaseListener}s for this instance, it must be removed.
      * </p>
-     * 
+     *
      * @param toRemove the {@link PhaseListener} to remove.
      *
      * @since 1.2
@@ -469,7 +469,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     }
 
     /**
-     * 
+     *
      * <p class="changed_added_2_0">
      * Return an unmodifiable list of the <code>PhaseListener</code> instances attached to this <code>UIViewRoot</code>
      * instance.
@@ -497,10 +497,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      *
      * <div class="changed_added_2_0">
      * <p>
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param componentResource The {@link UIComponent} representing a {@link jakarta.faces.application.Resource} instance
-     * 
+     *
      * </p>
      * </div>
      *
@@ -517,13 +517,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * The <code>component</code> must be added using the following algorithm:
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * If the <code>target</code> argument is <code>null</code>, look for a <code>target</code> attribute on the
@@ -531,7 +531,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <code>head</code>
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Call {@link #getComponentResources} to obtain the child list for the given target.
@@ -544,17 +544,17 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * remove the old resource.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Add the <code>component</code> resource to the list.
      * </p>
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * </div>
-     * 
+     *
      * <div class="changed_added_2_3">
      * <p>
      * The resource <code>Renderer</code> must ensure of the following:
@@ -564,7 +564,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <li>After rendering, call {@link ResourceHandler#markResourceRendered(FacesContext, String, String)}.</li>
      * </ul>
      * </div>
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param componentResource The {@link UIComponent} representing a {@link jakarta.faces.application.Resource} instance
      * @param target The name of the facet for which the {@link UIComponent} will be added
@@ -607,28 +607,28 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <ul>
      * <li>Locate the facet for the <code>component</code> by calling <code>getFacet()</code> using <code>target</code> as
      * the argument.</li>
-     * 
+     *
      * <li>If the facet is not found, create the facet by calling <code>context.getApplication().createComponent().</code>
      * <span class="changed_modified_2_0_rev_a">The argument to this method must refer to a component that extends
      * {@link UIPanel} and overrides the <code>encodeAll()</code> method to take no action. This is necessary to prevent
      * component resources from being inadvertently rendered.</span>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li class="changed_modified_2_1">Set the <code>id</code> of the facet to be a string created by prepending the
      * literal string &#8220;<code>jakarta_faces_location_</code>&#8221; (without the quotes) to the value of the
      * <code>target</code> argument</li>
-     * 
+     *
      * <li>Add the facet to the facets <code>Map</code> using <code>target</code> as the key</li>
      * </ul>
      * <li>return the children of the facet</li>
      * </ul>
-     * 
+     *
      * </div>
      *
      * @param context the Faces context.
      * @param target The name of the facet for which the components will be returned.
-     * 
+     *
      * @return A <code>List</code> of {@link UIComponent} children of the facet with the name <code>target</code>. If no
      * children are found for the facet, return <code>Collections.emptyList()</code>.
      *
@@ -653,14 +653,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <code>component</code> in the <code>List</code> is assumed to represent a resource instance. The ordering is the same
      * as the resources would appear in the component tree.
      * </p>
-     * 
+     *
      * @param context The Faces context.
-     * 
+     *
      * @return A <code>List</code> of all {@link UIComponent} resources of all supported targets. If no resources are found,
      * return an empty <code>List</code>.
-     * 
+     *
      * @throws NullPointerException If <code>context</code> is <code>null</code>.
-     * 
+     *
      * @since 2.3
      */
     public List<UIComponent> getComponentResources(FacesContext context) {
@@ -681,13 +681,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      *
      * <div class="changed_added_2_0">
      * <p>
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param componentResource The {@link UIComponent} representing a {@link jakarta.faces.application.Resource} instance
      *
      * </p>
      * </div>
-     * 
+     *
      * @since 2.0
      */
     public void removeComponentResource(FacesContext context, UIComponent componentResource) {
@@ -712,7 +712,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <li>Remove the <code>component</code> resource from the child list.</li>
      * </ul>
      * </div>
-     * 
+     *
      * @param context {@link FacesContext} for the current request
      * @param componentResource The {@link UIComponent} representing a {@link jakarta.faces.application.Resource} instance
      * @param target The name of the facet for which the {@link UIComponent} will be added
@@ -785,7 +785,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      *
      * @param context {@link FacesContext} for the current request
      * @param phaseId {@link PhaseId} of the current phase
-     * 
+     *
      * @since 2.0
      */
     public void broadcastEvents(FacesContext context, PhaseId phaseId) {
@@ -910,7 +910,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * argument event must be an instance of PostRestoreStateEvent whose component property is the current component in the
      * traversal. --></a>
      * </p>
-     * 
+     *
      * @param context the <code>FacesContext</code> for this requets
      * @param state the opaque state object obtained from the {@link jakarta.faces.application.StateManager}
      */
@@ -1005,9 +1005,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * Visit the clientIds and, if the component is an instance of {@link EditableValueHolder}, call its
      * {@link EditableValueHolder#resetValue} method. Use {@link #visitTree} to do the visiting.
      * </p>
-     * 
+     *
      * @since 2.2
-     * 
+     *
      * @param context the {@link FacesContext} for the request we are processing.
      * @param clientIds The client ids to be visited, on which the described action will be taken.
      */
@@ -1073,7 +1073,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <li>{@link PartialViewContext#PARTIAL_RENDER_PARAM_NAME}</li>
      * <li>{@link PartialViewContext#RESET_VALUES_PARAM_NAME}</li>
      * </ul>
-     * 
+     *
      * @since 2.0
      */
     @Override
@@ -1356,7 +1356,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * with UNIQUE_ID_PREFIX, and will be unique within <span class="changed_added_2_2">the non-{@link NamingContainer}
      * child sub-trees of</span> this UIViewRoot.
      * </p>
-     * 
+     *
      * @return the identifier.
      */
     public String createUniqueId() {
@@ -1560,19 +1560,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * {@link PreDestroyViewMapEvent}<code>.class</code> as the first argument and this <code>UIViewRoot</code> instance as
      * the second argument.
      * </p>
-     * 
+     *
      * <p class="changed_modified_2_0_rev_a">
      * Depending upon application configuration, objects stored in the view map may need to be <code>Serializable</code>. In
      * general, it is a good idea to ensure that any objects stored in the view map are <code>Serializable</code>.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_2">
      * For reasons made clear in {@link jakarta.faces.view.ViewScoped}, this map must ultimately be stored in the session.
      * For this reason, a {@code true} value for the {@code create} argument will force the session to be created with a
      * call to {@link jakarta.faces.context.ExternalContext#getSession(boolean)}.
-     * 
+     *
      * </p>
-     * 
+     *
      * <p>
      * See {@link FacesContext#setViewRoot} for the specification of when the <code>clear()</code> method must be called.
      * </p>
@@ -1608,7 +1608,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * </p>
      *
      * @param systemEvent the <code>Class</code> of event for which <code>listener</code> must be fired.
-     * 
+     *
      * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} whose
      * {@link jakarta.faces.event.SystemEventListener#processEvent} method must be called when events of type
      * <code>systemEventClass</code> are fired.
@@ -1677,13 +1677,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * </p>
      *
      * @param systemEvent the <code>Class</code> of event for which the listeners must be returned.
-     * 
+     *
      * @return Collection of view listeners.
-     * 
+     *
      * @throws NullPointerException if argument <code>systemEvent</code> is <code>null</code>.
      *
      * @since 2.0
-     * 
+     *
      */
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent) {
 
@@ -1723,14 +1723,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     }
 
     /**
-     * 
+     *
      * <p class="changed_added_2_2">
      * Restore ViewScope state. This is needed to allow the use of view scoped beans for EL-expressions in the template from
      * which the component tree is built. For example: <code>&lt;ui:include
      * src="#{viewScopedBean.includeFileName}"/&gt;</code>.
      * </p>
-     * 
-     * 
+     *
+     *
      * @param context current FacesContext.
      * @param state the state object.
      */

@@ -61,26 +61,26 @@ import jakarta.faces.event.PreRemoveFlashValueEvent;
  * <p>
  * How this implementation works
  * </p>
- * 
+ *
  * <p>
  * This class is an application singleton. It has one ivar, innerMap. Entries are added to and removed from this map as
  * needed according to how the flash scope is defined in the spec. This implementation never touches the session, nor
  * does it cause the session to be created.
  * </p>
- * 
+ *
  * <p>
  * Most of the hairy logic is encapsulated with in the inner class PreviousNextFlashInfoManager. An instance of this
  * class is obtained by calling one of the variants of getCurrentFlashManager(). When the instance is no longer needed
  * for this request, call releaseCurrentFlashManager().
  * </p>
- * 
+ *
  * <p>
  * Two very important methods are getPhaseMapForWriting() and getPhaseMapForReading(). These methods are the basis for
  * the Map implementation methods. Methods that need to write to the map use getPhaseMapForWriting(), those that need to
  * read use getPhaseMapForReading(). These methods allow for the laziness that allows us to only incur a cost when the
  * flash is actually written to.
  * </p>
- * 
+ *
  * <p>
  * The operation of this class is intimately tied to the request processing lifecycle. Let's break down every run thru
  * the request processing lifecycle into two parts called "previous" and "next". We use the names "previous" and "next"
@@ -105,7 +105,7 @@ public class ELFlash extends Flash {
      * Values are the actual Map instances that back the actual Map methods on this class. All writes to and reads from this
      * map are done by the {@link PreviousNextFlashInfoManager} inner class.
      * </p>
-     * 
+     *
      */
     private Map<String, Map<String, Object>> flashInnerMap = null;
 
@@ -246,7 +246,7 @@ public class ELFlash extends Flash {
      * <code>FacesContext.getCurrentInstance()</code> and then calls the overloaded <code>getFlash()</code> that takes a
      * <code>FacesContext</code> with it.
      * </p>
-     * 
+     *
      * @return The flash <code>Map</code> for this session.
      */
 
@@ -261,7 +261,7 @@ public class ELFlash extends Flash {
      *
      * @param create <code>true</code> to create a new instance for this request if necessary; <code>false</code> to return
      * <code>null</code> if there's no instance in the current <code>session</code>.
-     * 
+     *
      * @return The flash <code>Map</code> for this session.
      */
 
@@ -618,23 +618,23 @@ public class ELFlash extends Flash {
      * to the call to {@link #releaseCurrentFlashManager}. After this call, any calls to {@link #getCurrentFlashManager}
      * will return null.
      * </p>
-     * 
+     *
      * <p>
      * Scenario 1: normal request ending. This will be called after the RENDER_RESPONSE phase executes.
      * outgoingResponseIsRedirect will be false.
      * </p>
-     * 
+     *
      * <p>
      * Scenario 2: navigationHandler asks extContext for redirect. In this case, extContext calls this method directly,
      * outgoingResponseIsRedirect will be true.
      * </p>
-     * 
+     *
      * <p>
      * Scenario 3: extContext.flushBuffer(): As far as I can tell, this is only called in the JSP case, but it's good to
      * call it from there anyway, because we need to write our cookie before the response is committed.
      * outgoingResponseIsRedirect is false.
      * </p>
-     * 
+     *
      * <p>
      * Scenario 4: after rendering the response in JSP, but before the buffer is flushed. In the JSP case, I've found this
      * necessary because the call to extContext.flushBuffer() is too late, the response has already been committed by that
@@ -1147,20 +1147,20 @@ public class ELFlash extends Flash {
      * map. This class manages the complexities of dealing with these two maps, and does so by relying on another inner
      * class, FlashInfo.
      * </p>
-     * 
+     *
      * <p>
      * The "next" map is used in only one case, which happens to be a VERY common case: write operations to the flash that
      * happen during render response.
      * </p>
-     * 
+     *
      * <p>
      * The "previous" map is used for write operations that happen before render response, and for all read operations.
      * </p>
-     * 
+     *
      * <p>
      * This class knows how to "decode" its state from an incoming cookie, written by a previous call to "encode".
      * </p>
-     * 
+     *
      * <p>
      * See the docs for FlashInfo for more information.
      * </p>
@@ -1294,7 +1294,7 @@ public class ELFlash extends Flash {
          * block to prevent any errors from malformed cookies from polluting the system. When any error occurs, the flash is not
          * usable for this request, and a nice error message is logged.
          * </p>
-         * 
+         *
          * <p>
          * This method is where the LifetimeMarker is incremented, UNLESS the incoming request is the GET after the REDIRECT
          * after POST, in which case we don't increment it because the system will expire the entries in the doLastPhaseActions.

@@ -35,7 +35,7 @@ import jakarta.enterprise.inject.spi.ProcessProducer;
 import jakarta.enterprise.inject.spi.Producer;
 
 /*
- *  This is the hook into the bootstrapping of the entire feature.  
+ *  This is the hook into the bootstrapping of the entire feature.
  *
  *  Use the CDI anntation scanning feature to find all beans annotated
  *  with @FlowDefinition.  The scanning work done here is leveraged
@@ -56,7 +56,7 @@ import jakarta.enterprise.inject.spi.Producer;
  *  @FlowDefinition { definingClass, flow-id, defining-document-id }.  A
  *  data structure containing all the tuples is passed to
  *  FlowDiscoveryCDIContext.
- * 
+ *
  */
 
 public class FlowDiscoveryCDIExtension implements Extension {

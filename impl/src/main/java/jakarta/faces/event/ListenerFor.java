@@ -47,60 +47,60 @@ import java.lang.annotation.Inherited;
  * <code>UIComponent</code> instance is returned from <code>createComponent()</code>. The annotation processing must
  * proceed according to an algorithm semantically equivalent to the following.
  * </p>
- * 
+ *
  * <ul>
- * 
+ *
  * <li>
  * <p>
  * If this annotation is not present on the class in question, no action must be taken.
  * </p>
- * 
+ *
  * <p>
  * Determine the "target" on which to call <code>subscribeToEvent</code>.
  * </p>
- * 
+ *
  * <p>
  * If the class to which this annotation is attached implements {@link ComponentSystemEventListener} and is a
  * <code>UIComponent</code> instance, "target" is the <code>UIComponent</code> instance.
  * </p>
- * 
+ *
  * <p>
  * If the class to which this annotation is attached implements {@link ComponentSystemEventListener} and is a
  * <code>Renderer</code> instance, "target" is the <code>UIComponent</code> instance that is to be rendered by this
  * <code>Renderer</code> instance.
  * </p>
- * 
+ *
  * <p>
  * If the class to which this annotation is attached implements {@link ComponentSystemEventListener} and is neither an
  * instance of <code>Renderer</code> nor <code>UIComponent</code>, the action taken is unspecified. This case must not
  * trigger any kind of error.
  * </p>
- * 
+ *
  * <p>
  * If the class to which this annotation is attached implements <code>SystemEventListener</code> and does not implement
  * <code>ComponentSystemEventListener</code>, "target" is the {@link jakarta.faces.application.Application} instance.
  * </p>
- * 
+ *
  * </li>
- * 
+ *
  * <li>
- * 
+ *
  * <p>
  * Determine the variant of <code>subscribeToEvent()</code>to call and the parameters to pass to it.
  * </p>
- * 
+ *
  * <p>
  * If "target" is a <code>UIComponent</code> call
  * {@link jakarta.faces.component.UIComponent#subscribeToEvent(Class, ComponentSystemEventListener)}, passing the
  * {@link #systemEventClass} of the annotation as the first argument and the instance of the class to which this
  * annotation is attached (which must implement <code>ComponentSystemEventListener</code>) as the second argument.
  * </p>
- * 
+ *
  * <p>
  * If "target" is the {@link jakarta.faces.application.Application} instance, inspect the value of the
  * {@link #sourceClass} annotation attribute value.
  * </p>
- * 
+ *
  * <p>
  * If the value is <code>Void.class</code>, call
  * {@link jakarta.faces.application.Application#subscribeToEvent(Class, SystemEventListener)}, passing the value of
@@ -108,7 +108,7 @@ import java.lang.annotation.Inherited;
  * (which must implement <code>SystemEventListener) as the second
  argument.</code>
  * </p>
- * 
+ *
  * <p>
  * Otherwise, call {@link jakarta.faces.application.Application#subscribeToEvent(Class, Class, SystemEventListener)},
  * passing the value of {@link #systemEventClass} as the first argument, the value of {@link #sourceClass} as the second
@@ -116,25 +116,25 @@ import java.lang.annotation.Inherited;
  * <code>SystemEventListener) as the third
  argument.</code>
  * </p>
- * 
+ *
  * </li>
- * 
+ *
  * </ul>
- * 
+ *
  * <p>
  * Example: The standard renderer for <code>jakarta.faces.resource.Stylesheet</code> must have the following annotation
  * declaration:
  * </p>
- * 
+ *
  * <pre>
  * <code>@ListenerFor(systemEventClass=PostAddToViewEvent.class)</code>
  * </pre>
- * 
+ *
  * <p>
  * This will cause the renderer to be added as a listener for the {@link PostAddToViewEvent} to all components that list
  * it as their renderer.
  * </p>
- * 
+ *
  * </div>
  *
  * @since 2.0

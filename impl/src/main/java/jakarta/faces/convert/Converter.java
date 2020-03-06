@@ -29,13 +29,13 @@ import jakarta.faces.context.FacesContext;
  * describing a Java class that can perform Object-to-String and String-to-Object conversions between model data objects
  * and a String representation of those objects that is suitable for rendering.
  * </p>
- * 
+ *
  * <p>
  * {@link Converter} implementations must have a zero-arguments public constructor. In addition, if the
  * {@link Converter} class wishes to have configuration property values saved and restored with the component tree, the
  * implementation must also implement {@link StateHolder}.
  * </p>
- * 
+ *
  * <p>
  * Starting with version 1.2 of the specification, an exception to the above zero-arguments constructor requirement has
  * been introduced. If a converter has a single argument constructor that takes a <code>Class</code> instance and the
@@ -43,7 +43,7 @@ import jakarta.faces.context.FacesContext;
  * used to instantiate the converter instead of the zero-argument version. This enables the per-class conversion of Java
  * enumerated types.
  * </p>
- * 
+ *
  * <p>
  * If any <code>Converter</code> implementation requires a <code>java.util.Locale</code> to perform its job, it must
  * obtain that <code>Locale</code> from the {@link jakarta.faces.component.UIViewRoot} of the current
@@ -58,7 +58,7 @@ import jakarta.faces.context.FacesContext;
  * <code>ResourceDependencies</code> must be taken when {@link jakarta.faces.component.ValueHolder#setConverter} is
  * called.
  * </p>
- * 
+ *
  * @param <T> The generic type of object value to convert.
  */
 
@@ -102,7 +102,7 @@ public interface Converter<T> {
      * Application.createConverter() must guarantee that the default for the timezone of all
      * jakarta.faces.convert.DateTimeConverter instances must be equal to TimeZone.getDefault() instead of "GMT".
      * </p>
-     * 
+     *
      * @since 2.0
      */
     public static final String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME = "jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";

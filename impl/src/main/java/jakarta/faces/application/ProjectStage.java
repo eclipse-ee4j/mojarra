@@ -19,14 +19,14 @@ package jakarta.faces.application;
 import jakarta.faces.application.Application;
 
 /**
- * 
+ *
  * <p class="changed_added_2_0">
  * This class enables a feature similar to the <code>RAILS_ENV</code> feature of the Ruby on Rails web framework. The
  * constants in this class represent the current state of the running application in a typical product development
  * lifecycle. The value of this state may be queried at any time after application startup by calling
  * {@link Application#getProjectStage}.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public enum ProjectStage {

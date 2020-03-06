@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import java.lang.ref.WeakReference;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */

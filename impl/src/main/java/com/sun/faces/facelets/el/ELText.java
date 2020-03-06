@@ -37,7 +37,7 @@ import jakarta.faces.view.Location;
 /**
  * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
  * or <code>#{..}</code>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -46,7 +46,7 @@ public class ELText {
     private static final class LiteralValueExpression extends ValueExpression {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -224,7 +224,7 @@ public class ELText {
 
     /**
      * If it's literal text
-     * 
+     *
      * @return true if the String is literal (doesn't contain <code>#{..}</code> or <code>${..}</code>)
      */
     public boolean isLiteral() {
@@ -233,7 +233,7 @@ public class ELText {
 
     /**
      * Return an instance of <code>this</code> that is applicable given the ELContext and ExpressionFactory state.
-     * 
+     *
      * @param factory the ExpressionFactory to use
      * @param ctx the ELContext to use
      * @return an ELText instance
@@ -244,7 +244,7 @@ public class ELText {
 
     /**
      * Allow this instance to write to the passed Writer, given the ELContext state
-     * 
+     *
      * @param out Writer to write to
      * @param ctx current ELContext state
      * @throws ELException
@@ -260,7 +260,7 @@ public class ELText {
 
     /**
      * Evaluates the ELText to a String
-     * 
+     *
      * @param ctx current ELContext state
      * @throws ELException
      * @return the evaluated String
@@ -276,7 +276,7 @@ public class ELText {
 
     /**
      * Parses the passed string to determine if it's literal or not
-     * 
+     *
      * @param in input String
      * @return true if the String is literal (doesn't contain <code>#{..}</code> or <code>${..}</code>)
      */
@@ -289,7 +289,7 @@ public class ELText {
      * Factory method for creating an unvalidated ELText instance. NOTE: All expressions in the passed String are treated as
      * {@link com.sun.faces.facelets.el.ELText.LiteralValueExpression}, with one exception: composite component expressions.
      * These are treated as ContextualCompositeValueExpressions.
-     * 
+     *
      * @param in String to parse
      * @return ELText instance that knows if the String was literal or not
      * @throws jakarta.el.ELException
@@ -311,7 +311,7 @@ public class ELText {
      * to create a ValueExpression instance, resolving any functions at that time.
      * <p/>
      * Variables and properties will not be evaluated.
-     * 
+     *
      * @param fact ExpressionFactory to use
      * @param ctx ELContext to validate against
      * @param in String to parse

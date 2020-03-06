@@ -29,7 +29,7 @@ import java.io.Serializable;
 /**
  * A Validator that checks against a Regular Expression (which is the pattern property). The pattern must resolve to a
  * String that follows the java.util.regex standards.
- * 
+ *
  * @author driscoll
  */
 public class CreditCardValidator implements Validator, Serializable {
@@ -39,7 +39,7 @@ public class CreditCardValidator implements Validator, Serializable {
     /**
      * Validate a String against a regular expression pattern... The full regex pattern must be matched in order to pass the
      * validation.
-     * 
+     *
      * @param context Context of this request
      * @param component The component wrapping this validator
      * @param obj A string which will be compared to the pattern property of this validator. Must be a string.

@@ -35,13 +35,13 @@ import jakarta.enterprise.context.NormalScope;
  * when the user exits the specified {@code Flow}. See {@link FlowHandler#transition} for the specification of flow
  * entry and exit.
  * </p>
- * 
+ *
  * <p class="changed_added_2_3">
  * When replacing (rather than decorating) the flow implementation with a custom {@link FlowHandler} implementation, it
  * is necessary to also replace the CDI extension that implements the specified behavior regarding
  * <code>FlowScoped</code> beans.
  * </p>
- * 
+ *
  * @since 2.2
  */
 
@@ -58,7 +58,7 @@ public @interface FlowScoped {
      * </p>
      *
      * @since 2.2
-     * 
+     *
      * @return the id of this flow
      */
     String value();
@@ -70,7 +70,7 @@ public @interface FlowScoped {
      * </p>
      *
      * @since 2.2
-     * 
+     *
      * @return the defining document id of this flow
      */
 

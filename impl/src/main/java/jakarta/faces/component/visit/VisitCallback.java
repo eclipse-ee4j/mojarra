@@ -24,7 +24,7 @@ import jakarta.faces.component.UIComponent;
  * A simple callback interface that enables taking action on a specific UIComponent (either facet or child) during a
  * component tree visit.
  * </p>
- * 
+ *
  * @see UIComponent#visitTree UIComponent.visitTree()
  *
  * @since 2.0

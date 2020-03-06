@@ -29,7 +29,7 @@ public class BehaviorHolderAttachedObjectTargetHandler extends AttachedObjectTar
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.faces.facelets.tag.composite.AttachedObjectTargetHandler#newAttachedObjectTargetImpl()
      */
     @Override

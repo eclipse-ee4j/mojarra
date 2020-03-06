@@ -23,7 +23,7 @@ import jakarta.faces.component.StateHolder;
  * Components that want to leverage the partial state saving feature must implement this interface instead of
  * implementing {@link StateHolder}, from which this interface inherits.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public interface PartialStateHolder extends StateHolder {
@@ -38,7 +38,7 @@ public interface PartialStateHolder extends StateHolder {
      * <code>initialStateMarked()</code>, the implementation must return only the state that has changed in its
      * implementation of {@link StateHolder#saveState}.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     void markInitialState();
@@ -47,7 +47,7 @@ public interface PartialStateHolder extends StateHolder {
      * <p class="changed_added_2_0">
      * Return <code>true</code> if delta state changes are being tracked, otherwise <code>false</code>
      * </p>
-     * 
+     *
      * @return <code>true</code> if the initial state is marked, <code>false</code> otherwise.
      * @since 2.0
      */
@@ -57,7 +57,7 @@ public interface PartialStateHolder extends StateHolder {
      * <p class="changed_added_2_0">
      * Reset the PartialStateHolder to a non-delta tracking state.
      * </p>
-     * 
+     *
      * @since 2.0
      */
     void clearInitialState();

@@ -86,7 +86,7 @@ import jakarta.faces.view.facelets.TagHandler;
  * {@link AjaxBehaviors#pushBehavior}. As subsequent child components that implement the {@link ClientBehaviorHolder}
  * interface are evaluated this {@link AjaxBehavior} instance must be added as a behavior to the component.
  * </p>
- * 
+ *
  * @version $Id: AjaxHandler.java 5369 2008-09-08 19:53:45Z rogerk $
  */
 public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderAttachedObjectHandler {
@@ -125,7 +125,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
@@ -148,7 +148,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.AttachedObjectHandler#getFor()
      */
     @Override
@@ -158,7 +158,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see jakarta.faces.view.BehaviorHolderAttachedObjectHandler#getEventName()
      */
     @Override
@@ -257,7 +257,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
     /**
      * <p class="changed_added_2_0">
      * </p>
-     * 
+     *
      * @param ctx
      * @param parent
      * @param eventName

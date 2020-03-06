@@ -170,7 +170,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         lastId,
 
         /**
-         * 
+         *
          */
         rowStatePreserved
     }
@@ -253,7 +253,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * Return the zero-relative row number of the first row to be displayed.
      * </p>
-     * 
+     *
      * @return the row number.
      */
     public int getFirst() {
@@ -284,7 +284,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * Return the footer facet of this component (if any). A convenience method for <code>getFacet("footer")</code>.
      * </p>
-     * 
+     *
      * @return the footer facet.
      */
     public UIComponent getFooter() {
@@ -312,7 +312,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * Return the header facet of this component (if any). A convenience method for <code>getFacet("header")</code>.
      * </p>
-     * 
+     *
      * @return the header facet.
      */
     public UIComponent getHeader() {
@@ -343,7 +343,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * @return whether the row is available.
-     * 
+     *
      * @throws FacesException if an error occurs getting the row availability
      */
     public boolean isRowAvailable() {
@@ -372,7 +372,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * @return the row data.
-     * 
+     *
      * @throws FacesException if an error occurs getting the row data
      * @throws IllegalArgumentException if now row data is available at the currently specified row index
      */
@@ -389,7 +389,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * @return the row index.
-     * 
+     *
      * @throws FacesException if an error occurs getting the row index
      */
     public int getRowIndex() {
@@ -406,13 +406,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <code>isRowAvailable()</code> method to detect whether row data will be available for use by the
      * <code>getRowData()</code> method.
      * </p>
-     * 
+     *
      * <p class="changed_added_2_1">
      * To support transient state among descendents, please consult the specification for {@link #setRowStatePreserved},
      * which details the requirements for <code>setRowIndex()</code> when the <code>rowStatePreserved</code> JavaBeans
      * property is set to <code>true</code>.
      * </p>
-     * 
+     *
      * <ul>
      * <li>Save current state information for all descendant components (as described below).
      * <li>Store the new row index, and pass it on to the {@link DataModel} associated with this {@link UIData}
@@ -590,7 +590,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Return the number of rows to be displayed, or zero for all remaining rows in the table. The default value of this
      * property is zero.
      * </p>
-     * 
+     *
      * @return the number of rows.
      */
     public int getRows() {
@@ -622,7 +622,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Return the request-scope attribute under which the data object for the current row will be exposed when iterating.
      * This property is <strong>not</strong> enabled for value binding expressions.
      * </p>
-     * 
+     *
      * @return he request-scope attribute.
      */
     public String getVar() {
@@ -650,7 +650,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * @return the value of the <code>rowStatePreserved</code>.
-     * 
+     *
      * @since 2.1
      */
 
@@ -665,9 +665,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * its iterated children will be preserved on a per-row basis. This allows applications to modify component properties,
      * such as the style-class, for a specific row, rather than having such modifications apply to all rows.
      * </p>
-     * 
+     *
      * <div class="changed_added_2_1">
-     * 
+     *
      * <p>
      * To accomplish this, <code>UIData</code> must call {@link StateHolder#saveState} and
      * {@link TransientStateHolder#saveTransientState} on its children to capture their state on exiting each row. When
@@ -675,13 +675,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * called in order to reinitialize the children to the correct state for the new row. All of this action must take place
      * during the processing of {@link #setRowIndex}.
      * </p>
-     * 
+     *
      * <p>
      * Users should consider enabling this feature for cases where it is necessary to modify properties of
      * <code>UIData</code>'s children in a row-specific way. Note, however, that row-level state saving/restoring does add
      * overhead. As such, this feature should be used judiciously.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param preserveComponentState the flag if the state should be preserved.
@@ -712,7 +712,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * All other types will be adapted using the {@link ScalarDataModel} class, which will treat the object as a single row
      * of data.
      * </p>
-     * 
+     *
      * @return the object for the value.
      */
     public Object getValue() {
@@ -1252,11 +1252,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      *
      * <div class="changed_added_2_0">
-     * 
+     *
      * <p>
      * If the {@link UIComponent#isVisitable} method of this instance returns <code>false</code>, take no action and return.
      * </p>
-     * 
+     *
      * <p>
      * Call {@link UIComponent#pushComponentToEL} and invoke the visit callback on this <code>UIData</code> instance as
      * described in {@link UIComponent#visitTree}. Let the result of the invoctaion be <em>visitResult</em>. If
@@ -1266,9 +1266,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * non-empty, let <em>doVisitChildren</em> be <code>true</code>. If <em>doVisitChildren</em> is <code>true</code> and
      * <em>visitResult</em> is {@link VisitResult#ACCEPT}, take the following action.
      * </p>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * If this component has facets, call {@link UIComponent#getFacets} on this instance and invoke the
@@ -1276,20 +1276,20 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * {@link UIComponent#visitTree}.
      * </p>
      * </li>
-     * 
+     *
      * <li>
-     * 
+     *
      * <div class="changed_modified_2_0_rev_a">
-     * 
+     *
      * <p>
      * If this component has children, for each <code>UIColumn</code> child:
      * </p>
-     * 
+     *
      * <p>
      * Call {@link VisitContext#invokeVisitCallback} on that <code>UIColumn</code> instance. If such a call returns
      * <code>true</code>, terminate visiting and return <code>true</code> from this method.
      * </p>
-     * 
+     *
      * <p>
      * If the child <code>UIColumn</code> has facets, call {@link UIComponent#visitTree} on each one.
      * </p>
@@ -1301,46 +1301,46 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </div></li>
      *
      * <li>
-     * 
+     *
      * <div class="changed_modified_2_0_rev_a">
      *
      * <p>
      * Save aside the result of a call to {@link #getRowIndex}.
      * </p>
-     * 
+     *
      * <p>
      * For each child component of this <code>UIData</code> that is also an instance of {@link UIColumn},
      * </p>
-     * 
+     *
      * <p>
      * Iterate over the rows.
      * </p>
-     * 
+     *
      * </div>
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>
      * <p>
      * Let <em>rowsToProcess</em> be the return from {@link #getRows}.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Let <em>rowIndex</em> be the return from {@link #getFirst} - 1.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * While the number of rows processed is less than <em>rowsToProcess</em>, take the following actions.
      * </p>
-     * 
+     *
      * <p>
      * Call {@link #setRowIndex}, passing the current row index.
      * </p>
-     * 
+     *
      * <p>
      * If {@link #isRowAvailable} returns <code>false</code>, take no further action and return <code>false</code>.
      * </p>
@@ -1348,32 +1348,32 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p class="changed_modified_2_0_rev_a">
      * Call {@link UIComponent#visitTree} on each of the children of this <code>UIColumn</code> instance.
      * </p>
-     * 
+     *
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * </li>
-     * 
+     *
      * </ul>
-     * 
+     *
      * <p>
      * Call {@link #popComponentFromEL} and restore the saved row index with a call to {@link #setRowIndex}.
      * </p>
-     * 
+     *
      * <p>
      * Return <code>false</code> to allow the visiting to continue.
      * </p>
-     * 
+     *
      * </div>
      *
      * @param context the <code>VisitContext</code> that provides context for performing the visit.
      *
      * @param callback the callback to be invoked for each node encountered in the visit.
-     * 
+     *
      * @throws NullPointerException if any of the parameters are <code>null</code>.
-     * 
-     * 
+     *
+     *
      */
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback) {
@@ -1713,14 +1713,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Return the internal {@link DataModel} object representing the data objects that we will iterate over in this
      * component's rendering.
      * </p>
-     * 
+     *
      * <p>
      * If the model has been cached by a previous call to {@link #setDataModel}, return it. Otherwise call
      * {@link #getValue}. If the result is null, create an empty {@link ListDataModel} and return it. If the result is an
      * instance of {@link DataModel}, return it. Otherwise, adapt the result as described in {@link #getValue} and return
      * it.
      * </p>
-     * 
+     *
      * @return the data model.
      */
     protected DataModel getDataModel() {
@@ -1818,7 +1818,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * is <code>null</code>, the internal <code>DataModel</code> must be reset in a manner so that the next call to
      * {@link #getDataModel} causes lazy instantion of a newly refreshed <code>DataModel</code>.
      * </p>
-     * 
+     *
      * <p>
      * Subclasses might call this method if they either want to restore the internal <code>DataModel</code> during the
      * <em>Restore View</em> phase or if they want to explicitly refresh the current <code>DataModel</code> for the

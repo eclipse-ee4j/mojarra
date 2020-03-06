@@ -111,7 +111,7 @@ public class FlowCDIContext implements Context, Serializable {
 
     /*
      * Encapsulate access to the two maps we need to provide.
-     * 
+     *
      */
     private static class FlowScopeMapHelper {
         // <editor-fold defaultstate="collapsed">
