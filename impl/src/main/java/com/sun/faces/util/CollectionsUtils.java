@@ -39,7 +39,7 @@ public class CollectionsUtils {
 
     @SafeVarargs
     public static <T> Set<T> asSet(T... a) {
-        return new HashSet<T>(asList(a));
+        return new HashSet<>(asList(a));
     }
 
     public static <T> T[] ar(T... ts) {

@@ -39,7 +39,7 @@ public abstract class ConcurrentCache<K, V> {
      * Factory interface for creating various cacheable objects.
      */
     public interface Factory<K, V> {
-        public V newInstance(final K arg) throws Exception;
+        V newInstance(final K arg) throws Exception;
     }
 
     /**

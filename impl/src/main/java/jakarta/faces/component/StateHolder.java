@@ -75,7 +75,7 @@ public interface StateHolder {
      * @throws NullPointerException if <code>context</code> is null
      */
 
-    public Object saveState(FacesContext context);
+    Object saveState(FacesContext context);
 
     /**
      *
@@ -99,7 +99,7 @@ public interface StateHolder {
      * @throws NullPointerException if <code>context</code> is null.
      */
 
-    public void restoreState(FacesContext context, Object state);
+    void restoreState(FacesContext context, Object state);
 
     /**
      *
@@ -110,7 +110,7 @@ public interface StateHolder {
      * @return <code>true</code> if transient, <code>false</code> otherwise.
      */
 
-    public boolean isTransient();
+    boolean isTransient();
 
     /**
      * <p>
@@ -121,6 +121,6 @@ public interface StateHolder {
      * @param newTransientValue boolean pass <code>true</code> if this Object <span class="changed_modified_2_0_rev_a">will
      * not participate</span> in state saving or restoring, otherwise pass <code>false</code>.
      */
-    public void setTransient(boolean newTransientValue);
+    void setTransient(boolean newTransientValue);
 
 }

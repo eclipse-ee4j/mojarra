@@ -66,7 +66,7 @@ public class NamedEventManager {
 
         if (namedEvent == null) {
             try {
-                namedEvent = (Class<? extends SystemEvent>) loadClass(name, this);
+                namedEvent = loadClass(name, this);
             } catch (ClassNotFoundException ex) {
                 throw new FacesException("An unknown event type was specified:  " + name, ex);
             }

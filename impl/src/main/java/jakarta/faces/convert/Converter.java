@@ -78,7 +78,7 @@ public interface Converter<T> {
      * @throws ConverterException if conversion cannot be successfully performed
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
-    public T getAsObject(FacesContext context, UIComponent component, String value);
+    T getAsObject(FacesContext context, UIComponent component, String value);
 
     /**
      * <p>
@@ -94,7 +94,7 @@ public interface Converter<T> {
      * @throws ConverterException if conversion cannot be successfully performed
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
-    public String getAsString(FacesContext context, UIComponent component, T value);
+    String getAsString(FacesContext context, UIComponent component, T value);
 
     /**
      * <p class="changed_added_2_2">
@@ -105,6 +105,6 @@ public interface Converter<T> {
      *
      * @since 2.0
      */
-    public static final String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME = "jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
+    String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME = "jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
 
 }

@@ -126,7 +126,7 @@ public class DefaultFaceletFactory {
         // We can cast to the FaceletCache<DefaultFacelet> here because we know
         // that the Generics information is only used at compile time, and all cache
         // implementations will be using instance factories provided by us and returning DefaultFacelet
-        this.cache = initCache((FaceletCache<DefaultFacelet>) cache);
+        this.cache = initCache(cache);
     }
 
     private FaceletCache<DefaultFacelet> initCache(FaceletCache<DefaultFacelet> cache) {
@@ -336,7 +336,7 @@ public class DefaultFaceletFactory {
 
             URL fabricatedFaceletPage = tempFile.toURI().toURL();
             Facelet f = createFacelet(fabricatedFaceletPage);
-            UIComponent tmp = (UIComponent) app.createComponent("jakarta.faces.NamingContainer");
+            UIComponent tmp = app.createComponent("jakarta.faces.NamingContainer");
             tmp.setId(context.getViewRoot().createUniqueId());
             f.apply(context, tmp);
             result = tmp.findComponent(tempId);

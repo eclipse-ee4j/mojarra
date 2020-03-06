@@ -50,6 +50,6 @@ package com.sun.faces.spi;
  */
 public interface FacesConfigResourceProvider extends ConfigurationResourceProvider {
 
-    public static final String SERVICES_KEY = "com.sun.faces.spi.FacesConfigResourceProvider";
+    String SERVICES_KEY = "com.sun.faces.spi.FacesConfigResourceProvider";
 
 }

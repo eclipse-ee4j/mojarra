@@ -19,8 +19,6 @@ package com.sun.faces.facelets;
 import com.sun.faces.facelets.FaceletCache.InstanceFactory;
 
 import jakarta.faces.view.facelets.FaceletCache;
-import jakarta.faces.view.facelets.FaceletCache.MemberFactory;
-
 import java.io.IOException;
 import java.net.URL;
 

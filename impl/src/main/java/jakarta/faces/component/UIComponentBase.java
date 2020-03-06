@@ -854,7 +854,7 @@ public abstract class UIComponentBase extends UIComponent {
             // Process all facets and children of this component
             Iterator<UIComponent> kids = getFacetsAndChildren();
             while (kids.hasNext()) {
-                UIComponent kid = (UIComponent) kids.next();
+                UIComponent kid = kids.next();
                 kid.processDecodes(context);
             }
 
@@ -894,7 +894,7 @@ public abstract class UIComponentBase extends UIComponent {
             // Process all the facets and children of this component
             Iterator<UIComponent> kids = getFacetsAndChildren();
             while (kids.hasNext()) {
-                UIComponent kid = (UIComponent) kids.next();
+                UIComponent kid = kids.next();
                 kid.processValidators(context);
             }
 
@@ -925,7 +925,7 @@ public abstract class UIComponentBase extends UIComponent {
             // Process all facets and children of this component
             Iterator<UIComponent> kids = getFacetsAndChildren();
             while (kids.hasNext()) {
-                UIComponent kid = (UIComponent) kids.next();
+                UIComponent kid = kids.next();
                 kid.processUpdates(context);
             }
         } finally {
@@ -3295,7 +3295,7 @@ public abstract class UIComponentBase extends UIComponent {
         // Search through our facets and children
         UIComponent component = null;
         for (Iterator<UIComponent> i = base.getFacetsAndChildren(); i.hasNext();) {
-            UIComponent kid = (UIComponent) i.next();
+            UIComponent kid = i.next();
             if (!(kid instanceof NamingContainer)) {
                 if (checkId && id.equals(kid.getId())) {
                     component = kid;
@@ -3320,7 +3320,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (getChildCount() > 0) {
             Iterator<UIComponent> kids = getChildren().iterator();
             while (kids.hasNext()) {
-                UIComponent kid = (UIComponent) kids.next();
+                UIComponent kid = kids.next();
                 if (!kid.isTransient()) {
                     stateList.add(kid.processSaveState(context));
                 }
@@ -3336,7 +3336,7 @@ public abstract class UIComponentBase extends UIComponent {
 
             while (myFacets.hasNext()) {
                 Map.Entry<String, UIComponent> entry = myFacets.next();
-                UIComponent facet = (UIComponent) entry.getValue();
+                UIComponent facet = entry.getValue();
                 if (!facet.isTransient()) {
                     Object facetState = facet.processSaveState(context);
                     Object[] facetSaveState = new Object[2];

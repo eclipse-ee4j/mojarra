@@ -51,7 +51,7 @@ public interface ActionSource2 extends ActionSource {
      *
      * @return the action expression.
      */
-    public MethodExpression getActionExpression();
+    MethodExpression getActionExpression();
 
     /**
      * <p>
@@ -67,6 +67,6 @@ public interface ActionSource2 extends ActionSource {
      *
      * @param action The new method expression
      */
-    public void setActionExpression(MethodExpression action);
+    void setActionExpression(MethodExpression action);
 
 }

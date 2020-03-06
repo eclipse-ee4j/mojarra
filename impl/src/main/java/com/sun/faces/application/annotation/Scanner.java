@@ -34,7 +34,7 @@ interface Scanner {
      * <em>NOTE</em>: while a particular <code>Scanner</code> instance may handle a plural version of an
      * <code>Annotation</code> in additional to a singular, this method must return the singular version only.
      */
-    public Class<? extends Annotation> getAnnotation();
+    Class<? extends Annotation> getAnnotation();
 
     /**
      * Scan the target class for the {@link java.lang.annotation.Annotation}s this scanner handles.
@@ -43,6 +43,6 @@ interface Scanner {
      * @return a new {@link RuntimeAnnotationHandler} instance capable of processing the annotations defined on this class.
      * If no relevant {@link java.lang.annotation.Annotation}s are found, return <code>null</code>.
      */
-    public RuntimeAnnotationHandler scan(Class<?> clazz);
+    RuntimeAnnotationHandler scan(Class<?> clazz);
 
 }

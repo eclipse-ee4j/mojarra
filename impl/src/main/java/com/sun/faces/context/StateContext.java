@@ -222,7 +222,7 @@ public class StateContext {
         } else {
             result = 1;
         }
-        attrs.put(DYNAMIC_CHILD_COUNT, (Integer) result);
+        attrs.put(DYNAMIC_CHILD_COUNT, result);
         context.getViewRoot().getAttributes().put(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS, Boolean.TRUE);
 
         return result;

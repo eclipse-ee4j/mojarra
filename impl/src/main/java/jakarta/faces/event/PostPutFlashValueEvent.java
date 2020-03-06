@@ -32,7 +32,7 @@ import jakarta.faces.context.Flash;
  */
 public class PostPutFlashValueEvent extends SystemEvent {
 
-    private static final long serialVersionUID = -6422204761759384353L;;
+    private static final long serialVersionUID = -6422204761759384353L;
 
     // ------------------------------------------------------------ Constructors
 

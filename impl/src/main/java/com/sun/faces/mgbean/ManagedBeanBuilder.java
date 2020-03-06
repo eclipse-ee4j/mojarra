@@ -318,9 +318,9 @@ public class ManagedBeanBuilder extends BeanBuilder {
 
     // ----------------------------------------------------------- Inner Classes
 
-    private static interface BakedProperty {
+    private interface BakedProperty {
 
-        abstract void set(Object bean, FacesContext context);
+        void set(Object bean, FacesContext context);
 
     } // END BakedProperty
 

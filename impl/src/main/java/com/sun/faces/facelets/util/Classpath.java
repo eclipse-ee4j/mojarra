@@ -54,7 +54,7 @@ public final class Classpath {
 
     public enum SearchAdvice {
         FirstMatchOnly, AllMatches
-    };
+    }
 
     public static URL[] search(String prefix, String suffix) throws IOException {
         return search(Thread.currentThread().getContextClassLoader(), prefix, suffix, SearchAdvice.AllMatches);

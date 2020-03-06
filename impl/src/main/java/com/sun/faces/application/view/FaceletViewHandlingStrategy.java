@@ -535,7 +535,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     public BeanInfo getComponentMetadata(FacesContext context, Resource ccResource) {
 
         DefaultFaceletFactory factory = (DefaultFaceletFactory) RequestStateManager.get(context, FACELET_FACTORY);
-        DefaultFaceletFactory ourFactory = (DefaultFaceletFactory) factory;
+        DefaultFaceletFactory ourFactory = factory;
 
         if (ourFactory.needsToBeRefreshed(ccResource.getURL())) {
             metadataCache.remove(ccResource);

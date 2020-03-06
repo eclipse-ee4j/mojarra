@@ -36,7 +36,7 @@ class StateHolderSaver implements Serializable {
 
     private enum StateHolderTupleIndices {
         StateHolderSaverInstance, ComponentAddedDynamically, LastMember
-    };
+    }
 
     public boolean componentAddedDynamically() {
         boolean result = false;

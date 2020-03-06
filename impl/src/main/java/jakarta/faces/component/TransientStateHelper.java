@@ -48,7 +48,7 @@ public interface TransientStateHelper extends TransientStateHolder {
      * @return the stored value.
      * @since 2.1
      */
-    public Object getTransient(Object key);
+    Object getTransient(Object key);
 
     /**
      * <p class="changed_added_2_1">
@@ -61,7 +61,7 @@ public interface TransientStateHelper extends TransientStateHolder {
      * @return the stored value.
      * @since 2.1
      */
-    public Object getTransient(Object key, Object defaultValue);
+    Object getTransient(Object key, Object defaultValue);
 
     /**
      * <p class="changed_added_2_1">
@@ -74,5 +74,5 @@ public interface TransientStateHelper extends TransientStateHolder {
      * @return the previously stored value
      * @since 2.1
      */
-    public Object putTransient(Object key, Object value);
+    Object putTransient(Object key, Object value);
 }

@@ -41,7 +41,7 @@ public class EnumConverter implements Converter, PartialStateHolder {
     }
 
     public EnumConverter(Class targetClass) {
-        this.targetClass = (Class<? extends Enum>) targetClass;
+        this.targetClass = targetClass;
     }
 
     // ------------------------------------------------------ Manifest Constants

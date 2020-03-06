@@ -30,7 +30,7 @@ public interface ConfigAnnotationHandler {
     /**
      * @return a <code>Collection</code> of annotations handled by this ConfigAnnotationHandler implementation
      */
-    public Collection<Class<? extends Annotation>> getHandledAnnotations();
+    Collection<Class<? extends Annotation>> getHandledAnnotations();
 
     /**
      * <p>
@@ -46,11 +46,11 @@ public interface ConfigAnnotationHandler {
      * @param target annotated class
      * @param annotation <code>Annotation</code> to process
      */
-    public void collect(Class<?> target, Annotation annotation);
+    void collect(Class<?> target, Annotation annotation);
 
     /**
      * <code>Push<code> the configuration based on the collected metadata to the current application.
      */
-    public void push(FacesContext ctx);
+    void push(FacesContext ctx);
 
 }

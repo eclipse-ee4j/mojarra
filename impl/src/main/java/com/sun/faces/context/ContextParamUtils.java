@@ -59,6 +59,6 @@ public class ContextParamUtils {
      * @return the value.
      */
     public static <T extends Object> T getValue(ServletContext servletContext, ContextParam contextParam, Class<T> clazz) {
-        return (T) clazz.cast(getValue(servletContext, contextParam));
+        return clazz.cast(getValue(servletContext, contextParam));
     }
 }

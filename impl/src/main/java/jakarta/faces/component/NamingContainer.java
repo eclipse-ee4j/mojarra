@@ -39,6 +39,6 @@ public interface NamingContainer {
      *
      * @deprecated use {@link UINamingContainer#getSeparatorChar(jakarta.faces.context.FacesContext)}
      */
-    public static final char SEPARATOR_CHAR = ':';
+    char SEPARATOR_CHAR = ':';
 
 }

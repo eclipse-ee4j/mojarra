@@ -42,7 +42,7 @@ public interface InjectionProvider {
      * @param managedBean the target managed bean
      * @throws InjectionProviderException if an error occurs during resource injection
      */
-    public void inject(Object managedBean) throws InjectionProviderException;
+    void inject(Object managedBean) throws InjectionProviderException;
 
     /**
      * <p>
@@ -53,7 +53,7 @@ public interface InjectionProvider {
      * @throws InjectionProviderException if an error occurs when invoking the method annotated by the
      * <code>@PreDestroy</code> annotation
      */
-    public void invokePreDestroy(Object managedBean) throws InjectionProviderException;
+    void invokePreDestroy(Object managedBean) throws InjectionProviderException;
 
     /**
      * <p>
@@ -64,6 +64,6 @@ public interface InjectionProvider {
      * @throws InjectionProviderException if an error occurs when invoking the method annotated by the
      * <code>@PostConstruct</code> annotation
      */
-    public void invokePostConstruct(Object managedBean) throws InjectionProviderException;
+    void invokePostConstruct(Object managedBean) throws InjectionProviderException;
 
 }

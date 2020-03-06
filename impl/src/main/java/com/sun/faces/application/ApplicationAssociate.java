@@ -108,7 +108,6 @@ import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.search.SearchExpressionHandler;
-import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.PropertyResolver;

@@ -40,10 +40,10 @@ import jakarta.faces.context.FacesContext;
  */
 public interface CompilationMessageHolder {
 
-    public List<FacesMessage> getNamespacePrefixMessages(FacesContext context, String prefix);
+    List<FacesMessage> getNamespacePrefixMessages(FacesContext context, String prefix);
 
-    public void removeNamespacePrefixMessages(String prefix);
+    void removeNamespacePrefixMessages(String prefix);
 
-    public void processCompilationMessages(FacesContext context);
+    void processCompilationMessages(FacesContext context);
 
 }

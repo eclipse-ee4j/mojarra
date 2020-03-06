@@ -538,5 +538,5 @@ public interface TagDecorator {
      * @param tag tag to be decorated
      * @return a decorated tag, otherwise null
      */
-    public Tag decorate(Tag tag);
+    Tag decorate(Tag tag);
 }

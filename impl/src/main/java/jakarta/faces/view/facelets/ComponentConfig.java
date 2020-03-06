@@ -34,7 +34,7 @@ public interface ComponentConfig extends TagConfig {
      *
      * @since 2.0
      */
-    public String getComponentType();
+    String getComponentType();
 
     /**
      * <p class="changed_added_2_0">
@@ -44,5 +44,5 @@ public interface ComponentConfig extends TagConfig {
      *
      * @since 2.0
      */
-    public String getRendererType();
+    String getRendererType();
 }

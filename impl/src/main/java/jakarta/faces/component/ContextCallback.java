@@ -43,6 +43,6 @@ public interface ContextCallback {
      * @param target the {@link UIComponent} that was located by <code>clientId</code> by a call to
      * {@link UIComponent#invokeOnComponent}.
      */
-    public void invokeContextCallback(FacesContext context, UIComponent target);
+    void invokeContextCallback(FacesContext context, UIComponent target);
 
 }

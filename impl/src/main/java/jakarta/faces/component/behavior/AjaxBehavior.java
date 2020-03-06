@@ -791,7 +791,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
             return null;
         }
 
-        return Collections.unmodifiableList(new ArrayList<String>(collection));
+        return Collections.unmodifiableList(new ArrayList<>(collection));
     }
 
     // Property name constants

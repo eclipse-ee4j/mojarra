@@ -299,7 +299,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
             if (library.getContract() == null) {
                 contracts = Collections.emptyList();
             } else {
-                contracts = new ArrayList<String>(1);
+                contracts = new ArrayList<>(1);
                 contracts.add(library.getContract());
             }
         } else if (root == null) {

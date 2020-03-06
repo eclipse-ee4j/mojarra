@@ -37,6 +37,6 @@ public interface NodeBuilder {
      * @return the builder instance
      */
 
-    public NodeBuilder markAsStartNode();
+    NodeBuilder markAsStartNode();
 
 }

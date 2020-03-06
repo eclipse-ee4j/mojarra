@@ -532,10 +532,10 @@ public class FlowHandlerImpl extends FlowHandler {
             FacesContext context = FacesContext.getCurrentInstance();
             Map<Object, Object> attrs = context.getAttributes();
             if (!attrs.containsKey(FLOW_RETURN_DEPTH_PARAM_NAME)) {
-                attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, (Integer) 1);
+                attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, 1);
             } else {
                 Integer cur = (Integer) attrs.get(FLOW_RETURN_DEPTH_PARAM_NAME);
-                attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, (Integer) cur + 1);
+                attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, cur + 1);
             }
 
         }
@@ -548,7 +548,7 @@ public class FlowHandlerImpl extends FlowHandler {
                 Integer cur = (Integer) attrs.get(FLOW_RETURN_DEPTH_PARAM_NAME);
 
                 if (cur > 1) {
-                    attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, (Integer) cur - 1);
+                    attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, cur - 1);
                 } else {
                     attrs.remove(FLOW_RETURN_DEPTH_PARAM_NAME);
                 }

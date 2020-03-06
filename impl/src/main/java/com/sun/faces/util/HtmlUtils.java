@@ -335,7 +335,7 @@ public class HtmlUtils {
         // Formerly used String.valueOf(). This version tests out
         // about 40% faster in a microbenchmark (and on systems where GC is
         // going gonzo, it should be even better)
-        int i = (int) ch;
+        int i = ch;
         if (i > 10000) {
             bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, ((char) ('0' + (i / 10000))));
             i = i % 10000;
@@ -829,7 +829,7 @@ public class HtmlUtils {
     }
 
     static private char _LAST_EMPTY_ELEMENT_START = 'p';
-    static private String[][] emptyElementArr = new String[((int) _LAST_EMPTY_ELEMENT_START) + 1][];
+    static private String[][] emptyElementArr = new String[(_LAST_EMPTY_ELEMENT_START) + 1][];
 
     static private String[] aNames = new String[] { "area", };
 

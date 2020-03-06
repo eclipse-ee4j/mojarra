@@ -428,8 +428,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
                 }
 
                 if (!iterator.hasNext()) {
-                    throw new IllegalStateException(MessageFormat.format("UISelectOne component id=\"{0}\" group=\"{1}\" has no UISelectItem",
-                            new Object[] { radio.getId(), radio.getGroup() }));
+                    throw new IllegalStateException(MessageFormat.format("UISelectOne component id=\"{0}\" group=\"{1}\" has no UISelectItem", radio.getId(), radio.getGroup()));
                 }
 
                 selectItem = iterator.next();

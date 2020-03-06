@@ -35,5 +35,5 @@ public interface FacetHandler {
      *
      * @return the resolved literal String value of the facet name.
      */
-    public String getFacetName(FaceletContext ctx);
+    String getFacetName(FaceletContext ctx);
 }

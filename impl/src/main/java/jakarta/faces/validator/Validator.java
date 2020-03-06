@@ -76,7 +76,7 @@ public interface Validator<T> extends EventListener {
      * @deprecated Use {@link DoubleRangeValidator#NOT_IN_RANGE_MESSAGE_ID} or
      * {@link LongRangeValidator#NOT_IN_RANGE_MESSAGE_ID} instead.
      */
-    public static final String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.NOT_IN_RANGE";
+    String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.NOT_IN_RANGE";
 
     /**
      * <p>
@@ -102,6 +102,6 @@ public interface Validator<T> extends EventListener {
      * @throws ValidatorException if validation fails
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
-    public void validate(FacesContext context, UIComponent component, T value) throws ValidatorException;
+    void validate(FacesContext context, UIComponent component, T value) throws ValidatorException;
 
 }

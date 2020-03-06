@@ -166,7 +166,7 @@ public class HtmlColumn extends UIColumn {
         if (setAttributes == null) {
             String cname = this.getClass().getName();
             if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<String>(6);
+                setAttributes = new ArrayList<>(6);
                 this.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }
         }

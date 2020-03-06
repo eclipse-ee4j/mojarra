@@ -489,8 +489,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     } // END GenericObjectSelectItemIterator
 
-    private static interface ComponentAwareSelectItemIterator<E extends Object> extends Iterator<E> {
-        public UIComponent currentSelectComponent();
+    private interface ComponentAwareSelectItemIterator<E extends Object> extends Iterator<E> {
+        UIComponent currentSelectComponent();
     }
 
     /**

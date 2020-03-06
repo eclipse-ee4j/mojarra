@@ -28,13 +28,13 @@ import jakarta.servlet.ServletContext;
  */
 public interface AnnotationScanner {
 
-    public abstract Map<String, List<ScannedAnnotation>> getAnnotatedClassesInCurrentModule(ServletContext extContext) throws InjectionProviderException;
+    Map<String, List<ScannedAnnotation>> getAnnotatedClassesInCurrentModule(ServletContext extContext) throws InjectionProviderException;
 
     public interface ScannedAnnotation {
 
-        public Collection<URI> getDefiningURIs();
+        Collection<URI> getDefiningURIs();
 
-        public String getFullyQualifiedClassName();
+        String getFullyQualifiedClassName();
 
     }
 }

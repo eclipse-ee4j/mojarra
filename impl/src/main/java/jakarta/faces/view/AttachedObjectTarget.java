@@ -54,7 +54,7 @@ public interface AttachedObjectTarget {
      * <code>List&lt;AttachedObjectTarget&gt;</code>.
      * </p>
      */
-    public static final String ATTACHED_OBJECT_TARGETS_KEY = "jakarta.faces.view.AttachedObjectTargets";
+    String ATTACHED_OBJECT_TARGETS_KEY = "jakarta.faces.view.AttachedObjectTargets";
 
     /**
      * <p class="changed_added_2_0">
@@ -70,7 +70,7 @@ public interface AttachedObjectTarget {
      * @return the result as specified above
      *
      */
-    public List<UIComponent> getTargets(UIComponent topLevelComponent);
+    List<UIComponent> getTargets(UIComponent topLevelComponent);
 
     /**
      * <p class="changed_added_2_0">
@@ -81,6 +81,6 @@ public interface AttachedObjectTarget {
      * @return the name of the attached object target
      *
      */
-    public String getName();
+    String getName();
 
 }

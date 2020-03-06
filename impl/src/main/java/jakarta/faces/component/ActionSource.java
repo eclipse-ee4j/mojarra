@@ -45,7 +45,7 @@ public interface ActionSource {
      *
      * @return <code>true</code> if immediate, <code>false</code> otherwise.
      */
-    public boolean isImmediate();
+    boolean isImmediate();
 
     /**
      * <p>
@@ -54,7 +54,7 @@ public interface ActionSource {
      *
      * @param immediate The new immediate execution flag
      */
-    public void setImmediate(boolean immediate);
+    void setImmediate(boolean immediate);
 
     // -------------------------------------------------- Event Listener Methods
 
@@ -68,7 +68,7 @@ public interface ActionSource {
      *
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
-    public void addActionListener(ActionListener listener);
+    void addActionListener(ActionListener listener);
 
     /**
      * <p>
@@ -78,7 +78,7 @@ public interface ActionSource {
      *
      * @return the action listeners, or a zero-length array.
      */
-    public abstract ActionListener[] getActionListeners();
+    ActionListener[] getActionListeners();
 
     /**
      * <p>
@@ -90,7 +90,7 @@ public interface ActionSource {
      *
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
-    public void removeActionListener(ActionListener listener);
+    void removeActionListener(ActionListener listener);
 
     // -------------------------------------------------------------- Deprecated methods
 
@@ -113,7 +113,7 @@ public interface ActionSource {
      *
      * @return the action.
      */
-    public MethodBinding getAction();
+    MethodBinding getAction();
 
     /**
      * <p>
@@ -138,7 +138,7 @@ public interface ActionSource {
      *
      * @deprecated This has been replaced by {@link ActionSource2#setActionExpression(jakarta.el.MethodExpression)}.
      */
-    public void setAction(MethodBinding action);
+    void setAction(MethodBinding action);
 
     /**
      * <p>
@@ -156,7 +156,7 @@ public interface ActionSource {
      * @return the action listener.
      * @deprecated Use {@link #getActionListeners} instead.
      */
-    public MethodBinding getActionListener();
+    MethodBinding getActionListener();
 
     /**
      * <p>
@@ -174,6 +174,6 @@ public interface ActionSource {
      *
      * @deprecated This has been replaced by {@link #addActionListener(jakarta.faces.event.ActionListener)}.
      */
-    public void setActionListener(MethodBinding actionListener);
+    void setActionListener(MethodBinding actionListener);
 
 }

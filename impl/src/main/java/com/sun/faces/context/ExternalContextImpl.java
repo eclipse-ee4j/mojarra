@@ -104,7 +104,7 @@ public class ExternalContextImpl extends ExternalContext {
         domain, maxAge, path, secure, httpOnly
     }
 
-    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(new HashMap<Object, Object>()).getClass();
+    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(new HashMap<>()).getClass();
 
     // ------------------------------------------------------------ Constructors
 

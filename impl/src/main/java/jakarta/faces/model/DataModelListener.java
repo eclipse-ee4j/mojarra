@@ -34,6 +34,6 @@ public interface DataModelListener extends EventListener {
      *
      * @param event The {@link DataModelEvent} we are processing
      */
-    public void rowSelected(DataModelEvent event);
+    void rowSelected(DataModelEvent event);
 
 }

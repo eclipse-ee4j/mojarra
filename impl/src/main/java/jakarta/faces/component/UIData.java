@@ -1582,7 +1582,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     childState = descendantStateIterator.get(component.getClientId(facesContext));
                 }
                 if (descendantFullStateIterator != null && descendantFullStateIterator.hasNext()) {
-                    Object[] object = (Object[]) descendantFullStateIterator.next();
+                    Object[] object = descendantFullStateIterator.next();
                     childInitialState = object[0];
                     descendantInitialState = object[1];
                 }
@@ -1784,7 +1784,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     private DataModel<?> createDataModel(final Class<?> forClass) {
 
-        List<DataModel<?>> dataModel = new ArrayList<DataModel<?>>(1);
+        List<DataModel<?>> dataModel = new ArrayList<>(1);
         CDI<Object> cdi = CDI.current();
 
         // Scan the map in order, the first class that is a super class or equal to the class for which

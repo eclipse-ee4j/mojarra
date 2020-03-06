@@ -35,6 +35,6 @@ public interface ConverterConfig extends TagConfig {
      *
      * @return the converter id to be used in instantiating this converter
      */
-    public String getConverterId();
+    String getConverterId();
 
 }

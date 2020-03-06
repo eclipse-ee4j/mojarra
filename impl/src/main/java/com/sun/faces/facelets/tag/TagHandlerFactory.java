@@ -38,5 +38,5 @@ interface TagHandlerFactory {
      * @throws FacesException
      * @throws ELException
      */
-    public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException;
+    TagHandler createHandler(TagConfig cfg) throws FacesException, ELException;
 }

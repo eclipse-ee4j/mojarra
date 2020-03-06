@@ -46,5 +46,5 @@ public interface VisitCallback {
      * @return a {@link VisitResult} that indicates whether to continue visiting the component's subtree, skip visiting the
      * component's subtree or end the visit.
      */
-    public VisitResult visit(VisitContext context, UIComponent target);
+    VisitResult visit(VisitContext context, UIComponent target);
 }

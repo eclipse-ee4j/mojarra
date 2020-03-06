@@ -73,7 +73,7 @@ public class RenderKitImpl extends RenderKit {
      * values are the Renderer instances themselves.
      */
 
-    private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies = new ConcurrentHashMap<String, HashMap<String, Renderer>>();
+    private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies = new ConcurrentHashMap<>();
 
     /**
      * For Behavior Renderers: Keys are Strings for the behaviorRendererType, and values are the behaviorRenderer instances

@@ -275,7 +275,7 @@ public final class CdiUtils {
 
     public static DataModel<?> createDataModel(final Class<?> forClass) {
 
-        List<DataModel<?>> dataModel = new ArrayList<DataModel<?>>(1);
+        List<DataModel<?>> dataModel = new ArrayList<>(1);
         CDI<Object> cdi = CDI.current();
 
         // Scan the map in order, the first class that is a super class or equal to the class for which

@@ -36,7 +36,7 @@ import java.util.Map;
  */
 class DefaultTagDecorator implements TagDecorator {
 
-    private static enum Mapper {
+    private enum Mapper {
         a(new ElementConverter("h:commandLink", "jsf:action"), new ElementConverter("h:commandLink", "jsf:actionListener"),
                 new ElementConverter("h:outputLink", "jsf:value"), new ElementConverter("h:link", "jsf:outcome")),
 
@@ -84,7 +84,7 @@ class DefaultTagDecorator implements TagDecorator {
         }
     }
 
-    private static enum Namespace {
+    private enum Namespace {
         p(PassThroughAttributeLibrary.Namespace), jsf(PassThroughElementLibrary.Namespace), h(HtmlLibrary.Namespace);
 
         private String uri;

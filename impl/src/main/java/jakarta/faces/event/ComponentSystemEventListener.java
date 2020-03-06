@@ -43,6 +43,6 @@ public interface ComponentSystemEventListener extends FacesListener {
      *
      * @throws AbortProcessingException if lifecycle processing should cease for this request.
      */
-    public void processEvent(ComponentSystemEvent event) throws AbortProcessingException;
+    void processEvent(ComponentSystemEvent event) throws AbortProcessingException;
 
 }

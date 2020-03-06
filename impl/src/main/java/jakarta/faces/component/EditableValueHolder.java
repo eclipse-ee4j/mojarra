@@ -45,7 +45,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @return the submitted value.
      */
-    public Object getSubmittedValue();
+    Object getSubmittedValue();
 
     /**
      * <p class="changed_added_2_0">
@@ -55,7 +55,7 @@ public interface EditableValueHolder extends ValueHolder {
      * @since 2.0
      */
 
-    public void resetValue();
+    void resetValue();
 
     /**
      * <p>
@@ -68,7 +68,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @param submittedValue The new submitted value
      */
-    public void setSubmittedValue(Object submittedValue);
+    void setSubmittedValue(Object submittedValue);
 
     /**
      * Return the "local value set" state for this component. Calls to <code>setValue()</code> automatically reset this
@@ -76,14 +76,14 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @return <code>true</code> if the local value is set, <code>false</code> otherwise.
      */
-    public boolean isLocalValueSet();
+    boolean isLocalValueSet();
 
     /**
      * Sets the "local value set" state for this component.
      *
      * @param localValueSet the "local value set" boolean.
      */
-    public void setLocalValueSet(boolean localValueSet);
+    void setLocalValueSet(boolean localValueSet);
 
     /**
      * <p>
@@ -92,7 +92,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @return <code>true</code> if valid, <code>false</code> otherwise.
      */
-    public boolean isValid();
+    boolean isValid();
 
     /**
      * <p>
@@ -101,7 +101,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @param valid The new valid flag
      */
-    public void setValid(boolean valid);
+    void setValid(boolean valid);
 
     /**
      * <p>
@@ -110,7 +110,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @return <code>true</code> if required, <code>false</code> otherwise.
      */
-    public boolean isRequired();
+    boolean isRequired();
 
     /**
      * <p>
@@ -119,7 +119,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @param required The new "required field" state
      */
-    public void setRequired(boolean required);
+    void setRequired(boolean required);
 
     /**
      * <p>
@@ -128,7 +128,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @return <code>true</code> if is immediate, <code>false</code> otherwise.
      */
-    public boolean isImmediate();
+    boolean isImmediate();
 
     /**
      * <p>
@@ -139,7 +139,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @param immediate The new "immediate" state
      */
-    public void setImmediate(boolean immediate);
+    void setImmediate(boolean immediate);
 
     /**
      * <p>
@@ -150,7 +150,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @throws NullPointerException if <code>validator</code> is null
      */
-    public void addValidator(Validator validator);
+    void addValidator(Validator validator);
 
     /**
      * <p>
@@ -160,7 +160,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @return the validators, or a zero-length array.
      */
-    public Validator[] getValidators();
+    Validator[] getValidators();
 
     /**
      * <p>
@@ -170,7 +170,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @param validator The {@link Validator} to remove
      */
-    public void removeValidator(Validator validator);
+    void removeValidator(Validator validator);
 
     /**
      * <p>
@@ -182,7 +182,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
-    public void addValueChangeListener(ValueChangeListener listener);
+    void addValueChangeListener(ValueChangeListener listener);
 
     /**
      * <p>
@@ -192,7 +192,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @return the value change listeners, or a zero-length array.
      */
-    public ValueChangeListener[] getValueChangeListeners();
+    ValueChangeListener[] getValueChangeListeners();
 
     /**
      * <p>
@@ -204,7 +204,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
-    public void removeValueChangeListener(ValueChangeListener listener);
+    void removeValueChangeListener(ValueChangeListener listener);
 
     // -------------------------------------------------------------- Deprecated methods
 
@@ -223,7 +223,7 @@ public interface EditableValueHolder extends ValueHolder {
      * @return the validator as a method binding.
      * @deprecated {@link #getValidators} should be used instead.
      */
-    public MethodBinding getValidator();
+    MethodBinding getValidator();
 
     /**
      * <p>
@@ -247,7 +247,7 @@ public interface EditableValueHolder extends ValueHolder {
      * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by creating an instance of
      * {@link jakarta.faces.validator.MethodExpressionValidator}.
      */
-    public void setValidator(MethodBinding validatorBinding);
+    void setValidator(MethodBinding validatorBinding);
 
     /**
      * <p>
@@ -259,7 +259,7 @@ public interface EditableValueHolder extends ValueHolder {
      * @return the value change listener.
      * @deprecated Use {@link #getValueChangeListeners} instead.
      */
-    public MethodBinding getValueChangeListener();
+    MethodBinding getValueChangeListener();
 
     /**
      * <p>
@@ -283,5 +283,5 @@ public interface EditableValueHolder extends ValueHolder {
      * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument {@link ValueChangeListener} by
      * creating an instance of {@link jakarta.faces.event.MethodExpressionValueChangeListener}.
      */
-    public void setValueChangeListener(MethodBinding valueChangeMethod);
+    void setValueChangeListener(MethodBinding valueChangeMethod);
 }

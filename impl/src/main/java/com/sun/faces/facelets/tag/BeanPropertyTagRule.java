@@ -75,7 +75,7 @@ final class BeanPropertyTagRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             try {
-                this.method.invoke(instance, new Object[] { this.attribute.getObject(ctx, this.type) });
+                this.method.invoke(instance, this.attribute.getObject(ctx, this.type));
             } catch (InvocationTargetException e) {
                 throw new TagAttributeException(this.attribute, e.getCause());
             } catch (IllegalAccessException | IllegalArgumentException e) {

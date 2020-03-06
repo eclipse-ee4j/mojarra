@@ -30,7 +30,7 @@ public interface TagParser {
      *
      * @return String Failure message
      */
-    public String getMessage();
+    String getMessage();
 
     /**
      * <p>
@@ -39,26 +39,26 @@ public interface TagParser {
      *
      * @return boolean false if validation conditions have not been met
      */
-    public boolean hasFailed();
+    boolean hasFailed();
 
     /**
      * <p>
      * Set the Validator Info Bean
      * </p>
      */
-    public void setValidatorInfo(ValidatorInfo validatorInfo);
+    void setValidatorInfo(ValidatorInfo validatorInfo);
 
     /**
      * <p>
      * Parse the starting element. Parcel out to appropriate handler method.
      * </p>
      */
-    public void parseStartElement();
+    void parseStartElement();
 
     /**
      * <p>
      * Parse the ending element. Parcel out to appropriate handler method.
      * </p>
      */
-    public void parseEndElement();
+    void parseEndElement();
 }

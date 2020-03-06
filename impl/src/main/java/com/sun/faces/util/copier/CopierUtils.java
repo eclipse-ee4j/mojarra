@@ -32,7 +32,7 @@ public class CopierUtils {
     private final static Set<String> keywords;
 
     static {
-        Set<String> s = new HashSet<String>();
+        Set<String> s = new HashSet<>();
         String[] kws = { "abstract", "continue", "for", "new", "switch", "assert", "default", "if", "package", "synchronized", "boolean", "do", "goto",
                 "private", "this", "break", "double", "implements", "protected", "throw", "byte", "else", "import", "public", "throws", "case", "enum",
                 "instanceof", "return", "transient", "catch", "extends", "int", "short", "try", "char", "final", "interface", "static", "void", "class",

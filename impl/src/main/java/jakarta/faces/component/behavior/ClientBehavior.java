@@ -69,7 +69,7 @@ public interface ClientBehavior extends Behavior {
      *
      * @since 2.0
      */
-    public String getScript(ClientBehaviorContext behaviorContext);
+    String getScript(ClientBehaviorContext behaviorContext);
 
     /**
      * <p class="changed_added_2_0">
@@ -93,7 +93,7 @@ public interface ClientBehavior extends Behavior {
      *
      * @since 2.0
      */
-    public void decode(FacesContext context, UIComponent component);
+    void decode(FacesContext context, UIComponent component);
 
     /**
      * <p class="changed_added_2_0">
@@ -107,5 +107,5 @@ public interface ClientBehavior extends Behavior {
      *
      * @since 2.0
      */
-    public Set<ClientBehaviorHint> getHints();
+    Set<ClientBehaviorHint> getHints();
 }

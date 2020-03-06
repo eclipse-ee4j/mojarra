@@ -40,7 +40,7 @@ public interface ValueHolder {
      *
      * @return the local value.
      */
-    public Object getLocalValue();
+    Object getLocalValue();
 
     /**
      * <p>
@@ -55,7 +55,7 @@ public interface ValueHolder {
      *
      * @return the value.
      */
-    public Object getValue();
+    Object getValue();
 
     /**
      * <p>
@@ -64,7 +64,7 @@ public interface ValueHolder {
      *
      * @param value The new local value
      */
-    public void setValue(Object value);
+    void setValue(Object value);
 
     /**
      * <p>
@@ -73,7 +73,7 @@ public interface ValueHolder {
      *
      * @return the converter.
      */
-    public Converter getConverter();
+    Converter getConverter();
 
     /**
      * <p>
@@ -82,5 +82,5 @@ public interface ValueHolder {
      *
      * @param converter New {@link Converter} (or <code>null</code>)
      */
-    public void setConverter(Converter converter);
+    void setConverter(Converter converter);
 }

@@ -161,8 +161,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     private static final char[] ESCAPEDSTART = ("&lt;" + BREAKCDATA + "![").toCharArray();
     private static final char[] ESCAPEDEND = ("]" + BREAKCDATA + "]>").toCharArray();
 
-    private static final int CLOSEBRACKET = (int) ']';
-    private static final int LT = (int) '<';
+    private static final int CLOSEBRACKET = ']';
+    private static final int LT = '<';
 
     static final Pattern CDATA_START_SLASH_SLASH;
 

@@ -37,7 +37,7 @@ public interface ConfigurationResourceProvider {
      *
      * @return a List zero or more <code>URL</code> instances representing application configuration resources
      */
-    public Collection<URI> getResources(ServletContext context);
+    Collection<URI> getResources(ServletContext context);
 
     /**
      * Parameter to force the XML validation of the JSF configuration files returned by getResources.
@@ -46,7 +46,7 @@ public interface ConfigurationResourceProvider {
      * @param globalValidateXml the global (application level) value of the validateXml parameter
      * @return true if Mojarra should validate the given URI file, false if not
      */
-    default public boolean validateXml(URI uri, boolean globalValidateXml) {
+    default boolean validateXml(URI uri, boolean globalValidateXml) {
         return globalValidateXml;
     }
 

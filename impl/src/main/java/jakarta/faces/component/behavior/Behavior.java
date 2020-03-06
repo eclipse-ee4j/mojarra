@@ -57,6 +57,6 @@ public interface Behavior {
      *
      * @since 2.0
      */
-    public void broadcast(BehaviorEvent event);
+    void broadcast(BehaviorEvent event);
 
 }

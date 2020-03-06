@@ -357,7 +357,7 @@ public class DocumentOrderingWrapper {
     }
 
     public static LinkedList<String> getIds(DocumentOrderingWrapper[] documents) {
-        LinkedList<String> ids = new LinkedList<String>();
+        LinkedList<String> ids = new LinkedList<>();
         for (int i = 0; i < documents.length; i++) {
             ids.add(documents[i].getDocumentId());
         }
@@ -652,7 +652,7 @@ public class DocumentOrderingWrapper {
     }
 
     public static HashMap<String, DocumentOrderingWrapper> getDocumentHashMap(DocumentOrderingWrapper[] documents) {
-        HashMap<String, DocumentOrderingWrapper> configMap = new HashMap<String, DocumentOrderingWrapper>();
+        HashMap<String, DocumentOrderingWrapper> configMap = new HashMap<>();
 
         for (DocumentOrderingWrapper document : documents) {
             String name = document.id;
@@ -665,8 +665,8 @@ public class DocumentOrderingWrapper {
     }
 
     public static void preSort(DocumentOrderingWrapper[] documents) {
-        List<DocumentOrderingWrapper> anonymousAndUnorderedList = new ArrayList<DocumentOrderingWrapper>();
-        Map<Integer, Integer> linkedMap = new LinkedHashMap<Integer, Integer>();
+        List<DocumentOrderingWrapper> anonymousAndUnorderedList = new ArrayList<>();
+        Map<Integer, Integer> linkedMap = new LinkedHashMap<>();
 
         DocumentOrderingWrapper[] copyOfDocuments = new DocumentOrderingWrapper[documents.length];
         System.arraycopy(documents, 0, copyOfDocuments, 0, documents.length);
@@ -702,7 +702,7 @@ public class DocumentOrderingWrapper {
     }
 
     public static <K, V extends Comparable<? super V>> Map<K, V> descendingByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
+        List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
             @Override
             public int compare(Map.Entry<K, V> a, Map.Entry<K, V> b) {
@@ -710,7 +710,7 @@ public class DocumentOrderingWrapper {
             }
         });
 
-        Map<K, V> result = new LinkedHashMap<K, V>();
+        Map<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {
             result.put(entry.getKey(), entry.getValue());
         }

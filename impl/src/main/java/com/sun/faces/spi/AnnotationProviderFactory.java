@@ -101,7 +101,7 @@ public class AnnotationProviderFactory {
         Constructor c;
 
         try {
-            c = DEFAULT_ANNOTATION_PROVIDER.getDeclaredConstructor(new Class<?>[] { ServletContext.class });
+            c = DEFAULT_ANNOTATION_PROVIDER.getDeclaredConstructor(ServletContext.class);
             result = (AnnotationProvider) c.newInstance(sc);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e2) {

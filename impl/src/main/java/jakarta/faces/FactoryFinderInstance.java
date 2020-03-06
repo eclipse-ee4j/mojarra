@@ -178,7 +178,7 @@ final class FactoryFinderInstance {
                 return factoryOrList;
             }
 
-            savedFactoryNames.put(factoryName, new ArrayList<String>((List<String>) factoryOrList));
+            savedFactoryNames.put(factoryName, new ArrayList<>((List<String>) factoryOrList));
 
             Object factory = getImplementationInstance(getContextClassLoader2(), factoryName, (List<String>) factoryOrList);
 

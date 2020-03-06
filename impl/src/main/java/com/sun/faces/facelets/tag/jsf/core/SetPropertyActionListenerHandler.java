@@ -119,7 +119,7 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         private ValueBinding target;
 
         public LegacySetPropertyListener() {
-        };
+        }
 
         public LegacySetPropertyListener(ValueBinding value, ValueBinding target) {
             this.value = value;
@@ -144,7 +144,7 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         private ValueExpression target;
 
         public SetPropertyListener() {
-        };
+        }
 
         public SetPropertyListener(ValueExpression value, ValueExpression target) {
             this.value = value;

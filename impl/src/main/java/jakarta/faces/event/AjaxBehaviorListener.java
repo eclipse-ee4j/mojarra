@@ -40,5 +40,5 @@ public interface AjaxBehaviorListener extends BehaviorListener {
      *
      * @since 2.0
      */
-    public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException;
+    void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException;
 }

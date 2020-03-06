@@ -42,7 +42,7 @@ public interface ActionListener extends FacesListener {
      * </p>
      *
      */
-    public static final String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
+    String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
 
     /**
      * <p>
@@ -54,6 +54,6 @@ public interface ActionListener extends FacesListener {
      * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
      * current event should be performed
      */
-    public void processAction(ActionEvent event) throws AbortProcessingException;
+    void processAction(ActionEvent event) throws AbortProcessingException;
 
 }

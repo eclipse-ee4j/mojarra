@@ -121,7 +121,7 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
             if (ee.getCause() instanceof AbortProcessingException) {
                 throw (AbortProcessingException) ee.getCause();
             } else {
-                throw (ELException) ee;
+                throw ee;
             }
         }
     }

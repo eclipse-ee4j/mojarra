@@ -1209,7 +1209,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             boolean previousEqualsValue = previous.equals(value);
             if (!previousEqualsValue && previous instanceof Comparable && value instanceof Comparable) {
                 try {
-                    result = !(0 == ((Comparable) previous).compareTo((Comparable) value));
+                    result = !(0 == ((Comparable) previous).compareTo(value));
                 } catch (ClassCastException cce) {
                     // Comparable throws CCE if the types prevent a comparison
                     result = true;

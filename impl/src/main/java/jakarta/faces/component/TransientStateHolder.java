@@ -50,7 +50,7 @@ public interface TransientStateHolder {
      * @return object containing transient values
      * @since 2.1
      */
-    public java.lang.Object saveTransientState(jakarta.faces.context.FacesContext context);
+    java.lang.Object saveTransientState(jakarta.faces.context.FacesContext context);
 
     /**
      * <p class="changed_added_2_1">
@@ -65,5 +65,5 @@ public interface TransientStateHolder {
      * @param state the object containing transient values
      * @since 2.1
      */
-    public void restoreTransientState(jakarta.faces.context.FacesContext context, java.lang.Object state);
+    void restoreTransientState(jakarta.faces.context.FacesContext context, java.lang.Object state);
 }

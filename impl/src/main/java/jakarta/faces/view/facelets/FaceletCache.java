@@ -58,7 +58,7 @@ public abstract class FaceletCache<V> {
          *
          * @return the newly created {@code Facelet} or View Metadata {@code Facelet}
          */
-        public V newInstance(final URL key) throws IOException;
+        V newInstance(final URL key) throws IOException;
     }
 
     /**

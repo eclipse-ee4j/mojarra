@@ -36,6 +36,6 @@ public interface ValidatorConfig extends TagConfig {
      *
      * @since 2.0
      */
-    public String getValidatorId();
+    String getValidatorId();
 
 }

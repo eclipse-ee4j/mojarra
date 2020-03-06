@@ -1629,7 +1629,7 @@ public class RenderKitUtils {
 
     // Little utility enum that we use to identify the type of
     // handler that we are going to render.
-    private static enum HandlerType {
+    private enum HandlerType {
 
         // Indicates that we only have a user handler - nothing else
         USER_HANDLER_ONLY,

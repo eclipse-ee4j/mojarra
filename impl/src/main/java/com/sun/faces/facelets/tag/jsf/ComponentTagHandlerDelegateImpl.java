@@ -552,11 +552,11 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
     interface CreateComponentDelegate {
 
-        public UIComponent createComponent(FaceletContext ctx);
+        UIComponent createComponent(FaceletContext ctx);
 
-        public void setCompositeComponent(FacesContext context, UIComponent cc);
+        void setCompositeComponent(FacesContext context, UIComponent cc);
 
-        public UIComponent getCompositeComponent(FacesContext context);
+        UIComponent getCompositeComponent(FacesContext context);
 
     }
 

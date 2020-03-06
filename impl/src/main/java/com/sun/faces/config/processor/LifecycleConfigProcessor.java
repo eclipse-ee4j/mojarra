@@ -65,7 +65,7 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
     private List<PhaseListener> appPhaseListeners;
 
     public LifecycleConfigProcessor() {
-        appPhaseListeners = new CopyOnWriteArrayList<PhaseListener>();
+        appPhaseListeners = new CopyOnWriteArrayList<>();
     }
 
     // -------------------------------------------- Methods from ConfigProcessor
@@ -126,7 +126,7 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
                         }
 
                         for (Iterator<String> t = factory.getLifecycleIds(); t.hasNext();) {
-                            String lfId = (String) t.next();
+                            String lfId = t.next();
                             Lifecycle lifecycle = factory.getLifecycle(lfId);
                             if (LOGGER.isLoggable(FINE)) {
                                 LOGGER.log(FINE, format("Adding PhaseListener ''{0}'' to lifecycle ''{0}}", phaseListenerClassName, lfId));

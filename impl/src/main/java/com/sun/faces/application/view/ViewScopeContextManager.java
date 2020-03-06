@@ -69,7 +69,7 @@ public class ViewScopeContextManager {
                 LOGGER.log(Level.SEVERE, "CDI 1.1 events not enabled", ex);
             }
         }
-        beanManager = (BeanManager) Util.getCdiBeanManager(facesContext);
+        beanManager = Util.getCdiBeanManager(facesContext);
     }
 
     /**
@@ -373,7 +373,7 @@ public class ViewScopeContextManager {
 
     public void fireInitializedEvent(FacesContext facesContext, UIViewRoot root) {
         if (isCdiOneOneOrGreater && null != viewScopedCDIEventFireHelperImplClass) {
-            BeanManager beanManager = (BeanManager) Util.getCdiBeanManager(facesContext);
+            BeanManager beanManager = Util.getCdiBeanManager(facesContext);
             if (null != beanManager) {
                 Set<Bean<?>> availableBeans = beanManager.getBeans(viewScopedCDIEventFireHelperImplClass);
                 if (null != availableBeans && !availableBeans.isEmpty()) {
@@ -391,7 +391,7 @@ public class ViewScopeContextManager {
 
     public void fireDestroyedEvent(FacesContext facesContext, UIViewRoot root) {
         if (isCdiOneOneOrGreater && null != viewScopedCDIEventFireHelperImplClass) {
-            BeanManager beanManager = (BeanManager) Util.getCdiBeanManager(facesContext);
+            BeanManager beanManager = Util.getCdiBeanManager(facesContext);
             if (null != beanManager) {
                 Set<Bean<?>> availableBeans = beanManager.getBeans(viewScopedCDIEventFireHelperImplClass);
                 if (null != availableBeans && !availableBeans.isEmpty()) {

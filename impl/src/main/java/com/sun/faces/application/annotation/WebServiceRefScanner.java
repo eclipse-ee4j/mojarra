@@ -77,8 +77,8 @@ class WebServiceRefScanner implements Scanner {
         }
 
         if (!classAnnotations.isEmpty() || !fieldAnnotations.isEmpty()) {
-            handler = new WebServiceRefHandler(fields.toArray(new Field[0]), (WebServiceRef[]) fieldAnnotations.toArray(new WebServiceRef[0]),
-                    methods.toArray(new Method[0]), (WebServiceRef[]) methodAnnotations.toArray(new WebServiceRef[0]));
+            handler = new WebServiceRefHandler(fields.toArray(new Field[0]), fieldAnnotations.toArray(new WebServiceRef[0]),
+                    methods.toArray(new Method[0]), methodAnnotations.toArray(new WebServiceRef[0]));
         }
         return handler;
     }

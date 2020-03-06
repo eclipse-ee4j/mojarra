@@ -67,5 +67,5 @@ public interface FaceletHandler {
      * @since 2.0
      *
      */
-    public void apply(FaceletContext ctx, UIComponent parent) throws IOException;
+    void apply(FaceletContext ctx, UIComponent parent) throws IOException;
 }

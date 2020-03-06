@@ -86,7 +86,7 @@ public class FacesInitializer implements ServletContainerInitializer {
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
 
-        Set<Class<?>> annotatedClasses = new HashSet<Class<?>>();
+        Set<Class<?>> annotatedClasses = new HashSet<>();
         if (classes != null) {
             annotatedClasses.addAll(classes);
         }

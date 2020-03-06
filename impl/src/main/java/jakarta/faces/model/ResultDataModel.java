@@ -134,7 +134,7 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>> {
             throw new NoRowAvailableException();
         } else {
             // noinspection unchecked
-            return ((SortedMap<String, Object>) rows[index]);
+            return (rows[index]);
         }
 
     }

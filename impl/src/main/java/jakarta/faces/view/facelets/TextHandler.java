@@ -33,7 +33,7 @@ public interface TextHandler {
      *
      * @return the literal String value of the contained text
      */
-    public String getText();
+    String getText();
 
     /**
      * <p class="changed_added_2_0">
@@ -44,5 +44,5 @@ public interface TextHandler {
      *
      * @return the resolved literal String value of the contained text after evaluating EL
      */
-    public String getText(FaceletContext ctx);
+    String getText(FaceletContext ctx);
 }

@@ -42,7 +42,7 @@ public interface SystemEventListener extends FacesListener {
      *
      * @throws AbortProcessingException if lifecycle processing should cease for this request.
      */
-    public void processEvent(SystemEvent event) throws AbortProcessingException;
+    void processEvent(SystemEvent event) throws AbortProcessingException;
 
     /**
      * <p>
@@ -54,6 +54,6 @@ public interface SystemEventListener extends FacesListener {
      *
      * @return the value as specified above
      */
-    public boolean isListenerForSource(Object source);
+    boolean isListenerForSource(Object source);
 
 }

@@ -54,6 +54,6 @@ public interface SystemEventListenerHolder {
      * @return the listeners for the argument class
      *
      */
-    public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> facesEventClass);
+    List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> facesEventClass);
 
 }

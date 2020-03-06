@@ -38,7 +38,7 @@ public interface PhaseListener extends EventListener, Serializable {
      *
      * @param event the phase event.
      */
-    public void afterPhase(PhaseEvent event);
+    void afterPhase(PhaseEvent event);
 
     /**
      * <p>
@@ -48,7 +48,7 @@ public interface PhaseListener extends EventListener, Serializable {
      *
      * @param event the phase event.
      */
-    public void beforePhase(PhaseEvent event);
+    void beforePhase(PhaseEvent event);
 
     /**
      * <p>
@@ -59,6 +59,6 @@ public interface PhaseListener extends EventListener, Serializable {
      *
      * @return the phase id.
      */
-    public PhaseId getPhaseId();
+    PhaseId getPhaseId();
 
 }

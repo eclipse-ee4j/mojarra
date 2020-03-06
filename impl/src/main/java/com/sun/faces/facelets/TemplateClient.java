@@ -44,6 +44,6 @@ public interface TemplateClient {
      * @throws FaceletException
      * @throws ELException
      */
-    public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException;
+    boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException;
 
 }

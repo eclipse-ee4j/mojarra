@@ -520,7 +520,7 @@ public class ConverterPropertyEditorFactory {
                     return null;
                 }
 
-                classLoaderCache.put(targetClass.getClassLoader(), new WeakReference<DisposableClassLoader>(loader));
+                classLoaderCache.put(targetClass.getClassLoader(), new WeakReference<>(loader));
             }
             return (Class<? extends ConverterPropertyEditorBase>) loader.loadClass(className);
         } catch (ClassNotFoundException e) {

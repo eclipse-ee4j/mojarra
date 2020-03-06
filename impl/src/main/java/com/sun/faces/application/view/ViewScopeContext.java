@@ -108,9 +108,9 @@ public class ViewScopeContext implements Context, Serializable {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext != null) {
                 ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
-                result = (T) manager.getContextManager().getBean(facesContext, contextual);
+                result = manager.getContextManager().getBean(facesContext, contextual);
                 if (result == null) {
-                    result = (T) manager.getContextManager().createBean(facesContext, contextual, creational);
+                    result = manager.getContextManager().createBean(facesContext, contextual, creational);
                 }
             }
         }

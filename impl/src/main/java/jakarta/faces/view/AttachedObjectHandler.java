@@ -41,7 +41,7 @@ public interface AttachedObjectHandler {
      * @param context The <code>FacesContext</code> for this request
      * @param parent The <code>UIComponent</code> to which this particular attached object must be applied.
      */
-    public void applyAttachedObject(FacesContext context, UIComponent parent);
+    void applyAttachedObject(FacesContext context, UIComponent parent);
 
     /**
      * <p class="changed_added_2_0">
@@ -51,6 +51,6 @@ public interface AttachedObjectHandler {
      *
      * @return the value of the "for" attribute for this attached object
      */
-    public String getFor();
+    String getFor();
 
 }

@@ -44,7 +44,7 @@ public interface ClientBehaviorHolder {
      *
      * @since 2.0
      */
-    public void addClientBehavior(String eventName, ClientBehavior behavior);
+    void addClientBehavior(String eventName, ClientBehavior behavior);
 
     /**
      * <p class="changed_added_2_0">
@@ -55,7 +55,7 @@ public interface ClientBehaviorHolder {
      * @return an unmodifiable collection of event names.
      * @since 2.0
      */
-    public Collection<String> getEventNames();
+    Collection<String> getEventNames();
 
     /**
      * <p class="changed_added_2_0">
@@ -67,7 +67,7 @@ public interface ClientBehaviorHolder {
      * @return an unmodifiable map of client behaviors.
      * @since 2.0
      */
-    public Map<String, List<ClientBehavior>> getClientBehaviors();
+    Map<String, List<ClientBehavior>> getClientBehaviors();
 
     /**
      * <p class="changed_added_2_0">
@@ -77,5 +77,5 @@ public interface ClientBehaviorHolder {
      * @return the default event name.
      * @since 2.0
      */
-    public String getDefaultEventName();
+    String getDefaultEventName();
 }

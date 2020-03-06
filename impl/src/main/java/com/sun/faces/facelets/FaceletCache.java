@@ -28,7 +28,7 @@ public abstract class FaceletCache<V> {
      */
     @Deprecated
     public interface InstanceFactory<V> {
-        public V newInstance(final URL key) throws IOException;
+        V newInstance(final URL key) throws IOException;
     }
 
     /**

@@ -201,7 +201,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
 
     @SafeVarargs
     protected static <T> Set<T> asSet(T... a) {
-        return new HashSet<T>(asList(a));
+        return new HashSet<>(asList(a));
     }
 
 }

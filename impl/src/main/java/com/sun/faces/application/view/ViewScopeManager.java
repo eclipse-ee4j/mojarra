@@ -261,7 +261,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 }
 
                 if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {
-                    sessionMap.put(ACTIVE_VIEW_MAPS, (Map<String, Object>) Collections.synchronizedMap(new LRUMap<String, Object>(size)));
+                    sessionMap.put(ACTIVE_VIEW_MAPS, Collections.synchronizedMap(new LRUMap<String, Object>(size)));
                 }
 
                 Map<String, Object> viewMaps = (Map<String, Object>) sessionMap.get(ACTIVE_VIEW_MAPS);

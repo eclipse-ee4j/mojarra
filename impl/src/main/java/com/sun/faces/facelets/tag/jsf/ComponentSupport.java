@@ -37,7 +37,6 @@ import jakarta.faces.view.facelets.TagAttributeException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -151,7 +150,7 @@ public final class ComponentSupport {
             componentToTagMap = new HashMap<>();
             contextMap.put(COMPONENT_TO_TAG_MAP_NAME, componentToTagMap);
         }
-        return componentToTagMap.put((Integer) System.identityHashCode(c), t);
+        return componentToTagMap.put(System.identityHashCode(c), t);
     }
 
     public static Tag getTagForComponent(FacesContext context, UIComponent c) {
@@ -160,7 +159,7 @@ public final class ComponentSupport {
         Map<Integer, Tag> componentToTagMap;
         componentToTagMap = (Map<Integer, Tag>) contextMap.get(COMPONENT_TO_TAG_MAP_NAME);
         if (null != componentToTagMap) {
-            result = componentToTagMap.get((Integer) System.identityHashCode(c));
+            result = componentToTagMap.get(System.identityHashCode(c));
         }
 
         return result;

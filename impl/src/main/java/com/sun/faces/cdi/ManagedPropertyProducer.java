@@ -78,7 +78,7 @@ public class ManagedPropertyProducer extends CdiProducer<Object> {
 
         FacesContext context = getBeanReference(beanManager, FacesContext.class);
 
-        return (T) context.getApplication().evaluateExpressionGet(context, expression, expectedClass);
+        return context.getApplication().evaluateExpressionGet(context, expression, expectedClass);
     }
 
 }

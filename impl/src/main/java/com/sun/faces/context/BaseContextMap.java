@@ -221,7 +221,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         @Override
         public Map.Entry<String, V> next() {
             nextKey();
-            return new Entry<V>(currentKey, get(currentKey));
+            return new Entry<>(currentKey, get(currentKey));
         }
     }
 

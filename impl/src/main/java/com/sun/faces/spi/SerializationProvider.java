@@ -57,7 +57,7 @@ public interface SerializationProvider {
      * @return an <code>ObjectInputStream</code>
      * @throws IOException if an error occurs when creating the input stream
      */
-    public ObjectInputStream createObjectInputStream(InputStream source) throws IOException;
+    ObjectInputStream createObjectInputStream(InputStream source) throws IOException;
 
     /**
      * <p>
@@ -68,6 +68,6 @@ public interface SerializationProvider {
      * @return an <code>ObjectOutputStream</code>
      * @throws IOException if an error occurs when creating the output stream
      */
-    public ObjectOutputStream createObjectOutputStream(OutputStream destination) throws IOException;
+    ObjectOutputStream createObjectOutputStream(OutputStream destination) throws IOException;
 
 } // END SerializationProvider

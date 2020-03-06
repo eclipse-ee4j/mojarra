@@ -48,7 +48,7 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
          * @param value cached value
          * @return true if the value expired and should be removed from the cache, false otherwise
          */
-        public boolean isExpired(K key, V value);
+        boolean isExpired(K key, V value);
     }
 
     /**

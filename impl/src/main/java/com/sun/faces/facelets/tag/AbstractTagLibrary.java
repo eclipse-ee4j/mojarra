@@ -179,7 +179,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
-                return (TagHandler) this.handlerType.getConstructor(CONSTRUCTOR_SIG).newInstance(new Object[] { cfg });
+                return (TagHandler) this.handlerType.getConstructor(CONSTRUCTOR_SIG).newInstance(cfg);
             } catch (InvocationTargetException ite) {
                 Throwable t = ite.getCause();
                 if (t instanceof FacesException) {
@@ -319,7 +319,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
                 ComponentConfig ccfg = new ComponentConfigWrapper(cfg, this.componentType, this.renderType);
-                return (TagHandler) this.constructor.newInstance(new Object[] { ccfg });
+                return (TagHandler) this.constructor.newInstance(ccfg);
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
@@ -398,7 +398,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
                 ConverterConfig ccfg = new ConverterConfigWrapper(cfg, this.converterId);
-                return (TagHandler) this.constructor.newInstance(new Object[] { ccfg });
+                return (TagHandler) this.constructor.newInstance(ccfg);
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
@@ -430,7 +430,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
                 ValidatorConfig ccfg = new ValidatorConfigWrapper(cfg, this.validatorId);
-                return (TagHandler) this.constructor.newInstance(new Object[] { ccfg });
+                return (TagHandler) this.constructor.newInstance(ccfg);
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
@@ -462,7 +462,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
             try {
                 BehaviorConfig ccfg = new BehaviorConfigWrapper(cfg, this.behaviorId);
-                return (TagHandler) this.constructor.newInstance(new Object[] { ccfg });
+                return (TagHandler) this.constructor.newInstance(ccfg);
             } catch (InvocationTargetException e) {
                 throw new FaceletException(e.getCause().getMessage(), e.getCause().getCause());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
