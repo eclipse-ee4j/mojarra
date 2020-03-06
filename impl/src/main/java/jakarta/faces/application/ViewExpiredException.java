@@ -23,8 +23,7 @@ import jakarta.faces.FacesException;
 /**
  * <p>
  * Implementations must throw this {@link FacesException} when attempting to restore the view
- * {@link StateManager#restoreView(jakarta.faces.context.FacesContext, String, String)} results in
- * failure on postback.
+ * {@link StateManager#restoreView(jakarta.faces.context.FacesContext, String, String)} results in failure on postback.
  * </p>
  *
  * @since 1.2
@@ -32,11 +31,8 @@ import jakarta.faces.FacesException;
 
 public class ViewExpiredException extends FacesException {
 
-
     private static final long serialVersionUID = 5175808310270035833L;
-    
-    
-    
+
     // ----------------------------------------------------- Instance Variables
 
     /**
@@ -45,9 +41,7 @@ public class ViewExpiredException extends FacesException {
      * </p>
      */
     private String viewId;
-    
-    
-    
+
     // ----------------------------------------------------------- Constructors
 
     /**
@@ -111,14 +105,11 @@ public class ViewExpiredException extends FacesException {
         this.viewId = viewId;
     }
 
-   
-
     // --------------------------------------------------------- Public Methods
 
     /**
      * <p>
-     * Return the view identifier of this exception, or <code>null</code> if the view identifier is
-     * nonexistent or unknown.
+     * Return the view identifier of this exception, or <code>null</code> if the view identifier is nonexistent or unknown.
      * </p>
      * 
      * @return the view id, or <code>null</code>.
@@ -129,8 +120,8 @@ public class ViewExpiredException extends FacesException {
 
     /**
      * <p>
-     * Return the message for this exception prepended with the view identifier if the view
-     * identifier is not <code>null</code>, otherwise, return the message.
+     * Return the message for this exception prepended with the view identifier if the view identifier is not
+     * <code>null</code>, otherwise, return the message.
      * </p>
      * 
      * @return the message.
@@ -140,7 +131,7 @@ public class ViewExpiredException extends FacesException {
         if (viewId != null) {
             return "viewId:" + viewId + " - " + super.getMessage();
         }
-        
+
         return super.getMessage();
     }
 

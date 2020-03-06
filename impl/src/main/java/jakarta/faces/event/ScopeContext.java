@@ -19,24 +19,25 @@ package jakarta.faces.event;
 import java.util.Map;
 
 /**
- * <p class="changed_added_2_0">A structure that contains the name of
- * the scope and the scope itself exposed as a <code>Map&lt;String,
- * Object&gt;</code>.</p>
+ * <p class="changed_added_2_0">
+ * A structure that contains the name of the scope and the scope itself exposed as a <code>Map&lt;String,
+ * Object&gt;</code>.
+ * </p>
  *
  * @since 2.0
  */
 public class ScopeContext {
 
     private String scopeName;
-    private Map<String,Object> scope;
-
+    private Map<String, Object> scope;
 
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p class="changed_added_2_0">Construct this structure with the
-     * supplied arguments.</p>
+     * <p class="changed_added_2_0">
+     * Construct this structure with the supplied arguments.
+     * </p>
+     * 
      * @param scopeName the name of the scope
      * @param scope the scope itself
      */
@@ -47,13 +48,12 @@ public class ScopeContext {
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
 
-
     /**
-     * <p class="changed_added_2_0">Return the name of this custom
-     * scope.</p>
+     * <p class="changed_added_2_0">
+     * Return the name of this custom scope.
+     * </p>
      * 
      * @return Return the name of this custom scope.
      */
@@ -63,17 +63,17 @@ public class ScopeContext {
 
     }
 
-
     /**
-     * <p class="changed_modified_2_0">Return the scope itself, exposed
-     * as a <code>Map</code>.</p>
+     * <p class="changed_modified_2_0">
+     * Return the scope itself, exposed as a <code>Map</code>.
+     * </p>
      * 
      * @return Return the scope itself, exposed as a <code>Map</code>
      */
     public Map<String, Object> getScope() {
 
         return scope;
-        
+
     }
 
 }

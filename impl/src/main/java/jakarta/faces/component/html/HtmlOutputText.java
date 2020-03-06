@@ -25,21 +25,19 @@ import jakarta.faces.component.UIOutput;
 
 /**
  * <p>
- * Renders the component value as text, optionally wrapping in a
- * <code>span</code> element if I18N attributes, CSS styles or style
- * classes are specified.
+ * Renders the component value as text, optionally wrapping in a <code>span</code> element if I18N attributes, CSS
+ * styles or style classes are specified.
  * </p>
  * <p class="changed_modified_2_3">
- * If you are using h:outputText (or an equivalent inline EL
- * expression) within a script or style block the value is NOT
+ * If you are using h:outputText (or an equivalent inline EL expression) within a script or style block the value is NOT
  * escaped by default.
  * </p>
- * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Text</code>".
- * This value can be changed by calling the <code>setRendererType()</code> method.</p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Text</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
 public class HtmlOutputText extends UIOutput {
-
-
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -48,37 +46,40 @@ public class HtmlOutputText extends UIOutput {
         setRendererType("jakarta.faces.Text");
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlOutputText";
 
-
     protected enum PropertyKeys {
-        dir,
-        escape,
-        lang,
-        role,
-        style,
-        styleClass,
-        title,
-;
+        dir, escape, lang, role, style, styleClass, title,;
+
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
-}
+    }
 
     /**
-     * <p>Return the value of the <code>dir</code> property.</p>
+     * <p>
+     * Return the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Direction indication for text that does not inherit directionality.
-     * Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).
-     * These attributes are case sensitive when rendering to XHTML, so
-     * care must be taken to have the correct case.
+     * <p>
+     * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
+     * and "RTL" (right-to-left). These attributes are case sensitive when rendering to XHTML, so care must be taken to have
+     * the correct case.
      */
     public java.lang.String getDir() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.dir);
@@ -86,7 +87,10 @@ public class HtmlOutputText extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>dir</code> property.</p>
+     * <p>
+     * Set the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @param dir the new property value
      */
     public void setDir(java.lang.String dir) {
@@ -94,13 +98,15 @@ public class HtmlOutputText extends UIOutput {
         handleAttribute("dir", dir);
     }
 
-
     /**
-     * <p>Return the value of the <code>escape</code> property.</p>
+     * <p>
+     * Return the value of the <code>escape</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Flag indicating that characters that are sensitive
-     * in HTML and XML markup must be escaped.  This flag
-     * is set to "true" by default.
+     * <p>
+     * Contents: Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag is set
+     * to "true" by default.
      */
     public boolean isEscape() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.escape, true);
@@ -108,19 +114,24 @@ public class HtmlOutputText extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>escape</code> property.</p>
+     * <p>
+     * Set the value of the <code>escape</code> property.
+     * </p>
+     * 
      * @param escape the new property value
      */
     public void setEscape(boolean escape) {
         getStateHelper().put(PropertyKeys.escape, escape);
     }
 
-
     /**
-     * <p>Return the value of the <code>lang</code> property.</p>
+     * <p>
+     * Return the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Code describing the language used in the generated markup
-     * for this component.
+     * <p>
+     * Contents: Code describing the language used in the generated markup for this component.
      */
     public java.lang.String getLang() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.lang);
@@ -128,7 +139,10 @@ public class HtmlOutputText extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>lang</code> property.</p>
+     * <p>
+     * Set the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @param lang the new property value
      */
     public void setLang(java.lang.String lang) {
@@ -136,24 +150,26 @@ public class HtmlOutputText extends UIOutput {
         handleAttribute("lang", lang);
     }
 
-
     /**
-     * <p>Return the value of the <code>role</code> property.</p>
-     * @return the property value
-     * <p>Contents: <p class="changed_added_2_2">Per the WAI-ARIA spec and its
-     * relationship to HTML5 (Section title ARIA Role Attriubute),
-     * every HTML element may have a "role" attribute whose value
-     * must be passed through unmodified on the element on which it
-     * is declared in the final rendered markup.  The attribute, if
-     * specified, must have a value that is a string literal that is,
-     * or an EL Expression that evaluates to, a set of
-     * space-separated tokens representing the various WAI-ARIA roles
-     * that the element belongs to.
+     * <p>
+     * Return the value of the <code>role</code> property.
      * </p>
      * 
-     * <p class="changed_added_2_2">It is the page author's
-     * responsibility to ensure that the user agent is capable of
-     * correctly interpreting the value of this attribute.</p>
+     * @return the property value
+     * <p>
+     * Contents:
+     * <p class="changed_added_2_2">
+     * Per the WAI-ARIA spec and its relationship to HTML5 (Section title ARIA Role Attriubute), every HTML element may have
+     * a "role" attribute whose value must be passed through unmodified on the element on which it is declared in the final
+     * rendered markup. The attribute, if specified, must have a value that is a string literal that is, or an EL Expression
+     * that evaluates to, a set of space-separated tokens representing the various WAI-ARIA roles that the element belongs
+     * to.
+     * </p>
+     * 
+     * <p class="changed_added_2_2">
+     * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
+     * of this attribute.
+     * </p>
      */
     public java.lang.String getRole() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.role);
@@ -161,7 +177,10 @@ public class HtmlOutputText extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>role</code> property.</p>
+     * <p>
+     * Set the value of the <code>role</code> property.
+     * </p>
+     * 
      * @param role the new property value
      */
     public void setRole(java.lang.String role) {
@@ -169,11 +188,14 @@ public class HtmlOutputText extends UIOutput {
         handleAttribute("role", role);
     }
 
-
     /**
-     * <p>Return the value of the <code>style</code> property.</p>
+     * <p>
+     * Return the value of the <code>style</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style(s) to be applied when this component is rendered.
+     * <p>
+     * Contents: CSS style(s) to be applied when this component is rendered.
      */
     public java.lang.String getStyle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.style);
@@ -181,7 +203,10 @@ public class HtmlOutputText extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>style</code> property.</p>
+     * <p>
+     * Set the value of the <code>style</code> property.
+     * </p>
+     * 
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -189,13 +214,15 @@ public class HtmlOutputText extends UIOutput {
         handleAttribute("style", style);
     }
 
-
     /**
-     * <p>Return the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Space-separated list of CSS style class(es) to be applied when
-     * this element is rendered.  This value must be passed through
-     * as the "class" attribute on generated markup.
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
+     * passed through as the "class" attribute on generated markup.
      */
     public java.lang.String getStyleClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.styleClass);
@@ -203,19 +230,24 @@ public class HtmlOutputText extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>title</code> property.</p>
+     * <p>
+     * Return the value of the <code>title</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Advisory title information about markup elements generated
-     * for this component.
+     * <p>
+     * Contents: Advisory title information about markup elements generated for this component.
      */
     public java.lang.String getTitle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.title);
@@ -223,14 +255,16 @@ public class HtmlOutputText extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>title</code> property.</p>
+     * <p>
+     * Set the value of the <code>title</code> property.
+     * </p>
+     * 
      * @param title the new property value
      */
     public void setTitle(java.lang.String title) {
         getStateHelper().put(PropertyKeys.title, title);
         handleAttribute("title", title);
     }
-
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");

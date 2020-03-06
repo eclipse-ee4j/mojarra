@@ -26,8 +26,8 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ApplicationMapProducer is the CDI producer that allows injection of the
- * application map using @Inject and allows EL resolving of #{applicationScope}
+ * The ApplicationMapProducer is the CDI producer that allows injection of the application map using @Inject and allows
+ * EL resolving of #{applicationScope}
  * </p>
  *
  * @since 2.3
@@ -39,17 +39,11 @@ public class ApplicationMapProducer extends CdiProducer<Map<String, Object>> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ApplicationMapProducer() {
-        super.name("applicationScope")
-             .scope(ApplicationScoped.class)
-             .qualifiers(new ApplicationMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, Object.class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getApplicationMap());
+        super.name("applicationScope").scope(ApplicationScoped.class).qualifiers(new ApplicationMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getApplicationMap());
     }
 
 }

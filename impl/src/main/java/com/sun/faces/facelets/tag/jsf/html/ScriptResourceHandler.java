@@ -24,9 +24,7 @@ import jakarta.faces.view.facelets.ComponentHandler;
  */
 public class ScriptResourceHandler extends ComponentHandler {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ScriptResourceHandler(ComponentConfig config) {
 

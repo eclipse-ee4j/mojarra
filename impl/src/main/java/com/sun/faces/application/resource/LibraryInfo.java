@@ -18,8 +18,8 @@ package com.sun.faces.application.resource;
 
 /**
  * <p>
- * <code>LibraryInfo</code> is a simple wrapper class for information pertinent to building
- * a complete resource path using a Library and/or Contract.
+ * <code>LibraryInfo</code> is a simple wrapper class for information pertinent to building a complete resource path
+ * using a Library and/or Contract.
  * <p>
  */
 public class LibraryInfo {
@@ -34,6 +34,7 @@ public class LibraryInfo {
 
     /**
      * Constructs a new <code>LibraryInfo</code> using the specified details.
+     * 
      * @param name the name of the library
      * @param version the version of the library, if any
      * @param contract
@@ -47,13 +48,13 @@ public class LibraryInfo {
         this.helper = helper;
         initPath();
     }
-    
+
     LibraryInfo(LibraryInfo other, boolean copyLocalePrefix) {
         this.name = other.name;
         this.version = other.version;
         if (copyLocalePrefix) {
             this.contract = other.contract;
-            
+
             // http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-548 http://java.net/jira/browse/JAVASERVERFACES-2348
             this.localePrefix = other.localePrefix;
         }
@@ -102,8 +103,6 @@ public class LibraryInfo {
         return hash;
     }
 
-
-
     /**
      * @return return the library name.
      */
@@ -112,8 +111,7 @@ public class LibraryInfo {
     }
 
     /**
-     * @return return the version of the library, or <code>null</code>
-     *  if the library isn't versioned.
+     * @return return the version of the library, or <code>null</code> if the library isn't versioned.
      */
     public VersionInfo getVersion() {
         return version;
@@ -132,7 +130,7 @@ public class LibraryInfo {
     public String getPath() {
         return path;
     }
-    
+
     public String getPath(String localePrefix) {
         String result = null;
         if (null == localePrefix) {
@@ -142,42 +140,36 @@ public class LibraryInfo {
         }
         return result;
     }
-    
+
     /**
      * @return the Locale prefix, if any.
      */
     public String getLocalePrefix() {
         return localePrefix;
     }
-    
+
     /**
      * @return active contract or null
      */
     public String getContract() {
-		return contract;
-	}
+        return contract;
+    }
 
     @Override
     public String toString() {
-        return "LibraryInfo{" +
-               "name='" + (name != null ? name : "NONE") + '\'' +
-               ", version=" + ((version != null) ? version : "NONE") + '\'' +
-               ", localePrefix='" + ((localePrefix != null) ? localePrefix : "NONE") + '\'' +
-               ", contract='" + ((contract != null) ? contract : "NONE") + '\'' +
-               ", path='" + path + '\'' +
-               '}';
+        return "LibraryInfo{" + "name='" + (name != null ? name : "NONE") + '\'' + ", version=" + ((version != null) ? version : "NONE") + '\''
+                + ", localePrefix='" + ((localePrefix != null) ? localePrefix : "NONE") + '\'' + ", contract='" + ((contract != null) ? contract : "NONE")
+                + '\'' + ", path='" + path + '\'' + '}';
     }
 
     // --------------------------------------------------------- Private Methods
-
 
     /**
      * Construct the full path to the base directory of the library's resources.
      */
     private void initPath() {
 
-        StringBuilder builder = new StringBuilder(64),
-                      noLocaleBuilder = new StringBuilder(64);
+        StringBuilder builder = new StringBuilder(64), noLocaleBuilder = new StringBuilder(64);
 
         appendBasePath(builder);
         appendBasePath(noLocaleBuilder);
@@ -186,8 +178,8 @@ public class LibraryInfo {
             builder.append('/').append(localePrefix);
         }
         if (name != null) {
-	        builder.append('/').append(name);
-	        noLocaleBuilder.append('/').append(name);
+            builder.append('/').append(name);
+            noLocaleBuilder.append('/').append(name);
         }
         if (version != null) {
             builder.append('/').append(version.getVersion());

@@ -15,6 +15,7 @@
  */
 
 package com.sun.faces.el;
+
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ApplicationResourceBundle;
 import com.sun.faces.util.MessageUtils;
@@ -51,16 +52,13 @@ public class FacesResourceBundleELResolver extends ELResolver {
             return null;
         }
         if (null == property) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
             throw new PropertyNotFoundException(message);
         }
-        FacesContext facesContext = (FacesContext)
-           context.getContext(FacesContext.class);
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         Application app = facesContext.getApplication();
 
-        ResourceBundle result =
-              app.getResourceBundle(facesContext, property.toString());
+        ResourceBundle result = app.getResourceBundle(facesContext, property.toString());
         if (null != result) {
             context.setPropertyResolved(true);
         }
@@ -68,28 +66,22 @@ public class FacesResourceBundleELResolver extends ELResolver {
         return result;
     }
 
-
-
     @Override
-    public Class<?> getType(ELContext context, Object base, Object property)
-        throws ELException {
+    public Class<?> getType(ELContext context, Object base, Object property) throws ELException {
 
         if (null != base) {
             return null;
         }
 
         if (null == property) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
             throw new PropertyNotFoundException(message);
         }
 
-        FacesContext facesContext = (FacesContext)
-           context.getContext(FacesContext.class);
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         Application app = facesContext.getApplication();
 
-        ResourceBundle result =
-              app.getResourceBundle(facesContext, property.toString());
+        ResourceBundle result = app.getResourceBundle(facesContext, property.toString());
         if (null != result) {
             context.setPropertyResolved(true);
             return ResourceBundle.class;
@@ -100,50 +92,40 @@ public class FacesResourceBundleELResolver extends ELResolver {
     }
 
     @Override
-    public void  setValue(ELContext context, Object base, Object property,
-        Object val) throws ELException {
+    public void setValue(ELContext context, Object base, Object property, Object val) throws ELException {
         String message;
 
         if (base == null && property == null) {
-            message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
+            message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
             throw new PropertyNotFoundException(message);
         }
 
-        FacesContext facesContext = (FacesContext)
-           context.getContext(FacesContext.class);
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         Application app = facesContext.getApplication();
 
-        ResourceBundle result =
-              app.getResourceBundle(facesContext, property.toString());
+        ResourceBundle result = app.getResourceBundle(facesContext, property.toString());
         if (null != result) {
             context.setPropertyResolved(true);
-            message = MessageUtils.getExceptionMessageString
-                (MessageUtils.OBJECT_IS_READONLY);
+            message = MessageUtils.getExceptionMessageString(MessageUtils.OBJECT_IS_READONLY);
             message = message + " base " + base + " property " + property;
             throw new PropertyNotWritableException(message);
         }
 
-
     }
 
     @Override
-    public boolean isReadOnly(ELContext context, Object base, Object property)
-        throws ELException {
+    public boolean isReadOnly(ELContext context, Object base, Object property) throws ELException {
         if (base != null) {
             return false;
         }
         if (property == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "property");
             throw new PropertyNotFoundException(message);
         }
-        FacesContext facesContext = (FacesContext)
-           context.getContext(FacesContext.class);
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         Application app = facesContext.getApplication();
 
-        ResourceBundle result =
-              app.getResourceBundle(facesContext, property.toString());
+        ResourceBundle result = app.getResourceBundle(facesContext, property.toString());
         if (null != result) {
             context.setPropertyResolved(true);
             return true;
@@ -161,33 +143,29 @@ public class FacesResourceBundleELResolver extends ELResolver {
 
         ArrayList<FeatureDescriptor> list = new ArrayList<>();
 
-        FacesContext facesContext =
-            (FacesContext) context.getContext(FacesContext.class);
-        ApplicationAssociate associate =
-            ApplicationAssociate.getCurrentInstance();
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
+        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
         Map<String, ApplicationResourceBundle> rbMap = associate.getResourceBundles();
         if (rbMap == null) {
             return list.iterator();
         }
         // iterate over the list of managed beans
-        for (Iterator<Map.Entry<String,ApplicationResourceBundle>> i = rbMap.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<String,ApplicationResourceBundle> entry = i.next();
+        for (Iterator<Map.Entry<String, ApplicationResourceBundle>> i = rbMap.entrySet().iterator(); i.hasNext();) {
+            Map.Entry<String, ApplicationResourceBundle> entry = i.next();
             String var = entry.getKey();
             ApplicationResourceBundle bundle = entry.getValue();
-            if ( bundle != null) {
+            if (bundle != null) {
                 Locale curLocale = Util.getLocaleFromContextOrSystem(facesContext);
 
                 String description = bundle.getDescription(curLocale);
                 String displayName = bundle.getDisplayName(curLocale);
 
-                list.add(Util.getFeatureDescriptor(var,
-                    displayName, description, false, false, true,
-                    ResourceBundle.class, Boolean.TRUE));
+                list.add(Util.getFeatureDescriptor(var, displayName, description, false, false, true, ResourceBundle.class, Boolean.TRUE));
             }
         }
         return list.iterator();
     }
-    
+
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         if (base != null) {

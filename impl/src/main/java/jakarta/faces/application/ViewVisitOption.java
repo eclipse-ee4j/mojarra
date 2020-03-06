@@ -22,7 +22,9 @@ import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
- * <p class="changed_added_2_3">Defines the view traversal options.</p>
+ * <p class="changed_added_2_3">
+ * Defines the view traversal options.
+ * </p>
  * 
  * @since 2.3
  * 
@@ -33,13 +35,13 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 public enum ViewVisitOption {
 
     /**
-     * Return the logical views in the most minimal form form such that they can still be used for 
-     * an implicit match by the navigation handler as described in the Jakarta Server Faces spec 7.4.2.
+     * Return the logical views in the most minimal form form such that they can still be used for an implicit match by the
+     * navigation handler as described in the Jakarta Server Faces spec 7.4.2.
      * <p>
-     * For example, for the Facelets VDL a view such as <code>/foo/bar.xhtml</code> 
-     * would be returned as <code>/foo/bar</code>.
+     * For example, for the Facelets VDL a view such as <code>/foo/bar.xhtml</code> would be returned as
+     * <code>/foo/bar</code>.
      * 
      */
     RETURN_AS_MINIMAL_IMPLICIT_OUTCOME
-    
+
 }

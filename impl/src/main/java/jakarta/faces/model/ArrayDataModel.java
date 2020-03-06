@@ -17,19 +17,20 @@
 package jakarta.faces.model;
 
 /**
- * <p><strong>ArrayDataModel</strong> is a convenience implementation of
- * {@link DataModel} that wraps an array of Java objects.</p>
+ * <p>
+ * <strong>ArrayDataModel</strong> is a convenience implementation of {@link DataModel} that wraps an array of Java
+ * objects.
+ * </p>
  */
 
 public class ArrayDataModel<E> extends DataModel<E> {
 
-
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p>Construct a new {@link ArrayDataModel} with no specified
-     * wrapped data.</p>
+     * <p>
+     * Construct a new {@link ArrayDataModel} with no specified wrapped data.
+     * </p>
      */
     public ArrayDataModel() {
 
@@ -37,10 +38,10 @@ public class ArrayDataModel<E> extends DataModel<E> {
 
     }
 
-
     /**
-     * <p>Construct a new {@link ArrayDataModel} wrapping the specified
-     * array.</p>
+     * <p>
+     * Construct a new {@link ArrayDataModel} wrapping the specified array.
+     * </p>
      *
      * @param array Array to be wrapped (if any)
      */
@@ -51,26 +52,22 @@ public class ArrayDataModel<E> extends DataModel<E> {
 
     }
 
-
     // ------------------------------------------------------ Instance Variables
-
 
     // The array we are wrapping
     private Object array[];
 
-
     // The current row index (zero relative)
     private int index = -1;
 
-
     // -------------------------------------------------------------- Properties
 
-
     /**
-     * <p>Return <code>true</code> if there is <code>wrappedData</code>
-     * available, and the current value of <code>rowIndex</code> is greater
-     * than or equal to zero, and less than the length of the array.  Otherwise,
-     * return <code>false</code>.</p>
+     * <p>
+     * Return <code>true</code> if there is <code>wrappedData</code> available, and the current value of
+     * <code>rowIndex</code> is greater than or equal to zero, and less than the length of the array. Otherwise, return
+     * <code>false</code>.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row availability
      */
@@ -78,7 +75,7 @@ public class ArrayDataModel<E> extends DataModel<E> {
     public boolean isRowAvailable() {
 
         if (array == null) {
-	    return (false);
+            return (false);
         } else if ((index >= 0) && (index < array.length)) {
             return (true);
         } else {
@@ -87,11 +84,11 @@ public class ArrayDataModel<E> extends DataModel<E> {
 
     }
 
-
     /**
-     * <p>If there is <code>wrappedData</code> available, return the
-     * length of the array.  If no <code>wrappedData</code> is available,
-     * return -1.</p>
+     * <p>
+     * If there is <code>wrappedData</code> available, return the length of the array. If no <code>wrappedData</code> is
+     * available, return -1.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row count
      */
@@ -99,28 +96,27 @@ public class ArrayDataModel<E> extends DataModel<E> {
     public int getRowCount() {
 
         if (array == null) {
-	    return (-1);
+            return (-1);
         }
         return (array.length);
 
     }
 
-
     /**
-     * <p>If row data is available, return the array element at the index
-     * specified by <code>rowIndex</code>.  If no wrapped data is available,
-     * return <code>null</code>.</p>
+     * <p>
+     * If row data is available, return the array element at the index specified by <code>rowIndex</code>. If no wrapped
+     * data is available, return <code>null</code>.
+     * </p>
      *
      * @throws jakarta.faces.FacesException if an error occurs getting the row data
-     * @throws IllegalArgumentException if now row data is available
-     *  at the currently specified row index
+     * @throws IllegalArgumentException if now row data is available at the currently specified row index
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     @Override
     public E getRowData() {
 
         if (array == null) {
-	    return (null);
+            return (null);
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         } else {
@@ -129,10 +125,9 @@ public class ArrayDataModel<E> extends DataModel<E> {
 
     }
 
-
     /**
-     * @throws jakarta.faces.FacesException {@inheritDoc}     
-     */ 
+     * @throws jakarta.faces.FacesException {@inheritDoc}
+     */
     @Override
     public int getRowIndex() {
 
@@ -140,11 +135,10 @@ public class ArrayDataModel<E> extends DataModel<E> {
 
     }
 
-
     /**
      * @throws jakarta.faces.FacesException {@inheritDoc}
      * @throws IllegalArgumentException {@inheritDoc}
-     */ 
+     */
     @Override
     public void setRowIndex(int rowIndex) {
 
@@ -153,27 +147,25 @@ public class ArrayDataModel<E> extends DataModel<E> {
         }
         int old = index;
         index = rowIndex;
-	if (array == null) {
-	    return;
-	}
-	DataModelListener [] listeners = getDataModelListeners();
+        if (array == null) {
+            return;
+        }
+        DataModelListener[] listeners = getDataModelListeners();
         if ((old != index) && (listeners != null)) {
             Object rowData = null;
             if (isRowAvailable()) {
                 rowData = getRowData();
             }
-            DataModelEvent event =
-                new DataModelEvent(this, index, rowData);
+            DataModelEvent event = new DataModelEvent(this, index, rowData);
             int n = listeners.length;
             for (int i = 0; i < n; i++) {
-		if (null != listeners[i]) {
-		    listeners[i].rowSelected(event);
-		}
+                if (null != listeners[i]) {
+                    listeners[i].rowSelected(event);
+                }
             }
         }
 
     }
-
 
     @Override
     public Object getWrappedData() {
@@ -182,10 +174,8 @@ public class ArrayDataModel<E> extends DataModel<E> {
 
     }
 
-
     /**
-     * @throws ClassCastException if <code>data</code> is
-     *  non-<code>null</code> and is not an array of Java objects.
+     * @throws ClassCastException if <code>data</code> is non-<code>null</code> and is not an array of Java objects.
      */
     @Override
     public void setWrappedData(Object data) {
@@ -200,6 +190,5 @@ public class ArrayDataModel<E> extends DataModel<E> {
         }
 
     }
-
 
 }

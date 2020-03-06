@@ -30,15 +30,14 @@ import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 
 /**
- * <p>This <code>Renderer</code> is responsible for rendering
- * the standard HTML body element as well as rendering any resources
- * that should be output before the <code>body</code> tag is closed.</p>
+ * <p>
+ * This <code>Renderer</code> is responsible for rendering the standard HTML body element as well as rendering any
+ * resources that should be output before the <code>body</code> tag is closed.
+ * </p>
  */
 public class BodyRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] BODY_ATTRIBUTES =
-             AttributeManager.getAttributes(AttributeManager.Key.OUTPUTBODY);
-
+    private static final Attribute[] BODY_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTBODY);
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -53,8 +52,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
      * @throws IOException when an I/O error occurs.
      */
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         writer.startElement("body", component);
         writeIdAttributeIfNecessary(context, writer, component);
@@ -62,32 +60,27 @@ public class BodyRenderer extends HtmlBasicRenderer {
         if (styleClass != null && styleClass.length() != 0) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                BODY_ATTRIBUTES);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, BODY_ATTRIBUTES);
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
         // no-op
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         UIViewRoot viewRoot = context.getViewRoot();
         ListIterator iter = (viewRoot.getComponentResources(context, "body")).listIterator();
         while (iter.hasNext()) {
-            UIComponent resource = (UIComponent)iter.next();
+            UIComponent resource = (UIComponent) iter.next();
             resource.encodeAll(context);
         }
         RenderKitUtils.renderUnhandledMessages(context);
         writer.endElement("body");
     }
-    
+
     /**
      * Do we render our children.
      * 

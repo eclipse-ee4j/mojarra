@@ -18,10 +18,9 @@ package jakarta.faces.component;
 
 /**
  * <p class="changed_added_2_0">
- * <span class="changed_modified_2_2">This</span> component is paired with the
- * <code>jakarta.faces.Button</code> or <code>jakarta.faces.Link</code> renderers and encapsulates
- * properties relating to the rendering of outcomes directly to the response. This enables
- * bookmarkability in Jakarta Server Faces applications.
+ * <span class="changed_modified_2_2">This</span> component is paired with the <code>jakarta.faces.Button</code> or
+ * <code>jakarta.faces.Link</code> renderers and encapsulates properties relating to the rendering of outcomes directly
+ * to the response. This enables bookmarkability in Jakarta Server Faces applications.
  * </p>
  *
  * @since 2.0
@@ -59,7 +58,6 @@ public class UIOutcomeTarget extends UIOutput {
         super();
         setRendererType("jakarta.faces.Link");
     }
-    
 
     // -------------------------------------------------------------- Properties
 
@@ -73,8 +71,7 @@ public class UIOutcomeTarget extends UIOutput {
      * Return whether or not the view parameters should be encoded into the target url.
      * </p>
      *
-     * @return <code>true</code> if the view parameters should be encoded in the url,
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> if the view parameters should be encoded in the url, <code>false</code> otherwise.
      * @since 2.0
      */
     public boolean isIncludeViewParams() {
@@ -99,8 +96,7 @@ public class UIOutcomeTarget extends UIOutput {
      * Return whether or not the client window should be encoded into the target url.
      * </p>
      *
-     * @return <code>true</code> if the client window should NOT be encoded in the url,
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> if the client window should NOT be encoded in the url, <code>false</code> otherwise.
      * @since 2.0
      */
     public boolean isDisableClientWindow() {
@@ -112,8 +108,7 @@ public class UIOutcomeTarget extends UIOutput {
      * Set whether or not the client window should be encoded into the target url.
      * </p>
      * 
-     * @param disableClientWindow if @{code true}, the client window will not be included in this
-     *            outcome target.
+     * @param disableClientWindow if @{code true}, the client window will not be included in this outcome target.
      * 
      * @since 2.2
      */
@@ -123,9 +118,8 @@ public class UIOutcomeTarget extends UIOutput {
 
     /**
      * <p class="changed_added_2_0">
-     * Returns the <code>outcome</code> property of the <code>UIOutcomeTarget</code>. This value is
-     * passed to the {@link jakarta.faces.application.NavigationHandler} when resolving the target url
-     * of this component.
+     * Returns the <code>outcome</code> property of the <code>UIOutcomeTarget</code>. This value is passed to the
+     * {@link jakarta.faces.application.NavigationHandler} when resolving the target url of this component.
      * </p>
      *
      * @return the outcome.
@@ -137,8 +131,8 @@ public class UIOutcomeTarget extends UIOutput {
 
     /**
      * <p class="changed_added_2_0">
-     * Sets the <code>outcome</code> property of the <code>UIOutcomeTarget</code>. This value is
-     * passed to the NavigationHandler when resolving the target url of this component.
+     * Sets the <code>outcome</code> property of the <code>UIOutcomeTarget</code>. This value is passed to the
+     * NavigationHandler when resolving the target url of this component.
      * </p>
      *
      * @since 2.0

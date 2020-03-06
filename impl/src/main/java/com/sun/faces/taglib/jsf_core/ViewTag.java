@@ -53,10 +53,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * All JSF component tags must be nested within a f:view tag.  This tag
- * corresponds to the root of the UIComponent tree.  It does not have a
- * Renderer. It exists mainly to provide a guarantee that all faces
- * components reside inside of this tag.
+ * All JSF component tags must be nested within a f:view tag. This tag corresponds to the root of the UIComponent tree.
+ * It does not have a Renderer. It exists mainly to provide a guarantee that all faces components reside inside of this
+ * tag.
  *
  */
 
@@ -93,20 +92,19 @@ public class ViewTag extends UIComponentELTag {
     protected MethodExpression beforePhase = null;
 
     public void setBeforePhase(MethodExpression newBeforePhase) {
-    beforePhase = newBeforePhase;
+        beforePhase = newBeforePhase;
     }
 
     protected MethodExpression afterPhase = null;
 
     public void setAfterPhase(MethodExpression newAfterPhase) {
-    afterPhase = newAfterPhase;
+        afterPhase = newAfterPhase;
     }
-
 
     // Relationship Instance Variables
 
     //
-    // Constructors and Initializers    
+    // Constructors and Initializers
     //
 
     public ViewTag() {
@@ -117,7 +115,7 @@ public class ViewTag extends UIComponentELTag {
     // Class methods
     //
 
-    // 
+    //
     // Accessors
     //
 
@@ -131,14 +129,18 @@ public class ViewTag extends UIComponentELTag {
     }
 
     /**
-     * <p>Override parent <code>doStartTag()</code> to do the following:</p>
+     * <p>
+     * Override parent <code>doStartTag()</code> to do the following:
+     * </p>
      *
      * <ul>
      *
-     * <li><p>Reflect the response object for a method called flushContentToWrappedResponse
-     * and invoke it. This causes any content that appears before the view to be written out
-     * to the response.  This is necessary to allow proper ordering to
-     * happen.</p></li>
+     * <li>
+     * <p>
+     * Reflect the response object for a method called flushContentToWrappedResponse and invoke it. This causes any content
+     * that appears before the view to be written out to the response. This is necessary to allow proper ordering to happen.
+     * </p>
+     * </li>
      *
      * </ul>
      *
@@ -148,16 +150,12 @@ public class ViewTag extends UIComponentELTag {
     public int doStartTag() throws JspException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext == null) {
-            throw new IllegalStateException(
-                  MessageUtils.getExceptionMessageString(
-                        MessageUtils.FACES_CONTEXT_NOT_FOUND_ID));
+            throw new IllegalStateException(MessageUtils.getExceptionMessageString(MessageUtils.FACES_CONTEXT_NOT_FOUND_ID));
         }
 
         // flush out any content above the view tag
         Object response = facesContext.getExternalContext().getResponse();
-        Method customFlush = ReflectionUtils.lookupMethod(response.getClass(),
-                                                          "flushContentToWrappedResponse",
-                                                          RIConstants.EMPTY_CLASS_ARGS);
+        Method customFlush = ReflectionUtils.lookupMethod(response.getClass(), "flushContentToWrappedResponse", RIConstants.EMPTY_CLASS_ARGS);
         if (customFlush != null) {
             try {
                 pageContext.getOut().flush();
@@ -167,8 +165,7 @@ public class ViewTag extends UIComponentELTag {
             }
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE,
-                           "jsf.core.taglib.viewtag.interweaving_failed");
+                LOGGER.log(Level.FINE, "jsf.core.taglib.viewtag.interweaving_failed");
             }
         }
 
@@ -181,7 +178,7 @@ public class ViewTag extends UIComponentELTag {
             }
             throw e;
         } catch (Throwable t) {
-             if (LOGGER.isLoggable(Level.WARNING)) {
+            if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, "Can't leverage base class", t);
             }
             throw new JspException(t);
@@ -189,7 +186,7 @@ public class ViewTag extends UIComponentELTag {
 
         // this must happen after our overriderProperties executes.
         pageContext.getResponse().setLocale(facesContext.getViewRoot().getLocale());
-        
+
         List<UIComponent> preViewLoadBundleComponents = LoadBundleTag.getPreViewLoadBundleComponentList();
         if (!preViewLoadBundleComponents.isEmpty()) {
             Iterator<UIComponent> iter = preViewLoadBundleComponents.iterator();
@@ -206,15 +203,18 @@ public class ViewTag extends UIComponentELTag {
     }
 
     /**
-     * <p>Examine the body content of this tag.  If it is
-     * non-<code>null</code>, non-zero length, and not an HTML comment,
-     * call {@link jakarta.faces.webapp.UIComponentClassicTagBase#createVerbatimComponent()}.</p>
+     * <p>
+     * Examine the body content of this tag. If it is non-<code>null</code>, non-zero length, and not an HTML comment, call
+     * {@link jakarta.faces.webapp.UIComponentClassicTagBase#createVerbatimComponent()}.
+     * </p>
      *
-     * <p>Set the value of the verbatim component to be
-     * <code>content</code>.</p>
+     * <p>
+     * Set the value of the verbatim component to be <code>content</code>.
+     * </p>
      *
-     * <p>Add this child to the end of the child list for
-     * <code>UIViewRoot</code>.</p>
+     * <p>
+     * Add this child to the end of the child list for <code>UIViewRoot</code>.
+     * </p>
      */
 
     @Override
@@ -226,14 +226,11 @@ public class ViewTag extends UIComponentELTag {
         String content;
         String trimContent;
 
-        Stack<UIComponentClassicTagBase> viewTagStack =
-              SubviewTag.getViewTagStack();
+        Stack<UIComponentClassicTagBase> viewTagStack = SubviewTag.getViewTagStack();
         viewTagStack.pop();
 
-        if (null == (bodyContent = getBodyContent()) ||
-            null == (content = bodyContent.getString()) ||
-            0 == (trimContent = content.trim()).length() ||
-            (trimContent.startsWith("<!--") && trimContent.endsWith("-->"))) {
+        if (null == (bodyContent = getBodyContent()) || null == (content = bodyContent.getString()) || 0 == (trimContent = content.trim()).length()
+                || (trimContent.startsWith("<!--") && trimContent.endsWith("-->"))) {
             return result;
         }
 
@@ -248,9 +245,10 @@ public class ViewTag extends UIComponentELTag {
     }
 
     /**
-     * <p>Exercise a contract with the {@link ViewHandler} to get the
-     * character encoding from the response and set it into the
-     * session.</p>
+     * <p>
+     * Exercise a contract with the {@link ViewHandler} to get the character encoding from the response and set it into the
+     * session.
+     * </p>
      */
 
     @Override
@@ -260,12 +258,10 @@ public class ViewTag extends UIComponentELTag {
         HttpSession session;
 
         if (null != (session = pageContext.getSession())) {
-            session.setAttribute(ViewHandler.CHARACTER_ENCODING_KEY,
-                                 pageContext.getResponse().getCharacterEncoding());
+            session.setAttribute(ViewHandler.CHARACTER_ENCODING_KEY, pageContext.getResponse().getCharacterEncoding());
         }
         return rc;
     }
-
 
     @Override
     public String getComponentType() {
@@ -277,123 +273,109 @@ public class ViewTag extends UIComponentELTag {
         return null;
     }
 
-
     @Override
     protected int getDoEndValue() throws JspException {
         return (EVAL_PAGE);
     }
 
-
     //
     // Methods from Superclass
-    // 
+    //
     @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         Locale viewLocale = null;
-    UIViewRoot viewRoot = (UIViewRoot) component;
-    FacesContext context = FacesContext.getCurrentInstance();
-    ELContext elContext = context.getELContext();
-    try {
+        UIViewRoot viewRoot = (UIViewRoot) component;
+        FacesContext context = FacesContext.getCurrentInstance();
+        ELContext elContext = context.getELContext();
+        try {
 
-        if (null != renderKitId) {
-        if (renderKitId.isLiteralText()) {
-            // PENDING(edburns): better error message than NPE
-            // possible here.
-            viewRoot.setRenderKitId(renderKitId.getValue(elContext).toString());
-        } else {
-            // clear out the literal value to force using the
-            // expression
-            viewRoot.setRenderKitId(null);
-            viewRoot.setValueExpression("renderKitId", renderKitId);
-        }
-        }
-        else if (viewRoot.getRenderKitId() == null) {
-        String renderKitIdString =
-            context.getApplication().getDefaultRenderKitId();
-        if (null == renderKitIdString) {
-            renderKitIdString = RenderKitFactory.HTML_BASIC_RENDER_KIT;
-        }
-        viewRoot.setRenderKitId(renderKitIdString);
-        }
+            if (null != renderKitId) {
+                if (renderKitId.isLiteralText()) {
+                    // PENDING(edburns): better error message than NPE
+                    // possible here.
+                    viewRoot.setRenderKitId(renderKitId.getValue(elContext).toString());
+                } else {
+                    // clear out the literal value to force using the
+                    // expression
+                    viewRoot.setRenderKitId(null);
+                    viewRoot.setValueExpression("renderKitId", renderKitId);
+                }
+            } else if (viewRoot.getRenderKitId() == null) {
+                String renderKitIdString = context.getApplication().getDefaultRenderKitId();
+                if (null == renderKitIdString) {
+                    renderKitIdString = RenderKitFactory.HTML_BASIC_RENDER_KIT;
+                }
+                viewRoot.setRenderKitId(renderKitIdString);
+            }
 
-        if (null != locale) {
-        if (locale.isLiteralText()) {
-            // PENDING(edburns): better error message than NPE
-            // possible here.
-            viewLocale =
-            getLocaleFromString(locale.getValue(elContext).toString());
-        }
-        else {
-            component.setValueExpression("locale", locale);
+            if (null != locale) {
+                if (locale.isLiteralText()) {
+                    // PENDING(edburns): better error message than NPE
+                    // possible here.
+                    viewLocale = getLocaleFromString(locale.getValue(elContext).toString());
+                } else {
+                    component.setValueExpression("locale", locale);
                     Object result = locale.getValue(context.getELContext());
                     if (result instanceof Locale) {
                         viewLocale = (Locale) result;
                     } else if (result instanceof String) {
                         viewLocale = getLocaleFromString((String) result);
                     }
-        }
-        }
-        // BUGDB 10235218
-        if (null != viewLocale) {
-            ((UIViewRoot) component).setLocale(viewLocale);
-            // update the JSTL locale attribute in request scope so that
-            // JSTL picks up the locale from viewRoot. This attribute
-            // must be updated before the JSTL setBundle tag is called
-            // because that is when the new LocalizationContext object
-            // is created based on the locale.
-            Config.set(pageContext.getRequest(), Config.FMT_LOCALE, viewLocale);
-        }
+                }
+            }
+            // BUGDB 10235218
+            if (null != viewLocale) {
+                ((UIViewRoot) component).setLocale(viewLocale);
+                // update the JSTL locale attribute in request scope so that
+                // JSTL picks up the locale from viewRoot. This attribute
+                // must be updated before the JSTL setBundle tag is called
+                // because that is when the new LocalizationContext object
+                // is created based on the locale.
+                Config.set(pageContext.getRequest(), Config.FMT_LOCALE, viewLocale);
+            }
 
-        if (null != beforePhase) {
-        if (beforePhase.isLiteralText()) {
-            Object params [] = {beforePhase};
-            throw new jakarta.faces.FacesException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, params));
-        }
-        else {
-            viewRoot.setBeforePhaseListener(beforePhase);
+            if (null != beforePhase) {
+                if (beforePhase.isLiteralText()) {
+                    Object params[] = { beforePhase };
+                    throw new jakarta.faces.FacesException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, params));
+                } else {
+                    viewRoot.setBeforePhaseListener(beforePhase);
 
+                }
+            }
+            if (null != afterPhase) {
+                if (afterPhase.isLiteralText()) {
+                    Object params[] = { afterPhase };
+                    throw new jakarta.faces.FacesException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, params));
+                } else {
+                    viewRoot.setAfterPhaseListener(afterPhase);
+                }
+            }
+        } catch (ELException ele) {
+            throw new FacesException(ele);
         }
-        }
-        if (null != afterPhase) {
-        if (afterPhase.isLiteralText()) {
-            Object params [] = {afterPhase};
-            throw new jakarta.faces.FacesException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, params));
-        }
-        else {
-            viewRoot.setAfterPhaseListener(afterPhase);
-        }
-        }
-    } catch (ELException ele) {
-        throw new FacesException(ele);
     }
-    }
-
 
     /**
      * Returns the locale represented by the expression.
      *
-     * @param localeExpr a String in the format specified by JSTL Specification
-     *                   as follows:
-     *                   "A String value is interpreted as the printable
-     *                   representation of a locale, which must contain a
-     *                   two-letter (lower-case) language code (as defined by
-     *                   ISO-639), and may contain a two-letter (upper-case)
-     *                   country code (as defined by ISO-3166). Language and
-     *                   country codes must be separated by hyphen (???-???) or
-     *                   underscore (???_???)."
+     * @param localeExpr a String in the format specified by JSTL Specification as follows: "A String value is interpreted
+     * as the printable representation of a locale, which must contain a two-letter (lower-case) language code (as defined
+     * by ISO-639), and may contain a two-letter (upper-case) country code (as defined by ISO-3166). Language and country
+     * codes must be separated by hyphen (???-???) or underscore (???_???)."
      * @return Locale instance cosntructed from the expression.
      */
     protected Locale getLocaleFromString(String localeExpr) {
         Locale result = Locale.getDefault();
         if (localeExpr.indexOf("_") == -1 && localeExpr.indexOf("-") == -1) {
-            // expression has just language code in it. make sure the 
+            // expression has just language code in it. make sure the
             // expression contains exactly 2 characters.
             if (localeExpr.length() == 2) {
                 result = new Locale(localeExpr, "");
             }
         } else {
-            // expression has country code in it. make sure the expression 
+            // expression has country code in it. make sure the expression
             // contains exactly 5 characters.
             if (localeExpr.length() == 5) {
                 // get the language and country to construct the locale.

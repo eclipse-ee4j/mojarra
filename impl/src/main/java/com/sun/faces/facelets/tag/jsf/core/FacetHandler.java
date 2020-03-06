@@ -27,16 +27,15 @@ import jakarta.faces.view.facelets.TagException;
 import java.io.IOException;
 
 /**
- * Register a named facet on the UIComponent associated with the closest parent
- * UIComponent custom action. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/facet.html">tag
+ * Register a named facet on the UIComponent associated with the closest parent UIComponent custom action.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/facet.html">tag
  * documentation</a>.
  *
  * @author Jacob Hookom
  * @version $Id$
  */
-public final class FacetHandler extends TagHandlerImpl
-    implements jakarta.faces.view.facelets.FacetHandler {
+public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.view.facelets.FacetHandler {
 
     public static final String KEY = "facelets.FACET_NAME";
 
@@ -48,14 +47,12 @@ public final class FacetHandler extends TagHandlerImpl
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-      *      jakarta.faces.component.UIComponent)
-      */
+     * (non-Javadoc)
+     *
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
+     */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-          throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
             throw new TagException(this.tag, "Parent UIComponent was null");
         }

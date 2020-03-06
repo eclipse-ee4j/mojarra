@@ -26,16 +26,16 @@ import jakarta.servlet.ServletContext;
 import jakarta.faces.context.ExternalContext;
 
 public class ResourcePathsIterator implements Iterator<String> {
-    
+
     private final int maxDepth;
     private final ExternalContext externalContext;
     private final String[] extensions;
     private final String[] restrictedDirectories;
-    
+
     private final ArrayDeque<String> stack = new ArrayDeque<>();
-    
+
     private String next;
-    
+
     public ResourcePathsIterator(String rootPath, int maxDepth, String[] extensions, String[] restrictedDirectories, ExternalContext externalContext) {
         this.maxDepth = maxDepth;
         this.externalContext = externalContext;
@@ -50,10 +50,10 @@ public class ResourcePathsIterator implements Iterator<String> {
             return true;
         }
         tryTake();
-        
+
         return next != null;
     }
-    
+
     @Override
     public String next() {
         if (next == null) {
@@ -63,16 +63,16 @@ public class ResourcePathsIterator implements Iterator<String> {
         next = null;
         return nextReturn;
     }
-    
+
     private void visit(String resourcePath) {
         stack.addAll(externalContext.getResourcePaths(resourcePath));
     }
-    
+
     private void tryTake() {
         if (stack.isEmpty()) {
             return;
         }
-        
+
         while (next == null && !stack.isEmpty()) {
             String nextCandidate = stack.removeFirst();
             if (isDirectory(nextCandidate)) {
@@ -82,10 +82,10 @@ public class ResourcePathsIterator implements Iterator<String> {
             } else if (isValidCandidate(nextCandidate, extensions)) {
                 next = nextCandidate;
             }
-            
+
         }
     }
-    
+
     /**
      * Checks if the given resource path obtained from {@link ServletContext#getResourcePaths(String)} represents a
      * directory.
@@ -96,23 +96,23 @@ public class ResourcePathsIterator implements Iterator<String> {
     private static boolean isDirectory(final String resourcePath) {
         return resourcePath.endsWith("/");
     }
-    
+
     private static boolean directoryExceedsMaxDepth(final String resourcePath, final long max) {
         return resourcePath.chars().filter(i -> i == '/').count() > max;
     }
-    
+
     private static boolean isValidCandidate(final String resourcePath, final String[] extensions) {
         if (extensions == null || extensions.length == 0) {
             return true;
         }
-        
+
         for (String extension : extensions) {
             if (resourcePath.endsWith(extension)) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
 }

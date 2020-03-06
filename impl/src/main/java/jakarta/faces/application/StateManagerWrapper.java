@@ -24,15 +24,14 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * <span class="changed_modified_2_3">Provides</span> a simple implementation of
- * {@link StateManager} that can be subclassed by developers wishing to provide specialized behavior
- * to an existing {@link StateManager} instance. The default implementation of all methods is to
- * call through to the wrapped {@link StateManager}.
+ * <span class="changed_modified_2_3">Provides</span> a simple implementation of {@link StateManager} that can be
+ * subclassed by developers wishing to provide specialized behavior to an existing {@link StateManager} instance. The
+ * default implementation of all methods is to call through to the wrapped {@link StateManager}.
  * </p>
  *
  * <p class="changed_added_2_3">
- * Usage: extend this class and push the implementation being wrapped to the constructor and use
- * {@link #getWrapped} to access the instance being wrapped.
+ * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
+ * access the instance being wrapped.
  * </p>
  *
  * @since 1.2
@@ -51,9 +50,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
 
     /**
      * <p class="changed_added_2_3">
-     * If this state manager has been decorated, the implementation doing the decorating should push
-     * the implementation being wrapped to this constructor. The {@link #getWrapped()} will then
-     * return the implementation being wrapped.
+     * If this state manager has been decorated, the implementation doing the decorating should push the implementation
+     * being wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
      * </p>
      *
      * @param wrapped The implementation being wrapped.
@@ -67,15 +65,14 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     public StateManager getWrapped() {
         return wrapped;
     }
-    
 
     // ----------------------- Methods from jakarta.faces.application.StateManager
 
     /**
      * <p>
      * The default behavior of this method is to call
-     * {@link StateManager#saveSerializedView(jakarta.faces.context.FacesContext)} on the wrapped
-     * {@link StateManager} object.
+     * {@link StateManager#saveSerializedView(jakarta.faces.context.FacesContext)} on the wrapped {@link StateManager}
+     * object.
      * </p>
      *
      * @see StateManager#saveSerializedView(jakarta.faces.context.FacesContext)
@@ -88,9 +85,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
 
     /**
      * <p>
-     * The default behavior of this method is to call
-     * {@link StateManager#saveView(jakarta.faces.context.FacesContext)} on the wrapped
-     * {@link StateManager} object.
+     * The default behavior of this method is to call {@link StateManager#saveView(jakarta.faces.context.FacesContext)} on
+     * the wrapped {@link StateManager} object.
      * </p>
      *
      * @see StateManager#saveView(jakarta.faces.context.FacesContext)
@@ -104,8 +100,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     /**
      * <p>
      * The default behavior of this method is to call
-     * {@link StateManager#getTreeStructureToSave(jakarta.faces.context.FacesContext)} on the wrapped
-     * {@link StateManager} object.
+     * {@link StateManager#getTreeStructureToSave(jakarta.faces.context.FacesContext)} on the wrapped {@link StateManager}
+     * object.
      * </p>
      *
      * @see StateManager#getTreeStructureToSave(jakarta.faces.context.FacesContext)
@@ -119,8 +115,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     /**
      * <p>
      * The default behavior of this method is to call
-     * {@link StateManager#getComponentStateToSave(jakarta.faces.context.FacesContext)} on the wrapped
-     * {@link StateManager} object.
+     * {@link StateManager#getComponentStateToSave(jakarta.faces.context.FacesContext)} on the wrapped {@link StateManager}
+     * object.
      * </p>
      *
      * @see StateManager#getComponentStateToSave(jakarta.faces.context.FacesContext)
@@ -134,8 +130,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     /**
      * <p>
      * The default behavior of this method is to call
-     * {@link StateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object)} on the
-     * wrapped {@link StateManager} object.
+     * {@link StateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object)} on the wrapped
+     * {@link StateManager} object.
      * </p>
      *
      * @see StateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object)
@@ -154,7 +150,7 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
      * </p>
      *
      * @see StateManager#writeState(jakarta.faces.context.FacesContext,
-     *      jakarta.faces.application.StateManager.SerializedView)
+     * jakarta.faces.application.StateManager.SerializedView)
      * @since 1.2
      */
     @Override
@@ -165,8 +161,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     /**
      * <p>
      * The default behavior of this method is to call
-     * {@link StateManager#restoreView(jakarta.faces.context.FacesContext, String, String)} on the
-     * wrapped {@link StateManager} object.
+     * {@link StateManager#restoreView(jakarta.faces.context.FacesContext, String, String)} on the wrapped
+     * {@link StateManager} object.
      * </p>
      *
      * @see StateManager#restoreView(jakarta.faces.context.FacesContext, String, String)
@@ -180,8 +176,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     /**
      * <p>
      * The default behavior of this method is to call
-     * {@link StateManager#restoreTreeStructure(jakarta.faces.context.FacesContext, String, String)}
-     * on the wrapped {@link StateManager} object.
+     * {@link StateManager#restoreTreeStructure(jakarta.faces.context.FacesContext, String, String)} on the wrapped
+     * {@link StateManager} object.
      * </p>
      *
      * @see StateManager#restoreTreeStructure(jakarta.faces.context.FacesContext, String, String)
@@ -199,8 +195,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
      * on the wrapped {@link StateManager} object.
      * </p>
      *
-     * @see StateManager#restoreComponentState(jakarta.faces.context.FacesContext,
-     *      jakarta.faces.component.UIViewRoot, String)
+     * @see StateManager#restoreComponentState(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot,
+     * String)
      * @since 1.2
      */
     @Override
@@ -211,8 +207,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     /**
      * <p>
      * The default behavior of this method is to call
-     * {@link StateManager#isSavingStateInClient(jakarta.faces.context.FacesContext)} on the wrapped
-     * {@link StateManager} object.
+     * {@link StateManager#isSavingStateInClient(jakarta.faces.context.FacesContext)} on the wrapped {@link StateManager}
+     * object.
      * </p>
      *
      * @see StateManager#isSavingStateInClient(jakarta.faces.context.FacesContext)
@@ -225,9 +221,8 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
 
     /**
      * <p class="changed_added_2_0">
-     * The default behavior of this method is to call
-     * {@link StateManager#getViewState(jakarta.faces.context.FacesContext)} on the wrapped
-     * {@link StateManager} object.
+     * The default behavior of this method is to call {@link StateManager#getViewState(jakarta.faces.context.FacesContext)}
+     * on the wrapped {@link StateManager} object.
      * </p>
      *
      * @since 2.0

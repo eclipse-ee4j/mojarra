@@ -17,31 +17,29 @@
 package com.sun.faces.spi;
 
 /**
- * Wraps any exception thrown by an implementation
- * of <code>InjectionProvider</code>.
+ * Wraps any exception thrown by an implementation of <code>InjectionProvider</code>.
  */
 public class InjectionProviderException extends Exception {
 
     private static final long serialVersionUID = -9118556608529051203L;
 
     /**
-     * Creates a new <code>InjectionProviderException</code> with
-     * the root cause of the error.    
+     * Creates a new <code>InjectionProviderException</code> with the root cause of the error.
+     * 
      * @param cause the root cause
      */
     public InjectionProviderException(Throwable cause) {
         super(cause);
     }
-    
-    
+
     /**
-     * Creates a new <code>InjectionProviderException</code> with
-     * a descriptive message and the root cause of the error.
+     * Creates a new <code>InjectionProviderException</code> with a descriptive message and the root cause of the error.
+     * 
      * @param message descriptive message
      * @param cause the root cause
      */
     public InjectionProviderException(String message, Throwable cause) {
-        super(message, cause);        
+        super(message, cause);
     }
-    
+
 } // END InjectionProviderException

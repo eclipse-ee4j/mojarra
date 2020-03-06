@@ -27,13 +27,13 @@ package com.sun.faces.util.copier;
  */
 public class NewInstanceCopier implements Copier {
 
-	@Override
-	public Object copy(Object object) {
-		try {
-			return object.getClass().newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-	
+    @Override
+    public Object copy(Object object) {
+        try {
+            return object.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 }

@@ -24,10 +24,11 @@ import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_3">Provide for separation of interface and
- * implementation for the {@link SearchExpressionContext} contract.
- * Usage: extend this class and push the implementation being wrapped to the
- * constructor and use {@link #getWrapped} to access the instance being wrapped.</p>
+ * <p class="changed_added_2_3">
+ * Provide for separation of interface and implementation for the {@link SearchExpressionContext} contract. Usage:
+ * extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to access
+ * the instance being wrapped.
+ * </p>
  *
  * @since 2.3
  */
@@ -36,9 +37,10 @@ public abstract class SearchExpressionContextFactory implements FacesWrapper<Sea
     private final SearchExpressionContextFactory wrapped;
 
     /**
-     * <p class="changed_added_2_3">If this factory has been decorated,
-     * the implementation doing the decorating should push the implementation being wrapped to this constructor.
-     * The {@link #getWrapped()} will then return the implementation being wrapped.</p>
+     * <p class="changed_added_2_3">
+     * If this factory has been decorated, the implementation doing the decorating should push the implementation being
+     * wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
+     * </p>
      *
      * @param wrapped The implementation being wrapped.
      */
@@ -47,9 +49,10 @@ public abstract class SearchExpressionContextFactory implements FacesWrapper<Sea
     }
 
     /**
-     * <p class="changed_modified_2_3">If this factory has been decorated, the
-     * implementation doing the decorating may override this method to provide
-     * access to the implementation being wrapped.</p>
+     * <p class="changed_modified_2_3">
+     * If this factory has been decorated, the implementation doing the decorating may override this method to provide
+     * access to the implementation being wrapped.
+     * </p>
      */
     @Override
     public SearchExpressionContextFactory getWrapped() {
@@ -57,20 +60,20 @@ public abstract class SearchExpressionContextFactory implements FacesWrapper<Sea
     }
 
     /**
-     * <p class="changed_added_2_3">Creates a {@link SearchExpressionContext} instance
-     * for use with the {@link SearchExpressionHandler}.</p>
+     * <p class="changed_added_2_3">
+     * Creates a {@link SearchExpressionContext} instance for use with the {@link SearchExpressionHandler}.
+     * </p>
      *
      * @param context the FacesContext for the current request
      * @param source the source / base component from which we will start to perform our search.
-     * @param expressionHints the SearchExpressionHint to apply to the search.
-     *                  If <code>null</code>, no hints are applied.
-     * @param visitHints the VisitHints to apply to the visit, if used by a {@link SearchKeywordResolver}.
-     *                  If <code>null</code>, no hints are applied.
+     * @param expressionHints the SearchExpressionHint to apply to the search. If <code>null</code>, no hints are applied.
+     * @param visitHints the VisitHints to apply to the visit, if used by a {@link SearchKeywordResolver}. If
+     * <code>null</code>, no hints are applied.
      *
      * @return a {@link SearchExpressionContext} instance
      *
      * @since 2.3
      */
-    public abstract SearchExpressionContext getSearchExpressionContext(FacesContext context, UIComponent source,
-            Set<SearchExpressionHint> expressionHints, Set<VisitHint> visitHints);
+    public abstract SearchExpressionContext getSearchExpressionContext(FacesContext context, UIComponent source, Set<SearchExpressionHint> expressionHints,
+            Set<VisitHint> visitHints);
 }

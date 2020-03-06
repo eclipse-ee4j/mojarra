@@ -26,23 +26,23 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 
 /**
- * <p class="changed_added_2_0">When this annotation, along with {@link
- * ManagedBean} is found on a class, the runtime must act as if a
- * <code>&lt;managed-bean-scope&gt;VALUE&lt;managed-bean-scope&gt;</code>
- * element was declared for the corresponding managed bean, where VALUE is the
- * value of the {@link #value} attribute, which must be a Jakarta Expression Language expression that
- * evaluates to a <code>Map</code>.</p>
+ * <p class="changed_added_2_0">
+ * When this annotation, along with {@link ManagedBean} is found on a class, the runtime must act as if a
+ * <code>&lt;managed-bean-scope&gt;VALUE&lt;managed-bean-scope&gt;</code> element was declared for the corresponding
+ * managed bean, where VALUE is the value of the {@link #value} attribute, which must be a Jakarta Expression Language
+ * expression that evaluates to a <code>Map</code>.
+ * </p>
  *
- * <p class="changed_added_2_0">Developers must take care when using custom
- * scopes to ensure that any object references made to or from a custom scoped
- * bean consider the necessary scope lifetimes. The runtime is not required to
- * perform any validations for such considerations.</p>
+ * <p class="changed_added_2_0">
+ * Developers must take care when using custom scopes to ensure that any object references made to or from a custom
+ * scoped bean consider the necessary scope lifetimes. The runtime is not required to perform any validations for such
+ * considerations.
+ * </p>
  *
  *
  * @since 2.0
- * @deprecated This has been replaced by CDI custom scopes and 
- * {@code jakarta.enterprise.context.spi.Context}. See 2.4.2 and 6.2 of the CDI
- * specification for further details.
+ * @deprecated This has been replaced by CDI custom scopes and {@code jakarta.enterprise.context.spi.Context}. See 2.4.2
+ * and 6.2 of the CDI specification for further details.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

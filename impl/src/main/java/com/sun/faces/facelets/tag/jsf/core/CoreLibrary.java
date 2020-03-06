@@ -37,8 +37,8 @@ import jakarta.faces.validator.RegexValidator;
 import jakarta.faces.validator.RequiredValidator;
 
 /**
- * For Tag details, see JSF Core <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/tld-summary.html">taglib
+ * For Tag details, see JSF Core
+ * <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/tld-summary.html">taglib
  * documentation</a>.
  *
  * @author Jacob Hookom
@@ -46,7 +46,7 @@ import jakarta.faces.validator.RequiredValidator;
  */
 public final class CoreLibrary extends AbstractTagLibrary {
 
-    public final static String Namespace =    "http://java.sun.com/jsf/core";
+    public final static String Namespace = "http://java.sun.com/jsf/core";
     public final static String XMLNSNamespace = "http://xmlns.jcp.org/jsf/core";
 
     public final static CoreLibrary Instance = new CoreLibrary();
@@ -54,10 +54,10 @@ public final class CoreLibrary extends AbstractTagLibrary {
     public CoreLibrary() {
         this(Namespace);
     }
-    
+
     public CoreLibrary(String namespace) {
         super(namespace);
-        
+
         this.addTagHandler("actionListener", ActionListenerHandler.class);
 
         this.addTagHandler("ajax", AjaxHandler.class);
@@ -89,44 +89,42 @@ public final class CoreLibrary extends AbstractTagLibrary {
         this.addTagHandler("resetValues", ResetValuesHandler.class);
 
         this.addComponent("viewParam", UIViewParameter.COMPONENT_TYPE, null);
-        
+
         this.addComponent("viewAction", UIViewAction.COMPONENT_TYPE, null);
 
         this.addComponent("param", UIParameter.COMPONENT_TYPE, null);
-        
+
         this.addTagHandler("phaseListener", PhaseListenerHandler.class);
 
         this.addComponent("selectItem", UISelectItem.COMPONENT_TYPE, null);
 
         this.addComponent("selectItems", UISelectItems.COMPONENT_TYPE, null);
-        
+
         this.addTagHandler("setPropertyActionListener", SetPropertyActionListenerHandler.class);
 
         this.addComponent("subview", "jakarta.faces.NamingContainer", null);
-        
+
         this.addValidator("validateBean", BeanValidator.VALIDATOR_ID);
-        
+
         this.addValidator("validateLength", LengthValidator.VALIDATOR_ID);
-        
+
         this.addValidator("validateLongRange", LongRangeValidator.VALIDATOR_ID);
-        
+
         this.addValidator("validateDoubleRange", DoubleRangeValidator.VALIDATOR_ID);
 
         this.addValidator("validateRegex", RegexValidator.VALIDATOR_ID);
-        
+
         this.addValidator("validateRequired", RequiredValidator.VALIDATOR_ID);
-        
+
         this.addComponent("validateWholeBean", UIValidateWholeBean.FAMILY, null);
 
         this.addValidator("validator", null, ValidateDelegateHandler.class);
 
-        this.addTagHandler("valueChangeListener",
-                ValueChangeListenerHandler.class);
+        this.addTagHandler("valueChangeListener", ValueChangeListenerHandler.class);
 
         this.addTagHandler("view", ViewHandler.class);
-        
-        this.addComponent("verbatim", "jakarta.faces.HtmlOutputText",
-                          "jakarta.faces.Text", VerbatimHandler.class);       
+
+        this.addComponent("verbatim", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text", VerbatimHandler.class);
 
         this.addComponent("websocket", UIWebsocket.COMPONENT_TYPE, WebsocketRenderer.RENDERER_TYPE);
     }

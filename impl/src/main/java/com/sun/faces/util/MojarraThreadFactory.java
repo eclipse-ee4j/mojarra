@@ -26,31 +26,22 @@ public class MojarraThreadFactory implements ThreadFactory {
     final AtomicInteger threadNumber = new AtomicInteger(1);
     final String namePrefix;
 
-
     // -------------------------------------------------------- Constructors
-
 
     public MojarraThreadFactory(String factoryName) {
 
         SecurityManager s = System.getSecurityManager();
-        group = (s != null) ? s.getThreadGroup() :
-                Thread.currentThread().getThreadGroup();
-        namePrefix = "Mojarra-" + factoryName + '-' +
-                     poolNumber.getAndIncrement() +
-                     "-thread-";
+        group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        namePrefix = "Mojarra-" + factoryName + '-' + poolNumber.getAndIncrement() + "-thread-";
 
     }
 
-
     // ------------------------------------------ Methods from ThreadFactory
 
-    
     @Override
     public Thread newThread(Runnable r) {
 
-        Thread t = new Thread(group,
-                              r,
-                              namePrefix + threadNumber.getAndIncrement());
+        Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement());
         t.setDaemon(true);
         if (t.getPriority() != Thread.NORM_PRIORITY) {
             t.setPriority(Thread.NORM_PRIORITY);

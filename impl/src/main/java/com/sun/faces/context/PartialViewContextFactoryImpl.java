@@ -33,7 +33,6 @@ public class PartialViewContextFactoryImpl extends PartialViewContextFactory {
 
     // ---------------------------------- Methods from PartialViewContextFactory
 
-
     /**
      * @see PartialViewContextFactory#getPartialViewContext(jakarta.faces.context.FacesContext)
      */
@@ -43,5 +42,5 @@ public class PartialViewContextFactoryImpl extends PartialViewContextFactory {
         return new PartialViewContextImpl(context);
 
     }
-    
+
 }

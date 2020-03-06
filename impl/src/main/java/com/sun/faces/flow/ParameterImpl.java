@@ -22,21 +22,21 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.flow.Parameter;
 
 public class ParameterImpl extends Parameter implements Serializable {
-    
+
     private static final long serialVersionUID = -5433802753213440653L;
 
     private String name;
     private ValueExpression value;
-    
+
     public ParameterImpl() {
-        
+
     }
 
     public ParameterImpl(String name, ValueExpression value) {
         this.name = name;
         this.value = value;
     }
-    
+
     @Override
     public String getName() {
         return name;
@@ -54,7 +54,5 @@ public class ParameterImpl extends Parameter implements Serializable {
     public void setValue(ValueExpression value) {
         this.value = value;
     }
-    
-    
-    
+
 }

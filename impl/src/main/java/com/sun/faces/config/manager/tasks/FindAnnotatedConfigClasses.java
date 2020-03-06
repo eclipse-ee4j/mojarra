@@ -72,10 +72,10 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
         // This is where we discover what kind of InjectionProvider we have.
         if (provider instanceof FilterClassesFromFacesInitializerAnnotationProvider && annotationScanner != null) {
             // This InjectionProvider is capable of annotation scanning *and* injection.
-            
+
             // Note that DelegatingAnnotationProvider itself doesn't use the provided scanner, but just uses the classes
             // that were already scanned by the ServletContainerInitializer and stored there.
-            
+
             ((FilterClassesFromFacesInitializerAnnotationProvider) provider).setAnnotationScanner(annotationScanner, metadataGetter.getJarNames(annotatedSet));
             scanUris = emptySet();
         } else {
@@ -85,7 +85,7 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
 
         // Note that DelegatingAnnotationProvider itself ignores the scanUris and directly gets the classes from the
         // ServletContext where they were stored by the ServletContainerInitializer
-        
+
         Map<Class<? extends Annotation>, Set<Class<?>>> annotatedClasses = provider.getAnnotatedClasses(scanUris);
 
         if (t != null) {

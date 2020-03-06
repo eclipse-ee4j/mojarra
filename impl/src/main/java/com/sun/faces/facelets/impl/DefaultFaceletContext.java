@@ -49,12 +49,10 @@ import java.util.Set;
  * 
  * A single FaceletContext is used for all Facelets involved in an invocation of
  * {@link com.sun.faces.facelets.Facelet#apply(FacesContext, UIComponent) Facelet#apply(FacesContext, UIComponent)}.
- * This means that included Facelets are treated the same as the JSP include
- * directive.
+ * This means that included Facelets are treated the same as the JSP include directive.
  * 
  * @author Jacob Hookom
- * @version $Id: DefaultFaceletContext.java,v 1.4.4.3 2006/03/25 01:01:53 jhook
- *          Exp $
+ * @version $Id: DefaultFaceletContext.java,v 1.4.4.3 2006/03/25 01:01:53 jhook Exp $
  */
 final class DefaultFaceletContext extends FaceletContextImplBase {
 
@@ -69,14 +67,12 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     private FunctionMapper fnMapper;
 
-    private final Map<String,Integer> ids;
-    private final Map<Integer,Integer> prefixes;
+    private final Map<String, Integer> ids;
+    private final Map<Integer, Integer> prefixes;
     private String prefix;
-    private final StringBuilder uniqueIdBuilder=new StringBuilder(30);
+    private final StringBuilder uniqueIdBuilder = new StringBuilder(30);
 
-
-    public DefaultFaceletContext(DefaultFaceletContext ctx,
-            DefaultFacelet facelet) {
+    public DefaultFaceletContext(DefaultFaceletContext ctx, DefaultFacelet facelet) {
         this.ctx = ctx.ctx;
         this.clients = ctx.clients;
         this.faces = ctx.faces;
@@ -84,12 +80,11 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         this.ids = ctx.ids;
         this.prefixes = ctx.prefixes;
         this.varMapper = ctx.varMapper;
-        this.faceletHierarchy = new ArrayList<>(ctx.faceletHierarchy.size()+1);
+        this.faceletHierarchy = new ArrayList<>(ctx.faceletHierarchy.size() + 1);
         this.faceletHierarchy.addAll(ctx.faceletHierarchy);
         this.faceletHierarchy.add(facelet);
-        this.facelet=facelet;
-        this.faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY,
-                this);
+        this.facelet = facelet;
+        this.faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
     public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet) {
@@ -106,8 +101,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             this.varMapper = new DefaultVariableMapper();
         }
         this.fnMapper = this.ctx.getFunctionMapper();
-        this.faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY,
-                this);
+        this.faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
     /*
@@ -155,12 +149,10 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(jakarta.faces.component.UIComponent,
-     *      java.lang.String)
+     * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(jakarta.faces.component.UIComponent, java.lang.String)
      */
     @Override
-    public void includeFacelet(UIComponent parent, String relativePath)
-            throws IOException, FacesException, ELException {
+    public void includeFacelet(UIComponent parent, String relativePath) throws IOException, FacesException, ELException {
         this.facelet.include(this, parent, relativePath);
     }
 
@@ -212,29 +204,29 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     @Override
     public String generateUniqueId(String base) {
 
-        if(prefix==null) {
-            StringBuilder builder = new StringBuilder(faceletHierarchy.size()*30);
-            for(int i=0; i< faceletHierarchy.size(); i++) {
+        if (prefix == null) {
+            StringBuilder builder = new StringBuilder(faceletHierarchy.size() * 30);
+            for (int i = 0; i < faceletHierarchy.size(); i++) {
                 DefaultFacelet facelet = (DefaultFacelet) faceletHierarchy.get(i);
                 builder.append(facelet.getAlias());
             }
             Integer prefixInt = builder.toString().hashCode();
 
             Integer cnt = prefixes.get(prefixInt);
-            if(cnt==null) {
+            if (cnt == null) {
                 this.prefixes.put(prefixInt, 0);
                 prefix = prefixInt.toString();
             } else {
-                int i=cnt.intValue()+1;
+                int i = cnt.intValue() + 1;
                 this.prefixes.put(prefixInt, i);
-                prefix = prefixInt + "_" +i;
+                prefix = prefixInt + "_" + i;
             }
         }
 
         Integer cnt = this.ids.get(base);
         if (cnt == null) {
             this.ids.put(base, 0);
-            uniqueIdBuilder.delete(0,uniqueIdBuilder.length());
+            uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
             uniqueIdBuilder.append(prefix);
             uniqueIdBuilder.append("_");
             uniqueIdBuilder.append(base);
@@ -242,11 +234,11 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         } else {
             int i = cnt.intValue() + 1;
             this.ids.put(base, i);
-            uniqueIdBuilder.delete(0,uniqueIdBuilder.length());
+            uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
             uniqueIdBuilder.append(prefix);
             uniqueIdBuilder.append("_");
             uniqueIdBuilder.append(base);
-            uniqueIdBuilder.append("_");            
+            uniqueIdBuilder.append("_");
             uniqueIdBuilder.append(i);
             return uniqueIdBuilder.toString();
         }
@@ -271,8 +263,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see jakarta.faces.view.facelets.FaceletContext#setAttribute(java.lang.String,
-     *      java.lang.Object)
+     * @see jakarta.faces.view.facelets.FaceletContext#setAttribute(java.lang.String, java.lang.Object)
      */
     @Override
     public void setAttribute(String name, Object value) {
@@ -280,9 +271,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             if (value == null) {
                 this.varMapper.setVariable(name, null);
             } else {
-                this.varMapper.setVariable(name, this.facelet
-                        .getExpressionFactory().createValueExpression(value,
-                                Object.class));
+                this.varMapper.setVariable(name, this.facelet.getExpressionFactory().createValueExpression(value, Object.class));
             }
         }
     }
@@ -290,12 +279,10 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(jakarta.faces.component.UIComponent,
-     *      java.net.URL)
+     * @see jakarta.faces.view.facelets.FaceletContext#includeFacelet(jakarta.faces.component.UIComponent, java.net.URL)
      */
     @Override
-    public void includeFacelet(UIComponent parent, URL absolutePath)
-            throws IOException, FacesException, ELException {
+    public void includeFacelet(UIComponent parent, URL absolutePath) throws IOException, FacesException, ELException {
         this.facelet.include(this, parent, absolutePath);
     }
 
@@ -331,17 +318,16 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     }
 
     @Override
-    public boolean includeDefinition(UIComponent parent, String name)
-    throws IOException {
+    public boolean includeDefinition(UIComponent parent, String name) throws IOException {
         boolean found = false;
         TemplateManager client;
 
         for (int i = 0, size = this.clients.size(); i < size && !found; i++) {
             client = this.clients.get(i);
-            //noinspection EqualsBetweenInconvertibleTypes
+            // noinspection EqualsBetweenInconvertibleTypes
             if (client.equals(this.facelet))
-                continue;            
-            found = client.apply(this, parent, name);            
+                continue;
+            found = client.apply(this, parent, name);
         }
 
         return found;
@@ -351,7 +337,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         private final DefaultFacelet owner;
 
         private final TemplateClient target;
-        
+
         private final boolean root;
 
         private final Set<String> names = new HashSet<>();
@@ -363,22 +349,19 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         }
 
         @Override
-        public boolean apply(FaceletContext ctx, UIComponent parent, String name)
-        throws IOException {
+        public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
 
             String testName = (name != null) ? name : "facelets._NULL_DEF_";
             if (this.names.contains(testName)) {
                 return false;
             } else {
                 this.names.add(testName);
-                boolean found = this.target.apply(new DefaultFaceletContext(
-                        (DefaultFaceletContext) ctx, this.owner), parent, name);
+                boolean found = this.target.apply(new DefaultFaceletContext((DefaultFaceletContext) ctx, this.owner), parent, name);
                 this.names.remove(testName);
                 return found;
             }
         }
 
-        
         @Override
         public boolean equals(Object o) {
             // System.out.println(this.owner.getAlias() + " == " +
@@ -390,7 +373,6 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             return this.root;
         }
     }
-
 
     @Override
     public boolean isPropertyResolved() {

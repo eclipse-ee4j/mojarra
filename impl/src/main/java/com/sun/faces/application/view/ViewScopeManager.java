@@ -76,7 +76,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * Stores the CDI context manager.
      */
     private ViewScopeContextManager contextManager;
-    
+
     private boolean distributable;
 
     /**
@@ -96,7 +96,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         }
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isOptionEnabled(EnableDistributable);
-        
+
     }
 
     /**
@@ -234,24 +234,23 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.log(Level.FINEST, "Handling PostConstructViewMapEvent");
         }
-        
+
         UIViewRoot viewRoot = (UIViewRoot) se.getSource();
         Map<String, Object> viewMap = viewRoot.getViewMap(false);
 
-        if (viewMap != null) {            
+        if (viewMap != null) {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            
+
             if (viewRoot.isTransient() && facesContext.isProjectStage(ProjectStage.Development)) {
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "@ViewScoped beans are not supported on stateless views",
-                    "@ViewScoped beans are not supported on stateless views");
-                facesContext.addMessage(viewRoot.getClientId(facesContext), message);                
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "@ViewScoped beans are not supported on stateless views",
+                        "@ViewScoped beans are not supported on stateless views");
+                facesContext.addMessage(viewRoot.getClientId(facesContext), message);
 
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "@ViewScoped beans are not supported on stateless views");
                 }
             }
-            
+
             Object session = facesContext.getExternalContext().getSession(true);
 
             if (session != null) {
@@ -283,7 +282,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                     viewRoot.getTransientStateHelper().putTransient(VIEW_MAP, viewMap);
                     if (distributable) {
                         // If we are distributable, this will result in a dirtying of the
-                        // session data, forcing replication.  If we are not distributable,
+                        // session data, forcing replication. If we are not distributable,
                         // this is a no-op.
                         sessionMap.put(ACTIVE_VIEW_MAPS, viewMaps);
                     }
@@ -304,7 +303,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.log(Level.FINEST, "Handling PreDestroyViewMapEvent");
         }
-        
+
         UIViewRoot viewRoot = (UIViewRoot) se.getSource();
         Map<String, Object> viewMap = viewRoot.getViewMap(false);
 
@@ -316,7 +315,6 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 contextManager.fireDestroyedEvent(facesContext, viewRoot);
             }
 
-            
             destroyBeans(facesContext, viewMap);
 
         }
@@ -333,7 +331,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
             LOGGER.log(Level.FINEST, "Creating session for @ViewScoped beans");
         }
     }
-    
+
     /**
      * Destroy the associated data in the session.
      *

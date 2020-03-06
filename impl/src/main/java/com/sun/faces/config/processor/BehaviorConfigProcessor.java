@@ -42,8 +42,7 @@ import java.util.logging.Logger;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/behavior</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/behavior</code>.
  * </p>
  */
 public class BehaviorConfigProcessor extends AbstractConfigProcessor {

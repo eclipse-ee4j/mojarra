@@ -22,13 +22,12 @@ import java.util.Map;
 import com.sun.faces.el.ELUtils;
 
 /**
- * This class represents the parsed metadata for a <code>managed-bean</code>
- * entry within a faces-config.xml.
+ * This class represents the parsed metadata for a <code>managed-bean</code> entry within a faces-config.xml.
  */
 public class ManagedBeanInfo {
 
     public static final String NULL_VALUE = "null_value";
-    
+
     private String name;
     private String className;
     private String beanScope;
@@ -36,40 +35,19 @@ public class ManagedBeanInfo {
     private ManagedBeanInfo.MapEntry mapEntry;
     private ManagedBeanInfo.ListEntry listEntry;
     private List<ManagedBeanInfo.ManagedProperty> managedProperties;
-    private Map<String,String> descriptions;
-
+    private Map<String, String> descriptions;
 
     // ------------------------------------------------------------ Constructors
 
+    public ManagedBeanInfo(String name, String className, String beanScope, ManagedBeanInfo.MapEntry mapEntry, ManagedBeanInfo.ListEntry listEntry,
+            List<ManagedBeanInfo.ManagedProperty> managedProperties, Map<String, String> descriptions) {
 
-    public ManagedBeanInfo(String name,
-                           String className,
-                           String beanScope,
-                           ManagedBeanInfo.MapEntry mapEntry,
-                           ManagedBeanInfo.ListEntry listEntry,
-                           List<ManagedBeanInfo.ManagedProperty> managedProperties,
-                           Map<String,String> descriptions) {
-
-        this(name,
-             className,
-             beanScope,
-             false,
-             mapEntry,
-             listEntry,
-             managedProperties,
-             descriptions);
+        this(name, className, beanScope, false, mapEntry, listEntry, managedProperties, descriptions);
 
     }
 
-
-    public ManagedBeanInfo(String name,
-                           String className,
-                           String beanScope,
-                           boolean eager,
-                           ManagedBeanInfo.MapEntry mapEntry,
-                           ManagedBeanInfo.ListEntry listEntry,
-                           List<ManagedBeanInfo.ManagedProperty> managedProperties,
-                           Map<String,String> descriptions) {
+    public ManagedBeanInfo(String name, String className, String beanScope, boolean eager, ManagedBeanInfo.MapEntry mapEntry,
+            ManagedBeanInfo.ListEntry listEntry, List<ManagedBeanInfo.ManagedProperty> managedProperties, Map<String, String> descriptions) {
 
         this.name = name;
         this.className = className;
@@ -83,12 +61,10 @@ public class ManagedBeanInfo {
         if (eager && !ELUtils.Scope.APPLICATION.toString().equals(beanScope)) {
             this.eager = false;
         }
-        
+
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     public String getName() {
         return name;
@@ -127,32 +103,20 @@ public class ManagedBeanInfo {
     }
 
     public List<ManagedBeanInfo.ManagedProperty> getManagedProperties() {
-        return managedProperties;    
+        return managedProperties;
     }
 
-    public Map<String,String> getDescriptions() {
+    public Map<String, String> getDescriptions() {
         return descriptions;
     }
 
-    public ManagedBeanInfo clone(String name,
-                                 String scope,
-                                 boolean eager,
-                                 ManagedBeanInfo source) {
+    public ManagedBeanInfo clone(String name, String scope, boolean eager, ManagedBeanInfo source) {
 
-        return new ManagedBeanInfo(name,
-                                   source.className,
-                                   scope,
-                                   eager,
-                                   source.mapEntry,
-                                   source.listEntry,
-                                   source.managedProperties,
-                                   source.descriptions);
+        return new ManagedBeanInfo(name, source.className, scope, eager, source.mapEntry, source.listEntry, source.managedProperties, source.descriptions);
 
     }
 
-    
     // ----------------------------------------------------------- Inner Classes
-
 
     public static class MapEntry {
 
@@ -160,9 +124,7 @@ public class ManagedBeanInfo {
         private String valueClass;
         private Map<String, String> entries;
 
-        public MapEntry(String keyClass,
-                        String valueClass,
-                        Map<String,String> entries) {
+        public MapEntry(String keyClass, String valueClass, Map<String, String> entries) {
 
             this.keyClass = keyClass;
             this.valueClass = valueClass;
@@ -178,20 +140,18 @@ public class ManagedBeanInfo {
             return valueClass;
         }
 
-        public Map<String,String> getEntries() {
+        public Map<String, String> getEntries() {
             return entries;
         }
 
     }
-
 
     public static class ListEntry {
 
         private String valueClass;
         private List<String> values;
 
-        public ListEntry(String valueClass,
-                         List<String> values) {
+        public ListEntry(String valueClass, List<String> values) {
 
             this.valueClass = valueClass;
             this.values = values;
@@ -208,7 +168,6 @@ public class ManagedBeanInfo {
 
     }
 
-
     public static class ManagedProperty {
 
         private String propertyAlias;
@@ -218,11 +177,8 @@ public class ManagedBeanInfo {
         private ManagedBeanInfo.MapEntry mapEntry;
         private ManagedBeanInfo.ListEntry listEntry;
 
-        public ManagedProperty(String propertyName,
-                               String propertyClass,
-                               String propertyValue,
-                               ManagedBeanInfo.MapEntry mapEntry,
-                               ManagedBeanInfo.ListEntry listEntry) {
+        public ManagedProperty(String propertyName, String propertyClass, String propertyValue, ManagedBeanInfo.MapEntry mapEntry,
+                ManagedBeanInfo.ListEntry listEntry) {
 
             this.propertyName = propertyName;
             this.propertyClass = propertyClass;
@@ -232,12 +188,8 @@ public class ManagedBeanInfo {
 
         }
 
-        public ManagedProperty(String propertyAlias,
-                               String propertyName,
-                               String propertyClass,
-                               String propertyValue,
-                               ManagedBeanInfo.MapEntry mapEntry,
-                               ManagedBeanInfo.ListEntry listEntry) {
+        public ManagedProperty(String propertyAlias, String propertyName, String propertyClass, String propertyValue, ManagedBeanInfo.MapEntry mapEntry,
+                ManagedBeanInfo.ListEntry listEntry) {
 
             this(propertyName, propertyClass, propertyValue, mapEntry, listEntry);
             this.propertyAlias = propertyAlias;
@@ -262,7 +214,7 @@ public class ManagedBeanInfo {
 
         public String getPropertyValue() {
             return propertyValue;
-        }                
+        }
 
         public boolean hasMapEntry() {
             return (mapEntry != null);
@@ -282,4 +234,3 @@ public class ManagedBeanInfo {
 
     }
 }
-

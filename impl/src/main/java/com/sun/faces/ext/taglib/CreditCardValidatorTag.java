@@ -23,9 +23,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.webapp.ValidatorELTag;
 
-
 /**
  * Tag for the Regular Expression Validator.
+ * 
  * @author driscoll
  */
 public class CreditCardValidatorTag extends ValidatorELTag {
@@ -34,10 +34,9 @@ public class CreditCardValidatorTag extends ValidatorELTag {
 
     @Override
     protected Validator createValidator() {
-        
+
         Application app = FacesContext.getCurrentInstance().getApplication();
-        CreditCardValidator validator =
-                (CreditCardValidator) app.createValidator("com.sun.faces.ext.validator.CreditCardValidator");
+        CreditCardValidator validator = (CreditCardValidator) app.createValidator("com.sun.faces.ext.validator.CreditCardValidator");
         return validator;
     }
 }

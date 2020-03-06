@@ -59,8 +59,8 @@ import jakarta.faces.render.RenderKitFactory;
  * This is the default implementation for JSF 1.2.
  * </p>
  * <p>
- * While this class isn't used by the 2.0 runtime, it's kept for binary compatibility with those
- * that extend from this class directly.
+ * While this class isn't used by the 2.0 runtime, it's kept for binary compatibility with those that extend from this
+ * class directly.
  * </p>
  *
  * @deprecated Refer to {@link com.sun.faces.application.view.MultiViewHandler}
@@ -86,10 +86,8 @@ public class ViewHandlerImpl extends ViewHandler {
     }
 
     /**
-     * Do not call the default implementation of
-     * {@link ViewHandler#initView(jakarta.faces.context.FacesContext)} if the
-     * {@link jakarta.faces.context.ExternalContext#getRequestCharacterEncoding()} returns a
-     * <code>non-null</code> result.
+     * Do not call the default implementation of {@link ViewHandler#initView(jakarta.faces.context.FacesContext)} if the
+     * {@link jakarta.faces.context.ExternalContext#getRequestCharacterEncoding()} returns a <code>non-null</code> result.
      *
      * @see ViewHandler#initView(jakarta.faces.context.FacesContext)
      */
@@ -199,8 +197,7 @@ public class ViewHandlerImpl extends ViewHandler {
      * </p>
      *
      * <p>
-     * Create a new ResponseWriter around this response's Writer. Set it into the FacesContext,
-     * saving the old one aside.
+     * Create a new ResponseWriter around this response's Writer. Set it into the FacesContext, saving the old one aside.
      * </p>
      *
      * <p>
@@ -363,14 +360,12 @@ public class ViewHandlerImpl extends ViewHandler {
     }
 
     /**
-     * Execute the target view. If the HTTP status code range is not 2xx, then return true to
-     * indicate the response should be immediately flushed by the caller so that conditions such as
-     * 404 are properly handled.
+     * Execute the target view. If the HTTP status code range is not 2xx, then return true to indicate the response should
+     * be immediately flushed by the caller so that conditions such as 404 are properly handled.
      * 
      * @param context the <code>FacesContext</code> for the current request
      * @param viewToExecute the view to build
-     * @return <code>true</code> if the response should be immediately flushed to the client,
-     *         otherwise <code>false</code>
+     * @return <code>true</code> if the response should be immediately flushed to the client, otherwise <code>false</code>
      * @throws IOException if an error occurs executing the page
      */
     private boolean executePageToBuildView(FacesContext context, UIViewRoot viewToExecute) throws IOException {
@@ -494,8 +489,8 @@ public class ViewHandlerImpl extends ViewHandler {
     }
 
     /**
-     * Attempts to find a matching locale based on <code>pref</code> and list of supported locales,
-     * using the matching algorithm as described in JSTL 8.3.2.
+     * Attempts to find a matching locale based on <code>pref</code> and list of supported locales, using the matching
+     * algorithm as described in JSTL 8.3.2.
      * 
      * @param context the <code>FacesContext</code> for the current request
      * @param pref the preferred locale
@@ -636,10 +631,9 @@ public class ViewHandlerImpl extends ViewHandler {
 
     /**
      * <p>
-     * if the specified mapping is a prefix mapping, and the provided request URI (usually the value
-     * from <code>ExternalContext.getRequestServletPath()</code>) starts with
-     * <code>mapping + '/'</code>, prune the mapping from the URI and return it, otherwise, return
-     * the original URI.
+     * if the specified mapping is a prefix mapping, and the provided request URI (usually the value from
+     * <code>ExternalContext.getRequestServletPath()</code>) starts with <code>mapping + '/'</code>, prune the mapping from
+     * the URI and return it, otherwise, return the original URI.
      * 
      * @param uri the servlet request path
      * @param mapping the FacesServlet mapping used for this request

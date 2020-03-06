@@ -61,9 +61,9 @@ public class TagAttributeImpl extends TagAttribute {
     private final String value;
 
     private String string;
-    
+
     private Tag tag;
-    
+
     public TagAttributeImpl() {
         this.literal = false;
         this.localName = null;
@@ -73,10 +73,9 @@ public class TagAttributeImpl extends TagAttribute {
         this.value = null;
         this.string = null;
         this.tag = null;
-    } 
+    }
 
-    public TagAttributeImpl(Location location, String ns, String localName,
-            String qName, String value) {
+    public TagAttributeImpl(Location location, String ns, String localName, String qName, String value) {
         this.location = location;
         this.namespace = ns;
         this.localName = (null == localName || 0 == localName.length()) ? qName : localName;
@@ -91,13 +90,11 @@ public class TagAttributeImpl extends TagAttribute {
 
     /**
      * <p class="changed_modified_2_3">
-     * If literal,return
-     * {@link Boolean#valueOf(java.lang.String)  Boolean.valueOf(java.lang.String)}
-     * passing our value, otherwise call
-     * {@link #getObject(FaceletContext, Class) getObject(FaceletContext, Class)}.
+     * If literal,return {@link Boolean#valueOf(java.lang.String) Boolean.valueOf(java.lang.String)} passing our value,
+     * otherwise call {@link #getObject(FaceletContext, Class) getObject(FaceletContext, Class)}.
      * </p>
      * 
-     * @see Boolean#valueOf(java.lang.String) 
+     * @see Boolean#valueOf(java.lang.String)
      * @see #getObject(FaceletContext, Class)
      * @param ctx FaceletContext to use
      * @return boolean value
@@ -116,15 +113,12 @@ public class TagAttributeImpl extends TagAttribute {
     }
 
     /**
-     * If literal, call
-     * {@link Integer#parseInt(java.lang.String) Integer.parseInt(String)},
-     * otherwise call
+     * If literal, call {@link Integer#parseInt(java.lang.String) Integer.parseInt(String)}, otherwise call
      * {@link #getObject(FaceletContext, Class) getObject(FaceletContext, Class)}.
      * 
      * @see Integer#parseInt(java.lang.String)
      * @see #getObject(FaceletContext, Class)
-     * @param ctx
-     *            FaceletContext to use
+     * @param ctx FaceletContext to use
      * @return int value
      */
     @Override
@@ -157,32 +151,25 @@ public class TagAttributeImpl extends TagAttribute {
     }
 
     /**
-     * Create a MethodExpression, using this attribute's value as the expression
-     * String.
+     * Create a MethodExpression, using this attribute's value as the expression String.
      * 
-     * @see ExpressionFactory#createMethodExpression(jakarta.el.ELContext,
-     *      java.lang.String, java.lang.Class, java.lang.Class[])
+     * @see ExpressionFactory#createMethodExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class,
+     * java.lang.Class[])
      * @see MethodExpression
-     * @param ctx
-     *            FaceletContext to use
-     * @param type
-     *            expected return type
-     * @param paramTypes
-     *            parameter type
+     * @param ctx FaceletContext to use
+     * @param type expected return type
+     * @param paramTypes parameter type
      * @return a MethodExpression instance
      */
     @Override
-    public MethodExpression getMethodExpression(FaceletContext ctx,
-                                                Class type,
-                                                Class[] paramTypes) {
+    public MethodExpression getMethodExpression(FaceletContext ctx, Class type, Class[] paramTypes) {
 
         MethodExpression result;
 
         try {
             ExpressionFactory f = ctx.getExpressionFactory();
             if (ELUtils.isCompositeComponentLookupWithArgs(this.value)) {
-                String message =
-                      MessageUtils.getExceptionMessageString(ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
+                String message = MessageUtils.getExceptionMessageString(ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
                 throw new TagAttributeException(this, message);
             }
             // Determine if this is a composite component attribute lookup.
@@ -190,18 +177,10 @@ public class TagAttributeImpl extends TagAttribute {
             if (ELUtils.isCompositeComponentMethodExprLookup(this.value)) {
                 result = new AttributeLookupMethodExpression(getValueExpression(ctx, MethodExpression.class));
             } else if (ELUtils.isCompositeComponentExpr(this.value)) {
-                MethodExpression delegate = new TagMethodExpression(this,
-                                                 f.createMethodExpression(ctx,
-                                                                          this.value,
-                                                                          type,
-                                                                          paramTypes));
+                MethodExpression delegate = new TagMethodExpression(this, f.createMethodExpression(ctx, this.value, type, paramTypes));
                 result = new ContextualCompositeMethodExpression(getLocation(), delegate);
             } else {
-                result = new TagMethodExpression(this,
-                                                 f.createMethodExpression(ctx,
-                                                                          this.value,
-                                                                          type,
-                                                                          paramTypes));
+                result = new TagMethodExpression(this, f.createMethodExpression(ctx, this.value, type, paramTypes));
             }
         } catch (Exception e) {
             if (e instanceof TagAttributeException) {
@@ -227,8 +206,7 @@ public class TagAttributeImpl extends TagAttribute {
      * Delegates to getObject with Object.class as a param
      * 
      * @see #getObject(FaceletContext, Class)
-     * @param ctx
-     *            FaceletContext to use
+     * @param ctx FaceletContext to use
      * @return Object representation of this attribute's value
      */
     @Override
@@ -250,7 +228,7 @@ public class TagAttributeImpl extends TagAttribute {
     public Tag getTag() {
         return this.tag;
     }
-    
+
     @Override
     public void setTag(Tag tag) {
         this.tag = tag;
@@ -267,12 +245,10 @@ public class TagAttributeImpl extends TagAttribute {
     }
 
     /**
-     * If literal, then return our value, otherwise delegate to getObject,
-     * passing String.class.
+     * If literal, then return our value, otherwise delegate to getObject, passing String.class.
      * 
      * @see #getObject(FaceletContext, Class)
-     * @param ctx
-     *            FaceletContext to use
+     * @param ctx FaceletContext to use
      * @return String value of this attribute
      */
     @Override
@@ -285,17 +261,14 @@ public class TagAttributeImpl extends TagAttribute {
     }
 
     /**
-     * If literal, simply coerce our String literal value using an
-     * ExpressionFactory, otherwise create a ValueExpression and evaluate it.
+     * If literal, simply coerce our String literal value using an ExpressionFactory, otherwise create a ValueExpression and
+     * evaluate it.
      * 
      * @see ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
-     * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext,
-     *      java.lang.String, java.lang.Class)
+     * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)
      * @see ValueExpression
-     * @param ctx
-     *            FaceletContext to use
-     * @param type
-     *            expected return type
+     * @param ctx FaceletContext to use
+     * @param type expected return type
      * @return Object value of this attribute
      */
     @Override
@@ -305,8 +278,7 @@ public class TagAttributeImpl extends TagAttribute {
                 return this.value;
             } else {
                 try {
-                    return ctx.getExpressionFactory().coerceToType(this.value,
-                            type);
+                    return ctx.getExpressionFactory().coerceToType(this.value, type);
                 } catch (Exception e) {
                     throw new TagAttributeException(this, e);
                 }
@@ -322,16 +294,12 @@ public class TagAttributeImpl extends TagAttribute {
     }
 
     /**
-     * Create a ValueExpression, using this attribute's literal value and the
-     * passed expected type.
+     * Create a ValueExpression, using this attribute's literal value and the passed expected type.
      * 
-     * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext,
-     *      java.lang.String, java.lang.Class)
+     * @see ExpressionFactory#createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)
      * @see ValueExpression
-     * @param ctx
-     *            FaceletContext to use
-     * @param type
-     *            expected return type
+     * @param ctx FaceletContext to use
+     * @param type expected return type
      * @return ValueExpression instance
      */
     @Override
@@ -357,31 +325,23 @@ public class TagAttributeImpl extends TagAttribute {
     @Override
     public String toString() {
         if (this.string == null) {
-            this.string = this.location + " " + this.qName + "=\"" + this.value
-                    + "\"";
+            this.string = this.location + " " + this.qName + "=\"" + this.value + "\"";
         }
         return this.string;
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     public ValueExpression getValueExpression(FaceletContext ctx, String expr, Class type) {
         try {
             ExpressionFactory f = ctx.getExpressionFactory();
-            ValueExpression delegate = f.createValueExpression(ctx,
-                                                               expr,
-                                                               type);
+            ValueExpression delegate = f.createValueExpression(ctx, expr, type);
             if (ELUtils.isCompositeComponentExpr(expr)) {
                 if (ELUtils.isCompositeComponentLookupWithArgs(expr)) {
-                    String message =
-                          MessageUtils.getExceptionMessageString(ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
+                    String message = MessageUtils.getExceptionMessageString(ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
                     throw new TagAttributeException(this, message);
                 }
-                return new TagValueExpression(this,
-                                              new ContextualCompositeValueExpression(getLocation(),
-                                                                                delegate));
+                return new TagValueExpression(this, new ContextualCompositeValueExpression(getLocation(), delegate));
             } else {
                 return new TagValueExpression(this, delegate);
             }
@@ -390,15 +350,12 @@ public class TagAttributeImpl extends TagAttribute {
         }
     }
 
-
     // ---------------------------------------------------------- Nested Classes
-
 
     private static class AttributeLookupMethodExpression extends MethodExpression {
 
         private static final long serialVersionUID = -8983924930720420664L;
         private ValueExpression lookupExpression;
-
 
         public AttributeLookupMethodExpression(ValueExpression lookupExpression) {
 
@@ -407,8 +364,9 @@ public class TagAttributeImpl extends TagAttribute {
 
         }
 
-        @SuppressWarnings({"UnusedDeclaration"})
-        public AttributeLookupMethodExpression() {} // for serialization
+        @SuppressWarnings({ "UnusedDeclaration" })
+        public AttributeLookupMethodExpression() {
+        } // for serialization
 
         @Override
         public MethodInfo getMethodInfo(ELContext elContext) {
@@ -430,10 +388,12 @@ public class TagAttributeImpl extends TagAttribute {
 
             Object result = lookupExpression.getValue(elContext);
             if (result == null) {
-                throw new FacesException("Unable to resolve composite component from using page using EL expression '" + lookupExpression.getExpressionString() + '\'');
+                throw new FacesException(
+                        "Unable to resolve composite component from using page using EL expression '" + lookupExpression.getExpressionString() + '\'');
             }
             if (!(result instanceof MethodExpression)) {
-                throw new FacesException("Successfully resolved expression '" + lookupExpression.getExpressionString() + "', but the value is not a MethodExpression");
+                throw new FacesException(
+                        "Successfully resolved expression '" + lookupExpression.getExpressionString() + "', but the value is not a MethodExpression");
             }
 
             return ((MethodExpression) result).invoke(elContext, args);
@@ -452,8 +412,7 @@ public class TagAttributeImpl extends TagAttribute {
 
             boolean result = false;
             if (otherObj instanceof AttributeLookupMethodExpression) {
-                AttributeLookupMethodExpression other =
-                        (AttributeLookupMethodExpression) otherObj;
+                AttributeLookupMethodExpression other = (AttributeLookupMethodExpression) otherObj;
                 result = lookupExpression.getExpressionString().equals(other.lookupExpression.getExpressionString());
             }
             return result;

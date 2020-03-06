@@ -27,20 +27,19 @@ import jakarta.faces.validator.Validator;
 
 /**
  * <p>
- * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a">EditableValueHolder</strong> is
- * an extension of ValueHolder that describes additional features supported by editable components,
- * including {@link ValueChangeEvent}s and {@link Validator}s.
+ * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a">EditableValueHolder</strong> is an extension of
+ * ValueHolder that describes additional features supported by editable components, including {@link ValueChangeEvent}s
+ * and {@link Validator}s.
  */
 
 public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Return the submittedValue value of this component. This method should only be used by the
-     * <code>encodeBegin()</code> and/or <code>encodeEnd()</code> methods of this component, or its
-     * corresponding {@link Renderer}. <span class="changed_modified_2_0_rev_a">The action taken
-     * based on whether the value is <code>null</code>, empty, or non-<code>null</code> is
-     * determined based on the value of the
+     * Return the submittedValue value of this component. This method should only be used by the <code>encodeBegin()</code>
+     * and/or <code>encodeEnd()</code> methods of this component, or its corresponding {@link Renderer}.
+     * <span class="changed_modified_2_0_rev_a">The action taken based on whether the value is <code>null</code>, empty, or
+     * non-<code>null</code> is determined based on the value of the
      * <code>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</code>context-param.</span>
      * </p>
      * 
@@ -60,11 +59,10 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Set the submittedValue value of this component. This method should only be used by the
-     * <code>decode()</code> and <code>validate()</code> method of this component, or its
-     * corresponding {@link Renderer}. <span class="changed_modified_2_0_rev_a">The action taken
-     * based on whether the value is <code>null</code>, empty, or non-<code>null</code> is
-     * determined based on the value of the
+     * Set the submittedValue value of this component. This method should only be used by the <code>decode()</code> and
+     * <code>validate()</code> method of this component, or its corresponding {@link Renderer}.
+     * <span class="changed_modified_2_0_rev_a">The action taken based on whether the value is <code>null</code>, empty, or
+     * non-<code>null</code> is determined based on the value of the
      * <code>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</code>context-param.</span>
      * </p>
      * 
@@ -73,8 +71,8 @@ public interface EditableValueHolder extends ValueHolder {
     public void setSubmittedValue(Object submittedValue);
 
     /**
-     * Return the "local value set" state for this component. Calls to <code>setValue()</code>
-     * automatically reset this property to <code>true</code>.
+     * Return the "local value set" state for this component. Calls to <code>setValue()</code> automatically reset this
+     * property to <code>true</code>.
      * 
      * @return <code>true</code> if the local value is set, <code>false</code> otherwise.
      */
@@ -89,8 +87,7 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Return a flag indicating whether the local value of this component is valid (no conversion
-     * error has occurred).
+     * Return a flag indicating whether the local value of this component is valid (no conversion error has occurred).
      * </p>
      * 
      * @return <code>true</code> if valid, <code>false</code> otherwise.
@@ -99,8 +96,7 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Set a flag indicating whether the local value of this component is valid (no conversion error
-     * has occurred).
+     * Set a flag indicating whether the local value of this component is valid (no conversion error has occurred).
      * </p>
      *
      * @param valid The new valid flag
@@ -136,10 +132,9 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Set the "immediate" state for this component. When set to true, the component's value will be
-     * converted and validated immediately in the <em>Apply Request Values</em> phase, and
-     * {@link ValueChangeEvent}s will be delivered in that phase as well. The default value for this
-     * property must be <code>false</code>.
+     * Set the "immediate" state for this component. When set to true, the component's value will be converted and validated
+     * immediately in the <em>Apply Request Values</em> phase, and {@link ValueChangeEvent}s will be delivered in that phase
+     * as well. The default value for this property must be <code>false</code>.
      * </p>
      *
      * @param immediate The new "immediate" state
@@ -159,8 +154,8 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Return the set of registered {@link Validator}s for this component instance. If there are no
-     * registered validators, a zero-length array is returned.
+     * Return the set of registered {@link Validator}s for this component instance. If there are no registered validators, a
+     * zero-length array is returned.
      * </p>
      * 
      * @return the validators, or a zero-length array.
@@ -169,8 +164,8 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Remove a {@link Validator} instance from the set associated with this component, if it was
-     * previously associated. Otherwise, do nothing.
+     * Remove a {@link Validator} instance from the set associated with this component, if it was previously associated.
+     * Otherwise, do nothing.
      * </p>
      *
      * @param validator The {@link Validator} to remove
@@ -179,8 +174,8 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Add a new {@link ValueChangeListener} to the set of listeners interested in being notified
-     * when {@link ValueChangeEvent}s occur.
+     * Add a new {@link ValueChangeListener} to the set of listeners interested in being notified when
+     * {@link ValueChangeEvent}s occur.
      * </p>
      *
      * @param listener The {@link ValueChangeListener} to be added
@@ -191,8 +186,8 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Return the set of registered {@link ValueChangeListener}s for this component instance. If
-     * there are no registered listeners, a zero-length array is returned.
+     * Return the set of registered {@link ValueChangeListener}s for this component instance. If there are no registered
+     * listeners, a zero-length array is returned.
      * </p>
      * 
      * @return the value change listeners, or a zero-length array.
@@ -201,8 +196,8 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Remove an existing {@link ValueChangeListener} (if any) from the set of listeners interested
-     * in being notified when {@link ValueChangeEvent}s occur.
+     * Remove an existing {@link ValueChangeListener} (if any) from the set of listeners interested in being notified when
+     * {@link ValueChangeEvent}s occur.
      * </p>
      *
      * @param listener The {@link ValueChangeListener} to be removed
@@ -210,63 +205,55 @@ public interface EditableValueHolder extends ValueHolder {
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     public void removeValueChangeListener(ValueChangeListener listener);
-    
-    
-    
-    
-    
-    
+
     // -------------------------------------------------------------- Deprecated methods
-    
-    
+
     /**
      * <p>
-     * If {@link #setValidator} was not previously called for this instance, this method must return
-     * <code>null</code>. If it was called, this method must return the exact
-     * <code>MethodBinding</code> instance that was passed to {@link #setValidator}.
+     * If {@link #setValidator} was not previously called for this instance, this method must return <code>null</code>. If
+     * it was called, this method must return the exact <code>MethodBinding</code> instance that was passed to
+     * {@link #setValidator}.
      * </p>
      *
      * <p>
-     * This method will be called during the <em>Process Validations</em> or <em>Apply Request
-     * Values</em> phases (depending on the value of the <code>immediate</code> property).
+     * This method will be called during the <em>Process Validations</em> or <em>Apply Request Values</em> phases (depending
+     * on the value of the <code>immediate</code> property).
      * </p>
      *
      * @return the validator as a method binding.
      * @deprecated {@link #getValidators} should be used instead.
      */
     public MethodBinding getValidator();
-    
+
     /**
      * <p>
-     * Wrap the argument <code>validatorBinding</code> in an implementation of
-     * {@link jakarta.faces.validator.Validator} and store it in the internal data structure that
-     * backs the {@link #getValidators} method, taking care to over-write any instance that was
-     * stored by a previous call to <code>setValidator</code>.
+     * Wrap the argument <code>validatorBinding</code> in an implementation of {@link jakarta.faces.validator.Validator} and
+     * store it in the internal data structure that backs the {@link #getValidators} method, taking care to over-write any
+     * instance that was stored by a previous call to <code>setValidator</code>.
      * </p>
      *
      * <p>
-     * The argument method will be called during the <em>Process Validations</em> or <em>Apply
-     * Request Values</em> phases (depending on the value of the <code>immediate</code> property).
+     * The argument method will be called during the <em>Process Validations</em> or <em>Apply Request Values</em> phases
+     * (depending on the value of the <code>immediate</code> property).
      * </p>
      *
      * <p>
-     * Any method referenced by such an expression must be public, with a return type of
-     * <code>void</code>, and accept parameters of type {@link jakarta.faces.context.FacesContext},
-     * {@link UIComponent}, and <code>Object</code>.
+     * Any method referenced by such an expression must be public, with a return type of <code>void</code>, and accept
+     * parameters of type {@link jakarta.faces.context.FacesContext}, {@link UIComponent}, and <code>Object</code>.
      * </p>
      *
      * @param validatorBinding The new <code>MethodBinding</code> instance
      * 
-     * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by
-     *             creating an instance of {@link jakarta.faces.validator.MethodExpressionValidator}.
+     * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by creating an instance of
+     * {@link jakarta.faces.validator.MethodExpressionValidator}.
      */
     public void setValidator(MethodBinding validatorBinding);
 
     /**
      * <p>
-     * If {@link #setValueChangeListener} was not previously called for this instance, this method
-     * must return <code>null</code>. If it was called, this method must return the exact
-     * <code>MethodBinding</code> instance that was passed to {@link #setValueChangeListener}.
+     * If {@link #setValueChangeListener} was not previously called for this instance, this method must return
+     * <code>null</code>. If it was called, this method must return the exact <code>MethodBinding</code> instance that was
+     * passed to {@link #setValueChangeListener}.
      * </p>
      *
      * @return the value change listener.
@@ -276,27 +263,25 @@ public interface EditableValueHolder extends ValueHolder {
 
     /**
      * <p>
-     * Wrap the argument <code>valueChangeMethod</code> in an implementation of
-     * {@link ValueChangeListener} and store it in the internal data structure that backs the
-     * {@link #getValueChangeListeners} method, taking care to over-write any instance that was
-     * stored by a previous call to <code>setValueChangeListener</code>.
+     * Wrap the argument <code>valueChangeMethod</code> in an implementation of {@link ValueChangeListener} and store it in
+     * the internal data structure that backs the {@link #getValueChangeListeners} method, taking care to over-write any
+     * instance that was stored by a previous call to <code>setValueChangeListener</code>.
      * </p>
      *
      * <p>
-     * This argument method will be called during the <em>Process Validations</em> or <em>Apply
-     * Request Values</em> phases (depending on the value of the <code>immediate</code> property).
+     * This argument method will be called during the <em>Process Validations</em> or <em>Apply Request Values</em> phases
+     * (depending on the value of the <code>immediate</code> property).
      * </p>
      *
      * <p>
-     * Any method referenced by such an expression must be public, with a return type of
-     * <code>void</code>, and accept a parameter of type {@link jakarta.faces.event.ValueChangeEvent}.
+     * Any method referenced by such an expression must be public, with a return type of <code>void</code>, and accept a
+     * parameter of type {@link jakarta.faces.event.ValueChangeEvent}.
      * </p>
      *
      * @param valueChangeMethod The new method binding instance
      *
-     * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument
-     *             {@link ValueChangeListener} by creating an instance of
-     *             {@link jakarta.faces.event.MethodExpressionValueChangeListener}.
+     * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument {@link ValueChangeListener} by
+     * creating an instance of {@link jakarta.faces.event.MethodExpressionValueChangeListener}.
      */
     public void setValueChangeListener(MethodBinding valueChangeMethod);
 }

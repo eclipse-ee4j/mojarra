@@ -34,9 +34,9 @@ class CompilationUnit {
 
     protected final static FaceletHandler LEAF = new FaceletHandler() {
         @Override
-        public void apply(FaceletContext ctx, UIComponent parent)
-                throws IOException {
+        public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         }
+
         @Override
         public String toString() {
             return "FaceletHandler Tail";
@@ -53,7 +53,7 @@ class CompilationUnit {
     }
 
     protected void finishNotify(CompilationManager manager) {
-        
+
     }
 
     public void addChild(CompilationUnit unit) {
@@ -62,7 +62,7 @@ class CompilationUnit {
         }
         this.children.add(unit);
     }
-    
+
     public void removeChildren() {
         this.children.clear();
     }
@@ -81,8 +81,7 @@ class CompilationUnit {
         }
         FaceletHandler[] fh = new FaceletHandler[this.children.size()];
         for (int i = 0; i < fh.length; i++) {
-            fh[i] = ((CompilationUnit) this.children.get(i))
-                    .createFaceletHandler();
+            fh[i] = ((CompilationUnit) this.children.get(i)).createFaceletHandler();
         }
         return new CompositeFaceletHandler(fh);
     }

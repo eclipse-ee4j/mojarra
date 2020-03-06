@@ -22,10 +22,8 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.webapp.UIComponentELTag;
 
-
 /**
- * This class is the tag handler that evaluates the
- * <code>selectitem</code> custom tag.
+ * This class is the tag handler that evaluates the <code>selectitem</code> custom tag.
  */
 
 public class SelectItemTag extends UIComponentELTag {
@@ -55,7 +53,7 @@ public class SelectItemTag extends UIComponentELTag {
     // Relationship Instance Variables
 
     //
-    // Constructors and Initializers    
+    // Constructors and Initializers
     //
 
     public SelectItemTag() {
@@ -66,7 +64,7 @@ public class SelectItemTag extends UIComponentELTag {
     // Class methods
     //
 
-    // 
+    //
     // Accessors
     //
 
@@ -74,11 +72,9 @@ public class SelectItemTag extends UIComponentELTag {
         this.itemValue = value;
     }
 
-
     public void setItemLabel(ValueExpression label) {
         this.itemLabel = label;
     }
-
 
     public void setItemDescription(ValueExpression itemDescription) {
         this.itemDescription = itemDescription;
@@ -88,7 +84,6 @@ public class SelectItemTag extends UIComponentELTag {
         this.itemDisabled = itemDisabled;
     }
 
-
     public void setValue(ValueExpression value) {
         this.value = value;
     }
@@ -96,7 +91,6 @@ public class SelectItemTag extends UIComponentELTag {
     public void setNoSelectionOption(ValueExpression noSelectionOption) {
         this.noSelectionOption = noSelectionOption;
     }
-
 
     //
     // General Methods
@@ -106,12 +100,11 @@ public class SelectItemTag extends UIComponentELTag {
         return null;
     }
 
-
     @Override
     public String getComponentType() {
         return "jakarta.faces.SelectItem";
     }
-    
+
     //
     // Methods from BaseComponentTag
     //
@@ -145,38 +138,31 @@ public class SelectItemTag extends UIComponentELTag {
         }
         if (null != itemDescription) {
             if (!itemDescription.isLiteralText()) {
-                selectItem.setValueExpression("itemDescription",
-                                              itemDescription);
+                selectItem.setValueExpression("itemDescription", itemDescription);
             } else {
-                selectItem.setItemDescription(
-                    itemDescription.getExpressionString());
+                selectItem.setItemDescription(itemDescription.getExpressionString());
             }
         }
         if (null != itemDisabled) {
             if (!itemDisabled.isLiteralText()) {
                 selectItem.setValueExpression("itemDisabled", itemDisabled);
             } else {
-                selectItem.setItemDisabled(
-                    Boolean.valueOf(itemDisabled.getExpressionString()).
-                        booleanValue());
+                selectItem.setItemDisabled(Boolean.valueOf(itemDisabled.getExpressionString()).booleanValue());
             }
         }
         if (null != noSelectionOption) {
             if (!noSelectionOption.isLiteralText()) {
                 selectItem.setValueExpression("noSelectionOption", noSelectionOption);
             } else {
-                selectItem.setNoSelectionOption(
-                    Boolean.valueOf(noSelectionOption.getExpressionString()).
-                        booleanValue());
+                selectItem.setNoSelectionOption(Boolean.valueOf(noSelectionOption.getExpressionString()).booleanValue());
             }
         }
         if (null != escape) {
             if (!escape.isLiteralText()) {
                 selectItem.setValueExpression("escape", escape);
             } else {
-                selectItem.setItemEscaped(
-                    Boolean.valueOf(escape.getExpressionString()).
-                        booleanValue());            }
+                selectItem.setItemEscaped(Boolean.valueOf(escape.getExpressionString()).booleanValue());
+            }
         }
 
     }
@@ -188,6 +174,7 @@ public class SelectItemTag extends UIComponentELTag {
 
     /**
      * Getter for property escape.
+     * 
      * @return Value of property escape.
      */
     public ValueExpression getEscape() {
@@ -196,6 +183,7 @@ public class SelectItemTag extends UIComponentELTag {
 
     /**
      * Setter for property escape.
+     * 
      * @param escape New value of property escape.
      */
     public void setEscape(ValueExpression escape) {

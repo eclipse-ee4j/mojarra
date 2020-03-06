@@ -36,23 +36,18 @@ public class RequestHeaderValuesMap extends StringArrayValuesMap {
 
     private final HttpServletRequest request;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public RequestHeaderValuesMap(HttpServletRequest request) {
         this.request = request;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public boolean containsKey(Object key) {
         return (request.getHeaders(key.toString()) != null);
     }
-
 
     @Override
     public String[] get(Object key) {
@@ -67,53 +62,42 @@ public class RequestHeaderValuesMap extends StringArrayValuesMap {
         return valuesList.toArray(new String[valuesList.size()]);
     }
 
-
     @Override
-    public Set<Map.Entry<String,String[]>> entrySet() {
+    public Set<Map.Entry<String, String[]>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
-
 
     @Override
     public Set<String> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
-
     @Override
     public Collection<String[]> values() {
         return Collections.unmodifiableCollection(super.values());
     }
-
 
     @Override
     public int hashCode() {
         return hashCode(request);
     }
 
-
     @Override
     public boolean equals(Object obj) {
-       return !(obj == null || !(obj.getClass()
-                   == ExternalContextImpl
-                       .theUnmodifiableMapClass))
-               && super.equals(obj);
+        return !(obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) && super.equals(obj);
     }
-
 
     // --------------------------------------------- Methods from BaseContextMap
 
     @Override
-    protected Iterator<Map.Entry<String,String[]>> getEntryIterator() {
+    protected Iterator<Map.Entry<String, String[]>> getEntryIterator() {
         return new EntryIterator(request.getHeaderNames());
     }
-
 
     @Override
     protected Iterator<String> getKeyIterator() {
         return new KeyIterator(request.getHeaderNames());
     }
-
 
     @Override
     protected Iterator<String[]> getValueIterator() {

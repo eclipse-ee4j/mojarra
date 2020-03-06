@@ -25,6 +25,8 @@ import java.io.IOException;
 
 interface Instruction {
     public void write(FacesContext context) throws IOException;
+
     public Instruction apply(ExpressionFactory factory, ELContext ctx);
+
     public boolean isLiteral();
 }

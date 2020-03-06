@@ -27,23 +27,19 @@ import jakarta.servlet.ServletContext;
 import com.sun.faces.util.Util;
 
 /**
- * @see jakarta.faces.context.ExternalContext#getInitParameterMap()  
+ * @see jakarta.faces.context.ExternalContext#getInitParameterMap()
  */
 public class InitParameterMap extends BaseContextMap<String> {
 
     private final ServletContext servletContext;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public InitParameterMap(ServletContext newServletContext) {
         servletContext = newServletContext;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public String get(Object key) {
@@ -52,64 +48,51 @@ public class InitParameterMap extends BaseContextMap<String> {
         return servletContext.getInitParameter(keyString);
     }
 
-
     @Override
-    public Set<Map.Entry<String,String>> entrySet() {
+    public Set<Map.Entry<String, String>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
-
 
     @Override
     public Set<String> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
-
     @Override
     public Collection<String> values() {
         return Collections.unmodifiableCollection(super.values());
     }
-
 
     @Override
     public boolean containsKey(Object key) {
         return (servletContext.getInitParameter(key.toString()) != null);
     }
 
-
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null ||
-                 !(obj.getClass()
-                   == ExternalContextImpl
-                       .theUnmodifiableMapClass)) && super.equals(obj);
+        return !(obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) && super.equals(obj);
     }
-
 
     @Override
     public int hashCode() {
         int hashCode = 7 * servletContext.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = entrySet().iterator(); i.hasNext();) {
             hashCode += i.next().hashCode();
         }
         return hashCode;
     }
 
-
     // --------------------------------------------- Methods from BaseContextMap
 
-
     @Override
-    protected Iterator<Map.Entry<String,String>> getEntryIterator() {
+    protected Iterator<Map.Entry<String, String>> getEntryIterator() {
         return new EntryIterator(servletContext.getInitParameterNames());
     }
-
 
     @Override
     protected Iterator<String> getKeyIterator() {
         return new KeyIterator(servletContext.getInitParameterNames());
     }
-
 
     @Override
     protected Iterator<String> getValueIterator() {

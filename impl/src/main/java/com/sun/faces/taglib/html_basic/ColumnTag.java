@@ -37,24 +37,26 @@ public class ColumnTag extends UIComponentELTag {
     // Instance Variables
     //
 
-
     //
     // Setter Methods
     //
     // PROPERTY: footerClass
     private ValueExpression footerClass;
+
     public void setFooterClass(ValueExpression footerClass) {
         this.footerClass = footerClass;
     }
 
     // PROPERTY: headerClass
     private ValueExpression headerClass;
+
     public void setHeaderClass(ValueExpression headerClass) {
         this.headerClass = headerClass;
     }
 
     // PROPERTY: rowHeader
     private ValueExpression rowHeader;
+
     public void setRowHeader(ValueExpression rowHeader) {
         this.rowHeader = rowHeader;
     }
@@ -67,12 +69,10 @@ public class ColumnTag extends UIComponentELTag {
         return null;
     }
 
-
     @Override
     public String getComponentType() {
         return "jakarta.faces.Column";
     }
-
 
     @Override
     protected void setProperties(UIComponent component) {
@@ -116,7 +116,6 @@ public class ColumnTag extends UIComponentELTag {
         }
     }
 
-
     @Override
     public int doEndTag() throws JspException {
         try {
@@ -143,9 +142,7 @@ public class ColumnTag extends UIComponentELTag {
     }
 
     public String getDebugString() {
-        return "id: " + this.getId() + " class: " +
-            this.getClass().getName();
+        return "id: " + this.getId() + " class: " + this.getClass().getName();
     }
 
 }
-

@@ -17,19 +17,18 @@
 
 package jakarta.faces.view.facelets;
 
-
 /**
- * <p class="changed_added_2_0">Passed to the constructor of {@link
- * ComponentHandler}.  Represents a component-type/renderer-type
- * pair.</p>
+ * <p class="changed_added_2_0">
+ * Passed to the constructor of {@link ComponentHandler}. Represents a component-type/renderer-type pair.
+ * </p>
  *
  * @since 2.0
  * 
  */
 public interface ComponentConfig extends TagConfig {
     /**
-     * <p class="changed_added_2_0">ComponentType to pass to the
-     * <code>Application</code>. Cannot be <code>null</code>.
+     * <p class="changed_added_2_0">
+     * ComponentType to pass to the <code>Application</code>. Cannot be <code>null</code>.
      * 
      * @return the component type to pass to the {@code Application}.
      * 
@@ -38,8 +37,8 @@ public interface ComponentConfig extends TagConfig {
     public String getComponentType();
 
     /**
-     * <p class="changed_added_2_0">RendererType to set on created
-     * <code>UIComponent</code> instances.
+     * <p class="changed_added_2_0">
+     * RendererType to set on created <code>UIComponent</code> instances.
      *
      * @return the renderer type to pass to the {@code Application}.
      * 

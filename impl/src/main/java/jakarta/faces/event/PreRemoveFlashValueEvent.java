@@ -23,39 +23,39 @@ import jakarta.faces.context.Flash;
 
 /**
  *
- * <p class="changed_added_2_2">This event must be published by a call
- * to {@link jakarta.faces.application.Application#publishEvent} when a value
- * is removed from the flash.</p>
+ * <p class="changed_added_2_2">
+ * This event must be published by a call to {@link jakarta.faces.application.Application#publishEvent} when a value is
+ * removed from the flash.
+ * </p>
  *
  * @since 2.2
  */
 public class PreRemoveFlashValueEvent extends SystemEvent {
 
     private static final long serialVersionUID = -82999687346960430L;
-    
+
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p class="changed_added_2_2">Instantiate a new
-     * <code>PreRemoveFlashValueEvent</code> that indicates the argument
-     * <code>key</code> will be removed from the flash. If the argument is 
-     * <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed
-     * to the superclass constructor.</p>
-
+     * <p class="changed_added_2_2">
+     * Instantiate a new <code>PreRemoveFlashValueEvent</code> that indicates the argument <code>key</code> will be removed
+     * from the flash. If the argument is <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed to the
+     * superclass constructor.
+     * </p>
+     * 
      * @param key the key in the flash that was just added.
      *
      */
     public PreRemoveFlashValueEvent(String key) {
         super(null == key ? Flash.NULL_VALUE : key);
     }
-    
+
     /**
-     * <p class="changed_added_2_3">Instantiate a new
-     * <code>PreRemoveFlashValueEvent</code> that indicates the argument
-     * <code>key</code> will be removed from the flash. If the argument is 
-     * <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed
-     * to the superclass constructor.</p>
+     * <p class="changed_added_2_3">
+     * Instantiate a new <code>PreRemoveFlashValueEvent</code> that indicates the argument <code>key</code> will be removed
+     * from the flash. If the argument is <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed to the
+     * superclass constructor.
+     * </p>
      * 
      * @param facesContext the Faces context.
      * @param key the key in the flash that was just added.
@@ -64,7 +64,7 @@ public class PreRemoveFlashValueEvent extends SystemEvent {
     public PreRemoveFlashValueEvent(FacesContext facesContext, String key) {
         super(facesContext, key);
     }
-    
+
     public String getKey() {
         return getSource().toString();
     }

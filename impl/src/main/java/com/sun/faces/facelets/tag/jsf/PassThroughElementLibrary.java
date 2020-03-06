@@ -18,7 +18,6 @@ package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.facelets.tag.AbstractTagLibrary;
 
-
 public final class PassThroughElementLibrary extends AbstractTagLibrary {
 
     public final static String Namespace = "http://xmlns.jcp.org/jsf";
@@ -27,8 +26,7 @@ public final class PassThroughElementLibrary extends AbstractTagLibrary {
 
     public PassThroughElementLibrary() {
         super(Namespace);
-        
-        this.addComponent("element", "jakarta.faces.Panel",
-                "jakarta.faces.passthrough.Element", PassThroughElementComponentHandler.class);
+
+        this.addComponent("element", "jakarta.faces.Panel", "jakarta.faces.passthrough.Element", PassThroughElementComponentHandler.class);
     }
 }

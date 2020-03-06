@@ -27,11 +27,11 @@ import jakarta.el.ExpressionFactory;
 import java.io.IOException;
 
 public class XMLInstruction implements Instruction {
-    
+
     private final static char[] STOP = new char[0];
-    
+
     private final ELText text;
-    
+
     public XMLInstruction(ELText text) {
         this.text = text;
     }

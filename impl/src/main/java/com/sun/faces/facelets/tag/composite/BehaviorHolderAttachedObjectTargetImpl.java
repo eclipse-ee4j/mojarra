@@ -22,23 +22,23 @@ import java.util.List;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
 
-
-public class BehaviorHolderAttachedObjectTargetImpl extends
-      AttachedObjectTargetImpl implements BehaviorHolderAttachedObjectTarget {
+public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTargetImpl implements BehaviorHolderAttachedObjectTarget {
 
     private String event;
 
     private boolean defaultEvent;
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      */
     public BehaviorHolderAttachedObjectTargetImpl() {
 
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      *
      * @return the event
      */
@@ -47,7 +47,8 @@ public class BehaviorHolderAttachedObjectTargetImpl extends
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      *
      * @param event the event to set
      */
@@ -56,7 +57,8 @@ public class BehaviorHolderAttachedObjectTargetImpl extends
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      *
      * @return the defaultEvent
      */
@@ -66,7 +68,8 @@ public class BehaviorHolderAttachedObjectTargetImpl extends
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      *
      * @param defaultEvent the defaultEvent to set
      */
@@ -79,10 +82,9 @@ public class BehaviorHolderAttachedObjectTargetImpl extends
         List<UIComponent> targets = super.getTargets(topLevelComponent);
         List<UIComponent> wrappedTargets = new ArrayList<>(targets.size());
         for (UIComponent component : targets) {
-            wrappedTargets
-                  .add(new BehaviorHolderWrapper(component, getName(), getEvent()));
-		}
-		return wrappedTargets;
-	}
+            wrappedTargets.add(new BehaviorHolderWrapper(component, getName(), getEvent()));
+        }
+        return wrappedTargets;
+    }
 
 }

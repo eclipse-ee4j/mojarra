@@ -29,15 +29,15 @@ import java.util.Set;
  * 
  */
 public class MostlySingletonSet<E> implements Set<E>, Serializable {
-    
+
     private static final long serialVersionUID = 2818326518724772145L;
-    
+
     private Set<E> inner;
-    
+
     public MostlySingletonSet() {
-        
+
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="Mutating methods">
 
     @Override
@@ -54,14 +54,14 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
             }
             result = inner.add(e);
         }
-        
+
         return result;
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
         boolean result = true;
-        
+
         if (null == inner && 1 == c.size()) {
             inner = (Set<E>) Collections.singleton(c.iterator().next());
         } else {
@@ -86,12 +86,11 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
             inner = null;
         }
     }
-    
-    
+
     @Override
     public boolean remove(Object o) {
         boolean didRemove = false;
-        
+
         if (null != inner) {
             if (1 == inner.size()) {
                 // If we need to transition from one to zero
@@ -105,7 +104,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                 if (didRemove) {
                     inner = null;
                 }
-                
+
             } else {
                 didRemove = inner.remove(o);
                 if (didRemove && 1 == inner.size()) {
@@ -114,17 +113,16 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                     inner = newInner;
                 }
             }
-            
-            
+
         }
-        
+
         return didRemove;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean result = false;
-        
+
         if (null != inner) {
             if (1 == inner.size()) {
                 // May throw NPE per spec for Collection.removeAll()
@@ -139,7 +137,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                         // This handles null == cur.
                         if (result = oneAndOnlyElement.equals(cur)) {
                             break;
-                        } 
+                        }
                     } else {
                         // oneAndOnlyElement is null
                         if (result = cur == null) {
@@ -155,24 +153,24 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                 if (result && 0 == inner.size()) {
                     inner = null;
                 }
-                
+
             }
         }
-        
+
         return result;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean didModify = false;
-        
+
         if (null != inner) {
             if (1 == inner.size()) {
                 Iterator incomingIter = c.iterator();
                 E oneAndOnlyElement = inner.iterator().next();
                 // Iterate over the incoming collection
                 // looking for a member that is equal to our one and only
-                // element.  If found, we take no action, otherwise
+                // element. If found, we take no action, otherwise
                 // we remove the oneAndOnlyElement.
                 boolean found = false;
                 while (incomingIter.hasNext()) {
@@ -190,52 +188,51 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                 if (didModify = !found) {
                     inner = null;
                 }
-                
+
             } else {
                 didModify = inner.retainAll(c);
             }
         }
-        
+
         return didModify;
     }
 
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Non-mutating methods">
-    
+
     @Override
     public boolean contains(Object o) {
         boolean result = false;
-        
+
         if (null != inner) {
             result = inner.contains(o);
         }
-        
+
         return result;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
         boolean result = false;
-        
+
         if (null != inner) {
             result = inner.containsAll(c);
         }
-        
+
         return result;
     }
 
     @Override
     public boolean isEmpty() {
         boolean result = true;
-        
+
         if (null != inner) {
             result = inner.isEmpty();
         }
-        
+
         return result;
     }
-
 
     @Override
     public int size() {
@@ -245,7 +242,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         }
         return size;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         boolean result = false;
@@ -259,14 +256,14 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                 }
             } else if (obj instanceof Collection) {
                 Collection otherCollection = (Collection) obj;
-                
+
                 if (null != inner) {
                     result = inner.equals(otherCollection);
                 } else {
                     result = otherCollection.isEmpty();
                 }
-                
-            } 
+
+            }
         }
         return result;
     }
@@ -286,11 +283,9 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         }
         return result;
     }
-    
-    
-    
+
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Iteration and array">
 
     @Override
@@ -302,13 +297,13 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         } else {
             result = Collections.EMPTY_SET.iterator();
         }
-        
+
         return result;
     }
 
     @Override
     public Object[] toArray() {
-        Object [] result = null;
+        Object[] result = null;
         if (null != inner) {
             result = inner.toArray();
         }
@@ -317,13 +312,13 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        T [] result = null;
+        T[] result = null;
         if (null != inner) {
             result = inner.toArray(a);
         }
         return result;
     }
-    
+
     // </editor-fold>
-    
+
 }

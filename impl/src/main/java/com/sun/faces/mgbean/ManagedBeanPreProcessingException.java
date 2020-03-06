@@ -19,15 +19,15 @@ package com.sun.faces.mgbean;
 import jakarta.faces.FacesException;
 
 /**
- * <p>Represents errors from managed bean pre-processing.
+ * <p>
+ * Represents errors from managed bean pre-processing.
  */
 public class ManagedBeanPreProcessingException extends FacesException {
 
     private static final long serialVersionUID = 5355477597212764294L;
 
     public enum Type {
-        CHECKED,
-        UNCHECKED
+        CHECKED, UNCHECKED
     }
 
     private Type type = Type.CHECKED;
@@ -38,48 +38,39 @@ public class ManagedBeanPreProcessingException extends FacesException {
         super();
     }
 
-
     public ManagedBeanPreProcessingException(Type type) {
         super();
         this.type = type;
     }
 
-
     public ManagedBeanPreProcessingException(String message) {
         super(message);
     }
-
 
     public ManagedBeanPreProcessingException(String message, Type type) {
         super(message);
         this.type = type;
     }
 
-
     public ManagedBeanPreProcessingException(Throwable t) {
         super(t);
     }
-
 
     public ManagedBeanPreProcessingException(Throwable t, Type type) {
         super(t);
         this.type = type;
     }
 
-
     public ManagedBeanPreProcessingException(String message, Throwable t) {
         super(message, t);
     }
-
 
     public ManagedBeanPreProcessingException(String message, Throwable t, Type type) {
         super(message, t);
         this.type = type;
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     public Type getType() {
 

@@ -47,8 +47,7 @@ public final class IfHandler extends TagHandlerImpl {
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException, FacesException, ELException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException {
         boolean b = this.test.getBoolean(ctx);
         if (this.var != null) {
             ctx.setAttribute(var.getValue(ctx), b);

@@ -38,17 +38,14 @@ public class VariableResolverImpl extends VariableResolver {
 
     // Specified by jakarta.faces.el.VariableResolver.resolveVariable()
     @Override
-    public Object resolveVariable(FacesContext context, String name)
-            throws EvaluationException {
+    public Object resolveVariable(FacesContext context, String name) throws EvaluationException {
 
         if (context == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context");
             throw new NullPointerException(message);
         }
         if (name == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name");
             throw new NullPointerException(message);
         }
 
@@ -67,9 +64,7 @@ public class VariableResolverImpl extends VariableResolver {
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     public void setDelegate(VariableResolver delegate) {
 

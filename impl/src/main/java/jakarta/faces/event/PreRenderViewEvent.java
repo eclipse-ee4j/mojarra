@@ -25,24 +25,21 @@ import jakarta.faces.context.FacesContext;
 
 /**
  *
- * <p class="changed_added_2_0">When an instance of this event is passed
- * to {@link SystemEventListener#processEvent} or {@link
- * ComponentSystemEventListener#processEvent}, the listener
- * implementation may assume that the <code>source</code> of this event
- * instance is the {@link UIViewRoot} instance that is about to be
- * rendered.</p>
-
+ * <p class="changed_added_2_0">
+ * When an instance of this event is passed to {@link SystemEventListener#processEvent} or
+ * {@link ComponentSystemEventListener#processEvent}, the listener implementation may assume that the
+ * <code>source</code> of this event instance is the {@link UIViewRoot} instance that is about to be rendered.
+ * </p>
+ * 
  * <div class="changed_added_2_0">
  *
- * <p>It is valid for a listener for this event to change the {@link
- * UIViewRoot} in the current {@link jakarta.faces.context.FacesContext},
- * but the listener must ensure that the new <code>UIViewRoot</code> was
- * created with a call to {@link
- * jakarta.faces.application.ViewHandler#createView}, and that the view is
- * fully populated with the children to be traversed during render.  The
- * listener implementation may call {@link
- * jakarta.faces.view.ViewDeclarationLanguage#buildView} to populate
- * the <code>UIViewRoot</code>.</p>
+ * <p>
+ * It is valid for a listener for this event to change the {@link UIViewRoot} in the current
+ * {@link jakarta.faces.context.FacesContext}, but the listener must ensure that the new <code>UIViewRoot</code> was
+ * created with a call to {@link jakarta.faces.application.ViewHandler#createView}, and that the view is fully populated
+ * with the children to be traversed during render. The listener implementation may call
+ * {@link jakarta.faces.view.ViewDeclarationLanguage#buildView} to populate the <code>UIViewRoot</code>.
+ * </p>
  *
  * </div>
  *
@@ -50,35 +47,33 @@ import jakarta.faces.context.FacesContext;
  */
 public class PreRenderViewEvent extends ComponentSystemEvent {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     private static final long serialVersionUID = -781238104491250220L;
 
     /**
-
-     * <p class="changed_added_2_0">Instantiate a new
-     * <code>PreRenderViewEvent</code> that indicates the argument
-     * <code>root</code> is about to be rendered.</p>
-
-     * @param root the <code>UIViewRoot</code> that is about to be
+     * 
+     * <p class="changed_added_2_0">
+     * Instantiate a new <code>PreRenderViewEvent</code> that indicates the argument <code>root</code> is about to be
      * rendered.
-
+     * </p>
+     * 
+     * @param root the <code>UIViewRoot</code> that is about to be rendered.
+     * 
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PreRenderViewEvent(UIViewRoot root) {
         super(root);
     }
-    
+
     /**
-     * <p class="changed_added_2_3">Instantiate a new
-     * <code>PreRenderViewEvent</code> that indicates the argument
-     * <code>root</code> is about to be rendered.</p>
+     * <p class="changed_added_2_3">
+     * Instantiate a new <code>PreRenderViewEvent</code> that indicates the argument <code>root</code> is about to be
+     * rendered.
+     * </p>
      * 
      * @param facesContext the Faces context.
-     * @param root the <code>UIViewRoot</code> that is about to be
-     * rendered.
+     * @param root the <code>UIViewRoot</code> that is about to be rendered.
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PreRenderViewEvent(FacesContext facesContext, UIViewRoot root) {

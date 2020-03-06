@@ -42,8 +42,7 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/lifecycle</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/lifecycle</code>.
  * </p>
  */
 public class LifecycleConfigProcessor extends AbstractConfigProcessor {
@@ -69,7 +68,6 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
         appPhaseListeners = new CopyOnWriteArrayList<PhaseListener>();
     }
 
-
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
@@ -84,11 +82,11 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing lifecycle elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList lifecycles = document.getElementsByTagNameNS(namespace, LIFECYCLE);
-            
+
             if (lifecycles != null) {
                 for (int c = 0, csize = lifecycles.getLength(); c < csize; c++) {
                     Node lifecyleNode = lifecycles.item(c);
@@ -101,15 +99,13 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
         }
 
     }
-    
+
     @Override
     public void destroy(ServletContext sc, FacesContext facesContext) {
         destroyInstances(sc, facesContext, appPhaseListeners);
     }
-  
 
     // --------------------------------------------------------- Private Methods
-    
 
     private void addPhaseListeners(ServletContext sc, FacesContext facesContext, LifecycleFactory factory, NodeList phaseListeners) {
 
@@ -117,28 +113,25 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
             for (int i = 0, size = phaseListeners.getLength(); i < size; i++) {
                 Node phaseListenerNode = phaseListeners.item(i);
                 String phaseListenerClassName = getNodeText(phaseListenerNode);
-                
+
                 if (phaseListenerClassName != null) {
                     boolean[] didPerformInjection = { false };
-                    
-                    PhaseListener phaseListener = (PhaseListener) 
-                        createInstance(
-                                sc, facesContext, phaseListenerClassName, 
-                                PhaseListener.class, null, phaseListenerNode, 
-                                true, didPerformInjection);
-                    
+
+                    PhaseListener phaseListener = (PhaseListener) createInstance(sc, facesContext, phaseListenerClassName, PhaseListener.class, null,
+                            phaseListenerNode, true, didPerformInjection);
+
                     if (phaseListener != null) {
                         if (didPerformInjection[0]) {
                             appPhaseListeners.add(phaseListener);
                         }
-                        
+
                         for (Iterator<String> t = factory.getLifecycleIds(); t.hasNext();) {
                             String lfId = (String) t.next();
                             Lifecycle lifecycle = factory.getLifecycle(lfId);
                             if (LOGGER.isLoggable(FINE)) {
                                 LOGGER.log(FINE, format("Adding PhaseListener ''{0}'' to lifecycle ''{0}}", phaseListenerClassName, lfId));
                             }
-                            
+
                             lifecycle.addPhaseListener(phaseListener);
                         }
                     }
@@ -146,12 +139,12 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
             }
         }
     }
-    
+
     private void destroyInstances(ServletContext sc, FacesContext facesContext, List<?> instances) {
         for (Object instance : instances) {
             destroyInstance(sc, facesContext, instance.getClass().getName(), instance);
         }
-        
+
         instances.clear();
     }
 

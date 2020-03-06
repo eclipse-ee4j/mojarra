@@ -43,8 +43,7 @@ class ResourceScanner implements Scanner {
      *
      * @param clazz the class.
      * @return the runtime annotation handler.
-     * @todo Make sure we get all the fields, handle method and class based
-     * injection.
+     * @todo Make sure we get all the fields, handle method and class based injection.
      */
     @Override
     public RuntimeAnnotationHandler scan(Class<?> clazz) {
@@ -74,9 +73,8 @@ class ResourceScanner implements Scanner {
         }
 
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new ResourceHandler(
-                    fields.toArray(new Field[0]), (Resource[]) fieldAnnotations.toArray(new Resource[0]),
-                    methods.toArray(new Method[0]), (Resource[]) methodAnnotations.toArray(new Resource[0]));
+            handler = new ResourceHandler(fields.toArray(new Field[0]), (Resource[]) fieldAnnotations.toArray(new Resource[0]), methods.toArray(new Method[0]),
+                    (Resource[]) methodAnnotations.toArray(new Resource[0]));
         }
         return handler;
     }

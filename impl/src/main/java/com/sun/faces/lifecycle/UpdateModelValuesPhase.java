@@ -26,20 +26,16 @@ import jakarta.faces.event.PhaseId;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-
 /**
- * UpdateModelValuesPhase executes <code>processUpdates</code> on each
- * component in the tree so that it may have a chance to update its model value.
+ * UpdateModelValuesPhase executes <code>processUpdates</code> on each component in the tree so that it may have a
+ * chance to update its model value.
  */
 public class UpdateModelValuesPhase extends Phase {
-
 
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void execute(FacesContext facesContext) {
@@ -68,14 +64,12 @@ public class UpdateModelValuesPhase extends Phase {
 
     }
 
-
     @Override
     public PhaseId getId() {
 
         return PhaseId.UPDATE_MODEL_VALUES;
 
     }
-
 
 // The testcase for this class is TestUpdateModelValuesPhase.java
 

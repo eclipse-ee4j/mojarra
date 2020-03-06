@@ -42,8 +42,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/component</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/component</code>.
  * </p>
  */
 public class ComponentConfigProcessor extends AbstractConfigProcessor {
@@ -75,7 +74,7 @@ public class ComponentConfigProcessor extends AbstractConfigProcessor {
 
     /**
      * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[]) @param
-     *      sc
+     * sc
      * @param documentInfos
      */
     @Override
@@ -89,7 +88,7 @@ public class ComponentConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing component elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList components = document.getDocumentElement().getElementsByTagNameNS(namespace, COMPONENT);

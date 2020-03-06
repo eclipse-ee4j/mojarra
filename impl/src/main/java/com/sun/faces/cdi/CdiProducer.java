@@ -35,18 +35,17 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 
 /**
- * An abstract base class used by the CDI producers for some common
- * functionality.
+ * An abstract base class used by the CDI producers for some common functionality.
  * 
  * @since 2.3
  */
 abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializable {
-    
+
     /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     private String id = this.getClass().getName();
     private String name;
     private Class<?> beanClass = Object.class;
@@ -54,14 +53,13 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     private Set<Annotation> qualifiers = unmodifiableSet(asSet(new DefaultAnnotationLiteral(), new AnyAnnotationLiteral()));
     private Class<? extends Annotation> scope = Dependent.class;
     private Function<CreationalContext<T>, T> create;
-    
+
     /**
      * Get the ID of this particular instantiation of the producer.
      * <p>
-     * This is an implementation detail of CDI, where it wants to relocate
-     * a particular producer in order to re-inject a value. This is typically
-     * used in combination with passivation. Note that this is NOT about
-     * the value we're producing, but about the producer itself.
+     * This is an implementation detail of CDI, where it wants to relocate a particular producer in order to re-inject a
+     * value. This is typically used in combination with passivation. Note that this is NOT about the value we're producing,
+     * but about the producer itself.
      * 
      * @return the ID of this particular instantiation of the producer
      */
@@ -69,22 +67,22 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     public String getId() {
         return id;
     }
-    
+
     @Override
     public String getName() {
         return name;
     }
-    
+
     @Override
     public Class<?> getBeanClass() {
-       return beanClass;
+        return beanClass;
     }
-    
+
     @Override
     public Set<Type> getTypes() {
         return types;
     }
-    
+
     /**
      * Get the default qualifier.
      *
@@ -94,24 +92,23 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     public Set<Annotation> getQualifiers() {
         return qualifiers;
     }
-    
+
     @Override
     public Class<? extends Annotation> getScope() {
         return scope;
     }
-    
+
     @Override
     public T create(CreationalContext<T> creationalContext) {
         return create.apply(creationalContext);
     }
-    
+
     /**
      * Destroy the instance.
      *
      * <p>
-     * Since most artifact that the sub classes are producing 
-     * are artifacts that the JSF runtime really is
-     * managing the destroy method here does not need to do anything.
+     * Since most artifact that the sub classes are producing are artifacts that the JSF runtime really is managing the
+     * destroy method here does not need to do anything.
      * </p>
      *
      * @param instance the instance.
@@ -120,7 +117,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
     }
-    
+
     /**
      * Get the injection points.
      *
@@ -130,7 +127,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     public Set<InjectionPoint> getInjectionPoints() {
         return emptySet();
     }
-    
+
     /**
      * Get the stereotypes.
      *
@@ -140,7 +137,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     public Set<Class<? extends Annotation>> getStereotypes() {
         return emptySet();
     }
-    
+
     /**
      * Is this an alternative.
      *
@@ -160,52 +157,51 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     public boolean isNullable() {
         return false;
     }
-    
+
     protected CdiProducer<T> name(String name) {
         this.name = name;
         return this;
     }
-    
+
     protected CdiProducer<T> create(Function<CreationalContext<T>, T> create) {
         this.create = create;
         return this;
     }
-    
+
     protected CdiProducer<T> beanClass(Class<?> beanClass) {
         this.beanClass = beanClass;
         return this;
     }
-    
+
     protected CdiProducer<T> types(Type... types) {
         this.types = asSet(types);
         return this;
     }
-    
+
     protected CdiProducer<T> beanClassAndType(Class<?> beanClass) {
         beanClass(beanClass);
         types(beanClass);
         return this;
     }
-    
+
     protected CdiProducer<T> qualifiers(Annotation... qualifiers) {
         this.qualifiers = asSet(qualifiers);
         return this;
     }
-    
-    
+
     protected CdiProducer<T> scope(Class<? extends Annotation> scope) {
         this.scope = scope;
         return this;
     }
-    
+
     protected CdiProducer<T> addToId(Object object) {
         id = id + " " + object.toString();
         return this;
     }
-    
+
     @SafeVarargs
     protected static <T> Set<T> asSet(T... a) {
         return new HashSet<T>(asList(a));
     }
-    
+
 }

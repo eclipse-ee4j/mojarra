@@ -37,7 +37,7 @@ final class ActionSourceRule extends MetaRule {
     public final static Class[] ACTION_SIG = new Class[0];
 
     public final static Class[] ACTION_LISTENER_SIG = new Class[] { ActionEvent.class };
-    public final static Class[] ACTION_LISTENER_ZEROARG_SIG = new Class[] { };
+    public final static Class[] ACTION_LISTENER_ZEROARG_SIG = new Class[] {};
 
     final static class ActionMapper extends Metadata {
 
@@ -49,9 +49,7 @@ final class ActionSourceRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource) instance).setAction(new LegacyMethodBinding(
-                    this.attr.getMethodExpression(ctx, Object.class,
-                            ActionSourceRule.ACTION_SIG)));
+            ((ActionSource) instance).setAction(new LegacyMethodBinding(this.attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG)));
         }
     }
 
@@ -65,9 +63,7 @@ final class ActionSourceRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource2) instance).setActionExpression(this.attr
-                    .getMethodExpression(ctx, Object.class,
-                            ActionSourceRule.ACTION_SIG));
+            ((ActionSource2) instance).setActionExpression(this.attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG));
         }
 
     }
@@ -83,9 +79,7 @@ final class ActionSourceRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ActionSource) instance)
-                    .setActionListener(new LegacyMethodBinding(this.attr
-                            .getMethodExpression(ctx, null,
-                                    ActionSourceRule.ACTION_LISTENER_SIG)));
+                    .setActionListener(new LegacyMethodBinding(this.attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG)));
         }
 
     }
@@ -100,20 +94,15 @@ final class ActionSourceRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            
+
             ExpressionFactory expressionFactory = ctx.getExpressionFactory();
 
-            MethodExpression methodExpressionOneArg = attr.getMethodExpression(
-                ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
-            
-            MethodExpression methodExpressionZeroArg = 
-                    expressionFactory.createMethodExpression(
-                        ctx, methodExpressionOneArg.getExpressionString(), 
-                        Void.class, ActionSourceRule.ACTION_LISTENER_ZEROARG_SIG);            
-            
-            ((ActionSource2) instance)
-                    .addActionListener(new MethodExpressionActionListener(
-                            methodExpressionOneArg, methodExpressionZeroArg));
+            MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
+
+            MethodExpression methodExpressionZeroArg = expressionFactory.createMethodExpression(ctx, methodExpressionOneArg.getExpressionString(), Void.class,
+                    ActionSourceRule.ACTION_LISTENER_ZEROARG_SIG);
+
+            ((ActionSource2) instance).addActionListener(new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
 
         }
 
@@ -126,8 +115,7 @@ final class ActionSourceRule extends MetaRule {
     }
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta) {
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
         if (meta.isTargetInstanceOf(ActionSource.class)) {
 
             if ("action".equals(name)) {

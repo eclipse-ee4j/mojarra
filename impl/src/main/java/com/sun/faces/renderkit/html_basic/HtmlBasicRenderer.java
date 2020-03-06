@@ -63,8 +63,7 @@ import jakarta.faces.convert.ConverterException;
 import jakarta.faces.render.Renderer;
 
 /**
- * <B>HtmlBasicRenderer</B> is a base class for implementing renderers for
- * HtmlBasicRenderKit.
+ * <B>HtmlBasicRenderer</B> is a base class for implementing renderers for HtmlBasicRenderKit.
  */
 
 public abstract class HtmlBasicRenderer extends Renderer {
@@ -196,14 +195,10 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * @param ctx
-     *            the <code>FacesContext</code> for the current request
-     * @param behaviorSourceId
-     *            the ID of the behavior source
-     * @param componentClientId
-     *            the client ID of the component being decoded
-     * @return <code>true</code> if the behavior source is for the component being
-     *         decoded, otherwise <code>false</code>
+     * @param ctx the <code>FacesContext</code> for the current request
+     * @param behaviorSourceId the ID of the behavior source
+     * @param componentClientId the client ID of the component being decoded
+     * @return <code>true</code> if the behavior source is for the component being decoded, otherwise <code>false</code>
      */
     protected boolean isBehaviorSource(FacesContext ctx, String behaviorSourceId, String componentClientId) {
 
@@ -216,16 +211,13 @@ public abstract class HtmlBasicRenderer extends Renderer {
      * Conditionally augment an id-reference value.
      * </p>
      * <p>
-     * If the <code>forValue</code> doesn't already include a generated suffix, but the id
-     * of the <code>fromComponent</code> does include a generated suffix, then append the
-     * suffix from the <code>fromComponent</code> to the <code>forValue</code>. Otherwise
-     * just return the <code>forValue</code> as is.
+     * If the <code>forValue</code> doesn't already include a generated suffix, but the id of the <code>fromComponent</code>
+     * does include a generated suffix, then append the suffix from the <code>fromComponent</code> to the
+     * <code>forValue</code>. Otherwise just return the <code>forValue</code> as is.
      * </p>
      *
-     * @param forValue
-     *            - the basic id-reference value.
-     * @param fromComponent
-     *            - the component that holds the code>forValue</code>.
+     * @param forValue - the basic id-reference value.
+     * @param fromComponent - the component that holds the code>forValue</code>.
      *
      * @return the (possibly augmented) <code>forValue<code>.
      */
@@ -252,17 +244,14 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
     /**
      * <p>
-     * Render nested child components by invoking the encode methods on those components,
-     * but only when the <code>rendered</code> property is <code>true</code>.
+     * Render nested child components by invoking the encode methods on those components, but only when the
+     * <code>rendered</code> property is <code>true</code>.
      * </p>
      *
-     * @param context
-     *            FacesContext for the current request
-     * @param component
-     *            the component to recursively encode
+     * @param context FacesContext for the current request
+     * @param component the component to recursively encode
      *
-     * @throws IOException
-     *             if an error occurrs during the encode process
+     * @throws IOException if an error occurrs during the encode process
      */
     protected void encodeRecursive(FacesContext context, UIComponent component) throws IOException {
 
@@ -288,11 +277,10 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * @param component
-     *            <code>UIComponent</code> for which to extract children
+     * @param component <code>UIComponent</code> for which to extract children
      *
-     * @return an Iterator over the children of the specified component, selecting only
-     *         those that have a <code>rendered</code> property of <code>true</code>.
+     * @return an Iterator over the children of the specified component, selecting only those that have a
+     * <code>rendered</code> property of <code>true</code>.
      */
     protected Iterator<UIComponent> getChildren(UIComponent component) {
 
@@ -306,13 +294,10 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * @param context
-     *            the FacesContext for the current request
-     * @param component
-     *            the UIComponent whose value we're interested in
+     * @param context the FacesContext for the current request
+     * @param component the UIComponent whose value we're interested in
      *
-     * @return the value to be rendered and formats it if required. Sets to empty string
-     *         if value is null.
+     * @return the value to be rendered and formats it if required. Sets to empty string if value is null.
      */
     protected String getCurrentValue(FacesContext context, UIComponent component) {
 
@@ -336,15 +321,11 @@ public abstract class HtmlBasicRenderer extends Renderer {
     /**
      * Renderers override this method to write appropriate HTML content into the buffer.
      *
-     * @param context
-     *            the FacesContext for the current request
-     * @param component
-     *            the UIComponent of interest
-     * @param currentValue
-     *            <code>component</code>'s current value
+     * @param context the FacesContext for the current request
+     * @param component the UIComponent of interest
+     * @param currentValue <code>component</code>'s current value
      *
-     * @throws IOException
-     *             if an error occurs rendering the text
+     * @throws IOException if an error occurs rendering the text
      */
     protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
 
@@ -353,13 +334,11 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * @param component
-     *            Component from which to return a facet
-     * @param name
-     *            Name of the desired facet
+     * @param component Component from which to return a facet
+     * @param name Name of the desired facet
      *
-     * @return the specified facet from the specified component, but <strong>only</strong>
-     *         if its <code>rendered</code> property is set to <code>true</code>.
+     * @return the specified facet from the specified component, but <strong>only</strong> if its <code>rendered</code>
+     * property is set to <code>true</code>.
      */
     protected UIComponent getFacet(UIComponent component, String name) {
 
@@ -377,12 +356,9 @@ public abstract class HtmlBasicRenderer extends Renderer {
     /**
      * Locates the component identified by <code>forComponent</code>
      *
-     * @param context
-     *            the FacesContext for the current request
-     * @param forComponent
-     *            - the component to search for
-     * @param component
-     *            - the starting point in which to begin the search
+     * @param context the FacesContext for the current request
+     * @param forComponent - the component to search for
+     * @param component - the starting point in which to begin the search
      *
      * @return the component with the the <code>id</code that matches
      *         <code>forComponent</code> otheriwse null if no match is found.
@@ -434,18 +410,13 @@ public abstract class HtmlBasicRenderer extends Renderer {
     /**
      * Overloads getFormattedValue to take a advantage of a previously obtained converter.
      * 
-     * @param context
-     *            the FacesContext for the current request
-     * @param component
-     *            UIComponent of interest
-     * @param currentValue
-     *            the current value of <code>component</code>
-     * @param converter
-     *            the component's converter
+     * @param context the FacesContext for the current request
+     * @param component UIComponent of interest
+     * @param currentValue the current value of <code>component</code>
+     * @param converter the component's converter
      * @return the currentValue after any associated Converter has been applied
      *
-     * @throws ConverterException
-     *             if the value cannot be converted
+     * @throws ConverterException if the value cannot be converted
      */
     protected String getFormattedValue(FacesContext context, UIComponent component, Object currentValue, Converter converter) throws ConverterException {
 
@@ -492,17 +463,13 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * @param context
-     *            the FacesContext for the current request
-     * @param component
-     *            UIComponent of interest
-     * @param currentValue
-     *            the current value of <code>component</code>
+     * @param context the FacesContext for the current request
+     * @param component UIComponent of interest
+     * @param currentValue the current value of <code>component</code>
      *
      * @return the currentValue after any associated Converter has been applied
      *
-     * @throws ConverterException
-     *             if the value cannot be converted
+     * @throws ConverterException if the value cannot be converted
      */
     protected String getFormattedValue(FacesContext context, UIComponent component, Object currentValue) throws ConverterException {
 
@@ -537,8 +504,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * @param command
-     *            the command which may have parameters
+     * @param command the command which may have parameters
      *
      * @return an array of parameters
      */
@@ -565,12 +531,10 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * Collections parameters for use with Behavior script rendering. Similar to
-     * getParamList(), but returns a collection of ClientBehaviorContext.Parameter
-     * instances.
+     * Collections parameters for use with Behavior script rendering. Similar to getParamList(), but returns a collection of
+     * ClientBehaviorContext.Parameter instances.
      *
-     * @param command
-     *            the command which may have parameters
+     * @param command the command which may have parameters
      *
      * @return a collection of ClientBehaviorContext.Parameter instances.
      */
@@ -609,21 +573,17 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * Renderers override this method to store the previous value of the associated
-     * component.
+     * Renderers override this method to store the previous value of the associated component.
      *
-     * @param component
-     *            the target component to which the submitted value will be set
-     * @param value
-     *            the value to set
+     * @param component the target component to which the submitted value will be set
+     * @param value the value to set
      */
     protected void setSubmittedValue(UIComponent component, Object value) {
         // no-op unless overridden
     }
 
     /**
-     * @param component
-     *            the component of interest
+     * @param component the component of interest
      *
      * @return true if this renderer should render an id attribute.
      */
@@ -650,13 +610,11 @@ public abstract class HtmlBasicRenderer extends Renderer {
                 writer.writeAttribute("id", id = component.getClientId(context), "id");
             } catch (IOException e) {
                 if (logger.isLoggable(WARNING)) {
-                    logger.warning(
-                        getExceptionMessageString(
-                            CANT_WRITE_ID_ATTRIBUTE_ERROR_MESSAGE_ID, e.getMessage()));
+                    logger.warning(getExceptionMessageString(CANT_WRITE_ID_ATTRIBUTE_ERROR_MESSAGE_ID, e.getMessage()));
                 }
             }
         }
-        
+
         return id;
     }
 
@@ -674,7 +632,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
             }
             return false;
         }
-        
+
         return true;
     }
 
@@ -686,7 +644,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
             }
             return false;
         }
-        
+
         return true;
     }
 
@@ -699,34 +657,27 @@ public abstract class HtmlBasicRenderer extends Renderer {
             }
             return false;
         }
-        
+
         return true;
     }
 
     /**
-     * When rendering pass thru attributes, we need to take any attached Behaviors into
-     * account. The presence of a non-empty Behaviors map can cause us to switch from
-     * optimized pass thru attribute rendering to the unoptimized code path. However, in
-     * two very common cases - attaching action behaviors to commands and attaching value
-     * change behaviors to editable value holders - the behaviors map is populated with
-     * behaviors that are not handled by the pass thru attribute code - ie. the behaviors
-     * are handled locally by the renderer.
+     * When rendering pass thru attributes, we need to take any attached Behaviors into account. The presence of a non-empty
+     * Behaviors map can cause us to switch from optimized pass thru attribute rendering to the unoptimized code path.
+     * However, in two very common cases - attaching action behaviors to commands and attaching value change behaviors to
+     * editable value holders - the behaviors map is populated with behaviors that are not handled by the pass thru
+     * attribute code - ie. the behaviors are handled locally by the renderer.
      *
-     * In order to optimize such cases, we check to see whether the component's behaviors
-     * map actually contains behaviors only for these non-pass thru attributes. If so, we
-     * can pass a null behavior map into renderPassThruAttributes(), thus ensuring that we
-     * can take advantage of the optimized pass thru rendering logic.
+     * In order to optimize such cases, we check to see whether the component's behaviors map actually contains behaviors
+     * only for these non-pass thru attributes. If so, we can pass a null behavior map into renderPassThruAttributes(), thus
+     * ensuring that we can take advantage of the optimized pass thru rendering logic.
      *
-     * Note that in all cases where we use this method, we actually have two behavior
-     * events that we want to check for - a low-level/dom event (eg. "click", or "change")
-     * plus a high-level component event (eg. "action", or "valueChange").
+     * Note that in all cases where we use this method, we actually have two behavior events that we want to check for - a
+     * low-level/dom event (eg. "click", or "change") plus a high-level component event (eg. "action", or "valueChange").
      *
-     * @param component
-     *            the component that we are rendering
-     * @param domEventName
-     *            the name of the dom-level event
-     * @param componentEventName
-     *            the name of the component-level event
+     * @param component the component that we are rendering
+     * @param domEventName the name of the dom-level event
+     * @param componentEventName the name of the component-level event
      */
     protected static Map<String, List<ClientBehavior>> getPassThruBehaviors(UIComponent component, String domEventName, String componentEventName) {
 
@@ -756,14 +707,11 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
     /**
      * <p>
-     * Recursively searches for {@link NamingContainer}s from the given start point
-     * looking for the component with the <code>id</code> specified by
-     * <code>forComponent</code>.
+     * Recursively searches for {@link NamingContainer}s from the given start point looking for the component with the
+     * <code>id</code> specified by <code>forComponent</code>.
      *
-     * @param startPoint
-     *            - the starting point in which to begin the search
-     * @param forComponent
-     *            - the component to search for
+     * @param startPoint - the starting point in which to begin the search
+     * @param forComponent - the component to search for
      *
      * @return the component with the the <code>id</code that matches
      *         <code>forComponent</code> otheriwse null if no match is found.
@@ -822,8 +770,8 @@ public abstract class HtmlBasicRenderer extends Renderer {
     }
 
     /**
-     * Structure to hold common info used by Select* components to reduce the number of
-     * times component attributes are evaluated when rendering options.
+     * Structure to hold common info used by Select* components to reduce the number of times component attributes are
+     * evaluated when rendering options.
      */
     public static class OptionComponentInfo {
 

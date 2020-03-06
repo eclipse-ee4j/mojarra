@@ -21,29 +21,27 @@ import java.util.List;
 import jakarta.faces.component.UIComponent;
 
 /**
- * <p class="changed_added_2_0">Within the declaration of a
- * <em>composite component</em>, an <code>AttachedObjectTarget</code>
- * allows the <em>composite component author</em> to expose the
- * semantics of an inner component to the <em>page author</em> without
- * exposing the rendering or implementation details of the <em>inner
- * component</em>.  See {@link
- * ViewDeclarationLanguage#getComponentMetadata} for the context in
- * which implementations of this interface are used.</p>
+ * <p class="changed_added_2_0">
+ * Within the declaration of a <em>composite component</em>, an <code>AttachedObjectTarget</code> allows the
+ * <em>composite component author</em> to expose the semantics of an inner component to the <em>page author</em> without
+ * exposing the rendering or implementation details of the <em>inner component</em>. See
+ * {@link ViewDeclarationLanguage#getComponentMetadata} for the context in which implementations of this interface are
+ * used.
+ * </p>
  * 
- * <p class="changed_added_2_0">The implementation must ensure that 
- * this instance is thread safe and may be shared among different component 
- * trees.</p>
-
+ * <p class="changed_added_2_0">
+ * The implementation must ensure that this instance is thread safe and may be shared among different component trees.
+ * </p>
+ * 
  * <div class="changed_added_2_0">
-
- * <p>Subinterfaces are provided for the common behavioral interfaces:
- * {@link jakarta.faces.component.behavior.Behavior}, {@link
- * jakarta.faces.component.ValueHolder}, {@link
- * jakarta.faces.component.EditableValueHolder} and {@link
- * jakarta.faces.component.ActionSource2}.  The default VDL implementation
- * must provide a corresponding Facelets tag handler for each of the
- * subinterfaces of this interface.  </p>
-
+ * 
+ * <p>
+ * Subinterfaces are provided for the common behavioral interfaces: {@link jakarta.faces.component.behavior.Behavior},
+ * {@link jakarta.faces.component.ValueHolder}, {@link jakarta.faces.component.EditableValueHolder} and
+ * {@link jakarta.faces.component.ActionSource2}. The default VDL implementation must provide a corresponding Facelets
+ * tag handler for each of the subinterfaces of this interface.
+ * </p>
+ * 
  * </div>
  *
  * @since 2.0
@@ -51,38 +49,33 @@ import jakarta.faces.component.UIComponent;
 public interface AttachedObjectTarget {
 
     /**
-     * <p class="changed_added_2_0">The key in the value set of the
-     * <em>composite component <code>BeanDescriptor</code></em>, the
-     * value for which is a
-     * <code>List&lt;AttachedObjectTarget&gt;</code>.</p>
+     * <p class="changed_added_2_0">
+     * The key in the value set of the <em>composite component <code>BeanDescriptor</code></em>, the value for which is a
+     * <code>List&lt;AttachedObjectTarget&gt;</code>.
+     * </p>
      */
-    public static final String ATTACHED_OBJECT_TARGETS_KEY =
-            "jakarta.faces.view.AttachedObjectTargets";
-
+    public static final String ATTACHED_OBJECT_TARGETS_KEY = "jakarta.faces.view.AttachedObjectTargets";
 
     /**
-     * <p class="changed_added_2_0">Returns the
-     * <code>List&lt;UIComponent&gt;</code> that this
-     * <code>AttachedObjectTarget</code> exposes.  Each <em>attached
-     * object</em> exposed by the <em>composite component author</em>
-     * may point at multiple <code>UIComponent</code> instances within
-     * the composite component.  This method is used by the {@link
-     * jakarta.faces.view.ViewDeclarationLanguage#retargetAttachedObjects}
-     * method to take the appropriate action on the attached object.</p>
+     * <p class="changed_added_2_0">
+     * Returns the <code>List&lt;UIComponent&gt;</code> that this <code>AttachedObjectTarget</code> exposes. Each
+     * <em>attached object</em> exposed by the <em>composite component author</em> may point at multiple
+     * <code>UIComponent</code> instances within the composite component. This method is used by the
+     * {@link jakarta.faces.view.ViewDeclarationLanguage#retargetAttachedObjects} method to take the appropriate action on
+     * the attached object.
+     * </p>
      *
-     * @param topLevelComponent the top level component for this
-     * composite component.
+     * @param topLevelComponent the top level component for this composite component.
      *
      * @return the result as specified above
      *
      */
     public List<UIComponent> getTargets(UIComponent topLevelComponent);
 
-
     /**
-     * <p class="changed_added_2_0">Returns the name by which this
-     * attached object target is exposed to the <em>page
-     * author</em>.</p>
+     * <p class="changed_added_2_0">
+     * Returns the name by which this attached object target is exposed to the <em>page author</em>.
+     * </p>
      *
      *
      * @return the name of the attached object target

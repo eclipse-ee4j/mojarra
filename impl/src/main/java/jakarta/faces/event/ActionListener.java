@@ -16,48 +16,44 @@
 
 package jakarta.faces.event;
 
-
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.FacesListener;
 
 import jakarta.faces.component.UIComponent;
 
-
 /**
- * <p><span class="changed_modified_2_0 changed_modified_2_2">A</span> listener interface for 
- * receiving {@link ActionEvent}s.  <span class="changed_added_2_0">An
- * implementation
- * of this interface must be thread-safe.</span>  A class that
- * is interested in receiving such events implements this interface, and then
- * registers itself with the source {@link UIComponent} of interest, by
- * calling <code>addActionListener()</code>.</p>
+ * <p>
+ * <span class="changed_modified_2_0 changed_modified_2_2">A</span> listener interface for receiving
+ * {@link ActionEvent}s. <span class="changed_added_2_0">An implementation of this interface must be thread-safe.</span>
+ * A class that is interested in receiving such events implements this interface, and then registers itself with the
+ * source {@link UIComponent} of interest, by calling <code>addActionListener()</code>.
+ * </p>
  */
 
-public interface ActionListener extends FacesListener  {
-    
+public interface ActionListener extends FacesListener {
+
     /**
-     * <p class="changed_added_2_2">The presence of this component attribute
-     * on an {@link jakarta.faces.component.ActionSource} component will cause
-     * the default {@code ActionListener} to interpret the value of the 
-     * attribute as the <em>toFlowDocumentId</em> value to pass to
-     * {@link jakarta.faces.application.NavigationHandler#handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String, java.lang.String)}.</p>
+     * <p class="changed_added_2_2">
+     * The presence of this component attribute on an {@link jakarta.faces.component.ActionSource} component will cause the
+     * default {@code ActionListener} to interpret the value of the attribute as the <em>toFlowDocumentId</em> value to pass
+     * to
+     * {@link jakarta.faces.application.NavigationHandler#handleNavigation(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String, java.lang.String)}.
+     * </p>
      * 
      */
     public static final String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
 
     /**
-     * <p>Invoked when the action described by the specified
-     * {@link ActionEvent} occurs.</p>
+     * <p>
+     * Invoked when the action described by the specified {@link ActionEvent} occurs.
+     * </p>
      *
      * @param event The {@link ActionEvent} that has occurred
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces
-     *  implementation that no further processing on the current event
-     *  should be performed
+     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * current event should be performed
      */
-    public void processAction(ActionEvent event)
-        throws AbortProcessingException;
-
+    public void processAction(ActionEvent event) throws AbortProcessingException;
 
 }

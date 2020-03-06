@@ -77,7 +77,7 @@ final class NamespaceManager {
             }
         }
     }
-    
+
     public NamespaceUnit toNamespaceUnit(TagLibrary library) {
         NamespaceUnit unit = new NamespaceUnit(library);
         if (this.namespaces.size() > 0) {

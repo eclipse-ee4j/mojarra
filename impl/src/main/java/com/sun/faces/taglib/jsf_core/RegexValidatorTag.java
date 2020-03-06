@@ -24,10 +24,10 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.RegexValidator;
 import jakarta.faces.validator.Validator;
 
-
 /**
- * Tag for the Regular Expression Validator.  Can accept a regex pattern as a
- * property - this will be used to validate against.
+ * Tag for the Regular Expression Validator. Can accept a regex pattern as a property - this will be used to validate
+ * against.
+ * 
  * @author driscoll
  */
 public class RegexValidatorTag extends AbstractValidatorTag {
@@ -38,20 +38,17 @@ public class RegexValidatorTag extends AbstractValidatorTag {
 
     // ------------------------------------------------------------ Constructors
 
-
     public RegexValidatorTag() {
         if (VALIDATOR_ID_EXPR == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            ExpressionFactory factory =
-                context.getApplication().getExpressionFactory();
-            VALIDATOR_ID_EXPR =
-                factory.createValueExpression(context.getELContext(),
-                    "jakarta.faces.RegularExpression",String.class);
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            VALIDATOR_ID_EXPR = factory.createValueExpression(context.getELContext(), "jakarta.faces.RegularExpression", String.class);
         }
     }
 
     /**
      * Set the Regular Expression to use for validation.
+     * 
      * @param pattern A regular expression - needs to be escaped, @see java.util.regex .
      */
     public void setPattern(ValueExpression pattern) {
@@ -68,6 +65,6 @@ public class RegexValidatorTag extends AbstractValidatorTag {
             validator.setPattern((String) regex.getValue(ctx.getELContext()));
         }
         return validator;
-        
+
     }
 }

@@ -23,136 +23,152 @@ import jakarta.servlet.jsp.JspException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
 
-
 /*
  * ******* GENERATED CODE - DO NOT EDIT *******
  */
 
-
 public class MessagesTag extends UIComponentELTag {
-
 
     // Setter Methods
     // PROPERTY: for
     private jakarta.el.ValueExpression _for;
+
     public void setFor(jakarta.el.ValueExpression _for) {
         this._for = _for;
     }
 
     // PROPERTY: globalOnly
     private jakarta.el.ValueExpression globalOnly;
+
     public void setGlobalOnly(jakarta.el.ValueExpression globalOnly) {
         this.globalOnly = globalOnly;
     }
 
     // PROPERTY: showDetail
     private jakarta.el.ValueExpression showDetail;
+
     public void setShowDetail(jakarta.el.ValueExpression showDetail) {
         this.showDetail = showDetail;
     }
 
     // PROPERTY: showSummary
     private jakarta.el.ValueExpression showSummary;
+
     public void setShowSummary(jakarta.el.ValueExpression showSummary) {
         this.showSummary = showSummary;
     }
 
     // PROPERTY: dir
     private jakarta.el.ValueExpression dir;
+
     public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: errorClass
     private jakarta.el.ValueExpression errorClass;
+
     public void setErrorClass(jakarta.el.ValueExpression errorClass) {
         this.errorClass = errorClass;
     }
 
     // PROPERTY: errorStyle
     private jakarta.el.ValueExpression errorStyle;
+
     public void setErrorStyle(jakarta.el.ValueExpression errorStyle) {
         this.errorStyle = errorStyle;
     }
 
     // PROPERTY: fatalClass
     private jakarta.el.ValueExpression fatalClass;
+
     public void setFatalClass(jakarta.el.ValueExpression fatalClass) {
         this.fatalClass = fatalClass;
     }
 
     // PROPERTY: fatalStyle
     private jakarta.el.ValueExpression fatalStyle;
+
     public void setFatalStyle(jakarta.el.ValueExpression fatalStyle) {
         this.fatalStyle = fatalStyle;
     }
 
     // PROPERTY: infoClass
     private jakarta.el.ValueExpression infoClass;
+
     public void setInfoClass(jakarta.el.ValueExpression infoClass) {
         this.infoClass = infoClass;
     }
 
     // PROPERTY: infoStyle
     private jakarta.el.ValueExpression infoStyle;
+
     public void setInfoStyle(jakarta.el.ValueExpression infoStyle) {
         this.infoStyle = infoStyle;
     }
 
     // PROPERTY: lang
     private jakarta.el.ValueExpression lang;
+
     public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: layout
     private jakarta.el.ValueExpression layout;
+
     public void setLayout(jakarta.el.ValueExpression layout) {
         this.layout = layout;
     }
 
     // PROPERTY: role
     private jakarta.el.ValueExpression role;
+
     public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: style
     private jakarta.el.ValueExpression style;
+
     public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
     private jakarta.el.ValueExpression styleClass;
+
     public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: title
     private jakarta.el.ValueExpression title;
+
     public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
 
     // PROPERTY: tooltip
     private jakarta.el.ValueExpression tooltip;
+
     public void setTooltip(jakarta.el.ValueExpression tooltip) {
         this.tooltip = tooltip;
     }
 
     // PROPERTY: warnClass
     private jakarta.el.ValueExpression warnClass;
+
     public void setWarnClass(jakarta.el.ValueExpression warnClass) {
         this.warnClass = warnClass;
     }
 
     // PROPERTY: warnStyle
     private jakarta.el.ValueExpression warnStyle;
+
     public void setWarnStyle(jakarta.el.ValueExpression warnStyle) {
         this.warnStyle = warnStyle;
     }
-
 
     // General Methods
     public String getRendererType() {
@@ -169,7 +185,8 @@ public class MessagesTag extends UIComponentELTag {
         try {
             messages = (jakarta.faces.component.UIMessages) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIMessages.  Perhaps you're missing a tag?");
+            throw new IllegalStateException(
+                    "Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIMessages.  Perhaps you're missing a tag?");
         }
 
         if (_for != null) {
@@ -233,6 +250,7 @@ public class MessagesTag extends UIComponentELTag {
             messages.setValueExpression("warnStyle", warnStyle);
         }
     }
+
     // Methods From TagSupport
     public int doStartTag() throws JspException {
         try {

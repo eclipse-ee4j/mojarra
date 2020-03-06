@@ -29,12 +29,12 @@ import com.sun.faces.spi.AnnotationScanner;
 import com.sun.faces.spi.InjectionProvider;
 
 public final class ProvideMetadataToAnnotationScanTask {
-    
+
     private static final Pattern JAR_PATTERN = Pattern.compile("(.*/(\\S*\\.jar)).*(/faces-config.xml|/*.\\.faces-config.xml)");
 
     private final DocumentInfo[] documentInfos;
     private final InjectionProvider containerConnector;
-    
+
     private Set<URI> uris;
     private Set<String> jarNames;
 
@@ -104,7 +104,7 @@ public final class ProvideMetadataToAnnotationScanTask {
         if (containerConnector instanceof AnnotationScanner) {
             return (AnnotationScanner) this.containerConnector;
         }
-        
+
         return null;
     }
 }

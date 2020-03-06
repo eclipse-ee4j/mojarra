@@ -29,15 +29,16 @@ import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
 /**
- * <p>Represents a multiple-selection component that is rendered
- * as an HTML <code>select</code> element, showing either all
- * available options or the specified number of options.</p>
- * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Listbox</code>".
- * This value can be changed by calling the <code>setRendererType()</code> method.</p>
+ * <p>
+ * Represents a multiple-selection component that is rendered as an HTML <code>select</code> element, showing either all
+ * available options or the specified number of options.
+ * </p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Listbox</code>". This value
+ * can be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
 public class HtmlSelectManyListbox extends UISelectMany implements ClientBehaviorHolder {
-
-
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -46,55 +47,39 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         setRendererType("jakarta.faces.Listbox");
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlSelectManyListbox";
 
-
     protected enum PropertyKeys {
-        accesskey,
-        dir,
-        disabled,
-        disabledClass,
-        enabledClass,
-        label,
-        lang,
-        onblur,
-        onchange,
-        onclick,
-        ondblclick,
-        onfocus,
-        onkeydown,
-        onkeypress,
-        onkeyup,
-        onmousedown,
-        onmousemove,
-        onmouseout,
-        onmouseover,
-        onmouseup,
-        readonly,
-        role,
-        size,
-        style,
-        styleClass,
-        tabindex,
-        title,
-;
+        accesskey, dir, disabled, disabledClass, enabledClass, label, lang, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
+        onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, readonly, role, size, style, styleClass, tabindex, title,;
+
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
-}
+    }
 
     /**
-     * <p>Return the value of the <code>accesskey</code> property.</p>
+     * <p>
+     * Return the value of the <code>accesskey</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Access key that, when pressed, transfers focus
-     * to this element.
+     * <p>
+     * Contents: Access key that, when pressed, transfers focus to this element.
      */
     public java.lang.String getAccesskey() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.accesskey);
@@ -102,7 +87,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>accesskey</code> property.</p>
+     * <p>
+     * Set the value of the <code>accesskey</code> property.
+     * </p>
+     * 
      * @param accesskey the new property value
      */
     public void setAccesskey(java.lang.String accesskey) {
@@ -110,14 +98,16 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("accesskey", accesskey);
     }
 
-
     /**
-     * <p>Return the value of the <code>dir</code> property.</p>
+     * <p>
+     * Return the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Direction indication for text that does not inherit directionality.
-     * Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).
-     * These attributes are case sensitive when rendering to XHTML, so
-     * care must be taken to have the correct case.
+     * <p>
+     * Contents: Direction indication for text that does not inherit directionality. Valid values are "LTR" (left-to-right)
+     * and "RTL" (right-to-left). These attributes are case sensitive when rendering to XHTML, so care must be taken to have
+     * the correct case.
      */
     public java.lang.String getDir() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.dir);
@@ -125,7 +115,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>dir</code> property.</p>
+     * <p>
+     * Set the value of the <code>dir</code> property.
+     * </p>
+     * 
      * @param dir the new property value
      */
     public void setDir(java.lang.String dir) {
@@ -133,14 +126,16 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("dir", dir);
     }
 
-
     /**
-     * <p>Return the value of the <code>disabled</code> property.</p>
+     * <p>
+     * Return the value of the <code>disabled</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Flag indicating that this element must never receive focus or
-     * be included in a subsequent submit.  A value of false causes
-     * no attribute to be rendered, while a value of true causes the
-     * attribute to be rendered as disabled="disabled".
+     * <p>
+     * Contents: Flag indicating that this element must never receive focus or be included in a subsequent submit. A value
+     * of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as
+     * disabled="disabled".
      */
     public boolean isDisabled() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.disabled, false);
@@ -148,19 +143,24 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>disabled</code> property.</p>
+     * <p>
+     * Set the value of the <code>disabled</code> property.
+     * </p>
+     * 
      * @param disabled the new property value
      */
     public void setDisabled(boolean disabled) {
         getStateHelper().put(PropertyKeys.disabled, disabled);
     }
 
-
     /**
-     * <p>Return the value of the <code>disabledClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>disabledClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style class to apply to the rendered label
-     * on disabled options.
+     * <p>
+     * Contents: CSS style class to apply to the rendered label on disabled options.
      */
     public java.lang.String getDisabledClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.disabledClass);
@@ -168,19 +168,24 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>disabledClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>disabledClass</code> property.
+     * </p>
+     * 
      * @param disabledClass the new property value
      */
     public void setDisabledClass(java.lang.String disabledClass) {
         getStateHelper().put(PropertyKeys.disabledClass, disabledClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>enabledClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>enabledClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style class to apply to the rendered label
-     * on enabled options.
+     * <p>
+     * Contents: CSS style class to apply to the rendered label on enabled options.
      */
     public java.lang.String getEnabledClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.enabledClass);
@@ -188,18 +193,24 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>enabledClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>enabledClass</code> property.
+     * </p>
+     * 
      * @param enabledClass the new property value
      */
     public void setEnabledClass(java.lang.String enabledClass) {
         getStateHelper().put(PropertyKeys.enabledClass, enabledClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>label</code> property.</p>
+     * <p>
+     * Return the value of the <code>label</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: A localized user presentable name for this component.
+     * <p>
+     * Contents: A localized user presentable name for this component.
      */
     public java.lang.String getLabel() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.label);
@@ -207,19 +218,24 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>label</code> property.</p>
+     * <p>
+     * Set the value of the <code>label</code> property.
+     * </p>
+     * 
      * @param label the new property value
      */
     public void setLabel(java.lang.String label) {
         getStateHelper().put(PropertyKeys.label, label);
     }
 
-
     /**
-     * <p>Return the value of the <code>lang</code> property.</p>
+     * <p>
+     * Return the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Code describing the language used in the generated markup
-     * for this component.
+     * <p>
+     * Contents: Code describing the language used in the generated markup for this component.
      */
     public java.lang.String getLang() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.lang);
@@ -227,7 +243,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>lang</code> property.</p>
+     * <p>
+     * Set the value of the <code>lang</code> property.
+     * </p>
+     * 
      * @param lang the new property value
      */
     public void setLang(java.lang.String lang) {
@@ -235,11 +254,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("lang", lang);
     }
 
-
     /**
-     * <p>Return the value of the <code>onblur</code> property.</p>
+     * <p>
+     * Return the value of the <code>onblur</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when this element loses focus.
+     * <p>
+     * Contents: Javascript code executed when this element loses focus.
      */
     public java.lang.String getOnblur() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onblur);
@@ -247,7 +269,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onblur</code> property.</p>
+     * <p>
+     * Set the value of the <code>onblur</code> property.
+     * </p>
+     * 
      * @param onblur the new property value
      */
     public void setOnblur(java.lang.String onblur) {
@@ -255,12 +280,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onblur", onblur);
     }
 
-
     /**
-     * <p>Return the value of the <code>onchange</code> property.</p>
+     * <p>
+     * Return the value of the <code>onchange</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when this element loses focus
-     * and its value has been modified since gaining focus.
+     * <p>
+     * Contents: Javascript code executed when this element loses focus and its value has been modified since gaining focus.
      */
     public java.lang.String getOnchange() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onchange);
@@ -268,19 +295,24 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onchange</code> property.</p>
+     * <p>
+     * Set the value of the <code>onchange</code> property.
+     * </p>
+     * 
      * @param onchange the new property value
      */
     public void setOnchange(java.lang.String onchange) {
         getStateHelper().put(PropertyKeys.onchange, onchange);
     }
 
-
     /**
-     * <p>Return the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Return the value of the <code>onclick</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * clicked over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is clicked over this element.
      */
     public java.lang.String getOnclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onclick);
@@ -288,7 +320,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>onclick</code> property.
+     * </p>
+     * 
      * @param onclick the new property value
      */
     public void setOnclick(java.lang.String onclick) {
@@ -296,12 +331,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onclick", onclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Return the value of the <code>ondblclick</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * double clicked over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is double clicked over this element.
      */
     public java.lang.String getOndblclick() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.ondblclick);
@@ -309,7 +346,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>ondblclick</code> property.</p>
+     * <p>
+     * Set the value of the <code>ondblclick</code> property.
+     * </p>
+     * 
      * @param ondblclick the new property value
      */
     public void setOndblclick(java.lang.String ondblclick) {
@@ -317,11 +357,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("ondblclick", ondblclick);
     }
 
-
     /**
-     * <p>Return the value of the <code>onfocus</code> property.</p>
+     * <p>
+     * Return the value of the <code>onfocus</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when this element receives focus.
+     * <p>
+     * Contents: Javascript code executed when this element receives focus.
      */
     public java.lang.String getOnfocus() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onfocus);
@@ -329,7 +372,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onfocus</code> property.</p>
+     * <p>
+     * Set the value of the <code>onfocus</code> property.
+     * </p>
+     * 
      * @param onfocus the new property value
      */
     public void setOnfocus(java.lang.String onfocus) {
@@ -337,12 +383,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onfocus", onfocus);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeydown</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * pressed down over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is pressed down over this element.
      */
     public java.lang.String getOnkeydown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeydown);
@@ -350,7 +398,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onkeydown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeydown</code> property.
+     * </p>
+     * 
      * @param onkeydown the new property value
      */
     public void setOnkeydown(java.lang.String onkeydown) {
@@ -358,12 +409,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onkeydown", onkeydown);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeypress</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * pressed and released over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is pressed and released over this element.
      */
     public java.lang.String getOnkeypress() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeypress);
@@ -371,7 +424,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onkeypress</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeypress</code> property.
+     * </p>
+     * 
      * @param onkeypress the new property value
      */
     public void setOnkeypress(java.lang.String onkeypress) {
@@ -379,12 +435,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onkeypress", onkeypress);
     }
 
-
     /**
-     * <p>Return the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Return the value of the <code>onkeyup</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a key is
-     * released over this element.
+     * <p>
+     * Contents: Javascript code executed when a key is released over this element.
      */
     public java.lang.String getOnkeyup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onkeyup);
@@ -392,7 +450,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onkeyup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onkeyup</code> property.
+     * </p>
+     * 
      * @param onkeyup the new property value
      */
     public void setOnkeyup(java.lang.String onkeyup) {
@@ -400,12 +461,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onkeyup", onkeyup);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmousedown</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * pressed down over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is pressed down over this element.
      */
     public java.lang.String getOnmousedown() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousedown);
@@ -413,7 +476,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onmousedown</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousedown</code> property.
+     * </p>
+     * 
      * @param onmousedown the new property value
      */
     public void setOnmousedown(java.lang.String onmousedown) {
@@ -421,12 +487,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onmousedown", onmousedown);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmousemove</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved within this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved within this element.
      */
     public java.lang.String getOnmousemove() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmousemove);
@@ -434,7 +502,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onmousemove</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmousemove</code> property.
+     * </p>
+     * 
      * @param onmousemove the new property value
      */
     public void setOnmousemove(java.lang.String onmousemove) {
@@ -442,12 +513,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onmousemove", onmousemove);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseout</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved away from this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved away from this element.
      */
     public java.lang.String getOnmouseout() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseout);
@@ -455,7 +528,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onmouseout</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseout</code> property.
+     * </p>
+     * 
      * @param onmouseout the new property value
      */
     public void setOnmouseout(java.lang.String onmouseout) {
@@ -463,12 +539,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onmouseout", onmouseout);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseover</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * moved onto this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is moved onto this element.
      */
     public java.lang.String getOnmouseover() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseover);
@@ -476,7 +554,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onmouseover</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseover</code> property.
+     * </p>
+     * 
      * @param onmouseover the new property value
      */
     public void setOnmouseover(java.lang.String onmouseover) {
@@ -484,12 +565,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onmouseover", onmouseover);
     }
 
-
     /**
-     * <p>Return the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Return the value of the <code>onmouseup</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Javascript code executed when a pointer button is
-     * released over this element.
+     * <p>
+     * Contents: Javascript code executed when a pointer button is released over this element.
      */
     public java.lang.String getOnmouseup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.onmouseup);
@@ -497,7 +580,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>onmouseup</code> property.</p>
+     * <p>
+     * Set the value of the <code>onmouseup</code> property.
+     * </p>
+     * 
      * @param onmouseup the new property value
      */
     public void setOnmouseup(java.lang.String onmouseup) {
@@ -505,14 +591,15 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("onmouseup", onmouseup);
     }
 
-
     /**
-     * <p>Return the value of the <code>readonly</code> property.</p>
+     * <p>
+     * Return the value of the <code>readonly</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Flag indicating that this component will prohibit changes by
-     * the user.  The element may receive focus unless it has also
-     * been disabled.  A value of false causes
-     * no attribute to be rendered, while a value of true causes the
+     * <p>
+     * Contents: Flag indicating that this component will prohibit changes by the user. The element may receive focus unless
+     * it has also been disabled. A value of false causes no attribute to be rendered, while a value of true causes the
      * attribute to be rendered as readonly="readonly".
      */
     public boolean isReadonly() {
@@ -521,31 +608,36 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>readonly</code> property.</p>
+     * <p>
+     * Set the value of the <code>readonly</code> property.
+     * </p>
+     * 
      * @param readonly the new property value
      */
     public void setReadonly(boolean readonly) {
         getStateHelper().put(PropertyKeys.readonly, readonly);
     }
 
-
     /**
-     * <p>Return the value of the <code>role</code> property.</p>
-     * @return the property value
-     * <p>Contents: <p class="changed_added_2_2">Per the WAI-ARIA spec and its
-     * relationship to HTML5 (Section title ARIA Role Attriubute),
-     * every HTML element may have a "role" attribute whose value
-     * must be passed through unmodified on the element on which it
-     * is declared in the final rendered markup.  The attribute, if
-     * specified, must have a value that is a string literal that is,
-     * or an EL Expression that evaluates to, a set of
-     * space-separated tokens representing the various WAI-ARIA roles
-     * that the element belongs to.
+     * <p>
+     * Return the value of the <code>role</code> property.
      * </p>
      * 
-     * <p class="changed_added_2_2">It is the page author's
-     * responsibility to ensure that the user agent is capable of
-     * correctly interpreting the value of this attribute.</p>
+     * @return the property value
+     * <p>
+     * Contents:
+     * <p class="changed_added_2_2">
+     * Per the WAI-ARIA spec and its relationship to HTML5 (Section title ARIA Role Attriubute), every HTML element may have
+     * a "role" attribute whose value must be passed through unmodified on the element on which it is declared in the final
+     * rendered markup. The attribute, if specified, must have a value that is a string literal that is, or an EL Expression
+     * that evaluates to, a set of space-separated tokens representing the various WAI-ARIA roles that the element belongs
+     * to.
+     * </p>
+     * 
+     * <p class="changed_added_2_2">
+     * It is the page author's responsibility to ensure that the user agent is capable of correctly interpreting the value
+     * of this attribute.
+     * </p>
      */
     public java.lang.String getRole() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.role);
@@ -553,7 +645,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>role</code> property.</p>
+     * <p>
+     * Set the value of the <code>role</code> property.
+     * </p>
+     * 
      * @param role the new property value
      */
     public void setRole(java.lang.String role) {
@@ -561,12 +656,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("role", role);
     }
 
-
     /**
-     * <p>Return the value of the <code>size</code> property.</p>
+     * <p>
+     * Return the value of the <code>size</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Number of available options to be shown at all times.
-     * If not specified, all available options are shown.
+     * <p>
+     * Contents: Number of available options to be shown at all times. If not specified, all available options are shown.
      */
     public int getSize() {
         return (java.lang.Integer) getStateHelper().eval(PropertyKeys.size, Integer.MIN_VALUE);
@@ -574,18 +671,24 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>size</code> property.</p>
+     * <p>
+     * Set the value of the <code>size</code> property.
+     * </p>
+     * 
      * @param size the new property value
      */
     public void setSize(int size) {
         getStateHelper().put(PropertyKeys.size, size);
     }
 
-
     /**
-     * <p>Return the value of the <code>style</code> property.</p>
+     * <p>
+     * Return the value of the <code>style</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: CSS style(s) to be applied when this component is rendered.
+     * <p>
+     * Contents: CSS style(s) to be applied when this component is rendered.
      */
     public java.lang.String getStyle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.style);
@@ -593,7 +696,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>style</code> property.</p>
+     * <p>
+     * Set the value of the <code>style</code> property.
+     * </p>
+     * 
      * @param style the new property value
      */
     public void setStyle(java.lang.String style) {
@@ -601,13 +707,15 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("style", style);
     }
 
-
     /**
-     * <p>Return the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Space-separated list of CSS style class(es) to be applied when
-     * this element is rendered.  This value must be passed through
-     * as the "class" attribute on generated markup.
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) to be applied when this element is rendered. This value must be
+     * passed through as the "class" attribute on generated markup.
      */
     public java.lang.String getStyleClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.styleClass);
@@ -615,20 +723,25 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>tabindex</code> property.</p>
+     * <p>
+     * Return the value of the <code>tabindex</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Position of this element in the tabbing order
-     * for the current document.  This value must be
-     * an integer between 0 and 32767.
+     * <p>
+     * Contents: Position of this element in the tabbing order for the current document. This value must be an integer
+     * between 0 and 32767.
      */
     public java.lang.String getTabindex() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.tabindex);
@@ -636,7 +749,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>tabindex</code> property.</p>
+     * <p>
+     * Set the value of the <code>tabindex</code> property.
+     * </p>
+     * 
      * @param tabindex the new property value
      */
     public void setTabindex(java.lang.String tabindex) {
@@ -644,12 +760,14 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("tabindex", tabindex);
     }
 
-
     /**
-     * <p>Return the value of the <code>title</code> property.</p>
+     * <p>
+     * Return the value of the <code>title</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Advisory title information about markup elements generated
-     * for this component.
+     * <p>
+     * Contents: Advisory title information about markup elements generated for this component.
      */
     public java.lang.String getTitle() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.title);
@@ -657,7 +775,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
     }
 
     /**
-     * <p>Set the value of the <code>title</code> property.</p>
+     * <p>
+     * Set the value of the <code>title</code> property.
+     * </p>
+     * 
      * @param title the new property value
      */
     public void setTitle(java.lang.String title) {
@@ -665,16 +786,16 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
         handleAttribute("title", title);
     }
 
-
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur","change","valueChange","click","dblclick","focus","keydown","keypress","keyup","mousedown","mousemove","mouseout","mouseover","mouseup"));
+    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur", "change", "valueChange", "click", "dblclick",
+            "focus", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
 
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;    }
-
+        return EVENT_NAMES;
+    }
 
     public String getDefaultEventName() {
-        return "valueChange";    }
-
+        return "valueChange";
+    }
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");

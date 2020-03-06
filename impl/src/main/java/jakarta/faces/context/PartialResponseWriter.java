@@ -29,12 +29,12 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.ResponseStateManager;
 
 /**
- * <p class="changed_added_2_0"><strong>PartialResponseWriter</strong>
- * decorates an existing <code>ResponseWriter</code> to support the
- * generation of a partial response suitable for Ajax operations.
- * In addition to the markup generation methods inherited from
- * <code>jakarta.faces.context.ResponseWriter</code>, this class provides
- * methods for constructing the standard partial response elements.</p>
+ * <p class="changed_added_2_0">
+ * <strong>PartialResponseWriter</strong> decorates an existing <code>ResponseWriter</code> to support the generation of
+ * a partial response suitable for Ajax operations. In addition to the markup generation methods inherited from
+ * <code>jakarta.faces.context.ResponseWriter</code>, this class provides methods for constructing the standard partial
+ * response elements.
+ * </p>
  *
  * @since 2.0
  */
@@ -50,29 +50,33 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     // True when we need to close afer insert tag
     //
     private boolean inInsertAfter = false;
-    
+
     // True when we need to close an update tag
     //
     private boolean inUpdate = false;
 
     /**
-     * <p class="changed_added_2_0">Reserved ID value to indicate
-     * entire ViewRoot.</p>
+     * <p class="changed_added_2_0">
+     * Reserved ID value to indicate entire ViewRoot.
+     * </p>
      *
      * @since 2.0
      */
     public static final String RENDER_ALL_MARKER = "jakarta.faces.ViewRoot";
 
     /**
-     * <p class="changed_added_2_0">Reserved ID value to indicate
-     * serialized ViewState.</p>
+     * <p class="changed_added_2_0">
+     * Reserved ID value to indicate serialized ViewState.
+     * </p>
      *
      * @since 2.0
      */
     public static final String VIEW_STATE_MARKER = ResponseStateManager.VIEW_STATE_PARAM;
 
     /**
-     * <p class="changed_added_2_0">Create a <code>PartialResponseWriter</code>.</p>
+     * <p class="changed_added_2_0">
+     * Create a <code>PartialResponseWriter</code>.
+     * </p>
      *
      * @param writer The writer to wrap.
      * @since 2.0
@@ -82,11 +86,13 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the start of a partial response.</p>
-     * <p class="changed_added_2_3">If {@link UIViewRoot} is an instance of
-     * {@link NamingContainer}, then write
-     * {@link UIViewRoot#getContainerClientId(FacesContext)} as value of the
-     * <code>id</code> attribute of the root element.</p>
+     * <p class="changed_added_2_0">
+     * Write the start of a partial response.
+     * </p>
+     * <p class="changed_added_2_3">
+     * If {@link UIViewRoot} is an instance of {@link NamingContainer}, then write
+     * {@link UIViewRoot#getContainerClientId(FacesContext)} as value of the <code>id</code> attribute of the root element.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      * @since 2.0
@@ -94,8 +100,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     @Override
     public void startDocument() throws IOException {
         ResponseWriter writer = getWrapped();
-        String encoding = writer.getCharacterEncoding( );
-        if( encoding == null ) {
+        String encoding = writer.getCharacterEncoding();
+        if (encoding == null) {
             encoding = "utf-8";
         }
         writer.writePreamble("<?xml version='1.0' encoding='" + encoding + "'?>\n");
@@ -108,7 +114,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the end of a partial response.</p>
+     * <p class="changed_added_2_0">
+     * Write the end of a partial response.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      * @since 2.0
@@ -118,10 +126,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
         endChangesIfNecessary();
         ResponseWriter writer = getWrapped();
         /*
-         * Because during a <script> writing an exception can occur we need to
-         * make sure the wrapped response only writes one partial-response, but
-         * also calls to end the document (so we can properly cleanup in the 
-         * wrapped HtmlResponseWriter). See issue #3473.
+         * Because during a <script> writing an exception can occur we need to make sure the wrapped response only writes one
+         * partial-response, but also calls to end the document (so we can properly cleanup in the wrapped HtmlResponseWriter).
+         * See issue #3473.
          */
         if (!(writer instanceof PartialResponseWriter)) {
             writer.endElement("partial-response");
@@ -130,15 +137,15 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the start of an insert operation
-     * where the contents will be inserted before the specified target node.</p>
+     * <p class="changed_added_2_0">
+     * Write the start of an insert operation where the contents will be inserted before the specified target node.
+     * </p>
      *
      * @param targetId ID of the node insertion should occur before
      * @throws IOException if an input/output error occurs
      * @since 2.0
      */
-    public void startInsertBefore(String targetId)
-            throws IOException {
+    public void startInsertBefore(String targetId) throws IOException {
         startChangesIfNecessary();
         inInsertBefore = true;
         ResponseWriter writer = getWrapped();
@@ -149,15 +156,15 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the start of an insert operation
-     * where the contents will be inserted after the specified target node.</p>
+     * <p class="changed_added_2_0">
+     * Write the start of an insert operation where the contents will be inserted after the specified target node.
+     * </p>
      *
      * @param targetId ID of the node insertion should occur after
      * @throws IOException if an input/output error occurs
      * @since 2.0
      */
-    public void startInsertAfter(String targetId)
-            throws IOException {
+    public void startInsertAfter(String targetId) throws IOException {
         startChangesIfNecessary();
         inInsertAfter = true;
         ResponseWriter writer = getWrapped();
@@ -168,7 +175,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the end of an insert operation.</p>
+     * <p class="changed_added_2_0">
+     * Write the end of an insert operation.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      * @since 2.0
@@ -187,7 +196,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the start of an update operation.</p>
+     * <p class="changed_added_2_0">
+     * Write the start of an update operation.
+     * </p>
      *
      * @param targetId ID of the node to be updated
      * @throws IOException if an input/output error occurs
@@ -203,7 +214,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the end of an update operation.</p>
+     * <p class="changed_added_2_0">
+     * Write the end of an update operation.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      * @since 2.0
@@ -216,15 +229,16 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write an attribute update operation.</p>
+     * <p class="changed_added_2_0">
+     * Write an attribute update operation.
+     * </p>
      *
-     * @param targetId   ID of the node to be updated
+     * @param targetId ID of the node to be updated
      * @param attributes Map of attribute name/value pairs to be updated
      * @throws IOException if an input/output error occurs
      * @since 2.0
      */
-    public void updateAttributes(String targetId, Map<String, String> attributes)
-            throws IOException {
+    public void updateAttributes(String targetId, Map<String, String> attributes) throws IOException {
         startChangesIfNecessary();
         ResponseWriter writer = getWrapped();
         writer.startElement("attributes", null);
@@ -239,7 +253,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write a delete operation.</p>
+     * <p class="changed_added_2_0">
+     * Write a delete operation.
+     * </p>
      *
      * @param targetId ID of the node to be deleted
      * @throws IOException if an input/output error occurs
@@ -254,7 +270,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write a redirect operation.</p>
+     * <p class="changed_added_2_0">
+     * Write a redirect operation.
+     * </p>
      *
      * @param url URL to redirect to
      * @throws IOException if an input/output error occurs
@@ -269,7 +287,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the start of an eval operation.</p>
+     * <p class="changed_added_2_0">
+     * Write the start of an eval operation.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      * @since 2.0
@@ -282,7 +302,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the end of an eval operation.</p>
+     * <p class="changed_added_2_0">
+     * Write the end of an eval operation.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      * @since 2.0
@@ -294,7 +316,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the start of an extension operation.</p>
+     * <p class="changed_added_2_0">
+     * Write the start of an extension operation.
+     * </p>
      *
      * @param attributes String name/value pairs for extension element attributes
      * @throws IOException if an input/output error occurs
@@ -312,7 +336,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the end of an extension operation.</p>
+     * <p class="changed_added_2_0">
+     * Write the end of an extension operation.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      * @since 2.0
@@ -323,7 +349,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the start of an error.</p>
+     * <p class="changed_added_2_0">
+     * Write the start of an error.
+     * </p>
      *
      * @param errorName Descriptive string for the error
      * @throws IOException if an input/output error occurs
@@ -342,7 +370,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
     }
 
     /**
-     * <p class="changed_added_2_0">Write the end of an error.</p>
+     * <p class="changed_added_2_0">
+     * Write the end of an error.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      * @since 2.0
@@ -361,7 +391,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
             inChanges = true;
         }
     }
-    
+
     private void endUpdateIfNecessary() throws IOException {
         if (inUpdate) {
             endUpdate();

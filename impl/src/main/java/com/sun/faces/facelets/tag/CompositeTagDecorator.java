@@ -22,9 +22,8 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagDecorator;
 
 /**
- * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses
- * the chain of responsibility pattern to stop processing if any of the
- * TagDecorators return a value other than null.
+ * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses the chain of responsibility pattern to
+ * stop processing if any of the TagDecorators return a value other than null.
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -42,14 +41,14 @@ public final class CompositeTagDecorator implements TagDecorator {
     }
 
     /**
-     * Uses the chain of responsibility pattern to stop processing if any of
-     * the TagDecorators return a value other than null.
+     * Uses the chain of responsibility pattern to stop processing if any of the TagDecorators return a value other than
+     * null.
      */
     @Override
     public Tag decorate(Tag tag) {
         // eliminate the jsf: attributes
         Tag noJsfAttributes = defaultTagDecorator.decorate(tag);
-        if(noJsfAttributes != null) {
+        if (noJsfAttributes != null) {
             // pass the converted tag to the other decorators
             tag = noJsfAttributes;
         }

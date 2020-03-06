@@ -23,48 +23,48 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_0">This class is provided to allow custom
- * scopes to publish a "pre construct" event in the same way that other
- * scopes do to let the application become aware of the beginning of the
- * scope.  The runtime must listen for this event and invoke any
- * <code>PreDestroy</code> annotated methods on any of the beans in this
- * scope as appropriate.  See the example code on {@link
- * PostConstructCustomScopeEvent} for a usage example, replacing classes
- * as appropriate to make sense for this class.</p>
-
+ * <p class="changed_added_2_0">
+ * This class is provided to allow custom scopes to publish a "pre construct" event in the same way that other scopes do
+ * to let the application become aware of the beginning of the scope. The runtime must listen for this event and invoke
+ * any <code>PreDestroy</code> annotated methods on any of the beans in this scope as appropriate. See the example code
+ * on {@link PostConstructCustomScopeEvent} for a usage example, replacing classes as appropriate to make sense for this
+ * class.
+ * </p>
+ * 
  * @since 2.0
  */
 public class PreDestroyCustomScopeEvent extends SystemEvent {
-
 
     // ------------------------------------------------------------ Constructors
 
     private static final long serialVersionUID = -3646173841788025206L;
 
     /**
-     * <p class="changed_added_2_0">An instance of this event indicates
-     * that the custom scope enclosed within the argument
-     * <code>scopeContext</code> is about to end.</p>
-
-     * @param scopeContext A structure that contains the name of the
-     * scope and the scope itself exposed as a <code>Map&lt;String,
+     * <p class="changed_added_2_0">
+     * An instance of this event indicates that the custom scope enclosed within the argument <code>scopeContext</code> is
+     * about to end.
+     * </p>
+     * 
+     * @param scopeContext A structure that contains the name of the scope and the scope itself exposed as a
+     * <code>Map&lt;String,
      * Object&gt;</code>.
-
+     * 
      */
     public PreDestroyCustomScopeEvent(ScopeContext scopeContext) {
 
         super(scopeContext);
 
     }
-    
+
     /**
-     * <p class="changed_added_2_3">An instance of this event indicates
-     * that the custom scope enclosed within the argument
-     * <code>scopeContext</code> is about to end.</p>
+     * <p class="changed_added_2_3">
+     * An instance of this event indicates that the custom scope enclosed within the argument <code>scopeContext</code> is
+     * about to end.
+     * </p>
      * 
      * @param facesContext the Faces context.
-     * @param scopeContext A structure that contains the name of the
-     * scope and the scope itself exposed as a <code>Map&lt;String,
+     * @param scopeContext A structure that contains the name of the scope and the scope itself exposed as a
+     * <code>Map&lt;String,
      * Object&gt;</code>.
      */
     public PreDestroyCustomScopeEvent(FacesContext facesContext, ScopeContext scopeContext) {
@@ -74,8 +74,9 @@ public class PreDestroyCustomScopeEvent extends SystemEvent {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * <p class="changed_added_2_0">Return the <code>ScopeContext</code>
-     * for this event.</p>
+     * <p class="changed_added_2_0">
+     * Return the <code>ScopeContext</code> for this event.
+     * </p>
      * 
      * @return the scope context.
      */

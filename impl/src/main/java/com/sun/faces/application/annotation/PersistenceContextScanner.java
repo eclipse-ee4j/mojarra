@@ -60,7 +60,7 @@ class PersistenceContextScanner implements Scanner {
                 fields.add(field);
             }
         }
-        
+
         ArrayList<PersistenceContext> methodAnnotations = new ArrayList<>();
         ArrayList<Method> methods = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
@@ -70,10 +70,9 @@ class PersistenceContextScanner implements Scanner {
                 methods.add(method);
             }
         }
-        
+
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new PersistenceContextHandler(
-                    methods.toArray(new Method[0]), methodAnnotations.toArray(new PersistenceContext[0]),
+            handler = new PersistenceContextHandler(methods.toArray(new Method[0]), methodAnnotations.toArray(new PersistenceContext[0]),
                     fields.toArray(new Field[0]), fieldAnnotations.toArray(new PersistenceContext[0]));
         }
         return handler;

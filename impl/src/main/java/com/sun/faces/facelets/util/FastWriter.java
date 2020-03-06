@@ -23,14 +23,14 @@ import java.io.Writer;
  * @author Jacob Hookom
  */
 public final class FastWriter extends Writer {
-    
+
     private char[] buff;
     private int size;
-    
+
     public FastWriter() {
         this(1024);
     }
-    
+
     public FastWriter(int initialSize) {
         if (initialSize < 0) {
             throw new IllegalArgumentException("Initial Size cannot be less than 0");
@@ -47,12 +47,12 @@ public final class FastWriter extends Writer {
     public void flush() throws IOException {
         // do nothing
     }
-    
+
     private void overflow(int len) {
         if (this.size + len > this.buff.length) {
             char[] next = new char[(this.size + len) * 2];
             System.arraycopy(this.buff, 0, next, 0, this.size);
-            this.buff = next;    
+            this.buff = next;
         }
     }
 
@@ -84,7 +84,7 @@ public final class FastWriter extends Writer {
     public void write(String str) throws IOException {
         this.write(str.toCharArray(), 0, str.length());
     }
-    
+
     public void reset() {
         this.size = 0;
     }

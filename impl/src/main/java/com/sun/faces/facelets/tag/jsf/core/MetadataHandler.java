@@ -33,8 +33,7 @@ import java.util.logging.Logger;
 
 /**
  * <p>
- * This is a specialized <code>FacetHandler</code> to enable
- * <code>f:metadata</code> support.
+ * This is a specialized <code>FacetHandler</code> to enable <code>f:metadata</code> support.
  *
  * </p>
  */
@@ -42,20 +41,16 @@ public class MetadataHandler extends TagHandlerImpl {
 
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public MetadataHandler(TagConfig config) {
         super(config);
     }
 
-
     // ------------------------------------------------- Methods from TagHandler
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-          throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
         Util.notNull("parent", parent);
         UIViewRoot root;
@@ -73,11 +68,10 @@ public class MetadataHandler extends TagHandlerImpl {
 
         UIComponent facetComponent = null;
         if (root.getFacetCount() > 0) {
-              facetComponent = root.getFacets().get(UIViewRoot.METADATA_FACET_NAME);
+            facetComponent = root.getFacets().get(UIViewRoot.METADATA_FACET_NAME);
         }
         if (facetComponent == null) {
-            root.getAttributes().put(FacetHandler.KEY,
-                                       UIViewRoot.METADATA_FACET_NAME);
+            root.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
             try {
                 this.nextHandler.apply(ctx, root);
             } finally {

@@ -23,8 +23,8 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ExternalContextProducer is the CDI producer that allows injection of the
- * ExternalContext using @Inject and allows EL resolving of #{externalContext}
+ * The ExternalContextProducer is the CDI producer that allows injection of the ExternalContext using @Inject and allows
+ * EL resolving of #{externalContext}
  * </p>
  *
  * @since 2.3
@@ -36,13 +36,10 @@ public class ExternalContextProducer extends CdiProducer<ExternalContext> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ExternalContextProducer() {
-        super.name("externalContext")
-             .scope(RequestScoped.class)
-             .types(ExternalContext.class)
-             .beanClass(ExternalContext.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext());
+        super.name("externalContext").scope(RequestScoped.class).types(ExternalContext.class).beanClass(ExternalContext.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext());
     }
 
 }

@@ -18,8 +18,8 @@ package jakarta.faces.component.visit;
 
 /**
  *
- * <p class="changed_added_2_0">An enum that specifies the possible 
- * results of a call to {@link VisitCallback#visit}.
+ * <p class="changed_added_2_0">
+ * An enum that specifies the possible results of a call to {@link VisitCallback#visit}.
  * </p>
  *
  * @see VisitCallback#visit VisitCallback.visit()
@@ -28,23 +28,26 @@ package jakarta.faces.component.visit;
  */
 public enum VisitResult {
 
-  /**
-   * <p class="changed_added_2_0">This result indicates that the tree
-   * visit should descend into current component's subtree.</p>
-   * @since 2.0
-   */ 
-  ACCEPT,
+    /**
+     * <p class="changed_added_2_0">
+     * This result indicates that the tree visit should descend into current component's subtree.
+     * </p>
+     * 
+     * @since 2.0
+     */
+    ACCEPT,
 
-  /**
-   * <p class="changed_added_2_0">This result indicates that the tree
-   * visit should continue, but should skip the current component's
-   * subtree.</p>
-   */ 
-  REJECT,
+    /**
+     * <p class="changed_added_2_0">
+     * This result indicates that the tree visit should continue, but should skip the current component's subtree.
+     * </p>
+     */
+    REJECT,
 
-  /**
-   * <p class="changed_added_2_0">This result indicates that the tree
-   * visit should be terminated.</p>
-   */ 
-  COMPLETE
+    /**
+     * <p class="changed_added_2_0">
+     * This result indicates that the tree visit should be terminated.
+     * </p>
+     */
+    COMPLETE
 }

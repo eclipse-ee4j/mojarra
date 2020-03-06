@@ -21,10 +21,10 @@ import jakarta.faces.application.Application;
 /**
  * 
  * <p class="changed_added_2_0">
- * This class enables a feature similar to the <code>RAILS_ENV</code> feature of the Ruby on Rails
- * web framework. The constants in this class represent the current state of the running application
- * in a typical product development lifecycle. The value of this state may be queried at any time
- * after application startup by calling {@link Application#getProjectStage}.
+ * This class enables a feature similar to the <code>RAILS_ENV</code> feature of the Ruby on Rails web framework. The
+ * constants in this class represent the current state of the running application in a typical product development
+ * lifecycle. The value of this state may be queried at any time after application startup by calling
+ * {@link Application#getProjectStage}.
  * </p>
  * 
  * @since 2.0
@@ -33,12 +33,12 @@ public enum ProjectStage {
 
     /**
      * <p class="changed_added_2_0">
-     * This value indicates the currently running application is right now, at this moment, being
-     * developed. This value will usually be set during iterative development.
+     * This value indicates the currently running application is right now, at this moment, being developed. This value will
+     * usually be set during iterative development.
      * </p>
      */
     Development,
-    
+
     /**
      * <p class="changed_added_2_0">
      * This value indicates the currently running application is undergoing unit testing.
@@ -51,7 +51,7 @@ public enum ProjectStage {
      * </p>
      */
     SystemTest,
-    
+
     /**
      * <p class="changed_added_2_0">
      * This value indicates the currently running application is deployed in production.
@@ -61,16 +61,16 @@ public enum ProjectStage {
 
     /**
      * <p class="changed_added_2_0">
-     * The value of this constant is the value of the <code>param-name</code> for setting the
-     * current value to be returned by {@link Application#getProjectStage}.
+     * The value of this constant is the value of the <code>param-name</code> for setting the current value to be returned
+     * by {@link Application#getProjectStage}.
      * </p>
      */
     public static final String PROJECT_STAGE_PARAM_NAME = "jakarta.faces.PROJECT_STAGE";
 
     /**
      * <p class="changed_added_2_0">
-     * The value of this constant is the name used for JNDI lookups for setting the current value to
-     * be returned by {@link Application#getProjectStage}.
+     * The value of this constant is the name used for JNDI lookups for setting the current value to be returned by
+     * {@link Application#getProjectStage}.
      * </p>
      */
     public static final String PROJECT_STAGE_JNDI_NAME = "java:comp/env/jsf/ProjectStage";

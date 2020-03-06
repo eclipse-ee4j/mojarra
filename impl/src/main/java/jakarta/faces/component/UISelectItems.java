@@ -18,51 +18,44 @@ package jakarta.faces.component;
 
 import jakarta.faces.model.SelectItem;
 
-
 /**
- * <p><strong>UISelectItems</strong> is a component that may be nested
- * inside a {@link UISelectMany} or {@link UISelectOne} component, and
- * causes the addition of one or more {@link SelectItem} instances to the
- * list of available options in the parent component.  The
- * <code>value</code> of this component (set either directly, or acquired
- * indirectly a {@link jakarta.el.ValueExpression}, can be of any
- * of the following types:</p>
+ * <p>
+ * <strong>UISelectItems</strong> is a component that may be nested inside a {@link UISelectMany} or {@link UISelectOne}
+ * component, and causes the addition of one or more {@link SelectItem} instances to the list of available options in
+ * the parent component. The <code>value</code> of this component (set either directly, or acquired indirectly a
+ * {@link jakarta.el.ValueExpression}, can be of any of the following types:
+ * </p>
  * <ul>
- * <li><em>Single instance of {@link SelectItem}</em> - This instance is
- *     added to the set of available options for the parent tag.</li>
- * <li><em>Array of {@link SelectItem}</em> - This set of instances is
- *     added to the set of available options for the parent component,
- *     in ascending subscript order.</li>
- * <li><em>Collection of {@link SelectItem}</em> - This set of instances is
- *     added to the set of available options for the parent component,
- *     in the order provided by an iterator over them.</li>
- * <li><em>Map</em> - The keys of this object (once converted to
- *     Strings) are assumed to be labels, and the values of this object
- *     (once converted to Strings)
- *     are assumed to be values, of {@link SelectItem} instances that will
- *     be constructed dynamically and added to the set of available options
- *     for the parent component, in the order provided by an iterator over
- *     the keys.</li>
+ * <li><em>Single instance of {@link SelectItem}</em> - This instance is added to the set of available options for the
+ * parent tag.</li>
+ * <li><em>Array of {@link SelectItem}</em> - This set of instances is added to the set of available options for the
+ * parent component, in ascending subscript order.</li>
+ * <li><em>Collection of {@link SelectItem}</em> - This set of instances is added to the set of available options for
+ * the parent component, in the order provided by an iterator over them.</li>
+ * <li><em>Map</em> - The keys of this object (once converted to Strings) are assumed to be labels, and the values of
+ * this object (once converted to Strings) are assumed to be values, of {@link SelectItem} instances that will be
+ * constructed dynamically and added to the set of available options for the parent component, in the order provided by
+ * an iterator over the keys.</li>
  * </ul>
  */
 
 public class UISelectItems extends UIComponentBase {
 
-
     // ------------------------------------------------------ Manifest Constants
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.SelectItems";
 
-
     /**
-     * <p>The standard component family for this component.</p>
+     * <p>
+     * The standard component family for this component.
+     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.SelectItems";
-
 
     enum PropertyKeys {
         value
@@ -70,10 +63,10 @@ public class UISelectItems extends UIComponentBase {
 
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p>Create a new {@link UISelectItems} instance with default property
-     * values.</p>
+     * <p>
+     * Create a new {@link UISelectItems} instance with default property values.
+     * </p>
      */
     public UISelectItems() {
 
@@ -82,9 +75,7 @@ public class UISelectItems extends UIComponentBase {
 
     }
 
-
     // -------------------------------------------------------------- Properties
-
 
     @Override
     public String getFamily() {
@@ -93,13 +84,12 @@ public class UISelectItems extends UIComponentBase {
 
     }
 
-
     // -------------------------------------------------- ValueHolder Properties
 
-
     /**
-     * <p>Returns the <code>value</code> property of the
-     * <code>UISelectItems</code>.</p>
+     * <p>
+     * Returns the <code>value</code> property of the <code>UISelectItems</code>.
+     * </p>
      * 
      * @return the value.
      */
@@ -109,10 +99,10 @@ public class UISelectItems extends UIComponentBase {
 
     }
 
-
     /**
-     * <p>Sets the <code>value</code> property of the
-     * <code>UISelectItems</code>.</p>
+     * <p>
+     * Sets the <code>value</code> property of the <code>UISelectItems</code>.
+     * </p>
      * 
      * @param value the new value
      */
@@ -121,6 +111,5 @@ public class UISelectItems extends UIComponentBase {
         getStateHelper().put(PropertyKeys.value, value);
 
     }
-
 
 }

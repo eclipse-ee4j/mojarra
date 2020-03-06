@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.compiler;
 
-
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 
@@ -64,19 +63,15 @@ final class EndElementInstruction implements Instruction {
         return true;
     }
 
-
     // --------------------------------------------------------- Private Methods
 
     private void warnUnhandledResources(FacesContext ctx, String target) {
 
         UIViewRoot root = ctx.getViewRoot();
         if (root != null) {
-            List<UIComponent> headResources =
-                  root.getComponentResources(ctx, target);
+            List<UIComponent> headResources = root.getComponentResources(ctx, target);
             if (headResources != null && !headResources.isEmpty()) {
-                FacesMessage m =
-                      MessageUtils.getExceptionMessage(MessageUtils.NO_RESOURCE_TARGET_AVAILABLE,
-                                                       target);
+                FacesMessage m = MessageUtils.getExceptionMessage(MessageUtils.NO_RESOURCE_TARGET_AVAILABLE, target);
                 ctx.addMessage(null, m);
             }
         }

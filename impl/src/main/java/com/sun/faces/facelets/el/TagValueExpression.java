@@ -140,7 +140,7 @@ public final class TagValueExpression extends ValueExpression implements Externa
     public boolean isLiteralText() {
         return wrapped.isLiteralText();
     }
-    
+
     @Override
     public ValueReference getValueReference(ELContext context) {
         return wrapped.getValueReference(context);

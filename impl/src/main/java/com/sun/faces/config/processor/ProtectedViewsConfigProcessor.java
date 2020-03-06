@@ -39,8 +39,7 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.context.FacesContext;
 
 /**
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/protected-views</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/protected-views</code>.
  * 
  */
 public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
@@ -74,11 +73,11 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing protected-views element for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList protectedViews = document.getDocumentElement().getElementsByTagNameNS(namespace, PROTECTED_VIEWS);
-            
+
             if (protectedViews != null && protectedViews.getLength() > 0) {
                 processProtectedViews(facesContext, protectedViews, namespace, documentInfos[i]);
             }
@@ -112,18 +111,18 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
                     if (config == null) {
                         config = WebConfiguration.getInstance();
                     }
-                    
+
                     if (viewHandler == null) {
                         viewHandler = context.getApplication().getViewHandler();
                     }
-                    
+
                     viewHandler.addProtectedView(urlPattern);
 
                 } else {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, format(
-                                "Processing protected-views elements for document: ''{0}'', encountered <url-pattern> element without expected children",
-                                info.getSourceURI()));
+                        LOGGER.log(WARNING,
+                                format("Processing protected-views elements for document: ''{0}'', encountered <url-pattern> element without expected children",
+                                        info.getSourceURI()));
                     }
                 }
             }

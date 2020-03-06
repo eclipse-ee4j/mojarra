@@ -27,21 +27,17 @@ import jakarta.faces.view.facelets.TagException;
 import java.io.IOException;
 
 /**
- * Sets the specified name and attribute on the parent UIComponent. If the
- * "value" specified is not a literal, it will instead set the ValueExpression
- * on the UIComponent.
+ * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will
+ * instead set the ValueExpression on the UIComponent.
  * <p />
- * See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag
  * documentation</a>.
  * 
  * @see jakarta.faces.component.UIComponent#getAttributes()
- * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String,
- *      jakarta.el.ValueExpression)
+ * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, jakarta.el.ValueExpression)
  * @author Jacob Hookom
  */
-public final class AttributeHandler extends TagHandlerImpl 
-    implements jakarta.faces.view.facelets.AttributeHandler {
+public final class AttributeHandler extends TagHandlerImpl implements jakarta.faces.view.facelets.AttributeHandler {
 
     private final TagAttribute name;
 
@@ -59,12 +55,10 @@ public final class AttributeHandler extends TagHandlerImpl
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
             throw new TagException(this.tag, "Parent UIComponent was null");
         }
@@ -81,7 +75,6 @@ public final class AttributeHandler extends TagHandlerImpl
             }
         }
     }
-
 
     // jakarta.faces.view.facelets.tag.AttributeHandler.getAttributeName()
     // implementation.

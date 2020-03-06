@@ -19,9 +19,9 @@ package com.sun.faces.flow;
 import jakarta.faces.flow.Flow;
 
 public interface FlowCDIEventFireHelper {
-    
+
     void fireInitializedEvent(Flow currentFlow);
+
     void fireDestroyedEvent(Flow currentFlow);
-    
-    
+
 }

@@ -20,28 +20,24 @@ import jakarta.faces.FacesException;
 
 /**
  * <p>
- *  This represents any configuration processing problems that could
- *  occur.
+ * This represents any configuration processing problems that could occur.
  * </p>
  */
 public class ConfigurationException extends FacesException {
 
-     private static final long serialVersionUID = 5088235742267602695L;
+    private static final long serialVersionUID = 5088235742267602695L;
 
     public ConfigurationException() {
         super();
     }
 
-
     public ConfigurationException(String message) {
         super(message);
     }
 
-
     public ConfigurationException(Throwable t) {
         super(t);
     }
-
 
     public ConfigurationException(String message, Throwable t) {
         super(message, t);

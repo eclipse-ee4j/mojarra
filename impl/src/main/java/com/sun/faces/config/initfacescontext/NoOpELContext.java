@@ -22,7 +22,7 @@ import jakarta.el.FunctionMapper;
 import jakarta.el.VariableMapper;
 
 public class NoOpELContext extends ELContext {
-    
+
     @Override
     public ELResolver getELResolver() {
         return null;

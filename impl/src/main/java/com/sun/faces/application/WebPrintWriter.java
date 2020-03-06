@@ -21,8 +21,8 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 /**
- * A simple PrintWriter implementation to allow us to query whether or not the writer has been
- * flushed or closed. This is necessary to better mimic the actual Servlet response.
+ * A simple PrintWriter implementation to allow us to query whether or not the writer has been flushed or closed. This
+ * is necessary to better mimic the actual Servlet response.
  */
 public class WebPrintWriter extends PrintWriter {
 

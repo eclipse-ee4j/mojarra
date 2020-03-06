@@ -24,8 +24,7 @@ import jakarta.persistence.PersistenceUnit;
 import jakarta.faces.context.FacesContext;
 
 /**
- * {@link RuntimeAnnotationHandler} responsible for processing
- * {@link PersistenceUnit} annotations.
+ * {@link RuntimeAnnotationHandler} responsible for processing {@link PersistenceUnit} annotations.
  */
 class PersistenceUnitHandler extends JndiHandler implements RuntimeAnnotationHandler {
 
@@ -34,24 +33,22 @@ class PersistenceUnitHandler extends JndiHandler implements RuntimeAnnotationHan
     private Field[] fields;
     private PersistenceUnit[] fieldAnnotations;
 
-    public PersistenceUnitHandler(
-            Method[] methods, PersistenceUnit[] methodAnnotations,
-            Field[] fields, PersistenceUnit[] fieldAnnotations) {
+    public PersistenceUnitHandler(Method[] methods, PersistenceUnit[] methodAnnotations, Field[] fields, PersistenceUnit[] fieldAnnotations) {
         this.methods = methods;
         this.methodAnnotations = methodAnnotations;
         this.fields = fields;
         this.fieldAnnotations = fieldAnnotations;
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];
         for (int i = 0; i < fields.length; i++) {
             applyToField(ctx, fields[i], fieldAnnotations[i], object);
         }
-        
-        for (int i=0; i<methods.length; i++) {
+
+        for (int i = 0; i < methods.length; i++) {
             applyToMethod(ctx, methods[i], methodAnnotations[i], object);
         }
     }

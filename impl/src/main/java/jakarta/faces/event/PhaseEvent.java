@@ -16,7 +16,6 @@
 
 package jakarta.faces.event;
 
-
 import java.util.EventObject;
 
 import jakarta.faces.event.PhaseId;
@@ -24,51 +23,51 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.Lifecycle;
 
-
 /**
- * <p><strong>PhaseEvent</strong> represents the beginning or ending of
- * processing for a particular phase of the request processing lifecycle,
- * for the request encapsulated by the specified {@link FacesContext}.</p>
+ * <p>
+ * <strong>PhaseEvent</strong> represents the beginning or ending of processing for a particular phase of the request
+ * processing lifecycle, for the request encapsulated by the specified {@link FacesContext}.
+ * </p>
  */
 
 public class PhaseEvent extends EventObject {
 
     // ----------------------------------------------------------- Constructors
 
-
     private static final long serialVersionUID = 7603034985956521464L;
 
     /**
-     * <p>Construct a new event object from the specified parameters.
-     * The specified {@link Lifecycle} will be the source of this event.</p>
+     * <p>
+     * Construct a new event object from the specified parameters. The specified {@link Lifecycle} will be the source of
+     * this event.
+     * </p>
      *
      * @param context {@link FacesContext} for the current request
-     * @param phaseId Identifier of the current request processing
-     *  lifecycle phase
+     * @param phaseId Identifier of the current request processing lifecycle phase
      * @param lifecycle Lifecycle instance
      *
-     * @throws NullPointerException if <code>context</code> or
-     *  <code>phaseId</code> or <code>Lifecycle</code>is <code>null</code>
+     * @throws NullPointerException if <code>context</code> or <code>phaseId</code> or <code>Lifecycle</code>is
+     * <code>null</code>
      */
-    public PhaseEvent(FacesContext context, PhaseId phaseId, 
-            Lifecycle lifecycle) {
+    public PhaseEvent(FacesContext context, PhaseId phaseId, Lifecycle lifecycle) {
 
         super(lifecycle);
-        if ( phaseId == null || context == null || lifecycle == null) {
+        if (phaseId == null || context == null || lifecycle == null) {
             throw new NullPointerException();
         }
-	this.phaseId = phaseId;
+        this.phaseId = phaseId;
         this.context = context;
 
     }
 
-
     // ------------------------------------------------------------- Properties
 
     private FacesContext context = null;
-    
+
     /**
-     * <p>Return the {@link FacesContext} for the request being processed.</p>
+     * <p>
+     * Return the {@link FacesContext} for the request being processed.
+     * </p>
      *
      * @return the {@code FacesContext} for the current request.
      *
@@ -79,21 +78,19 @@ public class PhaseEvent extends EventObject {
 
     }
 
-
     private PhaseId phaseId = null;
 
-
     /**
-     * <p>Return the {@link PhaseId} representing the current request
-     * processing lifecycle phase.</p>
+     * <p>
+     * Return the {@link PhaseId} representing the current request processing lifecycle phase.
+     * </p>
      *
      * @return the phase id
      */
     public PhaseId getPhaseId() {
 
-	return (this.phaseId);
+        return (this.phaseId);
 
     }
-
 
 }

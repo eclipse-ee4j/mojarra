@@ -22,8 +22,7 @@ import jakarta.faces.component.UIPanel;
 
 /**
  * <p>
- * <strong>UIPanel</strong> is a {@link UIComponent} that manages the layout of its child
- * components.
+ * <strong>UIPanel</strong> is a {@link UIComponent} that manages the layout of its child components.
  * </p>
  */
 public class UIPanel extends UIComponentBase {
@@ -55,7 +54,6 @@ public class UIPanel extends UIComponentBase {
         super();
         setRendererType(null);
     }
-    
 
     // -------------------------------------------------- UIComponent Properties
 

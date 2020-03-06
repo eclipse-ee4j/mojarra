@@ -27,23 +27,19 @@ import jakarta.servlet.ServletRequest;
 import com.sun.faces.util.Util;
 
 /**
- * @see jakarta.faces.context.ExternalContext#getRequestParameterValuesMap()  
+ * @see jakarta.faces.context.ExternalContext#getRequestParameterValuesMap()
  */
 public class RequestParameterValuesMap extends StringArrayValuesMap {
 
     private final ServletRequest request;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public RequestParameterValuesMap(ServletRequest request) {
         this.request = request;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public String[] get(Object key) {
@@ -51,60 +47,47 @@ public class RequestParameterValuesMap extends StringArrayValuesMap {
         return request.getParameterValues(key.toString());
     }
 
-
     @Override
     public boolean containsKey(Object key) {
         return (request.getParameterValues(key.toString()) != null);
     }
 
-
     @Override
-    public Set<Map.Entry<String,String[]>> entrySet() {
+    public Set<Map.Entry<String, String[]>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
-
 
     @Override
     public Set<String> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
-
     @Override
     public Collection<String[]> values() {
         return Collections.unmodifiableCollection(super.values());
     }
-
 
     @Override
     public int hashCode() {
         return hashCode(request);
     }
 
-
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null || !(obj.getClass()
-                   == ExternalContextImpl
-                       .theUnmodifiableMapClass))
-               && super.equals(obj);
+        return !(obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) && super.equals(obj);
     }
 
-
     // --------------------------------------------- Methods from BaseContextMap
-
 
     @Override
     protected Iterator<Map.Entry<String, String[]>> getEntryIterator() {
         return new EntryIterator(request.getParameterNames());
     }
 
-
     @Override
     protected Iterator<String> getKeyIterator() {
         return new KeyIterator(request.getParameterNames());
     }
-
 
     @Override
     protected Iterator<String[]> getValueIterator() {

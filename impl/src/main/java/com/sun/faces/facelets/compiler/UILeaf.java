@@ -35,24 +35,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings({"deprecation"})
+@SuppressWarnings({ "deprecation" })
 public class UILeaf extends UIComponentBase implements UntargetableComponent {
-    
-    private final static Map<String,UIComponent> facets = new HashMap<String,UIComponent>(0, 1.0f){
-    
+
+    private final static Map<String, UIComponent> facets = new HashMap<String, UIComponent>(0, 1.0f) {
+
         private static final long serialVersionUID = 6132215325480325558L;
 
         @Override
         public void putAll(Map map) {
             // do nothing
         }
-    
+
         @Override
         public UIComponent put(String name, UIComponent value) {
             return null;
         }
     };
-    
+
     private UIComponent parent;
     private boolean returnLocalTransient = true;
 
@@ -89,7 +89,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
     @Override
     public void setParent(UIComponent parent) {
         this.parent = parent;
-                }
+    }
 
     @Override
     public String getRendererType() {
@@ -122,7 +122,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
     }
 
     @Override
-    public Map<String,UIComponent> getFacets() {
+    public Map<String, UIComponent> getFacets() {
         return facets;
     }
 
@@ -215,7 +215,6 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
     protected Renderer getRenderer(FacesContext faces) {
         return null;
     }
-
 
     @Override
     public boolean isTransient() {

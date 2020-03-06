@@ -17,10 +17,10 @@
 
 package jakarta.faces.view.facelets;
 
-
 /**
- * <p class="changed_added_2_0">Used in creating <code>ValidatorHandler</code>
- * and all implementations.</p>
+ * <p class="changed_added_2_0">
+ * Used in creating <code>ValidatorHandler</code> and all implementations.
+ * </p>
  *
  * @since 2.0
  * 
@@ -28,13 +28,14 @@ package jakarta.faces.view.facelets;
 public interface ValidatorConfig extends TagConfig {
 
     /**
-     * <p class="changed_added_2_0">Return the validator-id associated with a 
-     * particular validator in your faces-config</p>
+     * <p class="changed_added_2_0">
+     * Return the validator-id associated with a particular validator in your faces-config
+     * </p>
      * 
      * @return the validator-id
      * 
      * @since 2.0
      */
     public String getValidatorId();
-    
+
 }

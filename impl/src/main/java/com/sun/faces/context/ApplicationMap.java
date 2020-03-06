@@ -31,48 +31,39 @@ public class ApplicationMap extends BaseContextMap<Object> {
 
     private final ServletContext servletContext;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ApplicationMap(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
-    
+
     public Object getContext() {
         return this.servletContext;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public void clear() {
-        for (Enumeration e = servletContext.getAttributeNames();
-             e.hasMoreElements(); ) {
+        for (Enumeration e = servletContext.getAttributeNames(); e.hasMoreElements();) {
             servletContext.removeAttribute((String) e.nextElement());
         }
     }
 
-
     // Supported by maps if overridden
     @Override
     public void putAll(Map t) {
-        for (Iterator i = t.entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = t.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
-            servletContext.setAttribute((String) entry.getKey(),
-                                        entry.getValue());
+            servletContext.setAttribute((String) entry.getKey(), entry.getValue());
         }
     }
-
 
     @Override
     public Object get(Object key) {
         Util.notNull("key", key);
         return servletContext.getAttribute(key.toString());
     }
-
 
     @Override
     public Object put(String key, Object value) {
@@ -81,7 +72,6 @@ public class ApplicationMap extends BaseContextMap<Object> {
         servletContext.setAttribute(key, value);
         return (result);
     }
-
 
     @Override
     public Object remove(Object key) {
@@ -94,32 +84,26 @@ public class ApplicationMap extends BaseContextMap<Object> {
         return (result);
     }
 
-
     @Override
     public boolean containsKey(Object key) {
         return (servletContext.getAttribute(key.toString()) != null);
     }
 
-
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null || !(obj instanceof ApplicationMap))
-                   && super.equals(obj);
+        return !(obj == null || !(obj instanceof ApplicationMap)) && super.equals(obj);
     }
-
 
     @Override
     public int hashCode() {
         int hashCode = 7 * servletContext.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = entrySet().iterator(); i.hasNext();) {
             hashCode += i.next().hashCode();
         }
         return hashCode;
     }
 
-
     // --------------------------------------------- Methods from BaseContextMap
-
 
     @SuppressWarnings("unchecked")
     @Override

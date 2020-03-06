@@ -24,9 +24,8 @@ import com.sun.faces.util.Cache.Factory;
 import jakarta.faces.event.SystemEvent;
 
 /**
- * Simple wrapper class for application level SystemEvents. It provides the structure to map a
- * single SystemEvent to multiple sources which are represented by <code>SourceInfo</code>
- * instances.
+ * Simple wrapper class for application level SystemEvents. It provides the structure to map a single SystemEvent to
+ * multiple sources which are represented by <code>SourceInfo</code> instances.
  */
 public class SystemEventInfo {
 

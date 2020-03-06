@@ -23,8 +23,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The SessionProducer is the CDI producer that allows EL resolving of
- * #{session}
+ * The SessionProducer is the CDI producer that allows EL resolving of #{session}
  * </p>
  *
  * @since 2.3
@@ -36,12 +35,10 @@ public class SessionProducer extends CdiProducer<Object> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public SessionProducer() {
-       super.name("session")
-            .scope(SessionScoped.class)
-            .create(e -> FacesContext.getCurrentInstance().getExternalContext().getSession(false));
-       
+        super.name("session").scope(SessionScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getSession(false));
+
     }
 
 }

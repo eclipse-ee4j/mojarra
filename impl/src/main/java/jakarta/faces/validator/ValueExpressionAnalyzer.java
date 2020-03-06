@@ -30,8 +30,8 @@ import jakarta.el.VariableMapper;
 import jakarta.faces.el.CompositeComponentExpressionHolder;
 
 /**
- * Analyzes a {@link ValueExpression} and provides access to the base object and property
- * name to which the expression maps via the getReference() method.
+ * Analyzes a {@link ValueExpression} and provides access to the base object and property name to which the expression
+ * maps via the getReference() method.
  */
 class ValueExpressionAnalyzer {
     private ValueExpression expression;
@@ -147,7 +147,6 @@ class ValueExpressionAnalyzer {
         public Class<?> getType(ELContext context, Object base, Object property) {
             return delegate.getType(context, base, property);
         }
-
 
         @Override
         public boolean isReadOnly(ELContext context, Object base, Object property) {

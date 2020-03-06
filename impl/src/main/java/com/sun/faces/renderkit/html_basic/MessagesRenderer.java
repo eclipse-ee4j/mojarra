@@ -32,32 +32,28 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <p><B>MessagesRenderer</B> handles rendering for the Messages<p>.
+ * <p>
+ * <B>MessagesRenderer</B> handles rendering for the Messages
+ * <p>
+ * .
  *
  */
 
 public class MessagesRenderer extends HtmlBasicRenderer {
 
-
-     private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.MESSAGESMESSAGES);
-
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.MESSAGESMESSAGES);
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -65,12 +61,12 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             return;
         }
 
-        //  If id is user specified, we must render
+        // If id is user specified, we must render
         boolean mustRender = shouldWriteIdAttribute(component);
 
         UIMessages messages = (UIMessages) component;
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
 
         String clientId = ((UIMessages) component).getFor();
         // if no clientId was included
@@ -82,11 +78,11 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             }
         }
 
-        //"for" attribute optional for Messages
+        // "for" attribute optional for Messages
         Iterator messageIter = getMessageIter(context, clientId, component);
 
-        assert(messageIter != null);
-        
+        assert (messageIter != null);
+
         if (!messageIter.hasNext()) {
             if (mustRender) {
                 // no message to render, but must render anyway
@@ -105,14 +101,13 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         String layout = (String) component.getAttributes().get("layout");
         boolean showSummary = messages.isShowSummary();
         boolean showDetail = messages.isShowDetail();
-        String styleClass = (String) component.getAttributes().get(
-              "styleClass");
+        String styleClass = (String) component.getAttributes().get("styleClass");
 
         boolean wroteTable = false;
 
-        //For layout attribute of "table" render as HTML table.
-        //If layout attribute is not present, or layout attribute
-        //is "list", render as HTML list. 
+        // For layout attribute of "table" render as HTML table.
+        // If layout attribute is not present, or layout attribute
+        // is "list", render as HTML list.
         if ((layout != null) && (layout.equals("table"))) {
             writer.startElement("table", component);
             wroteTable = true;
@@ -120,16 +115,13 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             writer.startElement("ul", component);
         }
 
-        //Render "table" or "ul" level attributes.
+        // Render "table" or "ul" level attributes.
         writeIdAttributeIfNecessary(context, writer, component);
         if (null != styleClass) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
         // style is rendered as a passthru attribute
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
         while (messageIter.hasNext()) {
             FacesMessage curMessage = (FacesMessage) messageIter.next();
@@ -143,38 +135,25 @@ public class MessagesRenderer extends HtmlBasicRenderer {
 
             // make sure we have a non-null value for summary and
             // detail.
-            String summary = (null != (summary = curMessage.getSummary())) ?
-                      summary : "";
+            String summary = (null != (summary = curMessage.getSummary())) ? summary : "";
             // Default to summary if we have no detail
-            String detail = (null != (detail = curMessage.getDetail())) ?
-                     detail : summary;
-
+            String detail = (null != (detail = curMessage.getDetail())) ? detail : summary;
 
             if (curMessage.getSeverity() == FacesMessage.SEVERITY_INFO) {
-                severityStyle =
-                      (String) component.getAttributes().get("infoStyle");
-                severityStyleClass = (String)
-                      component.getAttributes().get("infoClass");
+                severityStyle = (String) component.getAttributes().get("infoStyle");
+                severityStyleClass = (String) component.getAttributes().get("infoClass");
             } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_WARN) {
-                severityStyle =
-                      (String) component.getAttributes().get("warnStyle");
-                severityStyleClass = (String)
-                      component.getAttributes().get("warnClass");
-            } else
-            if (curMessage.getSeverity() == FacesMessage.SEVERITY_ERROR) {
-                severityStyle =
-                      (String) component.getAttributes().get("errorStyle");
-                severityStyleClass = (String)
-                      component.getAttributes().get("errorClass");
-            } else
-            if (curMessage.getSeverity() == FacesMessage.SEVERITY_FATAL) {
-                severityStyle =
-                      (String) component.getAttributes().get("fatalStyle");
-                severityStyleClass = (String)
-                      component.getAttributes().get("fatalClass");
+                severityStyle = (String) component.getAttributes().get("warnStyle");
+                severityStyleClass = (String) component.getAttributes().get("warnClass");
+            } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_ERROR) {
+                severityStyle = (String) component.getAttributes().get("errorStyle");
+                severityStyleClass = (String) component.getAttributes().get("errorClass");
+            } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_FATAL) {
+                severityStyle = (String) component.getAttributes().get("fatalStyle");
+                severityStyleClass = (String) component.getAttributes().get("fatalClass");
             }
 
-            //Done intializing local variables. Move on to rendering.
+            // Done intializing local variables. Move on to rendering.
 
             if (wroteTable) {
                 writer.startElement("tr", component);
@@ -222,7 +201,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
                 writer.endElement("span");
             }
 
-            //close table row if present
+            // close table row if present
             if (wroteTable) {
                 writer.endElement("td");
                 writer.endElement("tr");
@@ -230,9 +209,9 @@ public class MessagesRenderer extends HtmlBasicRenderer {
                 writer.endElement("li");
             }
 
-        } //messageIter
+        } // messageIter
 
-        //close table if present
+        // close table if present
         if (wroteTable) {
             writer.endElement("table");
         } else {
@@ -242,5 +221,3 @@ public class MessagesRenderer extends HtmlBasicRenderer {
     }
 
 } // end of class MessagesRenderer
-
-

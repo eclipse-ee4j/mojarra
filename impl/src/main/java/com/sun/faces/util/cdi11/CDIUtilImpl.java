@@ -35,118 +35,116 @@ import jakarta.enterprise.inject.spi.InjectionTargetFactory;
 import jakarta.enterprise.util.AnnotationLiteral;
 
 public class CDIUtilImpl implements Serializable, CDIUtil {
-    
+
     private static final long serialVersionUID = -8101770583567814803L;
-    
+
     public CDIUtilImpl() {
-        
+
     }
-    
+
     @Override
     public Bean createHelperBean(BeanManager beanManager, Class beanClass) {
-       BeanWrapper result = null;
-       
-       AnnotatedType annotatedType = beanManager.createAnnotatedType(
-               beanClass );
-       
-       InjectionTargetFactory factory = beanManager.getInjectionTargetFactory(annotatedType);
-       
-       result = new BeanWrapper(beanClass);
-       //use this to create the class and inject dependencies
-       final InjectionTarget injectionTarget =
-               factory.createInjectionTarget(result);
-       result.setInjectionTarget(injectionTarget);
-       
-       return result;
-   }
-   
-   
-   private static class BeanWrapper implements Bean {
-       private Class beanClass;
-       private InjectionTarget injectionTarget = null;
-       
-       public BeanWrapper( Class beanClass) {
-           this.beanClass = beanClass;
-           
-       }
-       private void setInjectionTarget(InjectionTarget injectionTarget) {
-           this.injectionTarget = injectionTarget;
-       }
-       
-       @Override
-       public Class<?> getBeanClass() {
-           return beanClass;
-       }
-       
-       @Override
-       public Set<InjectionPoint> getInjectionPoints() {
-           return injectionTarget.getInjectionPoints();
-       }
-       
-       @Override
-       public String getName() {
-           return null;
-       }
-       
-       @Override
-       public Set<Annotation> getQualifiers() {
-           Set<Annotation> qualifiers = new HashSet<>();
-           qualifiers.add( new DefaultAnnotationLiteral());
-           qualifiers.add( new AnyAnnotationLiteral());
-           return qualifiers;
-       }
-       
-       public static class DefaultAnnotationLiteral extends AnnotationLiteral<Default> {
-           private static final long serialVersionUID = -9065007202240742004L;           
-           
-       }
-       
-       public static class AnyAnnotationLiteral extends AnnotationLiteral<Any> {
-           private static final long serialVersionUID = -4700109250603725375L;
-       }
-       
-       @Override
-       public Class<? extends Annotation> getScope() {
-           return Dependent.class;
-       }
-       
-       @Override
-       public Set<Class<? extends Annotation>> getStereotypes() {
-           return Collections.emptySet();
-       }
-       
-       @Override
-       public Set<Type> getTypes() {
-           Set<Type> types = new HashSet<>();
-           types.add( beanClass );
-           types.add( Object.class );
-           return types;
-       }
-       
-       @Override
-       public boolean isAlternative() {
-           return false;
-       }
-       
-       @Override
-       public boolean isNullable() {
-           return false;
-       }
-       
-       @Override
-       public Object create( CreationalContext ctx ) {
-           Object instance = injectionTarget.produce( ctx );
-           injectionTarget.inject( instance, ctx );
-           injectionTarget.postConstruct( instance );
-           return instance;
-       }
-       
-       @Override
-       public void destroy( Object instance, CreationalContext ctx ) {
-           injectionTarget.preDestroy( instance );
-           injectionTarget.dispose( instance );
-           ctx.release();
-       }
-   }   
-    
+        BeanWrapper result = null;
+
+        AnnotatedType annotatedType = beanManager.createAnnotatedType(beanClass);
+
+        InjectionTargetFactory factory = beanManager.getInjectionTargetFactory(annotatedType);
+
+        result = new BeanWrapper(beanClass);
+        // use this to create the class and inject dependencies
+        final InjectionTarget injectionTarget = factory.createInjectionTarget(result);
+        result.setInjectionTarget(injectionTarget);
+
+        return result;
+    }
+
+    private static class BeanWrapper implements Bean {
+        private Class beanClass;
+        private InjectionTarget injectionTarget = null;
+
+        public BeanWrapper(Class beanClass) {
+            this.beanClass = beanClass;
+
+        }
+
+        private void setInjectionTarget(InjectionTarget injectionTarget) {
+            this.injectionTarget = injectionTarget;
+        }
+
+        @Override
+        public Class<?> getBeanClass() {
+            return beanClass;
+        }
+
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            return injectionTarget.getInjectionPoints();
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public Set<Annotation> getQualifiers() {
+            Set<Annotation> qualifiers = new HashSet<>();
+            qualifiers.add(new DefaultAnnotationLiteral());
+            qualifiers.add(new AnyAnnotationLiteral());
+            return qualifiers;
+        }
+
+        public static class DefaultAnnotationLiteral extends AnnotationLiteral<Default> {
+            private static final long serialVersionUID = -9065007202240742004L;
+
+        }
+
+        public static class AnyAnnotationLiteral extends AnnotationLiteral<Any> {
+            private static final long serialVersionUID = -4700109250603725375L;
+        }
+
+        @Override
+        public Class<? extends Annotation> getScope() {
+            return Dependent.class;
+        }
+
+        @Override
+        public Set<Class<? extends Annotation>> getStereotypes() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Set<Type> getTypes() {
+            Set<Type> types = new HashSet<>();
+            types.add(beanClass);
+            types.add(Object.class);
+            return types;
+        }
+
+        @Override
+        public boolean isAlternative() {
+            return false;
+        }
+
+        @Override
+        public boolean isNullable() {
+            return false;
+        }
+
+        @Override
+        public Object create(CreationalContext ctx) {
+            Object instance = injectionTarget.produce(ctx);
+            injectionTarget.inject(instance, ctx);
+            injectionTarget.postConstruct(instance);
+            return instance;
+        }
+
+        @Override
+        public void destroy(Object instance, CreationalContext ctx) {
+            injectionTarget.preDestroy(instance);
+            injectionTarget.dispose(instance);
+            ctx.release();
+        }
+    }
+
 }

@@ -25,49 +25,48 @@ import jakarta.faces.context.FacesContext;
 
 /**
  *
- * <p class="changed_added_2_0 changed_added_2_1">When an instance of
- * this event is passed to {@link SystemEventListener#processEvent} or
- * {@link ComponentSystemEventListener#processEvent}, the listener
- * implementation may assume that the <code>source</code> of this event
- * instance is the {@link UIComponent} instance that is about to be
- * validated.</p>
-
- * <p class="changed_added_2_1">Components with children
- * must publish this event before processing their child nodes in
- * {@link UIComponent#processValidators}.  This is especially important for
- * iterating components such as
- * <code>UIData</code>, and form components, such as <code>UIForm</code>.</p>
-
+ * <p class="changed_added_2_0 changed_added_2_1">
+ * When an instance of this event is passed to {@link SystemEventListener#processEvent} or
+ * {@link ComponentSystemEventListener#processEvent}, the listener implementation may assume that the
+ * <code>source</code> of this event instance is the {@link UIComponent} instance that is about to be validated.
+ * </p>
+ * 
+ * <p class="changed_added_2_1">
+ * Components with children must publish this event before processing their child nodes in
+ * {@link UIComponent#processValidators}. This is especially important for iterating components such as
+ * <code>UIData</code>, and form components, such as <code>UIForm</code>.
+ * </p>
  *
+ * 
  * @since 2.0
  */
 public class PreValidateEvent extends ComponentSystemEvent {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     private static final long serialVersionUID = -248088758942796822L;
 
     /**
-
-     * <p class="changed_added_2_0">Constructor</p>
-
-     * @param component the <code>UIComponent</code> that is about to be
-     * validated.
-
+     * 
+     * <p class="changed_added_2_0">
+     * Constructor
+     * </p>
+     * 
+     * @param component the <code>UIComponent</code> that is about to be validated.
+     * 
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PreValidateEvent(UIComponent component) {
         super(component);
     }
-    
+
     /**
-     * <p class="changed_added_2_2">Constructor</p>
+     * <p class="changed_added_2_2">
+     * Constructor
+     * </p>
      * 
      * @param facesContext the Faces context.
-     * @param component the <code>UIComponent</code> that is about to be
-     * validated.
+     * @param component the <code>UIComponent</code> that is about to be validated.
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PreValidateEvent(FacesContext facesContext, UIComponent component) {

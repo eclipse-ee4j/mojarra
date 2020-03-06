@@ -37,7 +37,7 @@ public final class TagAttributesImpl extends TagAttributes {
     private final String[] ns;
 
     private final List nsattrs;
-    
+
     private Tag tag;
 
     /**
@@ -85,8 +85,7 @@ public final class TagAttributesImpl extends TagAttributes {
      * Using no namespace, find the TagAttribute
      * 
      * @see #get(String, String)
-     * @param localName
-     *            tag attribute name
+     * @param localName tag attribute name
      * @return the TagAttribute found, otherwise null
      */
     @Override
@@ -97,10 +96,8 @@ public final class TagAttributesImpl extends TagAttributes {
     /**
      * Find a TagAttribute that matches the passed namespace and local name.
      * 
-     * @param ns
-     *            namespace of the desired attribute
-     * @param localName
-     *            local name of the attribute
+     * @param ns namespace of the desired attribute
+     * @param localName local name of the attribute
      * @return a TagAttribute found, otherwise null
      */
     @Override
@@ -122,8 +119,7 @@ public final class TagAttributesImpl extends TagAttributes {
     /**
      * Get all TagAttributesImpl for the passed namespace
      * 
-     * @param namespace
-     *            namespace to search
+     * @param namespace namespace to search
      * @return a non-null array of TagAttributesImpl
      */
     @Override
@@ -154,7 +150,7 @@ public final class TagAttributesImpl extends TagAttributes {
     public Tag getTag() {
         return this.tag;
     }
-    
+
     @Override
     public void setTag(Tag tag) {
         this.tag = tag;

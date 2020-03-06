@@ -24,10 +24,10 @@ import jakarta.el.ExpressionFactory;
 import jakarta.faces.context.FacesContext;
 
 public class ELContextListenerImpl implements ELContextListener {
-    
+
     public ELContextListenerImpl() {
     }
-    
+
     /**
      * Invoked when a new <code>ELContext</code> has been created.
      *
@@ -35,25 +35,23 @@ public class ELContextListenerImpl implements ELContextListener {
      */
     @Override
     public void contextCreated(ELContextEvent ece) {
-        
-        
+
         FacesContext context = FacesContext.getCurrentInstance();
-        if ( context == null) {
+        if (context == null) {
             return;
         }
-        ELContext source = (ELContext)ece.getSource();
+        ELContext source = (ELContext) ece.getSource();
         // Register FacesContext with JSP
         source.putContext(FacesContext.class, context);
         ExpressionFactory exFactory = ELUtils.getDefaultExpressionFactory(context);
         if (null != exFactory) {
             source.putContext(ExpressionFactory.class, exFactory);
         }
-        
+
         // dispatch the event to any JSF applications interested in
         // the event.
-        ELContextListener[] listeners = 
-            context.getApplication().getELContextListeners();
-        if ( listeners == null) {
+        ELContextListener[] listeners = context.getApplication().getELContextListeners();
+        if (listeners == null) {
             return;
         }
         for (int i = 0; i < listeners.length; ++i) {
@@ -61,5 +59,5 @@ public class ELContextListenerImpl implements ELContextListener {
             elcl.contextCreated(new ELContextEvent(source));
         }
     }
-    
+
 }

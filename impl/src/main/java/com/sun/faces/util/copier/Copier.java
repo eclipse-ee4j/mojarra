@@ -19,10 +19,9 @@ package com.sun.faces.util.copier;
 /**
  * Interface that is to be implement by classes that know how to copy an object.
  * <p>
- * This contract makes no guarantee about the level of copying that is done.
- * Copies can be deep, shallow, just a new instance of the same type or anything in between. 
- * It generally depends on the exact purpose of the copied object what level of copying is needed, and
- * different implementations of this interface can facilitate for this difference.
+ * This contract makes no guarantee about the level of copying that is done. Copies can be deep, shallow, just a new
+ * instance of the same type or anything in between. It generally depends on the exact purpose of the copied object what
+ * level of copying is needed, and different implementations of this interface can facilitate for this difference.
  * 
  * @since 2.3
  * @author Arjan Tijms
@@ -30,13 +29,13 @@ package com.sun.faces.util.copier;
  */
 public interface Copier {
 
-	/**
-	 * Return an object that's logically a copy of the given object.
-	 * <p>
-	 * 
-	 * @param object the object to be copied
-	 * @return a copy of the given object
-	 */
-	Object copy(Object object);
-	
+    /**
+     * Return an object that's logically a copy of the given object.
+     * <p>
+     * 
+     * @param object the object to be copied
+     * @return a copy of the given object
+     */
+    Object copy(Object object);
+
 }

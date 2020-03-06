@@ -23,8 +23,7 @@ import jakarta.faces.component.UISelectItems;
 import jakarta.faces.webapp.UIComponentELTag;
 
 /**
- * This class is the tag handler that evaluates the
- * <code>selectitems</code> custom tag.
+ * This class is the tag handler that evaluates the <code>selectitems</code> custom tag.
  */
 
 public class SelectItemsTag extends UIComponentELTag {
@@ -37,10 +36,8 @@ public class SelectItemsTag extends UIComponentELTag {
     private ValueExpression itemDisabled;
     private ValueExpression itemLabelEscaped;
     private ValueExpression noSelectionOption;
-    
 
     // ---------------------------------------------------------- Tag Attributes
-
 
     public void setValue(ValueExpression value) {
         this.value = value;
@@ -73,9 +70,8 @@ public class SelectItemsTag extends UIComponentELTag {
     public void setNoSelectionOption(ValueExpression noSelectionOption) {
         this.noSelectionOption = noSelectionOption;
     }
-    
-    // ----------------------------------------- Methods from UIComponentTagBase
 
+    // ----------------------------------------- Methods from UIComponentTagBase
 
     /**
      * @see jakarta.faces.webapp.UIComponentELTag#getRendererType()
@@ -84,7 +80,6 @@ public class SelectItemsTag extends UIComponentELTag {
     public String getRendererType() {
         return null;
     }
-
 
     /**
      * @see jakarta.faces.webapp.UIComponentELTag#getComponentType()
@@ -95,9 +90,7 @@ public class SelectItemsTag extends UIComponentELTag {
         return UISelectItems.COMPONENT_TYPE;
     }
 
-
     // ------------------------------------------- Methods from UIComponentELTag
-
 
     /**
      * @see jakarta.faces.webapp.UIComponentELTag#setProperties(jakarta.faces.component.UIComponent)

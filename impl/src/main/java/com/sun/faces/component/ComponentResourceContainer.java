@@ -24,12 +24,11 @@ import jakarta.faces.context.FacesContext;
 public class ComponentResourceContainer extends UIPanel {
 
     /**
-     * Take no action to prevent component resources from inadvertantly
-     * being rendered.
+     * Take no action to prevent component resources from inadvertantly being rendered.
      */
     @Override
     public void encodeAll(FacesContext context) throws IOException {
         // no-op
     }
-    
+
 }

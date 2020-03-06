@@ -22,7 +22,9 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <p>This <code>Renderer</code> handles the rendering of <code>script</code> references.</p>
+ * <p>
+ * This <code>Renderer</code> handles the rendering of <code>script</code> references.
+ * </p>
  */
 public class ScriptRenderer extends ScriptStyleBaseRenderer {
 

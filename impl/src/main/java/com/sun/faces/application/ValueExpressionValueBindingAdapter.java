@@ -118,8 +118,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
 
     /**
      * <p>
-     * Always return <code>false</code> since we can't possibly know if this is a literal text
-     * binding or not.
+     * Always return <code>false</code> since we can't possibly know if this is a literal text binding or not.
      * </p>
      */
 

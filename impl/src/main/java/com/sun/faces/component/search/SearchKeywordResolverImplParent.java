@@ -32,5 +32,5 @@ public class SearchKeywordResolverImplParent extends SearchKeywordResolver {
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "parent".equals(keyword);
     }
-    
+
 }

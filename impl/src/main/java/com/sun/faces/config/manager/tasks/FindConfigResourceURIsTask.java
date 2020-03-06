@@ -30,11 +30,11 @@ import jakarta.servlet.ServletContext;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 
-
 /**
  * <p>
- *  This <code>Callable</code> will be used by {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
- *  It represents one or more URIs to configuration resources that require processing.
+ * This <code>Callable</code> will be used by
+ * {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
+ * It represents one or more URIs to configuration resources that require processing.
  * </p>
  */
 public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
@@ -42,14 +42,13 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
     private ConfigurationResourceProvider provider;
     private ServletContext servletContext;
 
-
     // -------------------------------------------------------- Constructors
-
 
     /**
      * Constructs a new <code>URITask</code> instance.
-     * @param provider the <code>ConfigurationResourceProvider</code> from
-     *  which zero or more <code>URL</code>s will be returned
+     * 
+     * @param provider the <code>ConfigurationResourceProvider</code> from which zero or more <code>URL</code>s will be
+     * returned
      * @param servletContext the <code>ServletContext</code> of the current application
      */
     public FindConfigResourceURIsTask(ConfigurationResourceProvider provider, ServletContext servletContext) {
@@ -57,33 +56,30 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
         this.servletContext = servletContext;
     }
 
-
     // ----------------------------------------------- Methods from Callable
-
 
     /**
      * @return zero or more <code>URL</code> instances
-     * @throws Exception if an Exception is thrown by the underlying
-     *  <code>ConfigurationResourceProvider</code> 
+     * @throws Exception if an Exception is thrown by the underlying <code>ConfigurationResourceProvider</code>
      */
     @SuppressWarnings("unchecked")
     @Override
     public Collection<URI> call() throws Exception {
         Collection<?> untypedCollection = provider.getResources(servletContext);
         Iterator<?> untypedCollectionIterator = untypedCollection.iterator();
-        
+
         Collection<URI> result = emptyList();
-        
+
         if (untypedCollectionIterator.hasNext()) {
             Object cur = untypedCollectionIterator.next();
-            
+
             // Account for older versions of the provider that return Collection<URL>.
             if (cur instanceof URL) {
                 result = new ArrayList<>(untypedCollection.size());
-                result.add(new URI(((URL)cur).toExternalForm()));
+                result.add(new URI(((URL) cur).toExternalForm()));
                 while (untypedCollectionIterator.hasNext()) {
                     cur = untypedCollectionIterator.next();
-                    result.add(new URI(((URL)cur).toExternalForm()));
+                    result.add(new URI(((URL) cur).toExternalForm()));
                 }
             } else {
                 result = (Collection<URI>) untypedCollection;
@@ -93,4 +89,4 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
         return result;
     }
 
-} 
+}

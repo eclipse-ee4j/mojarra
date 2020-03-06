@@ -23,9 +23,10 @@ import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p><strong class="changed_added_2_0 changed_modified_2_3">BehaviorEvent</strong> 
- * is the event that can be generated from component 
- * {@link jakarta.faces.component.behavior.Behavior}.</p>
+ * <p>
+ * <strong class="changed_added_2_0 changed_modified_2_3">BehaviorEvent</strong> is the event that can be generated from
+ * component {@link jakarta.faces.component.behavior.Behavior}.
+ * </p>
  *
  * @since 2.0
  */
@@ -36,13 +37,13 @@ public abstract class BehaviorEvent extends FacesEvent {
     private final Behavior behavior;
 
     /**
-     * <p class="changed_added_2_0 changed_removed_2_3">Construct a new event object 
-     * from the specified source component and <code>behavior</code>.</p>
+     * <p class="changed_added_2_0 changed_removed_2_3">
+     * Construct a new event object from the specified source component and <code>behavior</code>.
+     * </p>
      *
      * @param component Source {@link UIComponent} for this event
      * @param behavior {@link Behavior} that sent this event
-     * @throws IllegalArgumentException if <code>component</code> or 
-     * <code>behavior</code> is <code>null</code>
+     * @throws IllegalArgumentException if <code>component</code> or <code>behavior</code> is <code>null</code>
      * @since 2.0
      */
     public BehaviorEvent(UIComponent component, Behavior behavior) {
@@ -51,19 +52,19 @@ public abstract class BehaviorEvent extends FacesEvent {
         if (null == behavior) {
             throw new IllegalArgumentException("Behavior agrument cannot be null");
         }
-        
+
         this.behavior = behavior;
     }
 
     /**
-     * <p class="changed_added_2_3">Construct a new event object 
-     * from the Faces context, specified source component and behavior.</p>
+     * <p class="changed_added_2_3">
+     * Construct a new event object from the Faces context, specified source component and behavior.
+     * </p>
      *
      * @param facesContext the Faces context.
      * @param component Source {@link UIComponent} for this event
      * @param behavior {@link Behavior} that sent this event
-     * @throws IllegalArgumentException if <code>component</code> or 
-     * <code>behavior</code> is <code>null</code>
+     * @throws IllegalArgumentException if <code>component</code> or <code>behavior</code> is <code>null</code>
      * @since 2.3
      */
     public BehaviorEvent(FacesContext facesContext, UIComponent component, Behavior behavior) {
@@ -72,13 +73,13 @@ public abstract class BehaviorEvent extends FacesEvent {
         if (null == behavior) {
             throw new IllegalArgumentException("Behavior agrument cannot be null");
         }
-        
+
         this.behavior = behavior;
     }
-    
+
     /**
-     * <p class="changed_added_2_0">Return the source {@link Behavior} 
-     * that sent this event.
+     * <p class="changed_added_2_0">
+     * Return the source {@link Behavior} that sent this event.
      *
      * @since 2.0
      *

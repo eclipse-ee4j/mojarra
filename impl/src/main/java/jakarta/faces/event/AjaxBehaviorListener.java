@@ -22,26 +22,23 @@ import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.BehaviorListener;
 
 /**
- * <p class="changed_added_2_0">By implementing this class, an object
- * indicates that it is a listener for one or more kinds of {@link
- * BehaviorEvent}s.</p>
+ * <p class="changed_added_2_0">
+ * By implementing this class, an object indicates that it is a listener for one or more kinds of
+ * {@link BehaviorEvent}s.
+ * </p>
  *
  * @since 2.0
  */
 public interface AjaxBehaviorListener extends BehaviorListener {
 
-
     /**
      * <p class="changed_added_2_0">
      *
-     * @param event the <code>AjaxBehaviorEvent</code> instance that
-     * is being processed.
+     * @param event the <code>AjaxBehaviorEvent</code> instance that is being processed.
      *
-     * @throws AbortProcessingException if lifecycle processing should
-     * cease for this request.
+     * @throws AbortProcessingException if lifecycle processing should cease for this request.
      *
      * @since 2.0
      */
-    public void processAjaxBehavior(AjaxBehaviorEvent event) 
-        throws AbortProcessingException;
+    public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException;
 }

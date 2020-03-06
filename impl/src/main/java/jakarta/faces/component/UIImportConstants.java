@@ -23,25 +23,35 @@ import jakarta.faces.view.ViewMetadata;
 /**
  * <div class="changed_added_2_3">
  * 
- * <p><strong>UIImportConstants</strong> imports a mapping of all constant field values of the given type in the current
- * view.</p>
+ * <p>
+ * <strong>UIImportConstants</strong> imports a mapping of all constant field values of the given type in the current
+ * view.
+ * </p>
  * 
- * <p>The {@link jakarta.faces.view.ViewDeclarationLanguage} implementation must cause an instance of this component to be
+ * <p>
+ * The {@link jakarta.faces.view.ViewDeclarationLanguage} implementation must cause an instance of this component to be
  * placed in the view for each occurrence of an <code>&lt;f:importConstants /&gt;</code> element placed inside of an
  * <code>&lt;f:metadata /&gt;</code> element. The user must place <code>&lt;f:metadata /&gt;</code> as a direct child of
- * the <code>UIViewRoot</code>. The {@link ViewMetadata#createMetadataView(jakarta.faces.context.FacesContext)} must 
- * take care of actual task of importing the constants.</p>
+ * the <code>UIViewRoot</code>. The {@link ViewMetadata#createMetadataView(jakarta.faces.context.FacesContext)} must
+ * take care of actual task of importing the constants.
+ * </p>
  * 
- * <p>Instances of this class participate in the regular Jakarta Server Faces lifecycle, including on Ajax requests.</p>
+ * <p>
+ * Instances of this class participate in the regular Jakarta Server Faces lifecycle, including on Ajax requests.
+ * </p>
  * 
- * <p>The purpose of this component is to provide a mapping of all constant field values of the given type in the
- * current view. Constant field values are all <code>public static final</code> fields of the given type. The map key
- * represents the constant field name as <code>String</code>. The map value represents the actual constant field value.
- * This works for classes, interfaces and enums.</p>
+ * <p>
+ * The purpose of this component is to provide a mapping of all constant field values of the given type in the current
+ * view. Constant field values are all <code>public static final</code> fields of the given type. The map key represents
+ * the constant field name as <code>String</code>. The map value represents the actual constant field value. This works
+ * for classes, interfaces and enums.
+ * </p>
  * 
  * <h3 id="usage">Usage</h3>
  * 
- * <p>The below constant fields:</p>
+ * <p>
+ * The below constant fields:
+ * </p>
  * 
  * <pre>
  * package com.example;
@@ -69,7 +79,9 @@ import jakarta.faces.view.ViewMetadata;
  * }
  * </pre>
  * 
- * <p>Can be imported as below:</p>
+ * <p>
+ * Can be imported as below:
+ * </p>
  * 
  * <pre>
  * &lt;f:metadata&gt;
@@ -79,7 +91,9 @@ import jakarta.faces.view.ViewMetadata;
  * &lt;/f:metadata&gt;
  * </pre>
  * 
- * <p>And can be referenced as below:</p>
+ * <p>
+ * And can be referenced as below:
+ * </p>
  * 
  * <pre>
  * #{Foo.FOO1}, #{Foo.FOO2}, #{Barrr.BAR1}, #{Barrr.BAR2}, #{Baz.BAZ1}, #{Baz.BAZ2}
@@ -186,8 +200,8 @@ public class UIImportConstants extends UIComponentBase {
 
     /**
      * <p>
-     * Set the {@link ValueExpression} used to calculate the value for the specified attribute or property name, if any.
-     * If a {@link ValueExpression} is set for the <code>var</code> property, throw an illegal argument exception.
+     * Set the {@link ValueExpression} used to calculate the value for the specified attribute or property name, if any. If
+     * a {@link ValueExpression} is set for the <code>var</code> property, throw an illegal argument exception.
      * </p>
      *
      * @throws IllegalArgumentException If <code>name</code> is one of <code>id</code>, <code>parent</code>, or

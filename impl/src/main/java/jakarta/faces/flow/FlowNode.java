@@ -17,16 +17,16 @@
 package jakarta.faces.flow;
 
 /**
- * <p class="changed_added_2_2"><strong>FlowNode</strong> is the base
- * class for all nodes in a faces flow graph.</p>
+ * <p class="changed_added_2_2">
+ * <strong>FlowNode</strong> is the base class for all nodes in a faces flow graph.
+ * </p>
  *
  *
  * @since 2.2
  */
 
 public abstract class FlowNode {
-    
+
     public abstract String getId();
 
-    
 }

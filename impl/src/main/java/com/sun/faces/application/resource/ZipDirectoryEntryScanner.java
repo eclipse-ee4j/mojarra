@@ -32,14 +32,12 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
-
 class ZipDirectoryEntryScanner {
 
     private static final Logger LOGGER = FacesLogger.RESOURCE.getLogger();
     private static final String PREFIX = "META-INF/resources";
     private static final int PREFIX_LENGTH = PREFIX.length();
     Map<String, Boolean> resourceLibraries;
-
 
     ZipDirectoryEntryScanner() {
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -87,10 +85,9 @@ class ZipDirectoryEntryScanner {
     }
 
     boolean libraryExists(String libraryName, String localePrefix) {
-        String key = localePrefix != null? localePrefix + "/" + libraryName : libraryName;
-        
+        String key = localePrefix != null ? localePrefix + "/" + libraryName : libraryName;
+
         return resourceLibraries.containsKey(key);
     }
-
 
 }

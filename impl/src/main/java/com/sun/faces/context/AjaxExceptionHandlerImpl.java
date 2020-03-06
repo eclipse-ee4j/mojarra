@@ -42,38 +42,31 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
 
-
 /**
  * <p>
- * A specialized implementation of {@link ExceptionHandler} for JSF 2.0 that
- * handles exceptions by writing error information to the 
- * partial response.
+ * A specialized implementation of {@link ExceptionHandler} for JSF 2.0 that handles exceptions by writing error
+ * information to the partial response.
  * </p>
  *
  */
 public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
-    private static final String LOG_BEFORE_KEY =
-          "jsf.context.exception.handler.log_before";
-    private static final String LOG_AFTER_KEY =
-          "jsf.context.exception.handler.log_after";
-    private static final String LOG_KEY =
-          "jsf.context.exception.handler.log";
+    private static final String LOG_BEFORE_KEY = "jsf.context.exception.handler.log_before";
+    private static final String LOG_AFTER_KEY = "jsf.context.exception.handler.log_after";
+    private static final String LOG_KEY = "jsf.context.exception.handler.log";
 
-    
     private LinkedList<ExceptionQueuedEvent> unhandledExceptions;
     private LinkedList<ExceptionQueuedEvent> handledExceptions;
     private ExceptionQueuedEvent handled;
-
 
     public AjaxExceptionHandlerImpl(ExceptionHandler handler) {
         super(handler);
     }
 
     /**
-     * @return 
-     * @see ExceptionHandler#getHandledExceptionQueuedEvent() 
+     * @return
+     * @see ExceptionHandler#getHandledExceptionQueuedEvent()
      */
     @Override
     public ExceptionQueuedEvent getHandledExceptionQueuedEvent() {
@@ -88,7 +81,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     @Override
     public void handle() throws FacesException {
 
-        for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext(); ) {
+        for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
             ExceptionQueuedEvent event = i.next();
             ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
             try {
@@ -103,8 +96,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
                         if (t instanceof FacesException) {
                             handlePartialResponseError(context.getContext(), t);
                         } else {
-                            handlePartialResponseError(context.getContext(), 
-                                    new FacesException(t.getMessage(), t));
+                            handlePartialResponseError(context.getContext(), new FacesException(t.getMessage(), t));
                         }
                     }
                 } else {
@@ -142,12 +134,9 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     @Override
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
 
-        return ((unhandledExceptions != null)
-                    ? unhandledExceptions
-                    : Collections.<ExceptionQueuedEvent>emptyList());
+        return ((unhandledExceptions != null) ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
 
     }
-
 
     /**
      * @see jakarta.faces.context.ExceptionHandlerWrapper#getHandledExceptionQueuedEvents()
@@ -155,59 +144,53 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {
 
-        return ((handledExceptions != null)
-                    ? handledExceptions
-                    : Collections.<ExceptionQueuedEvent>emptyList());
+        return ((handledExceptions != null) ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList());
 
     }
 
-
-
     // --------------------------------------------------------- Private Methods
 
-     private void handlePartialResponseError(FacesContext context, Throwable t) {
-         if (context.getResponseComplete()) {
-             return; // don't write anything if the response is complete
-         }
-         try {
+    private void handlePartialResponseError(FacesContext context, Throwable t) {
+        if (context.getResponseComplete()) {
+            return; // don't write anything if the response is complete
+        }
+        try {
 
-             ExternalContext extContext = context.getExternalContext();
-             extContext.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
-             extContext.addResponseHeader("Cache-Control", "no-cache");
-             PartialResponseWriter writer = context.getPartialViewContext().getPartialResponseWriter();
+            ExternalContext extContext = context.getExternalContext();
+            extContext.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
+            extContext.addResponseHeader("Cache-Control", "no-cache");
+            PartialResponseWriter writer = context.getPartialViewContext().getPartialResponseWriter();
 
-             writer.startDocument();
-             writer.startError(t.getClass().toString());
-             String msg;
-             if (context.isProjectStage(ProjectStage.Production)) {
-                 msg = "See your server log for more information";
-             } else {
-                 if (t.getCause() != null) {
-                     msg = t.getCause().getMessage();
-                 } else {
-                     msg = t.getMessage();
-                 }
-             }
-             writer.write(((msg != null) ? msg : ""));
-             writer.endError();
-             writer.endDocument();
-             
-             if (LOGGER.isLoggable(Level.SEVERE)) {
-                 StringWriter sw = new StringWriter();
-                 PrintWriter pw = new PrintWriter(sw);
-                 t.printStackTrace(pw);
-                 LOGGER.log(Level.SEVERE, sw.toString());
-             }
-             
-             context.responseComplete();
-         } catch (IOException ioe) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                           ioe.toString(),
-                           ioe);
+            writer.startDocument();
+            writer.startError(t.getClass().toString());
+            String msg;
+            if (context.isProjectStage(ProjectStage.Production)) {
+                msg = "See your server log for more information";
+            } else {
+                if (t.getCause() != null) {
+                    msg = t.getCause().getMessage();
+                } else {
+                    msg = t.getMessage();
+                }
             }
-         }
-     }
+            writer.write(((msg != null) ? msg : ""));
+            writer.endError();
+            writer.endDocument();
+
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                t.printStackTrace(pw);
+                LOGGER.log(Level.SEVERE, sw.toString());
+            }
+
+            context.responseComplete();
+        } catch (IOException ioe) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, ioe.toString(), ioe);
+            }
+        }
+    }
 
     private boolean isRethrown(Throwable t) {
 
@@ -224,12 +207,8 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
         Throwable t = exceptionContext.getException();
         String key = getLoggingKey(beforePhase, afterPhase);
         if (LOGGER.isLoggable(Level.SEVERE)) {
-            LOGGER.log(Level.SEVERE,
-                       key,
-                       new Object[] { t.getClass().getName(),
-                                      phaseId.toString(),
-                                      ((c != null) ? c.getClientId(exceptionContext.getContext()) : ""),
-                                      t.getMessage()});
+            LOGGER.log(Level.SEVERE, key, new Object[] { t.getClass().getName(), phaseId.toString(),
+                    ((c != null) ? c.getClientId(exceptionContext.getContext()) : ""), t.getMessage() });
             LOGGER.log(Level.SEVERE, t.getMessage(), t);
         }
 

@@ -25,13 +25,12 @@ import jakarta.faces.flow.builder.SwitchCaseBuilder;
 import jakarta.el.ValueExpression;
 
 public class SwitchBuilderImpl extends SwitchBuilder {
-    
+
     private FlowBuilderImpl root;
     private String switchId;
     private SwitchNodeImpl switchNode;
     private SwitchCaseBuilderImpl switchCaseBuilder;
 
-    
     SwitchBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;
         this.switchId = id;
@@ -64,14 +63,13 @@ public class SwitchBuilderImpl extends SwitchBuilder {
     public SwitchCaseBuilder switchCase() {
         return switchCaseBuilder.switchCase();
     }
-    
+
     FlowBuilderImpl getRoot() {
         return root;
     }
-    
+
     SwitchNodeImpl getSwitchNode() {
         return switchNode;
     }
-    
-    
+
 }

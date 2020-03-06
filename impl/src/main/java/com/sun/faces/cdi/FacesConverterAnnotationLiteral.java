@@ -24,8 +24,7 @@ import jakarta.faces.convert.FacesConverter;
  * A helper class.
  *
  * <p>
- * Used in CdiUtils to define a CDI qualifier so we can get a match out using
- * the BeanManager API.
+ * Used in CdiUtils to define a CDI qualifier so we can get a match out using the BeanManager API.
  * </p>
  */
 @SuppressWarnings("all")
@@ -40,7 +39,7 @@ class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> 
      * Stores the value attribute.
      */
     private String value;
-    
+
     /**
      * Stores the forClass attribute.
      */
@@ -60,7 +59,7 @@ class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> 
     /**
      * Get the value attribute.
      * 
-     * @return the value attribute. 
+     * @return the value attribute.
      */
     @Override
     public String value() {
@@ -70,7 +69,7 @@ class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> 
     /**
      * Get the forClass attribute.
      * 
-     * @return the forClass attribute. 
+     * @return the forClass attribute.
      */
     @Override
     public Class forClass() {
@@ -80,7 +79,7 @@ class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> 
     /**
      * Get the managed attribute.
      * 
-     * @return true. 
+     * @return true.
      */
     @Override
     public boolean managed() {

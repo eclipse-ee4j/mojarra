@@ -25,11 +25,9 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * When an instance of this event is passed to
- * {@link SystemEventListener#processEvent} or
- * {@link ComponentSystemEventListener#processEvent}, the listener
- * implementation may assume that the <code>source</code> of this event instance
- * is the {@link UIViewRoot} instance that has just been rendered.
+ * When an instance of this event is passed to {@link SystemEventListener#processEvent} or
+ * {@link ComponentSystemEventListener#processEvent}, the listener implementation may assume that the
+ * <code>source</code> of this event instance is the {@link UIViewRoot} instance that has just been rendered.
  * </p>
  *
  * @since 2.3
@@ -44,8 +42,8 @@ public class PostRenderViewEvent extends ComponentSystemEvent {
     /**
      *
      * <p class="changed_added_2_3">
-     * Instantiate a new <code>PostRenderViewEvent</code> that indicates the
-     * argument <code>root</code> has just been rendered.
+     * Instantiate a new <code>PostRenderViewEvent</code> that indicates the argument <code>root</code> has just been
+     * rendered.
      * </p>
      *
      * @param root the <code>UIViewRoot</code> that has just been rendered.
@@ -54,11 +52,11 @@ public class PostRenderViewEvent extends ComponentSystemEvent {
     public PostRenderViewEvent(UIViewRoot root) {
         super(root);
     }
-    
+
     /**
      * <p class="changed_added_2_3">
-     * Instantiate a new <code>PostRenderViewEvent</code> that indicates the
-     * argument <code>root</code> has just been rendered.
+     * Instantiate a new <code>PostRenderViewEvent</code> that indicates the argument <code>root</code> has just been
+     * rendered.
      * </p>
      *
      * @param facesContext the Faces context.

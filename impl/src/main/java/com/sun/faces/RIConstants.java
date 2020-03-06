@@ -78,9 +78,8 @@ public class RIConstants {
     public static final String FACES_INITIALIZER_MAPPINGS_ADDED = FACES_PREFIX + "facesInitializerMappingsAdded";
 
     public static final String VIEWID_KEY_NAME = FACES_PREFIX + "viewId";
-    
-    public static final String PUSH_RESOURCE_URLS_KEY_NAME = FACES_PREFIX + "resourceUrls";
 
+    public static final String PUSH_RESOURCE_URLS_KEY_NAME = FACES_PREFIX + "resourceUrls";
 
     /**
      * Marker used when saving the list of component adds and removes.

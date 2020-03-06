@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,17 +36,14 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 
-public final class ResetValuesHandler extends ActionListenerHandlerBase
-      implements ActionSource2AttachedObjectHandler {
-    
+public final class ResetValuesHandler extends ActionListenerHandlerBase implements ActionSource2AttachedObjectHandler {
+
     private final TagAttribute render;
 
     // Pattern used for execute/render string splitting
     private static Pattern SPLIT_PATTERN = Pattern.compile(" ");
-    
-    
-    private final static class LazyActionListener
-          implements ActionListener, Serializable {
+
+    private final static class LazyActionListener implements ActionListener, Serializable {
         Collection<String> render;
 
         private static final long serialVersionUID = -5676209243297546166L;
@@ -57,8 +53,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase
         }
 
         @Override
-        public void processAction(ActionEvent event)
-              throws AbortProcessingException {
+        public void processAction(ActionEvent event) throws AbortProcessingException {
             FacesContext context = FacesContext.getCurrentInstance();
             UIViewRoot root = context.getViewRoot();
             root.resetValues(context, render);
@@ -73,42 +68,38 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase
         this.render = this.getAttribute("render");
     }
 
-
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent) {
-        FaceletContext ctx = (FaceletContext) context.getAttributes()
-              .get(FaceletContext.FACELET_CONTEXT_KEY);
+        FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
         ActionSource as = (ActionSource) parent;
         String renderStr = (String) render.getObject(ctx, String.class);
         ActionListener listener = new LazyActionListener(toList(renderStr));
         as.addActionListener(listener);
     }
-    
+
     // Converts the specified object to a List<String>
     private static List<String> toList(String strValue) {
 
-        
         // If the value contains no spaces, we can optimize.
         // This is worthwhile, since the execute/render lists
         // will often only contain a single value.
         if (strValue.indexOf(' ') == -1) {
             return Collections.singletonList(strValue);
         }
-        
+
         // We're stuck splitting up the string.
         String[] values = SPLIT_PATTERN.split(strValue);
         if ((values == null) || (values.length == 0)) {
             return null;
         }
-        
+
         // Note that we could create a Set out of the values if
-        // we care about removing duplicates.  However, the
-        // presence of duplicates does not real harm.  They will
-        // be consolidated during the partial view traversal.  So,
+        // we care about removing duplicates. However, the
+        // presence of duplicates does not real harm. They will
+        // be consolidated during the partial view traversal. So,
         // just create an list - garbage in, garbage out.
         return Collections.unmodifiableList(Arrays.asList(values));
-    
+
     }
-    
 
 }

@@ -16,7 +16,6 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.util.Util;
@@ -34,20 +33,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** <p>Render a {@link UIData} component as a two-dimensional table.</p> */
+/**
+ * <p>
+ * Render a {@link UIData} component as a two-dimensional table.
+ * </p>
+ */
 
 public class TableRenderer extends BaseTableRenderer {
 
-
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.DATATABLE);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.DATATABLE);
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -77,11 +76,8 @@ public class TableRenderer extends BaseTableRenderer {
 
     }
 
-
-
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -92,13 +88,13 @@ public class TableRenderer extends BaseTableRenderer {
         UIData data = (UIData) component;
 
         ResponseWriter writer = context.getResponseWriter();
-        
+
         // Check if any columns are being rendered, if not
         // render the minimal markup and exit
         TableMetaInfo info = getMetaInfo(context, data);
-        if(info.columns.isEmpty()) {
-        	renderEmptyTableBody(writer,data);
-        	return;
+        if (info.columns.isEmpty()) {
+            renderEmptyTableBody(writer, data);
+            return;
         }
         // Iterate over the rows of data that are provided
         int processed = 0;
@@ -145,8 +141,8 @@ public class TableRenderer extends BaseTableRenderer {
         }
 
         // fill an empty tbody, if no row has been rendered
-        if(!renderedRow) {
-        	this.renderEmptyTableRow(writer, data);
+        if (!renderedRow) {
+            this.renderEmptyTableRow(writer, data);
         }
         renderTableBodyEnd(context, component, writer);
 
@@ -156,8 +152,7 @@ public class TableRenderer extends BaseTableRenderer {
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -180,16 +175,14 @@ public class TableRenderer extends BaseTableRenderer {
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     private List<Integer> getBodyRows(Map<String, Object> appMap, UIData data) {
 
         List<Integer> result = null;
         String bodyRows = (String) data.getAttributes().get("bodyrows");
         if (bodyRows != null) {
-            String [] rows = Util.split(appMap, bodyRows, ",");
+            String[] rows = Util.split(appMap, bodyRows, ",");
             if (rows != null) {
                 result = new ArrayList<>(rows.length);
                 for (String curRow : rows) {
@@ -200,12 +193,9 @@ public class TableRenderer extends BaseTableRenderer {
 
         return result;
 
-     }
+    }
 
-
-    protected void renderColumnGroups(FacesContext context,
-                                      UIComponent table)
-          throws IOException {
+    protected void renderColumnGroups(FacesContext context, UIComponent table) throws IOException {
 
         UIComponent colGroups = getFacet(table, "colgroups");
         if (colGroups != null) {
@@ -215,10 +205,7 @@ public class TableRenderer extends BaseTableRenderer {
     }
 
     @Override
-    protected void renderFooter(FacesContext context,
-                                UIComponent table,
-                                ResponseWriter writer)
-          throws IOException {
+    protected void renderFooter(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         TableMetaInfo info = getMetaInfo(context, table);
         UIComponent footer = getFacet(table, "footer");
@@ -233,12 +220,10 @@ public class TableRenderer extends BaseTableRenderer {
             writer.startElement("tr", table);
             writer.writeText("\n", table, null);
             for (UIColumn column : info.columns) {
-                String columnFooterClass =
-                      (String) column.getAttributes().get("footerClass");
+                String columnFooterClass = (String) column.getAttributes().get("footerClass");
                 writer.startElement("td", column);
                 if (columnFooterClass != null) {
-                    writer.writeAttribute("class", columnFooterClass,
-                                          "columnFooterClass");
+                    writer.writeAttribute("class", columnFooterClass, "columnFooterClass");
                 } else if (footerClass != null) {
                     writer.writeAttribute("class", footerClass, "footerClass");
                 }
@@ -258,8 +243,8 @@ public class TableRenderer extends BaseTableRenderer {
             if (footerClass != null) {
                 writer.writeAttribute("class", footerClass, "footerClass");
             }
-            if(info.columns.size()>1) {
-            	writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
+            if (info.columns.size() > 1) {
+                writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
             }
             encodeRecursive(context, footer);
             writer.endElement("td");
@@ -271,16 +256,13 @@ public class TableRenderer extends BaseTableRenderer {
     }
 
     @Override
-    protected void renderHeader(FacesContext context,
-                                UIComponent table,
-                                ResponseWriter writer)
-    throws IOException {
+    protected void renderHeader(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         TableMetaInfo info = getMetaInfo(context, table);
         UIComponent header = getFacet(table, "header");
         // check if any header has to be rendered
-        if(header==null && !info.hasHeaderFacets) {
-        	return;
+        if (header == null && !info.hasHeaderFacets) {
+            return;
         }
         String headerClass = (String) table.getAttributes().get("headerClass");
         writer.startElement("thead", table);
@@ -291,8 +273,8 @@ public class TableRenderer extends BaseTableRenderer {
             if (headerClass != null) {
                 writer.writeAttribute("class", headerClass, "headerClass");
             }
-            if(info.columns.size()>1) {
-            	writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
+            if (info.columns.size() > 1) {
+                writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
             }
             writer.writeAttribute("scope", "colgroup", null);
             encodeRecursive(context, header);
@@ -303,12 +285,10 @@ public class TableRenderer extends BaseTableRenderer {
             writer.startElement("tr", table);
             writer.writeText("\n", table, null);
             for (UIColumn column : info.columns) {
-                String columnHeaderClass =
-                      (String) column.getAttributes().get("headerClass");
+                String columnHeaderClass = (String) column.getAttributes().get("headerClass");
                 writer.startElement("th", column);
                 if (columnHeaderClass != null) {
-                    writer.writeAttribute("class", columnHeaderClass,
-                                          "columnHeaderClass");
+                    writer.writeAttribute("class", columnHeaderClass, "columnHeaderClass");
                 } else if (headerClass != null) {
                     writer.writeAttribute("class", headerClass, "headerClass");
                 }
@@ -327,12 +307,8 @@ public class TableRenderer extends BaseTableRenderer {
 
     }
 
-
     @Override
-    protected void renderRow(FacesContext context,
-                             UIComponent table,
-                             UIComponent child,
-                             ResponseWriter writer) throws IOException {
+    protected void renderRow(FacesContext context, UIComponent table, UIComponent child, ResponseWriter writer) throws IOException {
 
         // Iterate over the child UIColumn components for each row
         TableMetaInfo info = getMetaInfo(context, table);
@@ -342,7 +318,7 @@ public class TableRenderer extends BaseTableRenderer {
             // Render the beginning of this cell
             boolean isRowHeader = false;
             Object rowHeaderValue = column.getAttributes().get("rowHeader");
-            if (null != rowHeaderValue ) {
+            if (null != rowHeaderValue) {
                 isRowHeader = Boolean.valueOf(rowHeaderValue.toString());
             }
             if (isRowHeader) {
@@ -354,16 +330,16 @@ public class TableRenderer extends BaseTableRenderer {
 
             final String tableColumnStyleClass = info.getCurrentColumnClass();
             final String columnStyleClass = (String) column.getAttributes().get("styleClass");
-            
-            if(tableColumnStyleClass != null) {
-                if(columnStyleClass != null) {
+
+            if (tableColumnStyleClass != null) {
+                if (columnStyleClass != null) {
                     throw new IOException("Cannot define both columnClasses on a table and styleClass on a column");
                 }
                 writer.writeAttribute("class", tableColumnStyleClass, "columnClasses");
             }
-            
-            if(columnStyleClass != null){
-                if(tableColumnStyleClass != null) {
+
+            if (columnStyleClass != null) {
+                if (tableColumnStyleClass != null) {
                     throw new IOException("Cannot define both columnClasses on a table and styleClass on a column");
                 }
                 writer.writeAttribute("class", columnStyleClass, "styleClass");
@@ -371,8 +347,7 @@ public class TableRenderer extends BaseTableRenderer {
 
             // Render the contents of this cell by iterating over
             // the kids of our kids
-            for (Iterator<UIComponent> gkids = getChildren(column);
-                 gkids.hasNext();) {
+            for (Iterator<UIComponent> gkids = getChildren(column); gkids.hasNext();) {
                 encodeRecursive(context, gkids.next());
             }
 
@@ -388,24 +363,19 @@ public class TableRenderer extends BaseTableRenderer {
 
     }
 
-
     // ------------------------------------------------------- Private Methods
-        
-    private void renderEmptyTableBody(final ResponseWriter writer, 
-    								  final UIComponent component) 
-    		throws IOException {
-    	
-    	writer.startElement("tbody", component);
-    	this.renderEmptyTableRow(writer, component);
-    	writer.endElement("tbody");
-    
+
+    private void renderEmptyTableBody(final ResponseWriter writer, final UIComponent component) throws IOException {
+
+        writer.startElement("tbody", component);
+        this.renderEmptyTableRow(writer, component);
+        writer.endElement("tbody");
+
     }
-    
-    private void renderEmptyTableRow(final ResponseWriter writer, 
-    							     final UIComponent component) 
-    		throws IOException {
-    	
-    	writer.startElement("tr", component);
+
+    private void renderEmptyTableRow(final ResponseWriter writer, final UIComponent component) throws IOException {
+
+        writer.startElement("tr", component);
         List<UIColumn> columns = getColumns(component);
         for (UIColumn column : columns) {
             if (column.isRendered()) {
@@ -413,13 +383,14 @@ public class TableRenderer extends BaseTableRenderer {
                 writer.endElement("td");
             }
         }
-    	writer.endElement("tr");
+        writer.endElement("tr");
     }
 
     /**
-     * <p>Return an Iterator over the <code>UIColumn</code> children of the
-     * specified <code>UIData</code> that have a <code>rendered</code> property
-     * of <code>true</code>.</p>
+     * <p>
+     * Return an Iterator over the <code>UIColumn</code> children of the specified <code>UIData</code> that have a
+     * <code>rendered</code> property of <code>true</code>.
+     * </p>
      *
      * @param table the table from which to extract children
      *
@@ -428,8 +399,7 @@ public class TableRenderer extends BaseTableRenderer {
     private List<UIColumn> getColumns(UIComponent table) {
         int childCount = table.getChildCount();
         if (childCount > 0) {
-            List<UIColumn> results =
-                  new ArrayList<>(childCount);
+            List<UIColumn> results = new ArrayList<>(childCount);
             for (UIComponent kid : table.getChildren()) {
                 if ((kid instanceof UIColumn) && kid.isRendered()) {
                     results.add((UIColumn) kid);

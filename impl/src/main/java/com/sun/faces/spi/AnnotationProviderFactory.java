@@ -37,15 +37,11 @@ public class AnnotationProviderFactory {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private static final Class<? extends AnnotationProvider> DEFAULT_ANNOTATION_PROVIDER =
-       FilterClassesFromFacesInitializerAnnotationProvider.class;
+    private static final Class<? extends AnnotationProvider> DEFAULT_ANNOTATION_PROVIDER = FilterClassesFromFacesInitializerAnnotationProvider.class;
 
-    private static final String ANNOTATION_PROVIDER_SERVICE_KEY =
-         "com.sun.faces.spi.annotationprovider";
-
+    private static final String ANNOTATION_PROVIDER_SERVICE_KEY = "com.sun.faces.spi.annotationprovider";
 
     // ---------------------------------------------------------- Public Methods
-
 
     public static AnnotationProvider createAnnotationProvider(ServletContext sc) {
         AnnotationProvider annotationProvider = createDefaultProvider(sc);
@@ -56,10 +52,10 @@ public class AnnotationProviderFactory {
             Object provider = null;
             try {
                 // try two arguments constructor
-                provider = ServiceFactoryUtils.getProviderFromEntry(services[0],
-                    new Class[] { ServletContext.class, AnnotationProvider.class }, new Object[] { sc , annotationProvider });
+                provider = ServiceFactoryUtils.getProviderFromEntry(services[0], new Class[] { ServletContext.class, AnnotationProvider.class },
+                        new Object[] { sc, annotationProvider });
             } catch (FacesException e) {
-                if(!NoSuchMethodException.class.isInstance(e.getCause())) {
+                if (!NoSuchMethodException.class.isInstance(e.getCause())) {
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.log(Level.FINE, e.toString(), e);
                     }
@@ -80,10 +76,9 @@ public class AnnotationProviderFactory {
                 if (!(provider instanceof AnnotationProvider)) {
                     throw new FacesException("Class " + provider.getClass().getName() + " is not an instance of com.sun.faces.spi.AnnotationProvider");
                 }
-                annotationProvider = (AnnotationProvider)provider;
+                annotationProvider = (AnnotationProvider) provider;
             }
-        }
-        else {
+        } else {
 
             ServiceLoader<AnnotationProvider> serviceLoader = ServiceLoader.load(AnnotationProvider.class);
             Iterator iterator = serviceLoader.iterator();
@@ -99,9 +94,7 @@ public class AnnotationProviderFactory {
         return annotationProvider;
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private static AnnotationProvider createDefaultProvider(ServletContext sc) {
         AnnotationProvider result = null;
@@ -110,7 +103,8 @@ public class AnnotationProviderFactory {
         try {
             c = DEFAULT_ANNOTATION_PROVIDER.getDeclaredConstructor(new Class<?>[] { ServletContext.class });
             result = (AnnotationProvider) c.newInstance(sc);
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e2) {
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e2) {
             throw new FacesException(e2);
         }
         return result;

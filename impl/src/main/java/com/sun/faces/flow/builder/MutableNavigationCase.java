@@ -28,11 +28,11 @@ import jakarta.faces.application.NavigationCase;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_0"><strong class="changed_modified_2_2">
- * NavigationCase</strong>
- * represents a <code>&lt;navigation-case&gt;</code> in the navigation
- * rule base, as well as the <span class="changed_modified_2_2"><code>&lt;from-view-id&gt;</code> with
- * which this <code>&lt;navigation-case&gt;</code> is a sibling</span>.</p>
+ * <p class="changed_added_2_0">
+ * <strong class="changed_modified_2_2"> NavigationCase</strong> represents a <code>&lt;navigation-case&gt;</code> in
+ * the navigation rule base, as well as the <span class="changed_modified_2_2"><code>&lt;from-view-id&gt;</code> with
+ * which this <code>&lt;navigation-case&gt;</code> is a sibling</span>.
+ * </p>
  *
  * @since 2.0
  */
@@ -44,7 +44,7 @@ public class MutableNavigationCase extends NavigationCase {
     private String condition;
     private String toViewId;
     private String toFlowDocumentId;
-    private Map<String,List<String>> parameters;
+    private Map<String, List<String>> parameters;
     private boolean redirect;
     private boolean includeViewParams;
 
@@ -53,23 +53,15 @@ public class MutableNavigationCase extends NavigationCase {
     private String toString;
     private int hashCode;
 
-
     // ------------------------------------------------------------ Constructors
 
     public MutableNavigationCase() {
         this(null, null, null, null, null, null, null, false, false);
         parameters = new ConcurrentHashMap<>();
     }
-    
-    public MutableNavigationCase(String fromViewId,
-                          String fromAction,
-                          String fromOutcome,
-                          String condition,
-                          String toViewId,
-                          String toFlowDocumentId,
-                          Map<String,List<String>> parameters,
-                          boolean redirect,
-                          boolean includeViewParams) {
+
+    public MutableNavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
+            Map<String, List<String>> parameters, boolean redirect, boolean includeViewParams) {
         super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, parameters, redirect, includeViewParams);
 
         this.fromViewId = fromViewId;
@@ -84,9 +76,8 @@ public class MutableNavigationCase extends NavigationCase {
 
     }
 
-    public MutableNavigationCase(String fromViewId, 
-                        String fromAction, String fromOutcome, String condition, String toViewId, 
-                        String toFlowDocumentId, boolean redirect, boolean includeViewParams) {
+    public MutableNavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
+            boolean redirect, boolean includeViewParams) {
         super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, Collections.EMPTY_MAP, redirect, includeViewParams);
 
         this.fromViewId = fromViewId;
@@ -98,7 +89,7 @@ public class MutableNavigationCase extends NavigationCase {
         this.parameters = Collections.emptyMap();
         this.redirect = redirect;
         this.includeViewParams = includeViewParams;
-        
+
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -109,11 +100,10 @@ public class MutableNavigationCase extends NavigationCase {
         return fromViewId;
 
     }
-    
+
     public void setFromViewId(String fromViewId) {
         this.fromViewId = fromViewId;
     }
-
 
     @Override
     public String getFromAction() {
@@ -121,11 +111,10 @@ public class MutableNavigationCase extends NavigationCase {
         return fromAction;
 
     }
-    
+
     public void setFromAction(String fromAction) {
         this.fromAction = fromAction;
     }
-
 
     @Override
     public String getFromOutcome() {
@@ -133,7 +122,7 @@ public class MutableNavigationCase extends NavigationCase {
         return fromOutcome;
 
     }
-    
+
     public void setFromOutcome(String fromOutcome) {
         this.fromOutcome = fromOutcome;
     }
@@ -142,11 +131,8 @@ public class MutableNavigationCase extends NavigationCase {
     public String getToViewId(FacesContext context) {
 
         if (toViewIdExpr == null) {
-            ExpressionFactory factory =
-                  context.getApplication().getExpressionFactory();
-            toViewIdExpr = factory.createValueExpression(context.getELContext(),
-                                                         toViewId,
-                                                         String.class);
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            toViewIdExpr = factory.createValueExpression(context.getELContext(), toViewId, String.class);
         }
         String result = (String) toViewIdExpr.getValue(context.getELContext());
         if (result.charAt(0) != '/') {
@@ -156,7 +142,7 @@ public class MutableNavigationCase extends NavigationCase {
         return result;
 
     }
-    
+
     public void setToViewId(String toViewId) {
         this.toViewId = toViewId;
         toViewIdExpr = null;
@@ -168,11 +154,11 @@ public class MutableNavigationCase extends NavigationCase {
         return toFlowDocumentId;
 
     }
-    
+
     public void setToFlowDocumentId(String toFlowDocumentId) {
         this.toFlowDocumentId = toFlowDocumentId;
     }
-    
+
     @Override
     public boolean hasCondition() {
 
@@ -184,24 +170,19 @@ public class MutableNavigationCase extends NavigationCase {
     public Boolean getCondition(FacesContext context) {
 
         if (conditionExpr == null && condition != null) {
-            ExpressionFactory factory =
-                  context.getApplication().getExpressionFactory();
-            conditionExpr = factory.createValueExpression(context.getELContext(),
-                                                          condition,
-                                                          Boolean.class);
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            conditionExpr = factory.createValueExpression(context.getELContext(), condition, Boolean.class);
         }
 
-        return ((conditionExpr != null)
-                ? (Boolean) conditionExpr.getValue(context.getELContext())
-                : null);
+        return ((conditionExpr != null) ? (Boolean) conditionExpr.getValue(context.getELContext()) : null);
 
     }
-    
+
     public void setCondition(String condition) {
         this.condition = condition;
         this.conditionExpr = null;
     }
-    
+
     public void setConditionExpression(ValueExpression conditionExpression) {
         this.conditionExpr = conditionExpression;
     }
@@ -212,19 +193,17 @@ public class MutableNavigationCase extends NavigationCase {
         return parameters;
 
     }
-    
+
     @Override
     public boolean isRedirect() {
 
         return redirect;
 
     }
-    
+
     public void setRedirect(boolean redirect) {
         this.redirect = redirect;
     }
-    
-
 
     @Override
     public boolean isIncludeViewParams() {
@@ -232,7 +211,7 @@ public class MutableNavigationCase extends NavigationCase {
         return includeViewParams;
 
     }
-    
+
     public void setIncludeViewParams(boolean includeViewParams) {
         this.includeViewParams = includeViewParams;
     }
@@ -290,8 +269,6 @@ public class MutableNavigationCase extends NavigationCase {
         hash = 29 * hash + (this.includeViewParams ? 1 : 0);
         return hash;
     }
-    
-
 
     @Override
     public String toString() {
@@ -313,5 +290,5 @@ public class MutableNavigationCase extends NavigationCase {
         return toString;
 
     }
- 
+
 }

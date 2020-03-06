@@ -181,9 +181,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
      * @return the view root.
      * @throws FacesException when a serious error occurs.
      */
-    private UIViewRoot restoreTree(FacesContext context,
-                                   String renderKitId,
-                                   Object[] tree) throws FacesException {
+    private UIViewRoot restoreTree(FacesContext context, String renderKitId, Object[] tree) throws FacesException {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.log(Level.FINEST, "restoreTree", renderKitId);
         }
@@ -229,7 +227,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "restoreView", new Object[]{viewId, renderKitId});
+            LOGGER.log(Level.FINEST, "restoreView", new Object[] { viewId, renderKitId });
         }
 
         UIViewRoot result = null;
@@ -288,7 +286,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         captureChild(treeList, 0, viewRoot);
         Object[] tree = treeList.toArray();
 
-        result = new Object[]{tree, state};
+        result = new Object[] { tree, state };
         return result;
     }
 
@@ -301,7 +299,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
          * Stores the serial version UID.
          */
         private static final long serialVersionUID = -3777170310958005106L;
-        
+
         /**
          * Stores the facet name.
          */
@@ -366,22 +364,22 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
          * Stores the NULL_ID constant.
          */
         private static final String NULL_ID = "";
-        
+
         /**
          * Stores the component type.
          */
         private String componentType;
-        
+
         /**
          * Stores the id.
          */
         private String id;
-        
+
         /**
          * Stores the parent.
          */
         private int parent;
-       
+
         /**
          * Constructor.
          */
@@ -437,7 +435,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
                 out.writeUTF(NULL_ID);
             }
         }
-        
+
         public int getParent() {
             return parent;
         }

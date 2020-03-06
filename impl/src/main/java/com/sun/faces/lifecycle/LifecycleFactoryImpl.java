@@ -32,31 +32,27 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
- * <B>LifecycleFactoryImpl</B> is the stock implementation of Lifecycle
- * in the JSF RI. <P>
+ * <B>LifecycleFactoryImpl</B> is the stock implementation of Lifecycle in the JSF RI.
+ * <P>
  *
- * @see	jakarta.faces.lifecycle.LifecycleFactory
+ * @see jakarta.faces.lifecycle.LifecycleFactory
  */
 
 public class LifecycleFactoryImpl extends LifecycleFactory {
 
-
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-    protected ConcurrentHashMap<String,Lifecycle> lifecycleMap = null;
-
+    protected ConcurrentHashMap<String, Lifecycle> lifecycleMap = null;
 
     // ------------------------------------------------------------ Constructors
-
 
     public LifecycleFactoryImpl() {
         super(null);
         lifecycleMap = new ConcurrentHashMap<>();
 
         // We must have an implementation under this key.
-        lifecycleMap.put(LifecycleFactory.DEFAULT_LIFECYCLE,
-                         new LifecycleImpl(FacesContext.getCurrentInstance()));
+        lifecycleMap.put(LifecycleFactory.DEFAULT_LIFECYCLE, new LifecycleImpl(FacesContext.getCurrentInstance()));
 //        lifecycleMap.put(ActionLifecycle.ACTION_LIFECYCLE,
 //                         new ActionLifecycle());
         if (LOGGER.isLoggable(Level.FINE)) {
@@ -64,28 +60,21 @@ public class LifecycleFactoryImpl extends LifecycleFactory {
         }
     }
 
-
     // -------------------------------------------------- Methods from Lifecycle
-
 
     @Override
     public void addLifecycle(String lifecycleId, Lifecycle lifecycle) {
         if (lifecycleId == null) {
-            throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "lifecycleId"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "lifecycleId"));
         }
         if (lifecycle == null) {
-            throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "lifecycle"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "lifecycle"));
         }
         if (null != lifecycleMap.get(lifecycleId)) {
-            Object params[] = {lifecycleId};
-            String message =
-                MessageUtils.getExceptionMessageString(MessageUtils.LIFECYCLE_ID_ALREADY_ADDED_ID,
-                                         params);
+            Object params[] = { lifecycleId };
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.LIFECYCLE_ID_ALREADY_ADDED_ID, params);
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning(MessageUtils.getExceptionMessageString(
-                        MessageUtils.LIFECYCLE_ID_ALREADY_ADDED_ID,params));
+                LOGGER.warning(MessageUtils.getExceptionMessageString(MessageUtils.LIFECYCLE_ID_ALREADY_ADDED_ID, params));
             }
             throw new IllegalArgumentException(message);
         }
@@ -95,21 +84,16 @@ public class LifecycleFactoryImpl extends LifecycleFactory {
         }
     }
 
-
     @Override
     public Lifecycle getLifecycle(String lifecycleId) throws FacesException {
 
         if (null == lifecycleId) {
-            throw new NullPointerException(
-                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "lifecycleId"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "lifecycleId"));
         }
 
         if (null == lifecycleMap.get(lifecycleId)) {
-            Object[] params = {lifecycleId};
-            String message =
-                MessageUtils.getExceptionMessageString(
-                    MessageUtils.CANT_CREATE_LIFECYCLE_ERROR_MESSAGE_ID,
-                    params);
+            Object[] params = { lifecycleId };
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.CANT_CREATE_LIFECYCLE_ERROR_MESSAGE_ID, params);
             throw new IllegalArgumentException(message);
         }
 
@@ -121,15 +105,11 @@ public class LifecycleFactoryImpl extends LifecycleFactory {
         return result;
     }
 
-
     @Override
     public Iterator<String> getLifecycleIds() {
         return lifecycleMap.keySet().iterator();
     }
 
-
-
 // The testcase for this class is TestLifecycleFactoryImpl.java 
-
 
 } // end of class LifecycleFactoryImpl

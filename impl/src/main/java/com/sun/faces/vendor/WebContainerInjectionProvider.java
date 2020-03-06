@@ -46,9 +46,8 @@ import com.sun.faces.util.FacesLogger;
 public class WebContainerInjectionProvider implements InjectionProvider {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private static Map<Class<?>, ConcurrentHashMap<Class<? extends Annotation>, MethodHolder>> methodsPerClazz = new ConcurrentHashMap<>();
-    
 
     // ------------------------------------------ Methods from InjectionProvider
 
@@ -71,14 +70,13 @@ public class WebContainerInjectionProvider implements InjectionProvider {
         }
     }
 
-    
     // --------------------------------------------------------- Private Methods
 
     private static void invokeAnnotatedMethod(Method method, Object managedBean) throws InjectionProviderException {
         if (method != null) {
             boolean accessible = method.isAccessible();
             method.setAccessible(true);
-            
+
             try {
                 method.invoke(managedBean);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -149,32 +147,29 @@ public class WebContainerInjectionProvider implements InjectionProvider {
     private static Method getAnnotatedMethodForMethodArr(Method[] methods, Class<? extends Annotation> annotation) {
         for (Method method : methods) {
             if (method.isAnnotationPresent(annotation)) {
-                
+
                 // validate method
                 if (Modifier.isStatic(method.getModifiers())) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_not_static",
-                                new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "jsf.core.web.injection.method_not_static", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
-                
+
                 if (!Void.TYPE.equals(method.getReturnType())) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_return_not_void",
-                                new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "jsf.core.web.injection.method_return_not_void", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
-                
+
                 if (method.getParameterTypes().length != 0) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_no_params",
-                                new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "jsf.core.web.injection.method_no_params", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
-                
+
                 Class<?>[] exceptions = method.getExceptionTypes();
                 if (method.getExceptionTypes().length != 0) {
                     boolean hasChecked = false;
@@ -192,7 +187,7 @@ public class WebContainerInjectionProvider implements InjectionProvider {
                         continue;
                     }
                 }
-                
+
                 // we found a match.
                 return method;
             }

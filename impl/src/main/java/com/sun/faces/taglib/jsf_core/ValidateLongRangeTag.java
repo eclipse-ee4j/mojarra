@@ -30,8 +30,7 @@ import jakarta.faces.validator.LongRangeValidator;
 import jakarta.faces.validator.Validator;
 
 /**
- * ValidateLongRangeTag is the tag handler class for
- * <code>validate_longrange</code> tag.
+ * ValidateLongRangeTag is the tag handler class for <code>validate_longrange</code> tag.
  */
 
 public class ValidateLongRangeTag extends MaxMinValidatorTag {
@@ -46,7 +45,6 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
     protected long maximum = 0;
     protected long minimum = 0;
 
-
 // Relationship Instance Variables
 
 //
@@ -57,13 +55,8 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
         super();
         if (VALIDATOR_ID_EXPR == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            ExpressionFactory factory =
-                FacesContext.getCurrentInstance().getApplication().
-                    getExpressionFactory();
-            VALIDATOR_ID_EXPR =
-                factory.createValueExpression(context.getELContext(),  
-                                              "jakarta.faces.LongRange",
-                                              String.class);
+            ExpressionFactory factory = FacesContext.getCurrentInstance().getApplication().getExpressionFactory();
+            VALIDATOR_ID_EXPR = factory.createValueExpression(context.getELContext(), "jakarta.faces.LongRange", String.class);
         }
     }
 
@@ -80,7 +73,6 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
         maximumExpression = newMaximum;
     }
 
-
     public void setMinimum(ValueExpression newMinimum) {
         minimumSet = true;
         minimumExpression = newMinimum;
@@ -92,7 +84,6 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
         return super.doStartTag();
     }
 
-
 // 
 // Methods from ValidatorTag
 //
@@ -100,8 +91,7 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
     @Override
     protected Validator createValidator() throws JspException {
 
-        LongRangeValidator result = (LongRangeValidator)
-            super.createValidator();
+        LongRangeValidator result = (LongRangeValidator) super.createValidator();
         assert (null != result);
 
         evaluateExpressions();
@@ -116,31 +106,23 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
         return result;
     }
 
-/* Evaluates expressions as necessary */
+    /* Evaluates expressions as necessary */
     private void evaluateExpressions() {
 
         ELContext context = FacesContext.getCurrentInstance().getELContext();
 
         if (minimumExpression != null) {
             if (!minimumExpression.isLiteralText()) {
-                minimum = ((Number)
-                              ELUtils.evaluateValueExpression(minimumExpression,
-                                  context)).longValue();
+                minimum = ((Number) ELUtils.evaluateValueExpression(minimumExpression, context)).longValue();
             } else {
-                minimum =
-                Long.valueOf(minimumExpression.getExpressionString()).
-                    longValue();
+                minimum = Long.valueOf(minimumExpression.getExpressionString()).longValue();
             }
         }
         if (maximumExpression != null) {
             if (!maximumExpression.isLiteralText()) {
-                maximum = ((Number)
-                              ELUtils.evaluateValueExpression(maximumExpression,
-                                  context)).longValue();
+                maximum = ((Number) ELUtils.evaluateValueExpression(maximumExpression, context)).longValue();
             } else {
-                maximum =
-                Long.valueOf(maximumExpression.getExpressionString()).
-                    longValue();
+                maximum = Long.valueOf(maximumExpression.getExpressionString()).longValue();
             }
         }
     }

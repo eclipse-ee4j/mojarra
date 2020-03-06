@@ -35,8 +35,7 @@ public class MetadataTargetImpl extends MetadataTarget {
 
     private final Map pd;
     private final Class type;
-    
-    
+
     public MetadataTargetImpl(Class type) throws IntrospectionException {
         this.type = type;
         this.pd = new HashMap();

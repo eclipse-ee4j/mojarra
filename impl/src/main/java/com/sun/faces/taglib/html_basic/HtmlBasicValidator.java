@@ -22,29 +22,28 @@ import com.sun.faces.taglib.ValidatorInfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-
 /**
- * <p>Top level validator for the html_basic tld</p>
+ * <p>
+ * Top level validator for the html_basic tld
+ * </p>
  *
  * @author Justyna Horwat
  * @author Ed Burns
  */
 public class HtmlBasicValidator extends FacesValidator {
 
-    //*********************************************************************
+    // *********************************************************************
     // Validation and configuration state (protected)
     private ValidatorInfo validatorInfo;
     private CommandTagParserImpl commandTagParser;
 
-
-    //*********************************************************************
+    // *********************************************************************
     // Constructor and lifecycle management
 
     public HtmlBasicValidator() {
         super();
         init();
     }
-
 
     @Override
     protected void init() {
@@ -56,38 +55,35 @@ public class HtmlBasicValidator extends FacesValidator {
         commandTagParser.setValidatorInfo(validatorInfo);
     }
 
-
     @Override
     public void release() {
         super.release();
         init();
     }
 
-
     @Override
     protected DefaultHandler getSAXHandler() {
-	// don't run the TLV if we're in designTime
-	if (java.beans.Beans.isDesignTime()) {
-	    return null;
-	}
-	
+        // don't run the TLV if we're in designTime
+        if (java.beans.Beans.isDesignTime()) {
+            return null;
+        }
+
         return new HtmlBasicValidatorHandler();
     }
 
-
     @Override
     protected String getFailureMessage(String prefix, String uri) {
-        // we should only get called if this Validator failed        
+        // we should only get called if this Validator failed
 
         StringBuffer result = new StringBuffer();
-      
+
         if (commandTagParser.getMessage() != null) {
             result.append(commandTagParser.getMessage());
         }
         return result.toString();
     }
-	    
-    //*********************************************************************
+
+    // *********************************************************************
     // SAX handler
 
     /**
@@ -96,19 +92,15 @@ public class HtmlBasicValidator extends FacesValidator {
     private class HtmlBasicValidatorHandler extends DefaultHandler {
 
         /**
-         * Parse the starting element.  Parcel out to appropriate
-         * handler method.
+         * Parse the starting element. Parcel out to appropriate handler method.
          *
          * @param ns Element name space.
          * @param ln Element local name.
          * @param qn Element QName.
-         * @param attrs  Element's Attribute list.
+         * @param attrs Element's Attribute list.
          */
         @Override
-        public void startElement(String ns,
-                                 String ln,
-                                 String qn,
-                                 Attributes attrs) {
+        public void startElement(String ns, String ln, String qn, Attributes attrs) {
             maybeSnagTLPrefixes(qn, attrs);
             validatorInfo.setNameSpace(ns);
             validatorInfo.setLocalName(ln);
@@ -121,10 +113,8 @@ public class HtmlBasicValidator extends FacesValidator {
             }
         }
 
-
         /**
-         * Parse the ending element. If it is a specific JSTL tag
-         * make sure that the nested count is decreased.
+         * Parse the ending element. If it is a specific JSTL tag make sure that the nested count is decreased.
          *
          * @param ns Element namespace.
          * @param ln Element local name.

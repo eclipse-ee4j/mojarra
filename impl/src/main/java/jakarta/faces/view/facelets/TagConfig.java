@@ -18,34 +18,37 @@
 package jakarta.faces.view.facelets;
 
 /**
- * <p class="changed_added_2_0">Passed to the constructor of {@link
- * TagHandler} subclass, it defines the document definition of the
- * handler we are instantiating.</p>
+ * <p class="changed_added_2_0">
+ * Passed to the constructor of {@link TagHandler} subclass, it defines the document definition of the handler we are
+ * instantiating.
+ * </p>
  *
  * @since 2.0
  */
 public interface TagConfig {
 
     /**
-     * <p class="changed_added_2_0">Return the <code>Tag</code>
-     * representing this handler.</p>
+     * <p class="changed_added_2_0">
+     * Return the <code>Tag</code> representing this handler.
+     * </p>
      *
      * @return the {@code Tag} instance
      */
     public Tag getTag();
 
     /**
-     * <p class="changed_added_2_0">The next {@link FaceletHandler}
-     * (child or children) to be applied.  This must never be
-     * <code>null</code>.</p>
+     * <p class="changed_added_2_0">
+     * The next {@link FaceletHandler} (child or children) to be applied. This must never be <code>null</code>.
+     * </p>
      *
      * @return the next {@code FaceletHandler} to be applied
      */
     public FaceletHandler getNextHandler();
 
     /**
-     * <p class="changed_added_2_0">A document-unique id, follows the
-     * convention "_tagId##"</p>
+     * <p class="changed_added_2_0">
+     * A document-unique id, follows the convention "_tagId##"
+     * </p>
      *
      * @return the id of this tag, unique within the current document.
      */

@@ -27,70 +27,75 @@ import jakarta.faces.event.MethodExpressionValueChangeListener;
 import jakarta.faces.validator.MethodExpressionValidator;
 import jakarta.faces.webapp.UIComponentELTag;
 
-
 /*
  * ******* GENERATED CODE - DO NOT EDIT *******
  */
 
-
 public class InputHiddenTag extends UIComponentELTag {
-
 
     // Setter Methods
     // PROPERTY: converter
     private jakarta.el.ValueExpression converter;
+
     public void setConverter(jakarta.el.ValueExpression converter) {
         this.converter = converter;
     }
 
     // PROPERTY: converterMessage
     private jakarta.el.ValueExpression converterMessage;
+
     public void setConverterMessage(jakarta.el.ValueExpression converterMessage) {
         this.converterMessage = converterMessage;
     }
 
     // PROPERTY: immediate
     private jakarta.el.ValueExpression immediate;
+
     public void setImmediate(jakarta.el.ValueExpression immediate) {
         this.immediate = immediate;
     }
 
     // PROPERTY: required
     private jakarta.el.ValueExpression required;
+
     public void setRequired(jakarta.el.ValueExpression required) {
         this.required = required;
     }
 
     // PROPERTY: requiredMessage
     private jakarta.el.ValueExpression requiredMessage;
+
     public void setRequiredMessage(jakarta.el.ValueExpression requiredMessage) {
         this.requiredMessage = requiredMessage;
     }
 
     // PROPERTY: validator
     private jakarta.el.MethodExpression validator;
+
     public void setValidator(jakarta.el.MethodExpression validator) {
         this.validator = validator;
     }
 
     // PROPERTY: validatorMessage
     private jakarta.el.ValueExpression validatorMessage;
+
     public void setValidatorMessage(jakarta.el.ValueExpression validatorMessage) {
         this.validatorMessage = validatorMessage;
     }
 
     // PROPERTY: value
     private jakarta.el.ValueExpression value;
+
     public void setValue(jakarta.el.ValueExpression value) {
         this.value = value;
     }
 
     // PROPERTY: valueChangeListener
     private jakarta.el.MethodExpression valueChangeListener;
+
     public void setValueChangeListener(jakarta.el.MethodExpression valueChangeListener) {
         this.valueChangeListener = valueChangeListener;
     }
-
 
     // General Methods
     public String getRendererType() {
@@ -107,7 +112,8 @@ public class InputHiddenTag extends UIComponentELTag {
         try {
             input = (jakarta.faces.component.UIInput) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIInput.  Perhaps you're missing a tag?");
+            throw new IllegalStateException(
+                    "Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIInput.  Perhaps you're missing a tag?");
         }
 
         if (converter != null) {
@@ -144,6 +150,7 @@ public class InputHiddenTag extends UIComponentELTag {
             input.addValueChangeListener(new MethodExpressionValueChangeListener(valueChangeListener));
         }
     }
+
     // Methods From TagSupport
     public int doStartTag() throws JspException {
         try {

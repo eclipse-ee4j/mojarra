@@ -24,12 +24,11 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIColumn;
 
 /**
- * <p>Represents a column that will be rendered
- * in an HTML <code>table</code> element.</p>
+ * <p>
+ * Represents a column that will be rendered in an HTML <code>table</code> element.
+ * </p>
  */
 public class HtmlColumn extends UIColumn {
-
-
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -37,32 +36,38 @@ public class HtmlColumn extends UIColumn {
         super();
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlColumn";
 
-
     protected enum PropertyKeys {
-        footerClass,
-        headerClass,
-        rowHeader,
-        styleClass,
-;
+        footerClass, headerClass, rowHeader, styleClass,;
+
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
-}
+    }
 
     /**
-     * <p>Return the value of the <code>footerClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>footerClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Space-separated list of CSS style class(es) that will be
-     * applied to any footer generated for this column.
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) that will be applied to any footer generated for this column.
      */
     public java.lang.String getFooterClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.footerClass);
@@ -70,19 +75,24 @@ public class HtmlColumn extends UIColumn {
     }
 
     /**
-     * <p>Set the value of the <code>footerClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>footerClass</code> property.
+     * </p>
+     * 
      * @param footerClass the new property value
      */
     public void setFooterClass(java.lang.String footerClass) {
         getStateHelper().put(PropertyKeys.footerClass, footerClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>headerClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>headerClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Space-separated list of CSS style class(es) that will be
-     * applied to any header generated for this column.
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) that will be applied to any header generated for this column.
      */
     public java.lang.String getHeaderClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.headerClass);
@@ -90,20 +100,25 @@ public class HtmlColumn extends UIColumn {
     }
 
     /**
-     * <p>Set the value of the <code>headerClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>headerClass</code> property.
+     * </p>
+     * 
      * @param headerClass the new property value
      */
     public void setHeaderClass(java.lang.String headerClass) {
         getStateHelper().put(PropertyKeys.headerClass, headerClass);
     }
 
-
     /**
-     * <p>Return the value of the <code>rowHeader</code> property.</p>
+     * <p>
+     * Return the value of the <code>rowHeader</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Flag indicating that this column is a row header column and
-     * therefore cells in this column should be rendered with "th"
-     * instead of "td" and must have the 'scope="row"' attribute.
+     * <p>
+     * Contents: Flag indicating that this column is a row header column and therefore cells in this column should be
+     * rendered with "th" instead of "td" and must have the 'scope="row"' attribute.
      */
     public boolean isRowHeader() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.rowHeader, false);
@@ -111,19 +126,24 @@ public class HtmlColumn extends UIColumn {
     }
 
     /**
-     * <p>Set the value of the <code>rowHeader</code> property.</p>
+     * <p>
+     * Set the value of the <code>rowHeader</code> property.
+     * </p>
+     * 
      * @param rowHeader the new property value
      */
     public void setRowHeader(boolean rowHeader) {
         getStateHelper().put(PropertyKeys.rowHeader, rowHeader);
     }
 
-
     /**
-     * <p>Return the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Return the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: Space-separated list of CSS style class(es) that will be
-     * applied to the "td" of this column
+     * <p>
+     * Contents: Space-separated list of CSS style class(es) that will be applied to the "td" of this column
      */
     public java.lang.String getStyleClass() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.styleClass);
@@ -131,13 +151,15 @@ public class HtmlColumn extends UIColumn {
     }
 
     /**
-     * <p>Set the value of the <code>styleClass</code> property.</p>
+     * <p>
+     * Set the value of the <code>styleClass</code> property.
+     * </p>
+     * 
      * @param styleClass the new property value
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
-
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");

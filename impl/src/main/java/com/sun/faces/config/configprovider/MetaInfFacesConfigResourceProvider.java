@@ -44,30 +44,27 @@ import java.util.regex.Matcher;
 /**
  *
  */
-public class MetaInfFacesConfigResourceProvider implements
-      ConfigurationResourceProvider {
+public class MetaInfFacesConfigResourceProvider implements ConfigurationResourceProvider {
 
     /**
-     * <p>This <code>Pattern</code> will pick the the JAR file name if present
-     * within a URL.</p>
+     * <p>
+     * This <code>Pattern</code> will pick the the JAR file name if present within a URL.
+     * </p>
      */
     private static final Pattern JAR_PATTERN = Pattern.compile(".*/(\\S*\\.jar).*");
 
     /**
-     * <p>The resource path for faces-config files included in the
-     * <code>META-INF</code> directory of JAR files.</p>
+     * <p>
+     * The resource path for faces-config files included in the <code>META-INF</code> directory of JAR files.
+     * </p>
      */
-    private static final String META_INF_RESOURCES =
-         "META-INF/faces-config.xml";
+    private static final String META_INF_RESOURCES = "META-INF/faces-config.xml";
 
-    private static final String WEB_INF_CLASSES =
-          "/WEB-INF/classes/META-INF";
-    
-    private static final String FACES_CONFIG_EXTENSION = 
-            ".faces-config.xml";
+    private static final String WEB_INF_CLASSES = "/WEB-INF/classes/META-INF";
+
+    private static final String FACES_CONFIG_EXTENSION = ".faces-config.xml";
 
     // ------------------------------ Methods From ConfigurationResourceProvider
-
 
     /**
      * @see com.sun.faces.spi.ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
@@ -82,7 +79,7 @@ public class MetaInfFacesConfigResourceProvider implements
             duplicatePattern = Pattern.compile(duplicateJarPattern);
         }
         SortedMap<String, Set<URI>> sortedJarMap = new TreeMap<>();
-        //noinspection CollectionWithoutInitialCapacity
+        // noinspection CollectionWithoutInitialCapacity
         List<URI> unsortedResourceList = new ArrayList<>();
 
         try {
@@ -116,9 +113,7 @@ public class MetaInfFacesConfigResourceProvider implements
             throw new FacesException(e);
         }
         // Load the sorted resources first:
-        List<URI> result =
-              new ArrayList<>(sortedJarMap.size() + unsortedResourceList
-                    .size());
+        List<URI> result = new ArrayList<>(sortedJarMap.size() + unsortedResourceList.size());
         for (Map.Entry<String, Set<URI>> entry : sortedJarMap.entrySet()) {
             result.addAll(entry.getValue());
         }
@@ -126,12 +121,10 @@ public class MetaInfFacesConfigResourceProvider implements
         result.addAll(unsortedResourceList);
 
         return result;
-        
+
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private Collection<URI> loadURLs(ServletContext context) throws IOException {
 
@@ -139,10 +132,10 @@ public class MetaInfFacesConfigResourceProvider implements
         try {
             for (Enumeration<URL> e = Util.getCurrentLoader(this).getResources(META_INF_RESOURCES); e.hasMoreElements();) {
                 String urlString = e.nextElement().toExternalForm();
-                urlString = urlString.replaceAll(" ", "%20");                
+                urlString = urlString.replaceAll(" ", "%20");
                 urls.add(new URI(urlString));
             }
-            URL [] urlArray = Classpath.search("META-INF/", FACES_CONFIG_EXTENSION);
+            URL[] urlArray = Classpath.search("META-INF/", FACES_CONFIG_EXTENSION);
             for (URL cur : urlArray) {
                 String urlString = cur.toExternalForm();
                 urlString = urlString.replaceAll(" ", "%20");
@@ -164,6 +157,6 @@ public class MetaInfFacesConfigResourceProvider implements
             throw new IOException(ex);
         }
         return urls;
-        
+
     }
 }

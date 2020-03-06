@@ -21,25 +21,23 @@ import java.util.Map;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p>This builder builds beans that are defined as <code>Map</code>
- * instances.</p>
+ * <p>
+ * This builder builds beans that are defined as <code>Map</code> instances.
+ * </p>
  */
 public class ManagedMapBeanBuilder extends BeanBuilder {
 
-    private Map<Expression,Expression> mapEntries;
+    private Map<Expression, Expression> mapEntries;
 
     // ------------------------------------------------------------ Constructors
-
 
     public ManagedMapBeanBuilder(ManagedBeanInfo beanInfo) {
 
         super(beanInfo);
-        
+
     }
 
-
     // ------------------------------------------------ Methods from BeanBuilder
-
 
     @Override
     void bake() {
@@ -47,19 +45,16 @@ public class ManagedMapBeanBuilder extends BeanBuilder {
         if (!isBaked()) {
             super.bake();
             ManagedBeanInfo.MapEntry entry = beanInfo.getMapEntry();
-            mapEntries = getBakedMap(entry.getKeyClass(),
-                                     entry.getValueClass(),
-                                     entry.getEntries());
+            mapEntries = getBakedMap(entry.getKeyClass(), entry.getValueClass(), entry.getEntries());
             baked();
         }
 
     }
 
-
     @Override
     protected void buildBean(Object bean, FacesContext context) {
 
         initMap(mapEntries, (Map) bean, context);
-        
+
     }
 }

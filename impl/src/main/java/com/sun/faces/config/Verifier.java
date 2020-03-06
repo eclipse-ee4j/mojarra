@@ -63,7 +63,7 @@ public class Verifier {
 
     /**
      * @return a <code>Verifier</code> for the current web application <em>if</em> <code>com.sun.faces.verifyObjects</code>
-     *         is enabled
+     * is enabled
      */
     public static Verifier getCurrentInstance() {
         return VERIFIER.get();
@@ -72,8 +72,7 @@ public class Verifier {
     /**
      * Set the <code>Verifier</code> for this thread (typically the same thread that is used to bootstrap the application).
      * 
-     * @param verifier
-     *            the <code>Verifier</code> for this web application
+     * @param verifier the <code>Verifier</code> for this web application
      */
     public static void setCurrentInstance(Verifier verifier) {
         if (verifier == null) {
@@ -106,12 +105,9 @@ public class Verifier {
      * </ul>
      * If any of these tests fail, queue a message to be displayed at a later point in time.
      * 
-     * @param type
-     *            The type of Faces object we're validating
-     * @param className
-     *            the class name of the Faces object we're validating
-     * @param assignableTo
-     *            the type we expect <code>className</code> to either implement or extend
+     * @param type The type of Faces object we're validating
+     * @param className the class name of the Faces object we're validating
+     * @param assignableTo the type we expect <code>className</code> to either implement or extend
      */
     public void validateObject(ObjectType type, String className, Class<?> assignableTo) {
 
@@ -120,17 +116,16 @@ public class Verifier {
         if ("jakarta.faces.component.html.HtmlHead".equals(className) || "jakarta.faces.component.html.HtmlBody".equals(className)) {
             return;
         }
-        
+
         Class<?> c = null;
         try {
             c = Util.loadClass(className, this);
         } catch (ClassNotFoundException cnfe) {
             messages.add(MessageUtils.getExceptionMessageString(MessageUtils.VERIFIER_CLASS_NOT_FOUND_ID, type, className));
         } catch (NoClassDefFoundError ncdfe) {
-            messages.add(MessageUtils.getExceptionMessageString(MessageUtils.VERIFIER_CLASS_MISSING_DEP_ID, type, className,
-                    ncdfe.getMessage()));
+            messages.add(MessageUtils.getExceptionMessageString(MessageUtils.VERIFIER_CLASS_MISSING_DEP_ID, type, className, ncdfe.getMessage()));
         }
-        
+
         if (c != null) {
             try {
                 Constructor ctor = c.getConstructor(RIConstants.EMPTY_CLASS_ARGS);

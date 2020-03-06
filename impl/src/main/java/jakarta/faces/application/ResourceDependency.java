@@ -30,20 +30,19 @@ import jakarta.faces.application.ResourceHandler;
 
 /**
  * <p class="changed_added_2_0">
- * Instances of {@link jakarta.faces.component.UIComponent} or {@link jakarta.faces.render.Renderer}
- * that have this annotation (or {@link ResourceDependencies} attached at the class level will
- * automatically have a resource dependency added so that the named resource will be present in user
- * agent's view of the <code>UIViewRoot</code> in which this component or renderer is used.
+ * Instances of {@link jakarta.faces.component.UIComponent} or {@link jakarta.faces.render.Renderer} that have this
+ * annotation (or {@link ResourceDependencies} attached at the class level will automatically have a resource dependency
+ * added so that the named resource will be present in user agent's view of the <code>UIViewRoot</code> in which this
+ * component or renderer is used.
  * </p>
  * 
  * <div class="changed_added_2_0">
  * 
  * <p>
- * The default implementation must support attaching this annotation to
- * {@link jakarta.faces.component.UIComponent} or {@link jakarta.faces.render.Renderer} classes. In both
- * cases, the event that precipitates the processing of this annotation is the insertion of a
- * <code>UIComponent</code> instance into the view hierarchy on an initial request for a view. When
- * that event happens, the following action must be taken.
+ * The default implementation must support attaching this annotation to {@link jakarta.faces.component.UIComponent} or
+ * {@link jakarta.faces.render.Renderer} classes. In both cases, the event that precipitates the processing of this
+ * annotation is the insertion of a <code>UIComponent</code> instance into the view hierarchy on an initial request for
+ * a view. When that event happens, the following action must be taken.
  * </p>
  * 
  * <ol>
@@ -55,15 +54,15 @@ import jakarta.faces.application.ResourceHandler;
  *
  * <li>
  * <p>
- * Create a {@link jakarta.faces.component.UIOutput} instance by passing
- * <code>jakarta.faces.Output</code>. to {@link Application#createComponent(java.lang.String)}.
+ * Create a {@link jakarta.faces.component.UIOutput} instance by passing <code>jakarta.faces.Output</code>. to
+ * {@link Application#createComponent(java.lang.String)}.
  * </p>
  * </li>
  *
  * <li>
  * <p>
- * Get the annotation instance from the class and obtain the values of the <em>name</em>,
- * <em>library</em>, and <em>target</em> attributes.
+ * Get the annotation instance from the class and obtain the values of the <em>name</em>, <em>library</em>, and
+ * <em>target</em> attributes.
  * </p>
  * </li>
  *
@@ -88,8 +87,7 @@ import jakarta.faces.application.ResourceHandler;
  *
  * <li>
  * <p>
- * Call <code>setRendererType</code> on the <code>UIOutput</code> instance, passing the
- * <em>renderer-type</em>.
+ * Call <code>setRendererType</code> on the <code>UIOutput</code> instance, passing the <em>renderer-type</em>.
  * </p>
  * </li>
  *
@@ -150,9 +148,9 @@ public @interface ResourceDependency {
 
     /**
      * <p class="changed_added_2_0">
-     * The <em>resourceName</em> of the resource pointed to by this <code>ResourceDependency</code>.
-     * It is valid to have Jakarta Expression Language Expressions in the value of this attribute, as long as the expression
-     * resolves to an instance of the expected type.
+     * The <em>resourceName</em> of the resource pointed to by this <code>ResourceDependency</code>. It is valid to have
+     * Jakarta Expression Language Expressions in the value of this attribute, as long as the expression resolves to an
+     * instance of the expected type.
      * </p>
      * 
      * @return the name.
@@ -161,10 +159,9 @@ public @interface ResourceDependency {
 
     /**
      * <p class="changed_added_2_0">
-     * The <em>libraryName</em> in which the resource pointed to by this
-     * <code>ResourceDependency</code> resides. If not specified, defaults to the empty string. It
-     * is valid to have Jakarta Expression Language Expressions in the value of this attribute, as long as the expression
-     * resolves to an instance of the expected type.
+     * The <em>libraryName</em> in which the resource pointed to by this <code>ResourceDependency</code> resides. If not
+     * specified, defaults to the empty string. It is valid to have Jakarta Expression Language Expressions in the value of
+     * this attribute, as long as the expression resolves to an instance of the expected type.
      * </p>
      * 
      * @return the library.

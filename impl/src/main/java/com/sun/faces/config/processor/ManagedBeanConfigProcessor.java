@@ -48,8 +48,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/managed-bean</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/managed-bean</code>.
  * </p>
  */
 public class ManagedBeanConfigProcessor extends AbstractConfigProcessor {
@@ -233,18 +232,18 @@ public class ManagedBeanConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing managed-bean elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList managedBeans = document.getDocumentElement().getElementsByTagNameNS(namespace, MANAGED_BEAN);
-            
+
             if (managedBeans != null && managedBeans.getLength() > 0) {
                 for (int m = 0, size = managedBeans.getLength(); m < size; m++) {
                     addManagedBean(beanManager, managedBeans.item(m));
                 }
             }
         }
-        
+
         beanManager.preProcessesBeans();
     }
 

@@ -17,11 +17,11 @@
 
 package jakarta.faces.view.facelets;
 
-
 /**
- * <p class="changed_added_2_0">A Facelet version of the Jakarta Server Pages {@link
- * jakarta.faces.webapp.ConverterTag}.  All the attributes specified in
- * the documentation for the converter tags are valid attributes.</p>
+ * <p class="changed_added_2_0">
+ * A Facelet version of the Jakarta Server Pages {@link jakarta.faces.webapp.ConverterTag}. All the attributes specified
+ * in the documentation for the converter tags are valid attributes.
+ * </p>
  *
  * @since 2.0
  * 
@@ -29,11 +29,12 @@ package jakarta.faces.view.facelets;
 public interface ConverterConfig extends TagConfig {
 
     /**
-     * <p class="changed_added_2_0">Return the converter id to be used
-     * in instantiating this converter</p>
+     * <p class="changed_added_2_0">
+     * Return the converter id to be used in instantiating this converter
+     * </p>
      * 
      * @return the converter id to be used in instantiating this converter
      */
     public String getConverterId();
-    
+
 }

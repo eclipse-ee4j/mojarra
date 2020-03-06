@@ -25,47 +25,49 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * <p class="changed_added_2_0"></p>
+ * <p class="changed_added_2_0">
+ * </p>
+ * 
  * @author asmirnov@exadel.com
  *
  */
 public class CollectionsUtils {
 
-	private CollectionsUtils() {
-		// this class contains static methods only.
-	}
-	
+    private CollectionsUtils() {
+        // this class contains static methods only.
+    }
+
     @SafeVarargs
     public static <T> Set<T> asSet(T... a) {
         return new HashSet<T>(asList(a));
     }
-	
-	public static <T> T[] ar(T...ts){
-		return ts;
-	}
-	
-	public static <T> T[] ar(){
-		return null;
-	}
 
-	public static <T,V> ConstMap<T,V> map() {
-		return new ConstMap<>();
-	}
-	
-	@SuppressWarnings("serial")
-	public static class ConstMap<T,V> extends HashMap<T,V> {
-		
-		public ConstMap() {
-			super(50, 1.0F);
-		}
-		
-		public ConstMap<T, V> add(T key, V value) {
-			put(key, value);
-			return this;
-		}
-		
-		public Map<T,V> fix() {
-			return Collections.unmodifiableMap(this);
-		}
-	}
+    public static <T> T[] ar(T... ts) {
+        return ts;
+    }
+
+    public static <T> T[] ar() {
+        return null;
+    }
+
+    public static <T, V> ConstMap<T, V> map() {
+        return new ConstMap<>();
+    }
+
+    @SuppressWarnings("serial")
+    public static class ConstMap<T, V> extends HashMap<T, V> {
+
+        public ConstMap() {
+            super(50, 1.0F);
+        }
+
+        public ConstMap<T, V> add(T key, V value) {
+            put(key, value);
+            return this;
+        }
+
+        public Map<T, V> fix() {
+            return Collections.unmodifiableMap(this);
+        }
+    }
 }

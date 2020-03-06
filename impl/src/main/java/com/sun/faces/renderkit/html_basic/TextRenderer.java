@@ -35,25 +35,18 @@ import com.sun.faces.config.WebConfiguration;
 import java.util.Map;
 
 /**
- * <B>TextRenderer</B> is a class that renders the current value of
- * <code>UIInput<code> or <code>UIOutput<code> component as a input field or
- * static text.
+ * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput<code> or <code>UIOutput<code>
+ * component as a input field or static text.
  */
 public class TextRenderer extends HtmlBasicInputRenderer {
 
-
-    private static final Attribute[] INPUT_ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
-    private static final Attribute[] OUTPUT_ATTRIBUTES = 
-          AttributeManager.getAttributes(AttributeManager.Key.OUTPUTTEXT);
-
+    private static final Attribute[] INPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
+    private static final Attribute[] OUTPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTTEXT);
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -61,15 +54,11 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-
     @Override
-    protected void getEndTextToRender(FacesContext context,
-                                      UIComponent component,
-                                      String currentValue)
-          throws IOException {
+    protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
         boolean shouldWriteIdAttribute = false;
         boolean isOutput = false;
 
@@ -83,23 +72,19 @@ public class TextRenderer extends HtmlBasicInputRenderer {
         if (component instanceof UIInput) {
             writer.startElement("input", component);
             writeIdAttributeIfNecessary(context, writer, component);
-            
+
             if (component instanceof HtmlInputFile) {
                 writer.writeAttribute("type", "file", null);
-            }
-            else {
+            } else {
                 writer.writeAttribute("type", "text", null);
             }
-            writer.writeAttribute("name", (component.getClientId(context)),
-                                  "clientId");
+            writer.writeAttribute("name", (component.getClientId(context)), "clientId");
 
             // only output the autocomplete attribute if the value
             // is 'off' since its lack of presence will be interpreted
             // as 'on' by the browser
             if ("off".equals(component.getAttributes().get("autocomplete"))) {
-                writer.writeAttribute("autocomplete",
-                                      "off",
-                                      "autocomplete");
+                writer.writeAttribute("autocomplete", "off", "autocomplete");
             }
 
             // render default text specified
@@ -111,36 +96,23 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             }
 
             // style is rendered as a passthur attribute
-            RenderKitUtils.renderPassThruAttributes(context,
-                                                    writer,
-                                                    component,
-                                                    INPUT_ATTRIBUTES,
-                                                    getNonOnChangeBehaviors(component));
+            RenderKitUtils.renderPassThruAttributes(context, writer, component, INPUT_ATTRIBUTES, getNonOnChangeBehaviors(component));
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             RenderKitUtils.renderOnchange(context, component, false);
 
-
             writer.endElement("input");
 
         } else if (isOutput = (component instanceof UIOutput)) {
-            if (styleClass != null
-                 || style != null
-                 || dir != null
-                 || lang != null
-                 || title != null
-                 || hasPassthroughAttributes
-                 || (shouldWriteIdAttribute = shouldWriteIdAttribute(component))) {
+            if (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
+                    || (shouldWriteIdAttribute = shouldWriteIdAttribute(component))) {
                 writer.startElement("span", component);
                 writeIdAttributeIfNecessary(context, writer, component);
                 if (null != styleClass) {
                     writer.writeAttribute("class", styleClass, "styleClass");
                 }
                 // style is rendered as a passthru attribute
-                RenderKitUtils.renderPassThruAttributes(context,
-                                                        writer,
-                                                        component,
-                                                        OUTPUT_ATTRIBUTES);
+                RenderKitUtils.renderPassThruAttributes(context, writer, component, OUTPUT_ATTRIBUTES);
 
             }
             if (currentValue != null) {
@@ -152,18 +124,12 @@ public class TextRenderer extends HtmlBasicInputRenderer {
                 }
             }
         }
-        if (isOutput && (styleClass != null
-                 || style != null
-                 || dir != null
-                 || lang != null
-                 || title != null
-                 || hasPassthroughAttributes
-                 || (shouldWriteIdAttribute))) {
+        if (isOutput && (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
+                || (shouldWriteIdAttribute))) {
             writer.endElement("span");
         }
 
     }
-
 
     @Override
     public boolean getRendersChildren() {
@@ -171,11 +137,9 @@ public class TextRenderer extends HtmlBasicInputRenderer {
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
-        boolean renderChildren = WebConfiguration.getInstance()
-                .isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
+        boolean renderChildren = WebConfiguration.getInstance().isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
 
         if (!renderChildren) {
             return;
@@ -198,5 +162,3 @@ public class TextRenderer extends HtmlBasicInputRenderer {
     // The testcase for this class is TestRenderers_2.java
 
 } // end of class TextRenderer
-
-

@@ -22,22 +22,20 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import com.sun.faces.config.WebConfiguration;
 
 /**
- * Interface for working with multiple {@link com.sun.faces.application.view.ViewHandlingStrategy}
- * implementations.
+ * Interface for working with multiple {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations.
  */
 public class ViewHandlingStrategyManager {
 
     // The strategies associated with this instance
     private volatile ViewHandlingStrategy[] strategies;
-    
 
     // ------------------------------------------------------------- Constructor
 
-
     /**
-     * Be default, if {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#DisableFaceletJSFViewHandler}
-     * isn't enabled, the strategies available (in order) will be {@link FaceletViewHandlingStrategy}
-     * and {@link com.sun.faces.application.view.JspViewHandlingStrategy}.  
+     * Be default, if
+     * {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#DisableFaceletJSFViewHandler} isn't
+     * enabled, the strategies available (in order) will be {@link FaceletViewHandlingStrategy} and
+     * {@link com.sun.faces.application.view.JspViewHandlingStrategy}.
      * <p>
      * Otherwise, only the {@link com.sun.faces.application.view.JspViewHandlingStrategy} will be available.
      */
@@ -45,30 +43,26 @@ public class ViewHandlingStrategyManager {
 
         WebConfiguration webConfig = WebConfiguration.getInstance();
         boolean pdlDisabled = webConfig.isOptionEnabled(DisableFaceletJSFViewHandler) || webConfig.isOptionEnabled(DisableFaceletJSFViewHandlerDeprecated);
-        
-        strategies = pdlDisabled
-                      ? new ViewHandlingStrategy[] { new JspViewHandlingStrategy() }
-                      : new ViewHandlingStrategy[] { new FaceletViewHandlingStrategy(), new JspViewHandlingStrategy() };
+
+        strategies = pdlDisabled ? new ViewHandlingStrategy[] { new JspViewHandlingStrategy() }
+                : new ViewHandlingStrategy[] { new FaceletViewHandlingStrategy(), new JspViewHandlingStrategy() };
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     /**
      * <p>
-     * Iterate through the available {@link com.sun.faces.application.view.ViewHandlingStrategy}
-     * implementations.  The first one to return true from {@link com.sun.faces.application.view.ViewHandlingStrategy#handlesViewId(String)}
-     * will be the {@link com.sun.faces.application.view.ViewHandlingStrategy} returned.
+     * Iterate through the available {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations. The first
+     * one to return true from {@link com.sun.faces.application.view.ViewHandlingStrategy#handlesViewId(String)} will be the
+     * {@link com.sun.faces.application.view.ViewHandlingStrategy} returned.
      * <p>
      *
      * @param viewId the viewId to match a {@link com.sun.faces.application.view.ViewHandlingStrategy} to
      *
      * @throws ViewHandlingStrategyNotFoundException if no match is found.
      *
-     * @return a {@link com.sun.faces.application.view.ViewHandlingStrategy} for
-     *  the specifed <code>viewId</code>
+     * @return a {@link com.sun.faces.application.view.ViewHandlingStrategy} for the specifed <code>viewId</code>
      */
     public ViewHandlingStrategy getStrategy(String viewId) {
 
@@ -77,21 +71,21 @@ public class ViewHandlingStrategyManager {
                 return strategy;
             }
         }
-        
+
         throw new ViewHandlingStrategyNotFoundException();
     }
 
     /**
-     * @return the currently registered {@link com.sun.faces.application.view.ViewHandlingStrategy}
-     *  implementations.
+     * @return the currently registered {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations.
      */
     public ViewHandlingStrategy[] getViewHandlingStrategies() {
         return strategies.clone();
     }
 
     /**
-     * Update the {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations
-     * to be applied when processing JSF requests.
+     * Update the {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations to be applied when processing
+     * JSF requests.
+     * 
      * @param stratagies the new view handling strategies
      */
     public synchronized void setViewHandlingStrategies(ViewHandlingStrategy[] stratagies) {

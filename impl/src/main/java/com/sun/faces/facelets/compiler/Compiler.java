@@ -51,11 +51,9 @@ public abstract class Compiler {
 
     public final static String EXPRESSION_FACTORY = "compiler.ExpressionFactory";
 
-    private static final TagLibrary EMPTY_LIBRARY = new CompositeTagLibrary(
-            new TagLibrary[0]);
+    private static final TagLibrary EMPTY_LIBRARY = new CompositeTagLibrary(new TagLibrary[0]);
 
-    private static final TagDecorator EMPTY_DECORATOR = new CompositeTagDecorator(
-            new TagDecorator[0]);
+    private static final TagDecorator EMPTY_DECORATOR = new CompositeTagDecorator(new TagDecorator[0]);
 
     private boolean validating = false;
 
@@ -69,37 +67,31 @@ public abstract class Compiler {
 
     private final Map features = new HashMap();
 
-
     /**
      * 
      */
     public Compiler() {
-        
+
     }
 
-    public final FaceletHandler compile(URL src, String alias)
-    throws IOException {
-        //if (!this.initialized)
-        //    this.initialize();
+    public final FaceletHandler compile(URL src, String alias) throws IOException {
+        // if (!this.initialized)
+        // this.initialize();
         return this.doCompile(src, alias);
     }
 
-    public final FaceletHandler metadataCompile(URL src, String alias)
-    throws IOException {
+    public final FaceletHandler metadataCompile(URL src, String alias) throws IOException {
 
         return this.doMetadataCompile(src, alias);
     }
 
-    protected abstract FaceletHandler doMetadataCompile(URL src, String alias)
-    throws IOException;
+    protected abstract FaceletHandler doMetadataCompile(URL src, String alias) throws IOException;
 
-    protected abstract FaceletHandler doCompile(URL src, String alias)
-    throws IOException;
+    protected abstract FaceletHandler doCompile(URL src, String alias) throws IOException;
 
     public final TagDecorator createTagDecorator() {
         if (this.decorators.size() > 0) {
-            return new CompositeTagDecorator((TagDecorator[]) this.decorators
-                    .toArray(new TagDecorator[this.decorators.size()]));
+            return new CompositeTagDecorator((TagDecorator[]) this.decorators.toArray(new TagDecorator[this.decorators.size()]));
         }
         return EMPTY_DECORATOR;
     }
@@ -116,13 +108,11 @@ public abstract class Compiler {
         el = (ExpressionFactory) this.featureInstance(EXPRESSION_FACTORY);
         if (el == null) {
             try {
-                el = FacesContext.getCurrentInstance().getApplication()
-                        .getExpressionFactory();
+                el = FacesContext.getCurrentInstance().getApplication().getExpressionFactory();
                 if (el == null) {
-                	if (log.isLoggable(Level.WARNING)) {
-	                    log.warning("No default ExpressionFactory from Faces Implementation, attempting to load from Feature["
-	                                + EXPRESSION_FACTORY + "]");
-                	}
+                    if (log.isLoggable(Level.WARNING)) {
+                        log.warning("No default ExpressionFactory from Faces Implementation, attempting to load from Feature[" + EXPRESSION_FACTORY + "]");
+                    }
                 }
             } catch (Exception e) {
                 if (log.isLoggable(Level.FINEST)) {
@@ -143,8 +133,7 @@ public abstract class Compiler {
             try {
                 return ReflectionUtil.forName(type).newInstance();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException t) {
-                throw new FaceletException("Could not instantiate feature["
-                        + name + "]: " + type);
+                throw new FaceletException("Could not instantiate feature[" + name + "]: " + type);
             }
         }
         return null;
@@ -152,8 +141,7 @@ public abstract class Compiler {
 
     public final TagLibrary createTagLibrary(CompilationMessageHolder unit) {
         if (this.libraries.size() > 0) {
-            return new CompositeTagLibrary((TagLibrary[]) this.libraries
-                    .toArray(new TagLibrary[this.libraries.size()]), unit);
+            return new CompositeTagLibrary((TagLibrary[]) this.libraries.toArray(new TagLibrary[this.libraries.size()]), unit);
         }
         return EMPTY_LIBRARY;
     }

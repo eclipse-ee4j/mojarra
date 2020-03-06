@@ -22,11 +22,11 @@ import jakarta.faces.component.search.SearchExpressionHint;
 import jakarta.faces.component.search.SearchKeywordResolver;
 
 public abstract class AbstractSearchKeywordResolverImpl extends SearchKeywordResolver {
-    
-    protected <T> T closest(Class<T> type, UIComponent base)  {
+
+    protected <T> T closest(Class<T> type, UIComponent base) {
         UIComponent parent = base.getParent();
 
-        while (parent != null)  {
+        while (parent != null) {
             if (type.isAssignableFrom(parent.getClass())) {
                 return (T) parent;
             }

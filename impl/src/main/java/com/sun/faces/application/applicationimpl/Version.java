@@ -39,24 +39,23 @@ import com.sun.faces.cdi.CdiExtension;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 
-
 public class Version {
 
     private Boolean isJsf23;
-    
+
     /**
      * Are we running in JSF 2.3
      * 
      * @return true if we are, false otherwise.
      */
     public boolean isJsf23() {
-        
+
         if (isJsf23 == null) {
-            
+
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            
+
             BeanManager beanManager = getCdiBeanManager(facesContext);
-            
+
             if (beanManager == null) {
                 // TODO: use version enum and >=
                 if (getFacesConfigXmlVersion(facesContext).equals("2.3") || getWebXmlVersion(facesContext).equals("4.0")) {
@@ -66,9 +65,9 @@ public class Version {
             } else {
                 isJsf23 = getBeanReference(beanManager, CdiExtension.class).isAddBeansForJSFImplicitObjects();
             }
-            
+
         }
-        
+
         return isJsf23;
     }
 
@@ -104,8 +103,6 @@ public class Version {
         }
         return result;
     }
-
-  
 
     public class JavaeeNamespaceContext implements NamespaceContext {
 

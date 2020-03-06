@@ -25,22 +25,20 @@ import jakarta.faces.view.facelets.FaceletContext;
 import java.io.IOException;
 
 final class UILiteralTextHandler extends AbstractUIHandler {
-    
+
     protected final String txtString;
-    
+
     public UILiteralTextHandler(String txtString) {
         this.txtString = txtString;
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
             UIComponent c = new UILiteralText(this.txtString);
             String uid;
             UIComponent ancestorNamingContainer = parent.getNamingContainer();
-            if (null != ancestorNamingContainer &&
-                    ancestorNamingContainer instanceof UniqueIdVendor) {
+            if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                 uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), null);
             } else {
                 uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId();

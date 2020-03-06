@@ -22,8 +22,9 @@ import java.util.Collection;
 import jakarta.servlet.ServletContext;
 
 /**
- * <p> Classes that implement this interface return zero or more
- * <code>URL</code>s which refer to application configuration resources.
+ * <p>
+ * Classes that implement this interface return zero or more <code>URL</code>s which refer to application configuration
+ * resources.
  * </p>
  *
  * @see FacesConfigResourceProvider
@@ -34,14 +35,12 @@ public interface ConfigurationResourceProvider {
     /**
      * @param context the <code>ServletContext</code> for this application
      *
-     * @return a List zero or more <code>URL</code> instances representing
-     *         application configuration resources
+     * @return a List zero or more <code>URL</code> instances representing application configuration resources
      */
     public Collection<URI> getResources(ServletContext context);
-    
+
     /**
-     * Parameter to force the XML validation of the JSF configuration files
-     * returned by getResources.
+     * Parameter to force the XML validation of the JSF configuration files returned by getResources.
      * 
      * @param uri the URI for which Mojarra asks if validation is needed. Should always be one as returned by getResources
      * @param globalValidateXml the global (application level) value of the validateXml parameter

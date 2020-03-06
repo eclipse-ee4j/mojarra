@@ -26,8 +26,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The RequestMapProducer is the CDI producer that allows injection of the request
- * map using @Inject.
+ * The RequestMapProducer is the CDI producer that allows injection of the request map using @Inject.
  * </p>
  *
  * @since 2.3
@@ -39,17 +38,11 @@ public class RequestMapProducer extends CdiProducer<Map<String, Object>> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public RequestMapProducer() {
-        super.name("requestScope")
-             .scope(RequestScoped.class)
-             .qualifiers(new RequestMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, Object.class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestMap());
+        super.name("requestScope").scope(RequestScoped.class).qualifiers(new RequestMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestMap());
     }
-    
+
 }

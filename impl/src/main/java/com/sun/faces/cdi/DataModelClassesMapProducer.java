@@ -25,9 +25,9 @@ import jakarta.faces.model.DataModel;
 
 /**
  * <p class="changed_added_2_3">
- * The DataModelClassesMapProducer is the CDI producer that allows UIData, UIRepeat and
- * possible other components that need a DataModel wrapper for a given type to obtain
- * a Map of types to DataModel implementations capable of wrapping that type.
+ * The DataModelClassesMapProducer is the CDI producer that allows UIData, UIRepeat and possible other components that
+ * need a DataModel wrapper for a given type to obtain a Map of types to DataModel implementations capable of wrapping
+ * that type.
  * </p>
  * 
  * <p>
@@ -43,20 +43,10 @@ public class DataModelClassesMapProducer extends CdiProducer<Map<Class<?>, Class
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public DataModelClassesMapProducer() {
-        super.name("comSunFacesDataModelClassesMap")
-             .scope(ApplicationScoped.class)
-             .qualifiers(new DataModelClassesAnnotationLiteral())
-             .types(
-                 Map.class, 
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> CDI
-                 .current()
-                 .select(CdiExtension.class)
-                 .get()
-                 .getForClassToDataModelClass());
+        super.name("comSunFacesDataModelClassesMap").scope(ApplicationScoped.class).qualifiers(new DataModelClassesAnnotationLiteral())
+                .types(Map.class, Object.class).beanClass(Map.class).create(e -> CDI.current().select(CdiExtension.class).get().getForClassToDataModelClass());
     }
 
 }

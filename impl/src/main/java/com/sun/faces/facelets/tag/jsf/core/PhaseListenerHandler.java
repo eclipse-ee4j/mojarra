@@ -37,8 +37,7 @@ import java.util.List;
 
 public class PhaseListenerHandler extends TagHandlerImpl {
 
-    private final static class LazyPhaseListener implements PhaseListener,
-                                                            Serializable {
+    private final static class LazyPhaseListener implements PhaseListener, Serializable {
 
         private static final long serialVersionUID = -6496143057319213401L;
 
@@ -58,16 +57,13 @@ public class PhaseListenerHandler extends TagHandlerImpl {
                 return null;
             }
             if (this.binding != null) {
-                instance = (PhaseListener) binding.getValue(faces
-                      .getELContext());
+                instance = (PhaseListener) binding.getValue(faces.getELContext());
             }
             if (instance == null && type != null) {
                 try {
-                    instance = (PhaseListener) ReflectionUtil.forName(
-                          this.type).newInstance();
+                    instance = (PhaseListener) ReflectionUtil.forName(this.type).newInstance();
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                    throw new AbortProcessingException(
-                          "Couldn't Lazily instantiate PhaseListener", e);
+                    throw new AbortProcessingException("Couldn't Lazily instantiate PhaseListener", e);
                 }
                 if (this.binding != null) {
                     binding.setValue(faces.getELContext(), instance);
@@ -110,9 +106,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
             LazyPhaseListener that = (LazyPhaseListener) o;
 
-            if (binding != null
-                ? !binding.equals(that.binding)
-                : that.binding != null) {
+            if (binding != null ? !binding.equals(that.binding) : that.binding != null) {
                 return false;
             }
             if (type != null ? !type.equals(that.type) : that.type != null) {
@@ -161,8 +155,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-          throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (ComponentHandler.isNew(parent)) {
             UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
             if (root == null) {
@@ -186,8 +179,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
         try {
             ReflectionUtil.forName(type);
         } catch (ClassNotFoundException e) {
-            throw new TagAttributeException(typeAttribute,
-                "Couldn't qualify ActionListener", e);
+            throw new TagAttributeException(typeAttribute, "Couldn't qualify ActionListener", e);
         }
     }
 

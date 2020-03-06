@@ -26,14 +26,15 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 
 /**
- * <p class="changed_added_2_0">When this annotation, along with {@link
- * ManagedBean} is found on a class, the runtime must act as if a
- * <code>&lt;managed-bean-scope&gt;none&lt;managed-bean-scope&gt;</code> element
- * was declared for the corresponding managed bean.</p>
+ * <p class="changed_added_2_0">
+ * When this annotation, along with {@link ManagedBean} is found on a class, the runtime must act as if a
+ * <code>&lt;managed-bean-scope&gt;none&lt;managed-bean-scope&gt;</code> element was declared for the corresponding
+ * managed bean.
+ * </p>
  *
  * @since 2.0
- * @deprecated This has been replaced by {@code jakarta.enterprise.context.Dependent}, 
- * which is a CDI build-in scope with approximately similar semantics.
+ * @deprecated This has been replaced by {@code jakarta.enterprise.context.Dependent}, which is a CDI build-in scope
+ * with approximately similar semantics.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

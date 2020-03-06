@@ -24,23 +24,22 @@ import jakarta.faces.flow.builder.ViewBuilder;
 import java.util.List;
 
 public class ViewBuilderImpl extends ViewBuilder {
-    
+
     private FlowBuilderImpl root;
     private ViewNodeImpl viewNode;
 
     public ViewBuilderImpl(FlowBuilderImpl root, String viewNodeId, String vdlDocumentId) {
         this.root = root;
-        
+
         List<ViewNode> viewNodes = root._getFlow()._getViews();
         viewNode = new ViewNodeImpl(viewNodeId, vdlDocumentId);
         viewNodes.add(viewNode);
     }
-    
+
     @Override
     public ViewBuilder markAsStartNode() {
         root._getFlow().setStartNodeId(viewNode.getId());
         return this;
     }
-    
-    
+
 }

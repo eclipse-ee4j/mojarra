@@ -23,15 +23,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p class="changed_added_2_2">The presence of this annotation on a
- * class automatically registers the class with the runtime as a {@link
- * ResourceResolver}.</p>
-
- */ 
+ * <p class="changed_added_2_2">
+ * The presence of this annotation on a class automatically registers the class with the runtime as a
+ * {@link ResourceResolver}.
+ * </p>
+ * 
+ */
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
 public @interface FaceletsResourceResolver {
-    
+
 }

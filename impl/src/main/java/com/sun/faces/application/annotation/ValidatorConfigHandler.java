@@ -30,25 +30,21 @@ import java.util.HashMap;
 
 /**
  * <p>
- * <code>ConfigAnnotationHandler</code> for {@link FacesValidator} annotated
- * classes.
+ * <code>ConfigAnnotationHandler</code> for {@link FacesValidator} annotated classes.
  * </p>
  */
 public class ValidatorConfigHandler implements ConfigAnnotationHandler {
 
     private static final Collection<Class<? extends Annotation>> HANDLES;
     static {
-        Collection<Class<? extends Annotation>> handles =
-              new ArrayList<>(1);
+        Collection<Class<? extends Annotation>> handles = new ArrayList<>(1);
         handles.add(FacesValidator.class);
         HANDLES = Collections.unmodifiableCollection(handles);
     }
 
-    private Map<ValidatorInfo,String> validators;
-
+    private Map<ValidatorInfo, String> validators;
 
     // ------------------------------------- Methods from ComponentConfigHandler
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#getHandledAnnotations()
@@ -59,7 +55,6 @@ public class ValidatorConfigHandler implements ConfigAnnotationHandler {
         return HANDLES;
 
     }
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#collect(Class, java.lang.annotation.Annotation)
@@ -81,7 +76,6 @@ public class ValidatorConfigHandler implements ConfigAnnotationHandler {
 
     }
 
-
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)
      */
@@ -90,7 +84,7 @@ public class ValidatorConfigHandler implements ConfigAnnotationHandler {
 
         if (validators != null) {
             Application app = ctx.getApplication();
-            for (Map.Entry<ValidatorInfo,String> entry : validators.entrySet()) {
+            for (Map.Entry<ValidatorInfo, String> entry : validators.entrySet()) {
                 app.addValidator(entry.getKey().validatorId, entry.getValue());
                 if (entry.getKey().isDefault) {
                     app.addDefaultValidatorId(entry.getKey().validatorId);
@@ -100,9 +94,7 @@ public class ValidatorConfigHandler implements ConfigAnnotationHandler {
 
     }
 
-
     // ---------------------------------------------------------- Nested Classes
-
 
     private static class ValidatorInfo {
 

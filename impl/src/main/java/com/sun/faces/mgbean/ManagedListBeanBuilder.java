@@ -21,16 +21,15 @@ import java.util.List;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p>This builder builds beans that are defined as <code>List</code>
- * instances.</p>
+ * <p>
+ * This builder builds beans that are defined as <code>List</code> instances.
+ * </p>
  */
 public class ManagedListBeanBuilder extends BeanBuilder {
 
     private List<Expression> values;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ManagedListBeanBuilder(ManagedBeanInfo beanInfo) {
 
@@ -38,10 +37,8 @@ public class ManagedListBeanBuilder extends BeanBuilder {
 
     }
 
-
     // ------------------------------------------------ Methods from BeanBuilder
 
-    
     @Override
     void bake() {
 
@@ -53,7 +50,6 @@ public class ManagedListBeanBuilder extends BeanBuilder {
         }
 
     }
-
 
     @Override
     protected void buildBean(Object bean, FacesContext context) {

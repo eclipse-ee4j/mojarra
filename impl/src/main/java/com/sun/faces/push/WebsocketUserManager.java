@@ -48,7 +48,8 @@ public class WebsocketUserManager {
     private static final int ESTIMATED_USER_CHANNELS_PER_APPLICATION = 1;
     private static final int ESTIMATED_USER_CHANNELS_PER_SESSION = 1;
     private static final int ESTIMATED_SESSIONS_PER_USER = 2;
-    private static final int ESTIMATED_CHANNELS_IDS_PER_USER = ESTIMATED_SESSIONS_PER_USER * ESTIMATED_USER_CHANNELS_PER_APPLICATION * ESTIMATED_USER_CHANNELS_PER_SESSION;
+    private static final int ESTIMATED_CHANNELS_IDS_PER_USER = ESTIMATED_SESSIONS_PER_USER * ESTIMATED_USER_CHANNELS_PER_APPLICATION
+            * ESTIMATED_USER_CHANNELS_PER_SESSION;
 
     // Properties -----------------------------------------------------------------------------------------------------
 
@@ -59,6 +60,7 @@ public class WebsocketUserManager {
 
     /**
      * Register application user based on given user and session based user ID.
+     * 
      * @param user The user.
      * @param userId The session based user ID.
      */
@@ -74,6 +76,7 @@ public class WebsocketUserManager {
 
     /**
      * Add user channel ID associated with given session based user ID and channel name.
+     * 
      * @param userId The session based user ID.
      * @param channel The channel name.
      * @param channelId The channel identifier.
@@ -94,6 +97,7 @@ public class WebsocketUserManager {
 
     /**
      * Resolve the user associated with given channel name and ID.
+     * 
      * @param channel The channel name.
      * @param channelId The channel identifier.
      * @return The user associated with given channel name and ID.
@@ -112,6 +116,7 @@ public class WebsocketUserManager {
 
     /**
      * Resolve the user-specific channel IDs associated with given user and channel name.
+     * 
      * @param user The user.
      * @param channel The channel name.
      * @return The user-specific channel IDs associated with given user and channel name.
@@ -131,6 +136,7 @@ public class WebsocketUserManager {
 
     /**
      * Deregister application user associated with given user and session based user ID.
+     * 
      * @param user The user.
      * @param userId The session based user ID.
      */

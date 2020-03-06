@@ -39,34 +39,19 @@ public class IterationStatus implements Serializable {
     private final Object current;
     private final int iterationCount;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Constructor used for ui:repeat.
      */
-    public IterationStatus(boolean first,
-                           boolean last,
-                           int index,
-                           Integer begin,
-                           Integer end,
-                           Integer step) {
+    public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end, Integer step) {
         this(first, last, index, begin, end, step, null, 0);
     }
-
 
     /**
      * Constructor used for c:forEach varStatus
      */
-    public IterationStatus(boolean first,
-                           boolean last,
-                           int index,
-                           Integer begin,
-                           Integer end,
-                           Integer step,
-                           Object current,
-                           int iterationCount) {
+    public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end, Integer step, Object current, int iterationCount) {
         this.index = index;
         this.begin = begin;
         this.end = end;
@@ -80,9 +65,7 @@ public class IterationStatus implements Serializable {
         this.iterationCount = iterationCount;
     }
 
-
     // ---------------------------------------------- Methods from LoopTagStatus
-
 
     public boolean isFirst() {
         return this.first;
@@ -118,7 +101,6 @@ public class IterationStatus implements Serializable {
 
     // ---------------------------------------------------------- Public Methods
 
-
     public boolean isEven() {
         return even;
     }
@@ -129,16 +111,7 @@ public class IterationStatus implements Serializable {
 
     @Override
     public String toString() {
-        return "IterationStatus{" +
-               "index=" + index +
-               ", first=" + first +
-               ", last=" + last +
-               ", begin=" + begin +
-               ", end=" + end +
-               ", step=" + step +
-               ", even=" + even +
-               ", current=" + current +
-               ", iterationCount=" + iterationCount +
-               '}';
+        return "IterationStatus{" + "index=" + index + ", first=" + first + ", last=" + last + ", begin=" + begin + ", end=" + end + ", step=" + step
+                + ", even=" + even + ", current=" + current + ", iterationCount=" + iterationCount + '}';
     }
 }

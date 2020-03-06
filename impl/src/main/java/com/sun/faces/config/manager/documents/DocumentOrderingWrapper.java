@@ -220,10 +220,8 @@ public class DocumentOrderingWrapper {
     /**
      * Sort the provided array of <code>Document</code>s per the order specified in the List represented by absoluteOrder.
      * 
-     * @param documents
-     *            Documents to sort
-     * @param absoluteOrder
-     *            the absolute order as specified in the /WEB-INF/faces-config.xml
+     * @param documents Documents to sort
+     * @param absoluteOrder the absolute order as specified in the /WEB-INF/faces-config.xml
      * @return an array of DocumentOrderingWrappers that may be smaller than the input array of wrappers.
      */
     public static DocumentOrderingWrapper[] sort(DocumentOrderingWrapper[] documents, List<String> absoluteOrder) {
@@ -328,8 +326,8 @@ public class DocumentOrderingWrapper {
                 }
                 if (documents[i].isBefore(documentId)) {
                     if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.log(Level.FINE, "done: " + documentId + " should be after " + documents[i].getDocumentId()
-                                + " given that it should be before: " + Arrays.asList(documents[i].getBeforeIds()));
+                        LOGGER.log(Level.FINE, "done: " + documentId + " should be after " + documents[i].getDocumentId() + " given that it should be before: "
+                                + Arrays.asList(documents[i].getBeforeIds()));
                     }
 
                     // we have a document that is out of order, and his index is ii, he belongs at index i, and all the documents in between
@@ -524,10 +522,8 @@ public class DocumentOrderingWrapper {
     /**
      * Simple helper method around <code>Arrays.binarySearch()</code>.
      * 
-     * @param ids
-     *            an array of IDs
-     * @param id
-     *            the ID to search for
+     * @param ids an array of IDs
+     * @param id the ID to search for
      * @return true if <code>ids</code> contains <code>id</code>
      */
     private static boolean search(String[] ids, String id) {
@@ -603,8 +599,7 @@ public class DocumentOrderingWrapper {
 
         for (String id : source) {
             if (search(searchTarget, id)) {
-                String msg = MessageFormat.format("Document {0} is specified to come before and after {1}.",
-                        documentInfo.getDocument().getDocumentURI(), id);
+                String msg = MessageFormat.format("Document {0} is specified to come before and after {1}.", documentInfo.getDocument().getDocumentURI(), id);
                 throw new ConfigurationException(msg);
             }
         }

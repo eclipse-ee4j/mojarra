@@ -16,7 +16,6 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
 import jakarta.servlet.jsp.JspException;
@@ -29,32 +28,31 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.webapp.UIComponentClassicTagBase;
 import jakarta.faces.webapp.UIComponentELTag;
 
-
 /**
- * <p>Tag implementation that adds an attribute with a specified name
- * and String value to the component whose tag it is nested inside,
- * if the component does not already contain an attribute with the
- * same name.  This tag creates no output to the page currently
- * being created.</p>
+ * <p>
+ * Tag implementation that adds an attribute with a specified name and String value to the component whose tag it is
+ * nested inside, if the component does not already contain an attribute with the same name. This tag creates no output
+ * to the page currently being created.
+ * </p>
  *
  */
 
 public class AttributeTag extends TagSupport {
 
-
     // ------------------------------------------------------------- Attributes
-
 
     private static final long serialVersionUID = -4058910110356397536L;
 
     /**
-     * <p>The name of the attribute to be created, if not already present.
+     * <p>
+     * The name of the attribute to be created, if not already present.
      */
     private ValueExpression name = null;
 
-
     /**
-     * <p>Set the attribute name.</p>
+     * <p>
+     * Set the attribute name.
+     * </p>
      *
      * @param name The new attribute name
      */
@@ -64,16 +62,17 @@ public class AttributeTag extends TagSupport {
 
     }
 
-
     /**
-     * <p>The value to be associated with this attribute, if it is created.</p>
+     * <p>
+     * The value to be associated with this attribute, if it is created.
+     * </p>
      */
     private ValueExpression value = null;
 
-
-
     /**
-     * <p>Set the attribute value.</p>
+     * <p>
+     * Set the attribute value.
+     * </p>
      *
      * @param value The new attribute value
      */
@@ -83,16 +82,14 @@ public class AttributeTag extends TagSupport {
 
     }
 
-
     // -------------------------------------------------------- Methods from Tag
 
-
     /**
-     * <p>Register the specified attribute name and value with the
-     * {@link UIComponent} instance associated with our most immediately
-     * surrounding {@link UIComponentClassicTagBase} instance, if this
-     * {@link UIComponent} does not already have a value for the
-     * specified attribute name.</p>
+     * <p>
+     * Register the specified attribute name and value with the {@link UIComponent} instance associated with our most
+     * immediately surrounding {@link UIComponentClassicTagBase} instance, if this {@link UIComponent} does not already have
+     * a value for the specified attribute name.
+     * </p>
      *
      * @exception JspException if a JSP error occurs
      */
@@ -100,20 +97,17 @@ public class AttributeTag extends TagSupport {
     public int doStartTag() throws JspException {
 
         // Locate our parent UIComponentTagBase
-        UIComponentClassicTagBase tag =
-            UIComponentELTag.getParentUIComponentClassicTagBase(pageContext);
+        UIComponentClassicTagBase tag = UIComponentELTag.getParentUIComponentClassicTagBase(pageContext);
         if (tag == null) {
-        	String message = MessageUtils.getExceptionMessageString
-        	(MessageUtils.NOT_NESTED_IN_UICOMPONENT_TAG_ERROR_MESSAGE_ID);
-        	throw new JspException(message);
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NOT_NESTED_IN_UICOMPONENT_TAG_ERROR_MESSAGE_ID);
+            throw new JspException(message);
         }
-        
+
         // Add this attribute if it is not already defined
         UIComponent component = tag.getComponentInstance();
         if (component == null) {
-        	String message = MessageUtils.getExceptionMessageString
-        	(MessageUtils.NO_COMPONENT_ASSOCIATED_WITH_UICOMPONENT_TAG_MESSAGE_ID);
-        	throw new JspException(message);
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NO_COMPONENT_ASSOCIATED_WITH_UICOMPONENT_TAG_MESSAGE_ID);
+            throw new JspException(message);
         }
 
         FacesContext context = FacesContext.getCurrentInstance();
@@ -121,25 +115,24 @@ public class AttributeTag extends TagSupport {
 
         String nameVal = null;
         Object valueVal = null;
-	boolean isLiteral = false;
+        boolean isLiteral = false;
 
         if (name != null) {
             nameVal = (String) name.getValue(elContext);
         }
 
         if (value != null) {
-	    if (isLiteral = value.isLiteralText()) {
-		valueVal = value.getValue(elContext);
-	    }
+            if (isLiteral = value.isLiteralText()) {
+                valueVal = value.getValue(elContext);
+            }
         }
-	
+
         if (component.getAttributes().get(nameVal) == null) {
-	    if (isLiteral) {
-		component.getAttributes().put(nameVal, valueVal);
-	    }
-	    else {
-		component.setValueExpression(nameVal, value);
-	    }
+            if (isLiteral) {
+                component.getAttributes().put(nameVal, valueVal);
+            } else {
+                component.setValueExpression(nameVal, value);
+            }
         }
         return (SKIP_BODY);
 
@@ -147,13 +140,13 @@ public class AttributeTag extends TagSupport {
 
     @Override
     public int doEndTag() throws JspException {
-	this.release();
-	return (EVAL_PAGE);
+        this.release();
+        return (EVAL_PAGE);
     }
 
-
     /**
-     * <p>Release references to any acquired resources.
+     * <p>
+     * Release references to any acquired resources.
      */
     @Override
     public void release() {

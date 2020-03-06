@@ -33,7 +33,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <p>Base class for all <code>ValidatorTag<code>s.</p>
+ * <p>
+ * Base class for all <code>ValidatorTag<code>s.
+ * </p>
  */
 public class AbstractValidatorTag extends ValidatorELTag {
 
@@ -42,26 +44,27 @@ public class AbstractValidatorTag extends ValidatorELTag {
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
     /**
-     * <p>The {@link jakarta.el.ValueExpression} that evaluates to an object that
-     * implements {@link jakarta.faces.convert.Converter}.</p>
+     * <p>
+     * The {@link jakarta.el.ValueExpression} that evaluates to an object that implements
+     * {@link jakarta.faces.convert.Converter}.
+     * </p>
      */
     protected ValueExpression binding = null;
 
-
     /**
-     * <p>The identifier of the {@link jakarta.faces.validator.Validator}
-     * instance to be created.</p>
+     * <p>
+     * The identifier of the {@link jakarta.faces.validator.Validator} instance to be created.
+     * </p>
      */
-    protected ValueExpression validatorId = null;    
-
+    protected ValueExpression validatorId = null;
 
     // ---------------------------------------------------------- Public Methods
 
-
     /**
-     * <p>Set the expression that will be used to create a
-     * {@link jakarta.el.ValueExpression} that references a backing bean property
-     * of the {@link jakarta.faces.validator.Validator} instance to be created.</p>
+     * <p>
+     * Set the expression that will be used to create a {@link jakarta.el.ValueExpression} that references a backing bean
+     * property of the {@link jakarta.faces.validator.Validator} instance to be created.
+     * </p>
      *
      * @param binding The new expression
      */
@@ -71,13 +74,11 @@ public class AbstractValidatorTag extends ValidatorELTag {
 
     } // END setBinding
 
-
     /**
-     * <p>Set the identifer of the {@link jakarta.faces.validator.Validator}
-     * instance to be created.
+     * <p>
+     * Set the identifer of the {@link jakarta.faces.validator.Validator} instance to be created.
      *
-     * @param validatorId The identifier of the converter instance to be
-     * created.
+     * @param validatorId The identifier of the converter instance to be created.
      */
     public void setValidatorId(ValueExpression validatorId) {
 
@@ -85,27 +86,20 @@ public class AbstractValidatorTag extends ValidatorELTag {
 
     } // END setValidatorId
 
-
     // --------------------------------------------- Methods from ValdiatorELTag
-
 
     @Override
     protected Validator createValidator() throws JspException {
 
         try {
-            return createValidator(validatorId,
-                                   binding,
-                                   FacesContext.getCurrentInstance());
+            return createValidator(validatorId, binding, FacesContext.getCurrentInstance());
         } catch (FacesException fe) {
             throw new JspException(fe.getCause());
         }
 
     }
 
-
-    protected static Validator createValidator(ValueExpression validatorId,
-                                               ValueExpression binding,
-                                               FacesContext facesContext) {
+    protected static Validator createValidator(ValueExpression validatorId, ValueExpression binding, FacesContext facesContext) {
 
         ELContext elContext = facesContext.getELContext();
         Validator validator = null;
@@ -123,15 +117,13 @@ public class AbstractValidatorTag extends ValidatorELTag {
         }
 
         // If "validatorId" is set, use it to create the validator
-        // instance.  If "validatorId" and "binding" are both set, store the
+        // instance. If "validatorId" and "binding" are both set, store the
         // validator instance in the value of the property represented by
         // the ValueExpression 'binding'.
         if (validatorId != null) {
             try {
-                String validatorIdVal = (String)
-                     validatorId.getValue(elContext);
-                validator = facesContext.getApplication()
-                     .createValidator(validatorIdVal);
+                String validatorIdVal = (String) validatorId.getValue(elContext);
+                validator = facesContext.getApplication().createValidator(validatorIdVal);
                 if (validator != null && binding != null) {
                     binding.setValue(elContext, validator);
                 }
@@ -142,11 +134,8 @@ public class AbstractValidatorTag extends ValidatorELTag {
 
         if (validator == null) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING,
-                     MessageUtils.getExceptionMessageString(
-                          MessageUtils.CANNOT_VALIDATE_ID,
-                          validatorId != null ? validatorId.getExpressionString() : "",
-                          binding != null ? binding.getExpressionString() : ""));
+                LOGGER.log(Level.WARNING, MessageUtils.getExceptionMessageString(MessageUtils.CANNOT_VALIDATE_ID,
+                        validatorId != null ? validatorId.getExpressionString() : "", binding != null ? binding.getExpressionString() : ""));
             }
         }
 

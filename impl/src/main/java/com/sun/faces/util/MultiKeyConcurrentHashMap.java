@@ -22,47 +22,39 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * This code is based off the source for ConcurrentHashMap from JDK 5 with the
- * ability of mapping multiple keys to a single value.
+ * This code is based off the source for ConcurrentHashMap from JDK 5 with the ability of mapping multiple keys to a
+ * single value.
  *
  * <ul>
- *   <li>
- *     This Map implemenation does not support iteration through keys
- *     and/or values.
- *   <li>
- *   <li>
- *     This Map implementation is <em>NOT</em> Serialziable.
- *   <li>
- *   <li>
- *     This cannot be cast as a general Map implementation.
- *   </li>
+ * <li>This Map implemenation does not support iteration through keys and/or values.
+ * <li>
+ * <li>This Map implementation is <em>NOT</em> Serialziable.
+ * <li>
+ * <li>This cannot be cast as a general Map implementation.</li>
  * </ul>
  */
 public class MultiKeyConcurrentHashMap<K, V> {
 
     /*
-     * The basic strategy is to subdivide the table among Segments,
-     * each of which itself is a concurrently readable hash table.
+     * The basic strategy is to subdivide the table among Segments, each of which itself is a concurrently readable hash
+     * table.
      */
 
     /* ---------------- Constants -------------- */
 
     /**
-     * The default initial number of table slots for this table. Used when not
-     * otherwise specified in constructor.
+     * The default initial number of table slots for this table. Used when not otherwise specified in constructor.
      */
     static int DEFAULT_INITIAL_CAPACITY = 16;
 
     /**
-     * The maximum capacity, used if a higher value is implicitly specified by
-     * either of the constructors with arguments.  MUST be a power of two <=
-     * 1<<30 to ensure that entries are indexible using ints.
+     * The maximum capacity, used if a higher value is implicitly specified by either of the constructors with arguments.
+     * MUST be a power of two <= 1<<30 to ensure that entries are indexible using ints.
      */
     static final int MAXIMUM_CAPACITY = 1 << 30;
 
     /**
-     * The default load factor for this table.  Used when not otherwise
-     * specified in constructor.
+     * The default load factor for this table. Used when not otherwise specified in constructor.
      */
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
@@ -72,24 +64,21 @@ public class MultiKeyConcurrentHashMap<K, V> {
     static final int DEFAULT_SEGMENTS = 16;
 
     /**
-     * The maximum number of segments to allow; used to bound constructor
-     * arguments.
+     * The maximum number of segments to allow; used to bound constructor arguments.
      */
     static final int MAX_SEGMENTS = 1 << 16; // slightly conservative
 
     /**
-     * Number of unsynchronized retries in size and containsValue methods before
-     * resorting to locking. This is used to avoid unbounded retries if tables
-     * undergo continuous modification which would make it impossible to obtain
-     * an accurate result.
+     * Number of unsynchronized retries in size and containsValue methods before resorting to locking. This is used to avoid
+     * unbounded retries if tables undergo continuous modification which would make it impossible to obtain an accurate
+     * result.
      */
     static final int RETRIES_BEFORE_LOCK = 2;
 
     /* ---------------- Fields -------------- */
 
     /**
-     * Mask value for indexing into segments. The upper bits of a key's hash
-     * code are used to choose the segment.
+     * Mask value for indexing into segments. The upper bits of a key's hash code are used to choose the segment.
      */
     final int segmentMask;
 
@@ -103,12 +92,10 @@ public class MultiKeyConcurrentHashMap<K, V> {
      */
     final Segment[] segments;
 
-
     /* ---------------- Small Utilities -------------- */
 
     /**
-     * Returns a hash code for non-null Objects. Uses the same hash code
-     * spreader as most other java.util hash tables.
+     * Returns a hash code for non-null Objects. Uses the same hash code spreader as most other java.util hash tables.
      *
      * @return the hash code
      */
@@ -134,7 +121,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
         return h;
     }
 
-
     /**
      * Returns the segment that should be used for key with given hash
      *
@@ -143,22 +129,19 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * @return the segment
      */
     final Segment<K, V> segmentFor(int hash) {
-        //noinspection unchecked
+        // noinspection unchecked
         return (Segment<K, V>) segments[(hash >>> segmentShift) & segmentMask];
     }
 
     /* ---------------- Inner Classes -------------- */
 
     /**
-     * ConcurrentHashMap list entry. Note that this is never exported out as a
-     * user-visible Map.Entry.
+     * ConcurrentHashMap list entry. Note that this is never exported out as a user-visible Map.Entry.
      * <p/>
-     * Because the value field is volatile, not final, it is legal wrt the Java
-     * Memory Model for an unsynchronized reader to see null instead of initial
-     * value when read via a data race.  Although a reordering leading to this
-     * is not likely to ever actually occur, the Segment.readValueUnderLock
-     * method is used as a backup in case a null (pre-initialized) value is ever
-     * seen in an unsynchronized access method.
+     * Because the value field is volatile, not final, it is legal wrt the Java Memory Model for an unsynchronized reader to
+     * see null instead of initial value when read via a data race. Although a reordering leading to this is not likely to
+     * ever actually occur, the Segment.readValueUnderLock method is used as a backup in case a null (pre-initialized) value
+     * is ever seen in an unsynchronized access method.
      */
     static final class HashEntry<K, V> {
         final K key1;
@@ -169,13 +152,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
         volatile V value;
         final HashEntry<K, V> next;
 
-        HashEntry(K key1,
-                  K key2,
-                  K key3,
-                  K key4,
-                  int hash,
-                  HashEntry<K, V> next,
-                  V value) {
+        HashEntry(K key1, K key2, K key3, K key4, int hash, HashEntry<K, V> next, V value) {
             this.key1 = key1;
             this.key2 = key2;
             this.key3 = key3;
@@ -187,47 +164,33 @@ public class MultiKeyConcurrentHashMap<K, V> {
     }
 
     /**
-     * Segments are specialized versions of hash tables.  This subclasses from
-     * ReentrantLock opportunistically, just to simplify some locking and avoid
-     * separate construction.
+     * Segments are specialized versions of hash tables. This subclasses from ReentrantLock opportunistically, just to
+     * simplify some locking and avoid separate construction.
      */
-    @SuppressWarnings({"serial"})
+    @SuppressWarnings({ "serial" })
     static final class Segment<K, V> extends ReentrantLock {
         /*
-         * Segments maintain a table of entry lists that are ALWAYS
-         * kept in a consistent state, so can be read without locking.
-         * Next fields of nodes are immutable (final).  All list
-         * additions are performed at the front of each bin. This
-         * makes it easy to check changes, and also fast to traverse.
-         * When nodes would otherwise be changed, new nodes are
-         * created to replace them. This works well for hash tables
-         * since the bin lists tend to be short. (The average length
-         * is less than two for the default load factor threshold.)
+         * Segments maintain a table of entry lists that are ALWAYS kept in a consistent state, so can be read without locking.
+         * Next fields of nodes are immutable (final). All list additions are performed at the front of each bin. This makes it
+         * easy to check changes, and also fast to traverse. When nodes would otherwise be changed, new nodes are created to
+         * replace them. This works well for hash tables since the bin lists tend to be short. (The average length is less than
+         * two for the default load factor threshold.)
          *
-         * Read operations can thus proceed without locking, but rely
-         * on selected uses of volatiles to ensure that completed
-         * write operations performed by other threads are
-         * noticed. For most purposes, the "count" field, tracking the
-         * number of elements, serves as that volatile variable
-         * ensuring visibility.  This is convenient because this field
-         * needs to be read in many read operations anyway:
+         * Read operations can thus proceed without locking, but rely on selected uses of volatiles to ensure that completed
+         * write operations performed by other threads are noticed. For most purposes, the "count" field, tracking the number of
+         * elements, serves as that volatile variable ensuring visibility. This is convenient because this field needs to be
+         * read in many read operations anyway:
          *
-         *   - All (unsynchronized) read operations must first read the
-         *     "count" field, and should not look at table entries if
-         *     it is 0.
+         * - All (unsynchronized) read operations must first read the "count" field, and should not look at table entries if it
+         * is 0.
          *
-         *   - All (synchronized) write operations should write to
-         *     the "count" field after structurally changing any bin.
-         *     The operations must not take any action that could even
-         *     momentarily cause a concurrent read operation to see
-         *     inconsistent data. This is made easier by the nature of
-         *     the read operations in Map. For example, no operation
-         *     can reveal that the table has grown but the threshold
-         *     has not yet been updated, so there are no atomicity
-         *     requirements for this with respect to reads.
+         * - All (synchronized) write operations should write to the "count" field after structurally changing any bin. The
+         * operations must not take any action that could even momentarily cause a concurrent read operation to see inconsistent
+         * data. This is made easier by the nature of the read operations in Map. For example, no operation can reveal that the
+         * table has grown but the threshold has not yet been updated, so there are no atomicity requirements for this with
+         * respect to reads.
          *
-         * As a guide, all critical volatile reads and writes to the
-         * count field are marked in code comments.
+         * As a guide, all critical volatile reads and writes to the count field are marked in code comments.
          */
 
         /**
@@ -236,31 +199,27 @@ public class MultiKeyConcurrentHashMap<K, V> {
         volatile int count;
 
         /**
-         * Number of updates that alter the size of the table. This is used
-         * during bulk-read methods to make sure they see a consistent snapshot:
-         * If modCounts change during a traversal of segments computing size or
-         * checking containsValue, then we might have an inconsistent view of
-         * state so (usually) must retry.
+         * Number of updates that alter the size of the table. This is used during bulk-read methods to make sure they see a
+         * consistent snapshot: If modCounts change during a traversal of segments computing size or checking containsValue,
+         * then we might have an inconsistent view of state so (usually) must retry.
          */
         int modCount;
 
         /**
-         * The table is rehashed when its size exceeds this threshold. (The
-         * value of this field is always (int)(capacity * loadFactor).)
+         * The table is rehashed when its size exceeds this threshold. (The value of this field is always (int)(capacity *
+         * loadFactor).)
          */
         int threshold;
 
         /**
-         * The per-segment table. Declared as a raw type, casted to
-         * HashEntry<K,V> on each use.
+         * The per-segment table. Declared as a raw type, casted to HashEntry<K,V> on each use.
          */
-        @SuppressWarnings({"NonSerializableFieldInSerializableClass"})
+        @SuppressWarnings({ "NonSerializableFieldInSerializableClass" })
         volatile HashEntry[] table;
 
         /**
-         * The load factor for the hash table.  Even though this value is same
-         * for all segments, it is replicated to avoid needing links to outer
-         * object.
+         * The load factor for the hash table. Even though this value is same for all segments, it is replicated to avoid
+         * needing links to outer object.
          *
          * @serial
          */
@@ -272,8 +231,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
         }
 
         /**
-         * Set table to new HashEntry array. Call only while holding lock or in
-         * constructor.
+         * Set table to new HashEntry array. Call only while holding lock or in constructor.
          */
         void setTable(HashEntry[] newTable) {
             threshold = (int) (newTable.length * loadFactor);
@@ -285,15 +243,14 @@ public class MultiKeyConcurrentHashMap<K, V> {
          */
         HashEntry<K, V> getFirst(int hash) {
             HashEntry[] tab = table;
-            //noinspection unchecked
+            // noinspection unchecked
             return (HashEntry<K, V>) tab[hash & (tab.length - 1)];
         }
 
         /**
-         * Read value field of an entry under lock. Called if value field ever
-         * appears to be null. This is possible only if a compiler happens to
-         * reorder a HashEntry initialization with its table assignment, which
-         * is legal under memory model but is not known to ever occur.
+         * Read value field of an entry under lock. Called if value field ever appears to be null. This is possible only if a
+         * compiler happens to reorder a HashEntry initialization with its table assignment, which is legal under memory model
+         * but is not known to ever occur.
          */
         V readValueUnderLock(HashEntry<K, V> e) {
             lock();
@@ -310,10 +267,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
             if (count != 0) { // read-volatile
                 HashEntry<K, V> e = getFirst(hash);
                 while (e != null) {
-                    if ((e.hash == hash && key1.equals(e.key1))
-                        && ((key2 == null && e.key2 == null) || (key2 != null && key2.equals(e.key2)))
-                        && ((key3 == null && e.key3 == null) || (key3 != null && key3.equals(e.key3)))
-                        && ((key4 == null && e.key4 == null) || (key4 != null && key4.equals(e.key4)))) {
+                    if ((e.hash == hash && key1.equals(e.key1)) && ((key2 == null && e.key2 == null) || (key2 != null && key2.equals(e.key2)))
+                            && ((key3 == null && e.key3 == null) || (key3 != null && key3.equals(e.key3)))
+                            && ((key4 == null && e.key4 == null) || (key4 != null && key4.equals(e.key4)))) {
                         V v = e.value;
                         if (v != null) {
                             return v;
@@ -326,18 +282,13 @@ public class MultiKeyConcurrentHashMap<K, V> {
             return null;
         }
 
-        boolean containsKey(Object key1,
-                            Object key2,
-                            Object key3,
-                            Object key4,
-                            int hash) {
+        boolean containsKey(Object key1, Object key2, Object key3, Object key4, int hash) {
             if (count != 0) { // read-volatile
                 HashEntry<K, V> e = getFirst(hash);
                 while (e != null) {
-                    if ((e.hash == hash && key1.equals(e.key1))
-                        && ((key2 == null && e.key2 == null) || (key2 != null && key2.equals(e.key2)))
-                        && ((key3 == null && e.key3 == null) || (key3 != null && key3.equals(e.key3)))
-                        && ((key4 == null && e.key4 == null) || (key4 != null && key4.equals(e.key4)))) {
+                    if ((e.hash == hash && key1.equals(e.key1)) && ((key2 == null && e.key2 == null) || (key2 != null && key2.equals(e.key2)))
+                            && ((key3 == null && e.key3 == null) || (key3 != null && key3.equals(e.key3)))
+                            && ((key4 == null && e.key4 == null) || (key4 != null && key4.equals(e.key4)))) {
                         return true;
                     }
                     e = e.next;
@@ -351,10 +302,8 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 HashEntry[] tab = table;
                 int len = tab.length;
                 for (int i = 0; i < len; i++) {
-                    for (//noinspection unchecked
-                          HashEntry<K, V> e = (HashEntry<K, V>) tab[i];
-                         e != null;
-                         e = e.next) {
+                    for (// noinspection unchecked
+                            HashEntry<K, V> e = (HashEntry<K, V>) tab[i]; e != null; e = e.next) {
                         V v = e.value;
                         if (v == null) // recheck
                         {
@@ -369,21 +318,12 @@ public class MultiKeyConcurrentHashMap<K, V> {
             return false;
         }
 
-        boolean replace(K key1,
-                        K key2,
-                        K key3,
-                        K key4,
-                        int hash,
-                        V oldValue,
-                        V newValue) {
+        boolean replace(K key1, K key2, K key3, K key4, int hash, V oldValue, V newValue) {
             lock();
             try {
                 HashEntry<K, V> e = getFirst(hash);
-                while (e != null && (e.hash != hash
-                                     || key1 != null && !key1.equals(e.key1)
-                                     || key2 != null && !key2.equals(e.key2)
-                                     || key3 != null && !key3.equals(e.key3)
-                                     || key4 != null && !key4.equals(e.key4))) {
+                while (e != null && (e.hash != hash || key1 != null && !key1.equals(e.key1) || key2 != null && !key2.equals(e.key2)
+                        || key3 != null && !key3.equals(e.key3) || key4 != null && !key4.equals(e.key4))) {
                     e = e.next;
                 }
 
@@ -402,11 +342,8 @@ public class MultiKeyConcurrentHashMap<K, V> {
             lock();
             try {
                 HashEntry<K, V> e = getFirst(hash);
-                while (e != null && (e.hash != hash
-                                     || key1 != null && !key1.equals(e.key1)
-                                     || key2 != null && !key2.equals(e.key2)
-                                     || key3 != null && !key3.equals(e.key3)
-                                     || key4 != null && !key4.equals(e.key4))) {
+                while (e != null && (e.hash != hash || key1 != null && !key1.equals(e.key1) || key2 != null && !key2.equals(e.key2)
+                        || key3 != null && !key3.equals(e.key3) || key4 != null && !key4.equals(e.key4))) {
                     e = e.next;
                 }
 
@@ -421,14 +358,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
             }
         }
 
-
-        V put(K key1,
-              K key2,
-              K key3,
-              K key4,
-              int hash,
-              V value,
-              boolean onlyIfAbsent) {
+        V put(K key1, K key2, K key3, K key4, int hash, V value, boolean onlyIfAbsent) {
             lock();
             try {
                 int c = count;
@@ -438,14 +368,11 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 }
                 HashEntry[] tab = table;
                 int index = hash & (tab.length - 1);
-                //noinspection unchecked
+                // noinspection unchecked
                 HashEntry<K, V> first = (HashEntry<K, V>) tab[index];
                 HashEntry<K, V> e = first;
-                while (e != null && (e.hash != hash
-                                     || key1 != null && !key1.equals(e.key1)
-                                     || key2 != null && !key2.equals(e.key2)
-                                     || key3 != null && !key3.equals(e.key3)
-                                     || key4 != null && !key4.equals(e.key4))) {
+                while (e != null && (e.hash != hash || key1 != null && !key1.equals(e.key1) || key2 != null && !key2.equals(e.key2)
+                        || key3 != null && !key3.equals(e.key3) || key4 != null && !key4.equals(e.key4))) {
                     e = e.next;
                 }
 
@@ -458,8 +385,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 } else {
                     oldValue = null;
                     ++modCount;
-                    tab[index] =
-                          new HashEntry<>(key1, key2, key3, key4, hash, first, value);
+                    tab[index] = new HashEntry<>(key1, key2, key3, key4, hash, first, value);
                     count = c; // write-volatile
                 }
                 return oldValue;
@@ -476,17 +402,12 @@ public class MultiKeyConcurrentHashMap<K, V> {
             }
 
             /*
-             * Reclassify nodes in each list to new Map.  Because we are
-             * using power-of-two expansion, the elements from each bin
-             * must either stay at same index, or move with a power of two
-             * offset. We eliminate unnecessary node creation by catching
-             * cases where old nodes can be reused because their next
-             * fields won't change. Statistically, at the default
-             * threshold, only about one-sixth of them need cloning when
-             * a table doubles. The nodes they replace will be garbage
-             * collectable as soon as they are no longer referenced by any
-             * reader thread that may be in the midst of traversing table
-             * right now.
+             * Reclassify nodes in each list to new Map. Because we are using power-of-two expansion, the elements from each bin
+             * must either stay at same index, or move with a power of two offset. We eliminate unnecessary node creation by
+             * catching cases where old nodes can be reused because their next fields won't change. Statistically, at the default
+             * threshold, only about one-sixth of them need cloning when a table doubles. The nodes they replace will be garbage
+             * collectable as soon as they are no longer referenced by any reader thread that may be in the midst of traversing
+             * table right now.
              */
 
             HashEntry[] newTable = new HashEntry[oldCapacity << 1];
@@ -494,24 +415,22 @@ public class MultiKeyConcurrentHashMap<K, V> {
             int sizeMask = newTable.length - 1;
             for (int i = 0; i < oldCapacity; i++) {
                 // We need to guarantee that any existing reads of old Map can
-                //  proceed. So we cannot yet null out each bin.
-                //noinspection unchecked
+                // proceed. So we cannot yet null out each bin.
+                // noinspection unchecked
                 HashEntry<K, V> e = (HashEntry<K, V>) oldTable[i];
 
                 if (e != null) {
                     HashEntry<K, V> next = e.next;
                     int idx = e.hash & sizeMask;
 
-                    //  Single node on list
+                    // Single node on list
                     if (next == null) {
                         newTable[idx] = e;
                     } else {
                         // Reuse trailing consecutive sequence at same slot
                         HashEntry<K, V> lastRun = e;
                         int lastIdx = idx;
-                        for (HashEntry<K, V> last = next;
-                             last != null;
-                             last = last.next) {
+                        for (HashEntry<K, V> last = next; last != null; last = last.next) {
                             int k = last.hash & sizeMask;
                             if (k != lastIdx) {
                                 lastIdx = k;
@@ -523,15 +442,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
                         // Clone all remaining nodes
                         for (HashEntry<K, V> p = e; p != lastRun; p = p.next) {
                             int k = p.hash & sizeMask;
-                            //noinspection unchecked
+                            // noinspection unchecked
                             HashEntry<K, V> n = (HashEntry<K, V>) newTable[k];
-                            newTable[k] = new HashEntry<>(p.key1,
-                                                              p.key2,
-                                                              p.key3,
-                                                              p.key4,
-                                                              p.hash,
-                                                              n,
-                                                              p.value);
+                            newTable[k] = new HashEntry<>(p.key1, p.key2, p.key3, p.key4, p.hash, n, p.value);
                         }
                     }
                 }
@@ -542,25 +455,17 @@ public class MultiKeyConcurrentHashMap<K, V> {
         /**
          * Remove; match on key only if value null, else match both.
          */
-        V remove(Object key1,
-                 Object key2,
-                 Object key3,
-                 Object key4,
-                 int hash,
-                 Object value) {
+        V remove(Object key1, Object key2, Object key3, Object key4, int hash, Object value) {
             lock();
             try {
                 int c = count - 1;
                 HashEntry[] tab = table;
                 int index = hash & (tab.length - 1);
-                //noinspection unchecked
+                // noinspection unchecked
                 HashEntry<K, V> first = (HashEntry<K, V>) tab[index];
                 HashEntry<K, V> e = first;
-                while (e != null && (e.hash != hash
-                                     || key1 != null && !key1.equals(e.key1)
-                                     || key2 != null && !key2.equals(e.key2)
-                                     || key3 != null && !key3.equals(e.key3)
-                                     || key4 != null && !key4.equals(e.key4))) {
+                while (e != null && (e.hash != hash || key1 != null && !key1.equals(e.key1) || key2 != null && !key2.equals(e.key2)
+                        || key3 != null && !key3.equals(e.key3) || key4 != null && !key4.equals(e.key4))) {
                     e = e.next;
                 }
 
@@ -575,13 +480,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
                         ++modCount;
                         HashEntry<K, V> newFirst = e.next;
                         for (HashEntry<K, V> p = first; p != e; p = p.next) {
-                            newFirst = new HashEntry<>(p.key1,
-                                                           p.key2,
-                                                           p.key3,
-                                                           p.key4,
-                                                           p.hash,
-                                                           newFirst,
-                                                           p.value);
+                            newFirst = new HashEntry<>(p.key1, p.key2, p.key3, p.key4, p.hash, newFirst, p.value);
                         }
                         tab[index] = newFirst;
                         count = c; // write-volatile
@@ -613,27 +512,19 @@ public class MultiKeyConcurrentHashMap<K, V> {
     /* ---------------- Public operations -------------- */
 
     /**
-     * Creates a new, empty map with the specified initial capacity, load
-     * factor, and concurrency level.
+     * Creates a new, empty map with the specified initial capacity, load factor, and concurrency level.
      *
-     * @param initialCapacity  the initial capacity. The implementation performs
-     *                         internal sizing to accommodate this many
-     *                         elements.
-     * @param loadFactor       the load factor threshold, used to control
-     *                         resizing. Resizing may be performed when the
-     *                         average number of elements per bin exceeds this
-     *                         threshold.
-     * @param concurrencyLevel the estimated number of concurrently updating
-     *                         threads. The implementation performs internal
-     *                         sizing to try to accommodate this many threads.
+     * @param initialCapacity the initial capacity. The implementation performs internal sizing to accommodate this many
+     * elements.
+     * @param loadFactor the load factor threshold, used to control resizing. Resizing may be performed when the average
+     * number of elements per bin exceeds this threshold.
+     * @param concurrencyLevel the estimated number of concurrently updating threads. The implementation performs internal
+     * sizing to try to accommodate this many threads.
      *
-     * @throws IllegalArgumentException if the initial capacity is negative or
-     *                                  the load factor or concurrencyLevel are
-     *                                  nonpositive.
+     * @throws IllegalArgumentException if the initial capacity is negative or the load factor or concurrencyLevel are
+     * nonpositive.
      */
-    public MultiKeyConcurrentHashMap(int initialCapacity,
-                                     float loadFactor,
-                                     int concurrencyLevel) {
+    public MultiKeyConcurrentHashMap(int initialCapacity, float loadFactor, int concurrencyLevel) {
         if (!(loadFactor > 0) || initialCapacity < 0 || concurrencyLevel <= 0) {
             throw new IllegalArgumentException();
         }
@@ -671,29 +562,23 @@ public class MultiKeyConcurrentHashMap<K, V> {
     }
 
     /**
-     * Creates a new, empty map with the specified initial capacity, and with
-     * default load factor and concurrencyLevel.
+     * Creates a new, empty map with the specified initial capacity, and with default load factor and concurrencyLevel.
      *
-     * @param initialCapacity the initial capacity. The implementation performs
-     *                        internal sizing to accommodate this many
-     *                        elements.
+     * @param initialCapacity the initial capacity. The implementation performs internal sizing to accommodate this many
+     * elements.
      *
-     * @throws IllegalArgumentException if the initial capacity of elements is
-     *                                  negative.
+     * @throws IllegalArgumentException if the initial capacity of elements is negative.
      */
     public MultiKeyConcurrentHashMap(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR, DEFAULT_SEGMENTS);
     }
 
     /**
-     * Creates a new, empty map with a default initial capacity, load factor,
-     * and concurrencyLevel.
+     * Creates a new, empty map with a default initial capacity, load factor, and concurrencyLevel.
      */
     public MultiKeyConcurrentHashMap() {
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_SEGMENTS);
     }
-
-    
 
     /**
      * @see java.util.Map#isEmpty()
@@ -701,13 +586,10 @@ public class MultiKeyConcurrentHashMap<K, V> {
     public boolean isEmpty() {
         final Segment[] segments = this.segments;
         /*
-         * We keep track of per-segment modCounts to avoid ABA
-         * problems in which an element in one segment was added and
-         * in another removed during traversal, in which case the
-         * table was never actually empty at any point. Note the
-         * similar use of modCounts in the size() and containsValue()
-         * methods, which are the only other methods also susceptible
-         * to ABA problems.
+         * We keep track of per-segment modCounts to avoid ABA problems in which an element in one segment was added and in
+         * another removed during traversal, in which case the table was never actually empty at any point. Note the similar use
+         * of modCounts in the size() and containsValue() methods, which are the only other methods also susceptible to ABA
+         * problems.
          */
         int[] mc = new int[segments.length];
         int mcsum = 0;
@@ -719,12 +601,11 @@ public class MultiKeyConcurrentHashMap<K, V> {
             }
         }
         // If mcsum happens to be zero, then we know we got a snapshot
-        // before any modifications at all were made.  This is
+        // before any modifications at all were made. This is
         // probably common enough to bother tracking.
         if (mcsum != 0) {
             for (int i = 0; i < segments.length; ++i) {
-                if (segments[i].count != 0 ||
-                    mc[i] != segments[i].modCount) {
+                if (segments[i].count != 0 || mc[i] != segments[i].modCount) {
                     return false;
                 }
             }
@@ -782,14 +663,13 @@ public class MultiKeyConcurrentHashMap<K, V> {
         }
     }
 
-
     /**
      * Returns the value to which the specified key is mapped in this table.
      *
      * @param key a key in the table.
      *
-     * @return the value to which the key is mapped in this table; <tt>null</tt>
-     *         if the key is not mapped to any value in this table.
+     * @return the value to which the key is mapped in this table; <tt>null</tt> if the key is not mapped to any value in
+     * this table.
      *
      * @throws NullPointerException if the key is <tt>null</tt>.
      */
@@ -827,9 +707,8 @@ public class MultiKeyConcurrentHashMap<K, V> {
      *
      * @param key possible key.
      *
-     * @return <tt>true</tt> if and only if the specified object is a key in
-     *         this table, as determined by the <tt>equals</tt> method;
-     *         <tt>false</tt> otherwise.
+     * @return <tt>true</tt> if and only if the specified object is a key in this table, as determined by the
+     * <tt>equals</tt> method; <tt>false</tt> otherwise.
      *
      * @throws NullPointerException if the key is <tt>null</tt>.
      */
@@ -857,23 +736,18 @@ public class MultiKeyConcurrentHashMap<K, V> {
     /**
      * @see #containsKey(Object)
      */
-    public boolean containsKey(Object key1,
-                               Object key2,
-                               Object key3,
-                               Object key4) {
+    public boolean containsKey(Object key1, Object key2, Object key3, Object key4) {
         int hash = hash(key1, key2, key3, key4);
         return segmentFor(hash).containsKey(key1, key2, key3, key4, hash);
     }
 
     /**
-     * Returns <tt>true</tt> if this map maps one or more keys to the specified
-     * value. Note: This method requires a full internal traversal of the hash
-     * table, and so is much slower than method <tt>containsKey</tt>.
+     * Returns <tt>true</tt> if this map maps one or more keys to the specified value. Note: This method requires a full
+     * internal traversal of the hash table, and so is much slower than method <tt>containsKey</tt>.
      *
      * @param value value whose presence in this map is to be tested.
      *
-     * @return <tt>true</tt> if this map maps one or more keys to the specified
-     *         value.
+     * @return <tt>true</tt> if this map maps one or more keys to the specified value.
      *
      * @throws NullPointerException if the value is <tt>null</tt>.
      */
@@ -930,17 +804,14 @@ public class MultiKeyConcurrentHashMap<K, V> {
     }
 
     /**
-     * Legacy method testing if some key maps into the specified value in this
-     * table.  This method is identical in functionality to {@link
-     * #containsValue}, and  exists solely to ensure full compatibility with
-     * class {@link java.util.Hashtable}, which supported this method prior to
-     * introduction of the Java Collections framework.
+     * Legacy method testing if some key maps into the specified value in this table. This method is identical in
+     * functionality to {@link #containsValue}, and exists solely to ensure full compatibility with class
+     * {@link java.util.Hashtable}, which supported this method prior to introduction of the Java Collections framework.
      *
      * @param value a value to search for.
      *
-     * @return <tt>true</tt> if and only if some key maps to the <tt>value</tt>
-     *         argument in this table as determined by the <tt>equals</tt>
-     *         method; <tt>false</tt> otherwise.
+     * @return <tt>true</tt> if and only if some key maps to the <tt>value</tt> argument in this table as determined by the
+     * <tt>equals</tt> method; <tt>false</tt> otherwise.
      *
      * @throws NullPointerException if the value is <tt>null</tt>.
      */
@@ -949,17 +820,16 @@ public class MultiKeyConcurrentHashMap<K, V> {
     }
 
     /**
-     * Maps the specified <tt>key</tt> to the specified <tt>value</tt> in this
-     * table. Neither the key nor the value can be <tt>null</tt>.
+     * Maps the specified <tt>key</tt> to the specified <tt>value</tt> in this table. Neither the key nor the value can be
+     * <tt>null</tt>.
      * <p/>
-     * <p> The value can be retrieved by calling the <tt>get</tt> method with a
-     * key that is equal to the original key.
+     * <p>
+     * The value can be retrieved by calling the <tt>get</tt> method with a key that is equal to the original key.
      *
-     * @param key   the table key.
+     * @param key the table key.
      * @param value the value.
      *
-     * @return the previous value of the specified key in this table, or
-     *         <tt>null</tt> if it did not have one.
+     * @return the previous value of the specified key in this table, or <tt>null</tt> if it did not have one.
      *
      * @throws NullPointerException if the key or value is <tt>null</tt>.
      */
@@ -1004,26 +874,24 @@ public class MultiKeyConcurrentHashMap<K, V> {
         return segmentFor(hash).put(key1, key2, key3, key4, hash, value, false);
     }
 
-
     /**
-     * If the specified key is not already associated with a value, associate it
-     * with the given value. This is equivalent to
+     * If the specified key is not already associated with a value, associate it with the given value. This is equivalent to
+     * 
      * <pre>
-     *   if (!map.containsKey(key))
-     *      return map.put(key, value);
-     *   else
-     *      return map.get(key);
+     * if (!map.containsKey(key))
+     *     return map.put(key, value);
+     * else
+     *     return map.get(key);
      * </pre>
+     * 
      * Except that the action is performed atomically.
      *
-     * @param key   key with which the specified value is to be associated.
+     * @param key key with which the specified value is to be associated.
      * @param value value to be associated with the specified key.
      *
-     * @return previous value associated with specified key, or <tt>null</tt> if
-     *         there was no mapping for key.
+     * @return previous value associated with specified key, or <tt>null</tt> if there was no mapping for key.
      *
-     * @throws NullPointerException if the specified key or value is
-     *                              <tt>null</tt>.
+     * @throws NullPointerException if the specified key or value is <tt>null</tt>.
      */
     public V putIfAbsent(K key, V value) {
         if (value == null) {
@@ -1066,7 +934,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
         return segmentFor(hash).put(key1, key2, key3, key4, hash, value, true);
     }
 
-
     /**
      * @see Map#remove(Object)
      */
@@ -1101,52 +968,52 @@ public class MultiKeyConcurrentHashMap<K, V> {
         return segmentFor(hash).remove(key1, key2, key3, key4, hash, null);
     }
 
-
     /**
      * Replace entry for key only if currently mapped to given value. Acts as
+     * 
      * <pre>
-     *  if (map.get(key).equals(oldValue)) {
+     * if (map.get(key).equals(oldValue)) {
      *     map.put(key, newValue);
      *     return true;
-     * } else return false;
+     * } else
+     *     return false;
      * </pre>
+     * 
      * except that the action is performed atomically.
      *
-     * @param key      key with which the specified value is associated.
+     * @param key key with which the specified value is associated.
      * @param oldValue value expected to be associated with the specified key.
      * @param newValue value to be associated with the specified key.
      *
      * @return true if the value was replaced
      *
-     * @throws NullPointerException if the specified key or values are
-     *                              <tt>null</tt>.
+     * @throws NullPointerException if the specified key or values are <tt>null</tt>.
      */
     public boolean replace(K key, V oldValue, V newValue) {
         if (oldValue == null || newValue == null) {
             throw new NullPointerException();
         }
         int hash = hash(key, null, null, null);
-        return segmentFor(hash)
-              .replace(key, null, null, null, hash, oldValue, newValue);
+        return segmentFor(hash).replace(key, null, null, null, hash, oldValue, newValue);
     }
 
     /**
      * Replace entry for key only if currently mapped to some value. Acts as
+     * 
      * <pre>
      *  if ((map.containsKey(key)) {
      *     return map.put(key, value);
      * } else return null;
      * </pre>
+     * 
      * except that the action is performed atomically.
      *
-     * @param key   key with which the specified value is associated.
+     * @param key key with which the specified value is associated.
      * @param value value to be associated with the specified key.
      *
-     * @return previous value associated with specified key, or <tt>null</tt> if
-     *         there was no mapping for key.
+     * @return previous value associated with specified key, or <tt>null</tt> if there was no mapping for key.
      *
-     * @throws NullPointerException if the specified key or value is
-     *                              <tt>null</tt>.
+     * @throws NullPointerException if the specified key or value is <tt>null</tt>.
      */
     public V replace(K key, V value) {
         if (value == null) {
@@ -1155,7 +1022,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
         int hash = hash(key, null, null, null);
         return segmentFor(hash).replace(key, null, null, null, hash, value);
     }
-
 
     /**
      * Removes all mappings from this map.
@@ -1173,14 +1039,12 @@ public class MultiKeyConcurrentHashMap<K, V> {
         throw new UnsupportedOperationException();
     }
 
-
     /**
      * Unsupported.
      */
     public Collection<V> values() {
         throw new UnsupportedOperationException();
     }
-
 
     /**
      * Unsupported.

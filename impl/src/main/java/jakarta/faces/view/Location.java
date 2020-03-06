@@ -20,9 +20,9 @@ package jakarta.faces.view;
 import java.io.Serializable;
 
 /**
- * <p class="changed_added_2_0">An object that represents the Location
- * of a tag or attribute of a tag in a View Declaration Language
- * file.</p>
+ * <p class="changed_added_2_0">
+ * An object that represents the Location of a tag or attribute of a tag in a View Declaration Language file.
+ * </p>
  *
  * @since 2.0
  * 
@@ -44,7 +44,9 @@ public class Location implements Serializable {
     }
 
     /**
-     * <p class="changed_added_2_0">Return the estimated character column.</p>
+     * <p class="changed_added_2_0">
+     * Return the estimated character column.
+     * </p>
      * 
      * @return the column
      */
@@ -53,8 +55,9 @@ public class Location implements Serializable {
     }
 
     /**
-     * <p class="changed_added_2_0">Return the line number in the page
-     * for this location.</p>
+     * <p class="changed_added_2_0">
+     * Return the line number in the page for this location.
+     * </p>
      *
      * @return the line number
      * 
@@ -64,8 +67,9 @@ public class Location implements Serializable {
     }
 
     /**
-     * <p class="changed_added_2_0">Return the file path to the page
-     * represented by this location.</p>
+     * <p class="changed_added_2_0">
+     * Return the file path to the page represented by this location.
+     * </p>
      *
      * @return the file path
      * 

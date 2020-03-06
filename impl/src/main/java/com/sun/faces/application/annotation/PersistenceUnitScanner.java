@@ -60,7 +60,7 @@ class PersistenceUnitScanner implements Scanner {
                 fields.add(field);
             }
         }
-        
+
         ArrayList<PersistenceUnit> methodAnnotations = new ArrayList<>();
         ArrayList<Method> methods = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
@@ -70,10 +70,9 @@ class PersistenceUnitScanner implements Scanner {
                 methods.add(method);
             }
         }
-        
+
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new PersistenceUnitHandler(
-                    methods.toArray(new Method[0]), methodAnnotations.toArray(new PersistenceUnit[0]),
+            handler = new PersistenceUnitHandler(methods.toArray(new Method[0]), methodAnnotations.toArray(new PersistenceUnit[0]),
                     fields.toArray(new Field[0]), fieldAnnotations.toArray(new PersistenceUnit[0]));
         }
         return handler;

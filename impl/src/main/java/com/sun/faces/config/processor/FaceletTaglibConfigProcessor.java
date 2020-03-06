@@ -221,12 +221,12 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing facelet-taglibrary document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             Element documentElement = document.getDocumentElement();
             NodeList libraryClass = documentElement.getElementsByTagNameNS(namespace, LIBRARY_CLASS);
-            
+
             if (libraryClass != null && libraryClass.getLength() > 0) {
                 processTaglibraryClass(sc, facesContext, libraryClass, compiler);
             } else {
@@ -286,7 +286,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
 
         if (tags != null && tags.getLength() > 0) {
             for (int i = 0, ilen = tags.getLength(); i < ilen; i++) {
-                
+
                 Node tagNode = tags.item(i);
                 NodeList children = tagNode.getChildNodes();
                 String tagName = null;
@@ -296,10 +296,10 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                 NodeList behavior = null;
                 Node source = null;
                 Node handlerClass = null;
-                
+
                 for (int j = 0, jlen = children.getLength(); j < jlen; j++) {
                     Node n = children.item(j);
-                    
+
                     // Process the nodes to see what children we have
                     if (n.getLocalName() != null) {
                         switch (n.getLocalName()) {
@@ -327,7 +327,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                         }
                     }
                 }
-                
+
                 if (component != null) {
                     processComponent(servletContext, facesContext, documentElement, component, taglibrary, tagName);
                 } else if (converter != null) {
@@ -363,7 +363,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                     }
                 }
             }
-            
+
             if (handlerClass != null) {
                 try {
                     Class<?> clazz = loadClass(sc, facesContext, handlerClass, this, null);
@@ -385,7 +385,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
         if (className == null) {
             throw new ConfigurationException("The tag named " + name + " from namespace " + taglibrary.getNamespace() + " has a null handler-class defined");
         }
-        
+
         try {
             Class<?> clazz;
             try {
@@ -511,7 +511,8 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
 
     }
 
-    private void processComponent(ServletContext sc, FacesContext facesContext, Element documentElement, NodeList component, TagLibraryImpl taglibrary, String name) {
+    private void processComponent(ServletContext sc, FacesContext facesContext, Element documentElement, NodeList component, TagLibraryImpl taglibrary,
+            String name) {
 
         if (component != null && component.getLength() > 0) {
             String componentType = null;
@@ -600,9 +601,9 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
     }
 
     private static Method createMethod(Class<?> type, String signatureParam) throws Exception {
-        
+
         // Formatted XML might cause \n\t characters - make sure we only have space characters left
-        
+
         String signature = signatureParam.replaceAll("\\s+", " ");
         int pos = signature.indexOf(' ');
         if (pos == -1) {

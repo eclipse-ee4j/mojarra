@@ -99,7 +99,6 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     private URI documentURI;
     private DocumentBuilderFactory factory;
     private boolean validating;
-    
 
     // --------------------------------------------------------
     // Constructors
@@ -109,14 +108,10 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
      * Constructs a new ParseTask instance
      * </p>
      *
-     * @param servletContext
-     *            the servlet context.
-     * @param validating
-     *            whether or not we're validating
-     * @param documentURI
-     *            a URL to the configuration resource to be parsed
-     * @throws Exception
-     *             general error
+     * @param servletContext the servlet context.
+     * @param validating whether or not we're validating
+     * @param documentURI a URL to the configuration resource to be parsed
+     * @throws Exception general error
      */
     public ParseConfigResourceToDOMTask(ServletContext servletContext, boolean validating, URI documentURI) throws Exception {
         this.servletContext = servletContext;
@@ -129,8 +124,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     /**
      * @return the result of the parse operation (a DOM)
-     * @throws Exception
-     *             if an error occurs during the parsing process
+     * @throws Exception if an error occurs during the parsing process
      */
     @Override
     public DocumentInfo call() throws Exception {
@@ -150,19 +144,16 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
             return new DocumentInfo(document, documentURI);
         } catch (Exception e) {
-            throw new ConfigurationException(
-                    format("Unable to parse document ''{0}'': {1}", documentURI.toURL().toExternalForm(), e.getMessage()), e);
+            throw new ConfigurationException(format("Unable to parse document ''{0}'': {1}", documentURI.toURL().toExternalForm(), e.getMessage()), e);
         }
     }
-    
 
     // ----------------------------------------------------- Private
     // Methods
 
     /**
      * @return <code>Document</code> based on <code>documentURI</code>.
-     * @throws Exception
-     *             if an error occurs during the process of building a <code>Document</code>
+     * @throws Exception if an error occurs during the process of building a <code>Document</code>
      */
     private Document getDocument() throws Exception {
 
@@ -204,8 +195,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
             documentNS = documentElement.getNamespaceURI();
             String rootElementTagName = documentElement.getTagName();
 
-            boolean isNonFacesConfigDocument = !FACES_CONFIG_TAGNAME.equals(rootElementTagName)
-                    && !FACELET_TAGLIB_TAGNAME.equals(rootElementTagName);
+            boolean isNonFacesConfigDocument = !FACES_CONFIG_TAGNAME.equals(rootElementTagName) && !FACELET_TAGLIB_TAGNAME.equals(rootElementTagName);
 
             if (isNonFacesConfigDocument) {
                 ClassLoader loader = this.getClass().getClassLoader();
@@ -213,8 +203,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                 doc = db.parse(is);
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING,
-                            MessageFormat.format(
-                                    "Config document {0} with namespace URI {1} is not a faces-config or facelet-taglib file.  Ignoring.",
+                            MessageFormat.format("Config document {0} with namespace URI {1} is not a faces-config or facelet-taglib file.  Ignoring.",
                                     documentURI.toURL().toExternalForm(), documentNS));
                 }
                 return doc;
@@ -377,8 +366,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
      * Obtain a <code>Transformer</code> using the style sheet referenced by the <code>XSL</code> constant.
      *
      * @return a new Tranformer instance
-     * @throws Exception
-     *             if a Tranformer instance could not be created
+     * @throws Exception if a Tranformer instance could not be created
      */
     private static Transformer getTransformer(String documentNS) throws Exception {
 
@@ -401,10 +389,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     /**
      * @return an <code>InputStream</code> to the resource referred to by <code>url</code>
-     * @param url
-     *            source <code>URL</code>
-     * @throws IOException
-     *             if an error occurs
+     * @param url source <code>URL</code>
+     * @throws IOException if an error occurs
      */
     private static InputStream getInputStream(URL url) throws IOException {
         URLConnection connection = url.openConnection();

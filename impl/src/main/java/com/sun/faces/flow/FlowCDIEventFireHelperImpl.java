@@ -26,20 +26,24 @@ import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowScoped;
 
 public class FlowCDIEventFireHelperImpl implements Serializable, FlowCDIEventFireHelper {
-    
+
     private static final long serialVersionUID = -5689195252450178355L;
-    
-    @Inject @Initialized(FlowScoped.class) Event<Flow> flowInitializedEvent;
-    @Inject @Destroyed(FlowScoped.class) Event<Flow> flowDestroyedEvent;
-    
+
+    @Inject
+    @Initialized(FlowScoped.class)
+    Event<Flow> flowInitializedEvent;
+    @Inject
+    @Destroyed(FlowScoped.class)
+    Event<Flow> flowDestroyedEvent;
+
     @Override
     public void fireInitializedEvent(Flow currentFlow) {
         flowInitializedEvent.fire(currentFlow);
     }
-    
+
     @Override
     public void fireDestroyedEvent(Flow currentFlow) {
         flowDestroyedEvent.fire(currentFlow);
     }
-        
+
 }

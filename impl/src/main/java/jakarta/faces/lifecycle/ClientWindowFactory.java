@@ -20,17 +20,19 @@ import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_2">Create {@link ClientWindow} instances based on 
- * the incoming request.</p>
+ * <p class="changed_added_2_2">
+ * Create {@link ClientWindow} instances based on the incoming request.
+ * </p>
  * 
- * <p class="changed_added_2_3">Usage: extend this class and push the implementation being wrapped to the
- * constructor and use {@link #getWrapped} to access the instance being wrapped.</p>
+ * <p class="changed_added_2_3">
+ * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
+ * access the instance being wrapped.
+ * </p>
  * 
  * @since 2.2
  */
 public abstract class ClientWindowFactory implements FacesWrapper<ClientWindowFactory> {
 
-    
     private ClientWindowFactory wrapped;
 
     /**
@@ -38,13 +40,14 @@ public abstract class ClientWindowFactory implements FacesWrapper<ClientWindowFa
      */
     @Deprecated
     public ClientWindowFactory() {
-        
+
     }
 
     /**
-     * <p class="changed_added_2_3">If this factory has been decorated, 
-     * the implementation doing the decorating should push the implementation being wrapped to this constructor.
-     * The {@link #getWrapped()} will then return the implementation being wrapped.</p>
+     * <p class="changed_added_2_3">
+     * If this factory has been decorated, the implementation doing the decorating should push the implementation being
+     * wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
+     * </p>
      * 
      * @param wrapped The implementation being wrapped.
      */
@@ -53,9 +56,10 @@ public abstract class ClientWindowFactory implements FacesWrapper<ClientWindowFa
     }
 
     /**
-     * <p class="changed_modified_2_3">If this factory has been decorated, the 
-     * implementation doing the decorating may override this method to provide
-     * access to the implementation being wrapped.</p>
+     * <p class="changed_modified_2_3">
+     * If this factory has been decorated, the implementation doing the decorating may override this method to provide
+     * access to the implementation being wrapped.
+     * </p>
      */
     @Override
     public ClientWindowFactory getWrapped() {
@@ -63,21 +67,18 @@ public abstract class ClientWindowFactory implements FacesWrapper<ClientWindowFa
     }
 
     /**
-     * <p class="changed_added_2_2">The implementation is responsible
-     * for creating the {@link ClientWindow} instance for this request.
-     * If {@link ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME}
-     * is "none" or unspecified, this method must return {@code null}.  
-     * If {@link ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME}
-     * is "url" the implementation must return a <code>ClientWindow</code>
-     * instance that implements the url-mode semantics described in
-     * {@link ClientWindow}.
+     * <p class="changed_added_2_2">
+     * The implementation is responsible for creating the {@link ClientWindow} instance for this request. If
+     * {@link ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} is "none" or unspecified, this method must return {@code null}. If
+     * {@link ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} is "url" the implementation must return a
+     * <code>ClientWindow</code> instance that implements the url-mode semantics described in {@link ClientWindow}.
      * 
      * @param context the {@link FacesContext} for this request.
-     * @return the {@link ClientWindow} for this request, or {@code null} 
+     * @return the {@link ClientWindow} for this request, or {@code null}
      * 
      * @since 2.2
      */
-    
+
     public abstract ClientWindow getClientWindow(FacesContext context);
-    
+
 }

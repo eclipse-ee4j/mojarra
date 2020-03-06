@@ -29,17 +29,16 @@ import jakarta.faces.view.facelets.*;
 import java.io.IOException;
 
 /**
- * Register an ActionListener instance on the UIComponent associated with the
- * closest parent UIComponent custom action. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag
+ * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag
  * documentation</a>.
  *
  * @author Jacob Hookom
  * @see jakarta.faces.event.ActionListener
  * @see jakarta.faces.component.ActionSource
  */
-public abstract class ActionListenerHandlerBase extends TagHandlerImpl
-      implements ActionSource2AttachedObjectHandler {
+public abstract class ActionListenerHandlerBase extends TagHandlerImpl implements ActionSource2AttachedObjectHandler {
 
     /**
      * @param config
@@ -51,40 +50,32 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-          throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (null == parent || !(ComponentHandler.isNew(parent))) {
             return;
         }
 
         if (parent instanceof ActionSource) {
             applyAttachedObject(ctx.getFacesContext(), parent);
-        } else if (parent.getAttributes()
-              .containsKey(Resource.COMPONENT_RESOURCE_KEY)) {
+        } else if (parent.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY)) {
             if (null == getFor()) {
                 // PENDING(): I18N
-                throw new TagException(this.tag,
-                                       "actionListener tags nested within composite components must have a non-null \"for\" attribute");
+                throw new TagException(this.tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
             }
             // Allow the composite component to know about the target
             // component.
-            CompositeComponentTagHandler.getAttachedObjectHandlers(parent)
-                  .add(this);
+            CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
 
         } else {
-            throw new TagException(this.tag,
-                                   "Parent is not of type ActionSource, type is: "
-                                   + parent);
+            throw new TagException(this.tag, "Parent is not of type ActionSource, type is: " + parent);
         }
     }
 
     @Override
     public abstract void applyAttachedObject(FacesContext context, UIComponent parent);
-
 
     @Override
     public String getFor() {
@@ -97,7 +88,7 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                result = (String)attr.getValueExpression(ctx, String.class).getValue(ctx);
+                result = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
             }
         }
         return result;

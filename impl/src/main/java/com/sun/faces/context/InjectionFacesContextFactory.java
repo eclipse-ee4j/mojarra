@@ -33,11 +33,9 @@ import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
 
 /**
- * This {@link FacesContextFactory} is responsible for injecting the
- * default {@link FacesContext} instance into the top-level {@link FacesContext}
- * as configured by the runtime.  Doing this allows us to preserve backwards
- * compatibility as the API evolves without having the API rely on implementation
- * specific details.  
+ * This {@link FacesContextFactory} is responsible for injecting the default {@link FacesContext} instance into the
+ * top-level {@link FacesContext} as configured by the runtime. Doing this allows us to preserve backwards compatibility
+ * as the API evolves without having the API rely on implementation specific details.
  */
 public class InjectionFacesContextFactory extends FacesContextFactory {
 
@@ -45,17 +43,14 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
     private Field defaultFacesContext;
     private Field defaultExternalContext;
 
-
-
     // ------------------------------------------------------------ Constructors
-
 
     public InjectionFacesContextFactory(FacesContextFactory delegate) {
         super(delegate);
 
         Util.notNull("facesContextFactory", delegate);
 
-         try {
+        try {
             defaultFacesContext = FacesContext.class.getDeclaredField("defaultFacesContext");
             defaultFacesContext.setAccessible(true);
         } catch (NoSuchFieldException nsfe) {
@@ -84,26 +79,16 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
 
     }
 
-
     // ---------------------------------------- Methods from FacesContextFactory
 
-
     @Override
-    public FacesContext getFacesContext(Object context,
-                                        Object request,
-                                        Object response,
-                                        Lifecycle lifecycle)
-    throws FacesException {
+    public FacesContext getFacesContext(Object context, Object request, Object response, Lifecycle lifecycle) throws FacesException {
 
-        FacesContext ctx = getWrapped().getFacesContext(context,
-                                                    request,
-                                                    response,
-                                                    lifecycle);
+        FacesContext ctx = getWrapped().getFacesContext(context, request, response, lifecycle);
         if (ctx == null) {
             // No i18n here
-            String message = MessageFormat
-                  .format("Delegate FacesContextFactory, {0}, returned null when calling getFacesContext().",
-                          getWrapped().getClass().getName());
+            String message = MessageFormat.format("Delegate FacesContextFactory, {0}, returned null when calling getFacesContext().",
+                    getWrapped().getClass().getName());
             throw new IllegalStateException(message);
         }
         injectDefaults(ctx, request);
@@ -111,15 +96,12 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private void injectDefaults(FacesContext target, Object request) {
 
         if (defaultFacesContext != null) {
-            FacesContext defaultFC =
-                  FacesContextImpl.getDefaultFacesContext();
+            FacesContext defaultFC = FacesContextImpl.getDefaultFacesContext();
             if (defaultFC != null) {
                 try {
                     defaultFacesContext.set(target, defaultFC);

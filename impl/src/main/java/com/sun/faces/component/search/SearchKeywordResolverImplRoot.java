@@ -25,13 +25,12 @@ public class SearchKeywordResolverImplRoot extends SearchKeywordResolver {
 
     @Override
     public void resolve(SearchKeywordContext searchKeywordContext, UIComponent current, String keyword) {
-        searchKeywordContext.invokeContextCallback(
-                searchKeywordContext.getSearchExpressionContext().getFacesContext().getViewRoot());
+        searchKeywordContext.invokeContextCallback(searchKeywordContext.getSearchExpressionContext().getFacesContext().getViewRoot());
     }
 
     @Override
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "root".equals(keyword);
     }
-    
+
 }

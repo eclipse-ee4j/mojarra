@@ -24,8 +24,9 @@ import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_3">A context object that is used to hold 
- * state relating to resolve a search expression.</p>
+ * <p class="changed_added_2_3">
+ * A context object that is used to hold state relating to resolve a search expression.
+ * </p>
  *
  * @see SearchExpressionHandler
  *
@@ -34,7 +35,9 @@ import jakarta.faces.context.FacesContext;
 public abstract class SearchExpressionContext {
 
     /**
-     * <p class="changed_added_2_3">Returns the source / base component from which we will start to perform our search.</p>
+     * <p class="changed_added_2_3">
+     * Returns the source / base component from which we will start to perform our search.
+     * </p>
      *
      * @return the source component.
      *
@@ -43,8 +46,10 @@ public abstract class SearchExpressionContext {
     public abstract UIComponent getSource();
 
     /**
-     * <p class="changed_added_2_3">Returns hints that influence the behavior of the tree visit,
-     * if it's used by an {@link SearchKeywordResolver} implementation.</p>
+     * <p class="changed_added_2_3">
+     * Returns hints that influence the behavior of the tree visit, if it's used by an {@link SearchKeywordResolver}
+     * implementation.
+     * </p>
      *
      * @return a non-empty, unmodifiable collection of {@link VisitHint}s
      *
@@ -54,7 +59,9 @@ public abstract class SearchExpressionContext {
     public abstract Set<VisitHint> getVisitHints();
 
     /**
-     * <p class="changed_added_2_3">Returns hints that influence the behavior of resolving the expression.</p>
+     * <p class="changed_added_2_3">
+     * Returns hints that influence the behavior of resolving the expression.
+     * </p>
      *
      * @return a non-empty, unmodifiable collection of {@link SearchExpressionHint}s
      *
@@ -63,8 +70,9 @@ public abstract class SearchExpressionContext {
     public abstract Set<SearchExpressionHint> getExpressionHints();
 
     /**
-     * <p class="changed_added_2_3">Returns the FacesContext for the
-     * current request.</p>
+     * <p class="changed_added_2_3">
+     * Returns the FacesContext for the current request.
+     * </p>
      *
      * @return the FacesContext.
      *
@@ -73,10 +81,10 @@ public abstract class SearchExpressionContext {
     public abstract FacesContext getFacesContext();
 
     /**
-     * <p class="changed_added_2_3">Creates a {@link SearchExpressionContext} instance
-     * for use with the {@link SearchExpressionHandler}.
-     * This method can be used to obtain a SearchExpressionContext instance
-     * without any {@link VisitHint} or {@link SearchExpressionHint}.</p>
+     * <p class="changed_added_2_3">
+     * Creates a {@link SearchExpressionContext} instance for use with the {@link SearchExpressionHandler}. This method can
+     * be used to obtain a SearchExpressionContext instance without any {@link VisitHint} or {@link SearchExpressionHint}.
+     * </p>
      *
      * @param context the FacesContext for the current request
      * @param source the source / base component from which we will start to perform our search.
@@ -90,25 +98,24 @@ public abstract class SearchExpressionContext {
     }
 
     /**
-     * <p class="changed_added_2_3">Creates a {@link SearchExpressionContext} instance
-     * for use with the {@link SearchExpressionHandler}.</p>
+     * <p class="changed_added_2_3">
+     * Creates a {@link SearchExpressionContext} instance for use with the {@link SearchExpressionHandler}.
+     * </p>
      *
      * @param context the FacesContext for the current request
      * @param source the source / base component from which we will start to perform our search.
-     * @param expressionHints the SearchExpressionHint to apply to the search.
-     *                  If <code>null</code>, no hints are applied.
-     * @param visitHints the VisitHints to apply to the visit, if used by a {@link SearchKeywordResolver}.
-     *                  If <code>null</code>, no hints are applied.
+     * @param expressionHints the SearchExpressionHint to apply to the search. If <code>null</code>, no hints are applied.
+     * @param visitHints the VisitHints to apply to the visit, if used by a {@link SearchKeywordResolver}. If
+     * <code>null</code>, no hints are applied.
      *
      * @return a {@link SearchExpressionContext} instance
      *
      * @since 2.3
      */
-    public static SearchExpressionContext createSearchExpressionContext(FacesContext context,  UIComponent source,
-            Set<SearchExpressionHint> expressionHints, Set<VisitHint> visitHints) {
+    public static SearchExpressionContext createSearchExpressionContext(FacesContext context, UIComponent source, Set<SearchExpressionHint> expressionHints,
+            Set<VisitHint> visitHints) {
 
-        SearchExpressionContextFactory factory
-                = (SearchExpressionContextFactory) FactoryFinder.getFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY);
+        SearchExpressionContextFactory factory = (SearchExpressionContextFactory) FactoryFinder.getFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY);
         return factory.getSearchExpressionContext(context, source, expressionHints, visitHints);
     }
 }

@@ -36,24 +36,21 @@ import java.util.Map;
  * @see java.lang.reflect.Method
  * @see jakarta.el.FunctionMapper
  */
-public final class DefaultFunctionMapper extends FunctionMapper implements
-                                                                Externalizable {
+public final class DefaultFunctionMapper extends FunctionMapper implements Externalizable {
 
     private static final long serialVersionUID = 1L;
 
     private Map functions = null;
 
     /*
-      * (non-Javadoc)
-      *
-      * @see jakarta.el.FunctionMapper#resolveFunction(java.lang.String,
-      *      java.lang.String)
-      */
+     * (non-Javadoc)
+     *
+     * @see jakarta.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
+     */
     @Override
     public Method resolveFunction(String prefix, String localName) {
         if (this.functions != null) {
-            Function f = (Function) this.functions
-                  .get(prefix + ":" + localName);
+            Function f = (Function) this.functions.get(prefix + ":" + localName);
             return f.getMethod();
         }
         return null;
@@ -70,23 +67,22 @@ public final class DefaultFunctionMapper extends FunctionMapper implements
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
-      */
+     * (non-Javadoc)
+     *
+     * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
+     */
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(this.functions);
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
-      */
+     * (non-Javadoc)
+     *
+     * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+     */
     @Override
-    public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.functions = (Map) in.readObject();
     }
 
@@ -94,8 +90,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements
     public String toString() {
         StringBuffer sb = new StringBuffer(128);
         sb.append("FunctionMapper[\n");
-        for (Iterator itr = this.functions.values().iterator();
-             itr.hasNext();) {
+        for (Iterator itr = this.functions.values().iterator(); itr.hasNext();) {
             sb.append(itr.next()).append('\n');
         }
         sb.append(']');
@@ -138,28 +133,26 @@ public final class DefaultFunctionMapper extends FunctionMapper implements
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
-           */
+         * (non-Javadoc)
+         *
+         * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
+         */
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeUTF((this.prefix != null) ? this.prefix : "");
             out.writeUTF(this.localName);
             out.writeUTF(this.m.getDeclaringClass().getName());
             out.writeUTF(this.m.getName());
-            out.writeObject(ReflectionUtil.toTypeNameArray(this.m
-                  .getParameterTypes()));
+            out.writeObject(ReflectionUtil.toTypeNameArray(this.m.getParameterTypes()));
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
-           */
+         * (non-Javadoc)
+         *
+         * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+         */
         @Override
-        public void readExternal(ObjectInput in) throws IOException,
-                                                        ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
             this.prefix = in.readUTF();
             if ("".equals(this.prefix)) {
@@ -197,10 +190,10 @@ public final class DefaultFunctionMapper extends FunctionMapper implements
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see java.lang.Object#equals(java.lang.Object)
-           */
+         * (non-Javadoc)
+         *
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof Function) {
@@ -210,10 +203,10 @@ public final class DefaultFunctionMapper extends FunctionMapper implements
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see java.lang.Object#hashCode()
-           */
+         * (non-Javadoc)
+         *
+         * @see java.lang.Object#hashCode()
+         */
         @Override
         public int hashCode() {
             return (this.prefix + this.localName).hashCode();

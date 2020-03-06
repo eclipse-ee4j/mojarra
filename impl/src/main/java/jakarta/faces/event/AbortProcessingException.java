@@ -16,13 +16,12 @@
 
 package jakarta.faces.event;
 
-
 import jakarta.faces.FacesException;
 
-
 /**
- * <p>An exception that may be thrown by event listeners to terminate the
- * processing of the current event.</p>
+ * <p>
+ * An exception that may be thrown by event listeners to terminate the processing of the current event.
+ * </p>
  */
 
 public class AbortProcessingException extends FacesException {
@@ -30,16 +29,18 @@ public class AbortProcessingException extends FacesException {
     private static final long serialVersionUID = 7726524187590697427L;
 
     /**
-     * <p>Construct a new exception with no detail message or root cause.</p>
+     * <p>
+     * Construct a new exception with no detail message or root cause.
+     * </p>
      */
     public AbortProcessingException() {
         super();
     }
 
-
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * no root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and no root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      */
@@ -47,9 +48,10 @@ public class AbortProcessingException extends FacesException {
         super(message);
     }
 
-
     /**
-     * <p>Construct a new exception with the specified root cause.</p>
+     * <p>
+     * Construct a new exception with the specified root cause.
+     * </p>
      *
      * @param cause The root cause for this exception
      */
@@ -57,10 +59,10 @@ public class AbortProcessingException extends FacesException {
         super(cause);
     }
 
-
     /**
-     * <p>Construct a new exception with the specified detail message and
-     * root cause.</p>
+     * <p>
+     * Construct a new exception with the specified detail message and root cause.
+     * </p>
      *
      * @param message The detail message for this exception
      * @param cause The root cause for this exception

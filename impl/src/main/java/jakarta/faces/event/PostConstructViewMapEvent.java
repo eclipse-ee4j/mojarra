@@ -23,12 +23,11 @@ import jakarta.faces.context.FacesContext;
 
 /**
  *
- * <p class="changed_added_2_0">This event must be published by a call
- * to {jakarta.faces.application.Application#publishEvent} when the view
- * map is first created.  This must happen on the first time a call is
- * made to {@link UIViewRoot#getViewMap} on a <code>UIViewRoot</code>
- * instance.  The source for this event is the
- * <code>UIViewRoot</code>.</p>
+ * <p class="changed_added_2_0">
+ * This event must be published by a call to {jakarta.faces.application.Application#publishEvent} when the view map is
+ * first created. This must happen on the first time a call is made to {@link UIViewRoot#getViewMap} on a
+ * <code>UIViewRoot</code> instance. The source for this event is the <code>UIViewRoot</code>.
+ * </p>
  *
  * @since 2.0
  */
@@ -36,32 +35,30 @@ public class PostConstructViewMapEvent extends ComponentSystemEvent {
 
     private static final long serialVersionUID = 8684338297976265379L;
 
-
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p class="changed_added_2_0">Instantiate a new
-     * <code>PostConstructViewMapEvent</code> that indicates the argument
-     * <code>root</code> was just associated with its view map.</p>
-
-     * @param root the <code>UIViewRoot</code> for which a view map has
-     * just been created.
+     * <p class="changed_added_2_0">
+     * Instantiate a new <code>PostConstructViewMapEvent</code> that indicates the argument <code>root</code> was just
+     * associated with its view map.
+     * </p>
+     * 
+     * @param root the <code>UIViewRoot</code> for which a view map has just been created.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */
     public PostConstructViewMapEvent(UIViewRoot root) {
         super(root);
     }
-    
-   /**
-     * <p class="changed_added_2_3">Instantiate a new
-     * <code>PostConstructViewMapEvent</code> that indicates the argument
-     * <code>root</code> was just associated with its view map.</p>
+
+    /**
+     * <p class="changed_added_2_3">
+     * Instantiate a new <code>PostConstructViewMapEvent</code> that indicates the argument <code>root</code> was just
+     * associated with its view map.
+     * </p>
      * 
      * @param facesContext the Faces context.
-     * @param root the <code>UIViewRoot</code> for which a view map has
-     * just been created.
+     * @param root the <code>UIViewRoot</code> for which a view map has just been created.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      */

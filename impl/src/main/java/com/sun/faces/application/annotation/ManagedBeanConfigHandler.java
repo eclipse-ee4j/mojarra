@@ -42,34 +42,24 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * <code>ConfigAnnotationHandler</code> for {@link ManagedBean} annotated
- * classes.
+ * <code>ConfigAnnotationHandler</code> for {@link ManagedBean} annotated classes.
  * </p>
  */
 public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
 
-    private static final Class<?>[] SCOPES = {
-          RequestScoped.class,
-          ViewScoped.class,
-          SessionScoped.class,
-          ApplicationScoped.class,
-          NoneScoped.class,
-          CustomScoped.class
-    };
+    private static final Class<?>[] SCOPES = { RequestScoped.class, ViewScoped.class, SessionScoped.class, ApplicationScoped.class, NoneScoped.class,
+            CustomScoped.class };
 
     private static final Collection<Class<? extends Annotation>> HANDLES;
     static {
-        Collection<Class<? extends Annotation>> handles =
-              new ArrayList<>(2);
+        Collection<Class<? extends Annotation>> handles = new ArrayList<>(2);
         handles.add(ManagedBean.class);
         HANDLES = Collections.unmodifiableCollection(handles);
     }
 
-    private Map<Class<?>,Annotation> managedBeans;
-
+    private Map<Class<?>, Annotation> managedBeans;
 
     // ------------------------------------ Methods from ConfigAnnotationHandler
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#getHandledAnnotations()
@@ -80,7 +70,6 @@ public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
         return HANDLES;
 
     }
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#collect(Class, java.lang.annotation.Annotation)
@@ -95,7 +84,6 @@ public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
 
     }
 
-
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)
      */
@@ -103,95 +91,61 @@ public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
     public void push(FacesContext ctx) {
 
         if (managedBeans != null) {
-            ApplicationAssociate associate =
-                  ApplicationAssociate.getInstance(ctx.getExternalContext());
+            ApplicationAssociate associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
             if (associate != null) {
                 BeanManager manager = associate.getBeanManager();
-                for (Map.Entry<Class<?>,Annotation> entry : managedBeans.entrySet()) {
+                for (Map.Entry<Class<?>, Annotation> entry : managedBeans.entrySet()) {
                     process(manager, entry.getKey(), entry.getValue());
                 }
             }
         }
     }
 
-
     // --------------------------------------------------------- Private Methods
 
+    private void process(BeanManager manager, Class<?> annotatedClass, Annotation annotation) {
 
-    private void process(BeanManager manager,
-                         Class<?> annotatedClass,
-                         Annotation annotation) {
-
-            manager.register(getBeanInfo(annotatedClass,
-                                         (ManagedBean) annotation));
+        manager.register(getBeanInfo(annotatedClass, (ManagedBean) annotation));
     }
 
-
-    private ManagedBeanInfo getBeanInfo(Class<?> annotatedClass,
-                                        ManagedBean metadata) {
+    private ManagedBeanInfo getBeanInfo(Class<?> annotatedClass, ManagedBean metadata) {
 
         String name = getName(metadata, annotatedClass);
         String scope = getScope(annotatedClass);
         boolean eager = metadata.eager();
-        
-        Map<String,Field> annotatedFields = new LinkedHashMap<>();
-        //Map<String, Method> annotatedMethods = new LinkedHashMap<String,Method>();
+
+        Map<String, Field> annotatedFields = new LinkedHashMap<>();
+        // Map<String, Method> annotatedMethods = new LinkedHashMap<String,Method>();
         collectAnnotatedFields(annotatedClass, annotatedFields);
-        //collectAnnotatedMethods(annotatedClass,
-        //                        annotatedMethods,
-        //                        annotatedFields.keySet());
+        // collectAnnotatedMethods(annotatedClass,
+        // annotatedMethods,
+        // annotatedFields.keySet());
 
         List<ManagedBeanInfo.ManagedProperty> properties = null;
 
         if (!annotatedFields.isEmpty()) {
             properties = new ArrayList<>(annotatedFields.size());
-            for (Map.Entry<String,Field> entry : annotatedFields.entrySet()) {
+            for (Map.Entry<String, Field> entry : annotatedFields.entrySet()) {
                 Field f = entry.getValue();
                 ManagedProperty property = f.getAnnotation(ManagedProperty.class);
-                ManagedBeanInfo.ManagedProperty propertyInfo =
-                          new ManagedBeanInfo.ManagedProperty(entry.getKey(),
-                                                              f.getType().getName(),
-                                                              property.value(),
-                                                              null,
-                                                              null);
+                ManagedBeanInfo.ManagedProperty propertyInfo = new ManagedBeanInfo.ManagedProperty(entry.getKey(), f.getType().getName(), property.value(),
+                        null, null);
                 properties.add(propertyInfo);
             }
         }
         /*
-        if (!annotatedMethods.isEmpty()) {
-            if (properties == null) {
-                properties = new ArrayList<ManagedBeanInfo.ManagedProperty>(annotatedMethods.size());
-                for (Map.Entry<String,Method> entry : annotatedMethods.entrySet()) {
-                    Method m = entry.getValue();
-                    ManagedProperty property = m.getAnnotation(ManagedProperty.class);
-                    String alias = property.name();
-                    if (alias != null && alias.length() == 0) {
-                        alias = null;
-                    }
-                    ManagedBeanInfo.ManagedProperty propertyInfo =
-                          new ManagedBeanInfo.ManagedProperty(alias,
-                                                              entry.getKey(),
-                                                              m.getParameterTypes()[0].getName(),
-                                                              property.value(),
-                                                              null,
-                                                              null);
-                    properties.add(propertyInfo);
-                }
-            }
-        }
-        */
+         * if (!annotatedMethods.isEmpty()) { if (properties == null) { properties = new
+         * ArrayList<ManagedBeanInfo.ManagedProperty>(annotatedMethods.size()); for (Map.Entry<String,Method> entry :
+         * annotatedMethods.entrySet()) { Method m = entry.getValue(); ManagedProperty property =
+         * m.getAnnotation(ManagedProperty.class); String alias = property.name(); if (alias != null && alias.length() == 0) {
+         * alias = null; } ManagedBeanInfo.ManagedProperty propertyInfo = new ManagedBeanInfo.ManagedProperty(alias,
+         * entry.getKey(), m.getParameterTypes()[0].getName(), property.value(), null, null); properties.add(propertyInfo); } }
+         * }
+         */
 
-        return new ManagedBeanInfo(name,
-                                   annotatedClass.getName(),
-                                   scope,
-                                   eager,
-                                   null,
-                                   null,
-                                   properties,
-                                   null);
+        return new ManagedBeanInfo(name, annotatedClass.getName(), scope, eager, null, null, properties, null);
 
     }
-
 
 //    private void collectAnnotatedMethods(Class<?> baseClass,
 //                                         Map<String,Method> annotatedMethods,
@@ -224,8 +178,7 @@ public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
 //        }
 //    }
 
-
-    private void collectAnnotatedFields(Class<?> baseClass, Map<String,Field> annotatedFields) {
+    private void collectAnnotatedFields(Class<?> baseClass, Map<String, Field> annotatedFields) {
 
         Field[] fields = baseClass.getDeclaredFields();
         for (Field field : fields) {
@@ -249,18 +202,18 @@ public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
 
     }
 
-
     private String getScope(Class<?> annotatedClass) {
 
         for (Class<?> scope : SCOPES) {
-            //noinspection unchecked
+            // noinspection unchecked
             Annotation a = annotatedClass.getAnnotation((Class<? extends Annotation>) scope);
             if (a != null) {
                 if (a instanceof RequestScoped) {
                     return "request";
                 } else if (a instanceof ViewScoped) {
                     return "view";
-                } if (a instanceof SessionScoped) {
+                }
+                if (a instanceof SessionScoped) {
                     return "session";
                 } else if (a instanceof ApplicationScoped) {
                     return "application";
@@ -275,7 +228,6 @@ public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
         return "request";
 
     }
-
 
     private String getName(ManagedBean managedBean, Class<?> annotatedClass) {
 
@@ -292,6 +244,5 @@ public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
         return name;
 
     }
-
 
 }

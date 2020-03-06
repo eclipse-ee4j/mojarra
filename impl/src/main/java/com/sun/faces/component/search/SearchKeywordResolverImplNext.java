@@ -29,15 +29,14 @@ public class SearchKeywordResolverImplNext extends SearchKeywordResolver {
     @Override
     public void resolve(SearchKeywordContext searchKeywordContext, UIComponent current, String keyword) {
         UIComponent parent = current.getParent();
-        
+
         if (parent.getChildCount() > 1) {
             List<UIComponent> children = parent.getChildren();
             int index = children.indexOf(current);
 
             if (index < parent.getChildCount() - 1) {
                 int nextIndex = -1;
-                do
-                {
+                do {
                     index++;
                     if (!(children.get(index) instanceof UntargetableComponent)) {
                         nextIndex = index;
@@ -57,5 +56,5 @@ public class SearchKeywordResolverImplNext extends SearchKeywordResolver {
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "next".equals(keyword);
     }
-    
+
 }

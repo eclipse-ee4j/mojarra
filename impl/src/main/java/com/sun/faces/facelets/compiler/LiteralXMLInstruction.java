@@ -27,10 +27,10 @@ import java.io.IOException;
 final class LiteralXMLInstruction implements Instruction {
 
     private final static char[] STOP = new char[0];
-    
+
     private final char[] instruction;
     private final int len;
-    
+
     public LiteralXMLInstruction(String literal) {
         this.instruction = literal.toCharArray();
         this.len = this.instruction.length;

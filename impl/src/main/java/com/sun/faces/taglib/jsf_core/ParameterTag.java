@@ -42,7 +42,6 @@ public class ParameterTag extends UIComponentELTag {
 
 // Attribute Instance Variables
 
-
 // Relationship Instance Variables
 
 //
@@ -64,7 +63,6 @@ public class ParameterTag extends UIComponentELTag {
         this.name = name;
     }
 
-
     public void setValue(ValueExpression value) {
         this.value = value;
     }
@@ -78,12 +76,10 @@ public class ParameterTag extends UIComponentELTag {
         return null;
     }
 
-
     @Override
     public String getComponentType() {
         return "jakarta.faces.Parameter";
     }
-
 
     @Override
     protected void setProperties(UIComponent component) {

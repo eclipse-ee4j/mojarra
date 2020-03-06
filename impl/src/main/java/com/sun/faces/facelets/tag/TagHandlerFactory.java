@@ -33,12 +33,10 @@ interface TagHandlerFactory {
     /**
      * A new TagHandler instantiated with the passed TagConfig
      * 
-     * @param cfg
-     *            TagConfiguration information
+     * @param cfg TagConfiguration information
      * @return a new TagHandler
      * @throws FacesException
      * @throws ELException
      */
-    public TagHandler createHandler(TagConfig cfg) throws FacesException,
-            ELException;
+    public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException;
 }

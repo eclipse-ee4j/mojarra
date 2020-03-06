@@ -73,7 +73,7 @@ public final class UIDebug extends UIComponentBase {
 
     @Override
     public void encodeBegin(FacesContext facesContext) throws IOException {
-        
+
         if (isRendered()) {
             pushComponentToEL(facesContext, this);
             String actionId = facesContext.getApplication().getViewHandler().getActionURL(facesContext, facesContext.getViewRoot().getViewId());
@@ -83,10 +83,12 @@ public final class UIDebug extends UIComponentBase {
             sb.append("function faceletsDebug(URL) {");
             sb.append("day = new Date();");
             sb.append("id = day.getTime();");
-            sb.append("eval(\"page\" + id + \" = window.open(URL, '\" + id + \"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left = 240,top = 212');\"); };");
+            sb.append(
+                    "eval(\"page\" + id + \" = window.open(URL, '\" + id + \"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left = 240,top = 212');\"); };");
             sb.append("(function() { if (typeof jsfFaceletsDebug === 'undefined') { var jsfFaceletsDebug = false; } if (!jsfFaceletsDebug) {");
             sb.append("var faceletsOrigKeyup = document.onkeyup;");
-            sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '" + this.getHotkey() + "' & e.shiftKey & e.ctrlKey) faceletsDebug('");
+            sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '" + this.getHotkey()
+                    + "' & e.shiftKey & e.ctrlKey) faceletsDebug('");
             sb.append(actionId);
             sb.append(actionId.indexOf('?') == -1 ? '?' : '&');
             sb.append(KEY);
@@ -144,8 +146,7 @@ public final class UIDebug extends UIComponentBase {
         String id = (String) faces.getExternalContext().getRequestParameterMap().get(KEY);
         if (id != null) {
             Object resp = faces.getExternalContext().getResponse();
-            if (!faces.getResponseComplete()
-                    && resp instanceof HttpServletResponse) {
+            if (!faces.getResponseComplete() && resp instanceof HttpServletResponse) {
                 try {
                     HttpServletResponse httpResp = (HttpServletResponse) resp;
                     String page = fetchDebugOutput(faces, id);

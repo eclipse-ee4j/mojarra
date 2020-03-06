@@ -37,8 +37,9 @@ import jakarta.servlet.jsp.JspException;
 import com.sun.faces.el.ELUtils;
 
 /**
- * <p>ConvertNumberTag is a ConverterTag implementation for
- * jakarta.faces.convert.NumberConverter</p>
+ * <p>
+ * ConvertNumberTag is a ConverterTag implementation for jakarta.faces.convert.NumberConverter
+ * </p>
  *
  */
 
@@ -46,9 +47,8 @@ public class ConvertNumberTag extends AbstractConverterTag {
 
     private static final long serialVersionUID = -2710405278792415110L;
     private static ValueExpression CONVERTER_ID_EXPR = null;
-    
-    private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
+    private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
     //
     // Instance Variables
@@ -84,24 +84,22 @@ public class ConvertNumberTag extends AbstractConverterTag {
     private boolean minIntegerDigitsSpecified;
 
     // Attribute Instance Variables
-    
+
     // Relationship Instance Variables
 
     //
-    // Constructors and Initializers    
+    // Constructors and Initializers
     //
     public ConvertNumberTag() {
         super();
         init();
     }
 
-
     @Override
     public void release() {
         super.release();
         init();
     }
-
 
     private void init() {
         currencyCode = null;
@@ -132,14 +130,10 @@ public class ConvertNumberTag extends AbstractConverterTag {
         typeExpression = null;
         if (CONVERTER_ID_EXPR == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            ExpressionFactory factory =
-                context.getApplication().getExpressionFactory();
-            CONVERTER_ID_EXPR =
-                factory.createValueExpression(context.getELContext(), 
-                    "jakarta.faces.Number", String.class);
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            CONVERTER_ID_EXPR = factory.createValueExpression(context.getELContext(), "jakarta.faces.Number", String.class);
         }
     }
-
 
     //
     // Class methods
@@ -153,54 +147,44 @@ public class ConvertNumberTag extends AbstractConverterTag {
         this.currencyCodeExpression = currencyCode;
     }
 
-
     public void setCurrencySymbol(ValueExpression currencySymbol) {
         this.currencySymbolExpression = currencySymbol;
     }
-
 
     public void setGroupingUsed(ValueExpression groupingUsed) {
         this.groupingUsedExpression = groupingUsed;
     }
 
-
     public void setIntegerOnly(ValueExpression integerOnly) {
         this.integerOnlyExpression = integerOnly;
     }
-
 
     public void setMaxFractionDigits(ValueExpression maxFractionDigits) {
         this.maxFractionDigitsExpression = maxFractionDigits;
         this.maxFractionDigitsSpecified = true;
     }
 
-
     public void setMaxIntegerDigits(ValueExpression maxIntegerDigits) {
         this.maxIntegerDigitsExpression = maxIntegerDigits;
         this.maxIntegerDigitsSpecified = true;
     }
-
 
     public void setMinFractionDigits(ValueExpression minFractionDigits) {
         this.minFractionDigitsExpression = minFractionDigits;
         this.minFractionDigitsSpecified = true;
     }
 
-
     public void setMinIntegerDigits(ValueExpression minIntegerDigits) {
         this.minIntegerDigitsExpression = minIntegerDigits;
     }
-
 
     public void setLocale(ValueExpression locale) {
         this.localeExpression = locale;
     }
 
-
     public void setPattern(ValueExpression pattern) {
         this.patternExpression = pattern;
     }
-
 
     public void setType(ValueExpression type) {
         this.typeExpression = type;
@@ -212,9 +196,9 @@ public class ConvertNumberTag extends AbstractConverterTag {
         return super.doStartTag();
     }
 
-    // 
+    //
     // Methods from ConverterTag
-    // 
+    //
 
     @Override
     protected Converter createConverter() throws JspException {
@@ -246,7 +230,6 @@ public class ConvertNumberTag extends AbstractConverterTag {
         return result;
     }
 
-
     /* Evaluates expressions as necessary */
     private void evaluateExpressions() {
 
@@ -254,123 +237,76 @@ public class ConvertNumberTag extends AbstractConverterTag {
         ELContext elContext = facesContext.getELContext();
 
         if (currencyCodeExpression != null) {
-            currencyCode = (String)
-            ELUtils.evaluateValueExpression(currencyCodeExpression,
-                elContext);
+            currencyCode = (String) ELUtils.evaluateValueExpression(currencyCodeExpression, elContext);
         }
         if (currencySymbolExpression != null) {
-            currencySymbol = (String)
-            ELUtils.evaluateValueExpression(currencySymbolExpression,
-                elContext);
+            currencySymbol = (String) ELUtils.evaluateValueExpression(currencySymbolExpression, elContext);
         }
         if (patternExpression != null) {
-            pattern = (String)
-            ELUtils.evaluateValueExpression(patternExpression,
-                elContext);
+            pattern = (String) ELUtils.evaluateValueExpression(patternExpression, elContext);
         }
         if (typeExpression != null) {
-            type = (String)
-            ELUtils.evaluateValueExpression(typeExpression,
-                elContext);
+            type = (String) ELUtils.evaluateValueExpression(typeExpression, elContext);
         }
         if (groupingUsedExpression != null) {
             if (groupingUsedExpression.isLiteralText()) {
-                groupingUsed =
-                Boolean.valueOf(
-                    groupingUsedExpression.getExpressionString()).
-                    booleanValue();
+                groupingUsed = Boolean.valueOf(groupingUsedExpression.getExpressionString()).booleanValue();
             } else {
-                groupingUsed = ((Boolean)
-                                   ELUtils.evaluateValueExpression(groupingUsedExpression,
-                                       elContext)).booleanValue();
+                groupingUsed = ((Boolean) ELUtils.evaluateValueExpression(groupingUsedExpression, elContext)).booleanValue();
             }
         }
         if (integerOnlyExpression != null) {
             if (integerOnlyExpression.isLiteralText()) {
-                integerOnly =
-                Boolean.valueOf(
-                    integerOnlyExpression.getExpressionString()).
-                    booleanValue();
+                integerOnly = Boolean.valueOf(integerOnlyExpression.getExpressionString()).booleanValue();
             } else {
-                integerOnly = ((Boolean)
-                                  ELUtils.evaluateValueExpression(integerOnlyExpression,
-                                      elContext)).booleanValue();
+                integerOnly = ((Boolean) ELUtils.evaluateValueExpression(integerOnlyExpression, elContext)).booleanValue();
             }
         }
         if (maxFractionDigitsExpression != null) {
             if (maxFractionDigitsExpression.isLiteralText()) {
-                maxFractionDigits =
-                Integer.valueOf(
-                    maxFractionDigitsExpression.getExpressionString()).
-                    intValue();
+                maxFractionDigits = Integer.valueOf(maxFractionDigitsExpression.getExpressionString()).intValue();
             } else {
-                maxFractionDigits = ((Integer)
-                                        ELUtils.evaluateValueExpression(maxFractionDigitsExpression,
-                                            elContext)).intValue();
+                maxFractionDigits = ((Integer) ELUtils.evaluateValueExpression(maxFractionDigitsExpression, elContext)).intValue();
             }
         }
         if (maxIntegerDigitsExpression != null) {
             if (maxIntegerDigitsExpression.isLiteralText()) {
-                maxIntegerDigits =
-                Integer.valueOf(
-                    maxIntegerDigitsExpression.getExpressionString()).
-                    intValue();
+                maxIntegerDigits = Integer.valueOf(maxIntegerDigitsExpression.getExpressionString()).intValue();
             } else {
-                maxIntegerDigits = ((Integer)
-                                       ELUtils.evaluateValueExpression(maxIntegerDigitsExpression,
-                                           elContext)).intValue();
+                maxIntegerDigits = ((Integer) ELUtils.evaluateValueExpression(maxIntegerDigitsExpression, elContext)).intValue();
             }
         }
         if (minFractionDigitsExpression != null) {
             if (minFractionDigitsExpression.isLiteralText()) {
-                minFractionDigits =
-                Integer.valueOf(
-                    minFractionDigitsExpression.getExpressionString()).
-                    intValue();
+                minFractionDigits = Integer.valueOf(minFractionDigitsExpression.getExpressionString()).intValue();
             } else {
-                minFractionDigits = ((Integer)
-                                        ELUtils.evaluateValueExpression(minFractionDigitsExpression,
-                                            elContext)).intValue();
+                minFractionDigits = ((Integer) ELUtils.evaluateValueExpression(minFractionDigitsExpression, elContext)).intValue();
             }
         }
         if (minIntegerDigitsExpression != null) {
             if (minIntegerDigitsExpression.isLiteralText()) {
-                minIntegerDigits =
-                Integer.valueOf(
-                    minIntegerDigitsExpression.getExpressionString()).
-                    intValue();
+                minIntegerDigits = Integer.valueOf(minIntegerDigitsExpression.getExpressionString()).intValue();
             } else {
-                minIntegerDigits = ((Integer)
-                                       ELUtils.evaluateValueExpression(minIntegerDigitsExpression,
-                                           elContext)).intValue();
+                minIntegerDigits = ((Integer) ELUtils.evaluateValueExpression(minIntegerDigitsExpression, elContext)).intValue();
             }
         }
-        
+
         if (localeExpression != null) {
             if (localeExpression.isLiteralText()) {
                 locale = getLocale(localeExpression.getExpressionString());
             } else {
-                Object loc = ELUtils.evaluateValueExpression(localeExpression,
-                                                          elContext);
+                Object loc = ELUtils.evaluateValueExpression(localeExpression, elContext);
                 if (loc != null) {
                     if (loc instanceof String) {
                         locale = getLocale((String) loc);
                     } else if (loc instanceof Locale) {
                         locale = (Locale) loc;
                     } else {
-                        Object[] params = {
-                            "locale",
-                            "java.lang.String or java.util.Locale",
-                            loc.getClass().getName()
-                        };
+                        Object[] params = { "locale", "java.lang.String or java.util.Locale", loc.getClass().getName() };
                         if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE,
-                                       "jsf.core.tags.eval_result_not_expected_type",
-                                       params);
+                            LOGGER.log(Level.SEVERE, "jsf.core.tags.eval_result_not_expected_type", params);
                         }
-                        throw new FacesException(
-                            MessageUtils.getExceptionMessageString(
-                                MessageUtils.EVAL_ATTR_UNEXPECTED_TYPE, params));
+                        throw new FacesException(MessageUtils.getExceptionMessageString(MessageUtils.EVAL_ATTR_UNEXPECTED_TYPE, params));
                     }
                 } else {
                     locale = facesContext.getViewRoot().getLocale();
@@ -380,7 +316,6 @@ public class ConvertNumberTag extends AbstractConverterTag {
 
     }
 
-
     protected static Locale getLocale(String string) {
         if (string == null) {
             return Locale.getDefault();
@@ -388,23 +323,19 @@ public class ConvertNumberTag extends AbstractConverterTag {
 
         if (string.length() > 2) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING,
-                           "jsf.core.taglib.invalid_locale_value",
-                           string);
+                LOGGER.log(Level.WARNING, "jsf.core.taglib.invalid_locale_value", string);
             }
         } else {
             String[] langs = Locale.getISOLanguages();
             Arrays.sort(langs);
             if (Arrays.binarySearch(langs, string) < 0) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
-                               "jsf.core.taglib.invalid_language",
-                               string);
+                    LOGGER.log(Level.WARNING, "jsf.core.taglib.invalid_language", string);
+                }
             }
         }
-    }
 
         return new Locale(string, "");
     }
-    
+
 } // end of class ConvertNumberTag

@@ -30,9 +30,8 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.List;
 
-
 public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
-    
+
     private TagAttribute name = null;
     private TagAttribute targets = null;
 
@@ -41,24 +40,20 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
         this.name = this.getRequiredAttribute("name");
         this.targets = this.getAttribute("targets");
     }
-    
-    abstract AttachedObjectTargetImpl newAttachedObjectTargetImpl();
-    
-    @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-    throws IOException {
 
-        assert(ctx.getFacesContext().getAttributes().containsKey(FaceletViewHandlingStrategy.IS_BUILDING_METADATA));
-        
+    abstract AttachedObjectTargetImpl newAttachedObjectTargetImpl();
+
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+
+        assert (ctx.getFacesContext().getAttributes().containsKey(FaceletViewHandlingStrategy.IS_BUILDING_METADATA));
+
         // only process if it's been created
-        if (null == parent || 
-            (null == (parent = parent.getParent())) ||
-            !(ComponentHandler.isNew(parent))) {
+        if (null == parent || (null == (parent = parent.getParent())) || !(ComponentHandler.isNew(parent))) {
             return;
         }
 
-        BeanInfo componentBeanInfo = (BeanInfo)
-                parent.getAttributes().get(UIComponent.BEANINFO_KEY);
+        BeanInfo componentBeanInfo = (BeanInfo) parent.getAttributes().get(UIComponent.BEANINFO_KEY);
         if (null == componentBeanInfo) {
             throw new TagException(this.tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
         }
@@ -67,11 +62,10 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
             throw new TagException(this.tag, "Error: I have an EditableValueHolder tag, but no enclosing composite component");
         }
 
-        List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>)
-                componentDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
+        List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>) componentDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
         AttachedObjectTargetImpl target = newAttachedObjectTargetImpl();
         targetList.add(target);
-        
+
         ValueExpression ve = name.getValueExpression(ctx, String.class);
         String strValue = (String) ve.getValue(ctx);
         if (null != strValue) {
@@ -82,9 +76,9 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
             ve = targets.getValueExpression(ctx, String.class);
             target.setTargetsList(ve);
         }
-        
+
         this.nextHandler.apply(ctx, parent);
-        
+
     }
 
 }

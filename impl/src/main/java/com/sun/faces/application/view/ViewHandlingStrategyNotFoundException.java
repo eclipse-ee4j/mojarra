@@ -19,24 +19,22 @@ package com.sun.faces.application.view;
 import jakarta.faces.FacesException;
 
 /**
- * Indicates that no {@link com.sun.faces.application.view.ViewHandlingStrategy}
- * instances were found appropriate to a particulare view ID.
+ * Indicates that no {@link com.sun.faces.application.view.ViewHandlingStrategy} instances were found appropriate to a
+ * particulare view ID.
  */
 public class ViewHandlingStrategyNotFoundException extends FacesException {
 
     private static final long serialVersionUID = 542553047788916981L;
 
-
     // ------------------------------------------------------------ Constructors
 
     /**
-     * @see FacesException#FacesException() 
+     * @see FacesException#FacesException()
      */
     public ViewHandlingStrategyNotFoundException() {
 
         super();
 
     }
-
 
 }

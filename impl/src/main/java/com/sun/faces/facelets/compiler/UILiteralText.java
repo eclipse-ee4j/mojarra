@@ -22,9 +22,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 public final class UILiteralText extends UILeaf {
-    
+
     private final String text;
-    
+
     public UILiteralText(String text) {
         this.text = text;
     }
@@ -36,6 +36,7 @@ public final class UILiteralText extends UILeaf {
             writer.write(this.text);
         }
     }
+
     @Override
     public String toString() {
         return this.text;

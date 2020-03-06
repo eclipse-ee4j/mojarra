@@ -20,17 +20,15 @@ import java.net.URL;
 
 public class FaceletResourceInfo extends ResourceInfo {
 
-    FaceletResourceInfo(ContractInfo contract, String name, VersionInfo version, 
-            ResourceHelper helper, URL url) {
+    FaceletResourceInfo(ContractInfo contract, String name, VersionInfo version, ResourceHelper helper, URL url) {
         super(contract, name, version, helper);
         this.url = url;
     }
-    
+
     private URL url;
 
     public URL getUrl() {
         return url;
     }
-    
-    
+
 }

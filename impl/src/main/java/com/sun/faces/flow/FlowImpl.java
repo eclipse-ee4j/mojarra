@@ -45,11 +45,11 @@ public class FlowImpl extends Flow implements Serializable {
     private static final long serialVersionUID = 5287030395068302998L;
 
     public static final Flow SYNTHESIZED_RETURN_CASE_FLOW = new FlowImpl(FlowHandler.NULL_FLOW);
-    
+
     public static final Flow ABANDONED_FLOW = new FlowImpl(FlowHandlerImpl.ABANDONED_FLOW);
 
-    // <editor-fold defaultstate="collapsed" desc="Instance variables">    
-    
+    // <editor-fold defaultstate="collapsed" desc="Instance variables">
+
     private String id;
     private String definingDocumentId;
     private String startNodeId;
@@ -60,7 +60,7 @@ public class FlowImpl extends Flow implements Serializable {
     private final CopyOnWriteArrayList<MethodCallNode> _methodCalls;
     private final List<MethodCallNode> methodCalls;
     private final ConcurrentHashMap<String, Parameter> _inboundParameters;
-    private final Map<String,Parameter> inboundParameters;
+    private final Map<String, Parameter> inboundParameters;
     private final ConcurrentHashMap<String, ReturnNode> _returns;
     private final Map<String, ReturnNode> returns;
     private final ConcurrentHashMap<String, SwitchNode> _switches;
@@ -71,10 +71,10 @@ public class FlowImpl extends Flow implements Serializable {
     private MethodExpression initializer;
     private MethodExpression finalizer;
     private boolean hasBeenInitialized = false;
-    
+
     // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="Constructors">       
+
+    // <editor-fold defaultstate="collapsed" desc="Constructors">
 
     public FlowImpl() {
         _inboundParameters = new ConcurrentHashMap<>();
@@ -93,7 +93,7 @@ public class FlowImpl extends Flow implements Serializable {
         _methodCalls = new CopyOnWriteArrayList<>();
         methodCalls = Collections.unmodifiableList(_methodCalls);
     }
-    
+
     private FlowImpl(String id) {
         this.id = id;
         definingDocumentId = null;
@@ -116,12 +116,12 @@ public class FlowImpl extends Flow implements Serializable {
         initializer = null;
         finalizer = null;
         hasBeenInitialized = true;
-    }    
+    }
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Object helpers">       
-        
+    // <editor-fold defaultstate="collapsed" desc="Object helpers">
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -168,10 +168,8 @@ public class FlowImpl extends Flow implements Serializable {
     }
 
     // </editor-fold>
-    
-   
-    // <editor-fold defaultstate="collapsed" desc="Simple properties">       
 
+    // <editor-fold defaultstate="collapsed" desc="Simple properties">
 
     @Override
     public String getId() {
@@ -216,20 +214,19 @@ public class FlowImpl extends Flow implements Serializable {
     public void setInitializer(MethodExpression initializer) {
         this.initializer = initializer;
     }
-    
+
     @Override
     public Map<String, Parameter> getInboundParameters() {
         return inboundParameters;
-    }    
-    
+    }
+
     public Map<String, Parameter> _getInboundParameters() {
         return _inboundParameters;
-    }    
-    
+    }
+
     // </editor-fold>
 
-    
-    // <editor-fold defaultstate="collapsed" desc="Graph properties">       
+    // <editor-fold defaultstate="collapsed" desc="Graph properties">
 
     @Override
     public List<ViewNode> getViews() {
@@ -241,29 +238,29 @@ public class FlowImpl extends Flow implements Serializable {
     }
 
     @Override
-    public Map<String,ReturnNode> getReturns() {
+    public Map<String, ReturnNode> getReturns() {
         return returns;
     }
-    
-    public Map<String,ReturnNode> _getReturns() {
+
+    public Map<String, ReturnNode> _getReturns() {
         return _returns;
     }
 
     @Override
-    public Map<String,SwitchNode> getSwitches() {
+    public Map<String, SwitchNode> getSwitches() {
         return switches;
     }
-    
-    public Map<String,SwitchNode> _getSwitches() {
+
+    public Map<String, SwitchNode> _getSwitches() {
         return _switches;
     }
 
     @Override
-    public Map<String,FlowCallNode> getFlowCalls() {
+    public Map<String, FlowCallNode> getFlowCalls() {
         return facesFlowCalls;
     }
 
-    public Map<String,FlowCallNode> _getFlowCalls() {
+    public Map<String, FlowCallNode> _getFlowCalls() {
         return _facesFlowCalls;
     }
 
@@ -271,11 +268,11 @@ public class FlowImpl extends Flow implements Serializable {
     public Map<String, Set<NavigationCase>> getNavigationCases() {
         return navigationCases;
     }
-    
+
     public Map<String, Set<NavigationCase>> _getNavigationCases() {
         return _navigationCases;
     }
-    
+
     @Override
     public FlowCallNode getFlowCall(Flow targetFlow) {
         String targetFlowId = targetFlow.getId();
@@ -284,7 +281,7 @@ public class FlowImpl extends Flow implements Serializable {
             this.init(context);
         }
         FlowCallNode result = _facesFlowCallsByTargetFlowId.get(targetFlowId);
-        
+
         return result;
     }
 
@@ -299,14 +296,13 @@ public class FlowImpl extends Flow implements Serializable {
 
     // </editor-fold>
 
-    
-    // <editor-fold defaultstate="collapsed" desc="Graph navigation">       
-    
+    // <editor-fold defaultstate="collapsed" desc="Graph navigation">
+
     @Override
     public FlowNode getNode(String nodeId) {
         List<ViewNode> myViews = getViews();
         FlowNode result = null;
-        
+
         if (null != myViews) {
             for (ViewNode cur : myViews) {
                 if (nodeId.equals(cur.getId())) {
@@ -332,52 +328,49 @@ public class FlowImpl extends Flow implements Serializable {
             Map<String, FlowCallNode> myCalls = getFlowCalls();
             result = myCalls.get(nodeId);
         }
-        
+
         if (null == result) {
             Map<String, ReturnNode> myReturns = getReturns();
             result = myReturns.get(nodeId);
         }
-        
+
         return result;
-        
+
     }
-    
+
     // </editor-fold>
 
-    
-    // <editor-fold defaultstate="collapsed" desc="Outside interaction">       
-    
-    
+    // <editor-fold defaultstate="collapsed" desc="Outside interaction">
+
     @Override
     public String getClientWindowFlowId(ClientWindow curWindow) {
         String result = null;
 
         result = curWindow.getId() + "_" + getId();
-        
+
         return result;
     }
-    
+
     // </editor-fold>
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="Helpers">
-    
+
     public void init(FacesContext context) {
         if (hasBeenInitialized) {
             return;
         }
         hasBeenInitialized = true;
-        
+
         // Populate lookup data structures.
         FlowCallNode curNode = null;
         String curTargetFlowId = null;
-        for (Map.Entry<String,FlowCallNode> cur : _facesFlowCalls.entrySet()) {
+        for (Map.Entry<String, FlowCallNode> cur : _facesFlowCalls.entrySet()) {
             curNode = cur.getValue();
             curTargetFlowId = curNode.getCalledFlowId(context);
             _facesFlowCallsByTargetFlowId.put(curTargetFlowId, curNode);
         }
     }
-    
+
     // </editor-fold>
-    
+
 }

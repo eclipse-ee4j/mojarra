@@ -20,16 +20,15 @@ import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 
 /**
- * Utility class to enable partial state saving of components that have been
- * dynamically added to the view.
+ * Utility class to enable partial state saving of components that have been dynamically added to the view.
  */
-public class ComponentStruct implements StateHolder {   
-    
+public class ComponentStruct implements StateHolder {
+
     /**
      * Marker that specifies this is an ADD.
      */
     public static final String ADD = "ADD";
-    
+
     /**
      * Marker that specifies this is a REMOVE.
      */
@@ -40,15 +39,16 @@ public class ComponentStruct implements StateHolder {
     private String parentClientId;
     private String clientId;
     private String id;
-    
-    public ComponentStruct() {}
-    
+
+    public ComponentStruct() {
+    }
+
     public ComponentStruct(String action, String clientId, String id) {
         this.action = action;
         this.clientId = clientId;
         this.id = id;
     }
-    
+
     public ComponentStruct(String action, String facetName, String parentClientId, String clientId, String id) {
         this.action = action;
         this.facetName = facetName;
@@ -67,11 +67,11 @@ public class ComponentStruct implements StateHolder {
         if (ctx == null) {
             throw new NullPointerException();
         }
-        
+
         if (state == null) {
             return;
         }
-        
+
         Object s[] = (Object[]) state;
         this.action = (String) s[0];
         this.parentClientId = (String) s[1];
@@ -85,14 +85,14 @@ public class ComponentStruct implements StateHolder {
         if (ctx == null) {
             throw new NullPointerException();
         }
-        
+
         Object state[] = new Object[5];
         state[0] = this.action;
         state[1] = this.parentClientId;
         state[2] = this.clientId;
         state[3] = this.id;
         state[4] = this.facetName;
-        
+
         return state;
     }
 
@@ -103,12 +103,12 @@ public class ComponentStruct implements StateHolder {
     @Override
     public boolean equals(Object obj) {
         boolean result = false;
-        
+
         if (obj instanceof ComponentStruct) {
             ComponentStruct struct = (ComponentStruct) obj;
             result = struct.clientId.equals(this.clientId);
         }
-        
+
         return result;
     }
 
@@ -123,7 +123,7 @@ public class ComponentStruct implements StateHolder {
         hash = 89 * hash + (this.clientId != null ? this.clientId.hashCode() : 0);
         return hash;
     }
-    
+
     public String getAction() {
         return action;
     }
@@ -143,5 +143,5 @@ public class ComponentStruct implements StateHolder {
     public String getId() {
         return id;
     }
-    
+
 }

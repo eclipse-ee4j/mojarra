@@ -24,8 +24,7 @@ import java.util.Set;
 public class TypedCollections {
 
     /**
-     * Dynamically check that the members of the collection are all instances of the given type (or
-     * null).
+     * Dynamically check that the members of the collection are all instances of the given type (or null).
      */
     private static boolean checkCollectionMembers(Collection<?> c, Class<?> type) {
         for (Object element : c) {
@@ -37,8 +36,8 @@ public class TypedCollections {
     }
 
     /**
-     * Dynamically check that the members of the collection are all instances of the given type (or
-     * null), and that the collection itself is of the given collection type.
+     * Dynamically check that the members of the collection are all instances of the given type (or null), and that the
+     * collection itself is of the given collection type.
      * 
      * @param <E> the collection's element type
      * @param c the collection to cast
@@ -86,8 +85,7 @@ public class TypedCollections {
     }
 
     /**
-     * Dynamically check that the keys and values in the map are all instances of the correct types
-     * (or null).
+     * Dynamically check that the keys and values in the map are all instances of the correct types (or null).
      * 
      * @param <K> the map's key type
      * @param <V> the map's value type

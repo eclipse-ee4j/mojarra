@@ -24,14 +24,13 @@ import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 
-
 public class HttpMethodRestrictionsPhaseListener implements PhaseListener {
-    
+
     private static final long serialVersionUID = 179883834600711161L;
 
     public HttpMethodRestrictionsPhaseListener() {
     }
-    
+
     @Override
     public void afterPhase(PhaseEvent event) {
     }
@@ -40,10 +39,10 @@ public class HttpMethodRestrictionsPhaseListener implements PhaseListener {
     public void beforePhase(PhaseEvent event) {
         FacesContext context = event.getFacesContext();
         ExternalContext extContext = context.getExternalContext();
-        
+
         Object requestObj = extContext.getRequest();
         if (requestObj instanceof HttpServletRequest) {
-            String method = ((HttpServletRequest)requestObj).getMethod();
+            String method = ((HttpServletRequest) requestObj).getMethod();
             if (method.equals("OPTIONS")) {
                 context.responseComplete();
             }
@@ -55,7 +54,5 @@ public class HttpMethodRestrictionsPhaseListener implements PhaseListener {
     public PhaseId getPhaseId() {
         return PhaseId.RESTORE_VIEW;
     }
-    
-    
-    
+
 }

@@ -21,19 +21,16 @@ import java.io.IOException;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <B>ListRenderer</B> is a class that renders the current value of
- * <code>UISelectOne<code> or <code>UISelectMany<code> component as a list of
- * options.
+ * <B>ListRenderer</B> is a class that renders the current value of <code>UISelectOne<code> or <code>UISelectMany<code>
+ * component as a list of options.
  */
 
 public class ListboxRenderer extends MenuRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-
     @Override
-    protected void writeDefaultSize(ResponseWriter writer, int itemCount)
-          throws IOException {
+    protected void writeDefaultSize(ResponseWriter writer, int itemCount) throws IOException {
 
         // If size not specified, default to number of items
         writer.writeAttribute("size", itemCount, "size");

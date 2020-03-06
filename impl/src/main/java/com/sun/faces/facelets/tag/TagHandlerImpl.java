@@ -34,11 +34,10 @@ public abstract class TagHandlerImpl extends TagHandler {
     public TagHandlerImpl(TagConfig config) {
         super(config);
     }
-    
+
     /**
-     * Searches child handlers, starting at the 'nextHandler' for all
-     * instances of the passed type.  This process will stop searching
-     * a branch if an instance is found.
+     * Searches child handlers, starting at the 'nextHandler' for all instances of the passed type. This process will stop
+     * searching a branch if an instance is found.
      * 
      * @param type Class type to search for
      * @return iterator over instances of FaceletHandlers of the matching type
@@ -57,9 +56,8 @@ public abstract class TagHandlerImpl extends TagHandler {
         }
         return found.iterator();
     }
-    
-    public final static Iterator findNextByType(FaceletHandler nextHandler,
-            Class type) {
+
+    public final static Iterator findNextByType(FaceletHandler nextHandler, Class type) {
         List found = new ArrayList();
         if (type.isAssignableFrom(nextHandler.getClass())) {
             found.add(nextHandler);
@@ -72,7 +70,7 @@ public abstract class TagHandlerImpl extends TagHandler {
             }
         }
         return found.iterator();
-        
+
     }
 
 }

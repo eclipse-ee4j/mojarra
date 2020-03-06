@@ -37,22 +37,19 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * This <code>TagHandler</code> is responsible for relocating children
- * defined within a composite component to a component within the
- * composite component's <code>composite:implementation</code> section.
+ * This <code>TagHandler</code> is responsible for relocating children defined within a composite component to a
+ * component within the composite component's <code>composite:implementation</code> section.
  */
 public class InsertChildrenHandler extends TagHandlerImpl {
 
     private final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
     private static final String REQUIRED_ATTRIBUTE = "required";
 
-    // This attribute is not required.  If not defined, then assume the facet
+    // This attribute is not required. If not defined, then assume the facet
     // isn't necessary.
     private TagAttribute required;
 
-    
     // ------------------------------------------------------------ Constructors
-
 
     public InsertChildrenHandler(TagConfig config) {
 
@@ -61,48 +58,31 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
     }
 
-
     // ------------------------------------------------- Methods from TagHandler
 
-
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-          throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
-        UIComponent compositeParent =
-              UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
+        UIComponent compositeParent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
         if (compositeParent != null) {
             int count = parent.getChildCount();
-            compositeParent.subscribeToEvent(PostAddToViewEvent.class,
-                                             new RelocateChildrenListener(ctx,
-                                                                          parent,
-                                                                          count,
-                                                                          this.tag.getLocation()));
+            compositeParent.subscribeToEvent(PostAddToViewEvent.class, new RelocateChildrenListener(ctx, parent, count, this.tag.getLocation()));
         }
 
     }
 
-
-
     // ----------------------------------------------------------- Inner Classes
 
-
     private class RelocateChildrenListener extends RelocateListener {
-
 
         private FaceletContext ctx;
         private UIComponent component;
         private int idx;
         private Location location;
 
-
         // -------------------------------------------------------- Constructors
 
-
-        RelocateChildrenListener(FaceletContext ctx,
-                                 UIComponent component,
-                                 int idx,
-                                 Location location) {
+        RelocateChildrenListener(FaceletContext ctx, UIComponent component, int idx, Location location) {
 
             this.ctx = ctx;
             this.component = component;
@@ -116,10 +96,8 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
         // --------------------------- Methods from ComponentSystemEventListener
 
-
         @Override
-        public void processEvent(ComponentSystemEvent event)
-        throws AbortProcessingException {
+        public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
 
             UIComponent compositeParent = event.getComponent();
             if (compositeParent == null) {
@@ -138,9 +116,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
             if (compositeParent == null) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
-                               "jsf.composite.component.insertchildren.missing.template",
-                               location.toString());
+                    LOGGER.log(Level.WARNING, "jsf.composite.component.insertchildren.missing.template", location.toString());
                 }
                 return;
             }
@@ -152,10 +128,10 @@ public class InsertChildrenHandler extends TagHandlerImpl {
             List<UIComponent> compositeChildren = compositeParent.getChildren();
             List<UIComponent> parentChildren = component.getChildren();
 
-            //store the new parent's info per child in the old parent's attr map
-            //<child id, new parent>
+            // store the new parent's info per child in the old parent's attr map
+            // <child id, new parent>
             for (UIComponent c : compositeChildren) {
-                String key =  (String)c.getAttributes().get(ComponentSupport.MARK_CREATED);
+                String key = (String) c.getAttributes().get(ComponentSupport.MARK_CREATED);
                 String value = component.getId();
                 if (key != null && value != null) {
                     compositeParent.getAttributes().put(key, value);
@@ -168,9 +144,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
                 parentChildren.addAll(getIdx(), compositeChildren);
             }
 
-            
         }
-
 
         // ----------------------------------------------------- Private Methods
 
@@ -179,24 +153,18 @@ public class InsertChildrenHandler extends TagHandlerImpl {
             return ((idx != null) ? idx : this.idx);
         }
 
-        private void throwRequiredException(FaceletContext ctx,
-                                        UIComponent compositeParent) {
+        private void throwRequiredException(FaceletContext ctx, UIComponent compositeParent) {
 
-            throw new TagException(tag,
-                                   "Unable to find any children components "
-                                     + "nested within parent composite component with id '"
-                                     + compositeParent .getClientId(ctx.getFacesContext())
-                                     + '\'');
+            throw new TagException(tag, "Unable to find any children components " + "nested within parent composite component with id '"
+                    + compositeParent.getClientId(ctx.getFacesContext()) + '\'');
 
         }
-
 
         private boolean isRequired() {
 
             return ((required != null) && required.getBoolean(ctx));
 
         }
-
 
     } // END RelocateChildrenListener
 

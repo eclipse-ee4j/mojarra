@@ -29,11 +29,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Copier that copies an object by serializing and subsequently deserializing it
- * again.
+ * Copier that copies an object by serializing and subsequently deserializing it again.
  * <p>
- * As per the platform serialization rules, the object and all its non transient
- * dependencies have to implement the {@link Serializable} interface.
+ * As per the platform serialization rules, the object and all its non transient dependencies have to implement the
+ * {@link Serializable} interface.
  *
  * @since 2.3
  * @author Arjan Tijms
@@ -41,8 +40,7 @@ import java.util.Queue;
  */
 public class SerializationCopier implements Copier {
 
-    private static final String SERIALIZATION_COPIER_ERROR
-            = "SerializationCopier cannot be used in this case. Please try other copier (e.g. MultiStrategyCopier, NewInstanceCopier, CopyCtorCopier, CloneCopier).";
+    private static final String SERIALIZATION_COPIER_ERROR = "SerializationCopier cannot be used in this case. Please try other copier (e.g. MultiStrategyCopier, NewInstanceCopier, CopyCtorCopier, CloneCopier).";
 
     @Override
     public Object copy(Object object) {
@@ -86,14 +84,12 @@ public class SerializationCopier implements Copier {
         }
 
         @Override
-        protected Class<?> resolveProxyClass(String[] interfaceNames)
-                throws IOException, ClassNotFoundException {
+        protected Class<?> resolveProxyClass(String[] interfaceNames) throws IOException, ClassNotFoundException {
             return out.queue.poll();
         }
 
         @Override
-        protected Class<?> resolveClass(ObjectStreamClass objectStreamClass)
-                throws IOException, ClassNotFoundException {
+        protected Class<?> resolveClass(ObjectStreamClass objectStreamClass) throws IOException, ClassNotFoundException {
 
             String actuallyfound = null;
             Class<?> pollclass = out.queue.poll();

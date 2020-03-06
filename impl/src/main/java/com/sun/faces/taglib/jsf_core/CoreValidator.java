@@ -23,38 +23,42 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * <p>A TagLibrary Validator class to allow a TLD to mandate that
- * JSF tag must have an id if it is a child or sibling of a JSTL
- * conditional or iteration tag</p>
+ * <p>
+ * A TagLibrary Validator class to allow a TLD to mandate that JSF tag must have an id if it is a child or sibling of a
+ * JSTL conditional or iteration tag
+ * </p>
  *
  * @author Justyna Horwat
  */
 public class CoreValidator extends FacesValidator {
 
-    //*********************************************************************
+    // *********************************************************************
     // Constants
 
-    //*********************************************************************
+    // *********************************************************************
     // Validation and configuration state (protected)
 
     private ValidatorInfo validatorInfo;
     private IdTagParserImpl idTagParser;
     private CoreTagParserImpl coreTagParser;
 
-    //*********************************************************************
+    // *********************************************************************
     // Constructor and lifecycle management
 
     /**
-     * <p>CoreValidator constructor</p>
+     * <p>
+     * CoreValidator constructor
+     * </p>
      */
     public CoreValidator() {
         super();
         init();
     }
 
-
     /**
-     * <p>Initialize state</p>
+     * <p>
+     * Initialize state
+     * </p>
      */
     @Override
     protected void init() {
@@ -63,16 +67,17 @@ public class CoreValidator extends FacesValidator {
         validatorInfo = new ValidatorInfo();
 
         idTagParser = new IdTagParserImpl();
-        idTagParser.setValidatorInfo(validatorInfo);        
-  
+        idTagParser.setValidatorInfo(validatorInfo);
+
         coreTagParser = new CoreTagParserImpl();
         coreTagParser.setValidatorInfo(validatorInfo);
-        
+
     }
 
-
     /**
-     * <p>Release and re-initialize state</p>
+     * <p>
+     * Release and re-initialize state
+     * </p>
      */
     @Override
     public void release() {
@@ -82,29 +87,32 @@ public class CoreValidator extends FacesValidator {
 
     //
     // Superclass overrides.
-    // 
+    //
 
     /**
-     * <p>Get the validator handler</p>
+     * <p>
+     * Get the validator handler
+     * </p>
      */
     @Override
     protected DefaultHandler getSAXHandler() {
         if (java.beans.Beans.isDesignTime()) {
-	    return null;
-	}
+            return null;
+        }
         return new CoreValidatorHandler();
     }
 
-
     /**
-     * <p>Create failure message from any failed validations</p>
+     * <p>
+     * Create failure message from any failed validations
+     * </p>
      *
      * @param prefix Tag library prefix
-     * @param uri    Tag library uri
+     * @param uri Tag library uri
      */
     @Override
     protected String getFailureMessage(String prefix, String uri) {
-        // we should only get called if this Validator failed        
+        // we should only get called if this Validator failed
         StringBuffer result = new StringBuffer();
 
         if (idTagParser.getMessage() != null) {
@@ -113,33 +121,30 @@ public class CoreValidator extends FacesValidator {
         if (coreTagParser.getMessage() != null) {
             result.append(coreTagParser.getMessage());
         }
-        
+
         return result.toString();
     }
 
-
-    //*********************************************************************
+    // *********************************************************************
     // SAX handler
 
     /**
-     * <p>The handler that provides the base of the TLV implementation.</p>
+     * <p>
+     * The handler that provides the base of the TLV implementation.
+     * </p>
      */
     private class CoreValidatorHandler extends DefaultHandler {
 
         /**
-         * Parse the starting element. If it is a specific JSTL tag
-         * make sure that the nested JSF tags have IDs.
+         * Parse the starting element. If it is a specific JSTL tag make sure that the nested JSF tags have IDs.
          *
          * @param ns Element name space.
          * @param ln Element local name.
          * @param qn Element QName.
-         * @param attrs  Element's Attribute list.
+         * @param attrs Element's Attribute list.
          */
         @Override
-        public void startElement(String ns,
-                                 String ln,
-                                 String qn,
-                                 Attributes attrs) {
+        public void startElement(String ns, String ln, String qn, Attributes attrs) {
             maybeSnagTLPrefixes(qn, attrs);
 
             validatorInfo.setNameSpace(ns);
@@ -153,7 +158,7 @@ public class CoreValidator extends FacesValidator {
             if (idTagParser.hasFailed()) {
                 failed = true;
             }
-            
+
             coreTagParser.parseStartElement();
 
             if (coreTagParser.hasFailed()) {
@@ -161,10 +166,10 @@ public class CoreValidator extends FacesValidator {
             }
         }
 
-
         /**
-         * <p>Parse the ending element. If it is a specific JSTL tag
-         * make sure that the nested count is decreased.</p>
+         * <p>
+         * Parse the ending element. If it is a specific JSTL tag make sure that the nested count is decreased.
+         * </p>
          *
          * @param ns Element name space.
          * @param ln Element local name.
@@ -177,7 +182,7 @@ public class CoreValidator extends FacesValidator {
             validatorInfo.setQName(qn);
             idTagParser.parseEndElement();
             coreTagParser.parseEndElement();
-            
+
         }
     }
 }

@@ -20,7 +20,9 @@ import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceVisitOption;
 
 /**
- * <p class="changed_added_2_3">Defines the resource traversal options.</p>
+ * <p class="changed_added_2_3">
+ * Defines the resource traversal options.
+ * </p>
  * 
  * @since 2.3
  * 
@@ -30,8 +32,8 @@ import jakarta.faces.application.ResourceVisitOption;
 public enum ResourceVisitOption {
 
     /**
-     * Only visit resources that are top level views, i.e. views that can be used
-     * to serve a request as opposed to those that can only be used for includes.
+     * Only visit resources that are top level views, i.e. views that can be used to serve a request as opposed to those
+     * that can only be used for includes.
      */
     TOP_LEVEL_VIEWS_ONLY
 

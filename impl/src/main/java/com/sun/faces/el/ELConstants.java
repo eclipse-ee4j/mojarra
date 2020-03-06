@@ -59,6 +59,5 @@ public interface ELConstants {
     public static final int VIEW = 18;
 
     public static final int VIEW_SCOPE = 19;
-    
-    
+
 }

@@ -32,17 +32,18 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <p><B>MessageRenderer</B> handles rendering for the Message<p>.
+ * <p>
+ * <B>MessageRenderer</B> handles rendering for the Message
+ * <p>
+ * .
  *
  */
 
 public class MessageRenderer extends HtmlBasicRenderer {
 
-
     private OutputMessageRenderer omRenderer = null;
 
     // ------------------------------------------------------------ Constructors
-
 
     public MessageRenderer() {
 
@@ -52,10 +53,8 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -65,10 +64,8 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
     }
 
-
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -78,10 +75,8 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -94,17 +89,17 @@ public class MessageRenderer extends HtmlBasicRenderer {
             return;
         }
 
-        //  If id is user specified, we must render
+        // If id is user specified, we must render
         boolean mustRender = shouldWriteIdAttribute(component);
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
 
         UIMessage message = (UIMessage) component;
 
         String clientId = message.getFor();
-        //"for" attribute required for Message. Should be taken care of
-        //by TLD in JSP case, but need to cover non-JSP case.
+        // "for" attribute required for Message. Should be taken care of
+        // by TLD in JSP case, but need to cover non-JSP case.
         if (clientId == null) {
             if (logger.isLoggable(Level.WARNING)) {
                 logger.warning("'for' attribute cannot be null");
@@ -115,8 +110,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
         clientId = augmentIdReference(clientId, component);
         Iterator messageIter = getMessageIter(context, clientId, component);
 
-
-        assert(messageIter != null);
+        assert (messageIter != null);
         if (!messageIter.hasNext()) {
             if (mustRender) {
                 // no message to render, but must render anyway
@@ -139,32 +133,22 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
         // make sure we have a non-null value for summary and
         // detail.
-        String summary = (null != (summary = curMessage.getSummary())) ?
-                  summary : "";
+        String summary = (null != (summary = curMessage.getSummary())) ? summary : "";
         // Default to summary if we have no detail
-        String detail = (null != (detail = curMessage.getDetail())) ?
-                 detail : summary;
+        String detail = (null != (detail = curMessage.getDetail())) ? detail : summary;
 
         if (curMessage.getSeverity() == FacesMessage.SEVERITY_INFO) {
-            severityStyle =
-                  (String) component.getAttributes().get("infoStyle");
-            severityStyleClass = (String)
-                  component.getAttributes().get("infoClass");
+            severityStyle = (String) component.getAttributes().get("infoStyle");
+            severityStyleClass = (String) component.getAttributes().get("infoClass");
         } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_WARN) {
-            severityStyle =
-                  (String) component.getAttributes().get("warnStyle");
-            severityStyleClass = (String)
-                  component.getAttributes().get("warnClass");
+            severityStyle = (String) component.getAttributes().get("warnStyle");
+            severityStyleClass = (String) component.getAttributes().get("warnClass");
         } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_ERROR) {
-            severityStyle =
-                  (String) component.getAttributes().get("errorStyle");
-            severityStyleClass = (String)
-                  component.getAttributes().get("errorClass");
+            severityStyle = (String) component.getAttributes().get("errorStyle");
+            severityStyleClass = (String) component.getAttributes().get("errorClass");
         } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_FATAL) {
-            severityStyle =
-                  (String) component.getAttributes().get("fatalStyle");
-            severityStyleClass = (String)
-                  component.getAttributes().get("fatalClass");
+            severityStyle = (String) component.getAttributes().get("fatalStyle");
+            severityStyleClass = (String) component.getAttributes().get("fatalClass");
         }
 
         String style = (String) component.getAttributes().get("style");
@@ -195,20 +179,15 @@ public class MessageRenderer extends HtmlBasicRenderer {
             styleClass = severityStyleClass;
         }
 
-        //Done intializing local variables. Move on to rendering.
+        // Done intializing local variables. Move on to rendering.
 
         boolean wroteSpan = false;
-        if (styleClass != null
-             || style != null
-             || dir != null
-             || lang != null
-             || title != null
-             || mustRender) {
+        if (styleClass != null || style != null || dir != null || lang != null || title != null || mustRender) {
             writer.startElement("span", component);
             writeIdAttributeIfNecessary(context, writer, component);
 
             wroteSpan = true;
-            if (style != null) {               
+            if (style != null) {
                 writer.writeAttribute("style", style, "style");
             }
             if (styleClass != null) {
@@ -218,9 +197,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
                 writer.writeAttribute("dir", dir, "dir");
             }
             if (lang != null) {
-                writer.writeAttribute(RenderKitUtils.prefixAttribute("lang", writer),
-                     lang,
-                     "lang");
+                writer.writeAttribute(RenderKitUtils.prefixAttribute("lang", writer), lang, "lang");
             }
             if (title != null) {
                 writer.writeAttribute("title", title, "title");
@@ -236,7 +213,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
             if (!wroteSpan) {
                 writer.startElement("span", component);
-            }            
+            }
             if (title == null || title.length() == 0) {
                 writer.writeAttribute("title", detail, "title");
             }
@@ -263,5 +240,3 @@ public class MessageRenderer extends HtmlBasicRenderer {
     }
 
 } // end of class MessageRenderer
-
-

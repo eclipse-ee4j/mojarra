@@ -18,15 +18,13 @@ package com.sun.faces.facelets.tag.jsf;
 
 import jakarta.faces.component.UINamingContainer;
 
-
 public class CompositeComponentImpl extends UINamingContainer {
-    
+
     public static final String TYPE = "jakarta.faces.NamingContainer";
 
     @Override
     public String getFamily() {
         return TYPE;
     }
-    
 
 }

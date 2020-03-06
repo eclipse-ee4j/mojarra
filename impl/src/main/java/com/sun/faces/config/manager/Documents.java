@@ -49,34 +49,32 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.faces.application.ApplicationConfigurationPopulator;
 
 public class Documents {
-    
+
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
-    
+
     /**
      * <p>
-     *   Obtains an array of <code>Document</code>s to be processed
+     * Obtains an array of <code>Document</code>s to be processed
      * </p>
      *
-     * @param servletContext the <code>ServletContext</code> for the application to be
-     *  processed
-     * @param providers <code>List</code> of <code>ConfigurationResourceProvider</code>
-     *  instances that provide the URL of the documents to parse.
-     * @param executor the <code>ExecutorService</code> used to dispatch parse
-     *  request to
-     * @param validating flag indicating whether or not the documents
-     *  should be validated
+     * @param servletContext the <code>ServletContext</code> for the application to be processed
+     * @param providers <code>List</code> of <code>ConfigurationResourceProvider</code> instances that provide the URL of
+     * the documents to parse.
+     * @param executor the <code>ExecutorService</code> used to dispatch parse request to
+     * @param validating flag indicating whether or not the documents should be validated
      * @return an array of <code>DocumentInfo</code>s
      */
-    public static DocumentInfo[] getXMLDocuments(ServletContext servletContext, List<ConfigurationResourceProvider> providers, ExecutorService executor, boolean validating) {
-        
+    public static DocumentInfo[] getXMLDocuments(ServletContext servletContext, List<ConfigurationResourceProvider> providers, ExecutorService executor,
+            boolean validating) {
+
         // Query all configuration providers to give us a URL to the configuration they are providing
-        
+
         List<FutureTask<Collection<URI>>> uriTasks = new ArrayList<>(providers.size());
-        
+
         for (ConfigurationResourceProvider provider : providers) {
             FutureTask<Collection<URI>> uriTask = new FutureTask<>(new FindConfigResourceURIsTask(provider, servletContext));
             uriTasks.add(uriTask);
-            
+
             if (executor != null) {
                 executor.execute(uriTask);
             } else {
@@ -85,7 +83,7 @@ public class Documents {
         }
 
         // Load and XML parse all documents to which the URLs that we collected above point to
-        
+
         List<FutureTask<DocumentInfo>> docTasks = new ArrayList<>(providers.size() << 1);
 
         for (FutureTask<Collection<URI>> uriTask : uriTasks) {
@@ -93,7 +91,7 @@ public class Documents {
                 for (URI uri : uriTask.get()) {
                     FutureTask<DocumentInfo> docTask = new FutureTask<>(new ParseConfigResourceToDOMTask(servletContext, validating, uri));
                     docTasks.add(docTask);
-                    
+
                     if (executor != null) {
                         executor.execute(docTask);
                     } else {
@@ -106,8 +104,8 @@ public class Documents {
             }
         }
 
-        // Collect the results of the documents we parsed above 
-        
+        // Collect the results of the documents we parsed above
+
         List<DocumentInfo> docs = new ArrayList<>(docTasks.size());
         for (FutureTask<DocumentInfo> docTask : docTasks) {
             try {
@@ -120,34 +118,28 @@ public class Documents {
 
         return docs.toArray(new DocumentInfo[docs.size()]);
     }
-    
+
     public static List<DocumentInfo> getProgrammaticDocuments(List<ApplicationConfigurationPopulator> configPopulators) throws ParserConfigurationException {
-        
+
         List<DocumentInfo> programmaticDocuments = new ArrayList<>();
-        
+
         DOMImplementation domImpl = createDOMImplementation();
         for (ApplicationConfigurationPopulator populator : configPopulators) {
-            
+
             Document facesConfigDoc = createEmptyFacesConfigDocument(domImpl);
-            
+
             try {
                 populator.populateApplicationConfiguration(facesConfigDoc);
-                
+
                 programmaticDocuments.add(new DocumentInfo(facesConfigDoc, null));
             } catch (Throwable e) {
                 if (LOGGER.isLoggable(INFO)) {
-                    LOGGER.log(INFO, 
-                        "{0} thrown when invoking {1}.populateApplicationConfigurationResources: {2}", 
-                        new String [] {
-                            e.getClass().getName(),
-                            populator.getClass().getName(),
-                            e.getMessage()
-                        }
-                    );
+                    LOGGER.log(INFO, "{0} thrown when invoking {1}.populateApplicationConfigurationResources: {2}",
+                            new String[] { e.getClass().getName(), populator.getClass().getName(), e.getMessage() });
                 }
             }
         }
-        
+
         return programmaticDocuments;
     }
 
@@ -175,18 +167,15 @@ public class Documents {
 
         return mergedDocuments.toArray(new DocumentInfo[0]);
     }
-    
+
     /**
      * <p>
-     * Sort the <code>faces-config</code> documents found on the classpath
-     * and those specified by the <code>jakarta.faces.CONFIG_FILES</code> context
-     * init parameter.
+     * Sort the <code>faces-config</code> documents found on the classpath and those specified by the
+     * <code>jakarta.faces.CONFIG_FILES</code> context init parameter.
      * </p>
      *
-     * @param facesDocuments an array of <em>all</em> <code>faces-config</code>
-     *  documents
-     * @param webInfFacesConfig FacesConfigInfo representing the WEB-INF/faces-config.xml
-     *  for this app
+     * @param facesDocuments an array of <em>all</em> <code>faces-config</code> documents
+     * @param webInfFacesConfig FacesConfigInfo representing the WEB-INF/faces-config.xml for this app
      *
      * @return the sorted documents
      */
@@ -201,32 +190,29 @@ public class Documents {
             for (int i = 1; i < len; i++) {
                 list.add(new DocumentOrderingWrapper(facesDocuments[i]));
             }
-            
+
             DocumentOrderingWrapper[] ordering = list.toArray(new DocumentOrderingWrapper[list.size()]);
             if (absoluteOrdering == null) {
                 DocumentOrderingWrapper.sort(ordering);
-                
+
                 // Sorting complete, now update the appropriate locations within
                 // the original array with the sorted documentation.
                 for (int i = 1; i < len; i++) {
                     facesDocuments[i] = ordering[i - 1].getDocument();
                 }
-                
+
                 return facesDocuments;
             } else {
                 DocumentOrderingWrapper[] result = DocumentOrderingWrapper.sort(ordering, absoluteOrdering);
-                DocumentInfo[] ret = new DocumentInfo[
-                                          webInfFacesConfig.isWebInfFacesConfig() ? 
-                                          result.length + 2 : 
-                                          result.length + 1];
-                
+                DocumentInfo[] ret = new DocumentInfo[webInfFacesConfig.isWebInfFacesConfig() ? result.length + 2 : result.length + 1];
+
                 for (int i = 1; i < len; i++) {
                     ret[i] = result[i - 1].getDocument();
                 }
-                
+
                 // Add the impl specific config file
                 ret[0] = facesDocuments[0];
-                
+
                 // Add the WEB-INF if necessary
                 if (webInfFacesConfig.isWebInfFacesConfig()) {
                     ret[ret.length - 1] = facesDocuments[facesDocuments.length - 1];
@@ -237,24 +223,21 @@ public class Documents {
 
         return facesDocuments;
     }
-    
+
     private static DOMImplementation createDOMImplementation() throws ParserConfigurationException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
-        
-        return documentBuilderFactory.newDocumentBuilder()
-                                     .getDOMImplementation();
+
+        return documentBuilderFactory.newDocumentBuilder().getDOMImplementation();
     }
-    
+
     private static Document createEmptyFacesConfigDocument(DOMImplementation domImpl) {
         Document document = domImpl.createDocument(JAVAEE_XMLNS, "faces-config", null);
-        
+
         Attr versionAttribute = document.createAttribute("version");
         versionAttribute.setValue("2.2");
-        document.getDocumentElement()
-                .getAttributes()
-                .setNamedItem(versionAttribute);
-        
+        document.getDocumentElement().getAttributes().setNamedItem(versionAttribute);
+
         return document;
     }
 

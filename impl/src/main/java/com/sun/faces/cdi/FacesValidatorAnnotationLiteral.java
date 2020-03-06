@@ -24,8 +24,7 @@ import jakarta.faces.validator.FacesValidator;
  * A helper class.
  *
  * <p>
- * Used in CdiUtils to define a CDI qualifier so we can get a match out using
- * the BeanManager API.
+ * Used in CdiUtils to define a CDI qualifier so we can get a match out using the BeanManager API.
  * </p>
  */
 @SuppressWarnings("all")
@@ -35,7 +34,7 @@ class FacesValidatorAnnotationLiteral extends AnnotationLiteral<FacesValidator> 
      * Stores the serial version UID.
      */
     private static final long serialVersionUID = -6266044469152347882L;
-    
+
     /**
      * Stores the value.
      */

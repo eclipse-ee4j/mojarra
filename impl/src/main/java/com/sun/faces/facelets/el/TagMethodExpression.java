@@ -31,18 +31,17 @@ import java.io.ObjectOutput;
  * @author Jacob Hookom
  * @version $Id$
  */
-public final class TagMethodExpression extends MethodExpression implements
-        Externalizable {
-    
+public final class TagMethodExpression extends MethodExpression implements Externalizable {
+
     private static final long serialVersionUID = 1L;
-    
+
     private String attr;
     private MethodExpression orig;
 
     public TagMethodExpression() {
         super();
     }
-    
+
     public TagMethodExpression(TagAttribute attr, MethodExpression orig) {
         this.attr = attr.toString();
         this.orig = orig;
@@ -119,8 +118,7 @@ public final class TagMethodExpression extends MethodExpression implements
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.orig = (MethodExpression) in.readObject();
         this.attr = in.readUTF();
     }

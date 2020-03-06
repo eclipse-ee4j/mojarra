@@ -16,7 +16,6 @@
 
 package com.sun.faces.context;
 
-
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.AlwaysPerformValidationWhenRequiredTrue;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableValidateWholeBean;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceAlwaysWriteFlashCookie;
@@ -43,35 +42,23 @@ import jakarta.faces.lifecycle.Lifecycle;
 
 public class FacesContextFactoryImpl extends FacesContextFactory {
 
-
-
     private final ExceptionHandlerFactory exceptionHandlerFactory;
     private final ExternalContextFactory externalContextFactory;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public FacesContextFactoryImpl() {
         super(null);
 
-        exceptionHandlerFactory = (ExceptionHandlerFactory)
-              FactoryFinder.getFactory(FactoryFinder.EXCEPTION_HANDLER_FACTORY);
-        externalContextFactory = (ExternalContextFactory)
-              FactoryFinder.getFactory(FactoryFinder.EXTERNAL_CONTEXT_FACTORY);
+        exceptionHandlerFactory = (ExceptionHandlerFactory) FactoryFinder.getFactory(FactoryFinder.EXCEPTION_HANDLER_FACTORY);
+        externalContextFactory = (ExternalContextFactory) FactoryFinder.getFactory(FactoryFinder.EXTERNAL_CONTEXT_FACTORY);
 
     }
 
-
     // ---------------------------------------- Methods from FacesContextFactory
 
-
     @Override
-    public FacesContext getFacesContext(Object sc,
-                                        Object request,
-                                        Object response,
-                                        Lifecycle lifecycle)
-    throws FacesException {
+    public FacesContext getFacesContext(Object sc, Object request, Object response, Lifecycle lifecycle) throws FacesException {
 
         Util.notNull("sc", sc);
         Util.notNull("request", request);
@@ -79,10 +66,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
         Util.notNull("lifecycle", lifecycle);
         ExternalContext extContext;
 
-        FacesContext ctx =
-              new FacesContextImpl(
-                  extContext = externalContextFactory.getExternalContext(sc, request, response),
-                  lifecycle);
+        FacesContext ctx = new FacesContextImpl(extContext = externalContextFactory.getExternalContext(sc, request, response), lifecycle);
 
         ctx.setExceptionHandler(exceptionHandlerFactory.getExceptionHandler());
         WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
@@ -93,8 +77,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
     }
 
     /*
-     * Copy the value of any init params that must be checked during
-     * this request to our FacesContext attribute map.
+     * Copy the value of any init params that must be checked during this request to our FacesContext attribute map.
      */
     private void savePerRequestInitParams(FacesContext context, WebConfiguration webConfig) {
         ExternalContext extContext = context.getExternalContext();
@@ -103,20 +86,15 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
         boolean setCurrentComponent = Boolean.valueOf(val);
         Map<Object, Object> attrs = context.getAttributes();
         attrs.put(UIInput.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE,
-                webConfig.isOptionEnabled(AlwaysPerformValidationWhenRequiredTrue) ?
-                Boolean.TRUE : Boolean.FALSE);
-        attrs.put(UIComponent.HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME,
-                setCurrentComponent ? Boolean.TRUE : Boolean.FALSE);
-        attrs.put(PartialStateSaving, webConfig.isOptionEnabled(PartialStateSaving) ?
-                Boolean.TRUE : Boolean.FALSE);
-        attrs.put(ForceAlwaysWriteFlashCookie, webConfig.isOptionEnabled(ForceAlwaysWriteFlashCookie) ?
-                Boolean.TRUE : Boolean.FALSE);
+                webConfig.isOptionEnabled(AlwaysPerformValidationWhenRequiredTrue) ? Boolean.TRUE : Boolean.FALSE);
+        attrs.put(UIComponent.HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME, setCurrentComponent ? Boolean.TRUE : Boolean.FALSE);
+        attrs.put(PartialStateSaving, webConfig.isOptionEnabled(PartialStateSaving) ? Boolean.TRUE : Boolean.FALSE);
+        attrs.put(ForceAlwaysWriteFlashCookie, webConfig.isOptionEnabled(ForceAlwaysWriteFlashCookie) ? Boolean.TRUE : Boolean.FALSE);
         // We must use getQualifiedName here because the consumer is in jsf-api
         // and thus cannot import the enum.
-        attrs.put(ViewRootPhaseListenerQueuesException.getQualifiedName(), webConfig.isOptionEnabled(ViewRootPhaseListenerQueuesException) ?
-                Boolean.TRUE : Boolean.FALSE);
-        attrs.put(EnableValidateWholeBean.getQualifiedName(), webConfig.isOptionEnabled(EnableValidateWholeBean) ?
-                Boolean.TRUE : Boolean.FALSE);
+        attrs.put(ViewRootPhaseListenerQueuesException.getQualifiedName(),
+                webConfig.isOptionEnabled(ViewRootPhaseListenerQueuesException) ? Boolean.TRUE : Boolean.FALSE);
+        attrs.put(EnableValidateWholeBean.getQualifiedName(), webConfig.isOptionEnabled(EnableValidateWholeBean) ? Boolean.TRUE : Boolean.FALSE);
 
         Object nonDefaultResourceResolver = extContext.getApplicationMap().get(DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME);
         if (null != nonDefaultResourceResolver) {

@@ -36,9 +36,8 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.faces.FacesException;
 
 /**
- * This steam converts byte content to character. This implementation allows us to query whether or
- * not the writer has been flushed or closed. This is necessary to better mimic the actual Servlet
- * response.
+ * This steam converts byte content to character. This implementation allows us to query whether or not the writer has
+ * been flushed or closed. This is necessary to better mimic the actual Servlet response.
  */
 class ByteArrayWebOutputStream extends ServletOutputStream {
 
@@ -74,8 +73,7 @@ class ByteArrayWebOutputStream extends ServletOutputStream {
     }
 
     /**
-     * Converts the buffered bytes into chars based on the specified encoding and writes them to the
-     * provided Writer.
+     * Converts the buffered bytes into chars based on the specified encoding and writes them to the provided Writer.
      *
      * @param writer target Writer
      * @param encoding character encoding

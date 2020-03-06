@@ -25,5 +25,5 @@ public abstract class LazyTagLibrary extends TagLibraryImpl {
     }
 
     public abstract boolean tagLibraryForNSExists(String toTest);
-    
+
 }

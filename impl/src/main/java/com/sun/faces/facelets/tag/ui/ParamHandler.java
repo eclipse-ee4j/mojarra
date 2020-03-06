@@ -48,15 +48,12 @@ public class ParamHandler extends TagHandlerImpl {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         String nameStr = this.name.getValue(ctx);
-        ValueExpression valueVE = this.value.getValueExpression(ctx,
-                Object.class);
+        ValueExpression valueVE = this.value.getValueExpression(ctx, Object.class);
         ctx.getVariableMapper().setVariable(nameStr, valueVE);
     }
 

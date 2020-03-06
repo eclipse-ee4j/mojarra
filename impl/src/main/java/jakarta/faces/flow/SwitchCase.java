@@ -19,16 +19,18 @@ package jakarta.faces.flow;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_2">Represents a case within a switch node in the flow graph.
- * See {@link SwitchNode}.</p>
+ * <p class="changed_added_2_2">
+ * Represents a case within a switch node in the flow graph. See {@link SwitchNode}.
+ * </p>
  * 
  * @since 2.2
  */
 public abstract class SwitchCase {
-    
+
     /**
-     * <p class="changed_added_2_2">Return the outcome to be used if {@link #getCondition}
-     * return {@code true}.</p>
+     * <p class="changed_added_2_2">
+     * Return the outcome to be used if {@link #getCondition} return {@code true}.
+     * </p>
      * 
      * @since 2.2
      * 
@@ -37,8 +39,9 @@ public abstract class SwitchCase {
     public abstract String getFromOutcome();
 
     /**
-     * <p class="changed_added_2_2">Return {@code true} if this case should be
-     * taken, {@code false} otherwise.</p>
+     * <p class="changed_added_2_2">
+     * Return {@code true} if this case should be taken, {@code false} otherwise.
+     * </p>
      * 
      * @since 2.2
      * 
@@ -47,5 +50,5 @@ public abstract class SwitchCase {
      * @return a value indicating whether or not this condition should be taken
      */
     public abstract Boolean getCondition(FacesContext context);
-    
+
 }

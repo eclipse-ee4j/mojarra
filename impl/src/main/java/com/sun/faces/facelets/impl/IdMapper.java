@@ -24,31 +24,26 @@ import jakarta.faces.context.FacesContext;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Used to provide aliases to Facelets generated unique IDs with tend to be
- * womewhat long.
+ * Used to provide aliases to Facelets generated unique IDs with tend to be womewhat long.
  */
 public class IdMapper {
 
     private static final String KEY = IdMapper.class.getName();
 
-    private Cache<String,String> idCache = new Cache<>(new IdGen());
-
+    private Cache<String, String> idCache = new Cache<>(new IdGen());
 
     // ------------------------------------------------------------ Constructors
 
-
-    IdMapper() { }
-
+    IdMapper() {
+    }
 
     // ---------------------------------------------------------- Public Methods
-
 
     public String getAliasedId(String id) {
 
         return idCache.get(id);
 
     }
-
 
     public static void setMapper(FacesContext ctx, IdMapper mapper) {
 
@@ -61,7 +56,6 @@ public class IdMapper {
 
     }
 
-
     public static IdMapper getMapper(FacesContext ctx) {
 
         Util.notNull("ctx", ctx);
@@ -69,16 +63,13 @@ public class IdMapper {
 
     }
 
-    
     // ---------------------------------------------------------- Nested Classes
 
-    private static final class IdGen implements Cache.Factory<String,String> {
+    private static final class IdGen implements Cache.Factory<String, String> {
 
         private AtomicInteger counter = new AtomicInteger(0);
 
-
         // ------------------------------------------ Methods from Cache.Factory
-
 
         @Override
         public String newInstance(String arg) throws InterruptedException {

@@ -61,15 +61,13 @@ public class EventHandler extends TagHandler {
             UIViewRoot viewRoot = ctx.getFacesContext().getViewRoot();
             // ensure that f:event can be used anywhere on the page for preRenderView and postRenderView,
             // not just as a direct child of the viewRoot
-            if (null != viewRoot && (PreRenderViewEvent.class == eventClass || PostRenderViewEvent.class == eventClass) &&
-                parent != viewRoot) {
+            if (null != viewRoot && (PreRenderViewEvent.class == eventClass || PostRenderViewEvent.class == eventClass) && parent != viewRoot) {
                 parent = viewRoot;
             }
             if (eventClass != null) {
                 parent.subscribeToEvent(eventClass,
-                        new DeclarativeSystemEventListener(
-                            listener.getMethodExpression(ctx, Object.class, new Class[] { ComponentSystemEvent.class }),
-                            listener.getMethodExpression(ctx, Object.class, new Class[] { })));
+                        new DeclarativeSystemEventListener(listener.getMethodExpression(ctx, Object.class, new Class[] { ComponentSystemEvent.class }),
+                                listener.getMethodExpression(ctx, Object.class, new Class[] {})));
             }
         }
     }
@@ -80,12 +78,10 @@ public class EventHandler extends TagHandler {
             throw new FacesException("Attribute 'type' can not be null");
         }
 
-        return ApplicationAssociate.getInstance(ctx.getFacesContext().getExternalContext())
-                .getNamedEventManager().getNamedEvent(eventType);
+        return ApplicationAssociate.getInstance(ctx.getFacesContext().getExternalContext()).getNamedEventManager().getNamedEvent(eventType);
     }
 
 }
-
 
 class DeclarativeSystemEventListener implements ComponentSystemEventListener, Serializable {
 
@@ -95,7 +91,8 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
     private MethodExpression noArgListener;
 
     // Necessary for state saving
-    public DeclarativeSystemEventListener() {}
+    public DeclarativeSystemEventListener() {
+    }
 
     public DeclarativeSystemEventListener(MethodExpression oneArg, MethodExpression noArg) {
         this.oneArgListener = oneArg;
@@ -105,11 +102,11 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
     @Override
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
         final ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-        try{
-            noArgListener.invoke(elContext, new Object[]{});
+        try {
+            noArgListener.invoke(elContext, new Object[] {});
         } catch (MethodNotFoundException | IllegalArgumentException mnfe) {
             // Attempt to call public void method(ComponentSystemEvent event)
-            oneArgListener.invoke(elContext, new Object[]{event});
+            oneArgListener.invoke(elContext, new Object[] { event });
         }
     }
 
@@ -124,14 +121,10 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
 
         DeclarativeSystemEventListener that = (DeclarativeSystemEventListener) o;
 
-        if (noArgListener != null
-            ? !noArgListener.equals(that.noArgListener)
-            : that.noArgListener != null) {
+        if (noArgListener != null ? !noArgListener.equals(that.noArgListener) : that.noArgListener != null) {
             return false;
         }
-        if (oneArgListener != null
-            ? !oneArgListener.equals(that.oneArgListener)
-            : that.oneArgListener != null) {
+        if (oneArgListener != null ? !oneArgListener.equals(that.oneArgListener) : that.oneArgListener != null) {
             return false;
         }
 
@@ -141,9 +134,7 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
     @Override
     public int hashCode() {
         int result = oneArgListener != null ? oneArgListener.hashCode() : 0;
-        result = 31 * result + (noArgListener != null
-                                ? noArgListener.hashCode()
-                                : 0);
+        result = 31 * result + (noArgListener != null ? noArgListener.hashCode() : 0);
         return result;
     }
 }

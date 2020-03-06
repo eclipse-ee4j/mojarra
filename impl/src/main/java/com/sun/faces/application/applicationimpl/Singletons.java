@@ -44,28 +44,28 @@ import jakarta.faces.event.ActionListener;
 import jakarta.faces.flow.FlowHandler;
 
 public class Singletons {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
     private static final String CONTEXT = "context";
-    
+
     private final ApplicationAssociate associate;
-    
+
     private volatile ActionListener actionListener;
     private volatile NavigationHandler navigationHandler;
     private volatile ViewHandler viewHandler;
     private volatile ResourceHandler resourceHandler;
     private volatile StateManager stateManager;
-    
+
     private volatile ArrayList<Locale> supportedLocales;
     private volatile Locale defaultLocale;
     private volatile String messageBundle;
-    
+
     private String defaultRenderKitId;
-    
+
     public Singletons(ApplicationAssociate applicationAssociate) {
         this.associate = applicationAssociate;
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getViewHandler()
      */
@@ -87,7 +87,7 @@ public class Singletons {
             LOGGER.log(FINE, MessageFormat.format("set ViewHandler Instance to ''{0}''", viewHandler.getClass().getName()));
         }
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getResourceHandler()
      */
@@ -104,12 +104,12 @@ public class Singletons {
         notRequestServiced("ResourceHandler");
 
         this.resourceHandler = resourceHandler;
-        
+
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.log(FINE, "set ResourceHandler Instance to ''{0}''", resourceHandler.getClass().getName());
         }
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getStateManager()
      */
@@ -131,14 +131,14 @@ public class Singletons {
             LOGGER.log(FINE, MessageFormat.format("set StateManager Instance to ''{0}''", stateManager.getClass().getName()));
         }
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getActionListener()
      */
     public ActionListener getActionListener() {
         return actionListener;
     }
-    
+
     /**
      * @see Application#setActionListener(jakarta.faces.event.ActionListener)
      */
@@ -152,7 +152,7 @@ public class Singletons {
             LOGGER.fine(MessageFormat.format("set ActionListener Instance to ''{0}''", actionListener.getClass().getName()));
         }
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getNavigationHandler()
      */
@@ -173,7 +173,7 @@ public class Singletons {
             LOGGER.fine(MessageFormat.format("set NavigationHandler Instance to ''{0}''", navigationHandler.getClass().getName()));
         }
     }
-    
+
     public FlowHandler getFlowHandler() {
         return associate.getFlowHandler();
     }
@@ -188,7 +188,7 @@ public class Singletons {
             LOGGER.fine(MessageFormat.format("set FlowHandler Instance to ''{0}''", flowHandler.getClass().getName()));
         }
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getSupportedLocales()
      */
@@ -231,7 +231,7 @@ public class Singletons {
             LOGGER.log(FINE, MessageFormat.format("set defaultLocale ''{0}''", defaultLocale.getClass().getName()));
         }
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#setMessageBundle(String)
      */
@@ -265,10 +265,9 @@ public class Singletons {
     public void setDefaultRenderKitId(String renderKitId) {
         defaultRenderKitId = renderKitId;
     }
-    
+
     /**
-     * @see jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext,
-     *      String)
+     * @see jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)
      */
     public ResourceBundle getResourceBundle(FacesContext context, String var) {
 
@@ -277,10 +276,7 @@ public class Singletons {
 
         return associate.getResourceBundle(context, var);
     }
-    
-    
-    
-    
+
     private void notRequestServiced(String artifactId) {
         if (associate.hasRequestBeenServiced()) {
             throw new IllegalStateException(getExceptionMessageString(ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID, artifactId));

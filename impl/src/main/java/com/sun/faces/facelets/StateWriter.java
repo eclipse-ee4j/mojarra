@@ -22,28 +22,20 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * A class for handling state insertion.  Content is written
- * directly to "out" until an attempt to write state;  at that
- * point, it's redirected into a buffer that can be picked through
- * in theory, this buffer should be very small, since it only
- * needs to be enough to contain all the content after the close
- * of the first (and, hopefully, only) form.
+ * A class for handling state insertion. Content is written directly to "out" until an attempt to write state; at that
+ * point, it's redirected into a buffer that can be picked through in theory, this buffer should be very small, since it
+ * only needs to be enough to contain all the content after the close of the first (and, hopefully, only) form.
  * <p>
  * Potential optimizations:
  * <ul>
- * <li>If we created a new FastWriter at each call to writingState(),
- * and stored a List of them, then we'd know that state tokens could
- * only possibly be near the start of each buffer (and might not be there
- * at all).  (There might be a close-element before the state token). Then,
- * we'd only need to check the start of the buffer for the state token;
- * if it's there, write out the real state, then blast the rest of the
- * buffer out.  This wouldn't even require toString(), which for
- * large buffers is expensive.  However, this optimization is only
- * going to be especially meaningful for the multi-form case.
- * </li>
- * <li>More of a FastWriter optimization than a StateWriter, but:
- *  it is far faster to create a set of small 1K buffers than constantly
- *  reallocating one big buffer.</li>
+ * <li>If we created a new FastWriter at each call to writingState(), and stored a List of them, then we'd know that
+ * state tokens could only possibly be near the start of each buffer (and might not be there at all). (There might be a
+ * close-element before the state token). Then, we'd only need to check the start of the buffer for the state token; if
+ * it's there, write out the real state, then blast the rest of the buffer out. This wouldn't even require toString(),
+ * which for large buffers is expensive. However, this optimization is only going to be especially meaningful for the
+ * multi-form case.</li>
+ * <li>More of a FastWriter optimization than a StateWriter, but: it is far faster to create a set of small 1K buffers
+ * than constantly reallocating one big buffer.</li>
  * </ul>
  *
  * @author Adam Winer
@@ -54,7 +46,7 @@ final class StateWriter extends Writer {
     private Writer out;
     private FastWriter fast;
     private boolean writtenState;
-    
+
     static public StateWriter getCurrentInstance() {
         return (StateWriter) CURRENT_WRITER.get();
     }
@@ -63,7 +55,7 @@ final class StateWriter extends Writer {
         if (initialSize < 0) {
             throw new IllegalArgumentException("Initial Size cannot be less than 0");
         }
-        
+
         this.initialSize = initialSize;
         this.out = initialOut;
 
@@ -71,12 +63,10 @@ final class StateWriter extends Writer {
     }
 
     /**
-     * Mark that state is about to be written.  Contrary to what you'd expect,
-     * we cannot and should not assume that this location is really going
-     * to have state;  it is perfectly legit to have a ResponseWriter that
-     * filters out content, and ignores an attempt to write out state
-     * at this point.  So, we have to check after the fact to see
-     * if there really are state markers.
+     * Mark that state is about to be written. Contrary to what you'd expect, we cannot and should not assume that this
+     * location is really going to have state; it is perfectly legit to have a ResponseWriter that filters out content, and
+     * ignores an attempt to write out state at this point. So, we have to check after the fact to see if there really are
+     * state markers.
      */
     public void writingState() {
         if (!this.writtenState) {
@@ -98,7 +88,7 @@ final class StateWriter extends Writer {
     public void flush() throws IOException {
         // do nothing
     }
-    
+
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         this.out.write(cbuf, off, len);
@@ -123,18 +113,17 @@ final class StateWriter extends Writer {
     public void write(String str) throws IOException {
         this.out.write(str);
     }
-    
+
     public String getAndResetBuffer() {
         if (!this.writtenState) {
-            throw new IllegalStateException(
-                     "Did not write state;  no buffer is available");
+            throw new IllegalStateException("Did not write state;  no buffer is available");
         }
 
         String result = this.fast.toString();
         this.fast.reset();
         return result;
     }
-  
+
     public void release() {
         CURRENT_WRITER.set(null);
     }

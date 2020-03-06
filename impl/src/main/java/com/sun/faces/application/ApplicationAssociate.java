@@ -128,14 +128,13 @@ import jakarta.faces.view.facelets.TagDecorator;
 
 /**
  * <p>
- * Break out the things that are associated with the Application, but need to be present even when
- * the user has replaced the Application instance.
+ * Break out the things that are associated with the Application, but need to be present even when the user has replaced
+ * the Application instance.
  * </p>
  * <p/>
  * <p>
- * For example: the user replaces ApplicationFactory, and wants to intercept calls to
- * createValueExpression() and createMethodExpression() for certain kinds of expressions, but allow
- * the existing application to handle the rest.
+ * For example: the user replaces ApplicationFactory, and wants to intercept calls to createValueExpression() and
+ * createMethodExpression() for certain kinds of expressions, but allow the existing application to handle the rest.
  * </p>
  */
 public class ApplicationAssociate {
@@ -145,16 +144,15 @@ public class ApplicationAssociate {
     private ApplicationImpl applicationImpl;
 
     /**
-     * Overall Map containing <code>from-view-id</code> key and <code>Set</code> of
-     * <code>NavigationCase</code> objects for that key; The <code>from-view-id</code> strings in
-     * this map will be stored as specified in the configuration file - some of them will have a
-     * trailing asterisk "*" signifying wild card, and some may be specified as an asterisk "*".
+     * Overall Map containing <code>from-view-id</code> key and <code>Set</code> of <code>NavigationCase</code> objects for
+     * that key; The <code>from-view-id</code> strings in this map will be stored as specified in the configuration file -
+     * some of them will have a trailing asterisk "*" signifying wild card, and some may be specified as an asterisk "*".
      */
     private Map<String, Set<NavigationCase>> navigationMap;
 
     /*
-     * The FacesComponentTagLibrary uses the information in this map to help it fabricate tag
-     * handlers for components annotated with FacesComponent. Key: namespace
+     * The FacesComponentTagLibrary uses the information in this map to help it fabricate tag handlers for components
+     * annotated with FacesComponent. Key: namespace
      */
     private Map<String, List<FacesComponentUsage>> facesComponentsByNamespace;
 
@@ -219,11 +217,10 @@ public class ApplicationAssociate {
     private Map<String, String> definingDocumentIdsToTruncatedJarUrls;
 
     private long timeOfInstantiation;
-    
+
     private Map<String, List<String>> resourceLibraryContracts;
-    
+
     Map<String, ApplicationResourceBundle> resourceBundles = new HashMap<>();
-    
 
     public ApplicationAssociate(ApplicationImpl appImpl) {
         applicationImpl = appImpl;
@@ -234,12 +231,12 @@ public class ApplicationAssociate {
         if (facesContext == null) {
             throw new IllegalStateException("ApplicationAssociate ctor not called in same callstack as ConfigureListener.contextInitialized()");
         }
-        
+
         ExternalContext externalContext = facesContext.getExternalContext();
         if (externalContext.getApplicationMap().get(ASSOCIATE_KEY) != null) {
             throw new IllegalStateException(getExceptionMessageString(APPLICATION_ASSOCIATE_EXISTS_ID));
         }
-        
+
         Map<String, Object> applicationMap = externalContext.getApplicationMap();
         applicationMap.put(ASSOCIATE_KEY, this);
 
@@ -247,7 +244,7 @@ public class ApplicationAssociate {
         injectionProvider = (InjectionProvider) facesContext.getAttributes().get(ConfigManager.INJECTION_PROVIDER_KEY);
         webConfig = WebConfiguration.getInstance(externalContext);
         beanManager = new BeanManager(injectionProvider, webConfig.isOptionEnabled(EnableLazyBeanValidation));
-        
+
         // Install the bean manager as a system event listener for custom
         // scopes being destoryed.
         applicationImpl.subscribeToEvent(PreDestroyCustomScopeEvent.class, ScopeContext.class, beanManager);
@@ -269,7 +266,7 @@ public class ApplicationAssociate {
         definingDocumentIdsToTruncatedJarUrls = new ConcurrentHashMap<>();
         timeOfInstantiation = System.currentTimeMillis();
     }
-    
+
     private boolean checkForPushBuilder() {
         try {
             return HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
@@ -482,7 +479,7 @@ public class ApplicationAssociate {
     public boolean isDevModeEnabled() {
         return devModeEnabled;
     }
-    
+
     public boolean isPushBuilderSupported() {
         return hasPushBuilder;
     }
@@ -497,8 +494,8 @@ public class ApplicationAssociate {
     }
 
     /**
-     * This method is called by <code>ConfigureListener</code> and will contain any
-     * <code>VariableResolvers</code> defined within faces-config configuration files.
+     * This method is called by <code>ConfigureListener</code> and will contain any <code>VariableResolvers</code> defined
+     * within faces-config configuration files.
      *
      * @param resolver VariableResolver
      */
@@ -529,8 +526,8 @@ public class ApplicationAssociate {
     }
 
     /**
-     * This method is called by <code>ConfigureListener</code> and will contain any
-     * <code>PropertyResolvers</code> defined within faces-config configuration files.
+     * This method is called by <code>ConfigureListener</code> and will contain any <code>PropertyResolvers</code> defined
+     * within faces-config configuration files.
      *
      * @param resolver PropertyResolver
      */
@@ -667,13 +664,11 @@ public class ApplicationAssociate {
     }
 
     /**
-     * Add a navigation case to the internal case set. If a case set does not already exist in the
-     * case list map containing this case (identified by <code>from-view-id</code>), start a new
-     * list, add the case to it, and store the set in the case set map. If a case set already
-     * exists, overwrite the previous case.
+     * Add a navigation case to the internal case set. If a case set does not already exist in the case list map containing
+     * this case (identified by <code>from-view-id</code>), start a new list, add the case to it, and store the set in the
+     * case set map. If a case set already exists, overwrite the previous case.
      *
-     * @param navigationCase the navigation case containing navigation mapping information from the
-     *            configuration file.
+     * @param navigationCase the navigation case containing navigation mapping information from the configuration file.
      */
     public void addNavigationCase(NavigationCase navigationCase) {
 
@@ -688,9 +683,8 @@ public class ApplicationAssociate {
     }
 
     /**
-     * Return a <code>Map</code> of navigation mappings loaded from the configuration system. The
-     * key for the returned <code>Map</code> is <code>from-view-id</code>, and the value is a
-     * <code>List</code> of navigation cases.
+     * Return a <code>Map</code> of navigation mappings loaded from the configuration system. The key for the returned
+     * <code>Map</code> is <code>from-view-id</code>, and the value is a <code>List</code> of navigation cases.
      *
      * @return Map the map of navigation mappings.
      */
@@ -732,7 +726,6 @@ public class ApplicationAssociate {
      * <p/>
      * values: ResourceBundleBean instances.
      */
-    
 
     public void addResourceBundle(String var, ApplicationResourceBundle bundle) {
         resourceBundles.put(var, bundle);

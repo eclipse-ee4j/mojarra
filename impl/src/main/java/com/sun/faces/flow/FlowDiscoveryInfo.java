@@ -17,7 +17,7 @@
 package com.sun.faces.flow;
 
 public class FlowDiscoveryInfo {
-    
+
     private Class definingClass;
     private String id;
     private String definingDocument;
@@ -35,8 +35,6 @@ public class FlowDiscoveryInfo {
         this.id = id;
         this.definingDocument = definingDocument;
     }
-    
-    
 
     public Class getDefiningClass() {
         return definingClass;

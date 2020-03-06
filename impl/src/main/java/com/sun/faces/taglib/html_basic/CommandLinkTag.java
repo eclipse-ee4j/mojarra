@@ -24,214 +24,243 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.event.MethodExpressionActionListener;
 import jakarta.faces.webapp.UIComponentELTag;
 
-
 /*
  * ******* GENERATED CODE - DO NOT EDIT *******
  */
 
-
 public class CommandLinkTag extends UIComponentELTag {
-
 
     // Setter Methods
     // PROPERTY: action
     private jakarta.el.MethodExpression action;
+
     public void setAction(jakarta.el.MethodExpression action) {
         this.action = action;
     }
 
     // PROPERTY: actionListener
     private jakarta.el.MethodExpression actionListener;
+
     public void setActionListener(jakarta.el.MethodExpression actionListener) {
         this.actionListener = actionListener;
     }
 
     // PROPERTY: immediate
     private jakarta.el.ValueExpression immediate;
+
     public void setImmediate(jakarta.el.ValueExpression immediate) {
         this.immediate = immediate;
     }
 
     // PROPERTY: value
     private jakarta.el.ValueExpression value;
+
     public void setValue(jakarta.el.ValueExpression value) {
         this.value = value;
     }
 
     // PROPERTY: accesskey
     private jakarta.el.ValueExpression accesskey;
+
     public void setAccesskey(jakarta.el.ValueExpression accesskey) {
         this.accesskey = accesskey;
     }
 
     // PROPERTY: charset
     private jakarta.el.ValueExpression charset;
+
     public void setCharset(jakarta.el.ValueExpression charset) {
         this.charset = charset;
     }
 
     // PROPERTY: coords
     private jakarta.el.ValueExpression coords;
+
     public void setCoords(jakarta.el.ValueExpression coords) {
         this.coords = coords;
     }
 
     // PROPERTY: dir
     private jakarta.el.ValueExpression dir;
+
     public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: disabled
     private jakarta.el.ValueExpression disabled;
+
     public void setDisabled(jakarta.el.ValueExpression disabled) {
         this.disabled = disabled;
     }
 
     // PROPERTY: hreflang
     private jakarta.el.ValueExpression hreflang;
+
     public void setHreflang(jakarta.el.ValueExpression hreflang) {
         this.hreflang = hreflang;
     }
 
     // PROPERTY: lang
     private jakarta.el.ValueExpression lang;
+
     public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: onblur
     private jakarta.el.ValueExpression onblur;
+
     public void setOnblur(jakarta.el.ValueExpression onblur) {
         this.onblur = onblur;
     }
 
     // PROPERTY: onclick
     private jakarta.el.ValueExpression onclick;
+
     public void setOnclick(jakarta.el.ValueExpression onclick) {
         this.onclick = onclick;
     }
 
     // PROPERTY: ondblclick
     private jakarta.el.ValueExpression ondblclick;
+
     public void setOndblclick(jakarta.el.ValueExpression ondblclick) {
         this.ondblclick = ondblclick;
     }
 
     // PROPERTY: onfocus
     private jakarta.el.ValueExpression onfocus;
+
     public void setOnfocus(jakarta.el.ValueExpression onfocus) {
         this.onfocus = onfocus;
     }
 
     // PROPERTY: onkeydown
     private jakarta.el.ValueExpression onkeydown;
+
     public void setOnkeydown(jakarta.el.ValueExpression onkeydown) {
         this.onkeydown = onkeydown;
     }
 
     // PROPERTY: onkeypress
     private jakarta.el.ValueExpression onkeypress;
+
     public void setOnkeypress(jakarta.el.ValueExpression onkeypress) {
         this.onkeypress = onkeypress;
     }
 
     // PROPERTY: onkeyup
     private jakarta.el.ValueExpression onkeyup;
+
     public void setOnkeyup(jakarta.el.ValueExpression onkeyup) {
         this.onkeyup = onkeyup;
     }
 
     // PROPERTY: onmousedown
     private jakarta.el.ValueExpression onmousedown;
+
     public void setOnmousedown(jakarta.el.ValueExpression onmousedown) {
         this.onmousedown = onmousedown;
     }
 
     // PROPERTY: onmousemove
     private jakarta.el.ValueExpression onmousemove;
+
     public void setOnmousemove(jakarta.el.ValueExpression onmousemove) {
         this.onmousemove = onmousemove;
     }
 
     // PROPERTY: onmouseout
     private jakarta.el.ValueExpression onmouseout;
+
     public void setOnmouseout(jakarta.el.ValueExpression onmouseout) {
         this.onmouseout = onmouseout;
     }
 
     // PROPERTY: onmouseover
     private jakarta.el.ValueExpression onmouseover;
+
     public void setOnmouseover(jakarta.el.ValueExpression onmouseover) {
         this.onmouseover = onmouseover;
     }
 
     // PROPERTY: onmouseup
     private jakarta.el.ValueExpression onmouseup;
+
     public void setOnmouseup(jakarta.el.ValueExpression onmouseup) {
         this.onmouseup = onmouseup;
     }
 
     // PROPERTY: rel
     private jakarta.el.ValueExpression rel;
+
     public void setRel(jakarta.el.ValueExpression rel) {
         this.rel = rel;
     }
 
     // PROPERTY: rev
     private jakarta.el.ValueExpression rev;
+
     public void setRev(jakarta.el.ValueExpression rev) {
         this.rev = rev;
     }
 
     // PROPERTY: role
     private jakarta.el.ValueExpression role;
+
     public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: shape
     private jakarta.el.ValueExpression shape;
+
     public void setShape(jakarta.el.ValueExpression shape) {
         this.shape = shape;
     }
 
     // PROPERTY: style
     private jakarta.el.ValueExpression style;
+
     public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
     private jakarta.el.ValueExpression styleClass;
+
     public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: tabindex
     private jakarta.el.ValueExpression tabindex;
+
     public void setTabindex(jakarta.el.ValueExpression tabindex) {
         this.tabindex = tabindex;
     }
 
     // PROPERTY: target
     private jakarta.el.ValueExpression target;
+
     public void setTarget(jakarta.el.ValueExpression target) {
         this.target = target;
     }
 
     // PROPERTY: title
     private jakarta.el.ValueExpression title;
+
     public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
 
     // PROPERTY: type
     private jakarta.el.ValueExpression type;
+
     public void setType(jakarta.el.ValueExpression type) {
         this.type = type;
     }
-
 
     // General Methods
     public String getRendererType() {
@@ -248,7 +277,8 @@ public class CommandLinkTag extends UIComponentELTag {
         try {
             command = (jakarta.faces.component.UICommand) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UICommand.  Perhaps you're missing a tag?");
+            throw new IllegalStateException(
+                    "Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UICommand.  Perhaps you're missing a tag?");
         }
 
         if (action != null) {
@@ -351,6 +381,7 @@ public class CommandLinkTag extends UIComponentELTag {
             command.setValueExpression("type", type);
         }
     }
+
     // Methods From TagSupport
     public int doStartTag() throws JspException {
         try {

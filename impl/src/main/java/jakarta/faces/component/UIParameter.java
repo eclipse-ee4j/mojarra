@@ -18,21 +18,20 @@ package jakarta.faces.component;
 
 /**
  * <p>
- * <strong>UIParameter</strong> is a {@link UIComponent} that represents an optionally named
- * configuration parameter for a parent component.
+ * <strong>UIParameter</strong> is a {@link UIComponent} that represents an optionally named configuration parameter for
+ * a parent component.
  * </p>
  *
  * <p>
- * Parent components should retrieve the value of a parameter by calling <code>getValue()</code>. In
- * this way, the parameter value can be set directly on the component (via <code>setValue()</code>),
- * or retrieved indirectly via the value binding expression.
+ * Parent components should retrieve the value of a parameter by calling <code>getValue()</code>. In this way, the
+ * parameter value can be set directly on the component (via <code>setValue()</code>), or retrieved indirectly via the
+ * value binding expression.
  * </p>
  *
  * <p>
- * In some scenarios, it is necessary to provide a parameter name, in addition to the parameter
- * value that is accessible via the <code>getValue()</code> method.
- * {@link jakarta.faces.render.Renderer}s that support parameter names on their nested
- * {@link UIParameter} child components should document their use of this property.
+ * In some scenarios, it is necessary to provide a parameter name, in addition to the parameter value that is accessible
+ * via the <code>getValue()</code> method. {@link jakarta.faces.render.Renderer}s that support parameter names on their
+ * nested {@link UIParameter} child components should document their use of this property.
  * </p>
  *
  */
@@ -58,7 +57,6 @@ public class UIParameter extends UIComponentBase {
     enum PropertyKeys {
         name, value, disable
     }
-    
 
     // ------------------------------------------------------------ Constructors
 
@@ -71,7 +69,6 @@ public class UIParameter extends UIComponentBase {
         super();
         setRendererType(null);
     }
-    
 
     // -------------------------------------------------------------- Properties
 
@@ -126,9 +123,9 @@ public class UIParameter extends UIComponentBase {
 
     /**
      * <p class="changed_added_2_0">
-     * Return the value of the <code>disable</code> directive for this component. This directive
-     * determines whether the parameter value should be disabled by assigning it a null value. If
-     * true, the <code>value</code> set on this component is ignored.
+     * Return the value of the <code>disable</code> directive for this component. This directive determines whether the
+     * parameter value should be disabled by assigning it a null value. If true, the <code>value</code> set on this
+     * component is ignored.
      * </p>
      * 
      * @return <code>true</code> if disabled, <code>false</code> otherwise.

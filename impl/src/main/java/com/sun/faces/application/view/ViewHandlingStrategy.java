@@ -40,8 +40,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
  * <p>
- * This represents how a particular page description language
- * is to be rendered/restored.
+ * This represents how a particular page description language is to be rendered/restored.
  * <p>
  */
 public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
@@ -51,19 +50,15 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
     protected ApplicationAssociate associate;
     protected WebConfiguration webConfig;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ViewHandlingStrategy() {
         FacesContext ctx = FacesContext.getCurrentInstance();
         webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
         associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
     }
-    
 
     // ---------------------------------------------------------- Public Methods
-
 
     /**
      * @see ViewDeclarationLanguage#restoreView(jakarta.faces.context.FacesContext, String)
@@ -95,13 +90,13 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
             // this is necessary to allow decorated impls.
             ViewHandler outerViewHandler = ctx.getApplication().getViewHandler();
             String renderKitId = outerViewHandler.calculateRenderKitId(ctx);
-            
+
             viewRoot = getStateManager(ctx).restoreView(ctx, viewId, renderKitId);
         }
 
         return viewRoot;
     }
-    
+
     /**
      * @see ViewDeclarationLanguage#createView(jakarta.faces.context.FacesContext, String)
      */
@@ -126,7 +121,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
         if (logger.isLoggable(FINE)) {
             logger.log(FINE, "Created new view for " + viewId);
         }
-        
+
         // PENDING(): not sure if we should set the RenderKitId here.
         // The UIViewRoot ctor sets the renderKitId to the default
         // one.
@@ -134,8 +129,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
         if (locale == null) {
             locale = ctx.getApplication().getViewHandler().calculateLocale(ctx);
             if (logger.isLoggable(FINE)) {
-                logger.fine(
-                    "Locale for this view as determined by calculateLocale " + locale.toString());
+                logger.fine("Locale for this view as determined by calculateLocale " + locale.toString());
             }
         } else {
             if (logger.isLoggable(FINE)) {
@@ -145,10 +139,9 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
 
         if (renderKitId == null) {
             renderKitId = ctx.getApplication().getViewHandler().calculateRenderKitId(ctx);
-            
+
             if (logger.isLoggable(FINE)) {
-                logger.fine(
-                    "RenderKitId for this view as determined by calculateRenderKitId " + renderKitId);
+                logger.fine("RenderKitId for this view as determined by calculateRenderKitId " + renderKitId);
             }
         } else {
             if (logger.isLoggable(FINE)) {
@@ -166,8 +159,8 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
     /**
      *
      * @param viewId the view ID
-     * @return <code>true</code> if this <code>ViewHandlingStrategy</code>
-     *  handles the the view type represented by <code>viewId</code>
+     * @return <code>true</code> if this <code>ViewHandlingStrategy</code> handles the the view type represented by
+     * <code>viewId</code>
      */
     public abstract boolean handlesViewId(String viewId);
 

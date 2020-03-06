@@ -16,7 +16,6 @@
 
 package jakarta.faces.convert;
 
-
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.MessageFactory;
@@ -24,61 +23,58 @@ import jakarta.faces.convert.MessageFactory;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
-
 /**
- * <p>{@link Converter} implementation for <code>java.lang.Long</code>
- * (and long primitive) values.</p>
+ * <p>
+ * {@link Converter} implementation for <code>java.lang.Long</code> (and long primitive) values.
+ * </p>
  */
 
 public class LongConverter implements Converter {
 
     // ------------------------------------------------------ Manifest Constants
 
-
     /**
-     * <p>The standard converter id for this converter.</p>
+     * <p>
+     * The standard converter id for this converter.
+     * </p>
      */
     public static final String CONVERTER_ID = "jakarta.faces.Long";
 
     /**
-     * <p>The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if
-     * the conversion to <code>Long</code> fails.  The message format
-     * string for this message may optionally include the following
+     * <p>
+     * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the conversion to
+     * <code>Long</code> fails. The message format string for this message may optionally include the following
      * placeholders:
      * <ul>
      * <li><code>{0}</code> replaced by the unconverted value.</li>
      * <li><code>{1}</code> replaced by an example value.</li>
-     * <li><code>{2}</code> replaced by a <code>String</code> whose value
-     * is the label of the input component that produced this message.</li>
+     * <li><code>{2}</code> replaced by a <code>String</code> whose value is the label of the input component that produced
+     * this message.</li>
      * </ul>
      */
-    public static final String LONG_ID =
-         "jakarta.faces.converter.LongConverter.LONG";
+    public static final String LONG_ID = "jakarta.faces.converter.LongConverter.LONG";
 
     /**
-     * <p>The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if
-     * the conversion of the <code>Long</code> value to
-     * <code>String</code> fails.   The message format string for this message
-     * may optionally include the following placeholders:
+     * <p>
+     * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the conversion of the
+     * <code>Long</code> value to <code>String</code> fails. The message format string for this message may optionally
+     * include the following placeholders:
      * <ul>
      * <li><code>{0}</code> relaced by the unconverted value.</li>
-     * <li><code>{1}</code> replaced by a <code>String</code> whose value
-     * is the label of the input component that produced this message.</li>
+     * <li><code>{1}</code> replaced by a <code>String</code> whose value is the label of the input component that produced
+     * this message.</li>
      * </ul>
      */
-    public static final String STRING_ID =
-         "jakarta.faces.converter.STRING";
+    public static final String STRING_ID = "jakarta.faces.converter.STRING";
 
     // ------------------------------------------------------- Converter Methods
 
-
     /**
-     * @throws ConverterException   {@inheritDoc}
+     * @throws ConverterException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component,
-                              String value) {
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
 
         if (context == null || component == null) {
             throw new NullPointerException();
@@ -96,21 +92,18 @@ public class LongConverter implements Converter {
         try {
             return (Long.valueOf(value));
         } catch (NumberFormatException nfe) {
-            throw new ConverterException(MessageFactory.getMessage(
-                 context, LONG_ID, value, "98765432",
-                 MessageFactory.getLabel(context, component)), nfe);
+            throw new ConverterException(MessageFactory.getMessage(context, LONG_ID, value, "98765432", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
             throw new ConverterException(e);
         }
     }
 
     /**
-     * @throws ConverterException   {@inheritDoc}
+     * @throws ConverterException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component,
-                              Object value) {
+    public String getAsString(FacesContext context, UIComponent component, Object value) {
 
         if (context == null || component == null) {
             throw new NullPointerException();
@@ -130,9 +123,7 @@ public class LongConverter implements Converter {
         try {
             return (Long.toString(((Number) value).longValue()));
         } catch (Exception e) {
-            throw new ConverterException(MessageFactory.getMessage(
-                 context, STRING_ID, value,
-                 MessageFactory.getLabel(context, component)), e);
+            throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }
     }
 }

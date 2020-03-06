@@ -19,13 +19,12 @@ package com.sun.faces.application.view;
 import java.io.Serializable;
 
 /**
- * An object used by ViewScopeContext to keep track of contextual and creational
- * context.
+ * An object used by ViewScopeContext to keep track of contextual and creational context.
  */
 class ViewScopeContextObject implements Serializable {
     private static final long serialVersionUID = 370695657651519831L;
 
-    private String passivationCapableId; 
+    private String passivationCapableId;
 
     /**
      * Stores the name.
@@ -46,7 +45,7 @@ class ViewScopeContextObject implements Serializable {
     public String getPassivationCapableId() {
         return this.passivationCapableId;
     }
-    
+
     /*
      * Get the name.
      * 

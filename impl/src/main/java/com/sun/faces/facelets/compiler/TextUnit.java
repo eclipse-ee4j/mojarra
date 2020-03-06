@@ -48,7 +48,7 @@ final class TextUnit extends CompilationUnit {
     private final String alias;
 
     private final String id;
-    
+
     public TextUnit(String alias, String id) {
         this.alias = alias;
         this.id = id;
@@ -100,11 +100,9 @@ final class TextUnit extends CompilationUnit {
                 ELText txt = ELText.parse(s, alias);
                 if (txt != null) {
                     if (txt.isLiteral()) {
-                        this.instructionBuffer.add(new LiteralTextInstruction(
-                                txt.toString()));
+                        this.instructionBuffer.add(new LiteralTextInstruction(txt.toString()));
                     } else {
-                        this.instructionBuffer.add(new TextInstruction(
-                                this.alias, txt));
+                        this.instructionBuffer.add(new TextInstruction(this.alias, txt));
                     }
                 }
             }
@@ -162,17 +160,14 @@ final class TextUnit extends CompilationUnit {
             for (int i = 0; i < attrs.length; i++) {
                 String qname = attrs[i].getQName();
                 String value = attrs[i].getValue();
-                this.buffer.append(' ').append(qname).append("=\"").append(
-                        value).append("\"");
+                this.buffer.append(' ').append(qname).append("=\"").append(value).append("\"");
 
                 ELText txt = ELText.parse(value);
                 if (txt != null) {
                     if (txt.isLiteral()) {
-                        this.addInstruction(new LiteralAttributeInstruction(
-                                qname, txt.toString()));
+                        this.addInstruction(new LiteralAttributeInstruction(qname, txt.toString()));
                     } else {
-                        this.addInstruction(new AttributeInstruction(
-                                this.alias, qname, txt));
+                        this.addInstruction(new AttributeInstruction(this.alias, qname, txt));
                     }
                 }
             }
@@ -216,35 +211,29 @@ final class TextUnit extends CompilationUnit {
 //        // NEW IMPLEMENTATION
 //        if (true) {
 
-            this.flushTextBuffer(child);
+        this.flushTextBuffer(child);
 
-            int size = this.instructionBuffer.size();
-            if (size > 0) {
-                try {
-                    String s = this.buffer.toString();
-                    if (child)
-                        s = trimRight(s);
-                    ELText txt = ELText.parse(s);
-                    if (txt != null) {
-                        Instruction[] instructions = (Instruction[]) this.instructionBuffer
-                                .toArray(new Instruction[size]);
-                        this.children.add(new UIInstructionHandler(this.alias,
-                                                                   this.id,
-                                                                   instructions,
-                                                                   txt));
-                        this.instructionBuffer.clear();
-                    }
+        int size = this.instructionBuffer.size();
+        if (size > 0) {
+            try {
+                String s = this.buffer.toString();
+                if (child)
+                    s = trimRight(s);
+                ELText txt = ELText.parse(s);
+                if (txt != null) {
+                    Instruction[] instructions = (Instruction[]) this.instructionBuffer.toArray(new Instruction[size]);
+                    this.children.add(new UIInstructionHandler(this.alias, this.id, instructions, txt));
+                    this.instructionBuffer.clear();
+                }
 
-                } catch (ELException e) {
-                    if (this.tags.size() > 0) {
-                        throw new TagException((Tag) this.tags.peek(), e
-                                .getMessage());
-                    } else {
-                        throw new ELException(this.alias + ": "
-                                + e.getMessage(), e.getCause());
-                    }
+            } catch (ELException e) {
+                if (this.tags.size() > 0) {
+                    throw new TagException((Tag) this.tags.peek(), e.getMessage());
+                } else {
+                    throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
                 }
             }
+        }
 
 //            // KEEP THESE SEPARATE SO LOGIC DOESN'T GET FUBARED
 //        } else if (this.buffer.length() > 0) {

@@ -21,7 +21,9 @@ import java.io.Serializable;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p>Helper class for saving and restoring attached objects.</p>
+ * <p>
+ * Helper class for saving and restoring attached objects.
+ * </p>
  */
 class StateHolderSaver implements Serializable {
 
@@ -30,18 +32,14 @@ class StateHolderSaver implements Serializable {
     private String className = null;
     private Serializable savedState = null;
 
-    public static final String DYNAMIC_COMPONENT =
-            "com.sun.faces.DynamicComponent";
-    
+    public static final String DYNAMIC_COMPONENT = "com.sun.faces.DynamicComponent";
+
     private enum StateHolderTupleIndices {
-        StateHolderSaverInstance,
-        ComponentAddedDynamically,
-        LastMember
+        StateHolderSaverInstance, ComponentAddedDynamically, LastMember
     };
 
     public boolean componentAddedDynamically() {
         boolean result = false;
-
 
         // if the Object to save implemented Serializable but not
         // StateHolder
@@ -60,7 +58,7 @@ class StateHolderSaver implements Serializable {
         if (null != savedState) {
             // don't need to check transient, since that was done on
             // the saving side.
-            Serializable [] tuple = (Serializable []) savedState;
+            Serializable[] tuple = (Serializable[]) savedState;
             result = (Boolean) tuple[StateHolderTupleIndices.ComponentAddedDynamically.ordinal()];
         }
 
@@ -77,12 +75,13 @@ class StateHolderSaver implements Serializable {
         if (toSave instanceof StateHolder) {
             // do not save an attached object that is marked transient.
             if (!((StateHolder) toSave).isTransient()) {
-                Serializable [] tuple = new Serializable[StateHolderTupleIndices.LastMember.ordinal()];
+                Serializable[] tuple = new Serializable[StateHolderTupleIndices.LastMember.ordinal()];
 
-                tuple[StateHolderTupleIndices.StateHolderSaverInstance.ordinal()] =
-                      (Serializable) ((StateHolder) toSave).saveState(context);
+                tuple[StateHolderTupleIndices.StateHolderSaverInstance.ordinal()] = (Serializable) ((StateHolder) toSave).saveState(context);
                 if (toSave instanceof UIComponent) {
-                    tuple[StateHolderTupleIndices.ComponentAddedDynamically.ordinal()] = ((UIComponent)toSave).getAttributes().containsKey(DYNAMIC_COMPONENT) ? Boolean.TRUE : Boolean.FALSE;
+                    tuple[StateHolderTupleIndices.ComponentAddedDynamically.ordinal()] = ((UIComponent) toSave).getAttributes().containsKey(DYNAMIC_COMPONENT)
+                            ? Boolean.TRUE
+                            : Boolean.FALSE;
                 }
                 savedState = tuple;
             } else {
@@ -119,38 +118,31 @@ class StateHolderSaver implements Serializable {
 
         try {
             toRestoreClass = loadClass(className, this);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
 
         if (null != toRestoreClass) {
             try {
                 result = toRestoreClass.newInstance();
-            }
-            catch (InstantiationException e) {
+            } catch (InstantiationException e) {
                 throw new IllegalStateException(e);
-            }
-            catch (IllegalAccessException a) {
+            } catch (IllegalAccessException a) {
                 throw new IllegalStateException(a);
             }
         }
 
-        if (null != result && null != savedState &&
-            result instanceof StateHolder) {
+        if (null != result && null != savedState && result instanceof StateHolder) {
             // don't need to check transient, since that was done on
             // the saving side.
-            Serializable [] tuple = (Serializable []) savedState;
+            Serializable[] tuple = (Serializable[]) savedState;
             ((StateHolder) result).restoreState(context, tuple[StateHolderTupleIndices.StateHolderSaverInstance.ordinal()]);
         }
         return result;
     }
 
-
-    private static Class loadClass(String name, 
-            Object fallbackClass) throws ClassNotFoundException {
-        ClassLoader loader =
-            Thread.currentThread().getContextClassLoader();
+    private static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClass().getClassLoader();
         }

@@ -37,21 +37,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>This builder creates standard managed beans, i.e. beans
- * that aren't List or Map instances.</p>
+ * <p>
+ * This builder creates standard managed beans, i.e. beans that aren't List or Map instances.
+ * </p>
  */
 public class ManagedBeanBuilder extends BeanBuilder {
 
     private List<BakedProperty> properties;
 
     private enum PropertyType {
-        MAP,
-        LIST,
-        BEAN
+        MAP, LIST, BEAN
     }
 
     // ------------------------------------------------------------ Constructors
-
 
     public ManagedBeanBuilder(ManagedBeanInfo beanInfo) {
 
@@ -59,43 +57,35 @@ public class ManagedBeanBuilder extends BeanBuilder {
 
     }
 
-
     // ------------------------------------------------ Methods from BeanBuilder
-
 
     @Override
     void bake() {
         if (!isBaked()) {
             super.bake();
             if (beanInfo.hasManagedProperties()) {
-                properties =
-                     new ArrayList<>(beanInfo.getManagedProperties().size());
+                properties = new ArrayList<>(beanInfo.getManagedProperties().size());
                 String propertyName = null;
                 try {
-                    for (ManagedBeanInfo.ManagedProperty property
-                         : beanInfo.getManagedProperties()) {
+                    for (ManagedBeanInfo.ManagedProperty property : beanInfo.getManagedProperties()) {
                         propertyName = property.getPropertyName();
                         switch (getPropertyType(property)) {
-                            case MAP:
-                                bakeMapProperty(property);
-                                break;
-                            case LIST:
-                                bakeListProperty(property);
-                                break;
-                            default:
-                                bakeBeanProperty(property);
+                        case MAP:
+                            bakeMapProperty(property);
+                            break;
+                        case LIST:
+                            bakeListProperty(property);
+                            break;
+                        default:
+                            bakeBeanProperty(property);
                         }
                     }
                 } catch (Exception e) {
                     if (e instanceof ManagedBeanPreProcessingException) {
                         throw (ManagedBeanPreProcessingException) e;
                     } else {
-                        String message = MessageUtils
-                             .getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_UNKNOWN_PROCESSING_ERROR_ID,
-                                                        propertyName);
-                        throw new ManagedBeanPreProcessingException(message,
-                                                                    e,
-                                                                    ManagedBeanPreProcessingException.Type.UNCHECKED);
+                        String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_UNKNOWN_PROCESSING_ERROR_ID, propertyName);
+                        throw new ManagedBeanPreProcessingException(message, e, ManagedBeanPreProcessingException.Type.UNCHECKED);
                     }
                 }
             }
@@ -103,7 +93,6 @@ public class ManagedBeanBuilder extends BeanBuilder {
             Introspector.flushFromCaches(getBeanClass());
         }
     }
-
 
     @Override
     protected void buildBean(Object bean, FacesContext context) {
@@ -113,22 +102,17 @@ public class ManagedBeanBuilder extends BeanBuilder {
                 property.set(bean, context);
             }
         }
-        
+
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private PropertyType getPropertyType(ManagedBeanInfo.ManagedProperty property) {
 
         if (property.hasListEntry()) {
             if (property.hasMapEntry() || property.hasPropertyValue()) {
-                String message =
-                     MessageUtils.getExceptionMessageString(
-                          MessageUtils.MANAGED_BEAN_LIST_PROPERTY_CONFIG_ERROR_ID,
-                          property.getPropertyName(),
-                          beanInfo.getName());
+                String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_LIST_PROPERTY_CONFIG_ERROR_ID, property.getPropertyName(),
+                        beanInfo.getName());
                 throw new ManagedBeanPreProcessingException(message);
             }
 
@@ -137,11 +121,8 @@ public class ManagedBeanBuilder extends BeanBuilder {
         if (property.hasMapEntry()) {
 
             if (property.hasPropertyValue()) {
-                String message =
-                     MessageUtils.getExceptionMessageString(
-                          MessageUtils.MANAGED_BEAN_MAP_PROPERTY_CONFIG_ERROR_ID,
-                          property.getPropertyName(),
-                          beanInfo.getName());
+                String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_MAP_PROPERTY_CONFIG_ERROR_ID, property.getPropertyName(),
+                        beanInfo.getName());
                 throw new ManagedBeanPreProcessingException(message);
             }
             return PropertyType.MAP;
@@ -151,50 +132,37 @@ public class ManagedBeanBuilder extends BeanBuilder {
 
     }
 
-
     private void bakeMapProperty(ManagedBeanInfo.ManagedProperty property) {
 
         ManagedBeanInfo.MapEntry rawEntry = property.getMapEntry();
-        Map<Expression,Expression> mapEntries =
-             getBakedMap(rawEntry.getKeyClass(),
-                         rawEntry.getValueClass(),
-                         rawEntry.getEntries());
+        Map<Expression, Expression> mapEntries = getBakedMap(rawEntry.getKeyClass(), rawEntry.getValueClass(), rawEntry.getEntries());
 
         // Find property setter and validate.
-        PropertyDescriptor pd =
-             getPropertyDescriptor(property.getPropertyName());
+        PropertyDescriptor pd = getPropertyDescriptor(property.getPropertyName());
         if (pd == null) {
-            String message = MessageUtils.getExceptionMessageString(
-                 MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID,
-                 property.getPropertyName(),
-                 beanInfo.getName());
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID, property.getPropertyName(),
+                    beanInfo.getName());
             queueMessage(message);
         } else {
             if (pd.getWriteMethod() != null) {
                 Class<?>[] params = pd.getWriteMethod().getParameterTypes();
                 if (!Map.class.isAssignableFrom(params[0])) {
-                    String message = MessageUtils.getExceptionMessageString(
-                         MessageUtils.MANAGED_BEAN_MAP_PROPERTY_INCORRECT_SETTER_ERROR_ID,
-                         property.getPropertyName(),
-                         beanInfo.getName());
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_MAP_PROPERTY_INCORRECT_SETTER_ERROR_ID,
+                            property.getPropertyName(), beanInfo.getName());
                     queueMessage(message);
                 }
             } else {
                 // no write method, let's hope there is a read method that returns
                 // a non-null map
                 if (pd.getReadMethod() == null) {
-                    String message = MessageUtils.getExceptionMessageString(
-                         MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID,
-                         property.getPropertyName(),
-                         beanInfo.getName());
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID,
+                            property.getPropertyName(), beanInfo.getName());
                     queueMessage(message);
                 } else {
                     Class<?> returnType = pd.getReadMethod().getReturnType();
                     if (!Map.class.isAssignableFrom(returnType)) {
-                        String message = MessageUtils.getExceptionMessageString(
-                             MessageUtils.MANAGED_BEAN_MAP_PROPERTY_INCORRECT_GETTER_ERROR_ID,
-                             property.getPropertyName(),
-                             beanInfo.getName());
+                        String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_MAP_PROPERTY_INCORRECT_GETTER_ERROR_ID,
+                                property.getPropertyName(), beanInfo.getName());
                         queueMessage(message);
                     }
                 }
@@ -207,74 +175,58 @@ public class ManagedBeanBuilder extends BeanBuilder {
             BakedMapProperty baked = new BakedMapProperty(mapEntries, pd);
             properties.add(baked);
         }
-        
-    }
 
+    }
 
     private void bakeListProperty(ManagedBeanInfo.ManagedProperty property) {
 
         ManagedBeanInfo.ListEntry rawEntry = property.getListEntry();
-        List<Expression> listEntry = getBakedList(rawEntry.getValueClass(),
-                                                  rawEntry.getValues());
+        List<Expression> listEntry = getBakedList(rawEntry.getValueClass(), rawEntry.getValues());
 
-        PropertyDescriptor pd =
-             getPropertyDescriptor(property.getPropertyName());
+        PropertyDescriptor pd = getPropertyDescriptor(property.getPropertyName());
         if (pd == null) {
-            String message = MessageUtils.getExceptionMessageString(
-                 MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID,
-                 property.getPropertyName(),
-                 beanInfo.getName());
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID, property.getPropertyName(),
+                    beanInfo.getName());
             queueMessage(message);
         } else {
             if (pd.getReadMethod() == null) {
                 // a null read method means we create a new List or
-                // array and pass it to the bean.  Validate that the
+                // array and pass it to the bean. Validate that the
                 // setter takes either an array or List.
                 if (pd.getWriteMethod() == null) {
-                    String message = MessageUtils.getExceptionMessageString(
-                         MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID,
-                         property.getPropertyName(),
-                         beanInfo.getName());
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID,
+                            property.getPropertyName(), beanInfo.getName());
                     queueMessage(message);
                 } else {
                     Class<?>[] params = pd.getWriteMethod().getParameterTypes();
                     if (params.length != 1) {
-                        String message = MessageUtils.getExceptionMessageString(
-                             MessageUtils.MANAGED_BEAN_PROPERTY_INCORRECT_ARGS_ERROR_ID,
-                             property.getPropertyName(),
-                             beanInfo.getName());
+                        String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_INCORRECT_ARGS_ERROR_ID,
+                                property.getPropertyName(), beanInfo.getName());
                         queueMessage(message);
                     } else {
                         if (!params[0].isArray() && !List.class.isAssignableFrom(params[0])) {
-                            String message = MessageUtils
-                                     .getExceptionMessageString(
-                                          MessageUtils.MANAGED_BEAN_LIST_SETTER_DOES_NOT_ACCEPT_LIST_OR_ARRAY_ERROR_ID,
-                                          property.getPropertyName(),
-                                          beanInfo.getName());
-                                queueMessage(message);
+                            String message = MessageUtils.getExceptionMessageString(
+                                    MessageUtils.MANAGED_BEAN_LIST_SETTER_DOES_NOT_ACCEPT_LIST_OR_ARRAY_ERROR_ID, property.getPropertyName(),
+                                    beanInfo.getName());
+                            queueMessage(message);
                         }
                     }
                 }
             } else {
-                // a getter exists.  ensure it returns a List or array.
+                // a getter exists. ensure it returns a List or array.
                 // if it returns an array, ensure a setter exists
                 Class<?> retType = pd.getReadMethod().getReturnType();
                 if (retType.isArray()) {
                     if (pd.getWriteMethod() == null) {
-                        String message = MessageUtils
-                             .getExceptionMessageString(
-                                  MessageUtils.MANAGED_BEAN_LIST_GETTER_ARRAY_NO_SETTER_ERROR_ID,
-                                  property.getPropertyName(),
-                                  beanInfo.getName());
+                        String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_LIST_GETTER_ARRAY_NO_SETTER_ERROR_ID,
+                                property.getPropertyName(), beanInfo.getName());
                         queueMessage(message);
                     }
                     // validate setter
                 } else {
                     if (!List.class.isAssignableFrom(retType)) {
-                        String message = MessageUtils.getExceptionMessageString(
-                             MessageUtils.MANAGED_BEAN_LIST_GETTER_DOES_NOT_RETURN_LIST_OR_ARRAY_ERROR_ID,
-                             property.getPropertyName(),
-                             beanInfo.getName());
+                        String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_LIST_GETTER_DOES_NOT_RETURN_LIST_OR_ARRAY_ERROR_ID,
+                                property.getPropertyName(), beanInfo.getName());
                         queueMessage(message);
                     }
                 }
@@ -283,36 +235,29 @@ public class ManagedBeanBuilder extends BeanBuilder {
         }
 
         if (!this.hasMessages()) {
-            BakedListProperty baked = new BakedListProperty(listEntry,
-                                                            pd);
+            BakedListProperty baked = new BakedListProperty(listEntry, pd);
             properties.add(baked);
         }
 
     }
 
-
     private void bakeBeanProperty(ManagedBeanInfo.ManagedProperty property) {
 
         String className = property.getPropertyClass();
-        PropertyDescriptor pd =
-                 getPropertyDescriptor(property.getPropertyName());
+        PropertyDescriptor pd = getPropertyDescriptor(property.getPropertyName());
 
         if (pd == null || pd.getWriteMethod() == null) {
             if (!UIComponent.class.isAssignableFrom(getBeanClass())) {
-                String message = MessageUtils.getExceptionMessageString(
-                     MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID,
-                     property.getPropertyName(),
-                     beanInfo.getName());
+                String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_DOES_NOT_EXIST_ERROR_ID, property.getPropertyName(),
+                        beanInfo.getName());
                 queueMessage(message);
-            }           
+            }
         } else {
             Method method = pd.getWriteMethod();
             Class<?>[] param = method.getParameterTypes();
             if (param.length != 1) {
-                String message = MessageUtils.getExceptionMessageString(
-                     MessageUtils.MANAGED_BEAN_PROPERTY_INCORRECT_ARGS_ERROR_ID,
-                     property.getPropertyName(),
-                     beanInfo.getName());
+                String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_PROPERTY_INCORRECT_ARGS_ERROR_ID, property.getPropertyName(),
+                        beanInfo.getName());
                 queueMessage(message);
             }
         }
@@ -327,13 +272,9 @@ public class ManagedBeanBuilder extends BeanBuilder {
             }
 
             if (className != null) {
-                if (!pd.getWriteMethod().getParameterTypes()[0]
-                     .isAssignableFrom(propertyClass)) {
-                    String message = MessageUtils.getExceptionMessageString(
-                         MessageUtils.MANAGED_BEAN_DEFINED_PROPERTY_CLASS_NOT_COMPATIBLE_ERROR_ID,
-                         property.getPropertyName(),
-                         beanInfo.getName(),
-                         property.getPropertyClass());
+                if (!pd.getWriteMethod().getParameterTypes()[0].isAssignableFrom(propertyClass)) {
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_DEFINED_PROPERTY_CLASS_NOT_COMPATIBLE_ERROR_ID,
+                            property.getPropertyName(), beanInfo.getName(), property.getPropertyClass());
                     queueMessage(message);
                 }
             }
@@ -350,15 +291,11 @@ public class ManagedBeanBuilder extends BeanBuilder {
         }
 
         if (!this.hasMessages()) {
-            BakedBeanProperty baked
-                 = new BakedBeanProperty(property.getPropertyName(),
-                                         pd,
-                                         value);
+            BakedBeanProperty baked = new BakedBeanProperty(property.getPropertyName(), pd, value);
             properties.add(baked);
         }
 
     }
-
 
     private PropertyDescriptor getPropertyDescriptor(String propertyName) {
 
@@ -371,9 +308,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
                 }
             }
         } catch (IntrospectionException ie) {
-            String message = MessageUtils.getExceptionMessageString(
-                 MessageUtils.MANAGED_BEAN_INTROSPECTION_ERROR_ID,
-                 beanInfo.getName());
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_INTROSPECTION_ERROR_ID, beanInfo.getName());
             throw new ManagedBeanPreProcessingException(message);
         }
 
@@ -381,9 +316,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
 
     }
 
-
     // ----------------------------------------------------------- Inner Classes
-
 
     private static interface BakedProperty {
 
@@ -393,11 +326,10 @@ public class ManagedBeanBuilder extends BeanBuilder {
 
     private class BakedMapProperty implements BakedProperty {
 
-        Map<Expression,Expression> mapEntries;
+        Map<Expression, Expression> mapEntries;
         PropertyDescriptor pd;
 
-        BakedMapProperty(Map<Expression,Expression> mapEntries,
-                         PropertyDescriptor pd) {
+        BakedMapProperty(Map<Expression, Expression> mapEntries, PropertyDescriptor pd) {
 
             this.mapEntries = mapEntries;
             this.pd = pd;
@@ -414,15 +346,14 @@ public class ManagedBeanBuilder extends BeanBuilder {
                 // see if a Map already exists, if so, we'll
                 // add the config entries to the existing
                 try {
-                    target = (Map) readMethod.invoke(bean,
-                                                     RIConstants.EMPTY_METH_ARGS);
+                    target = (Map) readMethod.invoke(bean, RIConstants.EMPTY_METH_ARGS);
                     mapReturned = (target != null);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ignored) {
                     // ignored
                 }
             }
             if (target == null) {
-                //noinspection CollectionWithoutInitialCapacity
+                // noinspection CollectionWithoutInitialCapacity
                 target = new HashMap();
             }
             initMap(mapEntries, target, context);
@@ -432,10 +363,8 @@ public class ManagedBeanBuilder extends BeanBuilder {
                 try {
                     writeMethod.invoke(bean, target);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    String message = MessageUtils.getExceptionMessageString(
-                         MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID,
-                         pd.getName(),
-                         beanInfo.getName());
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID, pd.getName(),
+                            beanInfo.getName());
                     throw new ManagedBeanPreProcessingException(message, e);
                 }
             }
@@ -443,21 +372,17 @@ public class ManagedBeanBuilder extends BeanBuilder {
 
     } // END BakedMapProperty
 
-
     private class BakedListProperty implements BakedProperty {
 
         private List<Expression> listEntries;
-        private PropertyDescriptor pd;        
+        private PropertyDescriptor pd;
 
-
-        BakedListProperty(List<Expression> listEntries,
-                          PropertyDescriptor pd) {
+        BakedListProperty(List<Expression> listEntries, PropertyDescriptor pd) {
 
             this.listEntries = listEntries;
-            this.pd = pd;           
-            
-        }
+            this.pd = pd;
 
+        }
 
         @Override
         public void set(Object bean, FacesContext context) {
@@ -481,7 +406,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
                         if (target == null) {
                             target = new ArrayList(len);
                         }
-                        //noinspection unchecked
+                        // noinspection unchecked
                         target.add(Array.get(temp, i));
                     }
                 } else {
@@ -489,11 +414,10 @@ public class ManagedBeanBuilder extends BeanBuilder {
                 }
             }
             if (target == null) {
-                //noinspection CollectionWithoutInitialCapacity
+                // noinspection CollectionWithoutInitialCapacity
                 target = new ArrayList();
             }
-            ExpressionFactory expFactory =
-                 context.getApplication().getExpressionFactory();
+            ExpressionFactory expFactory = context.getApplication().getExpressionFactory();
             initList(listEntries, target, context);
 
             // handle the case where the getter returned a non-null value
@@ -503,23 +427,18 @@ public class ManagedBeanBuilder extends BeanBuilder {
                 return;
             } else if (temp != null) {
 
-                // getter returned an array.  Converter the List
+                // getter returned an array. Converter the List
                 // 'target' to an array and call the setter
                 Class<?> arrayType = temp.getClass().getComponentType();
                 Object result = Array.newInstance(arrayType, target.size());
                 for (int i = 0, len = target.size(); i < len; i++) {
-                    Array.set(result,
-                              i,
-                              expFactory.coerceToType(target.get(i),
-                                                      arrayType));
+                    Array.set(result, i, expFactory.coerceToType(target.get(i), arrayType));
                 }
                 try {
                     pd.getWriteMethod().invoke(bean, result);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    String message = MessageUtils.getExceptionMessageString(
-                         MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID,
-                         pd.getName(),
-                         beanInfo.getName());
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID, pd.getName(),
+                            beanInfo.getName());
                     throw new ManagedBeanCreationException(message, e);
                 }
             } else {
@@ -531,37 +450,28 @@ public class ManagedBeanBuilder extends BeanBuilder {
                     Class<?> arrayType = param[0].getComponentType();
                     Object result = Array.newInstance(arrayType, target.size());
                     for (int i = 0, len = target.size(); i < len; i++) {
-                        Array.set(result,
-                                  i,
-                                  expFactory.coerceToType(target.get(i),
-                                                          arrayType));
+                        Array.set(result, i, expFactory.coerceToType(target.get(i), arrayType));
                     }
                     try {
                         writeMethod.invoke(bean, result);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        String message = MessageUtils.getExceptionMessageString(
-                             MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID,
-                             pd.getName(),
-                             beanInfo.getName());
+                        String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID, pd.getName(),
+                                beanInfo.getName());
                         throw new ManagedBeanCreationException(message, e);
                     }
                 } else {
                     try {
                         writeMethod.invoke(bean, target);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        String message = MessageUtils.getExceptionMessageString(
-                             MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID,
-                             pd.getName(),
-                             beanInfo.getName());
+                        String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID, pd.getName(),
+                                beanInfo.getName());
                         throw new ManagedBeanCreationException(message, e);
                     }
                 }
             }
         }
 
-
     } // END BakedListProperty
-
 
     private class BakedBeanProperty implements BakedProperty {
 
@@ -569,9 +479,7 @@ public class ManagedBeanBuilder extends BeanBuilder {
         private PropertyDescriptor pd;
         private Expression value;
 
-        BakedBeanProperty(String propertyName,
-                          PropertyDescriptor pd,
-                          Expression value) {
+        BakedBeanProperty(String propertyName, PropertyDescriptor pd, Expression value) {
 
             this.propertyName = propertyName;
             this.pd = pd;
@@ -579,35 +487,25 @@ public class ManagedBeanBuilder extends BeanBuilder {
 
         }
 
-
         @Override
         public void set(Object bean, FacesContext context) {
 
             if (pd != null) {
                 Method writeMethod = pd.getWriteMethod();
                 try {
-                    writeMethod.invoke(bean,
-                                       ((value != null)
-                                        ? value.evaluate(context.getELContext())
-                                        : null));
+                    writeMethod.invoke(bean, ((value != null) ? value.evaluate(context.getELContext()) : null));
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    String message = MessageUtils.getExceptionMessageString(
-                         MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID,
-                         pd.getName(),
-                         beanInfo.getName());
+                    String message = MessageUtils.getExceptionMessageString(MessageUtils.MANAGED_BEAN_UNABLE_TO_SET_PROPERTY_ERROR_ID, pd.getName(),
+                            beanInfo.getName());
                     throw new ManagedBeanCreationException(message, e);
                 }
             } else {
                 // no PropertyDescriptor means this bean is a UIComponent
-                ((UIComponent) bean).getAttributes()
-                     .put(propertyName, ((value != null)
-                                           ? value
-                          .evaluate(context.getELContext())
-                                           : ""));
+                ((UIComponent) bean).getAttributes().put(propertyName, ((value != null) ? value.evaluate(context.getELContext()) : ""));
             }
 
         }
-        
+
     } // END BakedBeanProperty
 
 }

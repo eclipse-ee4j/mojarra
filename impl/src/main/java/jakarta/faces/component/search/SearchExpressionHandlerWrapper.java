@@ -24,25 +24,26 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_3">Provides a simple implementation of {@link SearchExpressionHandler} that can
- * be subclassed by developers wishing to provide specialized behavior
- * to an existing {@link SearchExpressionHandler} instance.  The default
- * implementation of all methods is to call through to the wrapped
- * {@link SearchExpressionHandler} instance.
- * Usage: extend this class and push the implementation being wrapped to the
- * constructor and use {@link #getWrapped} to access the instance being wrapped.</p>
+ * <p class="changed_added_2_3">
+ * Provides a simple implementation of {@link SearchExpressionHandler} that can be subclassed by developers wishing to
+ * provide specialized behavior to an existing {@link SearchExpressionHandler} instance. The default implementation of
+ * all methods is to call through to the wrapped {@link SearchExpressionHandler} instance. Usage: extend this class and
+ * push the implementation being wrapped to the constructor and use {@link #getWrapped} to access the instance being
+ * wrapped.
+ * </p>
  *
  * @since 2.3
  */
-public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHandler
-        implements FacesWrapper<SearchExpressionHandler> {
+public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHandler implements FacesWrapper<SearchExpressionHandler> {
 
     private final SearchExpressionHandler wrapped;
 
     /**
-     * <p class="changed_added_2_3">If this search expression handler has been decorated,
-     * the implementation doing the decorating should push the implementation being wrapped to this constructor.
-     * The {@link #getWrapped()} will then return the implementation being wrapped.</p>
+     * <p class="changed_added_2_3">
+     * If this search expression handler has been decorated, the implementation doing the decorating should push the
+     * implementation being wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being
+     * wrapped.
+     * </p>
      *
      * @param wrapped The implementation being wrapped.
      * @since 2.3
@@ -67,26 +68,22 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
     }
 
     @Override
-    public void resolveComponent(SearchExpressionContext searchExpressionContext, String expression,
-            ContextCallback callback) {
+    public void resolveComponent(SearchExpressionContext searchExpressionContext, String expression, ContextCallback callback) {
         getWrapped().resolveComponent(searchExpressionContext, expression, callback);
     }
 
     @Override
-    public void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions,
-            ContextCallback callback) {
+    public void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions, ContextCallback callback) {
         getWrapped().resolveComponents(searchExpressionContext, expressions, callback);
     }
 
     @Override
-    public void invokeOnComponent(SearchExpressionContext searchExpressionContext, String expression,
-            ContextCallback callback) {
+    public void invokeOnComponent(SearchExpressionContext searchExpressionContext, String expression, ContextCallback callback) {
         getWrapped().invokeOnComponent(searchExpressionContext, expression, callback);
     }
 
     @Override
-    public void invokeOnComponent(SearchExpressionContext searchExpressionContext, UIComponent previous, String expression,
-            ContextCallback callback) {
+    public void invokeOnComponent(SearchExpressionContext searchExpressionContext, UIComponent previous, String expression, ContextCallback callback) {
         getWrapped().invokeOnComponent(searchExpressionContext, previous, expression, callback);
     }
 
@@ -104,7 +101,7 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
     public String[] splitExpressions(FacesContext context, String expressions) {
         return getWrapped().splitExpressions(context, expressions);
     }
-    
+
     @Override
     public char[] getExpressionSeperatorChars(FacesContext context) {
         return getWrapped().getExpressionSeperatorChars(context);

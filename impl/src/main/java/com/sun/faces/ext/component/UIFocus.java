@@ -24,11 +24,11 @@ import jakarta.faces.component.UIComponentBase;
  * @author driscoll
  */
 public class UIFocus extends UIComponentBase {
-    
+
     private static final String FAMILY = "FocusFamily";
-            
+
     @Override
     public String getFamily() {
         return FAMILY;
     }
-}  
+}

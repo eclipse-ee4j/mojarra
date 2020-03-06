@@ -26,36 +26,31 @@ import jakarta.faces.context.FacesContext;
 
 /**
  *
- * <p class="changed_added_2_0">When an instance of this event is passed
- * to {@link SystemEventListener#processEvent} or {@link
- * ComponentSystemEventListener#processEvent}, the listener
- * implementation may assume that the <code>source</code> of this event
- * instance is a {@link UIComponent} instance that is about to be
- * removed from the view.  Therefore, the implementation may assume it
- * is safe to call {@link UIComponent#getParent}, {@link
- * UIComponent#getClientId}, and other methods that depend upon the
- * component instance being added into the view.</p> 
-
+ * <p class="changed_added_2_0">
+ * When an instance of this event is passed to {@link SystemEventListener#processEvent} or
+ * {@link ComponentSystemEventListener#processEvent}, the listener implementation may assume that the
+ * <code>source</code> of this event instance is a {@link UIComponent} instance that is about to be removed from the
+ * view. Therefore, the implementation may assume it is safe to call {@link UIComponent#getParent},
+ * {@link UIComponent#getClientId}, and other methods that depend upon the component instance being added into the view.
+ * </p>
+ * 
  * @since 2.0
  */
 public class PreRemoveFromViewEvent extends ComponentSystemEvent {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     private static final long serialVersionUID = 1715650557625760365L;
 
     /**
-     * <p class="changed_added_2_0">Instantiate a new
-     * <code>BeforeRemoveFromView</code> that indicates the argument
-     * <code>component</code> is about to be removed from the view.</p>
-
-     * @param component the <code>UIComponent</code> that is about to be
+     * <p class="changed_added_2_0">
+     * Instantiate a new <code>BeforeRemoveFromView</code> that indicates the argument <code>component</code> is about to be
      * removed from the view.
+     * </p>
+     * 
+     * @param component the <code>UIComponent</code> that is about to be removed from the view.
      *
-     * @throws IllegalArgumentException if <code>component</code> is
-     *  <code>null</code>
+     * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
      */
     public PreRemoveFromViewEvent(UIComponent component) {
 
@@ -64,27 +59,26 @@ public class PreRemoveFromViewEvent extends ComponentSystemEvent {
     }
 
     /**
-     * <p class="changed_added_2_3">Instantiate a new
-     * <code>BeforeRemoveFromView</code> that indicates the argument
-     * <code>component</code> is about to be removed from the view.</p>
+     * <p class="changed_added_2_3">
+     * Instantiate a new <code>BeforeRemoveFromView</code> that indicates the argument <code>component</code> is about to be
+     * removed from the view.
+     * </p>
      * 
      * @param facesContext the Faces context.
-     * @param component the <code>UIComponent</code> that is about to be
-     * removed from the view.
-     * @throws IllegalArgumentException if <code>component</code> is
-     *  <code>null</code>
+     * @param component the <code>UIComponent</code> that is about to be removed from the view.
+     * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
      */
     public PreRemoveFromViewEvent(FacesContext facesContext, UIComponent component) {
         super(facesContext, component);
     }
-    
+
     // --------------------------------------- Methods from ComponentSystemEvent
 
-
     /**
-     * <p class="changed_added_2_0">Returns <code>true</code> if and
-     * only if the argument <code>listener</code> is an instance of
-     * {@link SystemEventListener}.</p>
+     * <p class="changed_added_2_0">
+     * Returns <code>true</code> if and only if the argument <code>listener</code> is an instance of
+     * {@link SystemEventListener}.
+     * </p>
      * 
      * @param listener the faces listener.
      * @return true if the listener is an appropriate one, false otherwise.
@@ -93,8 +87,7 @@ public class PreRemoveFromViewEvent extends ComponentSystemEvent {
     public boolean isAppropriateListener(FacesListener listener) {
 
         return (listener instanceof SystemEventListener);
-        
+
     }
-    
 
 }

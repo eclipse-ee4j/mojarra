@@ -32,20 +32,18 @@ import jakarta.el.ValueExpression;
 import java.io.Serializable;
 
 /**
- * Register an ActionListener instance on the UIComponent associated with the
- * closest parent UIComponent custom action. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag
+ * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag
  * documentation</a>.
  *
  * @author Jacob Hookom
  * @see jakarta.faces.event.ActionListener
  * @see jakarta.faces.component.ActionSource
  */
-public final class ActionListenerHandler extends ActionListenerHandlerBase
-      implements ActionSource2AttachedObjectHandler {
+public final class ActionListenerHandler extends ActionListenerHandlerBase implements ActionSource2AttachedObjectHandler {
 
-    private final static class LazyActionListener
-          implements ActionListener, Serializable {
+    private final static class LazyActionListener implements ActionListener, Serializable {
 
         private static final long serialVersionUID = -9202120013153262119L;
 
@@ -58,25 +56,20 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase
         }
 
         @Override
-        public void processAction(ActionEvent event)
-              throws AbortProcessingException {
+        public void processAction(ActionEvent event) throws AbortProcessingException {
             ActionListener instance = null;
             FacesContext faces = FacesContext.getCurrentInstance();
             if (faces == null) {
                 return;
             }
             if (this.binding != null) {
-                instance = (ActionListener) binding
-                      .getValue(faces.getELContext());
+                instance = (ActionListener) binding.getValue(faces.getELContext());
             }
             if (instance == null && this.type != null) {
                 try {
-                    instance = (ActionListener) ReflectionUtil
-                          .forName(this.type).newInstance();
+                    instance = (ActionListener) ReflectionUtil.forName(this.type).newInstance();
                 } catch (Exception e) {
-                    throw new AbortProcessingException(
-                          "Couldn't Lazily instantiate ValueChangeListener",
-                          e);
+                    throw new AbortProcessingException("Couldn't Lazily instantiate ValueChangeListener", e);
                 }
                 if (this.binding != null) {
                     binding.setValue(faces.getELContext(), instance);
@@ -117,11 +110,9 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase
         }
     }
 
-
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent) {
-        FaceletContext ctx = (FaceletContext) context.getAttributes()
-              .get(FaceletContext.FACELET_CONTEXT_KEY);
+        FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
         ActionSource as = (ActionSource) parent;
         ValueExpression b = null;
         if (this.binding != null) {
@@ -131,13 +122,11 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase
         as.addActionListener(listener);
     }
 
-
     private void checkType(String type) {
         try {
             ReflectionUtil.forName(type);
         } catch (ClassNotFoundException e) {
-            throw new TagAttributeException(typeAttribute,
-                "Couldn't qualify ActionListener", e);
+            throw new TagAttributeException(typeAttribute, "Couldn't qualify ActionListener", e);
         }
     }
 }

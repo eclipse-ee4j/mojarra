@@ -25,12 +25,12 @@ import jakarta.faces.component.UIOutput;
 
 /**
  * NONE
- * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Doctype</code>".
- * This value can be changed by calling the <code>setRendererType()</code> method.</p>
+ * <p>
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Doctype</code>". This value
+ * can be changed by calling the <code>setRendererType()</code> method.
+ * </p>
  */
 public class HtmlDoctype extends UIOutput {
-
-
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -39,32 +39,38 @@ public class HtmlDoctype extends UIOutput {
         setRendererType("jakarta.faces.Doctype");
     }
 
-
     /**
-     * <p>The standard component type for this component.</p>
+     * <p>
+     * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.OutputDoctype";
 
-
     protected enum PropertyKeys {
-        publicVal("public"),
-        rootElement,
-        system,
-;
+        publicVal("public"), rootElement, system,;
+
         String toString;
-        PropertyKeys(String toString) { this.toString = toString; }
-        PropertyKeys() { }
+
+        PropertyKeys(String toString) {
+            this.toString = toString;
+        }
+
+        PropertyKeys() {
+        }
+
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
-}
+    }
 
     /**
-     * <p>Return the value of the <code>public</code> property.</p>
+     * <p>
+     * Return the value of the <code>public</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: <div class="changed_added_2_1">
-     * Will be output as the public part of the DOCTYPE
-     * </div>
+     * <p>
+     * Contents: <div class="changed_added_2_1"> Will be output as the public part of the DOCTYPE </div>
      */
     public java.lang.String getPublic() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.publicVal);
@@ -72,7 +78,10 @@ public class HtmlDoctype extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>public</code> property.</p>
+     * <p>
+     * Set the value of the <code>public</code> property.
+     * </p>
+     * 
      * @param _public the new property value
      */
     public void setPublic(java.lang.String _public) {
@@ -80,13 +89,14 @@ public class HtmlDoctype extends UIOutput {
         handleAttribute("public", _public);
     }
 
-
     /**
-     * <p>Return the value of the <code>rootElement</code> property.</p>
+     * <p>
+     * Return the value of the <code>rootElement</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: <div class="changed_added_2_1">
-     * The root XML element
-     * </div>
+     * <p>
+     * Contents: <div class="changed_added_2_1"> The root XML element </div>
      */
     public java.lang.String getRootElement() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.rootElement);
@@ -94,7 +104,10 @@ public class HtmlDoctype extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>rootElement</code> property.</p>
+     * <p>
+     * Set the value of the <code>rootElement</code> property.
+     * </p>
+     * 
      * @param rootElement the new property value
      */
     public void setRootElement(java.lang.String rootElement) {
@@ -102,13 +115,14 @@ public class HtmlDoctype extends UIOutput {
         handleAttribute("rootElement", rootElement);
     }
 
-
     /**
-     * <p>Return the value of the <code>system</code> property.</p>
+     * <p>
+     * Return the value of the <code>system</code> property.
+     * </p>
+     * 
      * @return the property value
-     * <p>Contents: <div class="changed_added_2_1">
-     * Will be output as the system part of the DOCTYPE
-     * </div>
+     * <p>
+     * Contents: <div class="changed_added_2_1"> Will be output as the system part of the DOCTYPE </div>
      */
     public java.lang.String getSystem() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.system);
@@ -116,14 +130,16 @@ public class HtmlDoctype extends UIOutput {
     }
 
     /**
-     * <p>Set the value of the <code>system</code> property.</p>
+     * <p>
+     * Set the value of the <code>system</code> property.
+     * </p>
+     * 
      * @param system the new property value
      */
     public void setSystem(java.lang.String system) {
         getStateHelper().put(PropertyKeys.system, system);
         handleAttribute("system", system);
     }
-
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");

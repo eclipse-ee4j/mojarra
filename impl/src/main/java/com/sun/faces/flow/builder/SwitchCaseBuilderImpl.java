@@ -24,7 +24,7 @@ import jakarta.faces.flow.builder.SwitchCaseBuilder;
 import jakarta.el.ValueExpression;
 
 public class SwitchCaseBuilderImpl extends SwitchCaseBuilder {
-    
+
     private SwitchBuilderImpl root;
     private SwitchCaseImpl myCase;
 
@@ -32,7 +32,7 @@ public class SwitchCaseBuilderImpl extends SwitchCaseBuilder {
         this.root = root;
         this.myCase = null;
     }
-    
+
     public SwitchCaseImpl getNavigationCase() {
         return myCase;
     }
@@ -44,7 +44,7 @@ public class SwitchCaseBuilderImpl extends SwitchCaseBuilder {
         root.getSwitchNode()._getCases().add(result.myCase);
         return result;
     }
-    
+
     @Override
     public SwitchCaseBuilder condition(ValueExpression expression) {
         Util.notNull("expression", expression);

@@ -19,8 +19,7 @@ package com.sun.faces.application;
 import java.util.Date;
 
 /**
- * Default template class for the dynamic generation of target-class specific PropertyEditor
- * implementations.
+ * Default template class for the dynamic generation of target-class specific PropertyEditor implementations.
  */
 public class ConverterPropertyEditorFor_XXXX extends ConverterPropertyEditorBase {
     @Override

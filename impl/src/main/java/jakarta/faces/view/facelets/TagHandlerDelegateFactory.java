@@ -19,11 +19,15 @@ package jakarta.faces.view.facelets;
 import jakarta.faces.FacesWrapper;
 
 /**
- * <p class="changed_added_2_0"><span class="changed_modified_2_2 changed_modified_2_3">Abstract</span>
- * factory for creating instances of {@link TagHandlerDelegate}.</p>
+ * <p class="changed_added_2_0">
+ * <span class="changed_modified_2_2 changed_modified_2_3">Abstract</span> factory for creating instances of
+ * {@link TagHandlerDelegate}.
+ * </p>
  *
- * <p class="changed_added_2_3">Usage: extend this class and push the implementation being wrapped to the
- * constructor and use {@link #getWrapped} to access the instance being wrapped.</p>
+ * <p class="changed_added_2_3">
+ * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
+ * access the instance being wrapped.
+ * </p>
  *
  * @since 2.0
  */
@@ -40,9 +44,10 @@ public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandl
     }
 
     /**
-     * <p class="changed_added_2_3">If this factory has been decorated,
-     * the implementation doing the decorating should push the implementation being wrapped to this constructor.
-     * The {@link #getWrapped()} will then return the implementation being wrapped.</p>
+     * <p class="changed_added_2_3">
+     * If this factory has been decorated, the implementation doing the decorating should push the implementation being
+     * wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
+     * </p>
      *
      * @param wrapped The implementation being wrapped.
      */
@@ -51,9 +56,10 @@ public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandl
     }
 
     /**
-     * <p class="changed_modified_2_3">If this factory has been decorated, the
-     * implementation doing the decorating may override this method to provide
-     * access to the implementation being wrapped.</p>
+     * <p class="changed_modified_2_3">
+     * If this factory has been decorated, the implementation doing the decorating may override this method to provide
+     * access to the implementation being wrapped.
+     * </p>
      *
      * @since 2.2
      */
@@ -63,12 +69,11 @@ public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandl
     }
 
     /**
-     * <p class="changed_added_2_0">Create and return a {@link
-     * TagHandlerDelegate} instance designed for use with {@link
-     * ComponentHandler}.</p>
+     * <p class="changed_added_2_0">
+     * Create and return a {@link TagHandlerDelegate} instance designed for use with {@link ComponentHandler}.
+     * </p>
      *
-     * @param owner the <code>ComponentHandler</code> instance being
-     * helped by this helper instance.
+     * @param owner the <code>ComponentHandler</code> instance being helped by this helper instance.
      *
      * @return the newly created instance
      *
@@ -77,12 +82,11 @@ public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandl
     public abstract TagHandlerDelegate createComponentHandlerDelegate(ComponentHandler owner);
 
     /**
-     * <p class="changed_added_2_0">Create and return a {@link
-     * TagHandlerDelegate} instance designed for use with {@link
-     * ValidatorHandler}.</p>
+     * <p class="changed_added_2_0">
+     * Create and return a {@link TagHandlerDelegate} instance designed for use with {@link ValidatorHandler}.
+     * </p>
      *
-     * @param owner the <code>ValidatorHandler</code> instance being
-     * helped by this helper instance.
+     * @param owner the <code>ValidatorHandler</code> instance being helped by this helper instance.
      *
      * @return the newly created instance
      *
@@ -91,12 +95,11 @@ public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandl
     public abstract TagHandlerDelegate createValidatorHandlerDelegate(ValidatorHandler owner);
 
     /**
-     * <p class="changed_added_2_0">Create and return a {@link
-     * TagHandlerDelegate} instance designed for use with {@link
-     * ConverterHandler}.</p>
+     * <p class="changed_added_2_0">
+     * Create and return a {@link TagHandlerDelegate} instance designed for use with {@link ConverterHandler}.
+     * </p>
      *
-     * @param owner the <code>ValidatorHandler</code> instance being
-     * helped by this helper instance.
+     * @param owner the <code>ValidatorHandler</code> instance being helped by this helper instance.
      *
      * @return the newly created instance
      *
@@ -105,12 +108,11 @@ public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandl
     public abstract TagHandlerDelegate createConverterHandlerDelegate(ConverterHandler owner);
 
     /**
-     * <p class="changed_added_2_0">Create and return a {@link
-     * TagHandlerDelegate} instance designed for use with {@link
-     * BehaviorHandler}.</p>
+     * <p class="changed_added_2_0">
+     * Create and return a {@link TagHandlerDelegate} instance designed for use with {@link BehaviorHandler}.
+     * </p>
      *
-     * @param owner the <code>ValidatorHandler</code> instance being
-     * helped by this helper instance.
+     * @param owner the <code>ValidatorHandler</code> instance being helped by this helper instance.
      *
      * @return the newly created instance
      *

@@ -56,8 +56,7 @@ public class PrivateApiFaceletCacheAdapter<V> extends FaceletCache<V> {
     private MemberFactory<V> metadataMemberFactory;
 
     @Override
-    public void setMemberFactories(final MemberFactory<V> faceletFactory, 
-            final MemberFactory<V> viewMetadataFaceletFactory) {
+    public void setMemberFactories(final MemberFactory<V> faceletFactory, final MemberFactory<V> viewMetadataFaceletFactory) {
         InstanceFactory<V> instanceFactory = new InstanceFactory<V>() {
 
             @Override
@@ -87,7 +86,5 @@ public class PrivateApiFaceletCacheAdapter<V> extends FaceletCache<V> {
     public MemberFactory<V> getMetadataMemberFactory() {
         return metadataMemberFactory;
     }
-
-
 
 }

@@ -19,11 +19,10 @@ package com.sun.faces.facelets.tag.composite;
 import jakarta.faces.view.facelets.TagConfig;
 
 public class ActionSource2AttachedObjectTargetHandler extends AttachedObjectTargetHandler {
-    
+
     public ActionSource2AttachedObjectTargetHandler(TagConfig config) {
         super(config);
     }
-    
 
     @Override
     AttachedObjectTargetImpl newAttachedObjectTargetImpl() {

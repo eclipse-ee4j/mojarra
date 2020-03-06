@@ -22,7 +22,7 @@ public final class ComponentRef extends UIComponentBase {
 
     public final static String COMPONENT_TYPE = "facelets.ui.ComponentRef";
     public final static String COMPONENT_FAMILY = "facelets";
-    
+
     public ComponentRef() {
         super();
     }

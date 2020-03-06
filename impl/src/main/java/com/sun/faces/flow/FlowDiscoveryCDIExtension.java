@@ -61,35 +61,33 @@ import jakarta.enterprise.inject.spi.Producer;
 
 public class FlowDiscoveryCDIExtension implements Extension {
 
-
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.FLOW.getLogger();
     private List<Producer<Flow>> flowProducers;
-    
+
     public FlowDiscoveryCDIExtension() {
         flowProducers = new CopyOnWriteArrayList<>();
-        
+
     }
-    
+
     public List<Producer<Flow>> getFlowProducers() {
         return flowProducers;
     }
-    
+
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager) {
         AnnotatedType flowDiscoveryHelper = beanManager.createAnnotatedType(FlowDiscoveryCDIHelper.class);
         event.addAnnotatedType(flowDiscoveryHelper);
-        
+
     }
-    
+
     <T> void findFlowDefiners(@Observes ProcessProducer<T, Flow> pp) {
-    	if (pp.getAnnotatedMember().isAnnotationPresent(FlowDefinition.class)) {
+        if (pp.getAnnotatedMember().isAnnotationPresent(FlowDefinition.class)) {
             flowProducers.add(pp.getProducer());
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "Discovered Flow Producer {0}", pp.getProducer().toString());
             }
 
-    	}
+        }
     }
-    
-    
+
 }

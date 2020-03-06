@@ -16,36 +16,32 @@
 
 package jakarta.faces.event;
 
-
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.FacesListener;
 import jakarta.faces.event.ValueChangeEvent;
 
 import jakarta.faces.component.UIComponent;
 
-
 /**
- * <p>A listener interface for receiving {@link ValueChangeEvent}s.  A class
- * that is interested in receiving such events implements this interface, and
- * then registers itself with the source {@link UIComponent} of interest, by
- * calling <code>addValueChangeListener()</code>.</p>
+ * <p>
+ * A listener interface for receiving {@link ValueChangeEvent}s. A class that is interested in receiving such events
+ * implements this interface, and then registers itself with the source {@link UIComponent} of interest, by calling
+ * <code>addValueChangeListener()</code>.
+ * </p>
  */
 
 public interface ValueChangeListener extends FacesListener {
 
-
     /**
-     * <p>Invoked when the value change described by the specified
-     * {@link ValueChangeEvent} occurs.</p>
+     * <p>
+     * Invoked when the value change described by the specified {@link ValueChangeEvent} occurs.
+     * </p>
      *
      * @param event The {@link ValueChangeEvent} that has occurred
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces
-     *  implementation that no further processing on the current event
-     *  should be performed
+     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * current event should be performed
      */
-    public void processValueChange(ValueChangeEvent event)
-        throws AbortProcessingException;
-
+    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException;
 
 }

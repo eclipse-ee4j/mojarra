@@ -65,7 +65,7 @@ class WebServiceRefScanner implements Scanner {
                 fields.add(field);
             }
         }
-        
+
         ArrayList<WebServiceRef> methodAnnotations = new ArrayList<>();
         ArrayList<Method> methods = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
@@ -75,10 +75,9 @@ class WebServiceRefScanner implements Scanner {
                 methods.add(method);
             }
         }
-        
+
         if (!classAnnotations.isEmpty() || !fieldAnnotations.isEmpty()) {
-            handler = new WebServiceRefHandler(
-                    fields.toArray(new Field[0]), (WebServiceRef[]) fieldAnnotations.toArray(new WebServiceRef[0]),
+            handler = new WebServiceRefHandler(fields.toArray(new Field[0]), (WebServiceRef[]) fieldAnnotations.toArray(new WebServiceRef[0]),
                     methods.toArray(new Method[0]), (WebServiceRef[]) methodAnnotations.toArray(new WebServiceRef[0]));
         }
         return handler;

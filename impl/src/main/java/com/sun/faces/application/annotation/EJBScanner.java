@@ -60,7 +60,7 @@ class EJBScanner implements Scanner {
                 fields.add(field);
             }
         }
-        
+
         ArrayList<EJB> methodAnnotations = new ArrayList<>();
         ArrayList<Method> methods = new ArrayList<>();
 
@@ -72,9 +72,8 @@ class EJBScanner implements Scanner {
             }
         }
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new EJBHandler(
-                    fields.toArray(new Field[0]), (EJB[]) fieldAnnotations.toArray(new EJB[0]),
-                    methods.toArray(new Method[0]), (EJB[]) methodAnnotations.toArray(new EJB[0]));
+            handler = new EJBHandler(fields.toArray(new Field[0]), (EJB[]) fieldAnnotations.toArray(new EJB[0]), methods.toArray(new Method[0]),
+                    (EJB[]) methodAnnotations.toArray(new EJB[0]));
         }
         return handler;
     }

@@ -59,19 +59,18 @@ public class FacesConfigInfo {
      * <code>Document</code> does not represent the <code>WEB-INF/faces-config.xml</code> the {@link #isWebInfFacesConfig()}
      * method will return <code>false</code>
      *
-     * @param documentInfo
-     *            DocumentInfo representing the <code>/WEB-INF/faces-config.xml</code>
+     * @param documentInfo DocumentInfo representing the <code>/WEB-INF/faces-config.xml</code>
      */
     public FacesConfigInfo(DocumentInfo documentInfo) {
 
         Document document = documentInfo.getDocument();
         isWebInfFacesConfig = isWebinfFacesConfig(document);
         version = getVersion(document);
-        
+
         if (isWebInfFacesConfig && isVersionGreaterOrEqual(2.0)) {
             extractOrdering(document);
         }
-        
+
         metadataComplete = isMetadataComplete(document);
 
     }
@@ -79,10 +78,9 @@ public class FacesConfigInfo {
     // ------------------------------------------------------ Public Methods
 
     /**
-     * @param version
-     *            version to check
+     * @param version version to check
      * @return <code>true</code> if <code>version</code> is greater or equal to the version of the
-     *         <code>/WEB-INF/faces-config.xml</code>
+     * <code>/WEB-INF/faces-config.xml</code>
      */
     public boolean isVersionGreaterOrEqual(double version) {
         return this.version >= version;
@@ -90,7 +88,7 @@ public class FacesConfigInfo {
 
     /**
      * @return <code>true</code> if the <code>Document</code> provided at construction time represents the
-     *         <code>/WEB-INF/faces-config.xml</code>.
+     * <code>/WEB-INF/faces-config.xml</code>.
      */
     public boolean isWebInfFacesConfig() {
         return isWebInfFacesConfig;
@@ -98,7 +96,7 @@ public class FacesConfigInfo {
 
     /**
      * @return <code>true</code> if the <code>Document</code> provided at construction time represents the
-     *         <code>/WEB-INF/faces-config.xml and is metadata complete.
+     * <code>/WEB-INF/faces-config.xml and is metadata complete.
      */
     public boolean isMetadataComplete() {
         return metadataComplete;
@@ -106,37 +104,33 @@ public class FacesConfigInfo {
 
     /**
      * @return a <code>List</code> of document names that in the order that they should be processed. The presense of the
-     *         keyword "others" indicates all documents not explicitly referenced by name in the list should be places in
-     *         the final parsing order at same location. If there are multiple documents that aren't named and the others
-     *         element is present, the order that these documents are inserted into the final list is unspecified at this
-     *         time.
+     * keyword "others" indicates all documents not explicitly referenced by name in the list should be places in the final
+     * parsing order at same location. If there are multiple documents that aren't named and the others element is present,
+     * the order that these documents are inserted into the final list is unspecified at this time.
      */
     public List<String> getAbsoluteOrdering() {
         return absoluteOrdering != null ? unmodifiableList(absoluteOrdering) : null;
     }
-    
 
     // ----------------------------------------------------- Private Methods
 
     /**
-     * @param document
-     *            document representing <code>WEB-INF/faces-config.xml</code>
+     * @param document document representing <code>WEB-INF/faces-config.xml</code>
      * @return return the value of the version attribute of the provided document. If no version attribute is specified,
-     *         assume 1.1.
+     * assume 1.1.
      */
     private double getVersion(Document document) {
 
         String version = document.getDocumentElement().getAttributeNS(document.getNamespaceURI(), "version");
         if (version != null && version.length() > 0) {
             return Double.parseDouble(version);
-        } 
-            
+        }
+
         return 1.1d;
     }
 
     /**
-     * @param document
-     *            the <code>Document</code> to inspect
+     * @param document the <code>Document</code> to inspect
      * @return <code>true</code> if the document represents the <code>/WEB-INF/faces-config.xml</code>
      */
     private boolean isWebinfFacesConfig(Document document) {
@@ -148,8 +142,8 @@ public class FacesConfigInfo {
         if (isVersionGreaterOrEqual(2.0)) {
             String metadataComplete = document.getDocumentElement().getAttributeNS(document.getNamespaceURI(), "metadata-complete");
             return metadataComplete != null ? Boolean.valueOf(metadataComplete) : false;
-        } 
-            
+        }
+
         // not a 2.0 application, so annotation processing will not occur
         return true;
     }

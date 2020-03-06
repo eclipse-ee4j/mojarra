@@ -30,9 +30,7 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
 
     private ListenerFor[] listenersFor;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ListenerForHandler(ListenerFor[] listenersFor) {
 
@@ -40,11 +38,9 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
 
     }
 
-
     // ----------------------------------- Methods from RuntimeAnnotationHandler
 
-
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
 
@@ -62,28 +58,21 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
 
         if (listener instanceof ComponentSystemEventListener) {
             for (int i = 0, len = listenersFor.length; i < len; i++) {
-                    target.subscribeToEvent(listenersFor[i].systemEventClass(),
-                                            (ComponentSystemEventListener) listener);
+                target.subscribeToEvent(listenersFor[i].systemEventClass(), (ComponentSystemEventListener) listener);
+            }
+        } else if (listener instanceof SystemEventListener) {
+            Class sourceClassValue = null;
+            Application app = ctx.getApplication();
+            for (int i = 0, len = listenersFor.length; i < len; i++) {
+                sourceClassValue = listenersFor[i].sourceClass();
+                if (sourceClassValue == Void.class) {
+                    app.subscribeToEvent(listenersFor[i].systemEventClass(), (SystemEventListener) listener);
+                } else {
+                    app.subscribeToEvent(listenersFor[i].systemEventClass(), listenersFor[i].sourceClass(), (SystemEventListener) listener);
+
+                }
             }
         }
-	else if (listener instanceof SystemEventListener) {
-	    Class sourceClassValue = null;
-	    Application app = ctx.getApplication();
-            for (int i = 0, len = listenersFor.length; i < len; i++) {
-		sourceClassValue = listenersFor[i].sourceClass();
-		if (sourceClassValue == Void.class) {
-		    app.subscribeToEvent(listenersFor[i].systemEventClass(), 
-					 (SystemEventListener) listener); 
-                }
-                else {
-		    app.subscribeToEvent(listenersFor[i].systemEventClass(), 
-					 listenersFor[i].sourceClass(),
-					 (SystemEventListener) listener); 
-                    
-                }
-	    }
-	}
-
 
     }
 

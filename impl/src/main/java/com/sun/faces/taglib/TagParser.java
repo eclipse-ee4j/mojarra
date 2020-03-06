@@ -17,42 +17,48 @@
 package com.sun.faces.taglib;
 
 /**
- * <p>Interface defining the Validator Tag Parser implementation methods</p>
+ * <p>
+ * Interface defining the Validator Tag Parser implementation methods
+ * </p>
  */
 public interface TagParser {
 
     /**
-     * <p>Return the failure message for a failed validation</p>
+     * <p>
+     * Return the failure message for a failed validation
+     * </p>
      *
      * @return String Failure message
      */
     public String getMessage();
 
-
     /**
-     * <p>Return false if validator conditions have not been met</p>
+     * <p>
+     * Return false if validator conditions have not been met
+     * </p>
      *
      * @return boolean false if validation conditions have not been met
      */
     public boolean hasFailed();
 
-
     /**
-     * <p>Set the Validator Info Bean</p>
+     * <p>
+     * Set the Validator Info Bean
+     * </p>
      */
     public void setValidatorInfo(ValidatorInfo validatorInfo);
 
-
     /**
-     * <p>Parse the starting element.  Parcel out to appropriate
-     * handler method.</p>
+     * <p>
+     * Parse the starting element. Parcel out to appropriate handler method.
+     * </p>
      */
     public void parseStartElement();
 
-
     /**
-     * <p>Parse the ending element.  Parcel out to appropriate
-     * handler method.</p>
+     * <p>
+     * Parse the ending element. Parcel out to appropriate handler method.
+     * </p>
      */
     public void parseEndElement();
 }

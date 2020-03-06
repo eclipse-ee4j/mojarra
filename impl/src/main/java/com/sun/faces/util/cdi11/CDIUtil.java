@@ -26,17 +26,15 @@ import jakarta.enterprise.inject.spi.BeanManager;
  */
 
 public interface CDIUtil {
-    
+
     /*
-     * Allow for the programmatic instantiation of a CDI bean "on demand", 
-     * so to speak.  This is in contrast to the usual way of CDI beans, 
-     * where instantiation happens lazily.
+     * Allow for the programmatic instantiation of a CDI bean "on demand", so to speak. This is in contrast to the usual way
+     * of CDI beans, where instantiation happens lazily.
      * 
-     * Two clients of this interface are the CDI extensions for ViewScoped
-     * and FlowScoped so that they may fire the Initialized and Destroyed
-     * events as necessary.
+     * Two clients of this interface are the CDI extensions for ViewScoped and FlowScoped so that they may fire the
+     * Initialized and Destroyed events as necessary.
      * 
      */
     Bean createHelperBean(BeanManager beanManager, Class beanClass);
-    
+
 }

@@ -23,8 +23,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The RequestProducer is the CDI producer that allows EL resolving of
- * #{request}
+ * The RequestProducer is the CDI producer that allows EL resolving of #{request}
  * </p>
  *
  * @since 2.3
@@ -36,11 +35,9 @@ public class RequestProducer extends CdiProducer<Object> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public RequestProducer() {
-        super.name("request")
-             .scope(RequestScoped.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequest());
+        super.name("request").scope(RequestScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequest());
     }
 
 }

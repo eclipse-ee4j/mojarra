@@ -22,10 +22,14 @@ import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p class="changed_added_2_2"><span class="changed_modified_2_3">Wrapper</span> for {@link ClientWindow}</p>
+ * <p class="changed_added_2_2">
+ * <span class="changed_modified_2_3">Wrapper</span> for {@link ClientWindow}
+ * </p>
  *
- * <p class="changed_added_2_3">Usage: extend this class and push the implementation being wrapped to the
- * constructor and use {@link #getWrapped} to access the instance being wrapped.</p>
+ * <p class="changed_added_2_3">
+ * Usage: extend this class and push the implementation being wrapped to the constructor and use {@link #getWrapped} to
+ * access the instance being wrapped.
+ * </p>
  *
  * @since 2.2
  */
@@ -42,9 +46,10 @@ public abstract class ClientWindowWrapper extends ClientWindow implements FacesW
     }
 
     /**
-     * <p class="changed_added_2_3">If this client window has been decorated,
-     * the implementation doing the decorating should push the implementation being wrapped to this constructor.
-     * The {@link #getWrapped()} will then return the implementation being wrapped.</p>
+     * <p class="changed_added_2_3">
+     * If this client window has been decorated, the implementation doing the decorating should push the implementation
+     * being wrapped to this constructor. The {@link #getWrapped()} will then return the implementation being wrapped.
+     * </p>
      *
      * @param wrapped The implementation being wrapped.
      * @since 2.3
@@ -87,6 +92,5 @@ public abstract class ClientWindowWrapper extends ClientWindow implements FacesW
     public void decode(FacesContext context) {
         getWrapped().decode(context);
     }
-
 
 }

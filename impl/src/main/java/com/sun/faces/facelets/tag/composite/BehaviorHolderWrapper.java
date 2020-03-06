@@ -44,10 +44,10 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.render.Renderer;
 
 /**
- * <p class="changed_added_2_0"></p>
+ * <p class="changed_added_2_0">
+ * </p>
  */
-public class BehaviorHolderWrapper extends UIComponent implements
-      ClientBehaviorHolder {
+public class BehaviorHolderWrapper extends UIComponent implements ClientBehaviorHolder {
 
     private final UIComponent parent;
     private final String virtualEvent;
@@ -226,13 +226,11 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#invokeOnComponent(jakarta.faces.context.FacesContext, java.lang.String, jakarta.faces.component.ContextCallback)
+     * @see jakarta.faces.component.UIComponent#invokeOnComponent(jakarta.faces.context.FacesContext, java.lang.String,
+     * jakarta.faces.component.ContextCallback)
      */
     @Override
-    public boolean invokeOnComponent(FacesContext context,
-                                     String clientId,
-                                     ContextCallback callback)
-    throws FacesException {
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
         return parent.invokeOnComponent(context, clientId, callback);
     }
 
@@ -272,8 +270,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
      * @see jakarta.faces.component.UIComponent#processEvent(jakarta.faces.event.ComponentSystemEvent)
      */
     @Override
-    public void processEvent(ComponentSystemEvent event)
-          throws AbortProcessingException {
+    public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
         parent.processEvent(event);
     }
 
@@ -397,25 +394,26 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#subscribeToEvent(java.lang.Class, jakarta.faces.event.ComponentSystemEventListener)
+     * @see jakarta.faces.component.UIComponent#subscribeToEvent(java.lang.Class,
+     * jakarta.faces.event.ComponentSystemEventListener)
      */
     @Override
-    public void subscribeToEvent(Class<? extends SystemEvent> eventClass,
-                                 ComponentSystemEventListener componentListener) {
+    public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
         parent.subscribeToEvent(eventClass, componentListener);
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#unsubscribeFromEvent(java.lang.Class, jakarta.faces.event.ComponentSystemEventListener)
+     * @see jakarta.faces.component.UIComponent#unsubscribeFromEvent(java.lang.Class,
+     * jakarta.faces.event.ComponentSystemEventListener)
      */
     @Override
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
-                                     ComponentSystemEventListener componentListener) {
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
         parent.unsubscribeFromEvent(eventClass, componentListener);
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#visitTree(jakarta.faces.component.visit.VisitContext, jakarta.faces.component.visit.VisitCallback)
+     * @see jakarta.faces.component.UIComponent#visitTree(jakarta.faces.component.visit.VisitContext,
+     * jakarta.faces.component.visit.VisitCallback)
      */
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback) {
@@ -455,9 +453,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
                 parentHolder.addClientBehavior(event, behavior);
             }
         } else {
-            throw new FacesException(
-                  "Unable to attach behavior to non-ClientBehaviorHolder parent:"
-                  + parent);
+            throw new FacesException("Unable to attach behavior to non-ClientBehaviorHolder parent:" + parent);
         }
 
     }
@@ -466,14 +462,11 @@ public class BehaviorHolderWrapper extends UIComponent implements
     public Map<String, List<ClientBehavior>> getClientBehaviors() {
         if (parent instanceof ClientBehaviorHolder) {
             ClientBehaviorHolder parentHolder = (ClientBehaviorHolder) parent;
-            Map<String, List<ClientBehavior>> behaviors = new HashMap<>(
-                  1);
+            Map<String, List<ClientBehavior>> behaviors = new HashMap<>(1);
             behaviors.put(virtualEvent, parentHolder.getClientBehaviors().get(event));
             return Collections.unmodifiableMap(behaviors);
         } else {
-            throw new FacesException(
-                  "Unable to get behaviors from non-ClientBehaviorHolder parent:"
-                  + parent);
+            throw new FacesException("Unable to get behaviors from non-ClientBehaviorHolder parent:" + parent);
         }
     }
 
@@ -486,6 +479,5 @@ public class BehaviorHolderWrapper extends UIComponent implements
     public Collection<String> getEventNames() {
         return Collections.singleton(virtualEvent);
     }
-
 
 }

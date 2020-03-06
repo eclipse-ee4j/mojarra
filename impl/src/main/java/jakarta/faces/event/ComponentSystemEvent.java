@@ -26,10 +26,10 @@ import jakarta.faces.context.FacesContext;
 
 /**
  *
- * <p><strong class="changed_added_2_0 changed_modified_2_2">
- * ComponentSystemEvent</strong> is
- * the base class for {@link SystemEvent}s that are specific to a {@link
- * UIComponent} instance.</p>
+ * <p>
+ * <strong class="changed_added_2_0 changed_modified_2_2"> ComponentSystemEvent</strong> is the base class for
+ * {@link SystemEvent}s that are specific to a {@link UIComponent} instance.
+ * </p>
  *
  * @since 2.0
  */
@@ -37,16 +37,14 @@ public abstract class ComponentSystemEvent extends SystemEvent {
 
     private static final long serialVersionUID = -4726746661822507506L;
 
-    
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p class="changed_added_2_0">Pass the argument
-     * <code>component</code> to the superclass constructor.</p>
-
-     * @param component the <code>UIComponent</code> reference to be
-     * passed to the superclass constructor.
+     * <p class="changed_added_2_0">
+     * Pass the argument <code>component</code> to the superclass constructor.
+     * </p>
+     * 
+     * @param component the <code>UIComponent</code> reference to be passed to the superclass constructor.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      * 
@@ -57,12 +55,12 @@ public abstract class ComponentSystemEvent extends SystemEvent {
     }
 
     /**
-     * <p class="changed_added_2_3">Pass the argument
-     * <code>component</code> to the superclass constructor.</p>
+     * <p class="changed_added_2_3">
+     * Pass the argument <code>component</code> to the superclass constructor.
+     * </p>
      * 
      * @param facesContext the Faces context.
-     * @param component the <code>UIComponent</code> reference to be
-     * passed to the superclass constructor.
+     * @param component the <code>UIComponent</code> reference to be passed to the superclass constructor.
      *
      * @throws IllegalArgumentException if the argument is <code>null</code>.
      * 
@@ -71,13 +69,13 @@ public abstract class ComponentSystemEvent extends SystemEvent {
     public ComponentSystemEvent(FacesContext facesContext, UIComponent component) {
         super(facesContext, component);
     }
-    
+
     /**
-     * <p class="changed_added_2_2">Return <code>true</code> if the argument
-     * {@link FacesListener} is an instance of the appropriate listener class that this event
-     * supports.  The default implementation returns true if the listener
-     * is a {@link ComponentSystemEventListener} or if <code>super.isAppropriateListener()</code>
-     * returns true.</p>
+     * <p class="changed_added_2_2">
+     * Return <code>true</code> if the argument {@link FacesListener} is an instance of the appropriate listener class that
+     * this event supports. The default implementation returns true if the listener is a
+     * {@link ComponentSystemEventListener} or if <code>super.isAppropriateListener()</code> returns true.
+     * </p>
      *
      * @param listener {@link FacesListener} to evaluate
      * @since 2.2
@@ -92,9 +90,10 @@ public abstract class ComponentSystemEvent extends SystemEvent {
     }
 
     /**
-     * <p class="changed_added_2_2">Broadcast this event instance to 
-     * the specified {@link FacesListener} by calling the superclass's
-     * <code>processListener()</code> implementation.</p>
+     * <p class="changed_added_2_2">
+     * Broadcast this event instance to the specified {@link FacesListener} by calling the superclass's
+     * <code>processListener()</code> implementation.
+     * </p>
      *
      * @param listener {@link FacesListener} to evaluate
      * @since 2.2
@@ -114,7 +113,7 @@ public abstract class ComponentSystemEvent extends SystemEvent {
             if (listener instanceof SystemEventListener) {
                 super.processListener(listener);
             } else if (listener instanceof ComponentSystemEventListener) {
-                ((ComponentSystemEventListener)listener).processEvent(this);
+                ((ComponentSystemEventListener) listener).processEvent(this);
             }
         } finally {
             if (didPush) {
@@ -122,14 +121,13 @@ public abstract class ComponentSystemEvent extends SystemEvent {
             }
         }
     }
-    
-    
 
     // -------------------------------------------------------------- Properties
 
-
     /**
-     * <p class="changed_added_2_0">the source {@link UIComponent} that sent this event.</p>
+     * <p class="changed_added_2_0">
+     * the source {@link UIComponent} that sent this event.
+     * </p>
      * 
      * @since 2.0
      *
@@ -139,6 +137,6 @@ public abstract class ComponentSystemEvent extends SystemEvent {
 
         return ((UIComponent) getSource());
 
-    }    
+    }
 
 }

@@ -29,7 +29,7 @@ import com.sun.faces.util.Util;
 import jakarta.faces.context.FacesContext;
 
 /**
- * @see jakarta.faces.context.ExternalContext#getRequestParameterMap() 
+ * @see jakarta.faces.context.ExternalContext#getRequestParameterMap()
  */
 public class RequestParameterMap extends BaseContextMap<String> {
 
@@ -37,17 +37,13 @@ public class RequestParameterMap extends BaseContextMap<String> {
     private final ServletRequest request;
     private boolean inspectedParameterNames = false;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public RequestParameterMap(ServletRequest request) {
         this.request = request;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public String get(Object key) {
@@ -65,21 +61,19 @@ public class RequestParameterMap extends BaseContextMap<String> {
         return mapValue;
     }
 
-
     @Override
-    public Set<Map.Entry<String,String>> entrySet() {
+    public Set<Map.Entry<String, String>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
-
 
     @Override
     public Set<String> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
-
     /**
      * If view root is instance of naming container, return its container client id, suffixed with separator character.
+     * 
      * @return The naming container prefix, or an empty string if the view root is not an instance of naming container.
      */
     protected String getNamingContainerPrefix() {
@@ -96,53 +90,42 @@ public class RequestParameterMap extends BaseContextMap<String> {
         return namingContainerPrefix;
     }
 
-
     @Override
     public Collection<String> values() {
         return Collections.unmodifiableCollection(super.values());
     }
-
 
     @Override
     public boolean containsKey(Object key) {
         return (key != null && get(key) != null);
     }
 
-
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null ||
-                 !(obj.getClass()
-                   == ExternalContextImpl
-                       .theUnmodifiableMapClass)) && super.equals(obj);
+        return !(obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) && super.equals(obj);
     }
-
 
     @Override
     public int hashCode() {
         int hashCode = 7 * request.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = entrySet().iterator(); i.hasNext();) {
             hashCode += i.next().hashCode();
         }
         return hashCode;
     }
 
-
     // --------------------------------------------- Methods from BaseContextMap
 
-
     @Override
-    protected Iterator<Map.Entry<String,String>> getEntryIterator() {
+    protected Iterator<Map.Entry<String, String>> getEntryIterator() {
         return new EntryIterator(request.getParameterNames());
     }
-
 
     @Override
     protected Iterator<String> getKeyIterator() {
         return new KeyIterator(request.getParameterNames());
     }
 
-    
     @Override
     protected Iterator<String> getValueIterator() {
         return new ValueIterator(request.getParameterNames());

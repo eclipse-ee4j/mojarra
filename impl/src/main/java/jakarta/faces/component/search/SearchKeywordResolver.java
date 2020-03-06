@@ -19,16 +19,15 @@ package jakarta.faces.component.search;
 import jakarta.faces.component.UIComponent;
 
 /**
- * <p class="changed_added_2_3">A <strong>SearchKeywordResolver</strong> is responsible for
- * resolving a single keyword.  Implementations must support the following set
- * of {@code SearchKeywordResolver} implementations, each with the associated
- * behavior.</p>
+ * <p class="changed_added_2_3">
+ * A <strong>SearchKeywordResolver</strong> is responsible for resolving a single keyword. Implementations must support
+ * the following set of {@code SearchKeywordResolver} implementations, each with the associated behavior.
+ * </p>
  *
  * <div class="changed_added_2_3">
  *
  * <table border="1">
- * <caption>List of required supported keywords and
- * their behaviors</caption>
+ * <caption>List of required supported keywords and their behaviors</caption>
  *
  * <tr>
  *
@@ -66,19 +65,17 @@ import jakarta.faces.component.UIComponent;
  *
  * <td>&#64;id(id)</td>
  *
-
- * <td>Resolves to the components with the specified component id (not
- * clientId).  This is useful when the exact location of the component
- * tree is unknown, but must be used with caution when there multiple
- * occurrences of the given id within the view. </td>
-
+ * 
+ * <td>Resolves to the components with the specified component id (not clientId). This is useful when the exact location
+ * of the component tree is unknown, but must be used with caution when there multiple occurrences of the given id
+ * within the view.</td>
  *
+ * 
  * <tr>
  *
  * <td>&#64;namingcontainer</td>
  *
- * <td>The closest {@link jakarta.faces.component.NamingContainer}
- * ancestor component of the base component</td>
+ * <td>The closest {@link jakarta.faces.component.NamingContainer} ancestor component of the base component</td>
  *
  * <tr>
  *
@@ -119,23 +116,29 @@ import jakarta.faces.component.UIComponent;
  *
  * </table>
  *
- * <p>New {@link SearchKeywordResolver}s can be registered via
- *   {@link jakarta.faces.application.Application#addSearchKeywordResolver(jakarta.faces.component.search.SearchKeywordResolver)}
- * or in the application configuration resources.</p>
+ * <p>
+ * New {@link SearchKeywordResolver}s can be registered via
+ * {@link jakarta.faces.application.Application#addSearchKeywordResolver(jakarta.faces.component.search.SearchKeywordResolver)}
+ * or in the application configuration resources.
+ * </p>
  * 
- * <pre><code>
+ * <pre>
+ * <code>
  * &lt;application&gt;
  *   &lt;search-keyword-resolver&gt;...&lt;/search-keyword-resolver&gt;
  * &lt;/application&gt;
- * </code></pre>
+ * </code>
+ * </pre>
+ * 
  * </div>
  *
  * @since 2.3
  */
 public abstract class SearchKeywordResolver {
 
-   /**
-     * <p class="changed_added_2_3">Try to resolve one or multiple {@link UIComponent}s based on the keyword and calls
+    /**
+     * <p class="changed_added_2_3">
+     * Try to resolve one or multiple {@link UIComponent}s based on the keyword and calls
      * {@link SearchKeywordContext#invokeContextCallback(jakarta.faces.component.UIComponent)} for each resolved component.
      * </p>
      *
@@ -148,8 +151,9 @@ public abstract class SearchKeywordResolver {
     public abstract void resolve(SearchKeywordContext searchKeywordContext, UIComponent current, String keyword);
 
     /**
-     * <p class="changed_added_2_3">Checks if the current instance of the {@link SearchKeywordResolver}
-     * is responsible for resolving the keyword.</p>
+     * <p class="changed_added_2_3">
+     * Checks if the current instance of the {@link SearchKeywordResolver} is responsible for resolving the keyword.
+     * </p>
      *
      * @param searchExpressionContext the {@link SearchExpressionContext}
      * @param keyword the keyword
@@ -161,8 +165,10 @@ public abstract class SearchKeywordResolver {
     public abstract boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword);
 
     /**
-     * <p class="changed_added_2_3">A passthrough keyword is a keyword, that according to the context,
-     * does not require to be resolved on the server, and can be passed "unresolved" to the client.</p>
+     * <p class="changed_added_2_3">
+     * A passthrough keyword is a keyword, that according to the context, does not require to be resolved on the server, and
+     * can be passed "unresolved" to the client.
+     * </p>
      *
      * @param searchExpressionContext the {@link SearchExpressionContext}
      * @param keyword the keyword
@@ -176,9 +182,10 @@ public abstract class SearchKeywordResolver {
     }
 
     /**
-     * <p class="changed_added_2_3">A leaf keyword is a keyword that does not allow to be combined with keywords
-     * or id chains to the right.
-     * For example: @none:@parent.</p>
+     * <p class="changed_added_2_3">
+     * A leaf keyword is a keyword that does not allow to be combined with keywords or id chains to the right. For
+     * example: @none:@parent.
+     * </p>
      *
      * @param searchExpressionContext the {@link SearchExpressionContext}
      * @param keyword the keyword

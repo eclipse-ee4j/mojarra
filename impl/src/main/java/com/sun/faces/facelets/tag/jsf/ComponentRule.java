@@ -36,7 +36,7 @@ final class ComponentRule extends MetaRule {
 
         private final String name;
         private final String value;
-        
+
         public LiteralAttributeMetadata(String name, String value) {
             this.value = value;
             this.name = name;
@@ -47,7 +47,7 @@ final class ComponentRule extends MetaRule {
             ((UIComponent) instance).getAttributes().put(this.name, this.value);
         }
     }
-    
+
     final static class ValueExpressionMetadata extends Metadata {
 
         private final String name;
@@ -56,8 +56,7 @@ final class ComponentRule extends MetaRule {
 
         private final Class type;
 
-        public ValueExpressionMetadata(String name, Class type,
-                TagAttribute attr) {
+        public ValueExpressionMetadata(String name, Class type, TagAttribute attr) {
             this.name = name;
             this.attr = attr;
             this.type = type;
@@ -65,8 +64,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueExpression(this.name, this.attr
-                    .getValueExpression(ctx, this.type));
+            ((UIComponent) instance).setValueExpression(this.name, this.attr.getValueExpression(ctx, this.type));
         }
 
     }
@@ -87,9 +85,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueBinding(this.name,
-                    new LegacyValueBinding(this.attr.getValueExpression(ctx,
-                            this.type)));
+            ((UIComponent) instance).setValueBinding(this.name, new LegacyValueBinding(this.attr.getValueExpression(ctx, this.type)));
         }
 
     }
@@ -103,8 +99,7 @@ final class ComponentRule extends MetaRule {
     }
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta) {
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
         if (meta.isTargetInstanceOf(UIComponent.class)) {
 
             // if component and dynamic, then must set expression
@@ -127,8 +122,7 @@ final class ComponentRule extends MetaRule {
 
     private static void warnAttr(TagAttribute attr, Class type, String n) {
         if (log.isLoggable(Level.FINER)) {
-            log.finer(attr + " Property '" + n + "' is not on type: "
-                    + type.getName());
+            log.finer(attr + " Property '" + n + "' is not on type: " + type.getName());
         }
     }
 

@@ -19,11 +19,11 @@ package com.sun.faces.application.annotation;
 import java.lang.annotation.Annotation;
 
 /**
- * <code>Scanner</code> implementation responsible for PersistenceContext
- * annotations.
+ * <code>Scanner</code> implementation responsible for PersistenceContext annotations.
  *
- * <p> Note this will delegate down to the PersistenceContextScanner so we can fail
- * gracefully when JavaEE is not available. </p>
+ * <p>
+ * Note this will delegate down to the PersistenceContextScanner so we can fail gracefully when JavaEE is not available.
+ * </p>
  */
 public class DelegatedPersistenceContextScanner implements Scanner {
 

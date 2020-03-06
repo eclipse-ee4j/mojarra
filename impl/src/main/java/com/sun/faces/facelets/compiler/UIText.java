@@ -32,7 +32,7 @@ import java.io.IOException;
 public final class UIText extends UILeaf {
 
     private final ELText txt;
-    
+
     private final String alias;
 
     public UIText(String alias, ELText txt) {
@@ -52,8 +52,7 @@ public final class UIText extends UILeaf {
             try {
                 txt.write(out, context.getELContext());
             } catch (ELException e) {
-                throw new ELException(this.alias + ": " + e.getMessage(),
-                                      e.getCause());
+                throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
             } catch (IOException e) {
                 throw new ELException(this.alias + ": " + e.getMessage(), e);
             }

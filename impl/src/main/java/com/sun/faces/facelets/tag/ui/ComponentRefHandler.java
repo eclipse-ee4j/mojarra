@@ -22,7 +22,7 @@ import jakarta.faces.view.facelets.ComponentHandler;
 public final class ComponentRefHandler extends ComponentHandler {
 
     public final static String Name = "component";
-    
+
     public ComponentRefHandler(ComponentConfig config) {
         super(config);
     }

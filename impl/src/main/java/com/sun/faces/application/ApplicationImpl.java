@@ -68,9 +68,9 @@ import jakarta.faces.validator.Validator;
 
 /**
  * <p>
- * <strong>Application</strong> represents a per-web-application singleton object where applications
- * based on JavaServer Faces (or implementations wishing to provide extended functionality) can
- * register application-wide singletons that provide functionality required by JavaServer Faces.
+ * <strong>Application</strong> represents a per-web-application singleton object where applications based on JavaServer
+ * Faces (or implementations wishing to provide extended functionality) can register application-wide singletons that
+ * provide functionality required by JavaServer Faces.
  */
 public class ApplicationImpl extends Application {
 
@@ -88,7 +88,6 @@ public class ApplicationImpl extends Application {
     private final InstanceFactory instanceFactory;
     private final SearchExpression searchExpression;
     private final Stage stage;
-   
 
     /**
      * Constructor
@@ -102,15 +101,13 @@ public class ApplicationImpl extends Application {
         expressionLanguage = new ExpressionLanguage(associate);
         instanceFactory = new InstanceFactory(associate);
         searchExpression = new SearchExpression(associate);
-        
+
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.log(FINE, "Created Application instance ");
         }
     }
-    
-    
+
     // ----------------------------------------------------------- Events
-    
 
     /**
      * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
@@ -127,7 +124,7 @@ public class ApplicationImpl extends Application {
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source) {
         events.publishEvent(context, systemEventClass, sourceBaseType, source, getProjectStage());
     }
-    
+
     /**
      * @see Application#subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)
      */
@@ -143,7 +140,7 @@ public class ApplicationImpl extends Application {
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
         events.subscribeToEvent(systemEventClass, sourceClass, listener);
     }
-    
+
     /**
      * @see Application#unsubscribeFromEvent(Class, jakarta.faces.event.SystemEventListener)
      */
@@ -157,13 +154,10 @@ public class ApplicationImpl extends Application {
      */
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
-       events.unsubscribeFromEvent(systemEventClass, sourceClass, listener);
+        events.unsubscribeFromEvent(systemEventClass, sourceClass, listener);
     }
-    
-    
-    
+
     // ----------------------------------------------------------- Expression language
-    
 
     /**
      * @see jakarta.faces.application.Application#addELContextListener(jakarta.el.ELContextListener)
@@ -196,14 +190,13 @@ public class ApplicationImpl extends Application {
     public ExpressionFactory getExpressionFactory() {
         return expressionLanguage.getExpressionFactory();
     }
-   
+
     /**
-     * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext,
-     *      String, Class)
+     * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)
      */
     @Override
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
-       return expressionLanguage.evaluateExpressionGet(context, expression, expectedType);
+        return expressionLanguage.evaluateExpressionGet(context, expression, expectedType);
     }
 
     /**
@@ -221,11 +214,11 @@ public class ApplicationImpl extends Application {
     public void addELResolver(ELResolver resolver) {
         expressionLanguage.addELResolver(resolver);
     }
-    
+
     public CompositeELResolver getApplicationELResolvers() {
         return expressionLanguage.getApplicationELResolvers();
     }
-    
+
     public FacesCompositeELResolver getCompositeELResolver() {
         return expressionLanguage.getCompositeELResolver();
     }
@@ -233,11 +226,8 @@ public class ApplicationImpl extends Application {
     public void setCompositeELResolver(FacesCompositeELResolver compositeELResolver) {
         expressionLanguage.setCompositeELResolver(compositeELResolver);
     }
-    
-    
-    
+
     // ----------------------------------------------------------- Singletons
-    
 
     /**
      * @see jakarta.faces.application.Application#getViewHandler()
@@ -286,7 +276,7 @@ public class ApplicationImpl extends Application {
     public void setStateManager(StateManager stateManager) {
         singletons.setStateManager(stateManager);
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getActionListener()
      */
@@ -318,7 +308,7 @@ public class ApplicationImpl extends Application {
     public void setNavigationHandler(NavigationHandler navigationHandler) {
         singletons.setNavigationHandler(navigationHandler);
     }
-    
+
     @Override
     public FlowHandler getFlowHandler() {
         return singletons.getFlowHandler();
@@ -328,13 +318,13 @@ public class ApplicationImpl extends Application {
     public void setFlowHandler(FlowHandler flowHandler) {
         singletons.setFlowHandler(flowHandler);
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#getSupportedLocales()
      */
     @Override
     public Iterator<Locale> getSupportedLocales() {
-      return singletons.getSupportedLocales();
+        return singletons.getSupportedLocales();
     }
 
     /**
@@ -360,13 +350,13 @@ public class ApplicationImpl extends Application {
     public void setDefaultLocale(Locale locale) {
         singletons.setDefaultLocale(locale);
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#setMessageBundle(String)
      */
     @Override
     public void setMessageBundle(String messageBundle) {
-      singletons.setMessageBundle(messageBundle);
+        singletons.setMessageBundle(messageBundle);
     }
 
     /**
@@ -376,8 +366,7 @@ public class ApplicationImpl extends Application {
     public String getMessageBundle() {
         return singletons.getMessageBundle();
     }
-    
-    
+
     /**
      * @see jakarta.faces.application.Application#getDefaultRenderKitId()
      */
@@ -393,27 +382,23 @@ public class ApplicationImpl extends Application {
     public void setDefaultRenderKitId(String renderKitId) {
         singletons.setDefaultRenderKitId(renderKitId);
     }
-    
+
     /**
-     * @see jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext,
-     *      String)
+     * @see jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public ResourceBundle getResourceBundle(FacesContext context, String var) {
         return singletons.getResourceBundle(context, var);
     }
 
-    
-    
     // ----------------------------------------------------------- Instance factory
-    
-    
+
     /**
      * @see jakarta.faces.application.Application#addBehavior(String, String)
      */
     @Override
     public void addBehavior(String behaviorId, String behaviorClass) {
-       instanceFactory.addBehavior(behaviorId, behaviorClass);
+        instanceFactory.addBehavior(behaviorId, behaviorClass);
     }
 
     /**
@@ -431,7 +416,7 @@ public class ApplicationImpl extends Application {
     public Iterator<String> getBehaviorIds() {
         return instanceFactory.getBehaviorIds();
     }
-    
+
     @Override
     public UIComponent createComponent(String componentType) throws FacesException {
         return instanceFactory.createComponent(componentType);
@@ -444,17 +429,17 @@ public class ApplicationImpl extends Application {
     public void addComponent(String componentType, String componentClass) {
         instanceFactory.addComponent(componentType, componentClass);
     }
-    
+
     @Override
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) throws FacesException {
         return instanceFactory.createComponent(componentExpression, context, componentType);
     }
-    
+
     @Override
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType) {
         return instanceFactory.createComponent(componentExpression, context, componentType, rendererType);
     }
-    
+
     @Override
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
         return instanceFactory.createComponent(context, componentType, rendererType);
@@ -492,7 +477,7 @@ public class ApplicationImpl extends Application {
      */
     @Override
     public void addConverter(Class<?> targetClass, String converterClass) {
-       instanceFactory.addConverter(targetClass, converterClass);
+        instanceFactory.addConverter(targetClass, converterClass);
     }
 
     /**
@@ -532,7 +517,7 @@ public class ApplicationImpl extends Application {
      */
     @Override
     public void addValidator(String validatorId, String validatorClass) {
-      instanceFactory.addValidator(validatorId, validatorClass);
+        instanceFactory.addValidator(validatorId, validatorClass);
     }
 
     /**
@@ -566,10 +551,9 @@ public class ApplicationImpl extends Application {
     public Map<String, String> getDefaultValidatorInfo() {
         return instanceFactory.getDefaultValidatorInfo();
     }
-    
-    
+
     // ----------------------------------------------------------- Instance factory
-    
+
     /**
      * @see jakarta.faces.application.Application#getProjectStage()
      */
@@ -577,12 +561,9 @@ public class ApplicationImpl extends Application {
     public ProjectStage getProjectStage() {
         return stage.getProjectStage(this);
     }
-    
-    
-    
+
     // ----------------------------------------------------------- Search expression
-   
-    
+
     @Override
     public SearchExpressionHandler getSearchExpressionHandler() {
         return searchExpression.getSearchExpressionHandler();
@@ -590,7 +571,7 @@ public class ApplicationImpl extends Application {
 
     @Override
     public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler) {
-       searchExpression.setSearchExpressionHandler(searchExpressionHandler);
+        searchExpression.setSearchExpressionHandler(searchExpressionHandler);
     }
 
     @Override
@@ -603,16 +584,8 @@ public class ApplicationImpl extends Application {
         return searchExpression.getSearchKeywordResolver();
     }
 
-    
-    
-
-
- 
-    
-    
     // ----------------------------------------------------------- Deprecated methods
-    
-    
+
     /**
      * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
      */
@@ -621,7 +594,7 @@ public class ApplicationImpl extends Application {
     public PropertyResolver getPropertyResolver() {
         return expressionLanguage.getPropertyResolver();
     }
-    
+
     /**
      * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
      */

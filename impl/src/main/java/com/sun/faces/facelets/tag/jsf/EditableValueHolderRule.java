@@ -42,8 +42,7 @@ public final class EditableValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance).addValidator(ctx.getFacesContext()
-                    .getApplication().createValidator(this.validatorId));
+            ((EditableValueHolder) instance).addValidator(ctx.getFacesContext().getApplication().createValidator(this.validatorId));
         }
     }
 
@@ -57,9 +56,7 @@ public final class EditableValueHolderRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((EditableValueHolder) instance)
-                    .addValueChangeListener(new MethodExpressionValueChangeListener(
-                            this.attr.getMethodExpression(ctx, null,
-                                    VALUECHANGE_SIG)));
+                    .addValueChangeListener(new MethodExpressionValueChangeListener(this.attr.getMethodExpression(ctx, null, VALUECHANGE_SIG)));
         }
     }
 
@@ -72,9 +69,7 @@ public final class EditableValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance)
-                    .setValueChangeListener(new LegacyMethodBinding(this.attr
-                            .getMethodExpression(ctx, null, VALUECHANGE_SIG)));
+            ((EditableValueHolder) instance).setValueChangeListener(new LegacyMethodBinding(this.attr.getMethodExpression(ctx, null, VALUECHANGE_SIG)));
         }
     }
 
@@ -87,9 +82,7 @@ public final class EditableValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance)
-                    .addValidator(new MethodExpressionValidator(this.attr
-                            .getMethodExpression(ctx, null, VALIDATOR_SIG)));
+            ((EditableValueHolder) instance).addValidator(new MethodExpressionValidator(this.attr.getMethodExpression(ctx, null, VALIDATOR_SIG)));
         }
     }
 
@@ -102,22 +95,18 @@ public final class EditableValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance)
-                    .setValidator(new LegacyMethodBinding(this.attr
-                            .getMethodExpression(ctx, null, VALIDATOR_SIG)));
+            ((EditableValueHolder) instance).setValidator(new LegacyMethodBinding(this.attr.getMethodExpression(ctx, null, VALIDATOR_SIG)));
         }
     }
 
-    private final static Class[] VALIDATOR_SIG = new Class[] {
-            FacesContext.class, UIComponent.class, Object.class };
+    private final static Class[] VALIDATOR_SIG = new Class[] { FacesContext.class, UIComponent.class, Object.class };
 
     private final static Class[] VALUECHANGE_SIG = new Class[] { ValueChangeEvent.class };
 
     public final static EditableValueHolderRule Instance = new EditableValueHolderRule();
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta) {
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
 
         if (meta.isTargetInstanceOf(EditableValueHolder.class)) {
 

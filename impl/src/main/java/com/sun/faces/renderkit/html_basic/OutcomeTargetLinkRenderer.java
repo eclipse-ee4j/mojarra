@@ -33,21 +33,17 @@ import java.util.List;
 
 public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
-    private static final Attribute[] ATTRIBUTES =
-        AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETLINK);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETLINK);
 
-    private static final String NO_NAV_CASE =
-          OutcomeTargetLinkRenderer.class.getName() + "_NO_NAV_CASE";
+    private static final String NO_NAV_CASE = OutcomeTargetLinkRenderer.class.getName() + "_NO_NAV_CASE";
 
-    //Attributes that are to excluded from rendering for this renderer.
+    // Attributes that are to excluded from rendering for this renderer.
     private static final List<String> EXCLUDED_ATTRIBUTES = Arrays.asList("disabled");
 
     // --------------------------------------------------- Methods from Renderer
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-    throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -76,7 +72,6 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
     }
 
-
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
@@ -87,25 +82,18 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
-        String endElement = ((Util.componentIsDisabled(component) || context.getAttributes().remove(NO_NAV_CASE) != null) 
-                                ? "span"
-                                : "a");
+        assert (writer != null);
+        String endElement = ((Util.componentIsDisabled(component) || context.getAttributes().remove(NO_NAV_CASE) != null) ? "span" : "a");
         writer.endElement(endElement);
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
 
-
-    protected void renderAsDisabled(FacesContext context,
-                                    UIComponent component,
-                                    boolean failedToResolveNavigationCase)
-    throws IOException {
+    protected void renderAsDisabled(FacesContext context, UIComponent component, boolean failedToResolveNavigationCase) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
 
         writer.startElement("span", component);
         writeIdAndNameAttributes(context, writer, component);
@@ -122,13 +110,10 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
     }
 
-    protected void renderAsActive(FacesContext context,
-                                  NavigationCase navCase,
-                                  UIComponent component)
-    throws IOException {
+    protected void renderAsActive(FacesContext context, NavigationCase navCase, UIComponent component) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert (writer != null);
 
         writer.startElement("a", component);
         writeIdAndNameAttributes(context, writer, component);
@@ -143,10 +128,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
     }
 
-    protected void writeIdAndNameAttributes(FacesContext context,
-                                            ResponseWriter writer,
-                                            UIComponent component)
-    throws IOException {
+    protected void writeIdAndNameAttributes(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
 
         String writtenId = writeIdAttributeIfNecessary(context, writer, component);
         if (null != writtenId) {
@@ -155,18 +137,14 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
     }
 
-    protected void writeValue(ResponseWriter writer, UIComponent component)
-    throws IOException {
+    protected void writeValue(ResponseWriter writer, UIComponent component) throws IOException {
 
         writer.writeText(getLabel(component), component, null);
         writer.flush();
-        
+
     }
 
-
-    protected void renderLinkCommonAttributes(ResponseWriter writer,
-                                              UIComponent component)
-    throws IOException {
+    protected void renderLinkCommonAttributes(ResponseWriter writer, UIComponent component) throws IOException {
 
         // this is common to both link and button target renderers
         String styleClass = (String) component.getAttributes().get("styleClass");

@@ -38,12 +38,10 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 
 /**
- * <B>HtmlBasicInputRenderer</B> is a base class for implementing renderers
- * that support UIInput type components
+ * <B>HtmlBasicInputRenderer</B> is a base class for implementing renderers that support UIInput type components
  */
 
 public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
-
 
     private boolean hasStringConverter = false;
 
@@ -51,11 +49,8 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public Object getConvertedValue(FacesContext context, UIComponent component,
-                                    Object submittedValue)
-          throws ConverterException {
+    public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
 
         String newValue = (String) submittedValue;
         // if we have no local value, try to get the valueExpression.
@@ -71,28 +66,19 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
         if (null == converter && null != valueExpression) {
             Class converterType = valueExpression.getType(context.getELContext());
             // if converterType is null, assume the modelType is "String".
-            if (converterType == null ||
-                converterType == Object.class) {
+            if (converterType == null || converterType == Object.class) {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.log(Level.FINE,
-                               "No conversion necessary for value {0} of component {1}",
-                               new Object[]{
-                                     submittedValue,
-                                     component.getId() });
+                    logger.log(Level.FINE, "No conversion necessary for value {0} of component {1}", new Object[] { submittedValue, component.getId() });
                 }
                 return newValue;
             }
 
-            // If the converterType is a String, and we don't have a 
-            // converter-for-class for java.lang.String, assume the type is 
+            // If the converterType is a String, and we don't have a
+            // converter-for-class for java.lang.String, assume the type is
             // "String".
             if (converterType == String.class && !hasStringConverter(context)) {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.log(Level.FINE,
-                               "No conversion necessary for value {0} of component {1}",
-                               new Object[]{
-                                     submittedValue,
-                                     component.getId()});
+                    logger.log(Level.FINE, "No conversion necessary for value {0} of component {1}", new Object[] { submittedValue, component.getId() });
                 }
                 return newValue;
             }
@@ -103,20 +89,12 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
                 Application application = context.getApplication();
                 converter = application.createConverter(converterType);
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.log(Level.FINE,
-                               "Created converter ({0}) for type {1} for component {2}.",
-                               new Object[] {
-                                     converter.getClass().getName(),
-                                     converterType.getClass().getName(),
-                                     component.getId() });
+                    logger.log(Level.FINE, "Created converter ({0}) for type {1} for component {2}.",
+                            new Object[] { converter.getClass().getName(), converterType.getClass().getName(), component.getId() });
                 }
             } catch (Exception e) {
                 if (logger.isLoggable(Level.SEVERE)) {
-                    logger.log(Level.SEVERE,
-                               "Could not instantiate converter for type {0}: {1}",
-                               new Object[] {
-                                     converterType,
-                                     e.toString() });
+                    logger.log(Level.SEVERE, "Could not instantiate converter for type {0}: {1}", new Object[] { converterType, e.toString() });
                     logger.log(Level.SEVERE, "", e);
                 }
                 return (null);
@@ -128,13 +106,8 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
             // selectMany, converter has to be set if there is no
             // valueExpression attribute set on the component.
             if (logger.isLoggable(Level.FINE)) {
-                logger.log(Level.FINE,
-                            "No conversion necessary for value {0} of component {1}",
-                            new Object[] {
-                                  submittedValue,
-                                  component.getId() });
-                logger.fine(" since there is no explicitly registered converter "
-                            + "and the component value is not bound to a model property");
+                logger.log(Level.FINE, "No conversion necessary for value {0} of component {1}", new Object[] { submittedValue, component.getId() });
+                logger.fine(" since there is no explicitly registered converter " + "and the component value is not bound to a model property");
             }
             return newValue;
         }
@@ -142,23 +115,16 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
         if (converter != null) {
             // If the conversion eventually falls to needing to use EL type coercion,
             // make sure our special ConverterPropertyEditor knows about this value.
-            RequestStateManager.set(context,
-                                    RequestStateManager.TARGET_COMPONENT_ATTRIBUTE_NAME,
-                                    component);
+            RequestStateManager.set(context, RequestStateManager.TARGET_COMPONENT_ATTRIBUTE_NAME, component);
             return converter.getAsObject(context, component, newValue);
         } else {
             // throw converter exception.
-            Object[] params = {
-                  newValue,
-                  "null Converter"
-            };
+            Object[] params = { newValue, "null Converter" };
 
-            throw new ConverterException(MessageFactory.getMessage(
-                  context, MessageUtils.CONVERSION_ERROR_MESSAGE_ID, params));
+            throw new ConverterException(MessageFactory.getMessage(context, MessageUtils.CONVERSION_ERROR_MESSAGE_ID, params));
         }
 
     }
-
 
     @Override
     public void setSubmittedValue(UIComponent component, Object value) {
@@ -173,7 +139,6 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     }
 
     // ------------------------------------------------------- Protected Methods
-
 
     @Override
     protected Object getValue(UIComponent component) {
@@ -191,9 +156,9 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     }
 
     // Returns the Behaviors map, but only if it contains some entry other
-    // than those handled by renderOnchange().  This helps us optimize
+    // than those handled by renderOnchange(). This helps us optimize
     // renderPassThruAttributes() in the very common case where the
-    // button only contains an "valueChange" (or "change") Behavior.  In that
+    // button only contains an "valueChange" (or "change") Behavior. In that
     // we pass a null Behaviors map into renderPassThruAttributes(),
     // which allows us to take a more optimized code path.
     protected static Map<String, List<ClientBehavior>> getNonOnChangeBehaviors(UIComponent component) {
@@ -201,9 +166,9 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     }
 
     // Returns the Behaviors map, but only if it contains some entry other
-    // than those handled by renderOnchange().  This helps us optimize
+    // than those handled by renderOnchange(). This helps us optimize
     // renderPassThruAttributes() in the very common case where the
-    // button only contains an "valueChange" (or "change") Behavior.  In that
+    // button only contains an "valueChange" (or "change") Behavior. In that
     // we pass a null Behaviors map into renderPassThruAttributes(),
     // which allows us to take a more optimized code path.
     protected static Map<String, List<ClientBehavior>> getNonOnClickSelectBehaviors(UIComponent component) {
@@ -215,9 +180,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     private boolean hasStringConverter(FacesContext context) {
 
         if (!hasStringConverterSet) {
-            hasStringConverter = (null !=
-                                  context.getApplication()
-                                        .createConverter(String.class));
+            hasStringConverter = (null != context.getApplication().createConverter(String.class));
             hasStringConverterSet = true;
         }
         return hasStringConverter;

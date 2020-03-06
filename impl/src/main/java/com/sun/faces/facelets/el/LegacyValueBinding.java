@@ -41,20 +41,19 @@ import java.io.ObjectOutput;
 public final class LegacyValueBinding extends ValueBinding implements Externalizable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private ValueExpression delegate;
-    
+
     public LegacyValueBinding() {
         super();
     }
-    
+
     public LegacyValueBinding(ValueExpression ve) {
         this.delegate = ve;
     }
 
     @Override
-    public Object getValue(FacesContext context) throws EvaluationException,
-            PropertyNotFoundException {
+    public Object getValue(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         ELContext ctx = context.getELContext();
         try {
             return this.delegate.getValue(ctx);
@@ -66,8 +65,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
     }
 
     @Override
-    public void setValue(FacesContext context, Object value)
-            throws EvaluationException, PropertyNotFoundException {
+    public void setValue(FacesContext context, Object value) throws EvaluationException, PropertyNotFoundException {
         ELContext ctx = context.getELContext();
         try {
             this.delegate.setValue(ctx, value);
@@ -79,8 +77,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
     }
 
     @Override
-    public boolean isReadOnly(FacesContext context) throws EvaluationException,
-            PropertyNotFoundException {
+    public boolean isReadOnly(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         ELContext ctx = context.getELContext();
         try {
             return this.delegate.isReadOnly(ctx);
@@ -92,8 +89,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
     }
 
     @Override
-    public Class getType(FacesContext context) throws EvaluationException,
-            PropertyNotFoundException {
+    public Class getType(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         ELContext ctx = context.getELContext();
         try {
             return this.delegate.getType(ctx);

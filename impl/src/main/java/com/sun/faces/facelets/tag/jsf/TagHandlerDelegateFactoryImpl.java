@@ -63,6 +63,5 @@ public class TagHandlerDelegateFactoryImpl extends TagHandlerDelegateFactory {
     public TagHandlerDelegate createBehaviorHandlerDelegate(BehaviorHandler owner) {
         return new BehaviorTagHandlerDelegateImpl(owner);
     }
-    
-    
+
 }

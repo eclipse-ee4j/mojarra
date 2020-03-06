@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import jakarta.el.ValueExpression;
 
 public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
-    
+
     private FlowBuilderImpl root;
     private MutableNavigationCase navCase;
 
@@ -37,7 +37,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
         navCase = new MutableNavigationCase();
         this.root = root;
     }
-    
+
     @Override
     public NavigationCaseBuilder toFlowDocumentId(String toFlowDocumentId) {
         Util.notNull("toFlowDocumentId", toFlowDocumentId);
@@ -63,7 +63,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
     public NavigationCaseBuilder fromViewId(String fromViewId) {
         Util.notNull("fromViewId", fromViewId);
         navCase.setFromViewId(fromViewId);
-        Map<String,Set<NavigationCase>> rules = root._getFlow()._getNavigationCases();
+        Map<String, Set<NavigationCase>> rules = root._getFlow()._getNavigationCases();
         Set<NavigationCase> cases = rules.get(fromViewId);
         if (null == cases) {
             cases = new CopyOnWriteArraySet<>();
@@ -124,11 +124,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
             NavigationCaseBuilderImpl.this.navCase.isIncludeViewParams();
             return this;
         }
-    
-        
-        
-        
+
     }
-    
-    
+
 }

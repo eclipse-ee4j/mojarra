@@ -30,8 +30,7 @@ import jakarta.faces.validator.DoubleRangeValidator;
 import jakarta.faces.validator.Validator;
 
 /**
- * ValidateDoubleRangeTag is the tag handler class for
- * <code>validate_doublerange</code> tag.
+ * ValidateDoubleRangeTag is the tag handler class for <code>validate_doublerange</code> tag.
  */
 
 public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
@@ -51,7 +50,6 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
     protected double maximum = 0;
     protected double minimum = 0;
 
-
 // Relationship Instance Variables
 
 //
@@ -62,11 +60,8 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
         super();
         if (VALIDATOR_ID_EXPR == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            ExpressionFactory factory =
-                context.getApplication().getExpressionFactory();
-            VALIDATOR_ID_EXPR =
-                factory.createValueExpression(context.getELContext(), 
-                    "jakarta.faces.DoubleRange",String.class);
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            VALIDATOR_ID_EXPR = factory.createValueExpression(context.getELContext(), "jakarta.faces.DoubleRange", String.class);
         }
     }
 
@@ -83,7 +78,6 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
         maximumExpression = newMaximum;
     }
 
-
     public void setMinimum(ValueExpression newMinimum) {
         minimumSet = true;
         minimumExpression = newMinimum;
@@ -95,8 +89,6 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
         return super.doStartTag();
     }
 
-
-
 // 
 // Methods from ValidatorTag
 //
@@ -104,8 +96,7 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
     @Override
     protected Validator createValidator() throws JspException {
 
-        DoubleRangeValidator result = (DoubleRangeValidator)
-            super.createValidator();
+        DoubleRangeValidator result = (DoubleRangeValidator) super.createValidator();
 
         assert (null != result);
 
@@ -121,31 +112,23 @@ public class ValidateDoubleRangeTag extends MaxMinValidatorTag {
         return result;
     }
 
-/* Evaluates expressions as necessary */
+    /* Evaluates expressions as necessary */
     private void evaluateExpressions() {
 
         ELContext context = FacesContext.getCurrentInstance().getELContext();
 
         if (minimumExpression != null) {
             if (!minimumExpression.isLiteralText()) {
-                minimum = ((Number)
-                              ELUtils.evaluateValueExpression(minimumExpression,
-                                  context)).doubleValue();
+                minimum = ((Number) ELUtils.evaluateValueExpression(minimumExpression, context)).doubleValue();
             } else {
-                minimum =
-                Double.valueOf(minimumExpression.getExpressionString()).
-                    doubleValue();
+                minimum = Double.valueOf(minimumExpression.getExpressionString()).doubleValue();
             }
         }
         if (maximumExpression != null) {
             if (!maximumExpression.isLiteralText()) {
-                maximum = ((Number)
-                              ELUtils.evaluateValueExpression(maximumExpression,
-                                  context)).doubleValue();
+                maximum = ((Number) ELUtils.evaluateValueExpression(maximumExpression, context)).doubleValue();
             } else {
-                maximum =
-                Double.valueOf(maximumExpression.getExpressionString()).
-                    doubleValue();
+                maximum = Double.valueOf(maximumExpression.getExpressionString()).doubleValue();
             }
         }
     }

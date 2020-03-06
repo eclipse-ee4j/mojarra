@@ -21,7 +21,6 @@ import java.util.Map;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.*;
 
-
 public class RenderFacetHandler extends ComponentHandler {
 
     // Supported attribute names
@@ -33,13 +32,11 @@ public class RenderFacetHandler extends ComponentHandler {
     // This attribute is required.
     TagAttribute name;
 
-    // This attribute is not required.  If not defined, then assume the facet
+    // This attribute is not required. If not defined, then assume the facet
     // isn't necessary.
     TagAttribute required;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public RenderFacetHandler(ComponentConfig config) {
         super(config);
@@ -47,27 +44,23 @@ public class RenderFacetHandler extends ComponentHandler {
         required = this.getAttribute(REQUIRED_ATTRIBUTE);
     }
 
-
     // ------------------------------------------------- Methods from TagHandler
-
 
     @Override
     public void onComponentPopulated(FaceletContext ctx, UIComponent c, UIComponent parent) {
 
-        UIComponent compositeParent =
-              UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
+        UIComponent compositeParent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
         if (compositeParent == null) {
             return;
         }
-        boolean requiredValue =
-              ((this.required != null) && this.required.getBoolean(ctx));
+        boolean requiredValue = ((this.required != null) && this.required.getBoolean(ctx));
         String nameValue = this.name.getValue(ctx);
 
         if (compositeParent.getFacetCount() == 0 && requiredValue) {
             throwRequiredException(ctx, nameValue, compositeParent);
         }
 
-        Map<String,UIComponent> facetMap = compositeParent.getFacets();
+        Map<String, UIComponent> facetMap = compositeParent.getFacets();
         c.getAttributes().put(UIComponent.FACETS_KEY, nameValue);
         if (requiredValue && !facetMap.containsKey(nameValue)) {
             throwRequiredException(ctx, nameValue, compositeParent);
@@ -75,20 +68,12 @@ public class RenderFacetHandler extends ComponentHandler {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
 
+    private void throwRequiredException(FaceletContext ctx, String name, UIComponent compositeParent) {
 
-    private void throwRequiredException(FaceletContext ctx,
-                                        String name,
-                                        UIComponent compositeParent) {
-
-        throw new TagException(this.tag,
-                               "Unable to find facet named '"
-                               + name
-                               + "' in parent composite component with id '"
-                               + compositeParent .getClientId(ctx.getFacesContext())
-                               + '\'');
+        throw new TagException(this.tag, "Unable to find facet named '" + name + "' in parent composite component with id '"
+                + compositeParent.getClientId(ctx.getFacesContext()) + '\'');
 
     }
 

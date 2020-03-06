@@ -23,9 +23,10 @@ import jakarta.faces.context.Flash;
 
 /**
  *
- * <p class="changed_added_2_2">This event must be published by a call
- * to {@link jakarta.faces.application.Application#publishEvent} when a value
- * is kept in the flash.</p>
+ * <p class="changed_added_2_2">
+ * This event must be published by a call to {@link jakarta.faces.application.Application#publishEvent} when a value is
+ * kept in the flash.
+ * </p>
  *
  * @since 2.2
  */
@@ -35,27 +36,26 @@ public class PostKeepFlashValueEvent extends SystemEvent {
 
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * <p class="changed_added_2_2">Instantiate a new
-     * <code>PostKeepFlashValueEvent</code> that indicates the argument
-     * <code>key</code> was just kept in the flash. If the argument is 
-     * <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed
-     * to the superclass constructor.</p>
-
+     * <p class="changed_added_2_2">
+     * Instantiate a new <code>PostKeepFlashValueEvent</code> that indicates the argument <code>key</code> was just kept in
+     * the flash. If the argument is <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed to the
+     * superclass constructor.
+     * </p>
+     * 
      * @param key the key in the flash that was just kept.
      *
      */
     public PostKeepFlashValueEvent(String key) {
         super(null == key ? Flash.NULL_VALUE : key);
     }
-          
+
     /**
-     * <p class="changed_added_2_3">Instantiate a new
-     * <code>PostKeepFlashValueEvent</code> that indicates the argument
-     * <code>key</code> was just kept in the flash. If the argument is 
-     * <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed
-     * to the superclass constructor.</p>
+     * <p class="changed_added_2_3">
+     * Instantiate a new <code>PostKeepFlashValueEvent</code> that indicates the argument <code>key</code> was just kept in
+     * the flash. If the argument is <code>null</code>, the literal {@link Flash#NULL_VALUE} must be passed to the
+     * superclass constructor.
+     * </p>
      * 
      * @param facesContext the Faces context.
      * @param key the key in the flash that was just kept.
@@ -64,7 +64,7 @@ public class PostKeepFlashValueEvent extends SystemEvent {
     public PostKeepFlashValueEvent(FacesContext facesContext, String key) {
         super(facesContext, key);
     }
-    
+
     public String getKey() {
         return getSource().toString();
     }

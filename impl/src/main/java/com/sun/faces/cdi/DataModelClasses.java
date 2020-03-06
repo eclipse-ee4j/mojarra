@@ -28,13 +28,12 @@ import java.lang.annotation.Target;
 import jakarta.inject.Qualifier;
 
 /**
- * Classifier for obtaining the map 
- * that {@link DataModelClassesMapProducer} producer produces
+ * Classifier for obtaining the map that {@link DataModelClassesMapProducer} producer produces
  * 
  * @since 2.3
  *
  */
-@Target({TYPE, METHOD, PARAMETER, FIELD})
+@Target({ TYPE, METHOD, PARAMETER, FIELD })
 @Qualifier
 @Retention(value = RUNTIME)
 @interface DataModelClasses {

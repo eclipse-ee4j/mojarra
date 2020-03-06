@@ -82,21 +82,18 @@ import jakarta.faces.flow.ViewNode;
 
 /**
  * <p>
- * <strong>NavigationHandlerImpl</strong> is the class that implements default navigation handling.
- * Refer to section 7.4.2 of the specification for more details. PENDING: Make independent of
- * ApplicationAssociate.
+ * <strong>NavigationHandlerImpl</strong> is the class that implements default navigation handling. Refer to section
+ * 7.4.2 of the specification for more details. PENDING: Make independent of ApplicationAssociate.
  */
 
 public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     // Private Constants
-    private static final String RESET_FLOW_HANDLER_STATE_KEY = NavigationHandlerImpl.class.getName() +
-        "_RESET_FLOW_HANDLER_STATE_KEY";
+    private static final String RESET_FLOW_HANDLER_STATE_KEY = NavigationHandlerImpl.class.getName() + "_RESET_FLOW_HANDLER_STATE_KEY";
 
     public static boolean isResetFlowHandlerState(FacesContext facesContext) {
 
-        Boolean obtainingNavigationCase = (Boolean) FacesContext.getCurrentInstance().getAttributes()
-            .get(RESET_FLOW_HANDLER_STATE_KEY);
+        Boolean obtainingNavigationCase = (Boolean) FacesContext.getCurrentInstance().getAttributes().get(RESET_FLOW_HANDLER_STATE_KEY);
         return obtainingNavigationCase != null && obtainingNavigationCase;
     }
 
@@ -130,8 +127,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     // ------------------------------------------------------------ Constructors
 
     /**
-     * This constructor uses the current <code>ApplicationAssociate</code> instance to obtain the
-     * navigation mappings used to make navigational decisions.
+     * This constructor uses the current <code>ApplicationAssociate</code> instance to obtain the navigation mappings used
+     * to make navigational decisions.
      */
     public NavigationHandlerImpl() {
 
@@ -152,7 +149,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     /**
      * @see jakarta.faces.application.ConfigurableNavigationHandler#getNavigationCase(jakarta.faces.context.FacesContext,
-     *      String, String)
+     * String, String)
      */
     @Override
     public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome) {
@@ -172,8 +169,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             }
 
             return null;
-        }
-        finally {
+        } finally {
             unsetResetFlowHandlerState(context);
         }
     }
@@ -189,8 +185,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             Map<String, Set<NavigationCase>> result = getNavigationMap(context);
 
             return result;
-        }
-        finally {
+        } finally {
             unsetResetFlowHandlerState(context);
         }
     }
@@ -208,8 +203,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /*
-     * The Flow.equals() method alone is insufficient because we need to account for the case where
-     * one or the other or both operands may be null.
+     * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both
+     * operands may be null.
      * 
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
@@ -503,8 +498,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * Calls <code>clear()</code> on the ViewMap (if available) if the view ID of the UIViewRoot
-     * differs from <code>newId</code>
+     * Calls <code>clear()</code> on the ViewMap (if available) if the view ID of the UIViewRoot differs from
+     * <code>newId</code>
      */
     private void clearViewMapIfNecessary(FacesContext facesContext, String newId) {
         UIViewRoot root = facesContext.getViewRoot();
@@ -529,8 +524,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method uses helper methods to determine the new <code>view</code> identifier. Refer to
-     * section 7.4.2 of the specification for more details.
+     * This method uses helper methods to determine the new <code>view</code> identifier. Refer to section 7.4.2 of the
+     * specification for more details.
      *
      * @param ctx the @{link FacesContext} for the current request
      * @param fromAction The action reference string
@@ -653,10 +648,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method finds the List of cases for the current <code>view</code> identifier. After the
-     * cases are found, the <code>from-action</code> and <code>from-outcome</code> values are
-     * evaluated to determine the new <code>view</code> identifier. Refer to section 7.4.2 of the
-     * specification for more details.
+     * This method finds the List of cases for the current <code>view</code> identifier. After the cases are found, the
+     * <code>from-action</code> and <code>from-outcome</code> values are evaluated to determine the new <code>view</code>
+     * identifier. Refer to section 7.4.2 of the specification for more details.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param viewId The current <code>view</code> identifier.
@@ -693,9 +687,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method traverses the wild card match List (containing <code>from-view-id</code> strings
-     * and finds the List of cases for each <code>from-view-id</code> string. Refer to section 7.4.2
-     * of the specification for more details.
+     * This method traverses the wild card match List (containing <code>from-view-id</code> strings and finds the List of
+     * cases for each <code>from-view-id</code> string. Refer to section 7.4.2 of the specification for more details.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param viewId The current <code>view</code> identifier.
@@ -756,8 +749,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method will extract the cases for which a <code>from-view-id</code> is an asterisk "*".
-     * Refer to section 7.4.2 of the specification for more details.
+     * This method will extract the cases for which a <code>from-view-id</code> is an asterisk "*". Refer to section 7.4.2
+     * of the specification for more details.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param fromAction The action reference string.
@@ -1346,8 +1339,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method will attempt to find the <code>view</code> identifier based on action reference
-     * and outcome. Refer to section 7.4.2 of the specification for more details.
+     * This method will attempt to find the <code>view</code> identifier based on action reference and outcome. Refer to
+     * section 7.4.2 of the specification for more details.
      * 
      * @param ctx the {@link FacesContext} for the current request
      * @param caseSet The list of navigation cases.

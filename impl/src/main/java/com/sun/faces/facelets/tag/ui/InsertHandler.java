@@ -57,14 +57,12 @@ public final class InsertHandler extends TagHandlerImpl implements TemplateClien
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctxObj, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
-        
+
         ctx.extendClient(this);
         boolean found = false;
         try {

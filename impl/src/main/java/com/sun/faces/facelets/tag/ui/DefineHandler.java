@@ -51,19 +51,16 @@ public final class DefineHandler extends TagHandlerImpl {
     /*
      * (non-Javadoc)
      * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // no-op
-    	//this.nextHandler.apply(ctx, parent);
+        // this.nextHandler.apply(ctx, parent);
     }
-    
-    public void applyDefinition(FaceletContext ctx, UIComponent parent)
-    		throws IOException {
-    	this.nextHandler.apply(ctx, parent);
+
+    public void applyDefinition(FaceletContext ctx, UIComponent parent) throws IOException {
+        this.nextHandler.apply(ctx, parent);
     }
 
     public String getName() {

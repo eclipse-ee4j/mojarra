@@ -21,14 +21,12 @@ import java.io.IOException;
 
 import jakarta.faces.component.UIComponent;
 
-
 /**
- * <p class="changed_added_2_0">A FaceletHandler that is derived of 1 or
- * more, inner FaceletHandlers. This class would be found if the next
- * FaceletHandler is structually, a body with multiple child elements as
- * defined in XML.  This class enables the Facelet runtime to traverse
- * the tree of {@link FaceletHandler} instances built by the Facelets
- * compiler.</p>
+ * <p class="changed_added_2_0">
+ * A FaceletHandler that is derived of 1 or more, inner FaceletHandlers. This class would be found if the next
+ * FaceletHandler is structually, a body with multiple child elements as defined in XML. This class enables the Facelet
+ * runtime to traverse the tree of {@link FaceletHandler} instances built by the Facelets compiler.
+ * </p>
  *
  */
 public final class CompositeFaceletHandler implements FaceletHandler {
@@ -42,12 +40,13 @@ public final class CompositeFaceletHandler implements FaceletHandler {
     }
 
     /**
-     * <p class="changed_added_2_0">Calls apply on any child handlers.</p>
+     * <p class="changed_added_2_0">
+     * Calls apply on any child handlers.
+     * </p>
      *
      * @param ctx the <code>FaceletContext</code> for this view execution
      *
-     * @param parent the parent <code>UIComponent</code> of the
-     * component represented by this element instance.
+     * @param parent the parent <code>UIComponent</code> of the component represented by this element instance.
      * @since 2.0
      */
     @Override
@@ -58,8 +57,9 @@ public final class CompositeFaceletHandler implements FaceletHandler {
     }
 
     /**
-     * <p class="changed_added_2_0">Returns the array of child
-     * handlers contained by this handler.</p>
+     * <p class="changed_added_2_0">
+     * Returns the array of child handlers contained by this handler.
+     * </p>
      * 
      * @return Returns the array of child handlers contained by this handler.
      */

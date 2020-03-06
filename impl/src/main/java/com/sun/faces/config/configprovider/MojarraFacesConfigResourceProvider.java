@@ -32,15 +32,11 @@ import jakarta.servlet.ServletContext;
 /**
  *
  */
-public class MojarraFacesConfigResourceProvider implements
-      ConfigurationResourceProvider {
+public class MojarraFacesConfigResourceProvider implements ConfigurationResourceProvider {
 
-    private static final String JSF_RI_CONFIG =
-         "com/sun/faces/jsf-ri-runtime.xml";
-
+    private static final String JSF_RI_CONFIG = "com/sun/faces/jsf-ri-runtime.xml";
 
     // ------------------------------ Methods from ConfigurationResourceProvider
-
 
     /**
      * @see ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
@@ -49,7 +45,7 @@ public class MojarraFacesConfigResourceProvider implements
     public Collection<URI> getResources(ServletContext context) {
 
         List<URI> list = new ArrayList<>(1);
-        // Don't use Util.getCurrentLoader().  This config resource should
+        // Don't use Util.getCurrentLoader(). This config resource should
         // be available from the same classloader that loaded this instance.
         // Doing so allows us to be more OSGi friendly.
         ClassLoader loader = this.getClass().getClassLoader();

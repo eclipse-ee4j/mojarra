@@ -41,17 +41,18 @@ import jakarta.inject.Named;
 @Named(RIConstants.FLOW_DISCOVERY_CDI_HELPER_BEAN_NAME)
 @Dependent
 public class FlowDiscoveryCDIHelper implements Serializable {
-    
-private static final long serialVersionUID = 6217421203074690365L;
 
-public FlowDiscoveryCDIHelper() {
+    private static final long serialVersionUID = 6217421203074690365L;
+
+    public FlowDiscoveryCDIHelper() {
     }
-    
-    @Produces @FlowBuilderParameter
+
+    @Produces
+    @FlowBuilderParameter
     FlowBuilder createFlowBuilder() {
         FacesContext context = FacesContext.getCurrentInstance();
         FlowBuilder result = new FlowBuilderImpl(context);
         return result;
     }
-    
+
 }

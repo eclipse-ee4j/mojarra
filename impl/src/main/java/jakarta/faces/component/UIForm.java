@@ -32,15 +32,14 @@ import jakarta.faces.event.PreValidateEvent;
 
 /**
  * <p>
- * <strong class="changed_modified_2_1">UIForm</strong> is a {@link UIComponent} that represents an
- * input form to be presented to the user, and whose child components represent (among other things)
- * the input fields to be included when the form is submitted.
+ * <strong class="changed_modified_2_1">UIForm</strong> is a {@link UIComponent} that represents an input form to be
+ * presented to the user, and whose child components represent (among other things) the input fields to be included when
+ * the form is submitted.
  * </p>
  * 
  * <p>
- * By default, the <code>rendererType</code> property must be set to
- * "<code>jakarta.faces.Form</code>". This value can be changed by calling the
- * <code>setRendererType()</code> method.
+ * By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.Form</code>". This value can
+ * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
 public class UIForm extends UIComponentBase implements NamingContainer, UniqueIdVendor {
@@ -75,8 +74,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
         /**
          * <p>
-         * Last id vended by
-         * {@link UIForm#createUniqueId(jakarta.faces.context.FacesContext, String)}.
+         * Last id vended by {@link UIForm#createUniqueId(jakarta.faces.context.FacesContext, String)}.
          * </p>
          */
         lastId,
@@ -84,7 +82,6 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         submitted,
     }
 
-    
     // ------------------------------------------------------------ Constructors
 
     /**
@@ -97,7 +94,6 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         setRendererType("jakarta.faces.Form");
     }
 
-
     // -------------------------------------------------------------- Properties
 
     @Override
@@ -107,14 +103,12 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     /**
      * <p>
-     * <span class="changed_modified_2_1">Returns</span> the current value of the
-     * <code>submitted</code> property. The default value is <code>false</code>. See
-     * {@link #setSubmitted} for details.
+     * <span class="changed_modified_2_1">Returns</span> the current value of the <code>submitted</code> property. The
+     * default value is <code>false</code>. See {@link #setSubmitted} for details.
      * </p>
      * 
      * <p class="changed_modified_2_1">
-     * This property must be kept as a transient property using the
-     * {@link UIComponent#getTransientStateHelper}.
+     * This property must be kept as a transient property using the {@link UIComponent#getTransientStateHelper}.
      * </p>
      * 
      * @return <code>true</code> if the form was submitted, <code>false</code> otherwise.
@@ -125,23 +119,20 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     /**
      * <p>
-     * <span class="changed_modified_2_1">If</span> <strong>this</strong> <code>UIForm</code>
-     * instance (as opposed to other forms in the page) is experiencing a submit during this request
-     * processing lifecycle, this method must be called, with <code>true</code> as the argument,
-     * during the {@link UIComponent#decode} for this <code>UIForm</code> instance. If
-     * <strong>this</strong> <code>UIForm</code> instance is <strong>not</strong> experiencing a
-     * submit, this method must be called, with <code>false</code> as the argument, during the
-     * {@link UIComponent#decode} for this <code>UIForm</code> instance.
+     * <span class="changed_modified_2_1">If</span> <strong>this</strong> <code>UIForm</code> instance (as opposed to other
+     * forms in the page) is experiencing a submit during this request processing lifecycle, this method must be called,
+     * with <code>true</code> as the argument, during the {@link UIComponent#decode} for this <code>UIForm</code> instance.
+     * If <strong>this</strong> <code>UIForm</code> instance is <strong>not</strong> experiencing a submit, this method must
+     * be called, with <code>false</code> as the argument, during the {@link UIComponent#decode} for this
+     * <code>UIForm</code> instance.
      * </p>
      * 
      * <p>
-     * The value of a <code>UIForm</code>'s submitted property must not be saved as part of its
-     * state.
+     * The value of a <code>UIForm</code>'s submitted property must not be saved as part of its state.
      * </p>
      * 
      * <p class="changed_modified_2_1">
-     * This property must be kept as a transient property using the
-     * {@link UIComponent#getTransientStateHelper}.
+     * This property must be kept as a transient property using the {@link UIComponent#getTransientStateHelper}.
      * </p>
      * 
      * @param submitted the new value of the submitted flag.
@@ -163,14 +154,12 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         getStateHelper().put(PropertyKeys.prependId, prependId);
     }
 
-    
     // ----------------------------------------------------- UIComponent Methods
 
     /**
      * <p>
-     * Override {@link UIComponent#processDecodes} to ensure that the form is decoded
-     * <strong>before</strong> its children. This is necessary to allow the <code>submitted</code>
-     * property to be correctly set.
+     * Override {@link UIComponent#processDecodes} to ensure that the form is decoded <strong>before</strong> its children.
+     * This is necessary to allow the <code>submitted</code> property to be correctly set.
      * </p>
      *
      * @throws NullPointerException {@inheritDoc}
@@ -199,9 +188,8 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     /**
      * <p class="changed_modified_2_3">
-     * Override {@link UIComponent#processValidators} to ensure that the children of this
-     * <code>UIForm</code> instance are only processed if {@link #isSubmitted} returns
-     * <code>true</code>.
+     * Override {@link UIComponent#processValidators} to ensure that the children of this <code>UIForm</code> instance are
+     * only processed if {@link #isSubmitted} returns <code>true</code>.
      * </p>
      *
      * @throws NullPointerException {@inheritDoc}
@@ -214,30 +202,29 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         if (!isSubmitted()) {
             return;
         }
-        
+
         pushComponentToEL(context, this);
         Application application = context.getApplication();
         application.publishEvent(context, PreValidateEvent.class, this);
-        
+
         // Process all the facets and children of this component
         Iterator<UIComponent> kids = getFacetsAndChildren();
         while (kids.hasNext()) {
             kids.next().processValidators(context);
         }
-        
+
         application.publishEvent(context, PostValidateEvent.class, this);
         popComponentFromEL(context);
     }
 
     /**
      * <p>
-     * Override {@link UIComponent#processUpdates} to ensure that the children of this
-     * <code>UIForm</code> instance are only processed if {@link #isSubmitted} returns
-     * <code>true</code>.
+     * Override {@link UIComponent#processUpdates} to ensure that the children of this <code>UIForm</code> instance are only
+     * processed if {@link #isSubmitted} returns <code>true</code>.
      * </p>
      *
      * @throws NullPointerException {@inheritDoc}
@@ -248,7 +235,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         if (!isSubmitted()) {
             return;
         }
@@ -268,44 +255,42 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     /**
      * <p class="changed_modified_2_2">
-     * Generate an identifier for a component. The identifier will be prefixed with
-     * UNIQUE_ID_PREFIX, and will be unique within this component-container. Optionally, a unique
-     * seed value can be supplied by component creators which should be included in the generated
-     * unique id.
+     * Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX, and will be unique
+     * within this component-container. Optionally, a unique seed value can be supplied by component creators which should
+     * be included in the generated unique id.
      * </p>
      * <p class="changed_added_2_2">
-     * If the <code>prependId</code> property has the value <code>false</code>, this method must
-     * call <code>createUniqueId</code> on the next ancestor <code>UniqueIdVendor</code>.
+     * If the <code>prependId</code> property has the value <code>false</code>, this method must call
+     * <code>createUniqueId</code> on the next ancestor <code>UniqueIdVendor</code>.
      * </p>
      *
      * @param context FacesContext
-     * @param seed an optional seed value - e.g. based on the position of the component in the
-     *            VDL-template
+     * @param seed an optional seed value - e.g. based on the position of the component in the VDL-template
      * @return a unique-id in this component-container
      */
     @Override
     public String createUniqueId(FacesContext context, String seed) {
         if (isPrependId()) {
             int lastId = coalesce(getLastId(), 0);
-            
+
             setLastId(++lastId);
-            
+
             return UNIQUE_ID_PREFIX + coalesce(seed, lastId);
-        } 
-        
+        }
+
         UIComponent ancestorNamingContainer = getParent() == null ? null : getParent().getNamingContainer();
         if (ancestorNamingContainer instanceof UniqueIdVendor) {
             return ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(context, seed);
-        } 
-        
+        }
+
         return context.getViewRoot().createUniqueId(context, seed);
     }
 
     /**
      * <p>
-     * Override the {@link UIComponent#getContainerClientId} to allow users to disable this form
-     * from prepending its <code>clientId</code> to its descendent's <code>clientIds</code>
-     * depending on the value of this form's {@link #isPrependId} property.
+     * Override the {@link UIComponent#getContainerClientId} to allow users to disable this form from prepending its
+     * <code>clientId</code> to its descendent's <code>clientIds</code> depending on the value of this form's
+     * {@link #isPrependId} property.
      * </p>
      */
     @Override
@@ -313,7 +298,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         if (isPrependId()) {
             return super.getContainerClientId(context);
         }
-        
+
         UIComponent parent = getParent();
         while (parent != null) {
             if (parent instanceof NamingContainer) {
@@ -321,7 +306,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
             }
             parent = parent.getParent();
         }
-        
+
         return null;
     }
 
@@ -372,14 +357,13 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         // visit to continue.
         return false;
     }
-    
-    
+
     // ----------------------------------------------------- Private Methods
-    
+
     private Integer getLastId() {
         return (Integer) getStateHelper().get(PropertyKeys.lastId);
     }
-    
+
     private void setLastId(Integer lastId) {
         getStateHelper().put(PropertyKeys.lastId, lastId);
     }

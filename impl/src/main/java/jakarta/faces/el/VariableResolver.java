@@ -16,39 +16,35 @@
 
 package jakarta.faces.el;
 
-
 import jakarta.faces.context.FacesContext;
 
-
 /**
- * <p><strong>VariableResolver</strong> represents a pluggable mechanism
- * for resolving a top-level variable reference at evaluation time.</p>
+ * <p>
+ * <strong>VariableResolver</strong> represents a pluggable mechanism for resolving a top-level variable reference at
+ * evaluation time.
+ * </p>
  *
- * @deprecated This has been replaced by {@link jakarta.el.ELResolver}
- * when operating with a <code>null</code> <code>base</code> argument.
+ * @deprecated This has been replaced by {@link jakarta.el.ELResolver} when operating with a <code>null</code>
+ * <code>base</code> argument.
  */
 
 public abstract class VariableResolver {
 
-
     /**
-     * <p>Resolve the specified variable name, and return the corresponding
-     * object, if any; otherwise, return <code>null</code>.</p>
+     * <p>
+     * Resolve the specified variable name, and return the corresponding object, if any; otherwise, return
+     * <code>null</code>.
+     * </p>
      *
-     * @param context {@link FacesContext} against which to resolve
-     *  this variable name
+     * @param context {@link FacesContext} against which to resolve this variable name
      * @param name Name of the variable to be resolved
      *
-     * @throws EvaluationException if an exception is thrown while resolving
-     *  the variable name (the thrown exception must be included as the
-     *  <code>cause</code> property of this exception)
-     * @throws NullPointerException if <code>context</code>
-     *  or <code>name</code> is <code>null</code>
+     * @throws EvaluationException if an exception is thrown while resolving the variable name (the thrown exception must be
+     * included as the <code>cause</code> property of this exception)
+     * @throws NullPointerException if <code>context</code> or <code>name</code> is <code>null</code>
      *
      * @return the result of the resolution
      */
-    public abstract Object resolveVariable(FacesContext context, String name)
-        throws EvaluationException;
-
+    public abstract Object resolveVariable(FacesContext context, String name) throws EvaluationException;
 
 }

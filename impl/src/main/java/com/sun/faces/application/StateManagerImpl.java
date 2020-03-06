@@ -97,8 +97,7 @@ public class StateManagerImpl extends StateManager {
      * @param viewId the view id.
      * @param renderKitId the render kit id.
      * @return the view root.
-     * @see StateManager#restoreView(jakarta.faces.context.FacesContext, java.lang.String,
-     *      java.lang.String)
+     * @see StateManager#restoreView(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String)
      */
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {

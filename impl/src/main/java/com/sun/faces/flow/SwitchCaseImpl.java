@@ -24,7 +24,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.SwitchCase;
 
 public class SwitchCaseImpl extends SwitchCase implements Serializable {
-    
+
     private static final long serialVersionUID = -8982500105361921446L;
 
     // This is the id of the <return> or <switch>
@@ -33,25 +33,20 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
     private String condition;
     private ValueExpression conditionExpr;
 
-    public ValueExpression getConditionExpression () {
+    public ValueExpression getConditionExpression() {
         return conditionExpr;
     }
 
     @Override
     public Boolean getCondition(FacesContext context) {
         if (conditionExpr == null && condition != null) {
-            ExpressionFactory factory =
-                  context.getApplication().getExpressionFactory();
-            conditionExpr = factory.createValueExpression(context.getELContext(),
-                                                          condition,
-                                                          Boolean.class);
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            conditionExpr = factory.createValueExpression(context.getELContext(), condition, Boolean.class);
         }
 
-        return ((conditionExpr != null)
-                ? (Boolean) conditionExpr.getValue(context.getELContext())
-                : Boolean.FALSE);
+        return ((conditionExpr != null) ? (Boolean) conditionExpr.getValue(context.getELContext()) : Boolean.FALSE);
     }
-    
+
     public void setCondition(String condition) {
         this.condition = condition;
     }
@@ -59,12 +54,12 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
     public void setConditionExpression(ValueExpression conditionExpression) {
         this.conditionExpr = conditionExpression;
     }
-    
+
     @Override
     public String getFromOutcome() {
         return fromOutcome;
     }
-    
+
     public void setFromOutcome(String fromOutcome) {
         this.fromOutcome = fromOutcome;
     }
@@ -77,5 +72,4 @@ public class SwitchCaseImpl extends SwitchCase implements Serializable {
         this.enclosingId = returnId;
     }
 
-    
 }

@@ -31,14 +31,14 @@ public class SearchExpressionContextFactoryImpl extends SearchExpressionContextF
     public SearchExpressionContextFactoryImpl() {
         super(null);
     }
-    
+
     public SearchExpressionContextFactoryImpl(SearchExpressionContextFactory wrapped) {
         super(wrapped);
     }
 
     @Override
-    public SearchExpressionContext getSearchExpressionContext(FacesContext context, UIComponent source,
-            Set<SearchExpressionHint> expressionHints, Set<VisitHint> visitHints) {
+    public SearchExpressionContext getSearchExpressionContext(FacesContext context, UIComponent source, Set<SearchExpressionHint> expressionHints,
+            Set<VisitHint> visitHints) {
 
         SearchExpressionContextImpl searchExpressionContext = new SearchExpressionContextImpl(context);
         searchExpressionContext.setSource(source);
@@ -47,5 +47,5 @@ public class SearchExpressionContextFactoryImpl extends SearchExpressionContextF
 
         return searchExpressionContext;
     }
-    
+
 }

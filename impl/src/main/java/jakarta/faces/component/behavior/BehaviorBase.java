@@ -29,18 +29,19 @@ import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.BehaviorListener;
 
 /**
- * <p class="changed_added_2_0"><strong>BehaviorBase</strong> is a
- * convenience base class that provides a default implementation of the 
- * {@link Behavior} contract.  It also provides behavior listener registration 
- * and state saving support.</p>
+ * <p class="changed_added_2_0">
+ * <strong>BehaviorBase</strong> is a convenience base class that provides a default implementation of the
+ * {@link Behavior} contract. It also provides behavior listener registration and state saving support.
+ * </p>
  *
  * @since 2.0
  */
 public class BehaviorBase implements Behavior, PartialStateHolder {
-	
- /**
-     * <p>Our {@link jakarta.faces.event.BehaviorListener}s.  This data
-     * structure is lazily instantiated as necessary.</p>
+
+    /**
+     * <p>
+     * Our {@link jakarta.faces.event.BehaviorListener}s. This data structure is lazily instantiated as necessary.
+     * </p>
      */
     private List<BehaviorListener> listeners;
 
@@ -51,28 +52,24 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     private boolean initialState = false;
 
     /**
-     * <p class="changed_added_2_0">Default implementation of 
-     * {@link Behavior#broadcast}.  Delivers the specified 
-     * {@link BehaviorEvent} to all registered {@link BehaviorListener} 
-     * event listeners who have expressed an interest in events of 
-     * this type.  Listeners are called in the order in which they were 
-     * registered (added).</p>
+     * <p class="changed_added_2_0">
+     * Default implementation of {@link Behavior#broadcast}. Delivers the specified {@link BehaviorEvent} to all registered
+     * {@link BehaviorListener} event listeners who have expressed an interest in events of this type. Listeners are called
+     * in the order in which they were registered (added).
+     * </p>
      *
      * @param event The {@link BehaviorEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces
-     *  implementation that no further processing on the current event
-     *  should be performed
-     * @throws IllegalArgumentException if the implementation class
-     *  of this {@link BehaviorEvent} is not supported by this component
-     * @throws NullPointerException if <code>event</code> is
-     * <code>null</code>
+     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * current event should be performed
+     * @throws IllegalArgumentException if the implementation class of this {@link BehaviorEvent} is not supported by this
+     * component
+     * @throws NullPointerException if <code>event</code> is <code>null</code>
      *
      * @since 2.0
      */
     @Override
-    public void broadcast(BehaviorEvent event)
-        throws AbortProcessingException {
+    public void broadcast(BehaviorEvent event) throws AbortProcessingException {
 
         if (null == event) {
             throw new NullPointerException();
@@ -88,8 +85,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     }
 
     /**
-     * <p class="changed_added_2_0">Implementation of
-     * {@link jakarta.faces.component.StateHolder#isTransient}.
+     * <p class="changed_added_2_0">
+     * Implementation of {@link jakarta.faces.component.StateHolder#isTransient}.
      */
     @Override
     public boolean isTransient() {
@@ -97,8 +94,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     }
 
     /**
-     * <p class="changed_added_2_0">Implementation of
-     * {@link jakarta.faces.component.StateHolder#setTransient}.
+     * <p class="changed_added_2_0">
+     * Implementation of {@link jakarta.faces.component.StateHolder#setTransient}.
      */
     @Override
     public void setTransient(boolean transientFlag) {
@@ -106,8 +103,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     }
 
     /**
-     * <p class="changed_added_2_0">Implementation of
-     * {@link jakarta.faces.component.StateHolder#saveState}.
+     * <p class="changed_added_2_0">
+     * Implementation of {@link jakarta.faces.component.StateHolder#saveState}.
      */
     @Override
     public Object saveState(FacesContext context) {
@@ -115,7 +112,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
         if (context == null) {
             throw new NullPointerException();
         }
-        
+
         // If initial state has been marked, we don't need to
         // save any state.
         if (initialStateMarked()) {
@@ -127,8 +124,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     }
 
     /**
-     * <p class="changed_added_2_0">Implementation of
-     * {@link jakarta.faces.component.StateHolder#restoreState}.
+     * <p class="changed_added_2_0">
+     * Implementation of {@link jakarta.faces.component.StateHolder#restoreState}.
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -141,17 +138,16 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
         if (state != null) {
 
             // Unchecked cast from Object to List<BehaviorListener>
-            listeners = (List<BehaviorListener>)UIComponentBase.restoreAttachedState(context, state);
+            listeners = (List<BehaviorListener>) UIComponentBase.restoreAttachedState(context, state);
 
             // If we saved state last time, save state again next time.
             clearInitialState();
         }
     }
 
-  
     /**
-     * <p class="changed_added_2_0">Implementation of
-     * {@link jakarta.faces.component.PartialStateHolder#markInitialState}.
+     * <p class="changed_added_2_0">
+     * Implementation of {@link jakarta.faces.component.PartialStateHolder#markInitialState}.
      */
     @Override
     public void markInitialState() {
@@ -159,8 +155,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     }
 
     /**
-     * <p class="changed_added_2_0">Implementation of
-     * {@link jakarta.faces.component.PartialStateHolder#initialStateMarked}.
+     * <p class="changed_added_2_0">
+     * Implementation of {@link jakarta.faces.component.PartialStateHolder#initialStateMarked}.
      */
     @Override
     public boolean initialStateMarked() {
@@ -168,8 +164,9 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     }
 
     /**
-     * <p class="changed_added_2_0">Clears the initial state flag, causing
-     * the behavior to revert from partial to full state saving.</p>
+     * <p class="changed_added_2_0">
+     * Clears the initial state flag, causing the behavior to revert from partial to full state saving.
+     * </p>
      */
     @Override
     public void clearInitialState() {
@@ -177,13 +174,13 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     }
 
     /**
-     * <p class="changed_added_2_0">Add the specified {@link BehaviorListener} 
-     * to the set of listeners registered to receive event notifications 
-     * from this {@link Behavior}.
-     * It is expected that {@link Behavior} classes acting as event sources
-     * will have corresponding typesafe APIs for registering listeners of the
-     * required type, and the implementation of those registration methods
-     * will delegate to this method.  For example:</p>
+     * <p class="changed_added_2_0">
+     * Add the specified {@link BehaviorListener} to the set of listeners registered to receive event notifications from
+     * this {@link Behavior}. It is expected that {@link Behavior} classes acting as event sources will have corresponding
+     * typesafe APIs for registering listeners of the required type, and the implementation of those registration methods
+     * will delegate to this method. For example:
+     * </p>
+     * 
      * <pre>
      * public class AjaxBehaviorEvent extends BehaviorEvent { ... }
      *
@@ -205,8 +202,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
      *
      * @param listener The {@link BehaviorListener} to be registered
      *
-     * @throws NullPointerException if <code>listener</code>
-     *  is <code>null</code>
+     * @throws NullPointerException if <code>listener</code> is <code>null</code>
      *
      * @since 2.0
      */
@@ -216,7 +212,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
             throw new NullPointerException();
         }
         if (listeners == null) {
-            //noinspection CollectionWithoutInitialCapacity
+            // noinspection CollectionWithoutInitialCapacity
             listeners = new ArrayList<>();
         }
         listeners.add(listener);
@@ -225,14 +221,12 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
     }
 
     /**
-     * <p class="changed_added_2_0">Remove the specified 
-     * {@link BehaviorListener} from the set of listeners
-     * registered to receive event notifications from this 
-     * {@link Behavior}.
+     * <p class="changed_added_2_0">
+     * Remove the specified {@link BehaviorListener} from the set of listeners registered to receive event notifications
+     * from this {@link Behavior}.
      *
      * @param listener The {@link BehaviorListener} to be deregistered
-     * @throws NullPointerException if <code>listener</code>
-     *                              is <code>null</code>
+     * @throws NullPointerException if <code>listener</code> is <code>null</code>
      *
      * @since 2.0
      */

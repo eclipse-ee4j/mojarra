@@ -100,7 +100,7 @@ class CdiBehavior implements Behavior, StateHolder {
      */
     @Override
     public Object saveState(FacesContext facesContext) {
-        return new Object[]{behaviorId};
+        return new Object[] { behaviorId };
     }
 
     /**

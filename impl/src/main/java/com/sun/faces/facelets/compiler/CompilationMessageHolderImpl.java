@@ -26,10 +26,9 @@ import jakarta.faces.context.FacesContext;
  * @author edburns
  */
 public class CompilationMessageHolderImpl implements CompilerPackageCompilationMessageHolder {
-    
+
     private Map<String, List<FacesMessage>> messageListMap;
     private CompilationManager compilationManager;
-
 
     private Map<String, List<FacesMessage>> getMessageListMap() {
         if (null == messageListMap) {
@@ -37,17 +36,16 @@ public class CompilationMessageHolderImpl implements CompilerPackageCompilationM
         }
         return messageListMap;
     }
-    
+
     @Override
-    public List<FacesMessage> getNamespacePrefixMessages(FacesContext context,
-            String prefix) {
+    public List<FacesMessage> getNamespacePrefixMessages(FacesContext context, String prefix) {
         List<FacesMessage> result = null;
         Map<String, List<FacesMessage>> map = getMessageListMap();
         if (null == (result = map.get(prefix))) {
             result = new ArrayList<>();
             map.put(prefix, result);
         }
-        
+
         return result;
     }
 
