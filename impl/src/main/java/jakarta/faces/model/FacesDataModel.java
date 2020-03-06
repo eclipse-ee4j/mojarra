@@ -24,9 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Set;
 
-import jakarta.inject.Qualifier;
-
 import jakarta.faces.component.UIData;
+import jakarta.inject.Qualifier;
 
 /**
  * <div class="changed_added_2_3">

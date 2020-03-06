@@ -22,7 +22,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.faces.component.behavior.Behavior;
 import jakarta.inject.Qualifier;
 
 /**

@@ -16,12 +16,12 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+import java.util.Arrays;
+
 import com.sun.faces.facelets.el.ELText;
 
 import jakarta.faces.context.FacesContext;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 public final class UIInstructions extends UILeaf {
 

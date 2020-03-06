@@ -23,8 +23,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.faces.component.UIComponent;
-
 /**
  * <p class="changed_added_2_0">The presence of this annotation on a
  * class automatically registers the class with the runtime as a {@link

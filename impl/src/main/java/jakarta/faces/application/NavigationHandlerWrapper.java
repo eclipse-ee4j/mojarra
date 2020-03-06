@@ -16,8 +16,6 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.NavigationHandler;
-
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.FacesContext;
 

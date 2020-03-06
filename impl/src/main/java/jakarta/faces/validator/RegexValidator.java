@@ -21,10 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import jakarta.faces.validator.MessageFactory;
-import jakarta.faces.validator.Validator;
-import jakarta.faces.validator.ValidatorException;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;

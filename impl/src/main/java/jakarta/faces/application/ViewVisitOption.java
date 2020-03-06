@@ -16,9 +16,6 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.application.ViewVisitOption;
-
 import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**

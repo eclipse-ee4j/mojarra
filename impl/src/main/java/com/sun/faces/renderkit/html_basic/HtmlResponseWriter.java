@@ -19,6 +19,8 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,16 +31,13 @@ import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import jakarta.el.ValueExpression;
 
 /**
  * <p>

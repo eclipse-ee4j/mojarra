@@ -16,9 +16,6 @@
 
 package com.sun.faces.facelets.el;
 
-import com.sun.faces.facelets.util.ReflectionUtil;
-
-import jakarta.el.FunctionMapper;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,6 +24,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.sun.faces.facelets.util.ReflectionUtil;
+
+import jakarta.el.FunctionMapper;
 
 /**
  * Default implementation of the FunctionMapper

@@ -16,8 +16,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.Converter;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 

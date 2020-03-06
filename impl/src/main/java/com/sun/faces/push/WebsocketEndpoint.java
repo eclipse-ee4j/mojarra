@@ -24,12 +24,11 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.push.Push;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Endpoint;
 import jakarta.websocket.EndpointConfig;
 import jakarta.websocket.Session;
-
-import jakarta.faces.push.Push;
 
 /**
  * <p class="changed_added_2_3">

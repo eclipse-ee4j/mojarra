@@ -16,17 +16,15 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.Serializable;
 
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -34,8 +32,8 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.webapp.UIComponentClassicTagBase;
-
-import com.sun.faces.util.FacesLogger;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>

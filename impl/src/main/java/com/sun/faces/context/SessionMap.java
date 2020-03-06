@@ -16,21 +16,20 @@
 
 package com.sun.faces.context;
 
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Collections;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.io.Serializable;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.application.ProjectStage;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getSessionMap()

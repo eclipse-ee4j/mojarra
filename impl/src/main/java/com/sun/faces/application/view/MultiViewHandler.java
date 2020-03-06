@@ -52,8 +52,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
@@ -73,6 +71,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This {@link ViewHandler} implementation handles both JSP-based and Facelets/PDL-based views.

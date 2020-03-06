@@ -16,20 +16,19 @@
 
 package com.sun.faces.facelets.el;
 
-import com.sun.faces.el.ELUtils;
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.view.Location;

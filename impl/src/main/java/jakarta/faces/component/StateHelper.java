@@ -18,11 +18,6 @@ package jakarta.faces.component;
 
 import java.io.Serializable;
 
-import jakarta.faces.component.PartialStateHolder;
-import jakarta.faces.component.StateHelper;
-import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.UIComponent;
-
 /**
  * <p class="changed_added_2_0">
  * Define a <code>Map</code>-like contract that makes it easier for components to implement {@link PartialStateHolder}.

@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import jakarta.faces.component.UIComponent;
@@ -23,8 +25,6 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
-
-import java.io.IOException;
 
 /**
  * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will

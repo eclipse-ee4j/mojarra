@@ -16,11 +16,12 @@
 
 package com.sun.faces.facelets;
 
+import java.io.IOException;
+import java.net.URL;
+
 import com.sun.faces.facelets.FaceletCache.InstanceFactory;
 
 import jakarta.faces.view.facelets.FaceletCache;
-import java.io.IOException;
-import java.net.URL;
 
 public class PrivateApiFaceletCacheAdapter<V> extends FaceletCache<V> {
 

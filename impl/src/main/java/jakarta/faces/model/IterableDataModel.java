@@ -22,11 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.faces.model.DataModel;
-import jakarta.faces.model.DataModelEvent;
-import jakarta.faces.model.DataModelListener;
-import jakarta.faces.model.ListDataModel;
-
 /**
  * <p class="changed_added_2_3">
  * <strong>IterableDataModel</strong> is an implementation of {@link DataModel} that wraps an <code>Iterable</code>.

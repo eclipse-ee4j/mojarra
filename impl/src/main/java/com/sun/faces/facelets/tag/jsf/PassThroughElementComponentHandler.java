@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.util.Map;
+
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
@@ -26,8 +28,6 @@ import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagException;
-
-import java.util.Map;
 
 public class PassThroughElementComponentHandler extends ComponentHandler {
 

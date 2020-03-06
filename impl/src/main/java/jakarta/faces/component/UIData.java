@@ -32,8 +32,6 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.util.AnnotationLiteral;
-import jakarta.servlet.jsp.jstl.sql.Result;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -59,6 +57,7 @@ import jakarta.faces.model.ListDataModel;
 import jakarta.faces.model.ResultDataModel;
 import jakarta.faces.model.ResultSetDataModel;
 import jakarta.faces.model.ScalarDataModel;
+import jakarta.servlet.jsp.jstl.sql.Result;
 
 // ------------------------------------------------------------- Private Classes
 // Private class to represent saved state information

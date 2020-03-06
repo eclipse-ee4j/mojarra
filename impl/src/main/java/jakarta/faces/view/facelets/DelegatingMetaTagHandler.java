@@ -17,8 +17,8 @@
 package jakarta.faces.view.facelets;
 
 import java.io.IOException;
-import jakarta.el.ELException;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIComponent;

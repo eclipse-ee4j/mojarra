@@ -26,10 +26,9 @@ import java.lang.annotation.Target;
 import java.util.Objects;
 
 import jakarta.enterprise.event.Observes;
+import jakarta.faces.push.Push;
 import jakarta.inject.Qualifier;
 import jakarta.websocket.CloseReason.CloseCode;
-
-import jakarta.faces.push.Push;
 
 /**
  * <p class="changed_added_2_3">

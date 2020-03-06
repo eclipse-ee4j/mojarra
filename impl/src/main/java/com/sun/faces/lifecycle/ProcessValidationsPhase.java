@@ -16,8 +16,8 @@
 
 package com.sun.faces.lifecycle;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
 

@@ -16,8 +16,11 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.Serializable;
+
 import com.sun.faces.facelets.util.ReflectionUtil;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -25,11 +28,10 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.view.ActionSource2AttachedObjectHandler;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
-import java.io.Serializable;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.

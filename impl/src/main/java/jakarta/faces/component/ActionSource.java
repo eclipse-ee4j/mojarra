@@ -16,10 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.ActionSource;
-import jakarta.faces.component.ActionSource2;
-import jakarta.faces.component.UIComponent;
-
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;

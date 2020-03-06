@@ -27,14 +27,6 @@ import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.UIComponent;

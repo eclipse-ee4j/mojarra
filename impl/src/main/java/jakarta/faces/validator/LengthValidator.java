@@ -16,11 +16,6 @@
 
 package jakarta.faces.validator;
 
-import jakarta.faces.validator.LengthValidator;
-import jakarta.faces.validator.MessageFactory;
-import jakarta.faces.validator.Validator;
-import jakarta.faces.validator.ValidatorException;
-
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;

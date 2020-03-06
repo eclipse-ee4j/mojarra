@@ -21,12 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import jakarta.faces.application.Application;
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.ResourceVisitOption;
-import jakarta.faces.application.ViewResource;
-
 import jakarta.faces.context.FacesContext;
 
 /**

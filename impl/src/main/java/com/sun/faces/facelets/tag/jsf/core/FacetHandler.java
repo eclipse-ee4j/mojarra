@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import jakarta.faces.component.UIComponent;
@@ -23,8 +25,6 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
-
-import java.io.IOException;
 
 /**
  * Register a named facet on the UIComponent associated with the closest parent UIComponent custom action.

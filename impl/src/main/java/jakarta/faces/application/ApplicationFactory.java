@@ -16,9 +16,6 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.Application;
-import jakarta.faces.application.ApplicationFactory;
-
 import jakarta.faces.FacesWrapper;
 
 /**

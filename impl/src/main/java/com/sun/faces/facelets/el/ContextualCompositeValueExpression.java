@@ -18,12 +18,11 @@ package com.sun.faces.facelets.el;
 
 import com.sun.faces.component.CompositeComponentStackManager;
 
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;
-
-import jakarta.el.ValueExpression;
-import jakarta.el.ELContext;
 
 /**
  * <p>

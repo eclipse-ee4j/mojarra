@@ -16,22 +16,20 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.facelets.el.CompositeFunctionMapper;
 import com.sun.faces.facelets.tag.TagLibrary;
 
+import jakarta.el.ELContext;
+import jakarta.el.FunctionMapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletHandler;
-
-import com.sun.faces.el.ELContextImpl;
-
-import jakarta.el.FunctionMapper;
-import jakarta.el.ELContext;
-
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Map;
 
 final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
 

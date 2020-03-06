@@ -17,11 +17,10 @@
 package com.sun.faces.taglib.jsf_core;
 
 import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.webapp.UIComponentELTag;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * <p>

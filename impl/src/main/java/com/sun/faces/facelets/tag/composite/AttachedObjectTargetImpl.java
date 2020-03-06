@@ -16,18 +16,17 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.AttachedObjectTarget;
-
-import jakarta.el.ValueExpression;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class AttachedObjectTargetImpl implements AttachedObjectTarget {
 

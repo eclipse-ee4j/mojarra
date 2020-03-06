@@ -16,8 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.StateHolder;
-
 /**
  * <p class="changed_added_2_0">
  * Components that want to leverage the partial state saving feature must implement this interface instead of

@@ -16,19 +16,18 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-
-import java.io.IOException;
-import java.util.List;
 
 final class EndElementInstruction implements Instruction {
 

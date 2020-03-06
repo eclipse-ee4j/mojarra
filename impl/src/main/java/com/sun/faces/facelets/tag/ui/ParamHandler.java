@@ -16,16 +16,15 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
-
-import jakarta.el.ValueExpression;
-
-import java.io.IOException;
 
 /**
  * @author Jacob Hookom

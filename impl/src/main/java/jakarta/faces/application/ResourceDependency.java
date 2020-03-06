@@ -24,10 +24,6 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.faces.application.Application;
-import jakarta.faces.application.ResourceDependencies;
-import jakarta.faces.application.ResourceHandler;
-
 /**
  * <p class="changed_added_2_0">
  * Instances of {@link jakarta.faces.component.UIComponent} or {@link jakarta.faces.render.Renderer} that have this

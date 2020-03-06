@@ -16,8 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.NamingContainer;
-
 import jakarta.faces.context.FacesContext;
 
 /**

@@ -16,8 +16,9 @@
 
 package com.sun.faces.facelets.el;
 
-import jakarta.el.FunctionMapper;
 import java.lang.reflect.Method;
+
+import jakarta.el.FunctionMapper;
 
 /**
  * Composite FunctionMapper that attempts to load the Method from the first FunctionMapper, then the second if

@@ -16,17 +16,12 @@
 
 package jakarta.faces.event;
 
+import java.util.logging.Logger;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
-
-import java.util.logging.Logger;
 import jakarta.el.MethodNotFoundException;
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ActionEvent;
-import jakarta.faces.event.ActionListener;
-import jakarta.faces.event.ValueChangeListener;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 

@@ -19,6 +19,8 @@ package jakarta.faces.webapp;
 import static jakarta.faces.FactoryFinder.FACES_CONTEXT_FACTORY;
 import static jakarta.faces.FactoryFinder.LIFECYCLE_FACTORY;
 import static jakarta.faces.lifecycle.LifecycleFactory.DEFAULT_LIFECYCLE;
+import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static java.util.Collections.emptySet;
 import static java.util.EnumSet.allOf;
 import static java.util.EnumSet.range;
@@ -26,8 +28,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
-import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +37,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -46,14 +53,6 @@ import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.FacesContextFactory;
-import jakarta.faces.lifecycle.Lifecycle;
-import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
  * <p>

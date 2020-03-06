@@ -21,12 +21,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.application.ViewResource;
-import jakarta.servlet.ServletRegistration;
-
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletRegistration;
 
 /**
  * <p class="changed_added_2_0">

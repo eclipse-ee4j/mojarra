@@ -16,11 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ComponentSystemEvent;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.SystemEvent;
-
 /**
  * <p class="changed_added_2_0">
  * Implementors of this class do not need an <code>isListenerForSource()</code> method because they are only installed

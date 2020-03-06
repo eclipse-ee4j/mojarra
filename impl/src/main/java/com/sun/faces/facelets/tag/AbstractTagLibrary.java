@@ -16,23 +16,35 @@
 
 package com.sun.faces.facelets.tag;
 
-import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.Location;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ELException;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
+
+import jakarta.el.ELException;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.Location;
+import jakarta.faces.view.facelets.BehaviorConfig;
+import jakarta.faces.view.facelets.BehaviorHandler;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandler;
+import jakarta.faces.view.facelets.ValidatorConfig;
+import jakarta.faces.view.facelets.ValidatorHandler;
 
 /**
  * Base class for defining TagLibraries in Java

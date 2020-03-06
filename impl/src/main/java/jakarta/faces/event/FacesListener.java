@@ -18,8 +18,6 @@ package jakarta.faces.event;
 
 import java.util.EventListener;
 
-import jakarta.faces.event.FacesEvent;
-
 /**
  * <p>
  * A generic base interface for event listeners for various types of {@link FacesEvent}s. All listener interfaces for

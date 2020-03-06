@@ -64,12 +64,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import jakarta.el.CompositeELResolver;
-import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.annotation.AnnotationManager;
 import com.sun.faces.application.annotation.FacesComponentUsage;
@@ -101,6 +95,9 @@ import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -124,6 +121,8 @@ import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.FaceletsResourceResolver;
 import jakarta.faces.view.facelets.ResourceResolver;
 import jakarta.faces.view.facelets.TagDecorator;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * <p>

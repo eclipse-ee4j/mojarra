@@ -16,9 +16,6 @@
 
 package jakarta.faces.convert;
 
-import jakarta.faces.convert.Converter;
-import jakarta.faces.convert.ConverterException;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;

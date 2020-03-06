@@ -16,9 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.ExceptionQueuedEventContext;
-import jakarta.faces.event.SystemEvent;
-
 import jakarta.faces.context.FacesContext;
 
 /**

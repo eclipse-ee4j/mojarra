@@ -19,7 +19,11 @@ package com.sun.faces.facelets.tag.composite;
 import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.*;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
 
 public class RenderFacetHandler extends ComponentHandler {
 

@@ -16,6 +16,20 @@
 
 package com.sun.faces.config.processor;
 
+import static java.text.MessageFormat.format;
+import static java.util.logging.Level.FINE;
+
+import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.sun.faces.config.Verifier;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
@@ -24,21 +38,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.context.FacesContext;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-
 import jakarta.servlet.ServletContext;
-import javax.xml.xpath.XPathExpressionException;
-
-import static java.text.MessageFormat.format;
-import static java.util.logging.Level.FINE;
-
-import java.text.MessageFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <p>

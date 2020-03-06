@@ -18,8 +18,6 @@ package jakarta.faces.application;
 
 import java.net.URL;
 
-import jakarta.faces.application.Resource;
-
 /**
  * <p class="changed_added_2_2">
  * Superclass of {@link Resource} that is only for use with views.

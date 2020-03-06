@@ -17,10 +17,6 @@
 package jakarta.faces.component;
 
 import jakarta.el.ValueExpression;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIInput;
-import jakarta.faces.component.UISelectBoolean;
-
 import jakarta.faces.el.ValueBinding;
 
 /**

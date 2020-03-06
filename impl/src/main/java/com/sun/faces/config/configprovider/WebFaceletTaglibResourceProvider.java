@@ -16,8 +16,9 @@
 
 package com.sun.faces.config.configprovider;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsLibraries;
+
+import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 
 /**
  *

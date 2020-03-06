@@ -16,6 +16,9 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.annotation.FacesComponentUsage;
 import com.sun.faces.util.FacesLogger;
@@ -27,9 +30,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
-
-import java.util.List;
-import java.util.logging.Logger;
 
 public class FacesComponentTagLibrary extends LazyTagLibrary {
 

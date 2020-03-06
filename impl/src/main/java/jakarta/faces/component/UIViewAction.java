@@ -18,10 +18,9 @@ package jakarta.faces.component;
 
 import java.util.Map;
 
-import jakarta.el.MethodExpression;
-
 import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;

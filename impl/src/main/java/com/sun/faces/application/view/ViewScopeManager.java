@@ -16,9 +16,17 @@
 
 package com.sun.faces.application.view;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.LRUMap;
 
@@ -31,14 +39,6 @@ import jakarta.faces.event.PostConstructViewMapEvent;
 import jakarta.faces.event.PreDestroyViewMapEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.ViewMapListener;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;

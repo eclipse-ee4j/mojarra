@@ -17,14 +17,12 @@
 package com.sun.faces.el;
 
 import java.beans.FeatureDescriptor;
-
 import java.util.Iterator;
-
 import java.util.NoSuchElementException;
 
-import jakarta.el.ELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
+import jakarta.el.ELResolver;
 
 /**
  * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.

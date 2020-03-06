@@ -16,13 +16,13 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.view.facelets.FaceletContext;
-
-import java.io.IOException;
 
 final class UILiteralTextHandler extends AbstractUIHandler {
 

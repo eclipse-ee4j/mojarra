@@ -16,17 +16,16 @@
 
 package com.sun.faces.el;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.EvaluationException;
-import jakarta.faces.el.PropertyResolver;
-
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.List;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyResolver;
 
 public class PropertyResolverChainWrapper extends ELResolver {
 

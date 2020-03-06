@@ -26,18 +26,17 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.spi.InjectionProvider;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.FunctionMapper;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
-
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.spi.InjectionProvider;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.PreDestroyCustomScopeEvent;

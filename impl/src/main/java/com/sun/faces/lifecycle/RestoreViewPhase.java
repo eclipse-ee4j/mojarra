@@ -23,6 +23,7 @@ import static com.sun.faces.util.MessageUtils.NULL_REQUEST_VIEW_ERROR_MESSAGE_ID
 import static com.sun.faces.util.MessageUtils.RESTORE_VIEW_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getViewHandler;
+import static com.sun.faces.util.Util.isOneOf;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
@@ -37,8 +38,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.MethodExpression;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -46,6 +45,7 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProtectedViewException;
 import jakarta.faces.application.ViewExpiredException;
@@ -68,8 +68,6 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
-
-import static com.sun.faces.util.Util.isOneOf;
 
 /**
  * <B>Lifetime And Scope</B>

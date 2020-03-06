@@ -16,21 +16,6 @@
 
 package com.sun.faces.mgbean;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.spi.InjectionProvider;
-import com.sun.faces.spi.InjectionProviderException;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.context.FacesContext;
-
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -39,6 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.spi.InjectionProvider;
+import com.sun.faces.spi.InjectionProviderException;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
+
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

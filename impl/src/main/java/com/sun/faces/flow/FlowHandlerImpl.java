@@ -16,18 +16,6 @@
 
 package com.sun.faces.flow;
 
-import com.sun.faces.application.NavigationHandlerImpl;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.application.ConfigurableNavigationHandler;
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.flow.Flow;
-import jakarta.faces.flow.FlowCallNode;
-import jakarta.faces.flow.FlowHandler;
-import jakarta.faces.flow.Parameter;
-
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayDeque;
@@ -37,9 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.sun.faces.application.NavigationHandlerImpl;
+import com.sun.faces.util.Util;
+
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.Parameter;
 
 public class FlowHandlerImpl extends FlowHandler {
 

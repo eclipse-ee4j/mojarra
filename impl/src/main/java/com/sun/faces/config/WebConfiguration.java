@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContext;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.view.FaceletViewHandlingStrategy;
@@ -70,6 +69,7 @@ import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.view.facelets.ResourceResolver;
 import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.ServletContext;
 
 /**
  * Class Documentation

@@ -16,10 +16,10 @@
 
 package jakarta.faces.render;
 
-import java.io.Writer;
 import java.io.OutputStream;
-import java.util.Iterator;
+import java.io.Writer;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
 
 import jakarta.faces.component.UIComponent;

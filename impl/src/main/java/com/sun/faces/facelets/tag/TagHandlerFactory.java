@@ -17,7 +17,6 @@
 package com.sun.faces.facelets.tag;
 
 import jakarta.el.ELException;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;

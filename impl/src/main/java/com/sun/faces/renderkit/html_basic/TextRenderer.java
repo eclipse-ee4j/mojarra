@@ -19,7 +19,9 @@
 package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
+import java.util.Map;
 
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -30,9 +32,6 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import com.sun.faces.config.WebConfiguration;
-import java.util.Map;
 
 /**
  * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput<code> or <code>UIOutput<code>

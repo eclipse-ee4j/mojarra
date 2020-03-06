@@ -29,11 +29,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.application.ViewVisitOption;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;

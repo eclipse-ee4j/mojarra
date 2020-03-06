@@ -18,8 +18,6 @@ package jakarta.faces.event;
 
 import java.util.Map;
 
-import jakarta.faces.event.SystemEvent;
-
 import jakarta.faces.context.FacesContext;
 
 /**

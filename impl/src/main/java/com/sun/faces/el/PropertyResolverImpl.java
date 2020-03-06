@@ -16,13 +16,12 @@
 
 package com.sun.faces.el;
 
-import jakarta.el.ELException;
-
 import java.lang.reflect.Array;
 import java.util.List;
 
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.el.ELException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.PropertyNotFoundException;

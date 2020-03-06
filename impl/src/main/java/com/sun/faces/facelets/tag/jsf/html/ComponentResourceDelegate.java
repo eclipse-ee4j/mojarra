@@ -16,6 +16,10 @@
 
 package com.sun.faces.facelets.tag.jsf.html;
 
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
+
+import java.util.List;
+
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.facelets.tag.jsf.ComponentTagHandlerDelegateImpl;
 
@@ -26,10 +30,6 @@ import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributes;
-
-import java.util.List;
-
-import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
 
 /**
  * This class overrides key methods from <code>ComponentTagHandlerDelegateImpl</code> in order to properly find existing

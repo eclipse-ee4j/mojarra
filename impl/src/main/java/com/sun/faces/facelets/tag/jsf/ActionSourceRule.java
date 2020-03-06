@@ -18,14 +18,17 @@ package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.facelets.el.LegacyMethodBinding;
 
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.MethodExpressionActionListener;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ExpressionFactory;
-import jakarta.el.MethodExpression;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  *

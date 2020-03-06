@@ -17,13 +17,13 @@
 package com.sun.faces.flow;
 
 import java.io.Serializable;
+
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Event;
-import jakarta.inject.Inject;
-
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowScoped;
+import jakarta.inject.Inject;
 
 public class FlowCDIEventFireHelperImpl implements Serializable, FlowCDIEventFireHelper {
 

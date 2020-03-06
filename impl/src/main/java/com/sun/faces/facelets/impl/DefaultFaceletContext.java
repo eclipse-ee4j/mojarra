@@ -16,24 +16,6 @@
 
 package com.sun.faces.facelets.impl;
 
-import com.sun.faces.facelets.FaceletContextImplBase;
-import com.sun.faces.facelets.TemplateClient;
-import com.sun.faces.facelets.el.DefaultVariableMapper;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.Facelet;
-import jakarta.faces.view.facelets.FaceletContext;
-
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.FunctionMapper;
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +25,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.sun.faces.facelets.FaceletContextImplBase;
+import com.sun.faces.facelets.TemplateClient;
+import com.sun.faces.facelets.el.DefaultVariableMapper;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.FunctionMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * Default FaceletContext implementation.

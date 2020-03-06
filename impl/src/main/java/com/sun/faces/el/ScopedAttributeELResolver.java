@@ -16,27 +16,25 @@
 
 package com.sun.faces.el;
 
+import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.beans.FeatureDescriptor;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Map;
 
-import jakarta.el.ELException;
-import jakarta.el.PropertyNotFoundException;
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
-
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.mgbean.BeanManager;
+import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.mgbean.BeanManager;
 
 public class ScopedAttributeELResolver extends ELResolver {
 

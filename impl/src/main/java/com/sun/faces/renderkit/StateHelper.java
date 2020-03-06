@@ -28,8 +28,6 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.http.HttpSession;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.SerializationProvider;
@@ -43,6 +41,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.ResponseStateManager;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Common code for the default <code>StateHelper</code> implementations.

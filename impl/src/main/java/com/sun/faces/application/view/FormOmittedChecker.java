@@ -16,6 +16,10 @@
 
 package com.sun.faces.application.view;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import com.sun.faces.util.MessageUtils;
 
 import jakarta.faces.application.FacesMessage;
@@ -29,10 +33,6 @@ import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
-
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A convenience class that checks for omitted forms.

@@ -16,8 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.ComponentSystemEvent;
-
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 

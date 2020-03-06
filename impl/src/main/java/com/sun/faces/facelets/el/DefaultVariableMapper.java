@@ -16,10 +16,11 @@
 
 package com.sun.faces.facelets.el;
 
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
 import java.util.HashMap;
 import java.util.Map;
+
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 
 /**
  * Default instance of a VariableMapper backed by a Map

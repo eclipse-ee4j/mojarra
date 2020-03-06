@@ -16,6 +16,12 @@
 
 package com.sun.faces.facelets.impl;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.ConcurrentCache;
 import com.sun.faces.util.ExpiringConcurrentCache;
 import com.sun.faces.util.FacesLogger;
@@ -23,14 +29,6 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.view.facelets.FaceletCache;
-
-import java.io.IOException;
-
-import java.net.URL;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 /**
  * Default FaceletCache implementation.

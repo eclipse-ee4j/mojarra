@@ -16,15 +16,14 @@
 
 package com.sun.faces.application.view;
 
+import java.util.ServiceLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 import com.sun.faces.util.cdi11.CDIUtil;
 
-import jakarta.faces.view.ViewScoped;
-
-import java.util.ServiceLoader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.Bean;
@@ -32,6 +31,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.faces.view.ViewScoped;
 
 /**
  * The CDI extension that makes ViewScoped beans work in a CDI context.

@@ -16,10 +16,6 @@
 
 package jakarta.faces.context;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.PartialViewContext;
-import jakarta.faces.context.PartialViewContextFactory;
-
 import jakarta.faces.FacesWrapper;
 
 /**

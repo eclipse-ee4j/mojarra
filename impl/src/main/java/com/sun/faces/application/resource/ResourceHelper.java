@@ -42,17 +42,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ValueExpression;
-import jakarta.servlet.http.HttpServletResponse;
-
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * <p>

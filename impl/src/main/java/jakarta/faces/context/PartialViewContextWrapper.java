@@ -19,10 +19,6 @@ package jakarta.faces.context;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.PartialResponseWriter;
-import jakarta.faces.context.PartialViewContext;
-
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.event.PhaseId;
 

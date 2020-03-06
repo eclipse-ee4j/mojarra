@@ -16,10 +16,6 @@
 
 package jakarta.faces.context;
 
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.Flash;
-import jakarta.faces.context.FlashFactory;
-
 import jakarta.faces.FacesWrapper;
 
 /**

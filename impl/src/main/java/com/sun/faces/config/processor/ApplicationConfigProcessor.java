@@ -37,14 +37,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ELResolver;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContext;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,6 +56,7 @@ import com.sun.faces.el.DummyPropertyResolverImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELResolver;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationHandler;
@@ -77,6 +73,10 @@ import jakarta.faces.event.NamedEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.validator.BeanValidator;
+import jakarta.servlet.ServletContext;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 /**
  * <p>

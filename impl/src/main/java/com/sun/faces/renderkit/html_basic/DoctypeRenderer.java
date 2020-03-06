@@ -16,6 +16,9 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import java.io.IOException;
+import java.util.Map;
+
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 
@@ -23,9 +26,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
-
-import java.io.IOException;
-import java.util.Map;
 
 public class DoctypeRenderer extends Renderer {
 

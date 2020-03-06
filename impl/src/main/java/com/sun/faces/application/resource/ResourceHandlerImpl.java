@@ -16,32 +16,24 @@
 
 package com.sun.faces.application.resource;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DefaultResourceMaxAge;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ResourceBufferSize;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ResourceExcludes;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.RequestStateManager;
 import static com.sun.faces.util.RequestStateManager.RESOURCE_REQUEST;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.ResourceVisitOption;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-
 import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.notNegative;
 import static com.sun.faces.util.Util.notNull;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ProjectStage.Production;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
+import static java.lang.Boolean.FALSE;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.InputStream;
-import static java.lang.Boolean.FALSE;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -50,14 +42,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
+
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * This is the default implementation of {@link ResourceHandler}.

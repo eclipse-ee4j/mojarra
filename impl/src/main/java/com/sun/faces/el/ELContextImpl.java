@@ -16,14 +16,15 @@
 
 package com.sun.faces.el;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.FunctionMapper;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
-import java.util.Map;
-import java.util.HashMap;
-import java.lang.reflect.Method;
 
 /**
  * Concrete implementation of {@link jakarta.el.ELContext}. ELContext's constructor is protected to control creation of

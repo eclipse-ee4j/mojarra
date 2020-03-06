@@ -18,10 +18,10 @@ package com.sun.faces.push;
 
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.push.WebsocketEndpoint.PARAM_CHANNEL;
+import static jakarta.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
 import static java.lang.String.format;
 import static java.util.Collections.emptySet;
 import static java.util.logging.Level.WARNING;
-import static jakarta.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -36,20 +36,19 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.util.AnnotationLiteral;
-import jakarta.inject.Inject;
-import jakarta.websocket.CloseReason;
-import jakarta.websocket.Session;
-
 import com.sun.faces.util.Json;
 import com.sun.faces.util.Util;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.WebsocketEvent;
 import jakarta.faces.event.WebsocketEvent.Closed;
 import jakarta.faces.event.WebsocketEvent.Opened;
 import jakarta.faces.push.Push;
+import jakarta.inject.Inject;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Session;
 
 /**
  * <p class="changed_added_2_3">

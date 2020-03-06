@@ -18,11 +18,6 @@ package jakarta.faces.validator;
 
 import java.util.EventListener;
 
-import jakarta.faces.validator.DoubleRangeValidator;
-import jakarta.faces.validator.LongRangeValidator;
-import jakarta.faces.validator.Validator;
-import jakarta.faces.validator.ValidatorException;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 

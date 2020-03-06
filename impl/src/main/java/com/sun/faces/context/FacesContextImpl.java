@@ -27,11 +27,6 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELContextEvent;
-import jakarta.el.ELContextListener;
-import jakarta.el.ExpressionFactory;
-
 import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -39,12 +34,16 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;

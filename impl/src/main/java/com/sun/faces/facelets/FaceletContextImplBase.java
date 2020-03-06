@@ -16,14 +16,13 @@
 
 package com.sun.faces.facelets;
 
-import jakarta.el.ELException;
+import java.io.IOException;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
-
-import java.io.IOException;
 
 /**
  *

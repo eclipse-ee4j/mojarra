@@ -16,29 +16,29 @@
 
 package com.sun.faces.facelets.tag;
 
+import static com.sun.faces.util.MessageUtils.ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR;
+
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
+import com.sun.faces.facelets.el.ContextualCompositeValueExpression;
 import com.sun.faces.facelets.el.ELText;
 import com.sun.faces.facelets.el.TagMethodExpression;
 import com.sun.faces.facelets.el.TagValueExpression;
-import com.sun.faces.facelets.el.ContextualCompositeValueExpression;
 import com.sun.faces.util.MessageUtils;
-import static com.sun.faces.util.MessageUtils.ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodInfo;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
-
-import jakarta.el.ELException;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.MethodExpression;
-import jakarta.el.ValueExpression;
-import jakarta.el.MethodInfo;
-import jakarta.el.ELContext;
 
 /**
  * Representation of a Tag's attribute in a Facelet File

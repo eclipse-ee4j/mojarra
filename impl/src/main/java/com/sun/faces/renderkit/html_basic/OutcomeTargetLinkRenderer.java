@@ -16,8 +16,12 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import com.sun.faces.renderkit.AttributeManager;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
@@ -26,10 +30,6 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 

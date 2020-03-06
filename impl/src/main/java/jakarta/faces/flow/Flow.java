@@ -19,8 +19,8 @@ package jakarta.faces.flow;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import jakarta.el.MethodExpression;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.lifecycle.ClientWindow;
 

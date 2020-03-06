@@ -57,10 +57,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import jakarta.el.ELException;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.Attribute;
@@ -70,6 +66,9 @@ import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectMany;

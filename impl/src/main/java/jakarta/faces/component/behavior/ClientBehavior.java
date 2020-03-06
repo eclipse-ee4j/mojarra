@@ -18,12 +18,6 @@ package jakarta.faces.component.behavior;
 
 import java.util.Set;
 
-import jakarta.faces.component.behavior.Behavior;
-import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.behavior.ClientBehaviorContext;
-import jakarta.faces.component.behavior.ClientBehaviorHint;
-import jakarta.faces.component.behavior.ClientBehaviorHolder;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 

@@ -16,20 +16,19 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import com.sun.faces.facelets.el.ELText;
 import com.sun.faces.facelets.impl.IdMapper;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.facelets.util.FastWriter;
 
+import jakarta.el.ELException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletContext;
-
-import jakarta.el.ELException;
-
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * @author Adam Winer

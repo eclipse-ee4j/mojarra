@@ -16,14 +16,18 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.facelets.el.LegacyValueBinding;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.*;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  *

@@ -16,19 +16,23 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.view.AttachedObjectHandler;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
-import java.io.IOException;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandlerDelegate;
 
 /**
  *

@@ -16,14 +16,18 @@
 
 package com.sun.faces.facelets.el;
 
-import jakarta.el.*;
-
-import jakarta.faces.view.facelets.TagAttribute;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodInfo;
+import jakarta.el.MethodNotFoundException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  *

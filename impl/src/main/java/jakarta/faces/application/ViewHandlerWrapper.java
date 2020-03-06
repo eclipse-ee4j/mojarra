@@ -23,9 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.application.ViewVisitOption;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.UIViewRoot;

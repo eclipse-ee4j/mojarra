@@ -16,13 +16,12 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import jakarta.el.ValueExpression;
 import jakarta.el.ExpressionFactory;
-import jakarta.servlet.jsp.JspException;
-
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.RegexValidator;
 import jakarta.faces.validator.Validator;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Tag for the Regular Expression Validator. Can accept a regex pattern as a property - this will be used to validate

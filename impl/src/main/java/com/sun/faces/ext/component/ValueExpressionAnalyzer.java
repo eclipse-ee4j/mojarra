@@ -19,13 +19,13 @@ package com.sun.faces.ext.component;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Locale;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.FunctionMapper;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
-
 import jakarta.faces.el.CompositeComponentExpressionHolder;
 
 /**

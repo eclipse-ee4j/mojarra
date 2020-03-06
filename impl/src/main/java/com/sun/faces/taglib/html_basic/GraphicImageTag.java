@@ -18,10 +18,9 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import jakarta.servlet.jsp.JspException;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
+import jakarta.servlet.jsp.JspException;
 
 /*
  * ******* GENERATED CODE - DO NOT EDIT *******

@@ -23,9 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.validation.groups.Default;
-
 import jakarta.faces.context.FacesContext;
+import jakarta.validation.groups.Default;
 
 class MultiFieldValidationUtils {
 

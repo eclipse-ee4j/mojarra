@@ -16,6 +16,10 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
@@ -26,10 +30,6 @@ import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagConfig;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <p>

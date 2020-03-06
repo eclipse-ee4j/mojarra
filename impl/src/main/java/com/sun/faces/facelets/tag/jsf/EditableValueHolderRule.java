@@ -24,7 +24,11 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.MethodExpressionValueChangeListener;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.validator.MethodExpressionValidator;
-import jakarta.faces.view.facelets.*;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  *

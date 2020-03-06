@@ -17,12 +17,12 @@
 package com.sun.faces.context;
 
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Iterator;
-
-import jakarta.servlet.ServletRequest;
+import java.util.Map;
 
 import com.sun.faces.util.Util;
+
+import jakarta.servlet.ServletRequest;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestMap()

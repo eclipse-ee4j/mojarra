@@ -48,8 +48,6 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
 
@@ -58,6 +56,7 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Default implementation of {@link jakarta.faces.application.Resource}. The ResourceImpl instance itself has the same

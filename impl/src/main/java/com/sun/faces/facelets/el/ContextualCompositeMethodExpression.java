@@ -16,10 +16,18 @@
 
 package com.sun.faces.facelets.el;
 
-import com.sun.faces.component.CompositeComponentStackManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.sun.faces.component.CompositeComponentStackManager;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodInfo;
+import jakarta.el.MethodNotFoundException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
@@ -28,16 +36,6 @@ import jakarta.faces.event.ComponentSystemEventListener;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.validator.ValidatorException;
 import jakarta.faces.view.Location;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import jakarta.el.MethodExpression;
-import jakarta.el.ValueExpression;
-import jakarta.el.MethodInfo;
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.MethodNotFoundException;
 
 /**
  * <p>

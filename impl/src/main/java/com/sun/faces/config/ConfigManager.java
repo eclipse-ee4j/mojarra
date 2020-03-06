@@ -47,14 +47,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELContextEvent;
-import jakarta.el.ELContextListener;
-import jakarta.el.ExpressionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContext;
 
+import com.sun.faces.config.configpopulator.JsfRIRuntimePopulator;
 import com.sun.faces.config.configprovider.MetaInfFaceletTaglibraryConfigProvider;
 import com.sun.faces.config.configprovider.MetaInfFacesConfigResourceProvider;
 import com.sun.faces.config.configprovider.WebAppFlowConfigResourceProvider;
@@ -91,6 +87,10 @@ import com.sun.faces.spi.InjectionProviderFactory;
 import com.sun.faces.spi.ThreadContext;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -98,8 +98,7 @@ import jakarta.faces.application.ApplicationConfigurationPopulator;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostConstructApplicationEvent;
-
-import com.sun.faces.config.configpopulator.JsfRIRuntimePopulator;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>

@@ -16,16 +16,17 @@
 
 package com.sun.faces.facelets.util;
 
-import com.sun.faces.config.ConfigurationException;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
-import com.sun.faces.util.ReflectionUtils;
-import com.sun.faces.util.Util;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Arrays;
+
+import com.sun.faces.config.ConfigurationException;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.util.ReflectionUtils;
+import com.sun.faces.util.Util;
 
 public class ReflectionUtil {
 

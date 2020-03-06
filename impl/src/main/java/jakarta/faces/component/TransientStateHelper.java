@@ -16,9 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.TransientStateHolder;
-import jakarta.faces.component.UIComponent;
-
 /**
  * <p class="changed_added_2_1">
  * Define a <code>Map</code>-like contract that makes it easier for components to implement

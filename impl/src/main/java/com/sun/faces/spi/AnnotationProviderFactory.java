@@ -16,19 +16,18 @@
 
 package com.sun.faces.spi;
 
-import jakarta.servlet.ServletContext;
-
-import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.FacesException;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.servlet.ServletContext;
 
 /**
  *

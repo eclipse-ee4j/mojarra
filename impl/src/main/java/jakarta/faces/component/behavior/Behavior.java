@@ -16,8 +16,6 @@
 
 package jakarta.faces.component.behavior;
 
-import jakarta.faces.component.behavior.ClientBehavior;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.event.BehaviorEvent;
 

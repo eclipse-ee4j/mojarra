@@ -16,6 +16,9 @@
 
 package com.sun.faces.application.view;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.util.Util;
@@ -23,9 +26,6 @@ import com.sun.faces.util.Util;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * Custom {@link Writer} to efficiently handle the state manager replacement marker written out by

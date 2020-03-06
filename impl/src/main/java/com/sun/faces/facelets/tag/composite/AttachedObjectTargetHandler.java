@@ -16,19 +16,22 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.application.view.FaceletViewHandlingStrategy;
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.AttachedObjectTarget;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.List;
+
+import com.sun.faces.application.view.FaceletViewHandlingStrategy;
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.AttachedObjectTarget;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
 

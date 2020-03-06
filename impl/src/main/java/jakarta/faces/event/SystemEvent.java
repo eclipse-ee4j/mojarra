@@ -18,12 +18,6 @@ package jakarta.faces.event;
 
 import java.util.EventObject;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ComponentSystemEventListener;
-import jakarta.faces.event.FacesEvent;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.SystemEventListener;
-
 import jakarta.faces.context.FacesContext;
 
 /**

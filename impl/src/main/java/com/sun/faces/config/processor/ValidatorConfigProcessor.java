@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
@@ -41,6 +40,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>

@@ -16,13 +16,12 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.io.IOException;
 
 final class LiteralXMLInstruction implements Instruction {
 

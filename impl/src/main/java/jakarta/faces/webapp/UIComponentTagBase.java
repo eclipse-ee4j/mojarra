@@ -16,13 +16,12 @@
 
 package jakarta.faces.webapp;
 
-import jakarta.el.ELContext;
-import jakarta.servlet.jsp.tagext.JspTag;
+import java.util.logging.Logger;
 
+import jakarta.el.ELContext;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-
-import java.util.logging.Logger;
+import jakarta.servlet.jsp.tagext.JspTag;
 
 /**
  * <p>

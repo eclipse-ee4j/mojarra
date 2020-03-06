@@ -16,11 +16,12 @@
 
 package com.sun.faces.facelets.el;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Utility class for wrapping another VariableMapper with a new context, represented by a {@link java.util.Map Map}.

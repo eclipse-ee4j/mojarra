@@ -23,8 +23,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.faces.application.ResourceDependency;
-
 /**
  * <p class="changed_added_2_0">
  * Container annotation to specify multiple {@link ResourceDependency} annotations on a single class. Example:

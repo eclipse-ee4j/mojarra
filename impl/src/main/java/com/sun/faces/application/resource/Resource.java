@@ -30,12 +30,11 @@ import java.net.URLStreamHandler;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Roland Huss

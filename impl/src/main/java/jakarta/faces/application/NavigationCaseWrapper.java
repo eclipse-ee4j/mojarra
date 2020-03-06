@@ -21,8 +21,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.faces.application.NavigationCase;
-
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.FacesContext;
 

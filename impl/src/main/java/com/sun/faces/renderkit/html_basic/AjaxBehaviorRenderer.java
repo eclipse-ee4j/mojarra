@@ -18,7 +18,9 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,9 +43,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.ClientBehaviorRenderer;
-
-import java.util.EnumSet;
-import java.util.Set;
 
 /*
  *<b>AjaxBehaviorRenderer</b> renders Ajax behavior for a component.

@@ -21,8 +21,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.faces.bean.ManagedBean;
-
 /**
  * <p class="changed_added_2_0">
  * The presence of this annotation on a field of a class annotated with {@link ManagedBean} instructs the system to

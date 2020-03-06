@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.el.ValueExpression;
-import jakarta.faces.application.ConfigurableNavigationHandler;
-import jakarta.faces.application.NavigationCase;
-
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 

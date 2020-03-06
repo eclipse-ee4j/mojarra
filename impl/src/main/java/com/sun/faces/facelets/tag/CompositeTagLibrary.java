@@ -16,6 +16,9 @@
 
 package com.sun.faces.facelets.tag;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
 import com.sun.faces.facelets.compiler.CompilationMessageHolder;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagLibrary;
 import com.sun.faces.facelets.tag.jsf.FacesComponentTagLibrary;
@@ -29,9 +32,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
-
-import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the chain of responsibility pattern to stop

@@ -30,10 +30,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.AnnotationProvider;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * This class is the default implementation of AnnotationProvider referenced by the AnnotationProviderFactory. Unless

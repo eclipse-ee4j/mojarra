@@ -16,7 +16,14 @@
 
 package com.sun.faces.renderkit;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import jakarta.faces.component.UIComponent;
@@ -26,14 +33,6 @@ import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
-
-import java.util.Map;
-import java.util.ListIterator;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.Array;
 
 /**
  * <p>

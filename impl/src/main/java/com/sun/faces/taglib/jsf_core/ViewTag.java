@@ -16,28 +16,25 @@
 
 package com.sun.faces.taglib.jsf_core;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.ReflectionUtils;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.jstl.core.Config;
-import jakarta.servlet.jsp.tagext.BodyContent;
-import jakarta.servlet.jsp.tagext.BodyTag;
-
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.lang.reflect.Method;
-
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.ReflectionUtils;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
@@ -47,10 +44,11 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.webapp.UIComponentClassicTagBase;
 import jakarta.faces.webapp.UIComponentELTag;
-
-import com.sun.faces.RIConstants;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.jstl.core.Config;
+import jakarta.servlet.jsp.tagext.BodyContent;
+import jakarta.servlet.jsp.tagext.BodyTag;
 
 /**
  * All JSF component tags must be nested within a f:view tag. This tag corresponds to the root of the UIComponent tree.

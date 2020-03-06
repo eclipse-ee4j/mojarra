@@ -16,8 +16,9 @@
 
 package com.sun.faces.application;
 
-import com.sun.faces.util.MetadataWrapperMap;
 import java.util.Map;
+
+import com.sun.faces.util.MetadataWrapperMap;
 
 /**
  *

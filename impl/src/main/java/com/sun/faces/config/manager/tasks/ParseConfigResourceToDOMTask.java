@@ -32,7 +32,6 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -57,6 +56,8 @@ import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.config.processor.FacesFlowDefinitionConfigProcessor;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Timer;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>

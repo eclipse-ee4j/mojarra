@@ -18,13 +18,10 @@ package jakarta.faces.event;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import jakarta.faces.event.ComponentSystemEvent;
-
-import java.lang.annotation.Inherited;
 
 /**
  * <p class="changed_added_2_0">

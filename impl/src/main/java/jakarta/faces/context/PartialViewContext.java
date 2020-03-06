@@ -19,11 +19,6 @@ package jakarta.faces.context;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.PartialResponseWriter;
-import jakarta.faces.context.PartialViewContext;
-import jakarta.faces.context.ResponseWriter;
-
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;

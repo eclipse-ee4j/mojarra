@@ -25,10 +25,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.spi.ConfigurationResourceProvider;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>

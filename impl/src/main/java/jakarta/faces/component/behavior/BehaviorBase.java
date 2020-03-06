@@ -19,8 +19,6 @@ package jakarta.faces.component.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.faces.component.behavior.Behavior;
-
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;

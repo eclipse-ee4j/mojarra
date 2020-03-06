@@ -20,9 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.faces.event.FacesEvent;
-import jakarta.faces.event.PhaseId;
-
 import jakarta.faces.FacesException;
 
 /**

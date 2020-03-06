@@ -16,20 +16,6 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.tag.CompositeTagDecorator;
-import com.sun.faces.facelets.tag.CompositeTagLibrary;
-import com.sun.faces.facelets.tag.TagLibrary;
-import com.sun.faces.facelets.util.ReflectionUtil;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.FaceletException;
-import jakarta.faces.view.facelets.FaceletHandler;
-import jakarta.faces.view.facelets.TagDecorator;
-
-import jakarta.el.ExpressionFactory;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,6 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.facelets.tag.CompositeTagDecorator;
+import com.sun.faces.facelets.tag.CompositeTagLibrary;
+import com.sun.faces.facelets.tag.TagLibrary;
+import com.sun.faces.facelets.util.ReflectionUtil;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.TagDecorator;
 
 /**
  * A Compiler instance may handle compiling multiple sources

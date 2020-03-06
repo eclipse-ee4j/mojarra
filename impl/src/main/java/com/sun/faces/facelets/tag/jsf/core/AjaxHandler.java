@@ -25,15 +25,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
-import jakarta.el.ELContext;
-import jakarta.el.MethodExpression;
-import jakarta.el.MethodNotFoundException;
-
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import com.sun.faces.renderkit.RenderKitUtils;
 
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;

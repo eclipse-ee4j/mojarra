@@ -18,8 +18,6 @@ package jakarta.faces.context;
 
 import java.util.Map;
 
-import jakarta.faces.context.FacesContext;
-
 import jakarta.faces.event.PostKeepFlashValueEvent;
 import jakarta.faces.event.PostPutFlashValueEvent;
 

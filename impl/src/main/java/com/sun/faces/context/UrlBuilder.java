@@ -16,12 +16,6 @@
 
 package com.sun.faces.context;
 
-import com.sun.faces.util.Util;
-
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.lifecycle.ClientWindow;
-import jakarta.faces.render.ResponseStateManager;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -30,6 +24,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.sun.faces.util.Util;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
 
 /**
  * <p>

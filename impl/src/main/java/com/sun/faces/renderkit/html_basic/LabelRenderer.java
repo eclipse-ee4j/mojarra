@@ -19,6 +19,8 @@
 package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.sun.faces.renderkit.Attribute;
@@ -32,9 +34,6 @@ import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHint;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import java.util.EnumSet;
-import java.util.Set;
 
 /**
  * <p>

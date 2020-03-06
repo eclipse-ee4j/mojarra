@@ -34,6 +34,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.push.WebsocketChannelManager;
+import com.sun.faces.push.WebsocketSessionManager;
+import com.sun.faces.push.WebsocketUserManager;
+import com.sun.faces.util.FacesLogger;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
@@ -43,12 +48,6 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
-
-import com.sun.faces.push.WebsocketChannelManager;
-import com.sun.faces.push.WebsocketSessionManager;
-import com.sun.faces.push.WebsocketUserManager;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.model.DataModel;

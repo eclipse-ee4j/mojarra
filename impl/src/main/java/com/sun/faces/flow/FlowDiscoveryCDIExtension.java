@@ -16,15 +16,12 @@
 
 package com.sun.faces.flow;
 
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.flow.Flow;
-import jakarta.faces.flow.builder.FlowDefinition;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.util.FacesLogger;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -33,6 +30,8 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessProducer;
 import jakarta.enterprise.inject.spi.Producer;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.builder.FlowDefinition;
 
 /*
  *  This is the hook into the bootstrapping of the entire feature.

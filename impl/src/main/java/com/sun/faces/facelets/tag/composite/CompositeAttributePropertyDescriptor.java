@@ -16,16 +16,16 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.facelets.util.ReflectionUtil;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.context.FacesContext;
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+
+import com.sun.faces.facelets.util.ReflectionUtil;
+
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A property descriptor for a composite component attribute.

@@ -16,16 +16,16 @@
 
 package com.sun.faces.context;
 
-import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.logging.Logger;
+import java.util.LinkedList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import jakarta.el.ELException;
-
+import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
@@ -37,8 +37,6 @@ import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
-
-import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <p>

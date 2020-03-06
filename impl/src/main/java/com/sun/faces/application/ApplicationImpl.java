@@ -25,13 +25,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import jakarta.el.CompositeELResolver;
-import jakarta.el.ELContextListener;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-
 import com.sun.faces.application.applicationimpl.Events;
 import com.sun.faces.application.applicationimpl.ExpressionLanguage;
 import com.sun.faces.application.applicationimpl.InstanceFactory;
@@ -41,6 +34,12 @@ import com.sun.faces.application.applicationimpl.Stage;
 import com.sun.faces.el.FacesCompositeELResolver;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.NavigationHandler;

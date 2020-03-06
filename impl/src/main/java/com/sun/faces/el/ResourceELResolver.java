@@ -20,14 +20,13 @@ import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
-
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;

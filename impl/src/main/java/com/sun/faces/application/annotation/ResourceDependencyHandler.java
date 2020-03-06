@@ -16,16 +16,15 @@
 
 package com.sun.faces.application.annotation;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
-
-import jakarta.el.ValueExpression;
+import java.util.Map;
+import java.util.Set;
 
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.RequestStateManager;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.UIComponent;

@@ -36,6 +36,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.cdi.CdiExtension;
+import com.sun.faces.context.flash.FlashELResolver;
+import com.sun.faces.mgbean.BeanManager;
+import com.sun.faces.util.MessageUtils;
+
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
@@ -46,16 +52,6 @@ import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.jsp.JspApplicationContext;
-import jakarta.servlet.jsp.JspFactory;
-
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.cdi.CdiExtension;
-import com.sun.faces.context.flash.FlashELResolver;
-import com.sun.faces.mgbean.BeanManager;
-import com.sun.faces.util.MessageUtils;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -64,6 +60,9 @@ import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.PropertyResolver;
 import jakarta.faces.el.ReferenceSyntaxException;
 import jakarta.faces.el.VariableResolver;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspFactory;
 
 /**
  * <p>

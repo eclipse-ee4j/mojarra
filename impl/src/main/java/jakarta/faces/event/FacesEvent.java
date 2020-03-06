@@ -18,11 +18,6 @@ package jakarta.faces.event;
 
 import java.util.EventObject;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.FacesEvent;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.PhaseId;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewAction;
 import jakarta.faces.component.UIViewRoot;

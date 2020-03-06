@@ -16,14 +16,31 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.RIConstants;
-import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.jsf.ComponentTagHandlerDelegateImpl.CreateComponentDelegate;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.facelets.tag.MetadataTargetImpl;
+import com.sun.faces.facelets.tag.jsf.ComponentTagHandlerDelegateImpl.CreateComponentDelegate;
+import com.sun.faces.facelets.util.ReflectionUtil;
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ProjectStage;
@@ -48,24 +65,6 @@ import jakarta.faces.view.facelets.Metadata;
 import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
-
-import com.sun.faces.util.FacesLogger;
-import java.beans.BeanDescriptor;
-import jakarta.el.ELException;
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
-
-import java.beans.PropertyDescriptor;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 /**
  * <p>

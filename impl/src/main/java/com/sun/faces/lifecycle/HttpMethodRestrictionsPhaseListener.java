@@ -16,13 +16,12 @@
 
 package com.sun.faces.lifecycle;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class HttpMethodRestrictionsPhaseListener implements PhaseListener {
 

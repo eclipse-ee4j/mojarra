@@ -50,6 +50,7 @@ import static jakarta.faces.component.UIComponent.VIEW_LOCATION_KEY;
 import static jakarta.faces.component.UIViewRoot.COMPONENT_TYPE;
 import static jakarta.faces.view.AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY;
 import static jakarta.faces.view.facelets.FaceletContext.FACELET_CONTEXT_KEY;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
@@ -57,7 +58,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
-import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
@@ -76,13 +76,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.MethodExpression;
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
-import jakarta.servlet.http.HttpSession;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.StateContext;
@@ -95,7 +88,17 @@ import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import com.sun.faces.facelets.tag.ui.UIDebug;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Cache;
+import com.sun.faces.util.ComponentStruct;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.HtmlUtils;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Resource;
@@ -136,12 +139,7 @@ import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
 import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
-
-import com.sun.faces.util.ComponentStruct;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.HtmlUtils;
-import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * This {@link ViewHandlingStrategy} handles Facelets/PDL-based views.

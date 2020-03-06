@@ -16,15 +16,19 @@
 
 package com.sun.faces.facelets.tag;
 
-import com.sun.faces.facelets.el.LegacyMethodBinding;
-
-import jakarta.faces.el.MethodBinding;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.MethodExpression;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import com.sun.faces.facelets.el.LegacyMethodBinding;
+
+import jakarta.el.MethodExpression;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
 
 /**
  * Optional Rule for binding Method[Binding|Expression] properties

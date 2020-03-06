@@ -16,14 +16,13 @@
 
 package jakarta.faces.component;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
-
-import java.util.HashMap;
 
 class SharedUtils {
 

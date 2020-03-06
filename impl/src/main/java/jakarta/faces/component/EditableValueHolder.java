@@ -16,9 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.ValueHolder;
-
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;

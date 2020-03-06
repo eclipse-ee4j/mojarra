@@ -16,11 +16,11 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import com.sun.faces.taglib.FacesValidator;
-import com.sun.faces.taglib.ValidatorInfo;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.sun.faces.taglib.FacesValidator;
+import com.sun.faces.taglib.ValidatorInfo;
 
 /**
  * <p>

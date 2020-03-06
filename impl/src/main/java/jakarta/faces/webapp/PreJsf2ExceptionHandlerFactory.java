@@ -16,14 +16,13 @@
 
 package jakarta.faces.webapp;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jakarta.el.ELException;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;

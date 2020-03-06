@@ -30,7 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -47,6 +46,7 @@ import com.sun.faces.spi.ConfigurationResourceProvider;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.application.ApplicationConfigurationPopulator;
+import jakarta.servlet.ServletContext;
 
 public class Documents {
 

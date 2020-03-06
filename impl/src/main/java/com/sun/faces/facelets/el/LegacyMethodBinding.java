@@ -16,15 +16,14 @@
 
 package com.sun.faces.facelets.el;
 
+import java.io.Serializable;
+
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.el.MethodNotFoundException;
-
-import java.io.Serializable;
 
 /**
  * For legacy ActionSources

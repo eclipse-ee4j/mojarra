@@ -27,13 +27,12 @@ import java.lang.annotation.Target;
 import java.util.Collection;
 
 import jakarta.enterprise.util.Nonbinding;
-import jakarta.inject.Qualifier;
-import jakarta.websocket.CloseReason.CloseCodes;
-
 import jakarta.faces.component.UIWebsocket;
 import jakarta.faces.event.WebsocketEvent;
 import jakarta.faces.event.WebsocketEvent.Closed;
 import jakarta.faces.event.WebsocketEvent.Opened;
+import jakarta.inject.Qualifier;
+import jakarta.websocket.CloseReason.CloseCodes;
 
 /**
  * <p class="changed_added_2_3">

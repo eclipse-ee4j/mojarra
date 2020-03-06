@@ -16,9 +16,6 @@
 
 package jakarta.faces.context;
 
-import jakarta.faces.context.ExceptionHandlerFactory;
-import jakarta.faces.context.FacesContextFactory;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ExceptionQueuedEvent;

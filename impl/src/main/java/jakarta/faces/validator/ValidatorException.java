@@ -18,8 +18,6 @@ package jakarta.faces.validator;
 
 import java.util.Collection;
 
-import jakarta.faces.validator.Validator;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 

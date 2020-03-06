@@ -19,9 +19,8 @@ package com.sun.faces.application.annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import jakarta.persistence.PersistenceContext;
-
 import jakarta.faces.context.FacesContext;
+import jakarta.persistence.PersistenceContext;
 
 /**
  * {@link RuntimeAnnotationHandler} responsible for processing annotations.

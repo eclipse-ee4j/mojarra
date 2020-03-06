@@ -16,6 +16,7 @@
 
 package com.sun.faces.ext.validator;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import jakarta.faces.application.FacesMessage;
@@ -23,8 +24,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
-
-import java.io.Serializable;
 
 /**
  * A Validator that checks against a Regular Expression (which is the pattern property). The pattern must resolve to a

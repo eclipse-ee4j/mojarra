@@ -19,6 +19,7 @@ package com.sun.faces.spi;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import jakarta.servlet.ServletContext;

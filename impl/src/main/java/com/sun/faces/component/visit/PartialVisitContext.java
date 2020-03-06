@@ -30,7 +30,10 @@ import java.util.Set;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
-import jakarta.faces.component.visit.*;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 
 /**

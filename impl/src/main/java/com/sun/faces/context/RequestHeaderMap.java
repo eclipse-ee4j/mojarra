@@ -16,15 +16,15 @@
 
 package com.sun.faces.context;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
-import java.util.Collection;
-import java.util.Iterator;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import com.sun.faces.util.Util;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestHeaderMap()

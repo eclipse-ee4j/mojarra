@@ -16,13 +16,14 @@
 
 package com.sun.faces.taglib.html_basic;
 
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+
+import org.xml.sax.Attributes;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.taglib.TagParser;
 import com.sun.faces.taglib.ValidatorInfo;
-import org.xml.sax.Attributes;
-
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 /**
  * <p>

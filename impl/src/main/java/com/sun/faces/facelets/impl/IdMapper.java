@@ -16,12 +16,12 @@
 
 package com.sun.faces.facelets.impl;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.context.FacesContext;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Used to provide aliases to Facelets generated unique IDs with tend to be womewhat long.

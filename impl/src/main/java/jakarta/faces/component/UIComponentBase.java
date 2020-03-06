@@ -57,12 +57,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ELException;
-import jakarta.el.ValueExpression;
-
 import com.sun.faces.application.ValueBindingValueExpressionAdapter;
 import com.sun.faces.application.ValueExpressionValueBindingAdapter;
 
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.behavior.Behavior;

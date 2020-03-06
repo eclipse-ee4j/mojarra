@@ -16,16 +16,14 @@
 
 package com.sun.faces.el;
 
-import jakarta.el.ELResolver;
-import jakarta.el.ValueExpression;
-
+import com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType;
 import com.sun.faces.util.RequestStateManager;
 
+import jakarta.el.ELResolver;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.VariableResolver;
-
-import com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType;
 
 /**
  * <p>

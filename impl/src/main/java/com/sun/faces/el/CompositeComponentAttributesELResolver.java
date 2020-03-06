@@ -16,32 +16,30 @@
 
 package com.sun.faces.el;
 
+import static com.sun.faces.component.CompositeComponentStackManager.StackType.Evaluation;
+import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
+
+import java.beans.BeanInfo;
 import java.beans.FeatureDescriptor;
+import java.beans.PropertyDescriptor;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
-import jakarta.el.ELResolver;
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
-import jakarta.el.MethodExpression;
-
+import com.sun.faces.component.CompositeComponentStackManager;
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.CompositeComponentExpressionHolder;
-
-import com.sun.faces.component.CompositeComponentStackManager;
-import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
-import static com.sun.faces.component.CompositeComponentStackManager.StackType.Evaluation;
-import com.sun.faces.util.FacesLogger;
-
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
 
 /**
  * <p>

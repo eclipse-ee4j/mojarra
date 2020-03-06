@@ -16,10 +16,6 @@
 
 package com.sun.faces.config.configprovider;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.spi.ConfigurationResourceProvider;
-
-import com.sun.faces.util.FacesLogger;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,10 +24,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.spi.ConfigurationResourceProvider;
+import com.sun.faces.util.FacesLogger;
+
 import jakarta.servlet.ServletContext;
 
 /**

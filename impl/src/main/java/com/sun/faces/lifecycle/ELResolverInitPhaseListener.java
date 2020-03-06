@@ -16,7 +16,13 @@
 
 package com.sun.faces.lifecycle;
 
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.el.FacesCompositeELResolver;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FactoryFinder;
@@ -27,14 +33,6 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
-
-import com.sun.faces.el.ELUtils;
-
-import com.sun.faces.el.FacesCompositeELResolver;
-
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <p>

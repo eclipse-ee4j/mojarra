@@ -16,10 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.MethodBindingAdapterBase;
-import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.UIComponent;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.MethodBinding;

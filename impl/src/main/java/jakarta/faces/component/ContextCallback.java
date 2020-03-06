@@ -16,8 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-
 import jakarta.faces.context.FacesContext;
 
 /**

@@ -16,20 +16,8 @@
 
 package com.sun.faces.flow;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.flow.Flow;
-import jakarta.faces.flow.FlowHandler;
-import jakarta.faces.flow.FlowScoped;
-import jakarta.faces.lifecycle.ClientWindow;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +27,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.Contextual;
@@ -48,6 +41,12 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeShutdown;
 import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowScoped;
+import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 

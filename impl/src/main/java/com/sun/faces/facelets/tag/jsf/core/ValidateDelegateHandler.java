@@ -16,7 +16,11 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-import jakarta.faces.view.facelets.*;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.ValidatorConfig;
+import jakarta.faces.view.facelets.ValidatorHandler;
 
 /**
  * Register a named Validator instance on the UIComponent associated with the closest parent UIComponent custom action.

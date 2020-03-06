@@ -16,13 +16,12 @@
 
 package com.sun.faces.spi;
 
-import java.util.List;
-
 import static com.sun.faces.spi.ServiceFactoryUtils.getProviderFromEntry;
 import static com.sun.faces.spi.ServiceFactoryUtils.getServiceEntries;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;

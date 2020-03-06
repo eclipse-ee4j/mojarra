@@ -16,8 +16,8 @@
 
 package com.sun.faces.util;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MojarraThreadFactory implements ThreadFactory {
 

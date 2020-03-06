@@ -16,6 +16,10 @@
 
 package jakarta.faces.model;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -29,11 +33,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import jakarta.faces.FacesException;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.NotSerializableException;
-import java.io.ObjectOutputStream;
 
 /**
  * <p>

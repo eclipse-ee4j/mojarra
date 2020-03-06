@@ -16,25 +16,24 @@
 
 package com.sun.faces.facelets.tag;
 
-import com.sun.faces.facelets.FaceletContextImplBase;
-import com.sun.faces.facelets.TemplateClient;
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.ui.DefineHandler;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.FaceletContext;
-import jakarta.faces.view.facelets.TagAttribute;
-import jakarta.faces.view.facelets.TagConfig;
-import jakarta.faces.view.facelets.TagException;
-
-import jakarta.el.VariableMapper;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.sun.faces.facelets.FaceletContextImplBase;
+import com.sun.faces.facelets.TemplateClient;
+import com.sun.faces.facelets.el.VariableMapperWrapper;
+import com.sun.faces.facelets.tag.ui.DefineHandler;
+
+import jakarta.el.VariableMapper;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 /**
  * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before

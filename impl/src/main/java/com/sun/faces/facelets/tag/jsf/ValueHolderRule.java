@@ -22,7 +22,11 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectBoolean;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.convert.Converter;
-import jakarta.faces.view.facelets.*;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  *

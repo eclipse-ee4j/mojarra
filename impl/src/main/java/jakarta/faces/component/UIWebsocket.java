@@ -25,13 +25,12 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import jakarta.el.ValueExpression;
-import jakarta.websocket.CloseReason.CloseCodes;
-
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.push.Push;
 import jakarta.faces.push.PushContext;
+import jakarta.websocket.CloseReason.CloseCodes;
 
 /**
  * <p class="changed_added_2_3">

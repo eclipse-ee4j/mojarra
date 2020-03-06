@@ -57,10 +57,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-import jakarta.enterprise.inject.spi.BeanManager;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ConverterPropertyEditorFactory;
 import com.sun.faces.application.ViewMemberInstanceFactoryMetadataMap;
@@ -71,6 +67,9 @@ import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.Resource;

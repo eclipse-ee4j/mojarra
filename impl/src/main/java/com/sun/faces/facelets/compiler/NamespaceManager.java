@@ -16,10 +16,10 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.tag.TagLibrary;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.faces.facelets.tag.TagLibrary;
 
 /**
  * @author Jacob Hookom

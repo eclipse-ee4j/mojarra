@@ -20,7 +20,6 @@ import java.util.Map;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.spi.CDI;
-
 import jakarta.faces.model.DataModel;
 
 /**

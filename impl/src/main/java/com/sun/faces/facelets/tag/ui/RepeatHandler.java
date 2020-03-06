@@ -16,6 +16,14 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.component.UIComponent;
@@ -25,14 +33,6 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.Metadata;
 import jakarta.faces.view.facelets.TagAttribute;
-
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class RepeatHandler extends ComponentHandler {
 

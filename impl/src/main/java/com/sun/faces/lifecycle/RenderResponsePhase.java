@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.util.DebugUtil;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
@@ -32,8 +33,6 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PostRenderViewEvent;
 import jakarta.faces.event.PreRenderViewEvent;
 import jakarta.faces.view.ViewDeclarationLanguage;
-
-import com.sun.faces.util.DebugUtil;
 
 /**
  * <B>Lifetime And Scope</B>

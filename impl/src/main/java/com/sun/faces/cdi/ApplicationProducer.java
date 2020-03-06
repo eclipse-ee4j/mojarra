@@ -17,7 +17,6 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.context.ApplicationScoped;
-
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 

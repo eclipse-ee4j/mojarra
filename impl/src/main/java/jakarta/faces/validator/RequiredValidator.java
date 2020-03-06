@@ -16,10 +16,6 @@
 
 package jakarta.faces.validator;
 
-import jakarta.faces.validator.MessageFactory;
-import jakarta.faces.validator.Validator;
-import jakarta.faces.validator.ValidatorException;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;

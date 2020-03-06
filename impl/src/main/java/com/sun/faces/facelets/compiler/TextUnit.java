@@ -16,15 +16,18 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.el.ELText;
-
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ELException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import com.sun.faces.facelets.el.ELText;
+
+import jakarta.el.ELException;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
 
 /**
  *

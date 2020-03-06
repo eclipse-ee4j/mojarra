@@ -16,8 +16,6 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.StateManager;
-
 import jakarta.faces.FacesException;
 
 /**

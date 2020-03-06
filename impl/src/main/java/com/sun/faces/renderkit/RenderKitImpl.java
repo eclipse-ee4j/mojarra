@@ -18,25 +18,27 @@
 
 package com.sun.faces.renderkit;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableJSStyleHiding;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableScriptInAttributeValue;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PreferXHTMLContentType;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableJSStyleHiding;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableScriptInAttributeValue;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PreferXHTMLContentType;
 import com.sun.faces.renderkit.html_basic.HtmlResponseWriter;
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
@@ -47,8 +49,6 @@ import jakarta.faces.render.ClientBehaviorRenderer;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.render.ResponseStateManager;
-
-import com.sun.faces.util.FacesLogger;
 
 /**
  * <B>RenderKitImpl</B> is a class ...

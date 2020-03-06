@@ -16,9 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UINamingContainer;
-
 /**
  * <p>
  * <strong class="changed_modified_2_0">NamingContainer</strong> is an interface that must be implemented by any

@@ -16,15 +16,14 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import java.io.IOException;
+
+import com.sun.faces.application.view.FaceletViewHandlingStrategy;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagConfig;
-
-import com.sun.faces.application.view.FaceletViewHandlingStrategy;
-
-import java.io.IOException;
 
 public class ImplementationHandler extends TagHandlerImpl {
 

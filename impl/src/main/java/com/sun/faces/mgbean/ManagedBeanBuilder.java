@@ -16,14 +16,6 @@
 
 package com.sun.faces.mgbean;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.util.MessageUtils;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.FacesContext;
-
-import jakarta.el.ExpressionFactory;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -35,6 +27,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.util.MessageUtils;
+
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

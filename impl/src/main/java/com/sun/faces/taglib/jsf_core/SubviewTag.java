@@ -16,14 +16,16 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import java.util.Stack;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
-import jakarta.servlet.jsp.JspException;
-
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.sun.faces.RIConstants;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.RequestStateManager;
 
 import jakarta.faces.FacesException;
@@ -32,12 +34,7 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.webapp.UIComponentClassicTagBase;
 import jakarta.faces.webapp.UIComponentELTag;
-
-import com.sun.faces.util.ReflectionUtils;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.RIConstants;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
+import jakarta.servlet.jsp.JspException;
 
 public class SubviewTag extends UIComponentELTag {
 

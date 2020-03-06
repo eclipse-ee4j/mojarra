@@ -17,9 +17,10 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.faces.FacesException;
@@ -31,8 +32,6 @@ import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.Renderer;
-
-import java.util.HashMap;
 
 /**
  * <p>

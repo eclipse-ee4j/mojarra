@@ -16,15 +16,14 @@
 
 package com.sun.faces.context;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.ExternalContextFactory;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 public class ExternalContextFactoryImpl extends ExternalContextFactory {
 

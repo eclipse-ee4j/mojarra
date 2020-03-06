@@ -16,14 +16,14 @@
 
 package com.sun.faces.flow;
 
+import java.io.Serializable;
+
 import com.sun.faces.util.Util;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.flow.ReturnNode;
-
-import java.io.Serializable;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.ReturnNode;
 
 public class ReturnNodeImpl extends ReturnNode implements Serializable {
 

@@ -17,9 +17,9 @@
 package com.sun.faces.flow;
 
 import java.io.Serializable;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.SwitchCase;
 

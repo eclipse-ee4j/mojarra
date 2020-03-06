@@ -16,16 +16,15 @@
 
 package jakarta.faces.webapp;
 
-import jakarta.el.ELException;
 import jakarta.el.ELContext;
+import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.Tag;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * <p>

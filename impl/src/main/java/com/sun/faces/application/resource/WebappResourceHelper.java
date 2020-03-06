@@ -16,14 +16,7 @@
 
 package com.sun.faces.application.resource;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.ResourceResolver;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +29,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.impl.DefaultResourceResolver;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ResourceResolver;
 
 /**
  * <p>

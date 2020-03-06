@@ -16,10 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.ValueChangeEvent;
-
 import jakarta.faces.component.UIComponent;
 
 /**

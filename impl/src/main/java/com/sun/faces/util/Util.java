@@ -52,13 +52,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import jakarta.el.ELResolver;
-import jakarta.el.ValueExpression;
-import jakarta.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletRegistration;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParserFactory;
@@ -75,6 +70,9 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.io.FastStringWriter;
 
+import jakarta.el.ELResolver;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -90,6 +88,8 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
 
 /**
  * <B>Util</B> is a class ...

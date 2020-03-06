@@ -16,22 +16,24 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
+import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.IterationIdManager;
 
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagConfig;
-
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.*;
 
 /**
  * @author Jacob Hookom

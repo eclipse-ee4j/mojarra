@@ -16,10 +16,14 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import com.sun.faces.facelets.util.ReflectionUtil;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
@@ -28,12 +32,12 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
-import java.io.IOException;
-import java.io.Serializable;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 /**
  * Register an ValueChangeListener instance on the UIComponent associated with the closest parent UIComponent custom

@@ -16,19 +16,22 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ValueExpression;
-
 import java.beans.BeanDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 public class DeclareFacetHandler extends TagHandlerImpl {
 

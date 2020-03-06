@@ -16,26 +16,25 @@
 
 package com.sun.faces.el;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.ApplicationResourceBundle;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.application.Application;
-import jakarta.faces.context.FacesContext;
-
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-import jakarta.el.PropertyNotFoundException;
-import jakarta.el.PropertyNotWritableException;
-
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.ApplicationResourceBundle;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
 
 /**
  * @author edburns

@@ -16,12 +16,12 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sun.faces.facelets.tag.TagLibrary;
 
 import jakarta.faces.view.facelets.FaceletHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *

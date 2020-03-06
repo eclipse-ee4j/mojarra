@@ -16,22 +16,6 @@
 
 package jakarta.faces.webapp;
 
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.JspWriter;
-import jakarta.servlet.jsp.PageContext;
-import jakarta.servlet.jsp.tagext.BodyContent;
-import jakarta.servlet.jsp.tagext.BodyTag;
-import jakarta.servlet.jsp.tagext.JspIdConsumer;
-import jakarta.servlet.jsp.tagext.Tag;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.application.Application;
-import jakarta.faces.component.NamingContainer;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -44,6 +28,21 @@ import java.util.RandomAccess;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.BodyContent;
+import jakarta.servlet.jsp.tagext.BodyTag;
+import jakarta.servlet.jsp.tagext.JspIdConsumer;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * <p>

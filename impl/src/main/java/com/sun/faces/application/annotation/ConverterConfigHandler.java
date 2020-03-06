@@ -16,20 +16,20 @@
 
 package com.sun.faces.application.annotation;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.FacesConverter;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <p>

@@ -20,23 +20,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.ApplicationFactory;
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.application.Resource;
-import jakarta.faces.application.ResourceDependencies;
-import jakarta.faces.application.ResourceDependency;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
@@ -55,9 +46,6 @@ import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.view.ViewDeclarationLanguage;
-
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
 
 /**
  * <p>

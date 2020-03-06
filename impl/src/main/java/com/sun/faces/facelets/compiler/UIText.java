@@ -16,14 +16,13 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.el.ELText;
 
+import jakarta.el.ELException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-
-import jakarta.el.ELException;
-
-import java.io.IOException;
 
 /**
  * @author Jacob Hookom

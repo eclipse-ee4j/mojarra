@@ -16,6 +16,9 @@
 
 package com.sun.faces.application;
 
+import java.io.IOException;
+import java.util.Map;
+
 import com.sun.faces.application.view.JspStateManagementStrategy;
 
 import jakarta.faces.application.StateManager;
@@ -25,9 +28,6 @@ import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.StateManagementStrategy;
 import jakarta.faces.view.ViewDeclarationLanguage;
-
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * <p>

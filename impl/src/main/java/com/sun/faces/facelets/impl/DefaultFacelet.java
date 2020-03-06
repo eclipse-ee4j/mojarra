@@ -16,19 +16,6 @@
 
 package com.sun.faces.facelets.impl;
 
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.Facelet;
-import jakarta.faces.view.facelets.FaceletContext;
-import jakarta.faces.view.facelets.FaceletHandler;
-
-import jakarta.el.ExpressionFactory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -36,9 +23,27 @@ import java.io.ObjectOutput;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.faces.facelets.tag.jsf.ComponentSupport;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 /**
  * Default Facelet implementation.

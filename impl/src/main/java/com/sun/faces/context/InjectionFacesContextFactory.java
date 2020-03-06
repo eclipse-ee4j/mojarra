@@ -21,8 +21,6 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletRequest;
-
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
@@ -31,6 +29,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.servlet.ServletRequest;
 
 /**
  * This {@link FacesContextFactory} is responsible for injecting the default {@link FacesContext} instance into the

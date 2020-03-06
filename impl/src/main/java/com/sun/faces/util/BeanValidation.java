@@ -21,14 +21,13 @@ import static jakarta.validation.Validation.buildDefaultValidatorFactory;
 
 import java.util.Locale;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 import jakarta.validation.MessageInterpolator;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorContext;
 import jakarta.validation.ValidatorFactory;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.context.FacesContext;
 
 /**
  * Various utility methods for use with the BeanValidation API in JSF.

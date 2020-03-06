@@ -19,8 +19,6 @@ package jakarta.faces.context;
 import java.io.IOException;
 import java.io.Writer;
 
-import jakarta.faces.context.ResponseWriter;
-
 import jakarta.faces.component.UIComponent;
 
 /**

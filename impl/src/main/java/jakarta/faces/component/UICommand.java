@@ -19,11 +19,10 @@ package jakarta.faces.component;
 import static jakarta.faces.event.PhaseId.APPLY_REQUEST_VALUES;
 import static jakarta.faces.event.PhaseId.INVOKE_APPLICATION;
 
-import jakarta.el.MethodExpression;
-
 import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
 import com.sun.faces.application.MethodExpressionMethodBindingAdapter;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.MethodBinding;

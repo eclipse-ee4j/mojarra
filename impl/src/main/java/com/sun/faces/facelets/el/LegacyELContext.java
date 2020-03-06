@@ -16,17 +16,25 @@
 
 package com.sun.faces.facelets.el;
 
-import jakarta.el.*;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.VariableMapper;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.PropertyNotFoundException;
 import jakarta.faces.el.PropertyResolver;
 import jakarta.faces.el.VariableResolver;
-
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  *

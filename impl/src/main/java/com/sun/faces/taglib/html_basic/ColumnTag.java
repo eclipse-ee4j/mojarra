@@ -16,17 +16,16 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import jakarta.servlet.jsp.JspException;
-import jakarta.el.ValueExpression;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
+import jakarta.servlet.jsp.JspException;
 
 public class ColumnTag extends UIComponentELTag {
 

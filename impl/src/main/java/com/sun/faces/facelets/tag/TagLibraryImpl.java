@@ -16,10 +16,10 @@
 
 package com.sun.faces.facelets.tag;
 
-import com.sun.faces.util.Util;
-
 import java.lang.reflect.Method;
 import java.net.URL;
+
+import com.sun.faces.util.Util;
 
 /**
  * Concrete implementation for defining Facelet tag libraries in Java.

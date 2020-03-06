@@ -17,13 +17,10 @@
 package jakarta.faces.validator;
 
 import java.util.Map;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
-import jakarta.faces.validator.BeanValidator;
-import jakarta.faces.validator.Validator;
-import jakarta.faces.validator.ValidatorException;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;

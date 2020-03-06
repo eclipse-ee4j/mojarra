@@ -17,21 +17,13 @@
 package jakarta.faces.event;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.faces.event.ExceptionQueuedEvent;
-import jakarta.faces.event.ExceptionQueuedEventContext;
-import jakarta.faces.event.PhaseId;
-import jakarta.faces.event.SystemEvent;
-import jakarta.faces.event.SystemEventListener;
-import jakarta.faces.event.SystemEventListenerHolder;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-
-import java.util.Collections;
 
 /**
  * <p class="changed_added_2_0">

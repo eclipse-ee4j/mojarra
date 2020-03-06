@@ -16,8 +16,14 @@
 
 package com.sun.faces.facelets.compiler;
 
-import jakarta.el.ValueExpression;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.component.search.UntargetableComponent;
@@ -27,13 +33,6 @@ import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.FacesListener;
 import jakarta.faces.render.Renderer;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings({ "deprecation" })
 public class UILeaf extends UIComponentBase implements UntargetableComponent {

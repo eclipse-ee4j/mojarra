@@ -16,8 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIInput;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 

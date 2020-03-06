@@ -16,12 +16,6 @@
 
 package jakarta.faces.context;
 
-import jakarta.faces.context.ExceptionHandlerFactory;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.ExternalContextFactory;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.FacesContextFactory;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.lifecycle.Lifecycle;

@@ -18,7 +18,6 @@ package jakarta.faces.flow.builder;
 
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
-
 import jakarta.faces.flow.Flow;
 
 /**

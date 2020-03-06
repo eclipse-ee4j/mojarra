@@ -16,18 +16,18 @@
 
 package com.sun.faces.context;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.Collections;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Cookie;
+import java.util.Set;
 
 import com.sun.faces.util.Util;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestCookieMap()

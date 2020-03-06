@@ -16,11 +16,13 @@
 
 package com.sun.faces.application.annotation;
 
-import com.sun.faces.util.Util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+
+import com.sun.faces.util.Util;
+
 import jakarta.xml.ws.WebServiceRef;
 
 /**

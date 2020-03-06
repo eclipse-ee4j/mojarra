@@ -17,12 +17,12 @@
 
 package com.sun.faces.util;
 
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * From: http://blog.crazybob.org/2007/02/debugging-serialization.html

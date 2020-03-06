@@ -16,16 +16,16 @@
 
 package com.sun.faces.flow;
 
+import java.io.Serializable;
+
+import com.sun.faces.RIConstants;
 import com.sun.faces.flow.builder.FlowBuilderImpl;
 
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.builder.FlowBuilder;
 import jakarta.faces.flow.builder.FlowBuilderParameter;
-
-import com.sun.faces.RIConstants;
-import java.io.Serializable;
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
 
 /*

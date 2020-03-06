@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.stream.StreamSource;
@@ -49,6 +48,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>

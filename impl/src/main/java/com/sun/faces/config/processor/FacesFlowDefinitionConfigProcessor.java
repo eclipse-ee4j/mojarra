@@ -28,10 +28,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.ValueExpression;
-import jakarta.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,6 +54,9 @@ import com.sun.faces.flow.ParameterImpl;
 import com.sun.faces.flow.builder.FlowBuilderImpl;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -75,6 +74,7 @@ import jakarta.faces.flow.builder.FlowCallBuilder;
 import jakarta.faces.flow.builder.MethodCallBuilder;
 import jakarta.faces.flow.builder.NavigationCaseBuilder;
 import jakarta.faces.flow.builder.SwitchBuilder;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>

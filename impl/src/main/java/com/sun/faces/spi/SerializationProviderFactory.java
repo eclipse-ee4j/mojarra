@@ -16,23 +16,22 @@
 
 package com.sun.faces.spi;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.ObjectInputStream;
-import java.io.InputStream;
-import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
-import com.sun.faces.renderkit.ApplicationObjectInputStream;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.renderkit.ApplicationObjectInputStream;
+import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.context.ExternalContext;
-
-import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>

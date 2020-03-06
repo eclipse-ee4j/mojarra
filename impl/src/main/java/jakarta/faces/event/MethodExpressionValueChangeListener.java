@@ -19,10 +19,6 @@ package jakarta.faces.event;
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.MethodNotFoundException;
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ValueChangeEvent;
-import jakarta.faces.event.ValueChangeListener;
-
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 

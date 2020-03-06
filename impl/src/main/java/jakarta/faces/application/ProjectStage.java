@@ -16,8 +16,6 @@
 
 package jakarta.faces.application;
 
-import jakarta.faces.application.Application;
-
 /**
  *
  * <p class="changed_added_2_0">

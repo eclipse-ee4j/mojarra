@@ -16,11 +16,10 @@
 
 package com.sun.faces.config.processor;
 
-import jakarta.servlet.ServletContext;
-
 import com.sun.faces.config.manager.documents.DocumentInfo;
 
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>

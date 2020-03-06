@@ -30,12 +30,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.Flash;
-import jakarta.faces.context.PartialResponseWriter;
-import jakarta.faces.context.PartialViewContext;
-
 import jakarta.faces.lifecycle.ClientWindow;
 
 /**

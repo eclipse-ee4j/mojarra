@@ -18,12 +18,16 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.NumberConverter;
-import jakarta.faces.view.facelets.*;
-
-import jakarta.el.ELException;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * Register a NumberConverter instance on the UIComponent associated with the closest parent UIComponent custom action.

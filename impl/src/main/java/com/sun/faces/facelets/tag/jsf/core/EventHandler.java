@@ -16,8 +16,14 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import com.sun.faces.application.ApplicationAssociate;
 
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
@@ -33,13 +39,6 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
-
-import jakarta.el.ELContext;
-import jakarta.el.MethodExpression;
-import jakarta.el.MethodNotFoundException;
-
-import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * This is the TagHandler for the f:event tag.

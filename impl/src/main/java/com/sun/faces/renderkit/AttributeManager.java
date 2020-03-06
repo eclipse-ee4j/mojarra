@@ -18,11 +18,12 @@
 
 package com.sun.faces.renderkit;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.util.CollectionsUtils;
+import static com.sun.faces.renderkit.Attribute.attr;
+import static com.sun.faces.util.CollectionsUtils.ar;
+
 import java.util.Map;
-import static com.sun.faces.renderkit.Attribute.*;
-import static com.sun.faces.util.CollectionsUtils.*;
+
+import com.sun.faces.util.CollectionsUtils;
 
 /**
  * This class contains mappings between the standard components and the passthrough attributes associated with them.

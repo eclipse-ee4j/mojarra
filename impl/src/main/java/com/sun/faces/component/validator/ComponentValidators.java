@@ -16,6 +16,13 @@
 
 package com.sun.faces.component.validator;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.util.RequestStateManager;
 
@@ -25,8 +32,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.ValidatorHandler;
-
-import java.util.*;
 
 /**
  * <p>

@@ -16,16 +16,29 @@
 
 package com.sun.faces.facelets.tag;
 
+import java.beans.IntrospectionException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
-import jakarta.faces.view.facelets.*;
-
-import java.beans.IntrospectionException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.lang.ref.WeakReference;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
 
 /**
  *

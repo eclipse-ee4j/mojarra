@@ -16,8 +16,6 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.event.SystemEvent;
-
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 

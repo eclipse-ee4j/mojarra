@@ -22,11 +22,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.servlet.ServletRequest;
-
 import com.sun.faces.util.Util;
 
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletRequest;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestParameterMap()

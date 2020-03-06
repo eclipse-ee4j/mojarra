@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.faces.component.behavior.ClientBehavior;
-
 /**
  * <p class="changed_added_2_0">
  * The <strong>ClientBehaviorHolder</strong> interface may be implemented by any concrete

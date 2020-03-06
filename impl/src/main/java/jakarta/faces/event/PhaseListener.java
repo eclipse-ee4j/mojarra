@@ -19,9 +19,6 @@ package jakarta.faces.event;
 import java.io.Serializable;
 import java.util.EventListener;
 
-import jakarta.faces.event.PhaseEvent;
-import jakarta.faces.event.PhaseId;
-
 /**
  * <p>
  * An interface implemented by objects that wish to be notified at the beginning and ending of processing for each

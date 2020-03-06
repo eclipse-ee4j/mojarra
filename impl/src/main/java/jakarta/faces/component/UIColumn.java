@@ -16,11 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIColumn;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIData;
-
 /**
  * <p>
  * <strong>UIColumn</strong> is a {@link UIComponent} that represents a single column of data within a parent
