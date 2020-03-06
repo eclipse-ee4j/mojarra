@@ -16,12 +16,12 @@
 
 package com.sun.faces.application.annotation;
 
-import javax.faces.application.Application;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIComponent;
-import javax.faces.event.SystemEventListener;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.SystemEventListener;
 
 /**
  * {@link RuntimeAnnotationHandler} responsible for processing {@link ListenerFor} annotations.

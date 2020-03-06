@@ -18,8 +18,10 @@ package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.facelets.el.ELText;
 
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ELException;
-import javax.faces.view.facelets.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;

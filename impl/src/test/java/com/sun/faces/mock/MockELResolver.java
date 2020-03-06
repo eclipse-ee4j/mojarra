@@ -17,8 +17,11 @@
 package com.sun.faces.mock;
 
 import java.util.Iterator;
-import javax.faces.context.FacesContext;
+
 import javax.el.ELResolver;
+
+import jakarta.faces.context.FacesContext;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 

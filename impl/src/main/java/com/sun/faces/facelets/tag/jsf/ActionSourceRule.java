@@ -18,13 +18,14 @@ package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.facelets.el.LegacyMethodBinding;
 
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.MethodExpressionActionListener;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.MethodExpressionActionListener;
-import javax.faces.view.facelets.*;
 
 /**
  * 

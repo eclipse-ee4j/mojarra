@@ -17,7 +17,15 @@
 package com.sun.faces.facelets.tag.ui;
 
 import com.sun.faces.util.FacesLogger;
-import javax.faces.component.UIComponent;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.TagAttribute;
+
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.HashSet;
@@ -25,12 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.TagAttribute;
 
 public class RepeatHandler extends ComponentHandler {
 

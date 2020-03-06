@@ -19,12 +19,13 @@ package com.sun.faces.facelets.tag.jsf.core;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 
-import javax.faces.application.Resource;
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
-import javax.faces.view.facelets.*;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.facelets.*;
+
 import java.io.IOException;
 
 /**
@@ -34,8 +35,8 @@ import java.io.IOException;
  * documentation</a>.
  *
  * @author Jacob Hookom
- * @see javax.faces.event.ActionListener
- * @see javax.faces.component.ActionSource
+ * @see jakarta.faces.event.ActionListener
+ * @see jakarta.faces.component.ActionSource
  */
 public abstract class ActionListenerHandlerBase extends TagHandlerImpl
       implements ActionSource2AttachedObjectHandler {
@@ -51,7 +52,7 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl
      * (non-Javadoc)
      * 
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *      jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)

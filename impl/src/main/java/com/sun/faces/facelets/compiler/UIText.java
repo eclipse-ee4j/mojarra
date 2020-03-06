@@ -18,9 +18,11 @@ package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.facelets.el.ELText;
 
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import javax.el.ELException;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+
 import java.io.IOException;
 
 /**

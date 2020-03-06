@@ -83,11 +83,11 @@ public class Spec949IT {
         // Click the link and verify the ClientWindow is different on the new page.
         page = webClient.getPage(webUrl + path);
         link = (HtmlElement) page.getElementById(id);
-        clientWindowHiddenFields = page.getElementsByName("javax.faces.ClientWindow");
+        clientWindowHiddenFields = page.getElementsByName("jakarta.faces.ClientWindow");
         clientWindowBeforeClick = ((HtmlInput)clientWindowHiddenFields.get(0)).getDefaultValue();
         
         page = link.click();
-        clientWindowHiddenFields = page.getElementsByName("javax.faces.ClientWindow");
+        clientWindowHiddenFields = page.getElementsByName("jakarta.faces.ClientWindow");
         clientWindowAfterClick = ((HtmlInput)clientWindowHiddenFields.get(0)).getDefaultValue();
         
         assertNotSame("ClientWindow should not be the same on second page", clientWindowBeforeClick, clientWindowAfterClick);

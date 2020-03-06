@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.RequestParameterValuesMap;
+
+import jakarta.faces.annotation.RequestParameterValuesMap;
 
 /**
  * An annotation literal for @RequestParameterValuesMap

@@ -16,9 +16,10 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
 import java.beans.FeatureDescriptor;
+
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
 
 
 interface PropertyHandler {

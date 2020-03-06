@@ -16,9 +16,10 @@
 
 package com.sun.faces.facelets;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
 import java.io.IOException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * FaceletHandlers can implement this contract and push themselves into the

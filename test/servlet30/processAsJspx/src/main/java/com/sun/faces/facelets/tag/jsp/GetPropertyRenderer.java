@@ -29,7 +29,7 @@ import javax.faces.render.Renderer;
 import javax.faces.view.facelets.FaceletException;
 
 
-@FacesRenderer(componentFamily="javax.faces.Output", rendererType="jsp.GetProperty")
+@FacesRenderer(componentFamily="jakarta.faces.Output", rendererType="jsp.GetProperty")
 public class GetPropertyRenderer extends Renderer {
 
     @Override

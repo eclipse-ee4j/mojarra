@@ -25,7 +25,8 @@ import javax.el.ELResolver;
 import javax.el.FunctionMapper;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
-import javax.faces.el.CompositeComponentExpressionHolder;
+
+import jakarta.faces.el.CompositeComponentExpressionHolder;
 
 /**
  * Analyzes a {@link ValueExpression} and provides access to the base object and property

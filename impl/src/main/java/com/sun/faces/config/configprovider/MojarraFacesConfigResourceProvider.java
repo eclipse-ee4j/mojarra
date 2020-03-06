@@ -18,13 +18,14 @@ package com.sun.faces.config.configprovider;
 
 import com.sun.faces.spi.ConfigurationResourceProvider;
 
+import jakarta.faces.FacesException;
+
 import java.net.URI;
 import java.net.URL;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.faces.FacesException;
 
 import javax.servlet.ServletContext;
 

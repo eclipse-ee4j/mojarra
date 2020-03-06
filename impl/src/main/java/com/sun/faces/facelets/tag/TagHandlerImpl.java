@@ -16,13 +16,14 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.faces.view.facelets.CompositeFaceletHandler;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 /**
  *

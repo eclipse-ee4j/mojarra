@@ -39,7 +39,7 @@ public class CreateComponentBean {
         HtmlInputText inputText = 
                 (HtmlInputText) vdl.createComponent(context, 
                 "http://java.sun.com/jsf/html", "inputText", null);
-        if ("javax.faces.Text".equals(inputText.getRendererType())) {
+        if ("jakarta.faces.Text".equals(inputText.getRendererType())) {
             result = "SUCCESS";
         }
         

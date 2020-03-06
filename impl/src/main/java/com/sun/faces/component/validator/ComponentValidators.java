@@ -20,16 +20,15 @@ package com.sun.faces.component.validator;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.util.RequestStateManager;
 
-import javax.faces.context.FacesContext;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.validator.Validator;
-import javax.faces.application.Application;
-import javax.faces.view.facelets.ValidatorHandler;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.ValidatorHandler;
 
 import java.util.*;
-
-import javax.faces.event.PhaseId;
 
 /**
  * <p>
@@ -44,7 +43,7 @@ public class ComponentValidators {
      * Key within the <code>FacesContext</code>'s attribute map under which
      * a single <code>ComponentValidators</code> instance will be stored.
      */
-    private static final String COMPONENT_VALIDATORS = "javax.faces.component.ComponentValidators";
+    private static final String COMPONENT_VALIDATORS = "jakarta.faces.component.ComponentValidators";
 
 
     /**

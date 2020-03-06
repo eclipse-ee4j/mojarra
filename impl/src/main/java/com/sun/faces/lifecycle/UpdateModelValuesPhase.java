@@ -18,13 +18,13 @@ package com.sun.faces.lifecycle;
 
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+
 import java.util.logging.Logger;
 import java.util.logging.Level;
-
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
 
 
 /**

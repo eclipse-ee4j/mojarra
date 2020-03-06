@@ -28,7 +28,7 @@ public final class PassThroughElementLibrary extends AbstractTagLibrary {
     public PassThroughElementLibrary() {
         super(Namespace);
         
-        this.addComponent("element", "javax.faces.Panel",
-                "javax.faces.passthrough.Element", PassThroughElementComponentHandler.class);
+        this.addComponent("element", "jakarta.faces.Panel",
+                "jakarta.faces.passthrough.Element", PassThroughElementComponentHandler.class);
     }
 }

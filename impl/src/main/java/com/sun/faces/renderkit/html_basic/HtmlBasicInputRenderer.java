@@ -23,18 +23,19 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.ValueHolder;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
 
 import com.sun.faces.util.MessageFactory;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
 
 /**
  * <B>HtmlBasicInputRenderer</B> is a base class for implementing renderers

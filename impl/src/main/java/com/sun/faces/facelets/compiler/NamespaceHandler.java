@@ -18,14 +18,17 @@ package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.facelets.el.CompositeFunctionMapper;
 import com.sun.faces.facelets.tag.TagLibrary;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
+
 import com.sun.faces.el.ELContextImpl;
 
 import javax.el.FunctionMapper;
 import javax.el.ELContext;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.context.FacesContext;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;

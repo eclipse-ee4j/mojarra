@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.validator.FacesValidator;
+
+import jakarta.faces.validator.FacesValidator;
 
 /**
  * A helper class.

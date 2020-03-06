@@ -63,7 +63,7 @@ public class Issue4332IT {
         webClient.waitForBackgroundJavaScript(60000);
         
         String pageSource = page.getWebResponse().getContentAsString();
-        assertTrue(pageSource.contains("/javax.faces.push/push?"));
+        assertTrue(pageSource.contains("/jakarta.faces.push/push?"));
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
         assertTrue(button.asText().equals("push"));

@@ -18,13 +18,13 @@
 
 <%@ page contentType="text/html"
 %><%@ page import="java.util.Locale"
-%><%@ page import="javax.faces.FactoryFinder"
-%><%@ page import="javax.faces.application.Application"
-%><%@ page import="javax.faces.application.ApplicationFactory"
-%><%@ page import="javax.faces.application.FacesMessage"
-%><%@ page import="javax.faces.context.FacesContext"
+%><%@ page import="jakarta.faces.FactoryFinder"
+%><%@ page import="jakarta.faces.application.Application"
+%><%@ page import="jakarta.faces.application.ApplicationFactory"
+%><%@ page import="jakarta.faces.application.FacesMessage"
+%><%@ page import="jakarta.faces.context.FacesContext"
 %><%@ page import="com.sun.faces.util.MessageFactory"
-%><%@ page import="javax.faces.component.UIViewRoot, javax.faces.render.RenderKitFactory"
+%><%@ page import="jakarta.faces.component.UIViewRoot,jakarta.faces.render.RenderKitFactory"
 %><%
 
     // Initialize list of message ids

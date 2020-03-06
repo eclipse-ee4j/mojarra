@@ -18,9 +18,11 @@ package com.sun.faces.mock;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
-import javax.faces.FacesException;
+
 import javax.servlet.jsp.jstl.sql.Result;
 import org.apache.commons.beanutils.PropertyUtils;
+
+import jakarta.faces.FacesException;
 
 /**
  * <p>

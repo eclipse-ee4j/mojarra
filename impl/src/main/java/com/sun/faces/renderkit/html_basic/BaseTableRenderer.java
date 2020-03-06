@@ -22,15 +22,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIColumn;
-import javax.faces.component.UIData;
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * Base class for concrete Grid and Table renderers.
@@ -401,7 +401,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
          * the table in the order specified. Every column may or may not have a
          * stylesheet.</p>
          *
-         * @param table {@link javax.faces.component.UIComponent} component being rendered
+         * @param table {@link jakarta.faces.component.UIComponent} component being rendered
          *
          * @return an array of column classes
          */
@@ -494,7 +494,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
          * table, in the order specified.  Every row may or may not have a
          * stylesheet.</p>
          *
-         * @param table {@link javax.faces.component.UIComponent} component being rendered
+         * @param table {@link jakarta.faces.component.UIComponent} component being rendered
          *
          * @return an array of row classes
          */

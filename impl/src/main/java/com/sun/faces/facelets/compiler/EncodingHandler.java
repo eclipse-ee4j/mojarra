@@ -17,12 +17,14 @@
 package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.RIConstants;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
+
 import java.io.IOException;
 import java.util.Map;
-import javax.faces.context.FacesContext;
 
 public class EncodingHandler implements FaceletHandler {
 

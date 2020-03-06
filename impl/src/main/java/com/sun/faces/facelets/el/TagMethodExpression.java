@@ -17,7 +17,9 @@
 package com.sun.faces.facelets.el;
 
 import javax.el.*;
-import javax.faces.view.facelets.TagAttribute;
+
+import jakarta.faces.view.facelets.TagAttribute;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;

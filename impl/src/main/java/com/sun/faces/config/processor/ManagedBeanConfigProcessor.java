@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.w3c.dom.Document;
@@ -44,6 +42,9 @@ import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.mgbean.ManagedBeanInfo;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.TypedCollections;
+
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

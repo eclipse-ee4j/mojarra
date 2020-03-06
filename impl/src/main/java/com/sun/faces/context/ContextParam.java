@@ -16,7 +16,7 @@
 
 package com.sun.faces.context;
 
-import javax.faces.push.PushContext;
+import jakarta.faces.push.PushContext;
 
 /**
  * The enumeration of all our context-param entries.

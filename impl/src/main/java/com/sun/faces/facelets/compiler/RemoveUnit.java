@@ -16,7 +16,7 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 /**
  * 

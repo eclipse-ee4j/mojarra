@@ -20,10 +20,10 @@ import static com.sun.faces.RIConstants.FLOW_IN_JAR_PREFIX;
 import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.WebAppContractsDirectory;
+import static jakarta.faces.application.ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY;
 import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.StreamSupport.stream;
-import static javax.faces.application.ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,15 +34,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
-import javax.faces.FacesException;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
 
 public class FaceletWebappResourceHelper extends ResourceHelper {
     

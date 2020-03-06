@@ -19,12 +19,12 @@ package com.sun.faces.application;
 import static com.sun.faces.application.SharedUtils.evaluateExpressions;
 import static com.sun.faces.flow.FlowHandlerImpl.FLOW_RETURN_DEPTH_PARAM_NAME;
 import static com.sun.faces.util.Util.notNull;
+import static jakarta.faces.component.UIViewAction.isProcessingBroadcast;
+import static jakarta.faces.flow.FlowHandler.FLOW_ID_REQUEST_PARAM_NAME;
+import static jakarta.faces.flow.FlowHandler.NULL_FLOW;
+import static jakarta.faces.flow.FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME;
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.FINE;
-import static javax.faces.component.UIViewAction.isProcessingBroadcast;
-import static javax.faces.flow.FlowHandler.FLOW_ID_REQUEST_PARAM_NAME;
-import static javax.faces.flow.FlowHandler.NULL_FLOW;
-import static javax.faces.flow.FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME;
 
 import java.util.AbstractCollection;
 import java.util.AbstractMap;
@@ -49,26 +49,6 @@ import java.util.regex.Pattern;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.context.PartialViewContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowNode;
-import javax.faces.flow.MethodCallNode;
-import javax.faces.flow.Parameter;
-import javax.faces.flow.ReturnNode;
-import javax.faces.flow.SwitchCase;
-import javax.faces.flow.SwitchNode;
-import javax.faces.flow.ViewNode;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.InitFacesContext;
@@ -78,6 +58,27 @@ import com.sun.faces.flow.builder.MutableNavigationCase;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowNode;
+import jakarta.faces.flow.MethodCallNode;
+import jakarta.faces.flow.Parameter;
+import jakarta.faces.flow.ReturnNode;
+import jakarta.faces.flow.SwitchCase;
+import jakarta.faces.flow.SwitchNode;
+import jakarta.faces.flow.ViewNode;
 
 /**
  * <p>
@@ -150,7 +151,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     // ------------------------------ Methods from ConfigurableNavigationHandler
 
     /**
-     * @see javax.faces.application.ConfigurableNavigationHandler#getNavigationCase(javax.faces.context.FacesContext,
+     * @see jakarta.faces.application.ConfigurableNavigationHandler#getNavigationCase(jakarta.faces.context.FacesContext,
      *      String, String)
      */
     @Override
@@ -178,7 +179,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * @see javax.faces.application.ConfigurableNavigationHandler#getNavigationCases()
+     * @see jakarta.faces.application.ConfigurableNavigationHandler#getNavigationCases()
      */
     @Override
     public Map<String, Set<NavigationCase>> getNavigationCases() {

@@ -29,16 +29,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -52,6 +42,17 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
 /**
  * <p>
@@ -86,11 +87,11 @@ public class ViewHandlerImpl extends ViewHandler {
 
     /**
      * Do not call the default implementation of
-     * {@link ViewHandler#initView(javax.faces.context.FacesContext)} if the
-     * {@link javax.faces.context.ExternalContext#getRequestCharacterEncoding()} returns a
+     * {@link ViewHandler#initView(jakarta.faces.context.FacesContext)} if the
+     * {@link jakarta.faces.context.ExternalContext#getRequestCharacterEncoding()} returns a
      * <code>non-null</code> result.
      *
-     * @see ViewHandler#initView(javax.faces.context.FacesContext)
+     * @see ViewHandler#initView(jakarta.faces.context.FacesContext)
      */
     @Override
     public void initView(FacesContext context) throws FacesException {

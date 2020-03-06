@@ -17,9 +17,10 @@
 package com.sun.faces.test.javaee8.cdi;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.component.UIViewRoot;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import jakarta.faces.component.UIViewRoot;
 
 @Named(value = "injectViewBean")
 @ApplicationScoped

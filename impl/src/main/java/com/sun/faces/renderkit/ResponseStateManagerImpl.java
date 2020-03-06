@@ -20,14 +20,14 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Stat
 
 import java.io.IOException;
 
-import javax.faces.FacesException;
-import javax.faces.application.StateManager;
-import javax.faces.context.FacesContext;
-import javax.faces.render.ResponseStateManager;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.ResponseStateManager;
 
 
 /**
@@ -54,7 +54,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
 
     /**
-     * @see ResponseStateManager#isPostback(javax.faces.context.FacesContext) 
+     * @see ResponseStateManager#isPostback(jakarta.faces.context.FacesContext) 
      */
     @Override
     public boolean isPostback(FacesContext context) {
@@ -70,7 +70,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
     }
 
     /**
-     * @see ResponseStateManager#getState(javax.faces.context.FacesContext, java.lang.String) 
+     * @see ResponseStateManager#getState(jakarta.faces.context.FacesContext, java.lang.String) 
      */
     @Override
     public Object getState(FacesContext context, String viewId) {
@@ -95,7 +95,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
 
     /**
-     * @see ResponseStateManager#writeState(javax.faces.context.FacesContext, java.lang.Object) 
+     * @see ResponseStateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object) 
      */
     @Override
     public void writeState(FacesContext context, Object state)
@@ -107,7 +107,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
 
     /**
-     * @see ResponseStateManager#getViewState(javax.faces.context.FacesContext, java.lang.Object) 
+     * @see ResponseStateManager#getViewState(jakarta.faces.context.FacesContext, java.lang.Object) 
      */
     @Override
     public String getViewState(FacesContext context, Object state) {

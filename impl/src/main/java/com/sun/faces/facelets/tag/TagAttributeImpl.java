@@ -26,18 +26,19 @@ import com.sun.faces.util.MessageUtils;
 import static com.sun.faces.util.MessageUtils.ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.view.Location;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.el.MethodInfo;
 import javax.el.ELContext;
-import javax.faces.view.Location;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.FacesException;
 
 /**
  * Representation of a Tag's attribute in a Facelet File

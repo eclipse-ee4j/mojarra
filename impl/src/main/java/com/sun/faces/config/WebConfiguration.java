@@ -40,24 +40,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.push.PushContext;
-import javax.faces.validator.BeanValidator;
-import javax.faces.view.facelets.ResourceResolver;
-import javax.faces.webapp.FacesServlet;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -69,6 +51,25 @@ import com.sun.faces.facelets.util.Classpath;
 import com.sun.faces.lifecycle.HttpMethodRestrictionsPhaseListener;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.push.PushContext;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.view.facelets.ResourceResolver;
+import jakarta.faces.webapp.FacesServlet;
 
 /**
  * Class Documentation
@@ -151,7 +152,7 @@ public class WebConfiguration {
     /**
      * Return the WebConfiguration instance for this application passing
      * the result of FacesContext.getCurrentInstance().getExternalContext()
-     * to {@link #getInstance(javax.faces.context.ExternalContext)}.
+     * to {@link #getInstance(jakarta.faces.context.ExternalContext)}.
      * @return the WebConfiguration for this application or <code>null</code>
      *  if no FacesContext is available.
      */
@@ -669,7 +670,7 @@ public class WebConfiguration {
               e.hasMoreElements(); ) {
             String name = e.nextElement().toString();
             if (name.startsWith("com.sun.faces") ||
-                  name.startsWith("javax.faces")) {
+                  name.startsWith("jakarta.faces")) {
                 setParams.add(name);
             }
         }
@@ -1479,7 +1480,7 @@ public class WebConfiguration {
     public enum WebEnvironmentEntry {
 
 
-        ProjectStage(javax.faces.application.ProjectStage.PROJECT_STAGE_JNDI_NAME);
+        ProjectStage(jakarta.faces.application.ProjectStage.PROJECT_STAGE_JNDI_NAME);
 
         private static final String JNDI_PREFIX = "java:comp/env/";
         private String qualifiedName;

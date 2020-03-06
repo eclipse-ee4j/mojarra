@@ -31,17 +31,17 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionListener;
-import javax.faces.flow.FlowHandler;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.flow.FlowHandler;
 
 public class Singletons {
     
@@ -67,14 +67,14 @@ public class Singletons {
     }
     
     /**
-     * @see javax.faces.application.Application#getViewHandler()
+     * @see jakarta.faces.application.Application#getViewHandler()
      */
     public ViewHandler getViewHandler() {
         return viewHandler;
     }
 
     /**
-     * @see javax.faces.application.Application#setViewHandler(javax.faces.application.ViewHandler)
+     * @see jakarta.faces.application.Application#setViewHandler(jakarta.faces.application.ViewHandler)
      */
     public synchronized void setViewHandler(ViewHandler viewHandler) {
 
@@ -89,14 +89,14 @@ public class Singletons {
     }
     
     /**
-     * @see javax.faces.application.Application#getResourceHandler()
+     * @see jakarta.faces.application.Application#getResourceHandler()
      */
     public ResourceHandler getResourceHandler() {
         return resourceHandler;
     }
 
     /**
-     * @see javax.faces.application.Application#setResourceHandler(javax.faces.application.ResourceHandler)
+     * @see jakarta.faces.application.Application#setResourceHandler(jakarta.faces.application.ResourceHandler)
      */
     public synchronized void setResourceHandler(ResourceHandler resourceHandler) {
 
@@ -111,14 +111,14 @@ public class Singletons {
     }
     
     /**
-     * @see javax.faces.application.Application#getStateManager()
+     * @see jakarta.faces.application.Application#getStateManager()
      */
     public StateManager getStateManager() {
         return stateManager;
     }
 
     /**
-     * @see javax.faces.application.Application#setStateManager(javax.faces.application.StateManager)
+     * @see jakarta.faces.application.Application#setStateManager(jakarta.faces.application.StateManager)
      */
     public synchronized void setStateManager(StateManager stateManager) {
 
@@ -133,14 +133,14 @@ public class Singletons {
     }
     
     /**
-     * @see javax.faces.application.Application#getActionListener()
+     * @see jakarta.faces.application.Application#getActionListener()
      */
     public ActionListener getActionListener() {
         return actionListener;
     }
     
     /**
-     * @see Application#setActionListener(javax.faces.event.ActionListener)
+     * @see Application#setActionListener(jakarta.faces.event.ActionListener)
      */
     public synchronized void setActionListener(ActionListener actionListener) {
 
@@ -154,14 +154,14 @@ public class Singletons {
     }
     
     /**
-     * @see javax.faces.application.Application#getNavigationHandler()
+     * @see jakarta.faces.application.Application#getNavigationHandler()
      */
     public NavigationHandler getNavigationHandler() {
         return navigationHandler;
     }
 
     /**
-     * @see javax.faces.application.Application#setNavigationHandler(javax.faces.application.NavigationHandler)
+     * @see jakarta.faces.application.Application#setNavigationHandler(jakarta.faces.application.NavigationHandler)
      */
     public synchronized void setNavigationHandler(NavigationHandler navigationHandler) {
 
@@ -190,14 +190,14 @@ public class Singletons {
     }
     
     /**
-     * @see javax.faces.application.Application#getSupportedLocales()
+     * @see jakarta.faces.application.Application#getSupportedLocales()
      */
     public Iterator<Locale> getSupportedLocales() {
         return coalesce(supportedLocales, Collections.<Locale>emptyList()).iterator();
     }
 
     /**
-     * @see javax.faces.application.Application#setSupportedLocales(java.util.Collection)
+     * @see jakarta.faces.application.Application#setSupportedLocales(java.util.Collection)
      */
     public synchronized void setSupportedLocales(Collection<Locale> newLocales) {
 
@@ -212,14 +212,14 @@ public class Singletons {
     }
 
     /**
-     * @see javax.faces.application.Application#getDefaultLocale()
+     * @see jakarta.faces.application.Application#getDefaultLocale()
      */
     public Locale getDefaultLocale() {
         return defaultLocale;
     }
 
     /**
-     * @see javax.faces.application.Application#setDefaultLocale(java.util.Locale)
+     * @see jakarta.faces.application.Application#setDefaultLocale(java.util.Locale)
      */
     public synchronized void setDefaultLocale(Locale locale) {
 
@@ -233,7 +233,7 @@ public class Singletons {
     }
     
     /**
-     * @see javax.faces.application.Application#setMessageBundle(String)
+     * @see jakarta.faces.application.Application#setMessageBundle(String)
      */
     public synchronized void setMessageBundle(String messageBundle) {
         notNull("messageBundle", messageBundle);
@@ -246,28 +246,28 @@ public class Singletons {
     }
 
     /**
-     * @see javax.faces.application.Application#getMessageBundle()
+     * @see jakarta.faces.application.Application#getMessageBundle()
      */
     public String getMessageBundle() {
         return messageBundle;
     }
 
     /**
-     * @see javax.faces.application.Application#getDefaultRenderKitId()
+     * @see jakarta.faces.application.Application#getDefaultRenderKitId()
      */
     public String getDefaultRenderKitId() {
         return defaultRenderKitId;
     }
 
     /**
-     * @see javax.faces.application.Application#setDefaultRenderKitId(String)
+     * @see jakarta.faces.application.Application#setDefaultRenderKitId(String)
      */
     public void setDefaultRenderKitId(String renderKitId) {
         defaultRenderKitId = renderKitId;
     }
     
     /**
-     * @see javax.faces.application.Application#getResourceBundle(javax.faces.context.FacesContext,
+     * @see jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext,
      *      String)
      */
     public ResourceBundle getResourceBundle(FacesContext context, String var) {

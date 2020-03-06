@@ -29,7 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.push.Push;
+
+import jakarta.faces.push.Push;
 
 /**
  * <p class="changed_added_2_3">

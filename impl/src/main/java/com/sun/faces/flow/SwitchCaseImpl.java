@@ -19,8 +19,9 @@ package com.sun.faces.flow;
 import java.io.Serializable;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.SwitchCase;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.SwitchCase;
 
 public class SwitchCaseImpl extends SwitchCase implements Serializable {
     

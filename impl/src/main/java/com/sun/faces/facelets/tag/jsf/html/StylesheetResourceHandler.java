@@ -16,8 +16,8 @@
 
 package com.sun.faces.facelets.tag.jsf.html;
 
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
 
 /**
  * <code>ComponentHandler</code> for <code>h:outputStylesheet</code> references.

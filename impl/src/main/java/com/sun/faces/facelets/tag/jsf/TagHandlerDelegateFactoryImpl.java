@@ -16,17 +16,17 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import javax.faces.view.facelets.BehaviorHandler;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.ConverterHandler;
-import javax.faces.view.facelets.TagHandlerDelegate;
-import javax.faces.view.facelets.TagHandlerDelegateFactory;
-import javax.faces.view.facelets.ValidatorHandler;
-
 import com.sun.faces.facelets.tag.jsf.html.ScriptResourceDelegate;
 import com.sun.faces.facelets.tag.jsf.html.ScriptResourceHandler;
 import com.sun.faces.facelets.tag.jsf.html.StylesheetResourceDelegate;
 import com.sun.faces.facelets.tag.jsf.html.StylesheetResourceHandler;
+
+import jakarta.faces.view.facelets.BehaviorHandler;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.TagHandlerDelegate;
+import jakarta.faces.view.facelets.TagHandlerDelegateFactory;
+import jakarta.faces.view.facelets.ValidatorHandler;
 
 /**
  * Default implementation of {@link TagHandlerDelegateFactory}.

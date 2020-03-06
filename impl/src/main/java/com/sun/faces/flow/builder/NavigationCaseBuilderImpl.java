@@ -17,14 +17,16 @@
 package com.sun.faces.flow.builder;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.flow.builder.NavigationCaseBuilder;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import javax.el.ValueExpression;
-import javax.faces.application.NavigationCase;
-import javax.faces.flow.builder.NavigationCaseBuilder;
 
 public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
     

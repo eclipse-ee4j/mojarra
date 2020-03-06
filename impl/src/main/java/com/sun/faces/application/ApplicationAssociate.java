@@ -40,16 +40,16 @@ import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
 import static com.sun.faces.util.Util.isCdiAvailable;
 import static com.sun.faces.util.Util.split;
+import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
+import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
+import static jakarta.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Production;
 import static java.lang.Long.parseLong;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
-import static javax.faces.FactoryFinder.FACELET_CACHE_FACTORY;
-import static javax.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
-import static javax.faces.application.ProjectStage.Development;
-import static javax.faces.application.ProjectStage.Production;
 
 import java.io.IOException;
 import java.net.URL;
@@ -67,30 +67,6 @@ import java.util.logging.Logger;
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.PreDestroyCustomScopeEvent;
-import javax.faces.event.ScopeContext;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowHandlerFactory;
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletCacheFactory;
-import javax.faces.view.facelets.FaceletsResourceResolver;
-import javax.faces.view.facelets.ResourceResolver;
-import javax.faces.view.facelets.TagDecorator;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -124,6 +100,31 @@ import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.VariableResolver;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.PreDestroyCustomScopeEvent;
+import jakarta.faces.event.ScopeContext;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowHandlerFactory;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCacheFactory;
+import jakarta.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.view.facelets.ResourceResolver;
+import jakarta.faces.view.facelets.TagDecorator;
 
 /**
  * <p>
@@ -830,7 +831,7 @@ public class ApplicationAssociate {
                 cache = new PrivateApiFaceletCacheAdapter(privateApiCache);
             } catch (ClassCastException e) {
                 if (LOGGER.isLoggable(INFO)) {
-                    LOGGER.log(INFO, "Please remove context-param when using javax.faces.view.facelets.FaceletCache class with name:" + faceletCacheName
+                    LOGGER.log(INFO, "Please remove context-param when using jakarta.faces.view.facelets.FaceletCache class with name:" + faceletCacheName
                             + "and use the new FaceletCacheFactory API", e);
                 }
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {

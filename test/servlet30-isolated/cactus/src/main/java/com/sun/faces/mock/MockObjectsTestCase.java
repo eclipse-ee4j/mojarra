@@ -78,9 +78,9 @@ public class MockObjectsTestCase extends TestCase {
 
         // Set up Faces API Objects
 	FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
-				 "javax.faces.mock.MockApplicationFactory");
+				 "jakarta.faces.mock.MockApplicationFactory");
 	FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY,
-				 "javax.faces.mock.MockRenderKitFactory");
+				 "jakarta.faces.mock.MockRenderKitFactory");
 
         externalContext =
             new MockExternalContext(servletContext, request, response);

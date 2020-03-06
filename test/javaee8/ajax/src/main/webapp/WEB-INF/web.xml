@@ -22,23 +22,23 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee web-app_3_1.xsd"
          version="3.1">
     <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-name>jakarta.faces.PROJECT_STAGE</param-name>
         <param-value>${webapp.projectStage}</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+        <param-name>jakarta.faces.PARTIAL_STATE_SAVING</param-name>
         <param-value>${webapp.partialStateSaving}</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-name>jakarta.faces.STATE_SAVING_METHOD</param-name>
         <param-value>${webapp.stateSavingMethod}</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.SERIALIZE_SERVER_STATE</param-name>
+        <param-name>jakarta.faces.SERIALIZE_SERVER_STATE</param-name>
         <param-value>${webapp.serializeServerState}</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.ENABLE_CDI_RESOLVER_CHAIN</param-name>
+        <param-name>jakarta.faces.ENABLE_CDI_RESOLVER_CHAIN</param-name>
         <param-value>true</param-value>
     </context-param>
 </web-app>

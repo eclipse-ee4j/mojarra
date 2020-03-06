@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.component.behavior.FacesBehavior;
+
+import jakarta.faces.component.behavior.FacesBehavior;
 
 /**
  * A helper class.

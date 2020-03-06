@@ -30,11 +30,12 @@ import java.net.URLStreamHandler;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * @author Roland Huss
@@ -48,7 +49,7 @@ public final class Resource {
      * Get an URL of an internal resource. 
      * 
      * <p>
-     * First, {@link javax.faces.context.ExternalContext#getResource(String)} is
+     * First, {@link jakarta.faces.context.ExternalContext#getResource(String)} is
      * checked for an non-null URL return value. In the case of a null return
      * value (as it is the case for Weblogic 8.1 for a packed war), a URL with a
      * special URL handler is constructed, which can be used for

@@ -22,9 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.Parameter;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.Parameter;
 
 public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
     private static final long serialVersionUID = 543332738561754405L;

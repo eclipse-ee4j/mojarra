@@ -17,9 +17,10 @@
 package com.sun.faces.mock;
 
 import java.io.IOException;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIViewRoot;
-import javax.faces.application.StateManager;
+
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 public class MockStateManager extends StateManager {
 

@@ -16,8 +16,8 @@
 
 package com.sun.faces.application.resource;
 
-import static javax.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
-import static javax.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
+import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
+import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -45,13 +45,14 @@ import java.util.zip.GZIPOutputStream;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
@@ -129,7 +130,7 @@ public abstract class ResourceHelper {
     /**
      * <p>
      * If the resource is compressable, return an InputStream to read the
-     * compressed content, otherwise, call {@link #getNonCompressedInputStream(ResourceInfo, javax.faces.context.FacesContext)}
+     * compressed content, otherwise, call {@link #getNonCompressedInputStream(ResourceInfo, jakarta.faces.context.FacesContext)}
      * to return the content of the original resource.
      * </p>
      * <p>
@@ -138,7 +139,7 @@ public abstract class ResourceHelper {
      * a stream to the original content.
      * </p>
      * @param toStream the resource to obtain an InputStream to
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @return an <code>InputStream</code> to the resource, or
      *  <code>null</code> if no resource is found
      * @throws IOException if an error occurs obtaining the stream
@@ -255,7 +256,7 @@ public abstract class ResourceHelper {
      * @param localePrefix the logicial identifier for a locale specific library.
      *  if no localePrefix is configured, pass <code>null</code>
      * @param contract the name of the contract
-     *@param ctx the {@link javax.faces.context.FacesContext} for the current request  @return a {@link LibraryInfo} if a matching library based off the inputs
+     *@param ctx the {@link jakarta.faces.context.FacesContext} for the current request  @return a {@link LibraryInfo} if a matching library based off the inputs
      *  can be found, otherwise returns <code>null</code>
      */
     public abstract LibraryInfo findLibrary(String libraryName,
@@ -280,7 +281,7 @@ public abstract class ResourceHelper {
      * @param localePrefix the logicial identifier for a locale specific library.
      *  if no localePrefix is configured, pass <code>null</code>
      * @param compressable <code>true</code> if the resource can be compressed
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @return a {@link ResourceInfo} if a matching resource based off the inputs
      *  can be found, otherwise returns <code>null</code>
      */
@@ -294,7 +295,7 @@ public abstract class ResourceHelper {
     /**
      * <p>
      * The default implementation of this method will call through to
-     * {@link ResourceHelper#getURL(ResourceInfo, javax.faces.context.FacesContext)}
+     * {@link ResourceHelper#getURL(ResourceInfo, jakarta.faces.context.FacesContext)}
      * and leverage the URL to obtain the date information of the resource and
      * return the value of <code>URLConnection.getLastModified()</code>
      * </p>
@@ -319,7 +320,7 @@ public abstract class ResourceHelper {
 
 
     /**
-     * If a {@link ResourceInfo} is not compressable, {@link #getInputStream(ResourceInfo, javax.faces.context.FacesContext)}
+     * If a {@link ResourceInfo} is not compressable, {@link #getInputStream(ResourceInfo, jakarta.faces.context.FacesContext)}
      * will call this method to return a stream to the actual resource.
      *
      * @param info  the resource to obtain an InputStream to

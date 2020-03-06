@@ -25,22 +25,22 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerWrapper;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.PhaseId;
-import javax.faces.event.SystemEvent;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerWrapper;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.SystemEvent;
 
 
 /**
@@ -83,7 +83,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     }
 
     /**
-     * @see javax.faces.context.ExceptionHandlerWrapper#handle()
+     * @see jakarta.faces.context.ExceptionHandlerWrapper#handle()
      */
     @Override
     public void handle() throws FacesException {
@@ -122,7 +122,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     }
 
     /**
-     * @see javax.faces.context.ExceptionHandlerWrapper#processEvent(javax.faces.event.SystemEvent)
+     * @see jakarta.faces.context.ExceptionHandlerWrapper#processEvent(jakarta.faces.event.SystemEvent)
      */
     @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
@@ -137,7 +137,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     }
 
     /**
-     * @see javax.faces.context.ExceptionHandlerWrapper#getUnhandledExceptionQueuedEvents()
+     * @see jakarta.faces.context.ExceptionHandlerWrapper#getUnhandledExceptionQueuedEvents()
      */
     @Override
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
@@ -150,7 +150,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
 
 
     /**
-     * @see javax.faces.context.ExceptionHandlerWrapper#getHandledExceptionQueuedEvents()
+     * @see jakarta.faces.context.ExceptionHandlerWrapper#getHandledExceptionQueuedEvents()
      */
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {

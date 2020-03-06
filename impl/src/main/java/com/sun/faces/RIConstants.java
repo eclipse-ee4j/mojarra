@@ -16,11 +16,11 @@
 
 package com.sun.faces;
 
-import javax.faces.render.RenderKitFactory;
-
 import com.sun.faces.facelets.tag.jsf.core.CoreLibrary;
 import com.sun.faces.facelets.tag.jsf.html.HtmlLibrary;
 import com.sun.faces.facelets.tag.ui.UILibrary;
+
+import jakarta.faces.render.RenderKitFactory;
 
 /**
  * This class contains literal strings used throughout the Faces RI.

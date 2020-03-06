@@ -20,16 +20,18 @@ import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import com.sun.faces.facelets.util.ReflectionUtil;
 
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.event.ValueChangeListener;
+import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ValueExpression;
-import javax.faces.application.Resource;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.event.ValueChangeListener;
-import javax.faces.view.EditableValueHolderAttachedObjectHandler;
-import javax.faces.view.facelets.*;
+
 import java.io.IOException;
 import java.io.Serializable;
 

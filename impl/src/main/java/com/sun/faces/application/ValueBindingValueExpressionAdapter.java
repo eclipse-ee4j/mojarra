@@ -24,11 +24,12 @@ import java.io.Serializable;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.ValueBinding;
+
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.ValueBinding;
 
 /**
  * <p>
@@ -54,7 +55,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.ValueBinding#getExpressionString()
+     * @see jakarta.faces.el.ValueBinding#getExpressionString()
      */
     public String getExpressionString() {
         assert (null != valueExpression);
@@ -64,7 +65,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.ValueBinding#getType(javax.faces.context.FacesContext)
+     * @see jakarta.faces.el.ValueBinding#getType(jakarta.faces.context.FacesContext)
      */
     public Class getType(FacesContext context) throws EvaluationException, PropertyNotFoundException {
 
@@ -85,7 +86,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.ValueBinding#getValue(javax.faces.context.FacesContext)
+     * @see jakarta.faces.el.ValueBinding#getValue(jakarta.faces.context.FacesContext)
      */
     public Object getValue(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         if (context == null) {
@@ -105,7 +106,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.ValueBinding#isReadOnly(javax.faces.context.FacesContext)
+     * @see jakarta.faces.el.ValueBinding#isReadOnly(jakarta.faces.context.FacesContext)
      */
     public boolean isReadOnly(FacesContext context) throws EvaluationException, PropertyNotFoundException {
 
@@ -124,7 +125,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.ValueBinding#setValue(javax.faces.context.FacesContext, java.lang.Object)
+     * @see jakarta.faces.el.ValueBinding#setValue(jakarta.faces.context.FacesContext, java.lang.Object)
      */
     public void setValue(FacesContext context, Object value) throws EvaluationException, PropertyNotFoundException {
 

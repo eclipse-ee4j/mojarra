@@ -19,9 +19,11 @@ package com.sun.faces.mgbean;
 import com.sun.faces.RIConstants;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIComponent;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;

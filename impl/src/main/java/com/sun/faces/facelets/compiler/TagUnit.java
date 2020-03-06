@@ -19,10 +19,10 @@ package com.sun.faces.facelets.compiler;
 import com.sun.faces.RIConstants;
 import com.sun.faces.facelets.tag.TagLibrary;
 
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * 

@@ -20,14 +20,16 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.annotation.FacesComponentUsage;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
+
 import java.util.List;
 import java.util.logging.Logger;
-import javax.faces.FacesException;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
 
 public class FacesComponentTagLibrary extends LazyTagLibrary {
     

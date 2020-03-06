@@ -60,15 +60,15 @@
         <param-value>true</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-name>jakarta.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.CSRF_ALGORITHM</param-name>
+        <param-name>jakarta.faces.CSRF_ALGORITHM</param-name>
         <param-value>all</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+        <param-name>jakarta.faces.PARTIAL_STATE_SAVING</param-name>
         <param-value>{partial-state-saving}</param-value>
     </context-param>
     <context-param>
@@ -80,7 +80,7 @@
         <param-value>false</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-name>jakarta.faces.CONFIG_FILES</param-name>
         <param-value>/WEB-INF/init-faces-config.xml</param-value>
     </context-param>
 
@@ -95,12 +95,12 @@
     </context-param>
 
     <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-name>jakarta.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
 
     <context-param>
-        <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+        <param-name>jakarta.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/testcomponent.taglib.xml;/WEB-INF/source1.taglib.xml;/WEB-INF/composite-behavior.taglib.xml;/WEB-INF/formlayout.taglib.xml;/WEB-INF/i_spec_599_composite_taglib.taglib.xml</param-value>
     </context-param>
 
@@ -114,7 +114,7 @@
     <!-- Faces Servlet -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup> 1 </load-on-startup>
     </servlet>
 

@@ -31,6 +31,19 @@ import static com.sun.faces.util.Util.isEmpty;
 
 import com.sun.faces.util.TypedCollections;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.context.FlashFactory;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
+
 import java.util.HashSet;
 
 import static java.lang.Boolean.FALSE;
@@ -52,17 +65,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.context.FlashFactory;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.ResponseWriter;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.ResponseStateManager;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -171,7 +174,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see javax.faces.context.ExternalContext#getContext()
+     * @see jakarta.faces.context.ExternalContext#getContext()
      */
     @Override
     public Object getContext() {
@@ -180,7 +183,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getContextName()
+     * @see jakarta.faces.context.ExternalContext#getContextName()
      */
     @Override
     public String getContextName() {
@@ -198,7 +201,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequest()
+     * @see jakarta.faces.context.ExternalContext#getRequest()
      */
     @Override
     public Object getRequest() {
@@ -232,7 +235,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getResponse()
+     * @see jakarta.faces.context.ExternalContext#getResponse()
      */
     @Override
     public Object getResponse() {
@@ -270,7 +273,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getApplicationMap()
+     * @see jakarta.faces.context.ExternalContext#getApplicationMap()
      */
     @Override
     public Map<String,Object> getApplicationMap() {
@@ -286,7 +289,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
     
     /**
-     * @see javax.faces.context.ExternalContext#getSessionMap()
+     * @see jakarta.faces.context.ExternalContext#getSessionMap()
      */
     @Override
     public Map<String,Object> getSessionMap() {
@@ -306,7 +309,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestMap()
+     * @see jakarta.faces.context.ExternalContext#getRequestMap()
      */
     @Override
     public Map<String,Object> getRequestMap() {
@@ -318,7 +321,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestHeaderMap()
+     * @see jakarta.faces.context.ExternalContext#getRequestHeaderMap()
      */
     @Override
     public Map<String,String> getRequestHeaderMap() {
@@ -332,7 +335,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestHeaderValuesMap()
+     * @see jakarta.faces.context.ExternalContext#getRequestHeaderValuesMap()
      */
     @Override
     public Map<String,String[]> getRequestHeaderValuesMap() {
@@ -346,7 +349,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestCookieMap()
+     * @see jakarta.faces.context.ExternalContext#getRequestCookieMap()
      */
     @Override
     public Map<String,Object> getRequestCookieMap() {
@@ -360,7 +363,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getInitParameterMap()
+     * @see jakarta.faces.context.ExternalContext#getInitParameterMap()
      */
     @Override
     public Map<String,String> getInitParameterMap() {
@@ -374,7 +377,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestParameterMap()
+     * @see jakarta.faces.context.ExternalContext#getRequestParameterMap()
      */
     @Override
     public Map<String,String> getRequestParameterMap() {
@@ -388,7 +391,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestParameterValuesMap()
+     * @see jakarta.faces.context.ExternalContext#getRequestParameterValuesMap()
      */
     @Override
     public Map<String,String[]> getRequestParameterValuesMap() {
@@ -402,7 +405,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestParameterNames()
+     * @see jakarta.faces.context.ExternalContext#getRequestParameterNames()
      */
     @Override
     public Iterator<String> getRequestParameterNames() {
@@ -430,7 +433,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestLocale()
+     * @see jakarta.faces.context.ExternalContext#getRequestLocale()
      */
     @Override
     public Locale getRequestLocale() {
@@ -439,7 +442,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestLocales()
+     * @see jakarta.faces.context.ExternalContext#getRequestLocales()
      */
     @Override
     public Iterator<Locale> getRequestLocales() {
@@ -448,7 +451,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestPathInfo()
+     * @see jakarta.faces.context.ExternalContext#getRequestPathInfo()
      */
     @Override
     public String getRequestPathInfo() {
@@ -466,7 +469,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestContextPath()
+     * @see jakarta.faces.context.ExternalContext#getRequestContextPath()
      */
     @Override
     public String getRequestContextPath() {
@@ -475,7 +478,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestServletPath()
+     * @see jakarta.faces.context.ExternalContext#getRequestServletPath()
      */
     @Override
     public String getRequestServletPath() {
@@ -484,7 +487,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestCharacterEncoding()
+     * @see jakarta.faces.context.ExternalContext#getRequestCharacterEncoding()
      */
     @Override
     public String getRequestCharacterEncoding() {
@@ -493,7 +496,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestContentType()
+     * @see jakarta.faces.context.ExternalContext#getRequestContentType()
      */
     @Override
     public String getRequestContentType() {
@@ -502,7 +505,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestContentLength()
+     * @see jakarta.faces.context.ExternalContext#getRequestContentLength()
      */
     @Override
     public int getRequestContentLength() {
@@ -511,7 +514,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getResponseCharacterEncoding()
+     * @see jakarta.faces.context.ExternalContext#getResponseCharacterEncoding()
      */
     @Override
     public String getResponseCharacterEncoding() {
@@ -520,7 +523,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getResponseContentType()
+     * @see jakarta.faces.context.ExternalContext#getResponseContentType()
      */
     @Override
     public String getResponseContentType() {
@@ -529,7 +532,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getInitParameter(String)
+     * @see jakarta.faces.context.ExternalContext#getInitParameter(String)
      */
     @Override
     public String getInitParameter(String name) {
@@ -541,7 +544,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getResourcePaths(String)
+     * @see jakarta.faces.context.ExternalContext#getResourcePaths(String)
      */
     @Override
     public Set<String> getResourcePaths(String path) {
@@ -555,7 +558,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getResourceAsStream(String)
+     * @see jakarta.faces.context.ExternalContext#getResourceAsStream(String)
      */
     @Override
     public InputStream getResourceAsStream(String path) {
@@ -774,7 +777,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getAuthType()
+     * @see jakarta.faces.context.ExternalContext#getAuthType()
      */
     @Override
     public String getAuthType() {
@@ -805,7 +808,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRemoteUser()
+     * @see jakarta.faces.context.ExternalContext#getRemoteUser()
      */
     @Override
     public String getRemoteUser() {
@@ -814,7 +817,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getUserPrincipal()
+     * @see jakarta.faces.context.ExternalContext#getUserPrincipal()
      */
     @Override
     public java.security.Principal getUserPrincipal() {
@@ -823,7 +826,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#isUserInRole(String)
+     * @see jakarta.faces.context.ExternalContext#isUserInRole(String)
      */
     @Override
     public boolean isUserInRole(String role) {
@@ -837,7 +840,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#invalidateSession()
+     * @see jakarta.faces.context.ExternalContext#invalidateSession()
      */
     @Override
     public void invalidateSession() {
@@ -896,7 +899,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getResponseOutputStream()
+     * @see jakarta.faces.context.ExternalContext#getResponseOutputStream()
      */
     @Override
     public OutputStream getResponseOutputStream() throws IOException {
@@ -905,7 +908,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getResponseOutputWriter()
+     * @see jakarta.faces.context.ExternalContext#getResponseOutputWriter()
      */
     @Override
     public Writer getResponseOutputWriter() throws IOException {
@@ -913,7 +916,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestScheme()
+     * @see jakarta.faces.context.ExternalContext#getRequestScheme()
      */
     @Override
     public String getRequestScheme() {
@@ -922,7 +925,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestServerName()
+     * @see jakarta.faces.context.ExternalContext#getRequestServerName()
      */
     @Override
     public String getRequestServerName() {
@@ -931,7 +934,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#getRequestServerPort()
+     * @see jakarta.faces.context.ExternalContext#getRequestServerPort()
      */
     @Override
     public int getRequestServerPort() {
@@ -967,7 +970,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#setResponseBufferSize(int)
+     * @see jakarta.faces.context.ExternalContext#setResponseBufferSize(int)
      */
     @Override
     public void setResponseBufferSize(int size) {
@@ -976,7 +979,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#isResponseCommitted()
+     * @see jakarta.faces.context.ExternalContext#isResponseCommitted()
      */
     @Override
     public boolean isResponseCommitted() {
@@ -985,7 +988,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#responseReset()
+     * @see jakarta.faces.context.ExternalContext#responseReset()
      */
     @Override
     public void responseReset() {
@@ -994,7 +997,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#responseSendError(int, String)
+     * @see jakarta.faces.context.ExternalContext#responseSendError(int, String)
      */
     @Override
     public void responseSendError(int statusCode, String message) throws IOException {
@@ -1007,7 +1010,7 @@ public class ExternalContextImpl extends ExternalContext {
 
 
     /**
-     * @see javax.faces.context.ExternalContext#setResponseStatus(int)
+     * @see jakarta.faces.context.ExternalContext#setResponseStatus(int)
      */
     @Override
     public void setResponseStatus(int statusCode) {
@@ -1016,7 +1019,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     
     /**
-     * @see javax.faces.context.ExternalContext#responseFlushBuffer()
+     * @see jakarta.faces.context.ExternalContext#responseFlushBuffer()
      */
     @Override
     public void responseFlushBuffer() throws IOException {
@@ -1029,7 +1032,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see javax.faces.context.ExternalContext#setResponseContentLength(int)
+     * @see jakarta.faces.context.ExternalContext#setResponseContentLength(int)
      */
     @Override
     public void setResponseContentLength(int length) {
@@ -1037,7 +1040,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see javax.faces.context.ExternalContext#setSessionMaxInactiveInterval(int)
+     * @see jakarta.faces.context.ExternalContext#setSessionMaxInactiveInterval(int)
      */
     @Override
     public void setSessionMaxInactiveInterval(int interval) {
@@ -1047,7 +1050,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see javax.faces.context.ExternalContext#getResponseBufferSize()
+     * @see jakarta.faces.context.ExternalContext#getResponseBufferSize()
      */
     @Override
     public int getResponseBufferSize() {
@@ -1055,7 +1058,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see javax.faces.context.ExternalContext#getSessionMaxInactiveInterval()
+     * @see jakarta.faces.context.ExternalContext#getSessionMaxInactiveInterval()
 \     */
     @Override
     public int getSessionMaxInactiveInterval() {
@@ -1066,7 +1069,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see javax.faces.context.ExternalContext#isSecure()
+     * @see jakarta.faces.context.ExternalContext#isSecure()
      * @return boolean
      */
     @Override
@@ -1113,7 +1116,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * @see javax.faces.context.ExternalContext#encodePartialActionURL(String)
+     * @see jakarta.faces.context.ExternalContext#encodePartialActionURL(String)
      */
     @Override
     public String encodePartialActionURL(String url) {

@@ -33,9 +33,9 @@
 <body>
     <composite:interface>
         <composite:attribute name="action" method-signature="String method()" targets="form1:command" />
-        <composite:attribute name="actionListener" method-signature="void method(javax.faces.event.ActionEvent)" targets="form2:command2" />
-        <composite:attribute name="validator" method-signature="void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" targets="form4:input" />
-        <composite:attribute name="valueChangeListener" method-signature="void valueChange(javax.faces.event.ValueChangeEvent)" targets="form5:input2" />
+        <composite:attribute name="actionListener" method-signature="void method(jakarta.faces.event.ActionEvent)" targets="form2:command2" />
+        <composite:attribute name="validator" method-signature="void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)" targets="form4:input" />
+        <composite:attribute name="valueChangeListener" method-signature="void valueChange(jakarta.faces.event.ValueChangeEvent)" targets="form5:input2" />
         <composite:attribute name="bean" type="com.sun.faces.composite.CompositeBean" />
     </composite:interface>
     <composite:implementation>

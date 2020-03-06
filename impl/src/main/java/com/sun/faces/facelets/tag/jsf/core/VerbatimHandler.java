@@ -18,11 +18,12 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TextHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TextHandler;
+
 import java.util.Iterator;
 
 /**

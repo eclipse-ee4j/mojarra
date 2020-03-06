@@ -17,10 +17,12 @@
 package com.sun.faces.facelets;
 
 import com.sun.faces.facelets.FaceletCache.InstanceFactory;
+
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCache.MemberFactory;
+
 import java.io.IOException;
 import java.net.URL;
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletCache.MemberFactory;
 
 public class PrivateApiFaceletCacheAdapter<V> extends FaceletCache<V> {
 

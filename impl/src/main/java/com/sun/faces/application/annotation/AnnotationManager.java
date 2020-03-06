@@ -32,19 +32,19 @@ import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.component.behavior.ClientBehaviorBase;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.render.ClientBehaviorRenderer;
-import javax.faces.render.RenderKit;
-import javax.faces.render.Renderer;
-import javax.faces.validator.Validator;
-
 import com.sun.faces.util.FacesLogger;
-import javax.faces.event.SystemEvent;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.ClientBehaviorBase;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.render.ClientBehaviorRenderer;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.Validator;
 
 /**
  * This class represents the central point for annotation handling within a
@@ -213,8 +213,8 @@ public class AnnotationManager {
     }
 
     /**
-     * Apply annotations relevant to {@link javax.faces.component.behavior.Behavior} instances.
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * Apply annotations relevant to {@link jakarta.faces.component.behavior.Behavior} instances.
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param b the target <code>Behavior</code> to process
      */
     public void applyBehaviorAnnotations(FacesContext ctx, Behavior b) {
@@ -235,8 +235,8 @@ public class AnnotationManager {
     }
 
     /**
-     * Apply annotations relevant to {@link javax.faces.render.ClientBehaviorRenderer} instances.
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * Apply annotations relevant to {@link jakarta.faces.render.ClientBehaviorRenderer} instances.
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param b the target <code>ClientBehaviorRenderer</code> to process
      */
     public void applyClientBehaviorRendererAnnotations(FacesContext ctx, ClientBehaviorRenderer b) {
@@ -246,8 +246,8 @@ public class AnnotationManager {
     }
     
     /**
-     * Apply annotations relevant to {@link javax.faces.component.UIComponent} instances.
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * Apply annotations relevant to {@link jakarta.faces.component.UIComponent} instances.
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param c the target <code>UIComponent</code> to process
      */
     public void applyComponentAnnotations(FacesContext ctx, UIComponent c) {
@@ -258,8 +258,8 @@ public class AnnotationManager {
 
 
     /**
-     * Apply annotations relevant to {@link javax.faces.validator.Validator} instances.
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * Apply annotations relevant to {@link jakarta.faces.validator.Validator} instances.
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param v the target <code>Validator</code> to process
      */
     public void applyValidatorAnnotations(FacesContext ctx, Validator v) {
@@ -270,8 +270,8 @@ public class AnnotationManager {
 
 
     /**
-     * Apply annotations relevant to {@link javax.faces.convert.Converter} instances.
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * Apply annotations relevant to {@link jakarta.faces.convert.Converter} instances.
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param c the target <code>Converter</code> to process
      */
     public void applyConverterAnnotations(FacesContext ctx, Converter c) {
@@ -282,8 +282,8 @@ public class AnnotationManager {
 
 
     /**
-     * Apply annotations relevent to {@link javax.faces.render.Renderer} instances.
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * Apply annotations relevent to {@link jakarta.faces.render.Renderer} instances.
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param r the <code>Renderer</code> to process
      * @param c the <code>UIComponent</code> instances that is associated with this
      *  <code>Renderer</code>
@@ -337,7 +337,7 @@ public class AnnotationManager {
     /**
      * Apply all annotations associated with <code>targetClass</code>
      *
-     * @param ctx the {@link javax.faces.context.FacesContext} for the current request
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param targetClass class of the <code>processingTarget</code>
      * @param processingTarget the type of component that is being processed
      * @param params one or more parameters to be passed to each {@link RuntimeAnnotationHandler}

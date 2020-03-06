@@ -30,7 +30,7 @@ import java.io.Writer;
 
 /**
  * <p>
- * This class is used by {@link javax.faces.application.ViewHandler#createView} to obtain the text
+ * This class is used by {@link jakarta.faces.application.ViewHandler#createView} to obtain the text
  * that exists after the &lt;f:view&gt; tag.
  * </p>
  */

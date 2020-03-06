@@ -21,12 +21,13 @@ package com.sun.faces.taglib.jsf_core;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.LengthValidator;
-import javax.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
 
 import com.sun.faces.el.ELUtils;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.LengthValidator;
+import jakarta.faces.validator.Validator;
 
 /**
  * ValidateLengthTag is the tag handler class for
@@ -61,7 +62,7 @@ public class ValidateLengthTag extends MaxMinValidatorTag {
                     getExpressionFactory();
             VALIDATOR_ID_EXPR =
                 factory.createValueExpression(context.getELContext(), 
-                    "javax.faces.Length", String.class);
+                    "jakarta.faces.Length", String.class);
         }
     }
 

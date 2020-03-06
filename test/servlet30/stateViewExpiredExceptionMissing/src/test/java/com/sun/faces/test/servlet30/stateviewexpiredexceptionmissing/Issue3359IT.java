@@ -49,7 +49,7 @@ public class Issue3359IT {
         HtmlPage page = webClient.getPage(webUrl);
         
         String savingMethod = ((HtmlInput)page.getElementById("helloForm:stateSavingMethod")).getValueAttribute();
-        String origStateId =  ((HtmlHiddenInput)page.getElementByName("javax.faces.ViewState")).getValueAttribute();
+        String origStateId =  ((HtmlHiddenInput)page.getElementByName("jakarta.faces.ViewState")).getValueAttribute();
         
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("helloForm:button"); 
         page = button.click();
@@ -58,7 +58,7 @@ public class Issue3359IT {
         page = anchor.click();
         
         button = (HtmlSubmitInput) page.getElementById("helloForm:button");
-        HtmlHiddenInput hi = (HtmlHiddenInput)(page.getElementByName("javax.faces.ViewState"));
+        HtmlHiddenInput hi = (HtmlHiddenInput)(page.getElementByName("jakarta.faces.ViewState"));
         hi.setValueAttribute(origStateId);
         page = button.click();
         

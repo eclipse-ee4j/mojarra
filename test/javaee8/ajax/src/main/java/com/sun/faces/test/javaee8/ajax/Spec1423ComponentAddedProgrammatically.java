@@ -16,9 +16,9 @@
 
 package com.sun.faces.test.javaee8.ajax;
 
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIOutput;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIOutput;
 
 @FacesComponent(Spec1423ComponentAddedProgrammatically.COMPONENT_TYPE)
 @ResourceDependency(library="spec1423", name="addedProgrammatically.js")

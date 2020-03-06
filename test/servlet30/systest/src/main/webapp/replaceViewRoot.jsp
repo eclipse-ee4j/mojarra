@@ -22,7 +22,7 @@
     <title>Replace the ViewRoot</title>
     <%@ taglib uri="http://java.sun.com/jsf/core"  prefix="f" %>
     <%@ taglib uri="http://java.sun.com/jsf/html"  prefix="h" %>
-    <%@ page import="javax.faces.context.FacesContext" %>
+    <%@ page import="jakarta.faces.context.FacesContext" %>
     <%@ page import="javax.servlet.http.HttpServlet" %>
   </head>
 
@@ -31,7 +31,7 @@
 
 <% 
 
-FacesContext.getCurrentInstance().getApplication().addComponent("javax.faces.ViewRoot", "com.sun.faces.systest.model.ViewRootExtension");
+FacesContext.getCurrentInstance().getApplication().addComponent("jakarta.faces.ViewRoot", "com.sun.faces.systest.model.ViewRootExtension");
 ((HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest()).getSession().invalidate();
 
 %>

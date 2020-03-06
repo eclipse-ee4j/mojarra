@@ -16,7 +16,7 @@
 
 package com.sun.faces.mgbean;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * <p>Represents errors from managed bean pre-processing.

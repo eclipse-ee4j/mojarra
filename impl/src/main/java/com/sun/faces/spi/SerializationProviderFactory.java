@@ -16,8 +16,6 @@
 
 package com.sun.faces.spi;
 
-import javax.faces.context.ExternalContext;
-
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.io.ObjectOutputStream;
@@ -31,6 +29,9 @@ import com.sun.faces.renderkit.ApplicationObjectInputStream;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.context.ExternalContext;
+
 import com.sun.faces.util.FacesLogger;
 
 /**

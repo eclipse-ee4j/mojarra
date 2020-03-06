@@ -22,8 +22,8 @@ import static java.lang.Boolean.TRUE;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
-import javax.faces.event.SystemEvent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.SystemEvent;
 
 public class ReentrantLisneterInvocationGuard {
 

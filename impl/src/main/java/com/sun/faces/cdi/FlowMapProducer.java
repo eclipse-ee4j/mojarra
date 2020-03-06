@@ -19,10 +19,10 @@ package com.sun.faces.cdi;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowScoped;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowScoped;
 
 /**
  * <p class="changed_added_2_3">

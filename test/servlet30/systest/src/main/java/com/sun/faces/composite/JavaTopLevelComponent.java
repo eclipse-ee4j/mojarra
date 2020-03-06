@@ -30,7 +30,7 @@ public class JavaTopLevelComponent extends UINamingContainer {
     }
 
     public String getFamily() {
-        return "javax.faces.NamingContainer";
+        return "jakarta.faces.NamingContainer";
     }
     private String item = "Value hard coded in Java source file";
 

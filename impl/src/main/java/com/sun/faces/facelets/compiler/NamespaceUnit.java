@@ -18,7 +18,8 @@ package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.facelets.tag.TagLibrary;
 
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
+
 import java.util.HashMap;
 import java.util.Map;
 

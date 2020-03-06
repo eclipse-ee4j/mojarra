@@ -18,11 +18,13 @@ package com.sun.faces.el;
 
 import javax.el.ELResolver;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
 
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
+
 import com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType;
 
 /**

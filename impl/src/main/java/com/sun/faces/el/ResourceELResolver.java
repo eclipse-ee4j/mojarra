@@ -24,14 +24,15 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
-import javax.faces.context.ExternalContext;
+
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * ELResolver to resolve expressions like the following:
@@ -57,7 +58,7 @@ public class ResourceELResolver extends ELResolver {
      * <li>
      * If <code>property</code> contains a single <code>:</code> treat the content
      * before the <code>:</code> as the library name, and the content after the
-     * <code>:</code> to be the resource name and pass both to {@link javax.faces.application.ResourceHandler#createResource(String, String)}
+     * <code>:</code> to be the resource name and pass both to {@link jakarta.faces.application.ResourceHandler#createResource(String, String)}
      * </li>
      * <li>
      * If <code>property</code> contains more than one <code>:</code> then throw
@@ -66,7 +67,7 @@ public class ResourceELResolver extends ELResolver {
      * <li>
      * If one of the above steps resulted in the creation of a {@link Resource}
      * instance, call <code>ELContext.setPropertyResolved(true)</code> and return
-     * the result of {@link javax.faces.application.Resource#getRequestPath()}
+     * the result of {@link jakarta.faces.application.Resource#getRequestPath()}
      * </li>
      * </ul>
      * @see ELResolver#getValue(javax.el.ELContext, Object, Object)

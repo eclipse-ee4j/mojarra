@@ -16,7 +16,8 @@
 
 package com.sun.faces.cdi;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.ManagedProperty;
+
+import jakarta.faces.annotation.ManagedProperty;
 
 /**
  * An annotation literal for {@link ManagedProperty}

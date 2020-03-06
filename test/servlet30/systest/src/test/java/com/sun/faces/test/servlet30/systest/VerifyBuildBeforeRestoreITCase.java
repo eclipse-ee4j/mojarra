@@ -71,7 +71,7 @@ public class VerifyBuildBeforeRestoreITCase extends HtmlUnitFacesITCase {
 
             page = button.click();
             String text = page.asText();
-            assertTrue(text.contains("Message: javax.faces.event.PostAddToViewEvent javax.faces.event.PostRestoreStateEvent"));
+            assertTrue(text.contains("Message: jakarta.faces.event.PostAddToViewEvent jakarta.faces.event.PostRestoreStateEvent"));
             page = getPage("/faces/regression/uninstallListeners.xhtml");
         }
 

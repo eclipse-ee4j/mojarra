@@ -24,10 +24,12 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+
 import com.sun.faces.util.MessageUtils;
 
 public class ImplicitObjectELResolverForJsp extends ImplicitObjectELResolver {

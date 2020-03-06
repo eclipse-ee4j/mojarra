@@ -20,6 +20,15 @@ import com.sun.faces.component.CompositeComponentStackManager;
 
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.validator.ValidatorException;
+import jakarta.faces.view.Location;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,20 +38,12 @@ import javax.el.MethodInfo;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.MethodNotFoundException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.validator.ValidatorException;
-import javax.faces.view.Location;
 
 /**
  * <p>
  * This specialized <code>MethodExpression</code> enables the evaluation of
  * composite component expressions.  Instances of this expression will be created
- * when {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(javax.faces.view.facelets.FaceletContext, Class)}
+ * when {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
  * is invoked and the expression represents a composite component expression (i.e. #{cc.[properties]}).
  * </p>
  *
@@ -83,14 +84,14 @@ import javax.faces.view.Location;
  * When <code>commandButton</code> is clicked, the <code>ContextualCompositeMethodExpression</code>
  * first is looked up by {@link com.sun.faces.facelets.tag.TagAttributeImpl.AttributeLookupMethodExpression}
  * which results an instance of <code>ContextualCompositeMethodExpression</code>.
- * When this <code>ContextualCompositeMethodExpression is invoked, the {@link javax.faces.view.Location}
+ * When this <code>ContextualCompositeMethodExpression is invoked, the {@link jakarta.faces.view.Location}
  * object necessary to find the proper composite component will be derived from
  * source <code>ValueExpression</code> provided at construction time.  Using the
- * derived {@link javax.faces.view.Location}, we can find the composite component
+ * derived {@link jakarta.faces.view.Location}, we can find the composite component
  * that matches 'owns' the template in which the expression was defined in by
- * comparing the path of the Location with the name and library of the {@link javax.faces.application.Resource}
+ * comparing the path of the Location with the name and library of the {@link jakarta.faces.application.Resource}
  * instance associated with each composite component.  If a matching composite
- * component is found, it will be made available to the EL by calling {@link CompositeComponentStackManager#push(javax.faces.component.UIComponent)}.
+ * component is found, it will be made available to the EL by calling {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
  * </p>
  */
 public class ContextualCompositeMethodExpression extends MethodExpression {

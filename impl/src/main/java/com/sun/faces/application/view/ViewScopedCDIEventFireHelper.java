@@ -16,7 +16,7 @@
 
 package com.sun.faces.application.view;
 
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIViewRoot;
 
 public interface ViewScopedCDIEventFireHelper {
 

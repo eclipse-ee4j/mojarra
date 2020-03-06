@@ -19,16 +19,18 @@ package com.sun.faces.facelets.tag.jsf;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.AttachedObjectTarget;
+import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.AttachedObjectTarget;
-import javax.faces.view.BehaviorHolderAttachedObjectTarget;
-import javax.faces.view.facelets.*;
+
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.io.IOException;

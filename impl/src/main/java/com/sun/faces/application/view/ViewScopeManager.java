@@ -21,21 +21,24 @@ import com.sun.faces.config.WebConfiguration;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.LRUMap;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PostConstructViewMapEvent;
+import jakarta.faces.event.PreDestroyViewMapEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.ViewMapListener;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PostConstructViewMapEvent;
-import javax.faces.event.PreDestroyViewMapEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.ViewMapListener;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;

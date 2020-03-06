@@ -144,7 +144,7 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
 
     public void testValidators() throws Exception {
         try {
-            getPage("/faces/setApplicationMapProperty.xhtml?name=javax.faces.VALIDATE_EMPTY_FIELDS&value=true");
+            getPage("/faces/setApplicationMapProperty.xhtml?name=jakarta.faces.VALIDATE_EMPTY_FIELDS&value=true");
 
             HtmlPage page = getPage("/faces/composite/validator.xhtml");
             HtmlSubmitInput submit = (HtmlSubmitInput) getInputContainingGivenId(page, "form:submit");
@@ -166,7 +166,7 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
             }
         }
         finally {
-            getPage("/faces/clearApplicationMapProperty.xhtml?name=javax.faces.VALIDATE_EMPTY_FIELDS");
+            getPage("/faces/clearApplicationMapProperty.xhtml?name=jakarta.faces.VALIDATE_EMPTY_FIELDS");
 
         }
 
@@ -718,7 +718,7 @@ public class CompositeComponentsITCase extends HtmlUnitFacesITCase {
         HtmlPage page = getPage("/faces/composite/1462-using.xhtml");
         String text = page.asText();
         System.out.println(text);
-        assertTrue(text.matches("(?s).*Message:.*Received.*event:.*javax.faces.event.PreRenderViewEvent.*for.*component:.*javax.faces.component.UIViewRoot.*"));
+        assertTrue(text.matches("(?s).*Message:.*Received.*event:.*jakarta.faces.event.PreRenderViewEvent.*for.*component:.*jakarta.faces.component.UIViewRoot.*"));
 
     }
 

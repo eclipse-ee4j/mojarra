@@ -19,6 +19,11 @@ package com.sun.faces.flow;
 
 import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.MethodCallNode;
+import jakarta.faces.flow.Parameter;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -29,9 +34,6 @@ import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.MethodCallNode;
-import javax.faces.flow.Parameter;
 
 public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
 

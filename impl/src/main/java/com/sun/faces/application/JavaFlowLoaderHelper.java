@@ -29,14 +29,15 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Producer;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.builder.FlowDefinition;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.flow.FlowDiscoveryCDIExtension;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.builder.FlowDefinition;
 
 class JavaFlowLoaderHelper {
 

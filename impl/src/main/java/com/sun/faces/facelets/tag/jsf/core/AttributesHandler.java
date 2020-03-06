@@ -18,17 +18,18 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+
 import java.io.IOException;
 import java.util.Map;
 import javax.el.ValueExpression;
 
 public final class AttributesHandler extends TagHandlerImpl 
-    implements javax.faces.view.facelets.AttributeHandler {
+    implements jakarta.faces.view.facelets.AttributeHandler {
 
     private final TagAttribute value;
 
@@ -41,7 +42,7 @@ public final class AttributesHandler extends TagHandlerImpl
      * (non-Javadoc)
      * 
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *      jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
@@ -73,7 +74,7 @@ public final class AttributesHandler extends TagHandlerImpl
     }
 
 
-    // javax.faces.view.facelets.tag.AttributeHandler.getAttributeName()
+    // jakarta.faces.view.facelets.tag.AttributeHandler.getAttributeName()
     // implementation.
     @Override
     public String getAttributeName(FaceletContext ctxt) {

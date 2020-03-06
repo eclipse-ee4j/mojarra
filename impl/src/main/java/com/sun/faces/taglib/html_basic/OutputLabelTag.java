@@ -18,18 +18,12 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import com.sun.faces.util.Util;
-import java.io.IOException;
-import javax.el.*;
-import javax.faces.*;
-import javax.faces.component.*;
-import javax.faces.context.*;
-import javax.faces.convert.*;
-import javax.faces.el.*;
-import javax.faces.event.*;
-import javax.faces.validator.*;
-import javax.faces.webapp.*;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /*
@@ -188,20 +182,20 @@ public class OutputLabelTag extends UIComponentELTag {
 
     // General Methods
     public String getRendererType() {
-        return "javax.faces.Label";
+        return "jakarta.faces.Label";
     }
 
     public String getComponentType() {
-        return "javax.faces.HtmlOutputLabel";
+        return "jakarta.faces.HtmlOutputLabel";
     }
 
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
-        javax.faces.component.UIOutput output = null;
+        jakarta.faces.component.UIOutput output = null;
         try {
-            output = (javax.faces.component.UIOutput) component;
+            output = (jakarta.faces.component.UIOutput) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: javax.faces.component.UIOutput.  Perhaps you're missing a tag?");
+            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIOutput.  Perhaps you're missing a tag?");
         }
 
         if (converter != null) {

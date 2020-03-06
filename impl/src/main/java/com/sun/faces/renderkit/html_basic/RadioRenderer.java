@@ -31,19 +31,6 @@ import java.util.logging.Level;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UISelectItem;
-import javax.faces.component.UISelectOne;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.convert.Converter;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.model.SelectItem;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.Attribute;
@@ -52,6 +39,20 @@ import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.model.SelectItem;
 
 /**
  * <B>ReadoRenderer</B> is a class that renders the current value of

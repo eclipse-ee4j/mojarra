@@ -21,13 +21,14 @@ import static com.sun.faces.cdi.CdiUtils.getQualifier;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
 import javax.inject.Inject;
 
 import com.sun.faces.push.WebsocketPushContext;
 import com.sun.faces.push.WebsocketSessionManager;
 import com.sun.faces.push.WebsocketUserManager;
+
+import jakarta.faces.push.Push;
+import jakarta.faces.push.PushContext;
 
 
 /**

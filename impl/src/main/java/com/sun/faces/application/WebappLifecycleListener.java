@@ -44,11 +44,12 @@ import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.renderkit.StateHelper;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
 
 /**
  * <p>

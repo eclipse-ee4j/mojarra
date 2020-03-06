@@ -40,26 +40,27 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.*;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.event.SystemEventListenerHolder;
-import javax.faces.validator.Validator;
 import javax.servlet.ServletContext;
 import com.sun.el.ExpressionFactoryImpl;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.*;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.event.SystemEventListenerHolder;
+import jakarta.faces.validator.Validator;
 
 public class MockApplication extends Application {
 
@@ -69,16 +70,16 @@ public class MockApplication extends Application {
 
     public MockApplication() {
         addComponent("TestNamingContainer",
-                "javax.faces.webapp.TestNamingContainer");
-        addComponent("TestComponent", "javax.faces.webapp.TestComponent");
-        addComponent("TestInput", "javax.faces.component.UIInput");
-        addComponent("TestOutput", "javax.faces.component.UIOutput");
-        addConverter("Integer", "javax.faces.convert.IntegerConverter");
-        addConverter("javax.faces.Number",
-                "javax.faces.convert.NumberConverter");
-        addConverter("javax.faces.Long",
-                "javax.faces.convert.LongConverter");
-        addValidator("Length", "javax.faces.validator.LengthValidator");
+                "jakarta.faces.webapp.TestNamingContainer");
+        addComponent("TestComponent", "jakarta.faces.webapp.TestComponent");
+        addComponent("TestInput", "jakarta.faces.component.UIInput");
+        addComponent("TestOutput", "jakarta.faces.component.UIOutput");
+        addConverter("Integer", "jakarta.faces.convert.IntegerConverter");
+        addConverter("jakarta.faces.Number",
+                "jakarta.faces.convert.NumberConverter");
+        addConverter("jakarta.faces.Long",
+                "jakarta.faces.convert.LongConverter");
+        addValidator("Length", "jakarta.faces.validator.LengthValidator");
         servletContext = new MockServletContext();
     }
 
@@ -390,8 +391,8 @@ public class MockApplication extends Application {
      *
      * <li><p>
      * If the <code>source</code> argument implements {@link
-     * javax.faces.event.SystemEventListenerHolder}, call {@link
-     * javax.faces.event.SystemEventListenerHolder#getListenersForEventClass} on
+     * jakarta.faces.event.SystemEventListenerHolder}, call {@link
+     * jakarta.faces.event.SystemEventListenerHolder#getListenersForEventClass} on
      * it, passing the <code>systemEventClass</code> argument. If the list is
      * not empty, perform algorithm
      * <em>traverseListenerList</em> on the list.</p></li>
@@ -400,20 +401,20 @@ public class MockApplication extends Application {
      * If any <code>Application</code> level listeners have been installed by
      * previous calls to {@link
      * #subscribeToEvent(Class, Class,
-     *     javax.faces.event.SystemEventListener)}, perform algorithm
+     *     jakarta.faces.event.SystemEventListener)}, perform algorithm
      * <em>traverseListenerList</em> on the list.</p></li>
      *
      * <li><p>
      * If any <code>Application</code> level listeners have been installed by
      * previous calls to {@link
-     * #subscribeToEvent(Class, javax.faces.event.SystemEventListener)}, perform
+     * #subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)}, perform
      * algorithm <em>traverseListenerList</em> on the list.</p></li>
      *
      * </ul>
      *
      * <p>
      * If the act of invoking the <code>processListener</code> method causes an
-     * {@link javax.faces.event.AbortProcessingException} to be thrown,
+     * {@link jakarta.faces.event.AbortProcessingException} to be thrown,
      * processing of the listeners must be aborted.</p>
      *
      * RELEASE_PENDING (edburns,rogerk) it may be prudent to specify how the
@@ -427,7 +428,7 @@ public class MockApplication extends Application {
      *
      * <li><p>
      * Call {@link
-     * javax.faces.event.SystemEventListener#isListenerForSource}, passing the
+     * jakarta.faces.event.SystemEventListener#isListenerForSource}, passing the
      * <code>source</code> argument. If this returns <code>false</code>, take no
      * action on the listener.</p></li>
      *
@@ -439,12 +440,12 @@ public class MockApplication extends Application {
      * listener instances.</p></li>
      *
      * <li><p>
-     * Call {@link javax.faces.event.SystemEvent#isAppropriateListener}, passing
+     * Call {@link jakarta.faces.event.SystemEvent#isAppropriateListener}, passing
      * the listener instance as the argument. If this returns
      * <code>false</code>, take no action on the listener.</p></li>
      *
      * <li><p>
-     * Call {@link javax.faces.event.SystemEvent#processListener}, passing the
+     * Call {@link jakarta.faces.event.SystemEvent#processListener}, passing the
      * listener instance. </p></li>
      *
      * </ul>
@@ -510,12 +511,12 @@ public class MockApplication extends Application {
      * to store the argument <code>listener</code> in the application in such a
      * way that the <code>listener</code> can be quickly looked up by the
      * implementation of
-     * {@link javax.faces.application.Application#publishEvent} given
+     * {@link jakarta.faces.application.Application#publishEvent} given
      * <code>systemEventClass</code> and an instance of the <code>Class</code>
      * referenced by <code>sourceClass</code>. If argument
      * <code>sourceClass</code> is <code>null</code>, the <code>listener</code>
      * must be discoverable by the implementation of
-     * {@link javax.faces.application.Application#publishEvent} given only
+     * {@link jakarta.faces.application.Application#publishEvent} given only
      * <code>systemEventClass</code>.
      * </p>
      *
@@ -529,8 +530,8 @@ public class MockApplication extends Application {
      * <code>null</code>.
      *
      * @param listener the implementation of {@link
-     * javax.faces.event.SystemEventListener} whose {@link
-     * javax.faces.event.SystemEventListener#processEvent} method must be called
+     * jakarta.faces.event.SystemEventListener} whose {@link
+     * jakarta.faces.event.SystemEventListener#processEvent} method must be called
      * when events of type <code>systemEventClass</code> are fired.
      *
      * @throws <code>NullPointerException</code> if any combination of
@@ -561,15 +562,15 @@ public class MockApplication extends Application {
      * argument <code>listener</code> into application as a listener for events
      * of type <code>systemEventClass</code>. The default implementation simply
      * calls through to
-     * {@link #subscribeToEvent(Class, Class, javax.faces.event.SystemEventListener)}
+     * {@link #subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)}
      * passing <code>null</code> as the <code>sourceClass</code> argument</p>
      *
      * @param systemEventClass the <code>Class</code> of event for which
      * <code>listener</code> must be fired.
      *
      * @param listener the implementation of {@link
-     * javax.faces.event.SystemEventListener} whose {@link
-     * javax.faces.event.SystemEventListener#processEvent} method must be called
+     * jakarta.faces.event.SystemEventListener} whose {@link
+     * jakarta.faces.event.SystemEventListener#processEvent} method must be called
      * when events of type <code>systemEventClass</code> are fired.
      *
      * @throws <code>NullPointerException</code> if any combination of
@@ -591,7 +592,7 @@ public class MockApplication extends Application {
      * events of type <code>systemEventClass</code> that originate from objects
      * of type <code>sourceClass</code>. See {@link
      * #subscribeToEvent(Class, Class,
-     * javax.faces.event.SystemEventListener)} for the specification of how the
+     * jakarta.faces.event.SystemEventListener)} for the specification of how the
      * listener is stored, and therefore, how it must be removed.</p>
      *
      * @param systemEventClass the <code>Class</code> of event for which
@@ -602,7 +603,7 @@ public class MockApplication extends Application {
      * <code>null</code>.
      *
      * @param listener the implementation of {@link
-     * javax.faces.event.SystemEventListener} to remove from the internal data
+     * jakarta.faces.event.SystemEventListener} to remove from the internal data
      * structure.
      *
      * @throws <code>NullPointerException</code> if any combination of
@@ -633,14 +634,14 @@ public class MockApplication extends Application {
      * argument <code>listener</code> from the application as a listener for
      * events of type <code>systemEventClass</code>. The default implementation
      * simply calls through to
-     * {@link #unsubscribeFromEvent(Class, javax.faces.event.SystemEventListener)}
+     * {@link #unsubscribeFromEvent(Class, jakarta.faces.event.SystemEventListener)}
      * passing <code>null</code> as the <code>sourceClass</code> argument</p>
      *
      * @param systemEventClass the <code>Class</code> of event for which
      * <code>listener</code> must be fired.
      *
      * @param listener the implementation of {@link
-     * javax.faces.event.SystemEventListener} to remove from the internal data
+     * jakarta.faces.event.SystemEventListener} to remove from the internal data
      * structure.
      *
      * @throws <code>NullPointerException</code> if any combination of
@@ -697,7 +698,7 @@ public class MockApplication extends Application {
      * Traverse the <code>List</code> of listeners and invoke any that are
      * relevent for the specified source.
      *
-     * @throws javax.faces.event.AbortProcessingException propagated from the
+     * @throws jakarta.faces.event.AbortProcessingException propagated from the
      * listener invocation
      */
     private SystemEvent invokeListenersFor(Class<? extends SystemEvent> systemEventClass,
@@ -794,7 +795,7 @@ public class MockApplication extends Application {
     } // END SystemEventHelper
 
     /**
-     * Utility class for dealing with {@link javax.faces.component.UIComponent}
+     * Utility class for dealing with {@link jakarta.faces.component.UIComponent}
      * events.
      */
     private static class ComponentSystemEventHelper {

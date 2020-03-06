@@ -69,7 +69,7 @@ public class JavaTopLevelActionListenerComponentITCase extends HtmlUnitFacesITCa
         HtmlInput htmlInput = getInputContainingGivenId(page, "loginAction");
         HtmlPage newPage = htmlInput.click();
         String text = newPage.asText();
-        assertTrue(-1 != text.indexOf("javax.faces.Command"));
+        assertTrue(-1 != text.indexOf("jakarta.faces.Command"));
         assertTrue(-1 != text.indexOf("Action was processed successfully"));
     }
 

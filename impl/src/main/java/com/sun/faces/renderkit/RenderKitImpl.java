@@ -18,14 +18,6 @@
 
 package com.sun.faces.renderkit;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseStream;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.ClientBehaviorRenderer;
-import javax.faces.render.RenderKit;
-import javax.faces.render.Renderer;
-import javax.faces.render.ResponseStateManager;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -47,6 +39,15 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import com.sun.faces.renderkit.html_basic.HtmlResponseWriter;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseStream;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.ClientBehaviorRenderer;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.render.ResponseStateManager;
+
 import com.sun.faces.util.FacesLogger;
 
 /**
@@ -394,7 +395,7 @@ public class RenderKitImpl extends RenderKit {
 
 
     /**
-     * @see javax.faces.render.RenderKit#getComponentFamilies()
+     * @see jakarta.faces.render.RenderKit#getComponentFamilies()
      */
     @Override
     public Iterator<String> getComponentFamilies() {
@@ -405,7 +406,7 @@ public class RenderKitImpl extends RenderKit {
 
 
     /**
-     * @see javax.faces.render.RenderKit#getRendererTypes(String)  
+     * @see jakarta.faces.render.RenderKit#getRendererTypes(String)  
      */
     @Override
     public Iterator<String> getRendererTypes(String componentFamily) {

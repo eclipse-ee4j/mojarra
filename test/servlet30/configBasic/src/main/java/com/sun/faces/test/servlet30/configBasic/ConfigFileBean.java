@@ -169,71 +169,71 @@ public class ConfigFileBean {
         Application application = fc.getApplication();
 
         assertTrue(application.createComponent
-                   ("javax.faces.Column") instanceof UIColumn);
+                   ("jakarta.faces.Column") instanceof UIColumn);
         assertTrue(application.createComponent
                    (UIColumn.COMPONENT_TYPE) instanceof UIColumn);
         assertTrue(application.createComponent
-                   ("javax.faces.Command") instanceof UICommand);
+                   ("jakarta.faces.Command") instanceof UICommand);
         assertTrue(application.createComponent
                    (UICommand.COMPONENT_TYPE) instanceof UICommand);
         assertTrue(application.createComponent
-                   ("javax.faces.Data") instanceof UIData);
+                   ("jakarta.faces.Data") instanceof UIData);
         assertTrue(application.createComponent
                    (UIData.COMPONENT_TYPE) instanceof UIData);
         assertTrue(application.createComponent
-                   ("javax.faces.Form") instanceof UIForm);
+                   ("jakarta.faces.Form") instanceof UIForm);
         assertTrue(application.createComponent
                    (UIForm.COMPONENT_TYPE) instanceof UIForm);
         assertTrue(application.createComponent
-                   ("javax.faces.Graphic") instanceof UIGraphic);
+                   ("jakarta.faces.Graphic") instanceof UIGraphic);
         assertTrue(application.createComponent
                    (UIGraphic.COMPONENT_TYPE) instanceof UIGraphic);
         assertTrue(application.createComponent
-                   ("javax.faces.Input") instanceof UIInput);
+                   ("jakarta.faces.Input") instanceof UIInput);
         assertTrue(application.createComponent
                    (UIInput.COMPONENT_TYPE) instanceof UIInput);
         assertTrue(application.createComponent
-                   ("javax.faces.Message") instanceof UIMessage);
+                   ("jakarta.faces.Message") instanceof UIMessage);
         assertTrue(application.createComponent
                    (UIMessage.COMPONENT_TYPE) instanceof UIMessage);
         assertTrue(application.createComponent
-                   ("javax.faces.Messages") instanceof UIMessages);
+                   ("jakarta.faces.Messages") instanceof UIMessages);
         assertTrue(application.createComponent
                    (UIMessages.COMPONENT_TYPE) instanceof UIMessages);
         assertTrue(application.createComponent
-                   ("javax.faces.NamingContainer") instanceof UINamingContainer);
+                   ("jakarta.faces.NamingContainer") instanceof UINamingContainer);
         assertTrue(application.createComponent
                    (UINamingContainer.COMPONENT_TYPE) instanceof UINamingContainer);
         assertTrue(application.createComponent
-                   ("javax.faces.Output") instanceof UIOutput);
+                   ("jakarta.faces.Output") instanceof UIOutput);
         assertTrue(application.createComponent
                    (UIOutput.COMPONENT_TYPE) instanceof UIOutput);
         assertTrue(application.createComponent
-                   ("javax.faces.Panel") instanceof UIPanel);
+                   ("jakarta.faces.Panel") instanceof UIPanel);
         assertTrue(application.createComponent
                    (UIPanel.COMPONENT_TYPE) instanceof UIPanel);
         assertTrue(application.createComponent
-                   ("javax.faces.Parameter") instanceof UIParameter);
+                   ("jakarta.faces.Parameter") instanceof UIParameter);
         assertTrue(application.createComponent
                    (UIParameter.COMPONENT_TYPE) instanceof UIParameter);
         assertTrue(application.createComponent
-                   ("javax.faces.SelectBoolean") instanceof UISelectBoolean);
+                   ("jakarta.faces.SelectBoolean") instanceof UISelectBoolean);
         assertTrue(application.createComponent
                    (UISelectBoolean.COMPONENT_TYPE) instanceof UISelectBoolean);
         assertTrue(application.createComponent
-                   ("javax.faces.SelectItem") instanceof UISelectItem);
+                   ("jakarta.faces.SelectItem") instanceof UISelectItem);
         assertTrue(application.createComponent
                    (UISelectItem.COMPONENT_TYPE) instanceof UISelectItem);
         assertTrue(application.createComponent
-                   ("javax.faces.SelectItems") instanceof UISelectItems);
+                   ("jakarta.faces.SelectItems") instanceof UISelectItems);
         assertTrue(application.createComponent
                    (UISelectItems.COMPONENT_TYPE) instanceof UISelectItems);
         assertTrue(application.createComponent
-                   ("javax.faces.SelectMany") instanceof UISelectMany);
+                   ("jakarta.faces.SelectMany") instanceof UISelectMany);
         assertTrue(application.createComponent
                    (UISelectMany.COMPONENT_TYPE) instanceof UISelectMany);
         assertTrue(application.createComponent
-                   ("javax.faces.SelectOne") instanceof UISelectOne);
+                   ("jakarta.faces.SelectOne") instanceof UISelectOne);
         assertTrue(application.createComponent
                    (UISelectOne.COMPONENT_TYPE) instanceof UISelectOne);
     }
@@ -244,59 +244,59 @@ public class ConfigFileBean {
         Application application = fc.getApplication();
 
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlCommandButton") instanceof HtmlCommandButton);
+                   ("jakarta.faces.HtmlCommandButton") instanceof HtmlCommandButton);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlCommandLink") instanceof HtmlCommandLink);
+                   ("jakarta.faces.HtmlCommandLink") instanceof HtmlCommandLink);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlDataTable") instanceof HtmlDataTable);
+                   ("jakarta.faces.HtmlDataTable") instanceof HtmlDataTable);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlForm") instanceof HtmlForm);
+                   ("jakarta.faces.HtmlForm") instanceof HtmlForm);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlGraphicImage") instanceof HtmlGraphicImage);
+                   ("jakarta.faces.HtmlGraphicImage") instanceof HtmlGraphicImage);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlInputHidden") instanceof HtmlInputHidden);
+                   ("jakarta.faces.HtmlInputHidden") instanceof HtmlInputHidden);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlInputSecret") instanceof HtmlInputSecret);
+                   ("jakarta.faces.HtmlInputSecret") instanceof HtmlInputSecret);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlInputText") instanceof HtmlInputText);
+                   ("jakarta.faces.HtmlInputText") instanceof HtmlInputText);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlInputTextarea") instanceof HtmlInputTextarea);
+                   ("jakarta.faces.HtmlInputTextarea") instanceof HtmlInputTextarea);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlMessage") instanceof HtmlMessage);
+                   ("jakarta.faces.HtmlMessage") instanceof HtmlMessage);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlMessages") instanceof HtmlMessages);
+                   ("jakarta.faces.HtmlMessages") instanceof HtmlMessages);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlOutputFormat") instanceof HtmlOutputFormat);
+                   ("jakarta.faces.HtmlOutputFormat") instanceof HtmlOutputFormat);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlOutputLabel") instanceof HtmlOutputLabel);
+                   ("jakarta.faces.HtmlOutputLabel") instanceof HtmlOutputLabel);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlOutputLink") instanceof HtmlOutputLink);
+                   ("jakarta.faces.HtmlOutputLink") instanceof HtmlOutputLink);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlOutputText") instanceof HtmlOutputText);
+                   ("jakarta.faces.HtmlOutputText") instanceof HtmlOutputText);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlPanelGrid") instanceof HtmlPanelGrid);
+                   ("jakarta.faces.HtmlPanelGrid") instanceof HtmlPanelGrid);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlPanelGroup") instanceof HtmlPanelGroup);
+                   ("jakarta.faces.HtmlPanelGroup") instanceof HtmlPanelGroup);
         assertTrue(
             application.createComponent
-            ("javax.faces.HtmlSelectBooleanCheckbox") instanceof HtmlSelectBooleanCheckbox);
+            ("jakarta.faces.HtmlSelectBooleanCheckbox") instanceof HtmlSelectBooleanCheckbox);
         assertTrue(
             application.createComponent
-            ("javax.faces.HtmlSelectManyCheckbox") instanceof HtmlSelectManyCheckbox);
+            ("jakarta.faces.HtmlSelectManyCheckbox") instanceof HtmlSelectManyCheckbox);
         assertTrue(
             application.createComponent
-            ("javax.faces.HtmlSelectManyListbox") instanceof HtmlSelectManyListbox);
+            ("jakarta.faces.HtmlSelectManyListbox") instanceof HtmlSelectManyListbox);
         assertTrue(
             application.createComponent
-            ("javax.faces.HtmlSelectManyMenu") instanceof HtmlSelectManyMenu);
+            ("jakarta.faces.HtmlSelectManyMenu") instanceof HtmlSelectManyMenu);
         assertTrue(
             application.createComponent
-            ("javax.faces.HtmlSelectOneListbox") instanceof HtmlSelectOneListbox);
+            ("jakarta.faces.HtmlSelectOneListbox") instanceof HtmlSelectOneListbox);
         assertTrue(application.createComponent
-                   ("javax.faces.HtmlSelectOneMenu") instanceof HtmlSelectOneMenu);
+                   ("jakarta.faces.HtmlSelectOneMenu") instanceof HtmlSelectOneMenu);
         assertTrue(
             application.createComponent
-            ("javax.faces.HtmlSelectOneRadio") instanceof HtmlSelectOneRadio);
+            ("jakarta.faces.HtmlSelectOneRadio") instanceof HtmlSelectOneRadio);
     }
 
     // Check that all required by-class Converters have been registered
@@ -332,29 +332,29 @@ public class ConfigFileBean {
         Application application = fc.getApplication();
 
         assertTrue(application.createConverter
-                   ("javax.faces.BigDecimal") instanceof BigDecimalConverter);
+                   ("jakarta.faces.BigDecimal") instanceof BigDecimalConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.BigInteger") instanceof BigIntegerConverter);
+                   ("jakarta.faces.BigInteger") instanceof BigIntegerConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Boolean") instanceof BooleanConverter);
+                   ("jakarta.faces.Boolean") instanceof BooleanConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Byte") instanceof ByteConverter);
+                   ("jakarta.faces.Byte") instanceof ByteConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Character") instanceof CharacterConverter);
+                   ("jakarta.faces.Character") instanceof CharacterConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.DateTime") instanceof DateTimeConverter);
+                   ("jakarta.faces.DateTime") instanceof DateTimeConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Double") instanceof DoubleConverter);
+                   ("jakarta.faces.Double") instanceof DoubleConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Float") instanceof FloatConverter);
+                   ("jakarta.faces.Float") instanceof FloatConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Integer") instanceof IntegerConverter);
+                   ("jakarta.faces.Integer") instanceof IntegerConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Long") instanceof LongConverter);
+                   ("jakarta.faces.Long") instanceof LongConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Number") instanceof NumberConverter);
+                   ("jakarta.faces.Number") instanceof NumberConverter);
         assertTrue(application.createConverter
-                   ("javax.faces.Short") instanceof ShortConverter);
+                   ("jakarta.faces.Short") instanceof ShortConverter);
     }
 
     // Check that all required Renderers have been registered
@@ -366,46 +366,46 @@ public class ConfigFileBean {
                                    RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
         assertNotNull(
-            rk.getRenderer("javax.faces.Command", "javax.faces.Button"));
+            rk.getRenderer("jakarta.faces.Command", "jakarta.faces.Button"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Command", "javax.faces.Link"));
-        assertNotNull(rk.getRenderer("javax.faces.Data", "javax.faces.Table"));
-        assertNotNull(rk.getRenderer("javax.faces.Form", "javax.faces.Form"));
+            rk.getRenderer("jakarta.faces.Command", "jakarta.faces.Link"));
+        assertNotNull(rk.getRenderer("jakarta.faces.Data", "jakarta.faces.Table"));
+        assertNotNull(rk.getRenderer("jakarta.faces.Form", "jakarta.faces.Form"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Graphic", "javax.faces.Image"));
+            rk.getRenderer("jakarta.faces.Graphic", "jakarta.faces.Image"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Input", "javax.faces.Hidden"));
+            rk.getRenderer("jakarta.faces.Input", "jakarta.faces.Hidden"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Input", "javax.faces.Secret"));
-        assertNotNull(rk.getRenderer("javax.faces.Input", "javax.faces.Text"));
+            rk.getRenderer("jakarta.faces.Input", "jakarta.faces.Secret"));
+        assertNotNull(rk.getRenderer("jakarta.faces.Input", "jakarta.faces.Text"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Input", "javax.faces.Textarea"));
+            rk.getRenderer("jakarta.faces.Input", "jakarta.faces.Textarea"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Message", "javax.faces.Message"));
+            rk.getRenderer("jakarta.faces.Message", "jakarta.faces.Message"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Messages", "javax.faces.Messages"));
+            rk.getRenderer("jakarta.faces.Messages", "jakarta.faces.Messages"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Output", "javax.faces.Format"));
+            rk.getRenderer("jakarta.faces.Output", "jakarta.faces.Format"));
         assertNotNull(
-            rk.getRenderer("javax.faces.Output", "javax.faces.Label"));
-        assertNotNull(rk.getRenderer("javax.faces.Output", "javax.faces.Link"));
-        assertNotNull(rk.getRenderer("javax.faces.Output", "javax.faces.Text"));
-        assertNotNull(rk.getRenderer("javax.faces.Panel", "javax.faces.Grid"));
-        assertNotNull(rk.getRenderer("javax.faces.Panel", "javax.faces.Group"));
+            rk.getRenderer("jakarta.faces.Output", "jakarta.faces.Label"));
+        assertNotNull(rk.getRenderer("jakarta.faces.Output", "jakarta.faces.Link"));
+        assertNotNull(rk.getRenderer("jakarta.faces.Output", "jakarta.faces.Text"));
+        assertNotNull(rk.getRenderer("jakarta.faces.Panel", "jakarta.faces.Grid"));
+        assertNotNull(rk.getRenderer("jakarta.faces.Panel", "jakarta.faces.Group"));
         assertNotNull(
-            rk.getRenderer("javax.faces.SelectBoolean", "javax.faces.Checkbox"));
+            rk.getRenderer("jakarta.faces.SelectBoolean", "jakarta.faces.Checkbox"));
         assertNotNull(
-            rk.getRenderer("javax.faces.SelectMany", "javax.faces.Checkbox"));
+            rk.getRenderer("jakarta.faces.SelectMany", "jakarta.faces.Checkbox"));
         assertNotNull(
-            rk.getRenderer("javax.faces.SelectMany", "javax.faces.Listbox"));
+            rk.getRenderer("jakarta.faces.SelectMany", "jakarta.faces.Listbox"));
         assertNotNull(
-            rk.getRenderer("javax.faces.SelectMany", "javax.faces.Menu"));
+            rk.getRenderer("jakarta.faces.SelectMany", "jakarta.faces.Menu"));
         assertNotNull(
-            rk.getRenderer("javax.faces.SelectOne", "javax.faces.Listbox"));
+            rk.getRenderer("jakarta.faces.SelectOne", "jakarta.faces.Listbox"));
         assertNotNull(
-            rk.getRenderer("javax.faces.SelectOne", "javax.faces.Menu"));
+            rk.getRenderer("jakarta.faces.SelectOne", "jakarta.faces.Menu"));
         assertNotNull(
-            rk.getRenderer("javax.faces.SelectOne", "javax.faces.Radio"));
+            rk.getRenderer("jakarta.faces.SelectOne", "jakarta.faces.Radio"));
     }
 
     // Check that all required Validators have been registered
@@ -414,11 +414,11 @@ public class ConfigFileBean {
         Application application = fc.getApplication();
 
         assertTrue(application.createValidator
-                   ("javax.faces.DoubleRange") instanceof DoubleRangeValidator);
+                   ("jakarta.faces.DoubleRange") instanceof DoubleRangeValidator);
         assertTrue(application.createValidator
-                   ("javax.faces.Length") instanceof LengthValidator);
+                   ("jakarta.faces.Length") instanceof LengthValidator);
         assertTrue(application.createValidator
-                   ("javax.faces.LongRange") instanceof LongRangeValidator);
+                   ("jakarta.faces.LongRange") instanceof LongRangeValidator);
     }
 
     // Check whether embed configuration occurred or did not occur
@@ -534,13 +534,13 @@ public class ConfigFileBean {
     };
 
     private String rendersChildrenTrue[][] = {
-        {"javax.faces.Command", "javax.faces.Link"},
-        {"javax.faces.Data", "javax.faces.Table"},
-        {"javax.faces.Output", "javax.faces.Link"},
-        {"javax.faces.Panel", "javax.faces.Grid"},
-        {"javax.faces.Panel", "javax.faces.Group"},
-        {"javax.faces.Command", "javax.faces.Button"},
-        {"javax.faces.Form", "javax.faces.Form"}
+        {"jakarta.faces.Command", "jakarta.faces.Link"},
+        {"jakarta.faces.Data", "jakarta.faces.Table"},
+        {"jakarta.faces.Output", "jakarta.faces.Link"},
+        {"jakarta.faces.Panel", "jakarta.faces.Grid"},
+        {"jakarta.faces.Panel", "jakarta.faces.Group"},
+        {"jakarta.faces.Command", "jakarta.faces.Button"},
+        {"jakarta.faces.Form", "jakarta.faces.Form"}
     };
 
 

@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletContext;
 
 public class IterationIdManager {
     

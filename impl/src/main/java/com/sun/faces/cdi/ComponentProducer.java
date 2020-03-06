@@ -16,10 +16,10 @@
 
 package com.sun.faces.cdi;
 
-import static javax.faces.component.UIComponent.getCurrentComponent;
+import static jakarta.faces.component.UIComponent.getCurrentComponent;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">

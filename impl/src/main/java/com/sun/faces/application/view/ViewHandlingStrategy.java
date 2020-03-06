@@ -20,23 +20,23 @@ import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.getStateManager;
 import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.notNull;
+import static jakarta.faces.component.UIViewRoot.COMPONENT_TYPE;
 import static java.util.logging.Level.FINE;
-import static javax.faces.component.UIViewRoot.COMPONENT_TYPE;
 
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
  * <p>
@@ -66,7 +66,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
 
 
     /**
-     * @see ViewDeclarationLanguage#restoreView(javax.faces.context.FacesContext, String)
+     * @see ViewDeclarationLanguage#restoreView(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public UIViewRoot restoreView(FacesContext ctx, String viewId) {
@@ -103,7 +103,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
     }
     
     /**
-     * @see ViewDeclarationLanguage#createView(javax.faces.context.FacesContext, String)
+     * @see ViewDeclarationLanguage#createView(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public UIViewRoot createView(FacesContext ctx, String viewId) {

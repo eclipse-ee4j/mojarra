@@ -17,10 +17,11 @@
 package com.sun.faces.taglib.jsf_core;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.webapp.UIComponentELTag;
 
 /**
  * <p>Tag implementation that creates a {@link UIOutput} instance
@@ -62,13 +63,13 @@ public class VerbatimTag extends UIComponentELTag {
 
     @Override
     public String getRendererType() {
-        return "javax.faces.Text";
+        return "jakarta.faces.Text";
     }
 
 
     @Override
     public String getComponentType() {
-        return "javax.faces.Output";
+        return "jakarta.faces.Output";
     }
 
 

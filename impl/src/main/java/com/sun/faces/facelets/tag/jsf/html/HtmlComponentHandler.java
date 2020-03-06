@@ -16,9 +16,9 @@
 
 package com.sun.faces.facelets.tag.jsf.html;
 
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.MetaRuleset;
 
 /**
  * @author Jacob Hookom

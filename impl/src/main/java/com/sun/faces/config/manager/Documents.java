@@ -30,7 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
-import javax.faces.application.ApplicationConfigurationPopulator;
 import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,6 +45,8 @@ import com.sun.faces.config.manager.tasks.FindConfigResourceURIsTask;
 import com.sun.faces.config.manager.tasks.ParseConfigResourceToDOMTask;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.ApplicationConfigurationPopulator;
 
 public class Documents {
     
@@ -178,7 +179,7 @@ public class Documents {
     /**
      * <p>
      * Sort the <code>faces-config</code> documents found on the classpath
-     * and those specified by the <code>javax.faces.CONFIG_FILES</code> context
+     * and those specified by the <code>jakarta.faces.CONFIG_FILES</code> context
      * init parameter.
      * </p>
      *

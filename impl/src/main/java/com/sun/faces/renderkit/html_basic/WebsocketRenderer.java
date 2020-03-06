@@ -19,27 +19,27 @@
 package com.sun.faces.renderkit.html_basic;
 
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
-import static javax.faces.component.behavior.ClientBehaviorContext.createClientBehaviorContext;
+import static jakarta.faces.component.behavior.ClientBehaviorContext.createClientBehaviorContext;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIWebsocket;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.PostAddToViewEvent;
-
 import com.sun.faces.push.WebsocketChannelManager;
 import com.sun.faces.push.WebsocketFacesListener;
 import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIWebsocket;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.PostAddToViewEvent;
 
 /**
  * <b>WebsocketRenderer</b> is a class that renders the <code>jsf.push.init()</code> script and decodes any client
@@ -54,7 +54,7 @@ public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSys
 
     // Constants ------------------------------------------------------------------------------------------------------
 
-    public static final String RENDERER_TYPE = "javax.faces.Websocket";
+    public static final String RENDERER_TYPE = "jakarta.faces.Websocket";
 
     private static final String SCRIPT_INIT = "jsf.push.init('%s','%s','%s',%s,%s,%s);";
 

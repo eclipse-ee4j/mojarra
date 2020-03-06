@@ -16,9 +16,14 @@
 
 package com.sun.faces.systest.model;
 
-import javax.faces.context.*;
-import javax.faces.component.*;
-import javax.faces.convert.*;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+
+import jakarta.faces.component.*;
+import jakarta.faces.context.*;
+import jakarta.faces.convert.*;
 public class SpecialConverter implements Converter {
         public Object getAsObject(FacesContext context,
                                   UIComponent component,

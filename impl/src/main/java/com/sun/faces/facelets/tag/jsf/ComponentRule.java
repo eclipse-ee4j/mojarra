@@ -19,8 +19,9 @@ package com.sun.faces.facelets.tag.jsf;
 import com.sun.faces.facelets.el.LegacyValueBinding;
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.*;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.*;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

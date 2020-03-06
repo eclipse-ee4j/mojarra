@@ -29,7 +29,7 @@ import javax.faces.render.FacesRenderer;
 import javax.faces.render.Renderer;
 
 
-@FacesRenderer(componentFamily="javax.faces.Output", rendererType="jsp.Plugin")
+@FacesRenderer(componentFamily="jakarta.faces.Output", rendererType="jsp.Plugin")
 public class PluginRenderer extends Renderer {
 
     final String [] passthruAttrs = {

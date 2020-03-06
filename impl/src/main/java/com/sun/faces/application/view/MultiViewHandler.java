@@ -27,12 +27,12 @@ import static com.sun.faces.util.Util.isExactMapped;
 import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.isViewIdExactMappedToFacesServlet;
 import static com.sun.faces.util.Util.notNull;
+import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
-import static javax.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -52,26 +52,27 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ViewHandler;
-import javax.faces.application.ViewVisitOption;
-import javax.faces.component.UIViewParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.push.PushContext;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
-import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.application.ViewVisitOption;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.push.PushContext;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.view.ViewMetadata;
 
 /**
  * This {@link ViewHandler} implementation handles both JSP-based and
@@ -106,9 +107,9 @@ public class MultiViewHandler extends ViewHandler {
 
 
     /**
-     * Call the default implementation of {@link javax.faces.application.ViewHandler#initView(javax.faces.context.FacesContext)}
+     * Call the default implementation of {@link jakarta.faces.application.ViewHandler#initView(jakarta.faces.context.FacesContext)}
      *
-     * @see javax.faces.application.ViewHandler#initView(javax.faces.context.FacesContext)
+     * @see jakarta.faces.application.ViewHandler#initView(jakarta.faces.context.FacesContext)
      */
     @Override
     public void initView(FacesContext context) throws FacesException {
@@ -117,10 +118,10 @@ public class MultiViewHandler extends ViewHandler {
 
     /**
      * <p>
-     * Call {@link ViewDeclarationLanguage#restoreView(javax.faces.context.FacesContext, String)}.
+     * Call {@link ViewDeclarationLanguage#restoreView(jakarta.faces.context.FacesContext, String)}.
      * </p>
      *
-     * @see ViewHandler#restoreView(javax.faces.context.FacesContext, String)   
+     * @see ViewHandler#restoreView(jakarta.faces.context.FacesContext, String)   
      */
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId) {
@@ -136,10 +137,10 @@ public class MultiViewHandler extends ViewHandler {
     /**
      * <p>
      * Derive the physical view ID (i.e. the physical resource) and call
-     * call {@link ViewDeclarationLanguage#createView(javax.faces.context.FacesContext, String)}.
+     * call {@link ViewDeclarationLanguage#createView(jakarta.faces.context.FacesContext, String)}.
      * </p>
      *
-     * @see ViewHandler#restoreView(javax.faces.context.FacesContext, String)
+     * @see ViewHandler#restoreView(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public UIViewRoot createView(FacesContext context, String viewId) {
@@ -154,11 +155,11 @@ public class MultiViewHandler extends ViewHandler {
     
     /**
      * <p>
-     * Call {@link ViewDeclarationLanguage#renderView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot)}
+     * Call {@link ViewDeclarationLanguage#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)}
      * if the view can be rendered.
      * </p>
      *
-     * @see ViewHandler#renderView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot)
+     * @see ViewHandler#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)
      */
     @Override
     public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
@@ -175,7 +176,7 @@ public class MultiViewHandler extends ViewHandler {
      * This code is currently common to all {@link ViewHandlingStrategy} instances.
      * </p>
      *
-     * @see ViewHandler#calculateLocale(javax.faces.context.FacesContext)
+     * @see ViewHandler#calculateLocale(jakarta.faces.context.FacesContext)
      */
     @Override
     public Locale calculateLocale(FacesContext context) {
@@ -212,7 +213,7 @@ public class MultiViewHandler extends ViewHandler {
      * This code is currently common to all {@link ViewHandlingStrategy} instances.
      * </p>
      *
-     * @see ViewHandler#calculateRenderKitId(javax.faces.context.FacesContext)
+     * @see ViewHandler#calculateRenderKitId(jakarta.faces.context.FacesContext)
      */
     @Override
     public String calculateRenderKitId(FacesContext context) {
@@ -237,7 +238,7 @@ public class MultiViewHandler extends ViewHandler {
      * This code is currently common to all {@link ViewHandlingStrategy} instances.
      * </p>
      *
-     * @see ViewHandler#writeState(javax.faces.context.FacesContext)
+     * @see ViewHandler#writeState(jakarta.faces.context.FacesContext)
      */
     @Override
     public void writeState(FacesContext context) throws IOException {
@@ -271,7 +272,7 @@ public class MultiViewHandler extends ViewHandler {
      * This code is currently common to all {@link ViewHandlingStrategy} instances.
      * </p>
      *
-     * @see ViewHandler#getActionURL(javax.faces.context.FacesContext, String)
+     * @see ViewHandler#getActionURL(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public String getActionURL(FacesContext context, String viewId) {
@@ -325,7 +326,7 @@ public class MultiViewHandler extends ViewHandler {
      * This code is currently common to all {@link ViewHandlingStrategy} instances.
      * </p>
      *
-     * @see ViewHandler#getResourceURL(javax.faces.context.FacesContext, String)
+     * @see ViewHandler#getResourceURL(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public String getResourceURL(FacesContext context, String path) {
@@ -380,7 +381,7 @@ public class MultiViewHandler extends ViewHandler {
     }
 
     /**
-     * @see ViewHandler#getRedirectURL(javax.faces.context.FacesContext, String, java.util.Map, boolean)
+     * @see ViewHandler#getRedirectURL(jakarta.faces.context.FacesContext, String, java.util.Map, boolean)
      */
     @Override
     public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
@@ -439,7 +440,7 @@ public class MultiViewHandler extends ViewHandler {
     }
 
     /**
-     * @see ViewHandler#getViewDeclarationLanguage(javax.faces.context.FacesContext, String)
+     * @see ViewHandler#getViewDeclarationLanguage(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
@@ -514,7 +515,7 @@ public class MultiViewHandler extends ViewHandler {
     /**
      * <p>Adjust the viewID per the requirements of {@link #renderView}.</p>
      *
-     * @param context current {@link javax.faces.context.FacesContext}
+     * @param context current {@link jakarta.faces.context.FacesContext}
      * @param viewId  incoming view ID
      * @return the view ID with an altered suffix mapping (if necessary)
      */
@@ -871,11 +872,11 @@ public class MultiViewHandler extends ViewHandler {
     private String legacyConvertViewId(String viewId, int length, int extensionIndex, StringBuilder buffer) {
 
         // In 1.2, the viewId was converted by replacing the extension
-        // with the single extension specified by javax.faces.DEFAULT_SUFFIX,
-        // which defaulted to ".jsp".  In 2.0, javax.faces.DEFAULT_SUFFIX
-        // may specify multiple extensions.  If javax.faces.DEFAULT_SUFFIX is
+        // with the single extension specified by jakarta.faces.DEFAULT_SUFFIX,
+        // which defaulted to ".jsp".  In 2.0, jakarta.faces.DEFAULT_SUFFIX
+        // may specify multiple extensions.  If jakarta.faces.DEFAULT_SUFFIX is
         // explicitly set, we honor it and pick off the first specified
-        // extension.  If javax.faces.DEFAULT_SUFFIX is not explicitly set,
+        // extension.  If jakarta.faces.DEFAULT_SUFFIX is not explicitly set,
         // we honor the default 1.2 behavior and use ".jsp" as the suffix.
 
         String extension = (extensionsSet && 

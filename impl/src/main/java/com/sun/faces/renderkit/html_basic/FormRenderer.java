@@ -25,18 +25,18 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /** <B>FormRenderer</B> is a class that renders a <code>UIForm<code> as a Form. */
 
@@ -151,7 +151,7 @@ public class FormRenderer extends HtmlBasicRenderer {
             (!encodedPartialActionURL.equals(encodedActionURL))) {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", "type");
-            writer.writeAttribute("name", getParameterName(context, "javax.faces.encodedURL"), null);
+            writer.writeAttribute("name", getParameterName(context, "jakarta.faces.encodedURL"), null);
             writer.writeAttribute("value", encodedPartialActionURL, "value");
             writer.endElement("input");
             writer.write('\n');

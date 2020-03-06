@@ -21,7 +21,8 @@ import javax.servlet.ServletContext;
 import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;

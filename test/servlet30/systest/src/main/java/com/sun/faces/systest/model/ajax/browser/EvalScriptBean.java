@@ -91,7 +91,7 @@ public class EvalScriptBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("html",null);
                 writer.startElement("head",null);
                 writer.startElement("title",null);
@@ -129,7 +129,7 @@ public class EvalScriptBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewRoot");
+                writer.startUpdate("jakarta.faces.ViewRoot");
                 writer.startElement("span",null);
                 writer.writeAttribute("id","target","id");
                 writer.endElement("span");
@@ -158,7 +158,7 @@ public class EvalScriptBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewBody");
+                writer.startUpdate("jakarta.faces.ViewBody");
                 writer.startElement("body",null);
                 writer.startElement("span",null);
                 writer.writeAttribute("id","target","id");

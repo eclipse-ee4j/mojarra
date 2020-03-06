@@ -20,13 +20,13 @@ import static com.sun.faces.application.ApplicationResourceBundle.DEFAULT_KEY;
 import static com.sun.faces.config.ConfigManager.INJECTION_PROVIDER_KEY;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesProjectStage;
 import static com.sun.faces.util.ReflectionUtils.lookupConstructor;
+import static jakarta.faces.FactoryFinder.APPLICATION_FACTORY;
+import static jakarta.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Production;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
-import static javax.faces.FactoryFinder.APPLICATION_FACTORY;
-import static javax.faces.application.ProjectStage.Development;
-import static javax.faces.application.ProjectStage.Production;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -38,12 +38,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.w3c.dom.NamedNodeMap;
@@ -59,6 +53,13 @@ import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderException;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

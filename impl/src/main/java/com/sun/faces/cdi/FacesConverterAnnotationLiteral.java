@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.convert.FacesConverter;
+
+import jakarta.faces.convert.FacesConverter;
 
 /**
  * A helper class.

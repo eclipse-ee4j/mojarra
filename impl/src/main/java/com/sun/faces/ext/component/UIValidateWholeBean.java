@@ -17,25 +17,26 @@
 package com.sun.faces.ext.component;
 
 import static com.sun.faces.util.Util.reverse;
+import static jakarta.faces.validator.BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN;
+import static jakarta.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME;
+import static jakarta.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
 import static java.lang.Boolean.TRUE;
-import static javax.faces.validator.BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN;
-import static javax.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME;
-import static javax.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.FacesException;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.validator.Validator;
 import javax.validation.groups.Default;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.validator.Validator;
 
 public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
 

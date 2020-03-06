@@ -19,7 +19,7 @@ package com.sun.faces.context;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EXECUTE_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
-import static javax.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
+import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -32,34 +32,34 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.component.visit.VisitContextWrapper;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.PhaseId;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.component.visit.PartialVisitContext;
 import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.component.visit.VisitContextWrapper;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
  public class PartialViewContextImpl extends PartialViewContext {
 
@@ -92,7 +92,7 @@ import com.sun.faces.util.Util;
     // ---------------------------------------------- Methods from PartialViewContext
 
     /**
-     * @see javax.faces.context.PartialViewContext#isAjaxRequest()
+     * @see jakarta.faces.context.PartialViewContext#isAjaxRequest()
      */
     @Override
     public boolean isAjaxRequest() {
@@ -111,7 +111,7 @@ import com.sun.faces.util.Util;
     }
 
     /**
-     * @see javax.faces.context.PartialViewContext#isPartialRequest()
+     * @see jakarta.faces.context.PartialViewContext#isPartialRequest()
      */
     @Override
     public boolean isPartialRequest() {
@@ -128,7 +128,7 @@ import com.sun.faces.util.Util;
 
 
     /**
-     * @see javax.faces.context.PartialViewContext#isExecuteAll()
+     * @see jakarta.faces.context.PartialViewContext#isExecuteAll()
      */
     @Override
     public boolean isExecuteAll() {
@@ -140,7 +140,7 @@ import com.sun.faces.util.Util;
     }
 
     /**
-     * @see javax.faces.context.PartialViewContext#isRenderAll()
+     * @see jakarta.faces.context.PartialViewContext#isRenderAll()
      */
     @Override
     public boolean isRenderAll() {
@@ -156,7 +156,7 @@ import com.sun.faces.util.Util;
     }
     
     /**
-     * @see javax.faces.context.PartialViewContext#setRenderAll(boolean) 
+     * @see jakarta.faces.context.PartialViewContext#setRenderAll(boolean) 
      */
     @Override
     public void setRenderAll(boolean renderAll) {
@@ -178,7 +178,7 @@ import com.sun.faces.util.Util;
 
 
     /**
-     * @see javax.faces.context.PartialViewContext#getExecuteIds()
+     * @see jakarta.faces.context.PartialViewContext#getExecuteIds()
      */
     @Override
     public Collection<String> getExecuteIds() {
@@ -204,7 +204,7 @@ import com.sun.faces.util.Util;
     }
 
     /**
-     * @see javax.faces.context.PartialViewContext#getRenderIds()
+     * @see jakarta.faces.context.PartialViewContext#getRenderIds()
      */
     @Override
     public Collection<String> getRenderIds() {
@@ -219,7 +219,7 @@ import com.sun.faces.util.Util;
     }
 
 	/**
-	 * @see javax.faces.context.PartialViewContext#getEvalScripts()
+	 * @see jakarta.faces.context.PartialViewContext#getEvalScripts()
 	 */
 	@Override
 	public List<String> getEvalScripts() {
@@ -233,7 +233,7 @@ import com.sun.faces.util.Util;
 	}
 
     /**
-     * @see PartialViewContext#processPartial(javax.faces.event.PhaseId) 
+     * @see PartialViewContext#processPartial(jakarta.faces.event.PhaseId) 
      */
     @Override
     public void processPartial(PhaseId phaseId) {
@@ -334,7 +334,7 @@ import com.sun.faces.util.Util;
     }
 
     /**
-     * @see javax.faces.context.PartialViewContext#getPartialResponseWriter()
+     * @see jakarta.faces.context.PartialViewContext#getPartialResponseWriter()
      */
     @Override
     public PartialResponseWriter getPartialResponseWriter() {
@@ -346,7 +346,7 @@ import com.sun.faces.util.Util;
     }
 
     /**
-     * @see javax.faces.context.PartialViewContext#release()
+     * @see jakarta.faces.context.PartialViewContext#release()
      */
     @Override
     public void release() {
@@ -483,7 +483,7 @@ import com.sun.faces.util.Util;
               && !resourceHandler.isResourceRendered(context, name, library)) 
             {
                 if (!updateStarted) {
-                    writer.startUpdate("javax.faces.Resource");
+                    writer.startUpdate("jakarta.faces.Resource");
                     updateStarted = true;
                 }
 

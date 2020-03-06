@@ -16,11 +16,11 @@
 
 package com.sun.faces.context;
 
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerFactory;
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.application.ApplicationAssociate;
+
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerFactory;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Default ExceptionHandlerFactory implementation.
@@ -37,7 +37,7 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory {
 
     
     /**
-     * @see javax.faces.context.ExceptionHandlerFactory#getExceptionHandler()
+     * @see jakarta.faces.context.ExceptionHandlerFactory#getExceptionHandler()
      */
     @Override
     public ExceptionHandler getExceptionHandler() {

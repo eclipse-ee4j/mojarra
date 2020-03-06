@@ -20,16 +20,17 @@ import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.context.FlashFactory;
+
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.faces.FactoryFinder;
-import javax.faces.context.Flash;
-import javax.faces.context.FlashFactory;
 
 /**
  * <p>Provide a feature semantically identical to the <a target="_"

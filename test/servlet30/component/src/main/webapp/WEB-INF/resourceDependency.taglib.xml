@@ -25,7 +25,7 @@
             Writes a hello world.
         </description>
         <component>
-            <component-type>javax.faces.Output</component-type>
+            <component-type>jakarta.faces.Output</component-type>
             <renderer-type>com.sun.faces.test.servlet30.component.ResourceDependencyRenderer</renderer-type>
         </component>
     </tag>

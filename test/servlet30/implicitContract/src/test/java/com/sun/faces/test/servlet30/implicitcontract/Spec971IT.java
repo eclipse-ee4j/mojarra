@@ -118,7 +118,7 @@ public class Spec971IT {
     }
     
     private String synthesizeResourceRef(String contextName, String resourceName, String contractName) {
-        String result = "url(/" + contextName + "/faces/javax.faces.resource/" + 
+        String result = "url(/" + contextName + "/faces/jakarta.faces.resource/" + 
                 resourceName + "?con=" + contractName + ")";
         return result;
     }

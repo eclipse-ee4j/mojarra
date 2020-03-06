@@ -16,13 +16,16 @@
 
 package com.sun.faces.ext.component;
 
+import static jakarta.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME;
+import static jakarta.faces.validator.BeanValidator.VALIDATOR_ID;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.context.FacesContext;
-import static javax.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME;
-import static javax.faces.validator.BeanValidator.VALIDATOR_ID;
+
 import javax.validation.groups.Default;
+
+import jakarta.faces.context.FacesContext;
 
 class MultiFieldValidationUtils {
     

@@ -26,18 +26,18 @@
     <render-kit-id>CUSTOM</render-kit-id>
     <render-kit-class>com.sun.faces.test.servlet30.renderkit.CustomRenderKitImpl</render-kit-class>
     <renderer>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Text</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Text</renderer-type>
       <renderer-class>com.sun.faces.test.servlet30.renderkit.TextRenderer</renderer-class>
     </renderer>
     <renderer>
-      <component-family>javax.faces.Form</component-family>
-      <renderer-type>javax.faces.Form</renderer-type>
+      <component-family>jakarta.faces.Form</component-family>
+      <renderer-type>jakarta.faces.Form</renderer-type>
       <renderer-class>com.sun.faces.test.servlet30.renderkit.FormRenderer</renderer-class>
     </renderer>
     <renderer>
-      <component-family>javax.faces.Command</component-family>
-      <renderer-type>javax.faces.Button</renderer-type>
+      <component-family>jakarta.faces.Command</component-family>
+      <renderer-type>jakarta.faces.Button</renderer-type>
       <renderer-class>com.sun.faces.test.servlet30.renderkit.ButtonRenderer</renderer-class>
     </renderer>
 

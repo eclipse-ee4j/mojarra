@@ -35,7 +35,7 @@
   <tag>
                                                                                                                            
     <name>converter</name>
-    <tag-class>javax.faces.webapp.ConverterTag</tag-class>
+    <tag-class>jakarta.faces.webapp.ConverterTag</tag-class>
     <body-content>empty</body-content>
     <description>
       Register a named Converter instance on the UIComponent
@@ -169,7 +169,7 @@
       <name>converter</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <type>javax.faces.convert.Converter</type>
+      <type>jakarta.faces.convert.Converter</type>
     </attribute>
     <attribute>
       <name>value</name>

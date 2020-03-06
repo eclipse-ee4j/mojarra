@@ -22,8 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.el.ValueExpression;
+
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
 
 /**
@@ -32,24 +33,24 @@ import javax.el.ValueExpression;
  * where a parent component is expecting a single
  * component to be present, but the application
  * wishes to render more than one.</p>
- * <p>By default, the <code>rendererType</code> property must be set to "<code>javax.faces.passthrough.Element</code>".
+ * <p>By default, the <code>rendererType</code> property must be set to "<code>jakarta.faces.passthrough.Element</code>".
  * This value can be changed by calling the <code>setRendererType()</code> method.</p>
  */
-public class PassthroughElement extends javax.faces.component.UIPanel 
+public class PassthroughElement extends jakarta.faces.component.UIPanel 
     implements ClientBehaviorHolder {
 
-    private static final String OPTIMIZED_PACKAGE = "javax.faces.component.";
+    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public PassthroughElement() {
         super();
-        setRendererType("javax.faces.passthrough.Element");
+        setRendererType("jakarta.faces.passthrough.Element");
     }
 
 
     /**
      * <p>The standard component type for this component.</p>
      */
-    public static final String COMPONENT_TYPE = "javax.faces.Panel";
+    public static final String COMPONENT_TYPE = "jakarta.faces.Panel";
 
 
     protected enum PropertyKeys {
@@ -315,12 +316,12 @@ public class PassthroughElement extends javax.faces.component.UIPanel
 
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) this.getAttributes().get(
-            "javax.faces.component.UIComponentBase.attributesThatAreSet");
+            "jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
             if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
                 setAttributes = new ArrayList<>(6);
-                this.getAttributes().put("javax.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
+                this.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }
         }
         if (setAttributes != null) {

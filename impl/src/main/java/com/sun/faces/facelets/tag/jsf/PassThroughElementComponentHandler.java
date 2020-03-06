@@ -17,15 +17,17 @@
 package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+
 import java.util.Map;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.render.Renderer;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagException;
 
 public class PassThroughElementComponentHandler extends ComponentHandler {
     

@@ -17,7 +17,7 @@
 --%>
 
 <%@ page contentType="text/html" language="java" %>
-<%@ page import="javax.faces.context.FacesContext, java.util.Map" %>
+<%@ page import="jakarta.faces.context.FacesContext, java.util.Map" %>
 <%
     FacesContext ctx = FacesContext.getCurrentInstance();
     Map<String,Object> appMap = ctx.getExternalContext().getApplicationMap();

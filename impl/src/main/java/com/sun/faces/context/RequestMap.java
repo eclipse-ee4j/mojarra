@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
 import com.sun.faces.util.Util;
 
 /**
- * @see javax.faces.context.ExternalContext#getRequestMap() 
+ * @see jakarta.faces.context.ExternalContext#getRequestMap() 
  */
 public class RequestMap extends BaseContextMap<Object> {
 

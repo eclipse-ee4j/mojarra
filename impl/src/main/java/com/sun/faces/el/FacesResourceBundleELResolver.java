@@ -20,13 +20,15 @@ import com.sun.faces.application.ApplicationResourceBundle;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
+
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;

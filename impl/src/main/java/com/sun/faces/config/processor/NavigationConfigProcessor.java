@@ -29,10 +29,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -43,6 +39,11 @@ import org.w3c.dom.NodeList;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

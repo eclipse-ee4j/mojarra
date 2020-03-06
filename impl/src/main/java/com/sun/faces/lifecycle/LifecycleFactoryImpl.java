@@ -23,19 +23,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
  * <B>LifecycleFactoryImpl</B> is the stock implementation of Lifecycle
  * in the JSF RI. <P>
  *
- * @see	javax.faces.lifecycle.LifecycleFactory
+ * @see	jakarta.faces.lifecycle.LifecycleFactory
  */
 
 public class LifecycleFactoryImpl extends LifecycleFactory {

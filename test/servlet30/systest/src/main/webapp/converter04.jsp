@@ -39,7 +39,7 @@
 
       <h:outputText value="BigDecimal1:" />
       <h:inputText id="bd1"> 
-        <f:converter converterId="javax.faces.BigDecimal" />
+        <f:converter converterId="jakarta.faces.BigDecimal" />
       </h:inputText>
       <h:message for="bd1" showSummary="true"/>
 
@@ -47,7 +47,7 @@
 
       <h:outputText value="BigDecimal2:" />
       <h:inputText id="bd2" label="#{customBundle.BigDecimalLabel}"> 
-        <f:converter converterId="javax.faces.BigDecimal" />
+        <f:converter converterId="jakarta.faces.BigDecimal" />
       </h:inputText>
       <h:message for="bd2" showSummary="true" />
 
@@ -55,7 +55,7 @@
                                                                                 
       <h:outputText value="BigInteger1:" />
       <h:inputText id="bi1">
-        <f:converter converterId="javax.faces.BigInteger" />
+        <f:converter converterId="jakarta.faces.BigInteger" />
       </h:inputText>
       <h:message for="bi1" showSummary="true"/>
                                                                                 
@@ -63,7 +63,7 @@
                                                                                 
       <h:outputText value="BigInteger2:" />
       <h:inputText id="bi2" label="BigInteger2">
-        <f:converter converterId="javax.faces.BigInteger" />
+        <f:converter converterId="jakarta.faces.BigInteger" />
       </h:inputText>
       <h:message for="bi2" showSummary="true" />
 
@@ -71,7 +71,7 @@
                                                                                 
       <h:outputText value="Boolean1:" />
       <h:selectBooleanCheckbox id="b1" value="idontknow">
-        <f:converter converterId="javax.faces.Boolean" />
+        <f:converter converterId="jakarta.faces.Boolean" />
       </h:selectBooleanCheckbox>
       <h:message for="b1" showSummary="true" />
 
@@ -80,7 +80,7 @@
                                                                                 
       <h:outputText value="Boolean2:" />
       <h:selectBooleanCheckbox id="b2" label="Boolean2" value="true">
-        <f:converter converterId="javax.faces.Boolean" />
+        <f:converter converterId="jakarta.faces.Boolean" />
       </h:selectBooleanCheckbox>
       <h:message for="b2" showSummary="true" />
 
@@ -88,7 +88,7 @@
                                                                                          
       <h:outputText value="Byte1:" />
       <h:inputText id="byte1">
-        <f:converter converterId="javax.faces.Byte" />
+        <f:converter converterId="jakarta.faces.Byte" />
       </h:inputText>
       <h:message for="byte1"  showSummary="true"/>
                                                                                          
@@ -96,7 +96,7 @@
                                                                                          
       <h:outputText value="Byte2:" />
       <h:inputText id="byte2" label="Byte2">
-        <f:converter converterId="javax.faces.Byte" />
+        <f:converter converterId="jakarta.faces.Byte" />
       </h:inputText>
       <h:message for="byte2" showSummary="true" />
 
@@ -104,7 +104,7 @@
                                                                                          
       <h:outputText value="Character1:" />
       <h:inputText id="char1">
-        <f:converter converterId="javax.faces.Character" />
+        <f:converter converterId="jakarta.faces.Character" />
       </h:inputText>
       <h:message for="char1"  showSummary="true"/>
                                                                                          
@@ -112,7 +112,7 @@
                                                                                          
       <h:outputText value="Character2:" />
       <h:inputText id="char2" label="Character2">
-        <f:converter converterId="javax.faces.Character" />
+        <f:converter converterId="jakarta.faces.Character" />
       </h:inputText>
       <h:message for="char2" showSummary="true" />
 
@@ -168,7 +168,7 @@
 
       <h:outputText value="Double1:" />
       <h:inputText id="double1" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
       <h:message for="double1"  showSummary="true"/>
 
@@ -176,7 +176,7 @@
 
       <h:outputText value="Double2:" />
       <h:inputText id="double2" label="Double2" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Double" />
+         <f:converter converterId="jakarta.faces.Double" />
       </h:inputText>
       <h:message for="double2" showSummary="true" />
 
@@ -184,7 +184,7 @@
                                                                                          
       <h:outputText value="Float1:" />
       <h:inputText id="float1" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Float" />
+         <f:converter converterId="jakarta.faces.Float" />
       </h:inputText>
       <h:message for="float1"  showSummary="true"/>
                                                                                          
@@ -192,7 +192,7 @@
                                                                                          
       <h:outputText value="Float2:" />
       <h:inputText id="float2" label="Float2" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Float" />
+         <f:converter converterId="jakarta.faces.Float" />
       </h:inputText>
       <h:message for="float2" showSummary="true" />
                                                                                          
@@ -200,7 +200,7 @@
                                                                                          
       <h:outputText value="Integer1:" />
       <h:inputText id="integer1" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Integer" />
+         <f:converter converterId="jakarta.faces.Integer" />
       </h:inputText>
       <h:message for="integer1"  showSummary="true"/>
                                                                                          
@@ -208,7 +208,7 @@
                                                                                          
       <h:outputText value="Integer2:" />
       <h:inputText id="integer2" label="Integer2" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Integer" />
+         <f:converter converterId="jakarta.faces.Integer" />
       </h:inputText>
       <h:message for="integer2" showSummary="true" />
                                                                                          
@@ -216,7 +216,7 @@
                                                                                          
       <h:outputText value="Long1:" />
       <h:inputText id="long1" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Long" />
+         <f:converter converterId="jakarta.faces.Long" />
       </h:inputText>
       <h:message for="long1"  showSummary="true"/>
                                                                                          
@@ -224,7 +224,7 @@
                                                                                          
       <h:outputText value="Long2:" />
       <h:inputText id="long2" label="Long2" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Long" />
+         <f:converter converterId="jakarta.faces.Long" />
       </h:inputText>
       <h:message for="long2" showSummary="true" />
 
@@ -296,7 +296,7 @@
                                                                                          
       <h:outputText value="Short1:" />
       <h:inputText id="short1" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Short" />
+         <f:converter converterId="jakarta.faces.Short" />
       </h:inputText>
       <h:message for="short1"  showSummary="true"/>
                                                                                          
@@ -304,7 +304,7 @@
                                                                                          
       <h:outputText value="Short2:" />
       <h:inputText id="short2" label="Short2" size="10" maxlength="20">
-         <f:converter converterId="javax.faces.Short" />
+         <f:converter converterId="jakarta.faces.Short" />
       </h:inputText>
       <h:message for="short2" showSummary="true" />
 

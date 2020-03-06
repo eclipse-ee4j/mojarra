@@ -26,16 +26,18 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowHandler;
+
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.component.CompositeComponentStackManager;
 import java.util.HashMap;
-import javax.faces.flow.FlowHandler;
 
 public class ImplicitObjectELResolver extends ELResolver implements ELConstants{
 

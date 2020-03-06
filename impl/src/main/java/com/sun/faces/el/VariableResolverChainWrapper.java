@@ -20,15 +20,16 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
 
 import java.beans.FeatureDescriptor;
 import java.util.*;
 
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
 
 public class VariableResolverChainWrapper extends ELResolver {
     

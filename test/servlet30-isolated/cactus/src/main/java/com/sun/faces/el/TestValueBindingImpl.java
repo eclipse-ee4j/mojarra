@@ -408,7 +408,7 @@ public class TestValueBindingImpl extends ServletFacesTestCase
          * assertTrue(valueBinding.getType(getFacesContext()).getName().equals("javax.servlet.http.Cookie"));
          */
         valueBinding = this
-                .create("initParam['javax.faces.STATE_SAVING_METHOD']");
+                .create("initParam['jakarta.faces.STATE_SAVING_METHOD']");
         assertTrue(valueBinding.getType(getFacesContext()).getName().equals(
                 "java.lang.Object"));   
 

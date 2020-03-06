@@ -17,21 +17,21 @@
 package com.sun.faces.application.applicationimpl;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesProjectStage;
+import static jakarta.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Production;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.INFO;
-import static javax.faces.application.ProjectStage.Development;
-import static javax.faces.application.ProjectStage.Production;
 
 import java.util.logging.Logger;
-
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PostAddToViewEvent;
 
 import com.sun.faces.application.ValidateComponentNesting;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostAddToViewEvent;
 
 public class Stage {
     
@@ -41,7 +41,7 @@ public class Stage {
     
     
     /**
-     * @see javax.faces.application.Application#getProjectStage()
+     * @see jakarta.faces.application.Application#getProjectStage()
      */
     public ProjectStage getProjectStage(Application application) {
 

@@ -21,11 +21,11 @@
   <head>
     <title>component01.jsp</title>
 
-<%@ page import="javax.faces.FactoryFinder"
-%><%@ page import="javax.faces.application.Application"
-%><%@ page import="javax.faces.application.ApplicationFactory"
-%><%@ page import="javax.faces.context.FacesContext"
-%><%@ page import="javax.faces.component.UIInput"
+<%@ page import="jakarta.faces.FactoryFinder"
+%><%@ page import="jakarta.faces.application.Application"
+%><%@ page import="jakarta.faces.application.ApplicationFactory"
+%><%@ page import="jakarta.faces.context.FacesContext"
+%><%@ page import="jakarta.faces.component.UIInput"
 %><%@ page import="javax.el.ValueExpression"
 %>
  <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>

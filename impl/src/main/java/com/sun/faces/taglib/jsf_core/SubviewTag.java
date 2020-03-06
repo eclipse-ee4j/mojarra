@@ -20,17 +20,19 @@ import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.webapp.UIComponentClassicTagBase;
-import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 
 import java.lang.reflect.Method;
 
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+import jakarta.faces.webapp.UIComponentELTag;
+
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.RIConstants;
@@ -59,7 +61,7 @@ public class SubviewTag extends UIComponentELTag {
     @Override
     public String getComponentType() {
 
-        return "javax.faces.NamingContainer";
+        return "jakarta.faces.NamingContainer";
 
     }
 

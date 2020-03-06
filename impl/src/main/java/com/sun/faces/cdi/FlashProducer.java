@@ -20,8 +20,9 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 
 /**
  * <p class="changed_added_2_3">

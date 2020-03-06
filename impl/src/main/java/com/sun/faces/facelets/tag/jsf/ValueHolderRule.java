@@ -18,11 +18,11 @@ package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.facelets.el.LegacyValueBinding;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectBoolean;
-import javax.faces.component.ValueHolder;
-import javax.faces.convert.Converter;
-import javax.faces.view.facelets.*;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectBoolean;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.facelets.*;
 
 /**
  * 

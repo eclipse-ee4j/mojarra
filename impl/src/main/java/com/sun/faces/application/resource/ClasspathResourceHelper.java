@@ -19,7 +19,7 @@ package com.sun.faces.application.resource;
 import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
-import static javax.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Development;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,14 +28,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ResourceResolver;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.impl.DefaultResourceResolver;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ResourceResolver;
 
 
 /**
@@ -113,7 +113,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
     }
     
     /**
-     * @see ResourceHelper#getNonCompressedInputStream(com.sun.faces.application.resource.ResourceInfo, javax.faces.context.FacesContext)
+     * @see ResourceHelper#getNonCompressedInputStream(com.sun.faces.application.resource.ResourceInfo, jakarta.faces.context.FacesContext)
      */
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) throws IOException {
@@ -142,7 +142,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
 
 
     /**
-     * @see ResourceHelper#getURL(com.sun.faces.application.resource.ResourceInfo, javax.faces.context.FacesContext)
+     * @see ResourceHelper#getURL(com.sun.faces.application.resource.ResourceInfo, jakarta.faces.context.FacesContext)
      */
     @Override
     public URL getURL(ResourceInfo resource, FacesContext ctx) {
@@ -166,7 +166,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
 
     
     /**
-     * @see ResourceHelper#findLibrary(String, String, String, javax.faces.context.FacesContext)
+     * @see ResourceHelper#findLibrary(String, String, String, jakarta.faces.context.FacesContext)
      */
     @Override
     public LibraryInfo findLibrary(String libraryName, String localePrefix, String contract, FacesContext ctx) {
@@ -219,7 +219,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
             // try using this class' loader (necessary when running in OSGi)
             basePathURL = this.getClass().getClassLoader().getResource(basePath);
             if (basePathURL == null) {
-                if (null != localePrefix && libraryName.equals("javax.faces")) {
+                if (null != localePrefix && libraryName.equals("jakarta.faces")) {
                     return null;
                 }
                 if (enableMissingResourceLibraryDetection || forceScan) {
@@ -237,7 +237,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
     }
 
     /**
-     * @see ResourceHelper#findResource(LibraryInfo, String, String, boolean, javax.faces.context.FacesContext)
+     * @see ResourceHelper#findResource(LibraryInfo, String, String, boolean, jakarta.faces.context.FacesContext)
      */
     @Override
     public ResourceInfo findResource(LibraryInfo library,

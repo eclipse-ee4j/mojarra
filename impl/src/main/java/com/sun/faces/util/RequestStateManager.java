@@ -19,11 +19,11 @@ package com.sun.faces.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-
 import com.sun.faces.RIConstants;
+
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
 
 /**
  * <p>
@@ -57,7 +57,7 @@ public class RequestStateManager {
         RIConstants.FACES_PREFIX + "ComponentForValue";
 
     /**
-     * Attribute defining the {@link javax.faces.render.RenderKit} being used
+     * Attribute defining the {@link jakarta.faces.render.RenderKit} being used
      * for this request.
      */
     public static final String RENDER_KIT_IMPL_REQ =
@@ -86,7 +86,7 @@ public class RequestStateManager {
         RIConstants.FACES_PREFIX + "taglib.jsf_core.VIEWTAG_STACK";
 
     /**
-     * Attribute to store the {@link javax.faces.webapp.FacesServlet} path of
+     * Attribute to store the {@link jakarta.faces.webapp.FacesServlet} path of
      * the original request.
      */
     public static final String INVOCATION_PATH =

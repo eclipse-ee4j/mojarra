@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.faces.view.facelets.MetadataTarget;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -24,6 +23,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import jakarta.faces.view.facelets.MetadataTarget;
 
 /**
  * 

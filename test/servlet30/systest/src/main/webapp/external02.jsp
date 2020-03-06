@@ -17,7 +17,7 @@
 --%>
 
 <%@ page contentType="text/html"
-%><%@ page import="javax.faces.context.FacesContext"
+%><%@ page import="jakarta.faces.context.FacesContext"
 %><%
 
   // Set the attribute key and values we'll use throughout the test

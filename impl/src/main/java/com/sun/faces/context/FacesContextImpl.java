@@ -31,24 +31,6 @@ import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
 import javax.el.ExpressionFactory;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.PartialViewContextFactory;
-import javax.faces.context.ResponseStream;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.PhaseId;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
 
 import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.el.ELUtils;
@@ -56,6 +38,25 @@ import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.PartialViewContextFactory;
+import jakarta.faces.context.ResponseStream;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
 public class FacesContextImpl extends FacesContext {
 
@@ -114,7 +115,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getExternalContext()
+     * @see jakarta.faces.context.FacesContext#getExternalContext()
      */
     @Override
     public ExternalContext getExternalContext() {
@@ -124,7 +125,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getApplication()
+     * @see jakarta.faces.context.FacesContext#getApplication()
      */
     @Override
     public Application getApplication() {
@@ -142,7 +143,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getExceptionHandler()
+     * @see jakarta.faces.context.FacesContext#getExceptionHandler()
      */
     @Override
     public ExceptionHandler getExceptionHandler() {
@@ -151,7 +152,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#setExceptionHandler(javax.faces.context.ExceptionHandler)
+     * @see jakarta.faces.context.FacesContext#setExceptionHandler(jakarta.faces.context.ExceptionHandler)
      */
     @Override
     public void setExceptionHandler(ExceptionHandler exceptionHandler) {
@@ -160,7 +161,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getPartialViewContext()
+     * @see jakarta.faces.context.FacesContext#getPartialViewContext()
      */
     @Override
     public PartialViewContext getPartialViewContext() {
@@ -177,7 +178,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#isPostback()
+     * @see jakarta.faces.context.FacesContext#isPostback()
      */
     @Override
     public boolean isPostback() {
@@ -203,7 +204,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#isReleased()
+     * @see jakarta.faces.context.FacesContext#isReleased()
      */
     @Override
     public boolean isReleased() {
@@ -211,7 +212,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#getAttributes()
+     * @see jakarta.faces.context.FacesContext#getAttributes()
      */
     @Override
     public Map<Object, Object> getAttributes() {
@@ -226,7 +227,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getELContext()
+     * @see jakarta.faces.context.FacesContext#getELContext()
      */
     @Override
     public ELContext getELContext() {
@@ -258,7 +259,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getClientIdsWithMessages()
+     * @see jakarta.faces.context.FacesContext#getClientIdsWithMessages()
      */
     @Override
     public Iterator<String> getClientIdsWithMessages() {
@@ -270,7 +271,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getMaximumSeverity()
+     * @see jakarta.faces.context.FacesContext#getMaximumSeverity()
      */
     @Override
     public Severity getMaximumSeverity() {
@@ -295,7 +296,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getMessageList()
+     * @see jakarta.faces.context.FacesContext#getMessageList()
      */
     @Override
     public List<FacesMessage> getMessageList() {
@@ -317,7 +318,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getMessageList(String)
+     * @see jakarta.faces.context.FacesContext#getMessageList(String)
      */
     @Override
     public List<FacesMessage> getMessageList(String clientId) {
@@ -338,7 +339,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getMessages()
+     * @see jakarta.faces.context.FacesContext#getMessages()
      */
     @Override
     public Iterator<FacesMessage> getMessages() {
@@ -380,7 +381,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getRenderKit()
+     * @see jakarta.faces.context.FacesContext#getRenderKit()
      */
     @Override
     public RenderKit getRenderKit() {
@@ -414,7 +415,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getResponseStream()
+     * @see jakarta.faces.context.FacesContext#getResponseStream()
      */
     @Override
     public ResponseStream getResponseStream() {
@@ -424,7 +425,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see FacesContext#setResponseStream(javax.faces.context.ResponseStream)
+     * @see FacesContext#setResponseStream(jakarta.faces.context.ResponseStream)
      */
     @Override
     public void setResponseStream(ResponseStream responseStream) {
@@ -435,7 +436,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getViewRoot()
+     * @see jakarta.faces.context.FacesContext#getViewRoot()
      */
     @Override
     public UIViewRoot getViewRoot() {
@@ -445,7 +446,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see FacesContext#setViewRoot(javax.faces.component.UIViewRoot)
+     * @see FacesContext#setViewRoot(jakarta.faces.component.UIViewRoot)
      */
     @Override
     public void setViewRoot(UIViewRoot root) {
@@ -465,7 +466,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getResponseWriter()
+     * @see jakarta.faces.context.FacesContext#getResponseWriter()
      */
     @Override
     public ResponseWriter getResponseWriter() {
@@ -475,7 +476,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see FacesContext#setResponseWriter(javax.faces.context.ResponseWriter)
+     * @see FacesContext#setResponseWriter(jakarta.faces.context.ResponseWriter)
      */
     @Override
     public void setResponseWriter(ResponseWriter responseWriter) {
@@ -485,7 +486,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see FacesContext#addMessage(String, javax.faces.application.FacesMessage)
+     * @see FacesContext#addMessage(String, jakarta.faces.application.FacesMessage)
      */
     @Override
     public void addMessage(String clientId, FacesMessage message) {
@@ -524,7 +525,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#getCurrentPhaseId()
+     * @see jakarta.faces.context.FacesContext#getCurrentPhaseId()
      */
     @Override
     public PhaseId getCurrentPhaseId() {
@@ -538,7 +539,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#setCurrentPhaseId(javax.faces.event.PhaseId)
+     * @see jakarta.faces.context.FacesContext#setCurrentPhaseId(jakarta.faces.event.PhaseId)
      */
     @Override
     public void setCurrentPhaseId(PhaseId currentPhaseId) {
@@ -550,7 +551,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#release()
+     * @see jakarta.faces.context.FacesContext#release()
      */
     @Override
     public void release() {
@@ -599,7 +600,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#renderResponse()
+     * @see jakarta.faces.context.FacesContext#renderResponse()
      */
     @Override
     public void renderResponse() {
@@ -609,7 +610,7 @@ public class FacesContextImpl extends FacesContext {
 
 
     /**
-     * @see javax.faces.context.FacesContext#responseComplete()
+     * @see jakarta.faces.context.FacesContext#responseComplete()
      */
     @Override
     public void responseComplete() {
@@ -618,7 +619,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#validationFailed()
+     * @see jakarta.faces.context.FacesContext#validationFailed()
      */
     @Override
     public void validationFailed() {
@@ -627,7 +628,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#getRenderResponse()
+     * @see jakarta.faces.context.FacesContext#getRenderResponse()
      */
     @Override
     public boolean getRenderResponse() {
@@ -658,7 +659,7 @@ public class FacesContextImpl extends FacesContext {
     
 
     /**
-     * @see javax.faces.context.FacesContext#getResponseComplete()
+     * @see jakarta.faces.context.FacesContext#getResponseComplete()
      */
     @Override
     public boolean getResponseComplete() {
@@ -667,7 +668,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#isValidationFailed()
+     * @see jakarta.faces.context.FacesContext#isValidationFailed()
      */
     @Override
     public boolean isValidationFailed() {

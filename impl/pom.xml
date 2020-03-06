@@ -242,7 +242,7 @@
                             <aggregations>
                                 <aggregation>
                                     <includes>
-                                        <include>${project.basedir}/src/main/resources/META-INF/resources/javax.faces/jsf-uncompressed.js</include>
+                                        <include>${project.basedir}/src/main/resources/META-INF/resources/jakarta.faces/jsf-uncompressed.js</include>
                                     </includes>
                                     <output>${project.build.directory}/generated-resources/yui/jsf.js</output>
                                 </aggregation>
@@ -251,7 +251,7 @@
                                 <include>*.js</include>
                             </includes>
                             <sourceDirectory>${project.build.directory}/generated-resources/yui</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/javax.faces/</outputDirectory>
+                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/jakarta.faces/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -312,15 +312,15 @@
                         <Implementation-Vendor>Eclipse</Implementation-Vendor> 
                         <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
                         
-                        <Extension-Name>javax.faces</Extension-Name>
+                        <Extension-Name>jakarta.faces</Extension-Name>
                         
                         <Export-Package>
-                            javax.faces.*;version=2.3,
+                            jakarta.faces.*;version=2.3,
                             com.sun.faces.*;version=2.3
                         </Export-Package>
                         
                         <Import-Package>
-                            javax.faces.*,
+                            jakarta.faces.*,
                             com.sun.faces.*,
                             javax.servlet.annotation.*;resolution:=optional,
                             javax.servlet.*,
@@ -363,7 +363,7 @@
                             resolution:=optional;cardinality:=multiple,
                             osgi.serviceloader;filter:="(osgi.serviceloader=com.sun.faces.util.cdi11.CDIUtil)";
                             resolution:=optional;cardinality:=multiple,
-                            osgi.serviceloader;filter:="(osgi.serviceloader=javax.faces.application.ApplicationConfigurationPopulator)";
+                            osgi.serviceloader;filter:="(osgi.serviceloader=jakarta.faces.application.ApplicationConfigurationPopulator)";
                             resolution:=optional;cardinality:=multiple,
                             osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional
                         </Require-Capability>

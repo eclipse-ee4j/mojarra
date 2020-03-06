@@ -16,7 +16,7 @@
 
 package com.sun.faces.facelets.tag.ui;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 public final class ComponentRef extends UIComponentBase {
 

@@ -23,7 +23,7 @@
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd">
     <render-kit>
         <renderer>
-            <component-family>javax.faces.Output</component-family>
+            <component-family>jakarta.faces.Output</component-family>
             <renderer-type>com.sun.faces.test.servlet30.component.ResourceDependencyRenderer</renderer-type>
             <renderer-class>com.sun.faces.test.servlet30.component.ResourceDependencyRenderer</renderer-class>
         </renderer>

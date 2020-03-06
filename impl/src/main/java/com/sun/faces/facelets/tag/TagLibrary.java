@@ -16,11 +16,12 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.faces.FacesException;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
 import java.lang.reflect.Method;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 /**
  * A library of Tags associated with one or more namespaces.

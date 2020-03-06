@@ -102,7 +102,7 @@ public class ClientEncryptByDefaultIT {
         WebClient client = page.getWebClient();
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
-        HtmlHiddenInput stateField = (HtmlHiddenInput) page.getHtmlElementById("j_id_id6:javax.faces.ViewState:0");
+        HtmlHiddenInput stateField = (HtmlHiddenInput) page.getHtmlElementById("j_id_id6:jakarta.faces.ViewState:0");
         stateField.setValueAttribute(touchTmpClientStateSavingPasswordIneffectiveTxt);
         HtmlTextInput textField = (HtmlTextInput) page.getHtmlElementById("userNo");
         textField.setValueAttribute("5");

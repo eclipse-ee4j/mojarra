@@ -16,10 +16,10 @@
 
 package com.sun.faces.context.flash;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.context.FlashFactory;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.context.FlashFactory;
 
 /**
  * Default implementation of {@link FlashFactory}.

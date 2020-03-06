@@ -18,18 +18,27 @@ package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
 import java.util.LinkedHashMap;
-import javax.faces.bean.*;
-import javax.faces.context.FacesContext;
+import java.util.List;
+import java.util.Map;
+
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.mgbean.ManagedBeanInfo;
+
+import jakarta.faces.bean.ApplicationScoped;
+import jakarta.faces.bean.CustomScoped;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.ManagedProperty;
+import jakarta.faces.bean.NoneScoped;
+import jakarta.faces.bean.RequestScoped;
+import jakarta.faces.bean.SessionScoped;
+import jakarta.faces.bean.ViewScoped;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
@@ -88,7 +97,7 @@ public class ManagedBeanConfigHandler implements ConfigAnnotationHandler {
 
 
     /**
-     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(javax.faces.context.FacesContext)
+     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)
      */
     @Override
     public void push(FacesContext ctx) {

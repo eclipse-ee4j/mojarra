@@ -16,7 +16,7 @@
 
 package com.sun.faces.flow;
 
-import javax.faces.flow.Flow;
+import jakarta.faces.flow.Flow;
 
 public interface FlowCDIEventFireHelper {
     

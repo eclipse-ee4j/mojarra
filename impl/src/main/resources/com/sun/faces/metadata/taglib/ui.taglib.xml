@@ -362,7 +362,7 @@
 	Binds the component to a backing bean property, as specified in
 	the JSF specification.  <span class="changed_modified_2_2">The
 	Java language type of this property must be a class that extends
-	<code>javax.faces.component.UIComponent</code>.  The scope of
+	<code>jakarta.faces.component.UIComponent</code>.  The scope of
 	the bean on which this property resides must be no wider than
 	request scope.  If either of these conditions are not met, the
 	results are undefined.</span>
@@ -689,7 +689,7 @@ starting with "/".</span>
         <p>Binds the component to a backing bean property, as specified
         in the JSF specification. <span class="changed_added_2_2">The
 	Java language type of this property must be a class that extends
-	<code>javax.faces.component.UIComponent</code>.  The scope of
+	<code>jakarta.faces.component.UIComponent</code>.  The scope of
 	the bean on which this property resides must be no wider than
 	request scope.  If either of these conditions are not met, the
 	results are undefined.</span></p>

@@ -34,7 +34,7 @@
         </h:outputText>
         <br />
         <h:outputText id="preRenderComponentTest2" >
-            <f:event type="javax.faces.event.PreRenderComponent" listener="#{eventTagBean.beforeEncode}" />
+            <f:event type="jakarta.faces.event.PreRenderComponent" listener="#{eventTagBean.beforeEncode}" />
         </h:outputText>
         <br />
         <h:outputText id="postAddToViewTest1" >
@@ -42,11 +42,11 @@
         </h:outputText>
         <br />
         <h:outputText id="postAddToViewTest2" >
-            <f:event type="javax.faces.event.PostAddToView" listener="#{eventTagBean.beforeEncode}" />
+            <f:event type="jakarta.faces.event.PostAddToView" listener="#{eventTagBean.beforeEncode}" />
         </h:outputText>
         <br />
         <h:outputText id="fqcnTest" >
-            <f:event type="javax.faces.event.PreRenderComponentEvent" listener="#{eventTagBean.beforeEncode}" />
+            <f:event type="jakarta.faces.event.PreRenderComponentEvent" listener="#{eventTagBean.beforeEncode}" />
         </h:outputText>
         <br />
         <h:outputText id="noArgTest" >

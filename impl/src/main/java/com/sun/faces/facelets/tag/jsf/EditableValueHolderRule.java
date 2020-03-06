@@ -18,13 +18,13 @@ package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.facelets.el.LegacyMethodBinding;
 
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.MethodExpressionValueChangeListener;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.validator.MethodExpressionValidator;
-import javax.faces.view.facelets.*;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.MethodExpressionValueChangeListener;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.validator.MethodExpressionValidator;
+import jakarta.faces.view.facelets.*;
 
 /**
  * 

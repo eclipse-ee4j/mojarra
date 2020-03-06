@@ -17,13 +17,14 @@
 package com.sun.faces.facelets.impl;
 
 
-import javax.faces.view.facelets.FaceletCache;
 import com.sun.faces.util.ConcurrentCache;
 import com.sun.faces.util.ExpiringConcurrentCache;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
+import jakarta.faces.view.facelets.FaceletCache;
+
 import java.io.IOException;
 
 import java.net.URL;

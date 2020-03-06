@@ -16,11 +16,12 @@
 
 package com.sun.faces.component;
 
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIComponent;
-import javax.faces.view.Location;
-import javax.faces.application.Resource;
 import java.util.Stack;
+
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.Location;
 
 /**
  * <p>

@@ -18,11 +18,12 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+
 import java.io.IOException;
 
 /**
@@ -34,13 +35,13 @@ import java.io.IOException;
  * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag
  * documentation</a>.
  * 
- * @see javax.faces.component.UIComponent#getAttributes()
- * @see javax.faces.component.UIComponent#setValueExpression(java.lang.String,
+ * @see jakarta.faces.component.UIComponent#getAttributes()
+ * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String,
  *      javax.el.ValueExpression)
  * @author Jacob Hookom
  */
 public final class AttributeHandler extends TagHandlerImpl 
-    implements javax.faces.view.facelets.AttributeHandler {
+    implements jakarta.faces.view.facelets.AttributeHandler {
 
     private final TagAttribute name;
 
@@ -59,7 +60,7 @@ public final class AttributeHandler extends TagHandlerImpl
      * (non-Javadoc)
      * 
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *      jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
@@ -82,7 +83,7 @@ public final class AttributeHandler extends TagHandlerImpl
     }
 
 
-    // javax.faces.view.facelets.tag.AttributeHandler.getAttributeName()
+    // jakarta.faces.view.facelets.tag.AttributeHandler.getAttributeName()
     // implementation.
     @Override
     public String getAttributeName(FaceletContext ctxt) {

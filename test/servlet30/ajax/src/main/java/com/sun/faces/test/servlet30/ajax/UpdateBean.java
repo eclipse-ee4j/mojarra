@@ -40,7 +40,7 @@ public class UpdateBean {
                 PartialResponseWriter writer =
                     ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewBody");
+                writer.startUpdate("jakarta.faces.ViewBody");
                 writer.startElement("body",null);
                 writer.writeAttribute("class","foo","class");
                 writer.writeAttribute("title","fooTitle","title");

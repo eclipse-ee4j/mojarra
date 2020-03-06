@@ -20,10 +20,12 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.ValueBinding;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.ValueBinding;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;

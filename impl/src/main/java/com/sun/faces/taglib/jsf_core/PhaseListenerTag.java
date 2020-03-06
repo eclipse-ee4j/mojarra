@@ -18,16 +18,18 @@ package com.sun.faces.taglib.jsf_core;
 
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.webapp.UIComponentELTag;
+
 import com.sun.faces.util.FacesLogger;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -217,9 +219,9 @@ public class PhaseListenerTag extends TagSupport {
 
         /**
          * <p>Return the identifier of the request processing phase during
-         * which this listener is interested in processing {@link javax.faces.event.PhaseEvent}
+         * which this listener is interested in processing {@link jakarta.faces.event.PhaseEvent}
          * events.  Legal values are the singleton instances defined by the
-         * {@link javax.faces.event.PhaseId} class, including <code>PhaseId.ANY_PHASE</code>
+         * {@link jakarta.faces.event.PhaseId} class, including <code>PhaseId.ANY_PHASE</code>
          * to indicate an interest in being notified for all standard phases.</p>
          */
         @Override
@@ -236,10 +238,10 @@ public class PhaseListenerTag extends TagSupport {
 
         /**
          * <p>Invoked when the value change described by the specified
-         * {@link javax.faces.event.ValueChangeEvent} occurs.</p>
+         * {@link jakarta.faces.event.ValueChangeEvent} occurs.</p>
          *
          * @return a <code>PhaseListener</code> instance
-         * @throws javax.faces.event.AbortProcessingException
+         * @throws jakarta.faces.event.AbortProcessingException
          *          Signal the JavaServer Faces
          *          implementation that no further processing on the current event
          *          should be performed

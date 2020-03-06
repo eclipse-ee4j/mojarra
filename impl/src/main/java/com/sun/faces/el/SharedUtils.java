@@ -16,12 +16,13 @@
 
 package com.sun.faces.el;
 
-import javax.faces.context.FacesContext;
-import javax.faces.application.Application;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+
 import java.util.HashMap;
 
 class SharedUtils {

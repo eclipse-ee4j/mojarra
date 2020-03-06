@@ -18,6 +18,15 @@ package com.sun.faces.renderkit;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItems;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+
 import java.util.Map;
 import java.util.ListIterator;
 import java.io.ObjectOutputStream;
@@ -25,14 +34,6 @@ import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Array;
-
-import javax.faces.model.SelectItem;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectItem;
-import javax.faces.component.UISelectItems;
-import javax.faces.component.UISelectMany;
-import javax.faces.component.UISelectOne;
 
 
 /**

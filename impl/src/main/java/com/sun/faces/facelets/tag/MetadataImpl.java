@@ -16,8 +16,8 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.Metadata;
 
 /**
  * 

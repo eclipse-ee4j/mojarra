@@ -59,8 +59,8 @@
   &lt;tag&gt;
     &lt;tag-name&gt;testSchema&lt;/tag-name&gt;
     &lt;component&gt;
-      &lt;component-type&gt;javax.faces.Input&lt;/component-type&gt;
-      &lt;renderer-type&gt;javax.faces.Text&lt;/renderer-type&gt;
+      &lt;component-type&gt;jakarta.faces.Input&lt;/component-type&gt;
+      &lt;renderer-type&gt;jakarta.faces.Text&lt;/renderer-type&gt;
       &lt;handler-class&gt;com.sun.faces.facelets.tag.jsf.ComponentHandler&lt;/handler-class&gt;
       &lt;component-extension&gt;
 

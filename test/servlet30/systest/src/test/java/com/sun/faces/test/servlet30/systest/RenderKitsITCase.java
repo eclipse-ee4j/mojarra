@@ -124,7 +124,7 @@ public class RenderKitsITCase extends HtmlUnitFacesITCase {
 //        HtmlHiddenInput hidden = null;
 //        boolean exceptionThrown = false;
 //        try {
-//            hidden = (HtmlHiddenInput)form.getInputByName("javax.faces.RenderKitId");
+//            hidden = (HtmlHiddenInput)form.getInputByName("jakarta.faces.RenderKitId");
 //        } catch (ElementNotFoundException e) {
 //            exceptionThrown = true;
 //        }
@@ -146,7 +146,7 @@ public class RenderKitsITCase extends HtmlUnitFacesITCase {
 //        HtmlHiddenInput hidden = null;
 //        boolean exceptionThrown = false;
 //        try {
-//            hidden = (HtmlHiddenInput)form.getInputByName("javax.faces.RenderKitId");
+//            hidden = (HtmlHiddenInput)form.getInputByName("jakarta.faces.RenderKitId");
 //        } catch (ElementNotFoundException e) {
 //            exceptionThrown = true;
 //        }
@@ -158,7 +158,7 @@ public class RenderKitsITCase extends HtmlUnitFacesITCase {
 //        page = getPageSticky("/faces/renderkit04.jsp");
 //        form = getFormById(page, "form");
 //        assertNotNull("form exists", form);
-//        hidden = (HtmlHiddenInput)form.getInputByName("javax.faces.RenderKitId");
+//        hidden = (HtmlHiddenInput)form.getInputByName("jakarta.faces.RenderKitId");
 //        assertNotNull("hidden exists", hidden);
 //        assertTrue(-1 != page.asText().indexOf("HTML_BASIC"));
 //        assertTrue(-1 != page.asText().indexOf("com.sun.faces.renderkit.html_basic.HtmlResponseWriter"));

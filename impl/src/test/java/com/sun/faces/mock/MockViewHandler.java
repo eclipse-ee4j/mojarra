@@ -16,14 +16,15 @@
 
 package com.sun.faces.mock;
 
-import java.util.Locale;
 import java.io.IOException;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIViewRoot;
-import javax.faces.application.ViewHandler;
-import javax.faces.application.StateManager;
-import javax.faces.render.RenderKitFactory;
+import java.util.Locale;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKitFactory;
 
 public class MockViewHandler extends ViewHandler {
 

@@ -85,13 +85,13 @@ public class InterweavingITCase extends HtmlUnitFacesITCase {
         // Make multiple requests to the same page and ensure the response is 200
 
         HtmlPage page1 = getPage("/faces/interweaving08.jsp");
-        assertTrue(page1.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page1.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
 
         HtmlPage page2 = getPage("/faces/interweaving08.jsp");
-        assertTrue(page2.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page2.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
 
         HtmlPage page3 = getPage("/faces/interweaving08.jsp");
-        assertTrue(page3.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page3.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
     }
 
     public void test09() throws Exception {
@@ -99,13 +99,13 @@ public class InterweavingITCase extends HtmlUnitFacesITCase {
         // Make multiple requests to the same page and ensure the response is 200
 
         HtmlPage page1 = getPage("/faces/interweaving09.jsp");
-        assertTrue(page1.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page1.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
 
         HtmlPage page2 = getPage("/faces/interweaving09.jsp");
-        assertTrue(page2.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page2.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
 
         HtmlPage page3 = getPage("/faces/interweaving09.jsp");
-        assertTrue(page3.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page3.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*Value\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
     }
 
     public void test10() throws Exception {
@@ -113,25 +113,25 @@ public class InterweavingITCase extends HtmlUnitFacesITCase {
         // Make multiple requests to the same page and ensure the response is 200
 
         HtmlPage page1 = getPage("/faces/interweaving10.jsp");
-        assertTrue(page1.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page1.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
 
         HtmlPage page2 = getPage("/faces/interweaving10.jsp");
-        assertTrue(page2.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page2.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
 
         HtmlPage page3 = getPage("/faces/interweaving10.jsp");
-        assertTrue(page3.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
+        assertTrue(page3.asXml().matches("(?s).*\\s*<body>\\s*<form\\s*id=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"form\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<table>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Value\\s*ciao\\s*</td>\\s*</tr>\\s*</tbody>\\s*</table>\\s*</form>\\s*</body>.*"));
     }
 
     public void test11() throws Exception {
 //
 //        HtmlPage page = getPage("/faces/interweaving11.jsp");
-//        assertTrue(page.asXml().matches("(?s).*\\s*<body>\\s*<form.*<input\\s*type=\"hidden\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*<script.*jsf.js.*<a\\s*href.*>\\s*one\\s*</a>\\s*<a\\s*href.*>\\s*two\\s*</a>\\s*<a\\s*href.*>\\s*three\\s*</a>\\s*</form>\\s*</body>.*"));
+//        assertTrue(page.asXml().matches("(?s).*\\s*<body>\\s*<form.*<input\\s*type=\"hidden\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*<script.*jsf.js.*<a\\s*href.*>\\s*one\\s*</a>\\s*<a\\s*href.*>\\s*two\\s*</a>\\s*<a\\s*href.*>\\s*three\\s*</a>\\s*</form>\\s*</body>.*"));
     }
 
     public void test12() throws Exception {
 
         HtmlPage page = getPage("/faces/interweaving12.jsp");
-        assertTrue(page.asXml().matches("(?s).*\\s*<body>\\s*<form.*<input\\s*type=\"hidden\".*<input\\s*type=\"hidden\"\\s*name=\"javax.faces.ViewState\".*this should be before the button\\s*<input.*type=\"submit\".*value=\"commandButton 1\"\\s*/>\\s*</form>\\s*</body>.*"));
+        assertTrue(page.asXml().matches("(?s).*\\s*<body>\\s*<form.*<input\\s*type=\"hidden\".*<input\\s*type=\"hidden\"\\s*name=\"jakarta.faces.ViewState\".*this should be before the button\\s*<input.*type=\"submit\".*value=\"commandButton 1\"\\s*/>\\s*</form>\\s*</body>.*"));
     }
 
 }

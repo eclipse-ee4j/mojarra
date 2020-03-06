@@ -29,7 +29,7 @@
     <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-    <c:set scope="application" var="javax.faces.VALIDATE_EMPTY_FIELDS"
+    <c:set scope="application" var="jakarta.faces.VALIDATE_EMPTY_FIELDS"
            value="false" />
 
     <f:view>  

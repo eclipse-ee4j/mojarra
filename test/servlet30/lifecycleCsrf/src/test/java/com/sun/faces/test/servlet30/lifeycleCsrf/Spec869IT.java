@@ -59,7 +59,7 @@ public class Spec869IT {
         page = webClient.getPage(webUrl + "faces/i_spec_869_war_protected.xhtml");
         pageText = page.getBody().asText();
         
-        assertTrue(pageText.contains("javax.faces.application.ProtectedViewException"));
+        assertTrue(pageText.contains("jakarta.faces.application.ProtectedViewException"));
         
     }
     
@@ -111,7 +111,7 @@ public class Spec869IT {
         HtmlButtonInput button = (HtmlButtonInput) page.getElementById("button");
         page = button.click();
         String pageText = page.getBody().asText();
-        assertTrue(!pageText.contains("javax.faces.application.ProtectedViewException"));
+        assertTrue(!pageText.contains("jakarta.faces.application.ProtectedViewException"));
     }
 
     // Tests a request with a valid origin header request parameter.
@@ -126,7 +126,7 @@ public class Spec869IT {
         HtmlButtonInput button = (HtmlButtonInput) page.getElementById("button");
         page = button.click();
         String pageText = page.getBody().asText();
-        assertTrue(!pageText.contains("javax.faces.application.ProtectedViewException"));
+        assertTrue(!pageText.contains("jakarta.faces.application.ProtectedViewException"));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class Spec869IT {
         HtmlSpan invokeCount = page.getHtmlElementById("invokeCount");
         String invokeCountStrA = invokeCount.asText();
         
-        HtmlHiddenInput stateField = (HtmlHiddenInput) page.getHtmlElementById("j_id1:javax.faces.ViewState:0");
+        HtmlHiddenInput stateField = (HtmlHiddenInput) page.getHtmlElementById("j_id1:jakarta.faces.ViewState:0");
         stateField.setValueAttribute("stateless");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button_postback");
         page = button.click();

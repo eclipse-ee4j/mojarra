@@ -20,15 +20,18 @@ import com.sun.faces.cdi.CdiValidator;
 import com.sun.faces.component.validator.ComponentValidators;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.facelets.*;
+
 import com.sun.faces.util.RequestStateManager;
 
 import javax.el.ValueExpression;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.facelets.*;
+
 import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;

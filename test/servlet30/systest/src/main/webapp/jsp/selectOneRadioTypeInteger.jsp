@@ -26,7 +26,7 @@
 
 <f:view>
     <h:form id="form">
-        <h:selectOneRadio converter="javax.faces.Integer"
+        <h:selectOneRadio converter="jakarta.faces.Integer"
            value="#{myBean.selectedValue}">
             <f:selectItems value="#{myBean.mySelectItems}"/>
         </h:selectOneRadio>

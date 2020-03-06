@@ -51,13 +51,6 @@ import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationConfigurationPopulator;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PostConstructApplicationEvent;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
@@ -97,6 +90,15 @@ import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderFactory;
 import com.sun.faces.spi.ThreadContext;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationConfigurationPopulator;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostConstructApplicationEvent;
+
 import com.sun.faces.config.configpopulator.JsfRIRuntimePopulator;
 
 /**
@@ -513,7 +515,7 @@ public class ConfigManager {
     }
 
     /**
-     * Publishes a {@link javax.faces.event.PostConstructApplicationEvent} event for the current
+     * Publishes a {@link jakarta.faces.event.PostConstructApplicationEvent} event for the current
      * {@link Application} instance.
      */
     void publishPostConfigEvent() {
@@ -578,7 +580,7 @@ public class ConfigManager {
     }
 
     /**
-     * Calls through to {@link javax.faces.FactoryFinder#releaseFactories()}
+     * Calls through to {@link jakarta.faces.FactoryFinder#releaseFactories()}
      * ignoring any exceptions.
      */
     private void releaseFactories() {

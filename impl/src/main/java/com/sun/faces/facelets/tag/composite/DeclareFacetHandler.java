@@ -18,9 +18,11 @@ package com.sun.faces.facelets.tag.composite;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.*;
+
 import java.beans.BeanDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;

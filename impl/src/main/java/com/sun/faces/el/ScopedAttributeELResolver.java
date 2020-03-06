@@ -23,16 +23,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Map;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIViewRoot;
-
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
 import com.sun.faces.util.Util;
+
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.mgbean.BeanManager;

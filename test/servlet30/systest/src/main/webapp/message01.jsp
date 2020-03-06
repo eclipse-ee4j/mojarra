@@ -18,27 +18,27 @@
 
 <%@ page contentType="text/html"
 %><%@ page import="java.util.Locale"
-%><%@ page import="javax.faces.FactoryFinder"
-%><%@ page import="javax.faces.application.Application"
-%><%@ page import="javax.faces.application.ApplicationFactory"
-%><%@ page import="javax.faces.application.FacesMessage"
-%><%@ page import="javax.faces.context.FacesContext"
+%><%@ page import="jakarta.faces.FactoryFinder"
+%><%@ page import="jakarta.faces.application.Application"
+%><%@ page import="jakarta.faces.application.ApplicationFactory"
+%><%@ page import="jakarta.faces.application.FacesMessage"
+%><%@ page import="jakarta.faces.context.FacesContext"
 %><%@ page import="com.sun.faces.util.MessageFactory"
-%><%@ page import="javax.faces.component.UIViewRoot, javax.faces.render.RenderKitFactory"
+%><%@ page import="jakarta.faces.component.UIViewRoot,jakarta.faces.render.RenderKitFactory"
 %><%
 
     // Initialize list of message ids
     String list[] = {
-          "javax.faces.validator.NOT_IN_RANGE",
-          "javax.faces.validator.DoubleRangeValidator.MAXIMUM",
-          "javax.faces.validator.DoubleRangeValidator.MINIMUM",
-          "javax.faces.validator.DoubleRangeValidator.TYPE",
-          "javax.faces.validator.LengthValidator.MAXIMUM",
-          "javax.faces.validator.LengthValidator.MINIMUM",
-          "javax.faces.validator.LongRangeValidator.MAXIMUM",
-          "javax.faces.validator.LongRangeValidator.MINIMUM",
-          "javax.faces.validator.LongRangeValidator.TYPE",
-          "javax.faces.component.UIInput.REQUIRED"
+          "jakarta.faces.validator.NOT_IN_RANGE",
+          "jakarta.faces.validator.DoubleRangeValidator.MAXIMUM",
+          "jakarta.faces.validator.DoubleRangeValidator.MINIMUM",
+          "jakarta.faces.validator.DoubleRangeValidator.TYPE",
+          "jakarta.faces.validator.LengthValidator.MAXIMUM",
+          "jakarta.faces.validator.LengthValidator.MINIMUM",
+          "jakarta.faces.validator.LongRangeValidator.MAXIMUM",
+          "jakarta.faces.validator.LongRangeValidator.MINIMUM",
+          "jakarta.faces.validator.LongRangeValidator.TYPE",
+          "jakarta.faces.component.UIInput.REQUIRED"
     };
 
     // Acquire the FacesContext instance for this request
@@ -63,7 +63,7 @@
     // Test for replacing a Standard Validator Message
     facesContext.getViewRoot().setLocale(new Locale("en", "US"));
     FacesMessage msg = MessageFactory.getMessage(facesContext,
-                                                 "javax.faces.validator.DoubleRangeValidator.LIMIT");
+                                                 "jakarta.faces.validator.DoubleRangeValidator.LIMIT");
     if (!msg.getSummary()
           .equals("Validation Error:This summary replaces the RI summary")) {
         out.println("/message01.jsp FAILED - Missing replacement message");

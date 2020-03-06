@@ -16,11 +16,10 @@
 
 package com.sun.faces.el;
 
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
-
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
 
 /**
  * Default propertyResolver implementation that gets the ELContext from the 

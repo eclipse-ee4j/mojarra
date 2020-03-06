@@ -38,22 +38,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELResolver;
-import javax.faces.application.Application;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.event.NamedEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.validator.BeanValidator;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -76,6 +60,23 @@ import com.sun.faces.el.ChainAwareVariableResolver;
 import com.sun.faces.el.DummyPropertyResolverImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.VariableResolver;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.validator.BeanValidator;
 
 /**
  * <p>
@@ -363,7 +364,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     /**
      * If defaultValidatorIds is null, then no &lt;default-validators&gt; element appeared in any
-     * configuration file. In that case, add javax.faces.Bean if Bean Validation is available. If
+     * configuration file. In that case, add jakarta.faces.Bean if Bean Validation is available. If
      * the &lt;default-validators&gt; appeared at least once, don't add the default (and empty
      * &lt;default-validator&gt; element disabled default validators)
      */
@@ -390,7 +391,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
     static boolean isBeanValidatorAvailable(FacesContext facesContext) {
 
         boolean result = false;
-        final String beansValidationAvailabilityCacheKey = "javax.faces.BEANS_VALIDATION_AVAILABLE";
+        final String beansValidationAvailabilityCacheKey = "jakarta.faces.BEANS_VALIDATION_AVAILABLE";
         Map<String, Object> appMap = facesContext.getExternalContext().getApplicationMap();
 
         if (appMap.containsKey(beansValidationAvailabilityCacheKey)) {

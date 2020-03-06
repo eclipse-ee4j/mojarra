@@ -26,8 +26,6 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.w3c.dom.Document;
@@ -44,6 +42,9 @@ import com.sun.faces.facelets.tag.TagLibraryImpl;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagLibrary;
 import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

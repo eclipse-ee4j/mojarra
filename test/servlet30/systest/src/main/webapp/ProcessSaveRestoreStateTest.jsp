@@ -21,7 +21,7 @@
 
 <%@taglib prefix="f" uri="http://java.sun.com/jsf/core"%>
 <%@taglib prefix="h" uri="http://java.sun.com/jsf/html"%>
-<%@page import="javax.faces.component.*,javax.faces.context.*" %>
+<%@page import="jakarta.faces.component.*,jakarta.faces.context.*" %>
 
 <html>
     <head>

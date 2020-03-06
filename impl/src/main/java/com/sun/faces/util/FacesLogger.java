@@ -21,8 +21,9 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p/>

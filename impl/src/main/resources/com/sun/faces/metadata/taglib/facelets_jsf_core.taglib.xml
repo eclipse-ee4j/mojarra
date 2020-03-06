@@ -41,11 +41,11 @@
         <attribute>
             <description><![CDATA[
                 Value binding expression that evaluates to an object that
-                implements javax.faces.event.ActionListener.
+                implements jakarta.faces.event.ActionListener.
             ]]></description>
             <name>binding</name>
             <required>false</required>
-            <type>javax.faces.event.ActionListener</type>
+            <type>jakarta.faces.event.ActionListener</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -202,8 +202,8 @@
             <name>listener</name>
             <required>false</required>
             <method-signature>public void
-                processAjaxBehavior(javax.faces.event.AjaxBehaviorEvent event)
-                throws javax.faces.event.AbortProcessingException
+                processAjaxBehavior(jakarta.faces.event.AjaxBehaviorEvent event)
+                throws jakarta.faces.event.AbortProcessingException
             </method-signature>
         </attribute>
 
@@ -326,16 +326,16 @@
         ]]></description>
         <tag-name>convertDateTime</tag-name>
         <converter>
-            <converter-id>javax.faces.DateTime</converter-id>
+            <converter-id>jakarta.faces.DateTime</converter-id>
             <handler-class>com.sun.faces.facelets.tag.jsf.core.ConvertDateTimeHandler</handler-class>
         </converter>
         <attribute>
             <description><![CDATA[
                 <p>A ValueExpression that evaluates to an instance of
-                javax.faces.convert.DateTimeConverter.</p>
+                jakarta.faces.convert.DateTimeConverter.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.convert.DateTimeConverter</type>
+            <type>jakarta.faces.convert.DateTimeConverter</type>
         </attribute>
 
         <attribute>
@@ -452,16 +452,16 @@
         ]]></description>
         <tag-name>convertNumber</tag-name>
          <converter>
-            <converter-id>javax.faces.Number</converter-id>
+            <converter-id>jakarta.faces.Number</converter-id>
             <handler-class>com.sun.faces.facelets.tag.jsf.core.ConvertNumberHandler</handler-class>
         </converter>
         <attribute>
             <description><![CDATA[
                 <p>A ValueExpression that evaluates to an instance of
-                javax.faces.convert.NumberConverter.</p>
+                jakarta.faces.convert.NumberConverter.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.convert.NumberConverter</type>
+            <type>jakarta.faces.convert.NumberConverter</type>
         </attribute>
 
         <attribute>
@@ -597,10 +597,10 @@
         <attribute>
             <description><![CDATA[
                 <p>A ValueExpression that evaluates to an object that
-                implements javax.faces.convert.Converter.</p>
+                implements jakarta.faces.convert.Converter.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.convert.Converter</type>
+            <type>jakarta.faces.convert.Converter</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -656,8 +656,8 @@
             <name>listener</name>
             <required>true</required>
             <method-signature>public void
-                listener(javax.faces.event.ComponentSystemEvent event) throws
-                javax.faces.event.AbortProcessingException
+                listener(jakarta.faces.event.ComponentSystemEvent event) throws
+                jakarta.faces.event.AbortProcessingException
             </method-signature>
         </attribute>
 
@@ -687,7 +687,7 @@ attribute</th>
 <td>preRenderComponent
 </td>
 
-<td>javax.faces.event.PreRenderComponentEvent
+<td>jakarta.faces.event.PreRenderComponentEvent
 </td>
 
 </tr>
@@ -697,7 +697,7 @@ attribute</th>
 <td>preRenderView
 </td>
 
-<td>javax.faces.event.PreRenderViewEvent
+<td>jakarta.faces.event.PreRenderViewEvent
 </td>
 
 </tr>
@@ -707,7 +707,7 @@ attribute</th>
 <td><span class="changed_modified_2_0_rev_a">postAddToView</span>
 </td>
 
-<td>javax.faces.event.PostAddToViewEvent
+<td>jakarta.faces.event.PostAddToViewEvent
 </td>
 
 </tr>
@@ -717,7 +717,7 @@ attribute</th>
 <td>preValidate
 </td>
 
-<td>javax.faces.event.PreValidateEvent
+<td>jakarta.faces.event.PreValidateEvent
 </td>
 
 </tr>
@@ -727,7 +727,7 @@ attribute</th>
 <td>postValidate
 </td>
 
-<td>javax.faces.event.PostValidateEvent
+<td>jakarta.faces.event.PostValidateEvent
 </td>
 
 </tr>
@@ -738,12 +738,12 @@ attribute</th>
 
 <p>In addition to these values, the fully qualified class name of any
 java class that extends
-<code>javax.faces.event.ComponentSystemEvent</code> may be used as the
+<code>jakarta.faces.event.ComponentSystemEvent</code> may be used as the
 value of the "type" attribute.</p>
 
-<p>Also, the <code>@javax.faces.event.NamedEvent</code> annotation may
+<p>Also, the <code>@jakarta.faces.event.NamedEvent</code> annotation may
 be attached to any java class that extends
-<code>javax.faces.event.ComponentSystemEvent</code>.  This enables that
+<code>jakarta.faces.event.ComponentSystemEvent</code>.  This enables that
 event to be referenced from this attribute, as descibed in the javadocs
 for <code>@NamedEvent</code>.</p>
 
@@ -794,7 +794,7 @@ for <code>@NamedEvent</code>.</p>
         ]]></description>
         <tag-name>importConstants</tag-name>
         <component>
-            <component-type>javax.faces.ImportConstants</component-type>
+            <component-type>jakarta.faces.ImportConstants</component-type>
         </component>
         <attribute>
             <description><![CDATA[
@@ -985,7 +985,7 @@ for <code>@NamedEvent</code>.</p>
         ]]></description>
         <tag-name>param</tag-name>
         <component>
-            <component-type>javax.faces.Parameter</component-type>
+            <component-type>jakarta.faces.Parameter</component-type>
             <renderer-type/>
         </component>
         <attribute>
@@ -995,7 +995,7 @@ for <code>@NamedEvent</code>.</p>
                 the UIComponent created by this custom action.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.component.UIComponent</type>
+            <type>jakarta.faces.component.UIComponent</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1006,10 +1006,10 @@ for <code>@NamedEvent</code>.</p>
                 consulted by renderers that consider the
                 <code>UIParameter</code> component associated with this
                 <code><f:param></code> during their rendering.
-                Such renderers include <code>javax.faces.Output
-                javax.faces.Link</code> and
-                <code>javax.faces.OutcomeTarget
-                javax.faces.Link</code>.</span></p>
+                Such renderers include <code>jakarta.faces.Output
+                jakarta.faces.Link</code> and
+                <code>jakarta.faces.OutcomeTarget
+                jakarta.faces.Link</code>.</span></p>
 
 
             ]]></description>
@@ -1106,11 +1106,11 @@ for <code>@NamedEvent</code>.</p>
         <attribute>
             <description><![CDATA[
                 <p>Value binding expression that evaluates to an object that
-                implements javax.faces.event.PhaseListener.</p>
+                implements jakarta.faces.event.PhaseListener.</p>
             ]]></description>
             <name>binding</name>
             <required>false</required>
-            <type>javax.faces.event.PhaseListener</type>
+            <type>jakarta.faces.event.PhaseListener</type>
         </attribute>
 
         <attribute>
@@ -1131,7 +1131,7 @@ for <code>@NamedEvent</code>.</p>
         ]]></description>
         <tag-name>selectItem</tag-name>
         <component>
-            <component-type>javax.faces.SelectItem</component-type>
+            <component-type>jakarta.faces.SelectItem</component-type>
             <renderer-type/>
         </component>
         <attribute>
@@ -1141,7 +1141,7 @@ for <code>@NamedEvent</code>.</p>
                 the UIComponent created by this custom action.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.component.UIComponent</type>
+            <type>jakarta.faces.component.UIComponent</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1213,7 +1213,7 @@ for <code>@NamedEvent</code>.</p>
                 information for this option.</p>
             ]]></description>
             <name>value</name>
-            <type>javax.faces.model.SelectItem</type>
+            <type>jakarta.faces.model.SelectItem</type>
         </attribute>
     </tag>
 
@@ -1237,7 +1237,7 @@ for <code>@NamedEvent</code>.</p>
         ]]></description>
         <tag-name>selectItems</tag-name>
         <component>
-            <component-type>javax.faces.SelectItems</component-type>
+            <component-type>jakarta.faces.SelectItems</component-type>
             <renderer-type/>
         </component>
         <attribute>
@@ -1247,7 +1247,7 @@ for <code>@NamedEvent</code>.</p>
                 the UIComponent created by this custom action.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.component.UIComponent</type>
+            <type>jakarta.faces.component.UIComponent</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1369,7 +1369,7 @@ just a regular Java Object (POJO) that conforms to JavaBeans naming
 conventions for its properties.  The <code>value</code> attribute on
 line 2 points to a <code>List&lt;HobbitBean&gt;</code>, though it could
 just as well point to a <code>Collection</code>, array, or
-<code>javax.faces.model.DataModel</code>.  The attributes on lines 3
+<code>jakarta.faces.model.DataModel</code>.  The attributes on lines 3
 through 9, inclusive, leverage the fact that the value is a collection
 of POJOs.
 </p>
@@ -1505,7 +1505,7 @@ of POJOs.
         ]]></description>
         <tag-name>subview</tag-name>
         <component>
-            <component-type>javax.faces.NamingContainer</component-type>
+            <component-type>jakarta.faces.NamingContainer</component-type>
             <renderer-type/>
         </component>
         <attribute>
@@ -1515,7 +1515,7 @@ of POJOs.
                 the UIComponent created by this custom action.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.component.UIComponent</type>
+            <type>jakarta.faces.component.UIComponent</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1554,13 +1554,13 @@ of POJOs.
             <code>&lt;f:validateWholeBean /&gt;</code> are met.  Please
             see the documentation for <code>&lt;f:validateWholeBean
             /&gt;</code> and 
-            <code>javax.faces.validator.BeanValidator.validate()</code> for 
+            <code>jakarta.faces.validator.BeanValidator.validate()</code> for 
             the specification and usage example.</span></p>
 
         ]]></description>
         <tag-name>validateBean</tag-name>
         <validator>
-            <validator-id>javax.faces.Bean</validator-id>
+            <validator-id>jakarta.faces.Bean</validator-id>
             <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
         </validator>
         <attribute>
@@ -1569,7 +1569,7 @@ of POJOs.
                 BeanValidator.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.validator.BeanValidator</type>
+            <type>jakarta.faces.validator.BeanValidator</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1614,7 +1614,7 @@ of POJOs.
         ]]></description>
         <tag-name>validateDoubleRange</tag-name>
         <validator>
-            <validator-id>javax.faces.DoubleRange</validator-id>
+            <validator-id>jakarta.faces.DoubleRange</validator-id>
             <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
         </validator>
         <attribute>
@@ -1623,7 +1623,7 @@ of POJOs.
                 DoubleRangeValidator.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.validator.DoubleRangeValidator</type>
+            <type>jakarta.faces.validator.DoubleRangeValidator</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1672,7 +1672,7 @@ of POJOs.
         ]]></description>
         <tag-name>validateLength</tag-name>
         <validator>
-            <validator-id>javax.faces.Length</validator-id>
+            <validator-id>jakarta.faces.Length</validator-id>
             <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
         </validator>
         <attribute>
@@ -1681,7 +1681,7 @@ of POJOs.
                 LengthValidator.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.validator.LengthValidator</type>
+            <type>jakarta.faces.validator.LengthValidator</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1730,7 +1730,7 @@ of POJOs.
         ]]></description>
         <tag-name>validateLongRange</tag-name>
         <validator>
-            <validator-id>javax.faces.LongRange</validator-id>
+            <validator-id>jakarta.faces.LongRange</validator-id>
             <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
         </validator>
         <attribute>
@@ -1739,7 +1739,7 @@ of POJOs.
                 LongRangeValidator.
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.validator.LongRangeValidator</type>
+            <type>jakarta.faces.validator.LongRangeValidator</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1794,7 +1794,7 @@ of POJOs.
         ]]></description>
         <tag-name>validateRegex</tag-name>
         <validator>
-            <validator-id>javax.faces.RegularExpression</validator-id>
+            <validator-id>jakarta.faces.RegularExpression</validator-id>
             <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
         </validator>
         <attribute>
@@ -1803,7 +1803,7 @@ of POJOs.
                 RegexValidator.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.validator.RegexValidator</type>
+            <type>jakarta.faces.validator.RegexValidator</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1851,7 +1851,7 @@ of POJOs.
         ]]></description>
         <tag-name>validateRequired</tag-name>
         <validator>
-            <validator-id>javax.faces.Required</validator-id>
+            <validator-id>jakarta.faces.Required</validator-id>
             <handler-class>com.sun.faces.facelets.tag.jsf.core.ValidateDelegateHandler</handler-class>
         </validator>
         <attribute>
@@ -1860,7 +1860,7 @@ of POJOs.
                 RequiredValidator.
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.validator.RequiredValidator</type>
+            <type>jakarta.faces.validator.RequiredValidator</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1902,7 +1902,7 @@ of POJOs.
             discarded.  This feature must explicitly be enabled by
             setting the application parameter specified in the javadoc
             for the symbolic constant
-            <code>javax.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME</code>.
+            <code>jakarta.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME</code>.
             If this parameter is not set, or is set to false, this tag
             must be a no-op.  A non-normative example follows the
             specification of the feature.</p>
@@ -2022,13 +2022,13 @@ of POJOs.
             <p>Obtain a reference to
             a <code>javax.validation.Validator</code> instance using the
             same steps described in the javadoc
-            for <code>javax.faces.validator.BeanValidator.validate()</code>.
+            for <code>jakarta.faces.validator.BeanValidator.validate()</code>.
             Let the instance be called <em>beanValidator</em> for
             discussion.</p>
 
             <p>Obtain the value of the <code>validationGroups</code>
             attribute using the same steps described in the javadoc
-            for <code>javax.faces.validator.BeanValidator.validate()</code>.
+            for <code>jakarta.faces.validator.BeanValidator.validate()</code>.
             If this value is not present or not valid,
             throw <code>FacesException</code>.</p>
 
@@ -2272,10 +2272,10 @@ public class BackingBean implements PasswordHolder, Cloneable {
         <attribute>
             <description><![CDATA[
                 <p>A ValueExpression that evaluates to an object that implements
-                the javax.faces.validator.Validator interface.</p>
+                the jakarta.faces.validator.Validator interface.</p>
             ]]></description>
             <name>binding</name>
-            <type>javax.faces.validator.Validator</type>
+            <type>jakarta.faces.validator.Validator</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -2322,11 +2322,11 @@ public class BackingBean implements PasswordHolder, Cloneable {
         <attribute>
             <description><![CDATA[
                 <p>Value binding expression that evaluates to an object that
-                implements javax.faces.event.ValueChangeListener.</p>
+                implements jakarta.faces.event.ValueChangeListener.</p>
             ]]></description>
             <name>binding</name>
             <required>false</required>
-            <type>javax.faces.event.ValueChangeListener</type>
+            <type>jakarta.faces.event.ValueChangeListener</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -2361,8 +2361,8 @@ public class BackingBean implements PasswordHolder, Cloneable {
         ]]></description>
         <tag-name>verbatim</tag-name>
         <component>
-            <component-type>javax.faces.Output</component-type>
-            <renderer-type>javax.faces.Text</renderer-type>
+            <component-type>jakarta.faces.Output</component-type>
+            <renderer-type>jakarta.faces.Text</renderer-type>
         </component>
         <attribute>
             <description><![CDATA[
@@ -2394,34 +2394,34 @@ public class BackingBean implements PasswordHolder, Cloneable {
             page.</p>        ]]></description>
         <tag-name>view</tag-name>
         <component>
-            <component-type>javax.faces.ViewRoot</component-type>
+            <component-type>jakarta.faces.ViewRoot</component-type>
             <renderer-type/>
         </component>
         <attribute>
             <description><![CDATA[
 
                 <p>MethodBinding pointing to a method that takes a
-                javax.faces.event.PhaseEvent and returns void. This
+                jakarta.faces.event.PhaseEvent and returns void. This
                 method will be called after every phase except for
                 restore view on an initial request.</p>
 
             ]]></description>
             <name>afterPhase</name>
             <required>false</required>
-            <method-signature>void afterPhase(javax.faces.event.PhaseEvent)
+            <method-signature>void afterPhase(jakarta.faces.event.PhaseEvent)
             </method-signature>
         </attribute>
         <attribute>
             <description><![CDATA[
 
                 <p>MethodBinding pointing to a method that takes a
-                javax.faces.event.PhaseEvent and returns void. This method
+                jakarta.faces.event.PhaseEvent and returns void. This method
                 will be called before every phase except for restore view.</p>
 
             ]]></description>
             <name>beforePhase</name>
             <required>false</required>
-            <method-signature>void beforePhase(javax.faces.event.PhaseEvent)
+            <method-signature>void beforePhase(jakarta.faces.event.PhaseEvent)
             </method-signature>
         </attribute>
         <attribute>
@@ -2513,7 +2513,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
         </description>
         <tag-name>viewAction</tag-name>
         <component>
-            <component-type>javax.faces.ViewAction</component-type>
+            <component-type>jakarta.faces.ViewAction</component-type>
         </component>
         <attribute>
             <description>
@@ -2552,7 +2552,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             <name>actionListener</name>
             <required>false</required>
             <method-signature>public void
-                actionListener(javax.faces.event.ActionEvent)
+                actionListener(jakarta.faces.event.ActionEvent)
             </method-signature>
         </attribute>
         <attribute>
@@ -2622,7 +2622,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
         ]]></description>
         <tag-name>viewParam</tag-name>
         <component>
-            <component-type>javax.faces.Parameter</component-type>
+            <component-type>jakarta.faces.Parameter</component-type>
             <renderer-type/>
         </component>
         <attribute>
@@ -2632,7 +2632,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             ]]></description>
             <name>binding</name>
             <required>false</required>
-            <type>javax.faces.component.UIComponent</type>
+            <type>jakarta.faces.component.UIComponent</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -2640,7 +2640,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             ]]></description>
             <name>converter</name>
             <required>false</required>
-            <type>javax.faces.convert.Converter</type>
+            <type>jakarta.faces.convert.Converter</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -2720,8 +2720,8 @@ public class BackingBean implements PasswordHolder, Cloneable {
             ]]></description>
             <name>validator</name>
             <required>false</required>
-            <method-signature>void validate(javax.faces.context.FacesContext,
-                javax.faces.component.UIComponent, java.lang.Object)
+            <method-signature>void validate(jakarta.faces.context.FacesContext,
+                jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
         </attribute>
         <attribute>
@@ -2768,7 +2768,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             <name>valueChangeListener</name>
             <required>false</required>
             <method-signature>void
-                valueChange(javax.faces.event.ValueChangeEvent)
+                valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         </attribute>
         <attribute>
@@ -2788,15 +2788,15 @@ public class BackingBean implements PasswordHolder, Cloneable {
         <p class="changed_added_2_3">Registers a websocket push
         connection in client side by rendering the necessary scripts.
         Push messages can be sent from server side via
-        <code>javax.faces.push.PushContext</code> interface.  See also
-        <code>javax.faces.push.Push</code> API documentation for an
+        <code>jakarta.faces.push.PushContext</code> interface.  See also
+        <code>jakarta.faces.push.Push</code> API documentation for an
         elaborate instruction on how to use
         <code>&lt;f:websocket&gt;</code>.  </p>
                 
         ]]></description>
         <tag-name>websocket</tag-name>
         <component>
-        	<component-type>javax.faces.Websocket</component-type>
+        	<component-type>jakarta.faces.Websocket</component-type>
         </component>
 
         <attribute>
@@ -2807,7 +2807,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             ]]></description>
             <name>binding</name>
             <required>false</required>
-            <type>javax.faces.component.UIComponent</type>
+            <type>jakarta.faces.component.UIComponent</type>
         </attribute>
 
         <attribute>

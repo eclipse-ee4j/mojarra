@@ -18,12 +18,12 @@ package com.sun.faces.facelets.impl;
 
 import java.net.URL;
 
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.ViewResource;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ResourceResolver;
-
 import com.sun.faces.RIConstants;
+
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ViewResource;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ResourceResolver;
 
 public class DefaultResourceResolver extends ResourceResolver {
     

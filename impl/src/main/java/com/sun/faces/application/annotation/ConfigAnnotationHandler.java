@@ -19,7 +19,7 @@ package com.sun.faces.application.annotation;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Implementations of the interface will be called during application
@@ -38,7 +38,7 @@ public interface ConfigAnnotationHandler {
     /**
      * <p>
      * Collect metadata based on the provided <code>Class</code> and
-     * <code>Annotation</code> to be processed later by {@link #push(javax.faces.context.FacesContext)}.
+     * <code>Annotation</code> to be processed later by {@link #push(jakarta.faces.context.FacesContext)}.
      * </p>
      *
      * <p>

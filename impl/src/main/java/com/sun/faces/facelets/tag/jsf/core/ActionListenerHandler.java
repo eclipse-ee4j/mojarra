@@ -18,15 +18,17 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.util.ReflectionUtil;
 
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.facelets.*;
+
 import javax.el.ValueExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
-import javax.faces.view.facelets.*;
+
 import java.io.Serializable;
 
 /**
@@ -36,8 +38,8 @@ import java.io.Serializable;
  * documentation</a>.
  *
  * @author Jacob Hookom
- * @see javax.faces.event.ActionListener
- * @see javax.faces.component.ActionSource
+ * @see jakarta.faces.event.ActionListener
+ * @see jakarta.faces.component.ActionSource
  */
 public final class ActionListenerHandler extends ActionListenerHandlerBase
       implements ActionSource2AttachedObjectHandler {

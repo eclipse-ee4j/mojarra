@@ -20,8 +20,8 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 
 /**
  * Default implementation of {@link ViewDeclarationLanguageFactory}.
@@ -40,7 +40,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
 
 
     /**
-     * @see javax.faces.view.ViewDeclarationLanguageFactory#getViewDeclarationLanguage(String)
+     * @see jakarta.faces.view.ViewDeclarationLanguageFactory#getViewDeclarationLanguage(String)
      */
     @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage(String viewId) {
@@ -48,7 +48,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     }
     
     /**
-     * @see javax.faces.view.ViewDeclarationLanguageFactory#getAllViewDeclarationLanguages()
+     * @see jakarta.faces.view.ViewDeclarationLanguageFactory#getAllViewDeclarationLanguages()
      */
     @Override
     public List<ViewDeclarationLanguage> getAllViewDeclarationLanguages() {

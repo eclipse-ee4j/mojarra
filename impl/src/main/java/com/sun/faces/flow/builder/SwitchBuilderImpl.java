@@ -18,9 +18,11 @@ package com.sun.faces.flow.builder;
 
 import com.sun.faces.flow.SwitchNodeImpl;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.flow.builder.SwitchBuilder;
+import jakarta.faces.flow.builder.SwitchCaseBuilder;
+
 import javax.el.ValueExpression;
-import javax.faces.flow.builder.SwitchBuilder;
-import javax.faces.flow.builder.SwitchCaseBuilder;
 
 public class SwitchBuilderImpl extends SwitchBuilder {
     

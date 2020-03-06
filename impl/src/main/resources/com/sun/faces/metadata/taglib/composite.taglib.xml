@@ -477,7 +477,7 @@ component tag</em> in the <em>using page</em>.  If the value of the
 &#8220;action&#8221;, &#8220;actionListener&#8221;,
 &#8220;validator&#8221;, or &#8220;valueChangeListener&#8221;, the
 action described in <a target="_"
-href="../../../javadocs/javax/faces/application/ViewHandler.html#retargetMethodExpressions(javax.faces.context.FacesContext,%20javax.faces.component.UIComponent)">ViewHandler.retargetMethodExpressions()</a>
+href="../../../javadocs/javax/faces/application/ViewHandler.html#retargetMethodExpressions(jakarta.faces.context.FacesContext,%20javax.faces.component.UIComponent)">ViewHandler.retargetMethodExpressions()</a>
 must be taken to handle the attribute.  In these cases, the
 <code>method-signature</code> attribute, if present, must be ignored as
 its value is derived as described in
@@ -1231,7 +1231,7 @@ clientId is required due to the semantics of
                 for this composite
                 component. The declared <code>component-family</code>
                 for this
-                component must be <code>javax.faces.NamingContainer</code>.</p></div>
+                component must be <code>jakarta.faces.NamingContainer</code>.</p></div>
 
             ]]></description>
             <name>componentType</name>
@@ -1340,8 +1340,8 @@ composite component VDL view. </p>
 
             <p>The implementation of this tag handler must insert a
             component with <code>component-type</code>
-            <code>javax.faces.Output</code> and <code>renderer-type</code>
-            <code>javax.faces.CompositeFacet</code> as a
+            <code>jakarta.faces.Output</code> and <code>renderer-type</code>
+            <code>jakarta.faces.CompositeFacet</code> as a
             child at this point in the component tree.</p>
 
 <p>The implementation of this tag handler must store an attribute into

@@ -16,8 +16,9 @@
 
 package com.sun.faces.mgbean;
 
-import javax.faces.context.FacesContext;
 import java.util.List;
+
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>This doesn't really do anything, aside from being a place holder

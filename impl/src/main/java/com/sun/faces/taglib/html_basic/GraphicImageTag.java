@@ -18,18 +18,10 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import com.sun.faces.util.Util;
-import java.io.IOException;
-import javax.el.*;
-import javax.faces.*;
-import javax.faces.component.*;
-import javax.faces.context.*;
-import javax.faces.convert.*;
-import javax.faces.el.*;
-import javax.faces.event.*;
-import javax.faces.validator.*;
-import javax.faces.webapp.*;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /*
@@ -200,20 +192,20 @@ public class GraphicImageTag extends UIComponentELTag {
 
     // General Methods
     public String getRendererType() {
-        return "javax.faces.Image";
+        return "jakarta.faces.Image";
     }
 
     public String getComponentType() {
-        return "javax.faces.HtmlGraphicImage";
+        return "jakarta.faces.HtmlGraphicImage";
     }
 
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
-        javax.faces.component.UIGraphic graphic = null;
+        jakarta.faces.component.UIGraphic graphic = null;
         try {
-            graphic = (javax.faces.component.UIGraphic) component;
+            graphic = (jakarta.faces.component.UIGraphic) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: javax.faces.component.UIGraphic.  Perhaps you're missing a tag?");
+            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UIGraphic.  Perhaps you're missing a tag?");
         }
 
         if (url != null) {

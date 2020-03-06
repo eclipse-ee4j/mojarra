@@ -28,30 +28,31 @@ import java.util.TreeSet;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
-import javax.faces.application.Application;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.AjaxBehaviorListener;
-import javax.faces.view.AttachedObjectTarget;
-import javax.faces.view.BehaviorHolderAttachedObjectHandler;
-import javax.faces.view.BehaviorHolderAttachedObjectTarget;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.CompositeFaceletHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandler;
 
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.faces.event.AjaxBehaviorListener;
+import jakarta.faces.view.AttachedObjectTarget;
+import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
+import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandler;
 
 
 
@@ -59,7 +60,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
  * <p class="changed_added_2_0"><span class="changed_modified_2_2">Enable</span>
  * one or more components in the view
  * to perform Ajax operations.  This tag handler must create an instance
- * of {@link javax.faces.component.behavior.AjaxBehavior} using the tag attribute
+ * of {@link jakarta.faces.component.behavior.AjaxBehavior} using the tag attribute
  * values.  <div class="changed_modified_2_2">The <code>events</code> attribute for
  * this tag that can be a <code>ValueExpression</code> must be evaluated at tag
  * execution time since the event name is used in the process of <code>Behavior</code>
@@ -81,7 +82,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
  * Check for the existence of the Ajax resource by calling 
  * <code>UIViewRoot.getComponentResources()</code>.  If
  * the Ajax resource does not exist, create a <code>UIOutput</code> component
- * instance and set the renderer type to <code>javax.faces.resource.Script</code>.
+ * instance and set the renderer type to <code>jakarta.faces.resource.Script</code>.
  * Set the the following attributes in the component's attribute <code>Map</code>:
  * <code>library</code> with the value {@value ResourceHandler#JSF_SCRIPT_LIBRARY_NAME} and 
  * <code>name</code> with the value {@value ResourceHandler#JSF_SCRIPT_RESOURCE_NAME}. Install the component
@@ -134,7 +135,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
      * (non-Javadoc)
      * 
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *      jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
@@ -156,7 +157,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
     }
 
     /* (non-Javadoc)
-     * @see javax.faces.view.AttachedObjectHandler#getFor()
+     * @see jakarta.faces.view.AttachedObjectHandler#getFor()
      */
     @Override
     public String getFor() {
@@ -164,7 +165,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
     }
     
     /* (non-Javadoc)
-     * @see javax.faces.view.BehaviorHolderAttachedObjectHandler#getEventName()
+     * @see jakarta.faces.view.BehaviorHolderAttachedObjectHandler#getEventName()
      */
     @Override
     public String getEventName() {

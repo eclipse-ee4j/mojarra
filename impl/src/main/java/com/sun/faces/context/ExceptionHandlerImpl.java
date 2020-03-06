@@ -22,21 +22,23 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.PhaseId;
 import javax.el.ELException;
 
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.SystemEvent;
+
 import com.sun.faces.renderkit.RenderKitUtils;
-import javax.faces.context.ExternalContext;
 
 
 /**
@@ -47,7 +49,7 @@ import javax.faces.context.ExternalContext;
  * <p>
  * As an implementation note, if changes going forward are required here,
  * review the <code>ExceptionHandler</code> implementation within
- * <code>javax.faces.webapp.PreJsf2ExceptionHandlerFactory</code>.  The code
+ * <code>jakarta.faces.webapp.PreJsf2ExceptionHandlerFactory</code>.  The code
  * is, in most cases, quite similar.
  * </p>
  *
@@ -101,7 +103,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
 
     /**
-     * @see javax.faces.context.ExceptionHandler#handle()
+     * @see jakarta.faces.context.ExceptionHandler#handle()
      */
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     @Override
@@ -147,7 +149,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
 
     /**
-     * @see javax.faces.context.ExceptionHandler#isListenerForSource(Object)
+     * @see jakarta.faces.context.ExceptionHandler#isListenerForSource(Object)
      */
     @Override
     public boolean isListenerForSource(Object source) {
@@ -158,7 +160,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
 
     /**
-     * @see javax.faces.context.ExceptionHandler#processEvent(javax.faces.event.SystemEvent)
+     * @see jakarta.faces.context.ExceptionHandler#processEvent(jakarta.faces.event.SystemEvent)
      */
     @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
@@ -201,7 +203,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
 
     /**
-     * @see javax.faces.context.ExceptionHandler#getUnhandledExceptionQueuedEvents()
+     * @see jakarta.faces.context.ExceptionHandler#getUnhandledExceptionQueuedEvents()
      */
     @Override
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
@@ -214,7 +216,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
 
     /**
-     * @see javax.faces.context.ExceptionHandler#getHandledExceptionQueuedEvents()
+     * @see jakarta.faces.context.ExceptionHandler#getHandledExceptionQueuedEvents()
      */
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {

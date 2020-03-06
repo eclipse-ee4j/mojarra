@@ -35,7 +35,7 @@
 
         <div class="changed_added_2_2">
 
-        <p>Please see the documentation for Java class <code>javax.faces.view.facelets.TagDecorator</code>.</p>
+        <p>Please see the documentation for Java class <code>jakarta.faces.view.facelets.TagDecorator</code>.</p>
 
         </div>
 
@@ -47,13 +47,13 @@
 
      <p class="changed_added_2_2">Markup element
      that causes a component of <code>component-family:
-     javax.faces.Panel</code> with <code>renderer-type:
-     javax.faces.passthrough.Element</code> to be inserted in the tree.
+     jakarta.faces.Panel</code> with <code>renderer-type:
+     jakarta.faces.passthrough.Element</code> to be inserted in the tree.
      This element is primarily intended to be used by the default
      <code>TagDecorator</code>, when no match is found as described in
      the javadoc for that class.  The component that backs this element
      must implement
-     <code>javax.faces.component.behavior.ClientBehaviorHolder</code>
+     <code>jakarta.faces.component.behavior.ClientBehaviorHolder</code>
      and return "click" from its <code>getDefaultEventName()</code>
      method.  The list of events returned from its
      <code>getEventNames()</code> method must include the "on*"
@@ -70,7 +70,7 @@
          its value must be set into the component's pass through
          attributes map under the key given by the value of the symbolic
          constant
-         <code>javax.faces.render.Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY</code>.</p>
+         <code>jakarta.faces.render.Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY</code>.</p>
           
             ]]></description>
             <name>elementName</name>

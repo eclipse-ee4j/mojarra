@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
+
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">

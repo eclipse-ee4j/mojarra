@@ -22,6 +22,17 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.AnnotationProvider;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.view.facelets.FaceletsResourceResolver;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,15 +43,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.bean.ManagedBean;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.convert.FacesConverter;
-import javax.faces.event.NamedEvent;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.validator.FacesValidator;
-import javax.faces.view.facelets.FaceletsResourceResolver;
+
 import javax.servlet.ServletContext;
 
 
@@ -49,15 +52,15 @@ import javax.servlet.ServletContext;
  * classes contained within the web application are scanned for any of the known
  * Faces configuration Annotations:
  * <ul>
- *  <li>javax.faces.component.FacesBehavior</li>
- *  <li>javax.faces.render.FacesBehaviorRenderer</li>
- *  <li>javax.faces.component.FacesComponent</li>
- *  <li>javax.faces.convert.FacesConverter</li>
- *  <li>javax.faces.validator.FacesValidator</li>
- *  <li>javax.faces.render.FacesRenderer</li>
- *  <li>javax.faces.bean.ManagedBean</li>
- *  <li>javax.faces.event.NamedEvent</li>
- *  <li>javax.faces.view.facelets.FaceletsResourceResolver</li>
+ *  <li>jakarta.faces.component.FacesBehavior</li>
+ *  <li>jakarta.faces.render.FacesBehaviorRenderer</li>
+ *  <li>jakarta.faces.component.FacesComponent</li>
+ *  <li>jakarta.faces.convert.FacesConverter</li>
+ *  <li>jakarta.faces.validator.FacesValidator</li>
+ *  <li>jakarta.faces.render.FacesRenderer</li>
+ *  <li>jakarta.faces.bean.ManagedBean</li>
+ *  <li>jakarta.faces.event.NamedEvent</li>
+ *  <li>jakarta.faces.view.facelets.FaceletsResourceResolver</li>
  * </ul>
  */
 public abstract class AnnotationScanner extends AnnotationProvider {
@@ -82,15 +85,15 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                            "Ljavax/faces/component/behavior/FacesBehavior;",
                            "Ljavax/faces/render/FacesBehaviorRenderer;",
                            "Ljavax/faces/view/facelets/FaceletsResourceResolver;",
-                           "javax.faces.component.FacesComponent",
-                           "javax.faces.convert.FacesConverter",
-                           "javax.faces.validator.FacesValidator",
-                           "javax.faces.render.FacesRenderer",
-                           "javax.faces.bean.ManagedBean",
-                           "javax.faces.event.NamedEvent",
-                           "javax.faces.component.behavior.FacesBehavior",
-                           "javax.faces.render.FacesBehaviorRenderer",
-                           "javax.faces.view.facelets.FaceletsResourceResolver");
+                           "jakarta.faces.component.FacesComponent",
+                           "jakarta.faces.convert.FacesConverter",
+                           "jakarta.faces.validator.FacesValidator",
+                           "jakarta.faces.render.FacesRenderer",
+                           "jakarta.faces.bean.ManagedBean",
+                           "jakarta.faces.event.NamedEvent",
+                           "jakarta.faces.component.behavior.FacesBehavior",
+                           "jakarta.faces.render.FacesBehaviorRenderer",
+                           "jakarta.faces.view.facelets.FaceletsResourceResolver");
         FACES_ANNOTATIONS = Collections.unmodifiableSet(annotations);
         HashSet<Class<? extends Annotation>> annotationInstances =
               new HashSet<>(8, 1.0f);

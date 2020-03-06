@@ -23,11 +23,13 @@ import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.TagDecorator;
+
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.TagDecorator;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;

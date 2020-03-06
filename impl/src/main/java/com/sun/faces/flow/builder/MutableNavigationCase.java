@@ -17,13 +17,15 @@
 package com.sun.faces.flow.builder;
 
 import java.util.Collections;
-import javax.faces.application.*;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.el.ValueExpression;
+
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
+import javax.el.ValueExpression;
+
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_0"><strong class="changed_modified_2_2">

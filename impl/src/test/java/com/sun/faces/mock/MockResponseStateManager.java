@@ -16,7 +16,7 @@
 
 package com.sun.faces.mock;
 
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.render.ResponseStateManager;
 
 public class MockResponseStateManager extends ResponseStateManager {
 }

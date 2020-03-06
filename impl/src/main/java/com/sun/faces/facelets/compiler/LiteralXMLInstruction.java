@@ -18,8 +18,10 @@ package com.sun.faces.facelets.compiler;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import java.io.IOException;
 
 final class LiteralXMLInstruction implements Instruction {

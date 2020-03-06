@@ -18,11 +18,12 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+
 import java.io.IOException;
 
 /**
@@ -35,7 +36,7 @@ import java.io.IOException;
  * @version $Id$
  */
 public final class FacetHandler extends TagHandlerImpl
-    implements javax.faces.view.facelets.FacetHandler {
+    implements jakarta.faces.view.facelets.FacetHandler {
 
     public static final String KEY = "facelets.FACET_NAME";
 
@@ -50,7 +51,7 @@ public final class FacetHandler extends TagHandlerImpl
       * (non-Javadoc)
       *
       * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-      *      javax.faces.component.UIComponent)
+      *      jakarta.faces.component.UIComponent)
       */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent)
@@ -66,7 +67,7 @@ public final class FacetHandler extends TagHandlerImpl
         }
     }
 
-    // javax.faces.view.facelets.tag.FacetHandler.getFacetName()
+    // jakarta.faces.view.facelets.tag.FacetHandler.getFacetName()
     // implementation
     @Override
     public String getFacetName(FaceletContext ctxt) {

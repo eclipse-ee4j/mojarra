@@ -16,9 +16,9 @@
 
 package com.sun.faces.context;
 
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerWrapper;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerWrapper;
+import jakarta.faces.context.FacesContext;
 
 public class AjaxNoAjaxExceptionHandler extends ExceptionHandlerWrapper {
     

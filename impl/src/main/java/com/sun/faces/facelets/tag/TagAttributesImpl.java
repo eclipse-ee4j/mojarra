@@ -16,15 +16,16 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributes;
 import java.util.*;
-import javax.faces.view.facelets.Tag;
+
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributes;
 
 /**
  * A set of TagAttributesImpl, usually representing all attributes on a Tag.
  * 
- * @see javax.faces.view.facelets.TagAttribute
+ * @see jakarta.faces.view.facelets.TagAttribute
  * @author Jacob Hookom
  * @version $Id$
  */

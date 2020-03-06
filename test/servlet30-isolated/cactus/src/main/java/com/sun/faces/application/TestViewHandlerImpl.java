@@ -113,7 +113,7 @@ public class TestViewHandlerImpl extends JspFacesTestCase {
 
     public void beginTransient(WebRequest theRequest) {
         theRequest.setURL(path, "/test", "/faces", TEST_URI, null);
-        theRequest.addParameter("javax.faces.ViewState", "j_id1:j_id2");
+        theRequest.addParameter("jakarta.faces.ViewState", "j_id1:j_id2");
     }
 
     public void beginCalculateLocaleLang(WebRequest theRequest) {

@@ -21,7 +21,7 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.context.ResponseWriter;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -29,8 +29,10 @@ import java.util.List;
 
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.view.Location;
 
 /**
  * Handles parsing EL Strings in accordance with the EL-API Specification. The

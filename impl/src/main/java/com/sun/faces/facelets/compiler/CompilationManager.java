@@ -28,7 +28,8 @@ import com.sun.faces.facelets.tag.ui.CompositionHandler;
 import com.sun.faces.facelets.tag.ui.UILibrary;
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.view.facelets.*;
+import jakarta.faces.view.facelets.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

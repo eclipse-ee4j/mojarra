@@ -59,7 +59,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         // case 1
         assertTrue(text.matches(
                 "(?s).*<head>.*"+
-                "<script type=\"text/javascript\".*src=\"/jsf-systest/faces/javax.faces.resource/case1.js.*\">.*" +
+                "<script type=\"text/javascript\".*src=\"/jsf-systest/faces/jakarta.faces.resource/case1.js.*\">.*" +
                 "</script>.*" + 
                 "</head>.*"
                 ));
@@ -78,7 +78,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         // case 3
         assertTrue(text.matches(
                 "(?s).*<body>.*"+
-                "<script type=\"text/javascript\".*src=\"/jsf-systest/faces/javax.faces.resource/case3.js.*\">.*" +
+                "<script type=\"text/javascript\".*src=\"/jsf-systest/faces/jakarta.faces.resource/case3.js.*\">.*" +
                 "</script>.*" + 
                 "</body>.*"
                 ));
@@ -88,7 +88,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         // case 4
         assertTrue(text.matches(
                 "(?s).*<head>.*"+
-                "<script type=\"text/javascript\".*src=\"/jsf-systest/faces/javax.faces.resource/case4.js.*\">.*" +
+                "<script type=\"text/javascript\".*src=\"/jsf-systest/faces/jakarta.faces.resource/case4.js.*\">.*" +
                 "</script>.*" + 
                 "</head>.*"
                 ));
@@ -98,7 +98,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         // case 6
         assertTrue(text.matches(
                 "(?s).*<body>.*"+
-                "<script type=\"text/javascript\".*src=\"/jsf-systest/faces/javax.faces.resource/case6.js.*\">.*" +
+                "<script type=\"text/javascript\".*src=\"/jsf-systest/faces/jakarta.faces.resource/case6.js.*\">.*" +
                 "</script>.*" + 
                 "</body>.*"
                 ));
@@ -117,7 +117,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         // case 9
         assertTrue(text.matches(
                 "(?s).*<head>.*"+
-                "<link.* type=\"text/css\".*rel=\"stylesheet\".* href=\"/jsf-systest/faces/javax.faces.resource/case9.css.*\"\\s*/>.*" + 
+                "<link.* type=\"text/css\".*rel=\"stylesheet\".* href=\"/jsf-systest/faces/jakarta.faces.resource/case9.css.*\"\\s*/>.*" + 
                 "</head>.*"
                 ));
         
@@ -138,7 +138,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         // case 11
         assertTrue(text.matches(
                 "(?s).*<head>.*"+
-                "<link.* type=\"text/css\".*rel=\"stylesheet\".* href=\"/jsf-systest/faces/javax.faces.resource/case11.css.*\"\\s*/>.*" + 
+                "<link.* type=\"text/css\".*rel=\"stylesheet\".* href=\"/jsf-systest/faces/jakarta.faces.resource/case11.css.*\"\\s*/>.*" + 
                 "</head>.*"
                 ));
         
@@ -147,7 +147,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         // case 12
         assertTrue(text.matches(
                 "(?s).*<head>.*"+
-                "<link.* type=\"text/css\".*rel=\"stylesheet\".* href=\"/jsf-systest/faces/javax.faces.resource/case12.css.*\"\\s*/>.*" + 
+                "<link.* type=\"text/css\".*rel=\"stylesheet\".* href=\"/jsf-systest/faces/jakarta.faces.resource/case12.css.*\"\\s*/>.*" + 
                 "</head>.*"
                 ));
 
@@ -156,7 +156,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         // case 14
         assertTrue(text.matches(
                 "(?s).*<head>.*"+
-                "<link.* type=\"text/css\".*rel=\"stylesheet\".* href=\"/jsf-systest/faces/javax.faces.resource/case14.css.*\"\\s*/>.*" + 
+                "<link.* type=\"text/css\".*rel=\"stylesheet\".* href=\"/jsf-systest/faces/jakarta.faces.resource/case14.css.*\"\\s*/>.*" + 
                 "</head>.*"
                 ));
 
@@ -178,9 +178,9 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
     public void testScriptQuery() throws Exception {
         lastpage = getPage("/faces/render/outputScriptQuery.xhtml");
         String text = lastpage.asXml();
-        assertTrue(text.contains("/jsf-systest/faces/javax.faces.resource/simple.js"));
-        assertTrue(text.contains("/jsf-systest/faces/javax.faces.resource/simple2.js"));
-        assertTrue(text.contains("/jsf-systest/faces/javax.faces.resource/jsf.js"));
+        assertTrue(text.contains("/jsf-systest/faces/jakarta.faces.resource/simple.js"));
+        assertTrue(text.contains("/jsf-systest/faces/jakarta.faces.resource/simple2.js"));
+        assertTrue(text.contains("/jsf-systest/faces/jakarta.faces.resource/jsf.js"));
     }
 
     public void testSheetMedia() throws Exception {
@@ -188,7 +188,7 @@ public class OutputScriptStyleITCase extends HtmlUnitFacesITCase {
         String text = lastpage.asXml();
         assertTrue(text.matches(
                 "(?s).*<head>.*"+
-                "<link.* type=\"text/css\".* rel=\"stylesheet\".* href=\"/jsf-systest/faces/javax.faces.resource/case9.css.*\".* media=\"print\"\\s*/>.*" +
+                "<link.* type=\"text/css\".* rel=\"stylesheet\".* href=\"/jsf-systest/faces/jakarta.faces.resource/case9.css.*\".* media=\"print\"\\s*/>.*" +
                 "</head>.*"
                 ));
     }

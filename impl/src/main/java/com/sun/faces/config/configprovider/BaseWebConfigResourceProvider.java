@@ -30,13 +30,14 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
 import javax.servlet.ServletContext;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FacesException;
 
 /**
  * 

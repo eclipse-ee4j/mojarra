@@ -22,9 +22,10 @@ import static com.sun.faces.cdi.CdiUtils.getCurrentInjectionPoint;
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.annotation.ManagedProperty;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+
+import jakarta.faces.annotation.ManagedProperty;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">

@@ -42,7 +42,7 @@ public class Issue2067IT {
     @Test
     public void testCamelCaseFalseConfig() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml");
-        int index1 = page.asXml().indexOf("javax.faces.ViewState");
+        int index1 = page.asXml().indexOf("jakarta.faces.ViewState");
         int index2 = page.asXml().indexOf("HELLO");
         assertTrue(index1 != -1);
         assertTrue(index2 != -1);

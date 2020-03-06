@@ -19,12 +19,13 @@ package com.sun.faces.component.search;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.search.UntargetableComponent;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchKeywordResolver;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchKeywordContext;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.component.search.UntargetableComponent;
 
 public class SearchKeywordResolverImplChild extends SearchKeywordResolver {
 

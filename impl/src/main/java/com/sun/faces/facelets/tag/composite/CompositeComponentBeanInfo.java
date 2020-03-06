@@ -27,7 +27,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.FacesException;
+
+import jakarta.faces.FacesException;
 
 
 public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanInfo, Externalizable {

@@ -19,8 +19,12 @@ package com.sun.faces.test.servlet30.faceletsFindChild;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import javax.faces.bean.*;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+
+import jakarta.faces.bean.*;
 
 @SessionScoped
 @ManagedBean(name = "pageAjaxTest2")

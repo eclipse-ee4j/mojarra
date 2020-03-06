@@ -18,11 +18,13 @@ package com.sun.faces.facelets.tag.composite;
 
 import com.sun.faces.util.Util;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.AttachedObjectTarget;
+
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectTarget;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -19,8 +19,15 @@ package com.sun.faces.flow;
 import com.sun.faces.RIConstants;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowScoped;
+import jakarta.faces.lifecycle.ClientWindow;
+
 import java.io.Serializable;
-import javax.faces.flow.FlowScoped;
 import java.lang.annotation.Annotation;
 
 import java.util.ArrayList;
@@ -41,11 +48,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowHandler;
-import javax.faces.lifecycle.ClientWindow;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 

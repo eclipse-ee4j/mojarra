@@ -19,8 +19,8 @@ package com.sun.faces.renderkit;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_EVENT_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
-import static javax.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
-import static javax.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
+import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
+import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -37,35 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHint;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlMessages;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.model.SelectItem;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.Renderer;
-import javax.faces.render.ResponseStateManager;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
@@ -74,6 +45,36 @@ import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorHint;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlMessages;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.render.ResponseStateManager;
 
 /**
  * <p>A set of utilities for use in {@link RenderKit}s.</p>
@@ -139,7 +140,7 @@ public class RenderKitUtils {
      *
      * Hopefully JSF 2.0 will remove the need for this.
      */
-    private static final String OPTIMIZED_PACKAGE = "javax.faces.component.";
+    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
 
     /**
@@ -272,14 +273,14 @@ public class RenderKitUtils {
     }
 
     /**
-     * <p>Return a List of {@link javax.faces.model.SelectItem}
+     * <p>Return a List of {@link jakarta.faces.model.SelectItem}
      * instances representing the available options for this component,
-     * assembled from the set of {@link javax.faces.component.UISelectItem}
-     * and/or {@link javax.faces.component.UISelectItems} components that are
+     * assembled from the set of {@link jakarta.faces.component.UISelectItem}
+     * and/or {@link jakarta.faces.component.UISelectItems} components that are
      * direct children of this component.  If there are no such children, an
      * empty <code>Iterator</code> is returned.</p>
      *
-     * @param context The {@link javax.faces.context.FacesContext} for the current request.
+     * @param context The {@link jakarta.faces.context.FacesContext} for the current request.
      *                If null, the UISelectItems behavior will not work.
      * @param component the component
      * @throws IllegalArgumentException if <code>context</code>
@@ -305,7 +306,7 @@ public class RenderKitUtils {
      * all the javascript attributes, alt, rows, cols, etc. </p>
      *
      * @param context the FacesContext for this request
-     * @param writer writer the {@link javax.faces.context.ResponseWriter} to be used when writing
+     * @param writer writer the {@link jakarta.faces.context.ResponseWriter} to be used when writing
      *  the attributes
      * @param component the component
      * @param attributes an array of attributes to be processed
@@ -344,7 +345,7 @@ public class RenderKitUtils {
      * all the javascript attributes, alt, rows, cols, etc. </p>
      *
      * @param context the FacesContext for this request
-     * @param writer writer the {@link javax.faces.context.ResponseWriter} to be used when writing
+     * @param writer writer the {@link jakarta.faces.context.ResponseWriter} to be used when writing
      *  the attributes
      * @param component the component
      * @param attributes an array of attributes to be processed
@@ -661,7 +662,7 @@ public class RenderKitUtils {
     /**
      * @param component the UIComponent in question
      * @return <code>true</code> if the component is within the
-     *  <code>javax.faces.component</code> or <code>javax.faces.component.html</code>
+     *  <code>jakarta.faces.component</code> or <code>jakarta.faces.component.html</code>
      *  packages, otherwise return <code>false</code>
      */
     private static boolean canBeOptimized(UIComponent component,
@@ -1133,7 +1134,7 @@ public class RenderKitUtils {
     private static UIComponent createJsfJs() {
 
         UIOutput output = new UIOutput();
-        output.setRendererType("javax.faces.resource.Script");
+        output.setRendererType("jakarta.faces.resource.Script");
         output.getAttributes().put("name", JSF_SCRIPT_RESOURCE_NAME);
         output.getAttributes().put("library", JSF_SCRIPT_LIBRARY_NAME);
         return output;
@@ -1209,7 +1210,7 @@ public class RenderKitUtils {
             Application app = ctx.getApplication();
             HtmlMessages messages = (HtmlMessages) app.createComponent(HtmlMessages.COMPONENT_TYPE);
             messages.setId("javax_faces_developmentstage_messages");
-            Renderer messagesRenderer = ctx.getRenderKit().getRenderer(HtmlMessages.COMPONENT_FAMILY, "javax.faces.Messages");
+            Renderer messagesRenderer = ctx.getRenderKit().getRenderer(HtmlMessages.COMPONENT_FAMILY, "jakarta.faces.Messages");
             messages.setErrorStyle("Color: red");
             messages.setWarnStyle("Color: orange");
             messages.setInfoStyle("Color: blue");

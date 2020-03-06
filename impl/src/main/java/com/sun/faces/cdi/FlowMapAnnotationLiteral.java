@@ -17,7 +17,8 @@
 package com.sun.faces.cdi;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.FlowMap;
+
+import jakarta.faces.annotation.FlowMap;
 
 /**
  * An annotation literal for <code>@FlowMap</code>.

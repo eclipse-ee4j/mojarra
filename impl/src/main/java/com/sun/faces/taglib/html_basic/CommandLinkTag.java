@@ -18,18 +18,11 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import com.sun.faces.util.Util;
-import java.io.IOException;
-import javax.el.*;
-import javax.faces.*;
-import javax.faces.component.*;
-import javax.faces.context.*;
-import javax.faces.convert.*;
-import javax.faces.el.*;
-import javax.faces.event.*;
-import javax.faces.validator.*;
-import javax.faces.webapp.*;
 import javax.servlet.jsp.JspException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.event.MethodExpressionActionListener;
+import jakarta.faces.webapp.UIComponentELTag;
 
 
 /*
@@ -242,20 +235,20 @@ public class CommandLinkTag extends UIComponentELTag {
 
     // General Methods
     public String getRendererType() {
-        return "javax.faces.Link";
+        return "jakarta.faces.Link";
     }
 
     public String getComponentType() {
-        return "javax.faces.HtmlCommandLink";
+        return "jakarta.faces.HtmlCommandLink";
     }
 
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
-        javax.faces.component.UICommand command = null;
+        jakarta.faces.component.UICommand command = null;
         try {
-            command = (javax.faces.component.UICommand) component;
+            command = (jakarta.faces.component.UICommand) component;
         } catch (ClassCastException cce) {
-            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: javax.faces.component.UICommand.  Perhaps you're missing a tag?");
+            throw new IllegalStateException("Component " + component.toString() + " not expected type.  Expected: jakarta.faces.component.UICommand.  Perhaps you're missing a tag?");
         }
 
         if (action != null) {

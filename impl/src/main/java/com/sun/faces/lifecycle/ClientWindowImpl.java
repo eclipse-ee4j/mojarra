@@ -20,11 +20,11 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 
 import java.util.Map;
 
-import javax.faces.component.UINamingContainer;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
 
 public class ClientWindowImpl extends ClientWindow {
     

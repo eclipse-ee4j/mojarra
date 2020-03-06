@@ -38,7 +38,7 @@ public class InvalidXMLBean {
                 PartialResponseWriter writer =
                       ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
-                writer.startUpdate("javax.faces.ViewBody");
+                writer.startUpdate("jakarta.faces.ViewBody");
                 writer.startElement("body",null);
                 writer.startElement("h2", null);
                 writer.writeAttribute("id", "h2", "id");

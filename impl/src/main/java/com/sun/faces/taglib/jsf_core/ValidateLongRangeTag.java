@@ -21,12 +21,13 @@ package com.sun.faces.taglib.jsf_core;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.LongRangeValidator;
-import javax.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
 
 import com.sun.faces.el.ELUtils;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.LongRangeValidator;
+import jakarta.faces.validator.Validator;
 
 /**
  * ValidateLongRangeTag is the tag handler class for
@@ -61,7 +62,7 @@ public class ValidateLongRangeTag extends MaxMinValidatorTag {
                     getExpressionFactory();
             VALIDATOR_ID_EXPR =
                 factory.createValueExpression(context.getELContext(),  
-                                              "javax.faces.LongRange",
+                                              "jakarta.faces.LongRange",
                                               String.class);
         }
     }

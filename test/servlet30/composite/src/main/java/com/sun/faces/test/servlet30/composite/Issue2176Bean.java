@@ -52,7 +52,7 @@ public class Issue2176Bean implements Serializable {
         FacesContext.getCurrentInstance().getViewRoot().visitTree(visitContext, new VisitCallback() {
 
             public VisitResult visit(VisitContext context, UIComponent target) {
-                if ("javax.faces.Composite".equals(target.getRendererType())) {
+                if ("jakarta.faces.Composite".equals(target.getRendererType())) {
                     BeanInfo beanInfo = (BeanInfo) target.getAttributes().get(UIComponent.BEANINFO_KEY);
                     Collection<String> ids = (Collection<String>) beanInfo.getBeanDescriptor().getValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES);
 

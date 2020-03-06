@@ -16,9 +16,9 @@
 
 package com.sun.faces.context;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.PartialViewContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.PartialViewContextFactory;
 
 /**
  * <p>
@@ -35,7 +35,7 @@ public class PartialViewContextFactoryImpl extends PartialViewContextFactory {
 
 
     /**
-     * @see PartialViewContextFactory#getPartialViewContext(javax.faces.context.FacesContext)
+     * @see PartialViewContextFactory#getPartialViewContext(jakarta.faces.context.FacesContext)
      */
     @Override
     public PartialViewContext getPartialViewContext(FacesContext context) {

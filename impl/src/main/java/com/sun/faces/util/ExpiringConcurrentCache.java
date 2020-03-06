@@ -28,7 +28,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * This class implements an abstract ConcurrentCache with  objects in the cache potentially expiring.

@@ -27,8 +27,6 @@ import java.net.URL;
 import java.util.Iterator;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
@@ -37,6 +35,9 @@ import javax.xml.xpath.XPathFactory;
 import org.xml.sax.InputSource;
 
 import com.sun.faces.cdi.CdiExtension;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 
 
 public class Version {

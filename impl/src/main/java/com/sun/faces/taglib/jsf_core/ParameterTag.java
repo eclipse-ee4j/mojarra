@@ -19,9 +19,10 @@
 package com.sun.faces.taglib.jsf_core;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
-import javax.faces.webapp.UIComponentELTag;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.webapp.UIComponentELTag;
 
 public class ParameterTag extends UIComponentELTag {
 
@@ -80,7 +81,7 @@ public class ParameterTag extends UIComponentELTag {
 
     @Override
     public String getComponentType() {
-        return "javax.faces.Parameter";
+        return "jakarta.faces.Parameter";
     }
 
 

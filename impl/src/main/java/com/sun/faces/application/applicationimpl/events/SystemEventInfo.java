@@ -18,10 +18,10 @@ package com.sun.faces.application.applicationimpl.events;
 
 import static com.sun.faces.util.Util.coalesce;
 
-import javax.faces.event.SystemEvent;
-
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.Cache.Factory;
+
+import jakarta.faces.event.SystemEvent;
 
 /**
  * Simple wrapper class for application level SystemEvents. It provides the structure to map a

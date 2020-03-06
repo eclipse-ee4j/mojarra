@@ -28,8 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.w3c.dom.Document;
@@ -43,6 +41,9 @@ import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.context.InjectionFacesContextFactory;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

@@ -415,7 +415,7 @@ public class TestValueExpressionImpl extends ServletFacesTestCase
          * assertTrue(valueExpression.getType(getFacesContext().getELContext()).getName().equals("javax.servlet.http.Cookie"));
          */
         valueExpression = this
-                .create("initParam['javax.faces.STATE_SAVING_METHOD']");
+                .create("initParam['jakarta.faces.STATE_SAVING_METHOD']");
         assertTrue(valueExpression.getType(getFacesContext().getELContext()).getName().equals(
                 "java.lang.Object"));   
 

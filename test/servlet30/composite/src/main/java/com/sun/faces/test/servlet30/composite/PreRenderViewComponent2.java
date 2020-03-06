@@ -33,7 +33,7 @@ import javax.faces.event.PreRenderComponentEvent;
 public class PreRenderViewComponent2 extends PreRenderViewComponentBase
         implements NamingContainer, ComponentSystemEventListener {
 
-    public static final String COMPONENT_FAMILY = "javax.faces.NamingContainer";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.NamingContainer";
 
     public PreRenderViewComponent2() {
         super();

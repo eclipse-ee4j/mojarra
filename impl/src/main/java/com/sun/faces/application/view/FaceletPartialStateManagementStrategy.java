@@ -21,11 +21,11 @@ import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.Util.isEmpty;
+import static jakarta.faces.component.visit.VisitHint.SKIP_ITERATION;
+import static jakarta.faces.component.visit.VisitResult.ACCEPT;
+import static jakarta.faces.component.visit.VisitResult.COMPLETE;
+import static jakarta.faces.component.visit.VisitResult.REJECT;
 import static java.util.logging.Level.FINEST;
-import static javax.faces.component.visit.VisitHint.SKIP_ITERATION;
-import static javax.faces.component.visit.VisitResult.ACCEPT;
-import static javax.faces.component.visit.VisitResult.COMPLETE;
-import static javax.faces.component.visit.VisitResult.REJECT;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -37,26 +37,26 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.StateManagementStrategy;
-
 import com.sun.faces.context.StateContext;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.ComponentStruct;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
 
 /**
  * The state management strategy for PSS.
@@ -72,7 +72,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     /**
      * Stores the skip hint.
      */
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
 
     /**
      * Constructor.

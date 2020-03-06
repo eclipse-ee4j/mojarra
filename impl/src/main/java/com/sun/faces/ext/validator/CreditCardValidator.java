@@ -16,12 +16,14 @@
 
 package com.sun.faces.ext.validator;
 
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIComponent;
-import javax.faces.application.FacesMessage;
 import java.util.Locale;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
+
 import java.io.Serializable;
 
 /**

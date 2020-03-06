@@ -20,13 +20,14 @@ import com.sun.faces.facelets.tag.jsf.PassThroughAttributeLibrary;
 import com.sun.faces.facelets.tag.jsf.PassThroughElementLibrary;
 import com.sun.faces.facelets.tag.jsf.html.HtmlLibrary;
 
-import javax.faces.render.Renderer;
-import javax.faces.view.Location;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributes;
-import javax.faces.view.facelets.TagDecorator;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.view.Location;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributes;
+import jakarta.faces.view.facelets.TagDecorator;
+
 import java.util.HashMap;
 import java.util.Map;
 

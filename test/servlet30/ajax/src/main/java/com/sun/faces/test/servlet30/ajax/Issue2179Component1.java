@@ -26,11 +26,11 @@ import javax.faces.context.FacesContext;
 public class Issue2179Component1 extends UIInput {
 
     public Issue2179Component1() {
-        setRendererType("javax.faces.Text");
+        setRendererType("jakarta.faces.Text");
     }
 
     public String getFamily() {
-        return ("javax.faces.Input");
+        return ("jakarta.faces.Input");
     }
 
     public void encodeAll(FacesContext context) throws IOException {

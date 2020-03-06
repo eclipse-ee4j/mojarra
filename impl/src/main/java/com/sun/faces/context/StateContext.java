@@ -34,16 +34,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PreRemoveFromViewEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ApplicationStateInfo;
@@ -51,6 +41,16 @@ import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.util.ComponentStruct;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MostlySingletonSet;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PreRemoveFromViewEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
 
 /**
  * Context for dealing with partial state saving mechanics.
@@ -190,7 +190,7 @@ public class StateContext {
      * Toggles the current modification tracking status.
      * 
      * @param trackMods if <code>true</code> and the listener installed by 
-     * {@link #startTrackViewModifications(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot) 
+     * {@link #startTrackViewModifications(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot) 
      * is present, then view modifications will be tracked.  If 
      * <code>false</code>, then modification events will be ignored.
      */

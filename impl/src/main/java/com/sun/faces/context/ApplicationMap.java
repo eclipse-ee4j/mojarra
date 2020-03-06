@@ -25,7 +25,7 @@ import javax.servlet.ServletContext;
 import com.sun.faces.util.Util;
 
 /**
- * @see javax.faces.context.ExternalContext#getApplicationMap()
+ * @see jakarta.faces.context.ExternalContext#getApplicationMap()
  */
 public class ApplicationMap extends BaseContextMap<Object> {
 
