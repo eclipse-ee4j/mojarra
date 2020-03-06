@@ -54,7 +54,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 
 /**
@@ -325,7 +325,7 @@ public class DefaultFaceletFactory {
         UIComponent result = null;
         Application app = context.getApplication();
         ExternalContext extContext = context.getExternalContext();
-        File tmpDir = (File) extContext.getApplicationMap().get("javax.servlet.context.tempdir");
+        File tmpDir = (File) extContext.getApplicationMap().get("jakarta.servlet.context.tempdir");
         File tempFile = null;
         OutputStreamWriter osw = null;
         try {

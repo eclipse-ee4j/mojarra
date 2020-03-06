@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.EditableValueHolder;

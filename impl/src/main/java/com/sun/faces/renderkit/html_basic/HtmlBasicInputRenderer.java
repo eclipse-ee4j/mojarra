@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import com.sun.faces.util.MessageFactory;
 import com.sun.faces.util.MessageUtils;

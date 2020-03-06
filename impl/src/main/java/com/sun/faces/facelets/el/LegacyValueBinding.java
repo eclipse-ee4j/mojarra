@@ -16,10 +16,10 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotWritableException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
@@ -58,7 +58,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
         ELContext ctx = context.getELContext();
         try {
             return this.delegate.getValue(ctx);
-        } catch (javax.el.PropertyNotFoundException e) {
+        } catch (jakarta.el.PropertyNotFoundException e) {
             throw new PropertyNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
             throw new EvaluationException(e.getMessage(), e.getCause());
@@ -71,7 +71,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
         ELContext ctx = context.getELContext();
         try {
             this.delegate.setValue(ctx, value);
-        } catch (PropertyNotWritableException | javax.el.PropertyNotFoundException e) {
+        } catch (PropertyNotWritableException | jakarta.el.PropertyNotFoundException e) {
             throw new PropertyNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
             throw new EvaluationException(e.getMessage(), e.getCause());
@@ -84,7 +84,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
         ELContext ctx = context.getELContext();
         try {
             return this.delegate.isReadOnly(ctx);
-        } catch (javax.el.PropertyNotFoundException e) {
+        } catch (jakarta.el.PropertyNotFoundException e) {
             throw new PropertyNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
             throw new EvaluationException(e.getMessage(), e.getCause());
@@ -97,7 +97,7 @@ public final class LegacyValueBinding extends ValueBinding implements Externaliz
         ELContext ctx = context.getELContext();
         try {
             return this.delegate.getType(ctx);
-        } catch (javax.el.PropertyNotFoundException e) {
+        } catch (jakarta.el.PropertyNotFoundException e) {
             throw new PropertyNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
             throw new EvaluationException(e.getMessage(), e.getCause());

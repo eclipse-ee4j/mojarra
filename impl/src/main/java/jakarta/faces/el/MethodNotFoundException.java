@@ -22,7 +22,7 @@ package jakarta.faces.el;
  * against a base object.</p>
  *
  * @deprecated This has been replaced by {@link
- * javax.el.MethodNotFoundException}.
+ * jakarta.el.MethodNotFoundException}.
  */
 
 public class MethodNotFoundException extends EvaluationException {

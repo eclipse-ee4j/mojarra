@@ -17,7 +17,7 @@
 package com.sun.faces.test.servlet30.flash;
 
 import java.util.Map;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import javax.faces.application.Application;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;

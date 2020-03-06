@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.FactoryFinder;

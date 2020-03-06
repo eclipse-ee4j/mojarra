@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.StateHelper;
 import jakarta.faces.component.StateHolder;

@@ -16,7 +16,7 @@
 
 package com.sun.faces.test.javaee6web.injection;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;

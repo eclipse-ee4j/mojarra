@@ -24,7 +24,7 @@ import java.util.Map;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewResource;
-import javax.servlet.ServletRegistration;
+import jakarta.servlet.ServletRegistration;
 
 import jakarta.faces.context.FacesContext;
 

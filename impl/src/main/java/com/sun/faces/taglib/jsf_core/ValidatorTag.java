@@ -24,8 +24,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
-import javax.el.ValueExpression;
-import javax.servlet.jsp.JspException;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Basic implementation of <code>ValidatorELTag</code>.

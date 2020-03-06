@@ -16,8 +16,8 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.servlet.jsp.JspException;
-import javax.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
+import jakarta.el.ValueExpression;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

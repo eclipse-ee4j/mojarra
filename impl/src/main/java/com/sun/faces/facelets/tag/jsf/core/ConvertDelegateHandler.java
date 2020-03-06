@@ -16,7 +16,7 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.convert.Converter;

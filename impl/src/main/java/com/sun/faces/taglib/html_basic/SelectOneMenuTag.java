@@ -18,7 +18,7 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -38,224 +38,224 @@ public class SelectOneMenuTag extends UIComponentELTag {
 
     // Setter Methods
     // PROPERTY: converter
-    private javax.el.ValueExpression converter;
-    public void setConverter(javax.el.ValueExpression converter) {
+    private jakarta.el.ValueExpression converter;
+    public void setConverter(jakarta.el.ValueExpression converter) {
         this.converter = converter;
     }
 
     // PROPERTY: converterMessage
-    private javax.el.ValueExpression converterMessage;
-    public void setConverterMessage(javax.el.ValueExpression converterMessage) {
+    private jakarta.el.ValueExpression converterMessage;
+    public void setConverterMessage(jakarta.el.ValueExpression converterMessage) {
         this.converterMessage = converterMessage;
     }
 
     // PROPERTY: immediate
-    private javax.el.ValueExpression immediate;
-    public void setImmediate(javax.el.ValueExpression immediate) {
+    private jakarta.el.ValueExpression immediate;
+    public void setImmediate(jakarta.el.ValueExpression immediate) {
         this.immediate = immediate;
     }
 
     // PROPERTY: required
-    private javax.el.ValueExpression required;
-    public void setRequired(javax.el.ValueExpression required) {
+    private jakarta.el.ValueExpression required;
+    public void setRequired(jakarta.el.ValueExpression required) {
         this.required = required;
     }
 
     // PROPERTY: requiredMessage
-    private javax.el.ValueExpression requiredMessage;
-    public void setRequiredMessage(javax.el.ValueExpression requiredMessage) {
+    private jakarta.el.ValueExpression requiredMessage;
+    public void setRequiredMessage(jakarta.el.ValueExpression requiredMessage) {
         this.requiredMessage = requiredMessage;
     }
 
     // PROPERTY: validator
-    private javax.el.MethodExpression validator;
-    public void setValidator(javax.el.MethodExpression validator) {
+    private jakarta.el.MethodExpression validator;
+    public void setValidator(jakarta.el.MethodExpression validator) {
         this.validator = validator;
     }
 
     // PROPERTY: validatorMessage
-    private javax.el.ValueExpression validatorMessage;
-    public void setValidatorMessage(javax.el.ValueExpression validatorMessage) {
+    private jakarta.el.ValueExpression validatorMessage;
+    public void setValidatorMessage(jakarta.el.ValueExpression validatorMessage) {
         this.validatorMessage = validatorMessage;
     }
 
     // PROPERTY: value
-    private javax.el.ValueExpression value;
-    public void setValue(javax.el.ValueExpression value) {
+    private jakarta.el.ValueExpression value;
+    public void setValue(jakarta.el.ValueExpression value) {
         this.value = value;
     }
 
     // PROPERTY: valueChangeListener
-    private javax.el.MethodExpression valueChangeListener;
-    public void setValueChangeListener(javax.el.MethodExpression valueChangeListener) {
+    private jakarta.el.MethodExpression valueChangeListener;
+    public void setValueChangeListener(jakarta.el.MethodExpression valueChangeListener) {
         this.valueChangeListener = valueChangeListener;
     }
 
     // PROPERTY: accesskey
-    private javax.el.ValueExpression accesskey;
-    public void setAccesskey(javax.el.ValueExpression accesskey) {
+    private jakarta.el.ValueExpression accesskey;
+    public void setAccesskey(jakarta.el.ValueExpression accesskey) {
         this.accesskey = accesskey;
     }
 
     // PROPERTY: dir
-    private javax.el.ValueExpression dir;
-    public void setDir(javax.el.ValueExpression dir) {
+    private jakarta.el.ValueExpression dir;
+    public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: disabled
-    private javax.el.ValueExpression disabled;
-    public void setDisabled(javax.el.ValueExpression disabled) {
+    private jakarta.el.ValueExpression disabled;
+    public void setDisabled(jakarta.el.ValueExpression disabled) {
         this.disabled = disabled;
     }
 
     // PROPERTY: disabledClass
-    private javax.el.ValueExpression disabledClass;
-    public void setDisabledClass(javax.el.ValueExpression disabledClass) {
+    private jakarta.el.ValueExpression disabledClass;
+    public void setDisabledClass(jakarta.el.ValueExpression disabledClass) {
         this.disabledClass = disabledClass;
     }
 
     // PROPERTY: enabledClass
-    private javax.el.ValueExpression enabledClass;
-    public void setEnabledClass(javax.el.ValueExpression enabledClass) {
+    private jakarta.el.ValueExpression enabledClass;
+    public void setEnabledClass(jakarta.el.ValueExpression enabledClass) {
         this.enabledClass = enabledClass;
     }
 
     // PROPERTY: hideNoSelectionOption
-    private javax.el.ValueExpression hideNoSelectionOption;
-    public void setHideNoSelectionOption(javax.el.ValueExpression hideNoSelectionOption) {
+    private jakarta.el.ValueExpression hideNoSelectionOption;
+    public void setHideNoSelectionOption(jakarta.el.ValueExpression hideNoSelectionOption) {
         this.hideNoSelectionOption = hideNoSelectionOption;
     }
 
     // PROPERTY: label
-    private javax.el.ValueExpression label;
-    public void setLabel(javax.el.ValueExpression label) {
+    private jakarta.el.ValueExpression label;
+    public void setLabel(jakarta.el.ValueExpression label) {
         this.label = label;
     }
 
     // PROPERTY: lang
-    private javax.el.ValueExpression lang;
-    public void setLang(javax.el.ValueExpression lang) {
+    private jakarta.el.ValueExpression lang;
+    public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: onblur
-    private javax.el.ValueExpression onblur;
-    public void setOnblur(javax.el.ValueExpression onblur) {
+    private jakarta.el.ValueExpression onblur;
+    public void setOnblur(jakarta.el.ValueExpression onblur) {
         this.onblur = onblur;
     }
 
     // PROPERTY: onchange
-    private javax.el.ValueExpression onchange;
-    public void setOnchange(javax.el.ValueExpression onchange) {
+    private jakarta.el.ValueExpression onchange;
+    public void setOnchange(jakarta.el.ValueExpression onchange) {
         this.onchange = onchange;
     }
 
     // PROPERTY: onclick
-    private javax.el.ValueExpression onclick;
-    public void setOnclick(javax.el.ValueExpression onclick) {
+    private jakarta.el.ValueExpression onclick;
+    public void setOnclick(jakarta.el.ValueExpression onclick) {
         this.onclick = onclick;
     }
 
     // PROPERTY: ondblclick
-    private javax.el.ValueExpression ondblclick;
-    public void setOndblclick(javax.el.ValueExpression ondblclick) {
+    private jakarta.el.ValueExpression ondblclick;
+    public void setOndblclick(jakarta.el.ValueExpression ondblclick) {
         this.ondblclick = ondblclick;
     }
 
     // PROPERTY: onfocus
-    private javax.el.ValueExpression onfocus;
-    public void setOnfocus(javax.el.ValueExpression onfocus) {
+    private jakarta.el.ValueExpression onfocus;
+    public void setOnfocus(jakarta.el.ValueExpression onfocus) {
         this.onfocus = onfocus;
     }
 
     // PROPERTY: onkeydown
-    private javax.el.ValueExpression onkeydown;
-    public void setOnkeydown(javax.el.ValueExpression onkeydown) {
+    private jakarta.el.ValueExpression onkeydown;
+    public void setOnkeydown(jakarta.el.ValueExpression onkeydown) {
         this.onkeydown = onkeydown;
     }
 
     // PROPERTY: onkeypress
-    private javax.el.ValueExpression onkeypress;
-    public void setOnkeypress(javax.el.ValueExpression onkeypress) {
+    private jakarta.el.ValueExpression onkeypress;
+    public void setOnkeypress(jakarta.el.ValueExpression onkeypress) {
         this.onkeypress = onkeypress;
     }
 
     // PROPERTY: onkeyup
-    private javax.el.ValueExpression onkeyup;
-    public void setOnkeyup(javax.el.ValueExpression onkeyup) {
+    private jakarta.el.ValueExpression onkeyup;
+    public void setOnkeyup(jakarta.el.ValueExpression onkeyup) {
         this.onkeyup = onkeyup;
     }
 
     // PROPERTY: onmousedown
-    private javax.el.ValueExpression onmousedown;
-    public void setOnmousedown(javax.el.ValueExpression onmousedown) {
+    private jakarta.el.ValueExpression onmousedown;
+    public void setOnmousedown(jakarta.el.ValueExpression onmousedown) {
         this.onmousedown = onmousedown;
     }
 
     // PROPERTY: onmousemove
-    private javax.el.ValueExpression onmousemove;
-    public void setOnmousemove(javax.el.ValueExpression onmousemove) {
+    private jakarta.el.ValueExpression onmousemove;
+    public void setOnmousemove(jakarta.el.ValueExpression onmousemove) {
         this.onmousemove = onmousemove;
     }
 
     // PROPERTY: onmouseout
-    private javax.el.ValueExpression onmouseout;
-    public void setOnmouseout(javax.el.ValueExpression onmouseout) {
+    private jakarta.el.ValueExpression onmouseout;
+    public void setOnmouseout(jakarta.el.ValueExpression onmouseout) {
         this.onmouseout = onmouseout;
     }
 
     // PROPERTY: onmouseover
-    private javax.el.ValueExpression onmouseover;
-    public void setOnmouseover(javax.el.ValueExpression onmouseover) {
+    private jakarta.el.ValueExpression onmouseover;
+    public void setOnmouseover(jakarta.el.ValueExpression onmouseover) {
         this.onmouseover = onmouseover;
     }
 
     // PROPERTY: onmouseup
-    private javax.el.ValueExpression onmouseup;
-    public void setOnmouseup(javax.el.ValueExpression onmouseup) {
+    private jakarta.el.ValueExpression onmouseup;
+    public void setOnmouseup(jakarta.el.ValueExpression onmouseup) {
         this.onmouseup = onmouseup;
     }
 
     // PROPERTY: onselect
-    private javax.el.ValueExpression onselect;
-    public void setOnselect(javax.el.ValueExpression onselect) {
+    private jakarta.el.ValueExpression onselect;
+    public void setOnselect(jakarta.el.ValueExpression onselect) {
         this.onselect = onselect;
     }
 
     // PROPERTY: readonly
-    private javax.el.ValueExpression readonly;
-    public void setReadonly(javax.el.ValueExpression readonly) {
+    private jakarta.el.ValueExpression readonly;
+    public void setReadonly(jakarta.el.ValueExpression readonly) {
         this.readonly = readonly;
     }
 
     // PROPERTY: role
-    private javax.el.ValueExpression role;
-    public void setRole(javax.el.ValueExpression role) {
+    private jakarta.el.ValueExpression role;
+    public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: style
-    private javax.el.ValueExpression style;
-    public void setStyle(javax.el.ValueExpression style) {
+    private jakarta.el.ValueExpression style;
+    public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
-    private javax.el.ValueExpression styleClass;
-    public void setStyleClass(javax.el.ValueExpression styleClass) {
+    private jakarta.el.ValueExpression styleClass;
+    public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: tabindex
-    private javax.el.ValueExpression tabindex;
-    public void setTabindex(javax.el.ValueExpression tabindex) {
+    private jakarta.el.ValueExpression tabindex;
+    public void setTabindex(jakarta.el.ValueExpression tabindex) {
         this.tabindex = tabindex;
     }
 
     // PROPERTY: title
-    private javax.el.ValueExpression title;
-    public void setTitle(javax.el.ValueExpression title) {
+    private jakarta.el.ValueExpression title;
+    public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
 

@@ -18,10 +18,10 @@
 
 package com.sun.faces.taglib.jsf_core;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.el.ExpressionFactory;
-import javax.servlet.jsp.JspException;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.ExpressionFactory;
+import jakarta.servlet.jsp.JspException;
 
 import com.sun.faces.el.ELUtils;
 

@@ -21,7 +21,7 @@ import com.sun.faces.facelets.el.LegacyMethodBinding;
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.view.facelets.*;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

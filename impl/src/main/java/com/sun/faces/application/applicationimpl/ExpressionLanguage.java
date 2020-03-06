@@ -30,14 +30,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELContextListener;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
@@ -84,7 +84,7 @@ public class ExpressionLanguage {
     }
     
     /**
-     * @see jakarta.faces.application.Application#addELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#addELContextListener(jakarta.el.ELContextListener)
      */
     public void addELContextListener(ELContextListener listener) {
         if (listener != null) {
@@ -93,7 +93,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see jakarta.faces.application.Application#removeELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#removeELContextListener(jakarta.el.ELContextListener)
      */
     public void removeELContextListener(ELContextListener listener) {
         if (listener != null) {
@@ -129,7 +129,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see jakarta.faces.application.Application#addELResolver(javax.el.ELResolver)
+     * @see jakarta.faces.application.Application#addELResolver(jakarta.el.ELResolver)
      */
     public void addELResolver(ELResolver resolver) {
 

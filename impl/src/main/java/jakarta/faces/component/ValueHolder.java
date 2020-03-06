@@ -17,7 +17,7 @@
 package jakarta.faces.component;
 
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 
 import jakarta.faces.convert.Converter;

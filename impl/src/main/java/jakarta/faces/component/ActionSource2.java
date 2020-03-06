@@ -16,7 +16,7 @@
 
 package jakarta.faces.component;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 

@@ -16,7 +16,7 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.*;
+import jakarta.el.*;
 
 import jakarta.faces.view.facelets.TagAttribute;
 

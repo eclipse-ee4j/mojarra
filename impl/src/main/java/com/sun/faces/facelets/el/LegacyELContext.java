@@ -16,7 +16,7 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.*;
+import jakarta.el.*;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -116,7 +116,7 @@ public final class LegacyELContext extends ELContext {
                     }
                 }
             } catch (PropertyNotFoundException e) {
-                throw new javax.el.PropertyNotFoundException(e.getMessage(), e
+                throw new jakarta.el.PropertyNotFoundException(e.getMessage(), e
                         .getCause());
             } catch (EvaluationException e) {
                 throw new ELException(e.getMessage(), e.getCause());
@@ -143,7 +143,7 @@ public final class LegacyELContext extends ELContext {
                     }
                 }
             } catch (PropertyNotFoundException e) {
-                throw new javax.el.PropertyNotFoundException(e.getMessage(), e
+                throw new jakarta.el.PropertyNotFoundException(e.getMessage(), e
                         .getCause());
             } catch (EvaluationException e) {
                 throw new ELException(e.getMessage(), e.getCause());
@@ -170,7 +170,7 @@ public final class LegacyELContext extends ELContext {
                     }
                 }
             } catch (PropertyNotFoundException e) {
-                throw new javax.el.PropertyNotFoundException(e.getMessage(), e
+                throw new jakarta.el.PropertyNotFoundException(e.getMessage(), e
                         .getCause());
             } catch (EvaluationException e) {
                 throw new ELException(e.getMessage(), e.getCause());
@@ -205,7 +205,7 @@ public final class LegacyELContext extends ELContext {
                     }
                 }
             } catch (PropertyNotFoundException e) {
-                throw new javax.el.PropertyNotFoundException(e.getMessage(), e
+                throw new jakarta.el.PropertyNotFoundException(e.getMessage(), e
                         .getCause());
             } catch (EvaluationException e) {
                 throw new ELException(e.getMessage(), e.getCause());

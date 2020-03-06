@@ -28,7 +28,7 @@ import jakarta.faces.model.SelectItem;
  * </p>
  * <ul>
  * <li>The <code>value</code> attribute's value is an instance of {@link SelectItem}.</li>
- * <li>The associated {@link javax.el.ValueExpression} points at a model data item of type
+ * <li>The associated {@link jakarta.el.ValueExpression} points at a model data item of type
  * {@link SelectItem}.</li>
  * <li>A new {@link SelectItem} instance is synthesized from the values of the
  * <code>itemDescription</code>, <code>itemDisabled</code>, <code>itemLabel</code>, <code

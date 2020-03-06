@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import javax.el.ValueExpression;
-import javax.websocket.CloseReason.CloseCodes;
+import jakarta.el.ValueExpression;
+import jakarta.websocket.CloseReason.CloseCodes;
 
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.ExternalContext;

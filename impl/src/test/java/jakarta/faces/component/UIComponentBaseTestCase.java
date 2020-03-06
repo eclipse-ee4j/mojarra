@@ -37,7 +37,7 @@ import jakarta.faces.validator.ValidatorException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

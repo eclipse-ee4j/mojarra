@@ -16,7 +16,7 @@
 
 package jakarta.faces.component;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.view.ViewMetadata;
 

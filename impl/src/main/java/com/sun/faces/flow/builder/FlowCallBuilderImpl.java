@@ -24,7 +24,7 @@ import jakarta.faces.flow.FlowCallNode;
 import jakarta.faces.flow.builder.FlowCallBuilder;
 
 import java.util.Map;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 public class FlowCallBuilderImpl extends FlowCallBuilder {
     

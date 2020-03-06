@@ -22,11 +22,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.el.ELContextListener;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ProjectStage;
@@ -630,7 +630,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     /**
      * <p class="changed_added_2_0">
      * <span class="changed_modified_2_2">The</span> default behavior of this method is to call
-     * {@link Application#addELResolver(javax.el.ELResolver)} on the wrapped {@link Application}
+     * {@link Application#addELResolver(jakarta.el.ELResolver)} on the wrapped {@link Application}
      * object.
      * </p>
      *
@@ -656,7 +656,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     /**
      * <p class="changed_added_2_0">
      * The default behavior of this method is to call
-     * {@link Application#createComponent(javax.el.ValueExpression, jakarta.faces.context.FacesContext, String)}
+     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String)}
      * on the wrapped {@link Application} object.
      * </p>
      */
@@ -668,7 +668,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     /**
      * <p class="changed_added_2_0">
      * The default behavior of this method is to call
-     * {@link Application#createComponent(javax.el.ValueExpression, jakarta.faces.context.FacesContext, String, String)}
+     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String, String)}
      * on the wrapped {@link Application} object.
      * </p>
      */
@@ -740,7 +740,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     /**
      * <p class="changed_added_2_0">
      * The default behavior of this method is to call
-     * {@link Application#addELContextListener(javax.el.ELContextListener)} on the wrapped
+     * {@link Application#addELContextListener(jakarta.el.ELContextListener)} on the wrapped
      * {@link Application} object.
      * </p>
      */
@@ -752,7 +752,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     /**
      * <p class="changed_added_2_0">
      * The default behavior of this method is to call
-     * {@link Application#removeELContextListener(javax.el.ELContextListener)} on the wrapped
+     * {@link Application#removeELContextListener(jakarta.el.ELContextListener)} on the wrapped
      * {@link Application} object.
      * </p>
      */

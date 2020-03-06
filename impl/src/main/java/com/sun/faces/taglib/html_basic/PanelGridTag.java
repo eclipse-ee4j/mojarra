@@ -18,7 +18,7 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
@@ -34,200 +34,200 @@ public class PanelGridTag extends UIComponentELTag {
 
     // Setter Methods
     // PROPERTY: bgcolor
-    private javax.el.ValueExpression bgcolor;
-    public void setBgcolor(javax.el.ValueExpression bgcolor) {
+    private jakarta.el.ValueExpression bgcolor;
+    public void setBgcolor(jakarta.el.ValueExpression bgcolor) {
         this.bgcolor = bgcolor;
     }
 
     // PROPERTY: bodyrows
-    private javax.el.ValueExpression bodyrows;
-    public void setBodyrows(javax.el.ValueExpression bodyrows) {
+    private jakarta.el.ValueExpression bodyrows;
+    public void setBodyrows(jakarta.el.ValueExpression bodyrows) {
         this.bodyrows = bodyrows;
     }
 
     // PROPERTY: border
-    private javax.el.ValueExpression border;
-    public void setBorder(javax.el.ValueExpression border) {
+    private jakarta.el.ValueExpression border;
+    public void setBorder(jakarta.el.ValueExpression border) {
         this.border = border;
     }
 
     // PROPERTY: captionClass
-    private javax.el.ValueExpression captionClass;
-    public void setCaptionClass(javax.el.ValueExpression captionClass) {
+    private jakarta.el.ValueExpression captionClass;
+    public void setCaptionClass(jakarta.el.ValueExpression captionClass) {
         this.captionClass = captionClass;
     }
 
     // PROPERTY: captionStyle
-    private javax.el.ValueExpression captionStyle;
-    public void setCaptionStyle(javax.el.ValueExpression captionStyle) {
+    private jakarta.el.ValueExpression captionStyle;
+    public void setCaptionStyle(jakarta.el.ValueExpression captionStyle) {
         this.captionStyle = captionStyle;
     }
 
     // PROPERTY: cellpadding
-    private javax.el.ValueExpression cellpadding;
-    public void setCellpadding(javax.el.ValueExpression cellpadding) {
+    private jakarta.el.ValueExpression cellpadding;
+    public void setCellpadding(jakarta.el.ValueExpression cellpadding) {
         this.cellpadding = cellpadding;
     }
 
     // PROPERTY: cellspacing
-    private javax.el.ValueExpression cellspacing;
-    public void setCellspacing(javax.el.ValueExpression cellspacing) {
+    private jakarta.el.ValueExpression cellspacing;
+    public void setCellspacing(jakarta.el.ValueExpression cellspacing) {
         this.cellspacing = cellspacing;
     }
 
     // PROPERTY: columnClasses
-    private javax.el.ValueExpression columnClasses;
-    public void setColumnClasses(javax.el.ValueExpression columnClasses) {
+    private jakarta.el.ValueExpression columnClasses;
+    public void setColumnClasses(jakarta.el.ValueExpression columnClasses) {
         this.columnClasses = columnClasses;
     }
 
     // PROPERTY: columns
-    private javax.el.ValueExpression columns;
-    public void setColumns(javax.el.ValueExpression columns) {
+    private jakarta.el.ValueExpression columns;
+    public void setColumns(jakarta.el.ValueExpression columns) {
         this.columns = columns;
     }
 
     // PROPERTY: dir
-    private javax.el.ValueExpression dir;
-    public void setDir(javax.el.ValueExpression dir) {
+    private jakarta.el.ValueExpression dir;
+    public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: footerClass
-    private javax.el.ValueExpression footerClass;
-    public void setFooterClass(javax.el.ValueExpression footerClass) {
+    private jakarta.el.ValueExpression footerClass;
+    public void setFooterClass(jakarta.el.ValueExpression footerClass) {
         this.footerClass = footerClass;
     }
 
     // PROPERTY: frame
-    private javax.el.ValueExpression frame;
-    public void setFrame(javax.el.ValueExpression frame) {
+    private jakarta.el.ValueExpression frame;
+    public void setFrame(jakarta.el.ValueExpression frame) {
         this.frame = frame;
     }
 
     // PROPERTY: headerClass
-    private javax.el.ValueExpression headerClass;
-    public void setHeaderClass(javax.el.ValueExpression headerClass) {
+    private jakarta.el.ValueExpression headerClass;
+    public void setHeaderClass(jakarta.el.ValueExpression headerClass) {
         this.headerClass = headerClass;
     }
 
     // PROPERTY: lang
-    private javax.el.ValueExpression lang;
-    public void setLang(javax.el.ValueExpression lang) {
+    private jakarta.el.ValueExpression lang;
+    public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: onclick
-    private javax.el.ValueExpression onclick;
-    public void setOnclick(javax.el.ValueExpression onclick) {
+    private jakarta.el.ValueExpression onclick;
+    public void setOnclick(jakarta.el.ValueExpression onclick) {
         this.onclick = onclick;
     }
 
     // PROPERTY: ondblclick
-    private javax.el.ValueExpression ondblclick;
-    public void setOndblclick(javax.el.ValueExpression ondblclick) {
+    private jakarta.el.ValueExpression ondblclick;
+    public void setOndblclick(jakarta.el.ValueExpression ondblclick) {
         this.ondblclick = ondblclick;
     }
 
     // PROPERTY: onkeydown
-    private javax.el.ValueExpression onkeydown;
-    public void setOnkeydown(javax.el.ValueExpression onkeydown) {
+    private jakarta.el.ValueExpression onkeydown;
+    public void setOnkeydown(jakarta.el.ValueExpression onkeydown) {
         this.onkeydown = onkeydown;
     }
 
     // PROPERTY: onkeypress
-    private javax.el.ValueExpression onkeypress;
-    public void setOnkeypress(javax.el.ValueExpression onkeypress) {
+    private jakarta.el.ValueExpression onkeypress;
+    public void setOnkeypress(jakarta.el.ValueExpression onkeypress) {
         this.onkeypress = onkeypress;
     }
 
     // PROPERTY: onkeyup
-    private javax.el.ValueExpression onkeyup;
-    public void setOnkeyup(javax.el.ValueExpression onkeyup) {
+    private jakarta.el.ValueExpression onkeyup;
+    public void setOnkeyup(jakarta.el.ValueExpression onkeyup) {
         this.onkeyup = onkeyup;
     }
 
     // PROPERTY: onmousedown
-    private javax.el.ValueExpression onmousedown;
-    public void setOnmousedown(javax.el.ValueExpression onmousedown) {
+    private jakarta.el.ValueExpression onmousedown;
+    public void setOnmousedown(jakarta.el.ValueExpression onmousedown) {
         this.onmousedown = onmousedown;
     }
 
     // PROPERTY: onmousemove
-    private javax.el.ValueExpression onmousemove;
-    public void setOnmousemove(javax.el.ValueExpression onmousemove) {
+    private jakarta.el.ValueExpression onmousemove;
+    public void setOnmousemove(jakarta.el.ValueExpression onmousemove) {
         this.onmousemove = onmousemove;
     }
 
     // PROPERTY: onmouseout
-    private javax.el.ValueExpression onmouseout;
-    public void setOnmouseout(javax.el.ValueExpression onmouseout) {
+    private jakarta.el.ValueExpression onmouseout;
+    public void setOnmouseout(jakarta.el.ValueExpression onmouseout) {
         this.onmouseout = onmouseout;
     }
 
     // PROPERTY: onmouseover
-    private javax.el.ValueExpression onmouseover;
-    public void setOnmouseover(javax.el.ValueExpression onmouseover) {
+    private jakarta.el.ValueExpression onmouseover;
+    public void setOnmouseover(jakarta.el.ValueExpression onmouseover) {
         this.onmouseover = onmouseover;
     }
 
     // PROPERTY: onmouseup
-    private javax.el.ValueExpression onmouseup;
-    public void setOnmouseup(javax.el.ValueExpression onmouseup) {
+    private jakarta.el.ValueExpression onmouseup;
+    public void setOnmouseup(jakarta.el.ValueExpression onmouseup) {
         this.onmouseup = onmouseup;
     }
 
     // PROPERTY: role
-    private javax.el.ValueExpression role;
-    public void setRole(javax.el.ValueExpression role) {
+    private jakarta.el.ValueExpression role;
+    public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: rowClass
-    private javax.el.ValueExpression rowClass;
-    public void setRowClass(javax.el.ValueExpression rowClass) {
+    private jakarta.el.ValueExpression rowClass;
+    public void setRowClass(jakarta.el.ValueExpression rowClass) {
         this.rowClass = rowClass;
     }
 
     // PROPERTY: rowClasses
-    private javax.el.ValueExpression rowClasses;
-    public void setRowClasses(javax.el.ValueExpression rowClasses) {
+    private jakarta.el.ValueExpression rowClasses;
+    public void setRowClasses(jakarta.el.ValueExpression rowClasses) {
         this.rowClasses = rowClasses;
     }
 
     // PROPERTY: rules
-    private javax.el.ValueExpression rules;
-    public void setRules(javax.el.ValueExpression rules) {
+    private jakarta.el.ValueExpression rules;
+    public void setRules(jakarta.el.ValueExpression rules) {
         this.rules = rules;
     }
 
     // PROPERTY: style
-    private javax.el.ValueExpression style;
-    public void setStyle(javax.el.ValueExpression style) {
+    private jakarta.el.ValueExpression style;
+    public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
-    private javax.el.ValueExpression styleClass;
-    public void setStyleClass(javax.el.ValueExpression styleClass) {
+    private jakarta.el.ValueExpression styleClass;
+    public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: summary
-    private javax.el.ValueExpression summary;
-    public void setSummary(javax.el.ValueExpression summary) {
+    private jakarta.el.ValueExpression summary;
+    public void setSummary(jakarta.el.ValueExpression summary) {
         this.summary = summary;
     }
 
     // PROPERTY: title
-    private javax.el.ValueExpression title;
-    public void setTitle(javax.el.ValueExpression title) {
+    private jakarta.el.ValueExpression title;
+    public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
 
     // PROPERTY: width
-    private javax.el.ValueExpression width;
-    public void setWidth(javax.el.ValueExpression width) {
+    private jakarta.el.ValueExpression width;
+    public void setWidth(jakarta.el.ValueExpression width) {
         this.width = width;
     }
 

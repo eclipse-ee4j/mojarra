@@ -16,7 +16,7 @@
 
 package com.sun.faces.context;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * A utility class for dealing with context-param entries.

@@ -23,7 +23,7 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.io.IOException;
 

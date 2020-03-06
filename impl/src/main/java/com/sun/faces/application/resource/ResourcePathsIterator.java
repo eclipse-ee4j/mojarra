@@ -21,7 +21,7 @@ import static com.sun.faces.util.Util.startsWithOneOf;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import jakarta.faces.context.ExternalContext;
 

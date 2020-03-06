@@ -21,7 +21,7 @@ import com.sun.faces.facelets.el.ELText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import java.io.IOException;
 

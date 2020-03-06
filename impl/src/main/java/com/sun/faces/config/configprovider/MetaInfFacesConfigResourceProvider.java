@@ -25,7 +25,7 @@ import com.sun.faces.facelets.util.Classpath;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 import java.net.URISyntaxException;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -70,7 +70,7 @@ public class MetaInfFacesConfigResourceProvider implements
 
 
     /**
-     * @see com.sun.faces.spi.ConfigurationResourceProvider#getResources(javax.servlet.ServletContext)
+     * @see com.sun.faces.spi.ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
      */
     @Override
     public Collection<URI> getResources(ServletContext context) {

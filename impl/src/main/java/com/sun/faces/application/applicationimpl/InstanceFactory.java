@@ -57,9 +57,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ConverterPropertyEditorFactory;
@@ -697,9 +697,9 @@ public class InstanceFactory {
     
     /**
      * Leveraged by
-     * {@link Application#createComponent(javax.el.ValueExpression, jakarta.faces.context.FacesContext, String)}
+     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String)}
      * and
-     * {@link Application#createComponent(javax.el.ValueExpression, jakarta.faces.context.FacesContext, String, String)}.
+     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String, String)}.
      * This method will apply any component and render annotations that may be present.
      */
     private UIComponent createComponentApplyAnnotations(FacesContext ctx, ValueExpression componentExpression, String componentType, String rendererType,

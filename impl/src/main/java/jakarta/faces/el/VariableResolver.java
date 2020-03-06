@@ -24,7 +24,7 @@ import jakarta.faces.context.FacesContext;
  * <p><strong>VariableResolver</strong> represents a pluggable mechanism
  * for resolving a top-level variable reference at evaluation time.</p>
  *
- * @deprecated This has been replaced by {@link javax.el.ELResolver}
+ * @deprecated This has been replaced by {@link jakarta.el.ELResolver}
  * when operating with a <code>null</code> <code>base</code> argument.
  */
 

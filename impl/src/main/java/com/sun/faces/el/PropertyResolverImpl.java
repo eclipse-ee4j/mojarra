@@ -16,7 +16,7 @@
 
 package com.sun.faces.el;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import java.lang.reflect.Array;
 import java.util.List;
@@ -96,7 +96,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             return context.getApplication().getELResolver().getType(context.getELContext(), base,property);
-        } catch (javax.el.PropertyNotFoundException pnfe) {
+        } catch (jakarta.el.PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(pnfe);
         } catch (ELException elex) {
             throw new EvaluationException(elex);
@@ -147,7 +147,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             return context.getApplication().getELResolver().getValue(context.getELContext(), base,property);
-        } catch (javax.el.PropertyNotFoundException pnfe) {
+        } catch (jakarta.el.PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(pnfe);
         } catch (ELException elex) {
             throw new EvaluationException(elex);
@@ -249,7 +249,7 @@ public class PropertyResolverImpl extends PropertyResolver {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getApplication().getELResolver().setValue(context.getELContext(), base,property, value);
-        } catch (javax.el.PropertyNotFoundException | javax.el.PropertyNotWritableException pnfe) {
+        } catch (jakarta.el.PropertyNotFoundException | jakarta.el.PropertyNotWritableException pnfe) {
             throw new PropertyNotFoundException(pnfe);
         }
         catch (ELException elex) {

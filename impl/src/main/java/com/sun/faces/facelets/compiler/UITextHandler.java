@@ -24,7 +24,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.view.facelets.FaceletContext;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import java.io.IOException;
 import java.io.Writer;

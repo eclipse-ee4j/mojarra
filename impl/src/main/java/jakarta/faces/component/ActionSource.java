@@ -109,7 +109,7 @@ public interface ActionSource {
      * method must call through to {@link ActionSource2#getActionExpression} and examine the result.
      * If the result came from a previous call to {@link #setAction}, extract the
      * <code>MethodBinding</code> from it and return it. Otherwise, wrap the returned
-     * {@link javax.el.MethodExpression} in a <code>MethodBinding</code> implementation, and return
+     * {@link jakarta.el.MethodExpression} in a <code>MethodBinding</code> implementation, and return
      * it.
      * </p>
      * 
@@ -131,7 +131,7 @@ public interface ActionSource {
      * <p>
      * If the implementing class also implements {@link ActionSource2}, the implementation of this
      * method must wrap the argument <code>action</code> in a class that implements
-     * {@link javax.el.MethodExpression} and call through to
+     * {@link jakarta.el.MethodExpression} and call through to
      * {@link ActionSource2#setActionExpression}, passing the wrapped <code>action</code>.
      * </p>
      *
@@ -151,7 +151,7 @@ public interface ActionSource {
      * @param action The new MethodBinding expression
      *
      * @deprecated This has been replaced by
-     *             {@link ActionSource2#setActionExpression(javax.el.MethodExpression)}.
+     *             {@link ActionSource2#setActionExpression(jakarta.el.MethodExpression)}.
      */
     public void setAction(MethodBinding action);
 

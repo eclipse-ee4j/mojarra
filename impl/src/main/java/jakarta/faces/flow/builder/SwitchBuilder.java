@@ -16,7 +16,7 @@
 
 package jakarta.faces.flow.builder;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * <p class="changed_added_2_2">Create a switch node in the current {@link jakarta.faces.flow.Flow}.</p>

@@ -18,12 +18,12 @@ package com.sun.faces.mock;
 
 import java.util.Iterator;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 
 import jakarta.faces.context.FacesContext;
 
-import javax.el.ELContext;
-import javax.el.ELException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
 
 /**
  * <p>

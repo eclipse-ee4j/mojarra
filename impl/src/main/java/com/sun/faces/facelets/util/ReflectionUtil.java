@@ -255,6 +255,6 @@ public class ReflectionUtil {
     private static boolean isDevModeEnabled() {
         WebConfiguration webconfig = WebConfiguration.getInstance();
         return (webconfig != null
-                  && "Development".equals(webconfig.getOptionValue(WebContextInitParameter.JavaxFacesProjectStage)));
+                  && "Development".equals(webconfig.getOptionValue(WebContextInitParameter.JakartaFacesProjectStage)));
     }
 }

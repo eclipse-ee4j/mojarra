@@ -26,7 +26,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;

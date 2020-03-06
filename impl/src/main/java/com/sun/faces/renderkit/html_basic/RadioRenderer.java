@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.Attribute;

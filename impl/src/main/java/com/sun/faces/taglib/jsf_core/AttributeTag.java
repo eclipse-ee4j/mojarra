@@ -17,10 +17,10 @@
 package com.sun.faces.taglib.jsf_core;
 
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 import com.sun.faces.util.MessageUtils;
 

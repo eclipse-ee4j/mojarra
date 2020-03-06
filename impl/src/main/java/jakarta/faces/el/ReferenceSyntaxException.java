@@ -21,7 +21,7 @@ package jakarta.faces.el;
  * <p>An exception reporting a syntax error in a method binding expression
  * or value binding expression.</p>
  *
- * @deprecated This has been replaced by {@link javax.el.ELException}.
+ * @deprecated This has been replaced by {@link jakarta.el.ELException}.
  */
 
 public class ReferenceSyntaxException extends EvaluationException {

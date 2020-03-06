@@ -50,7 +50,7 @@ public abstract class Facelet {
 
      * @throws jakarta.faces.FacesException if unable to create child <code>UIComponent</code> instances
 
-     * @throws javax.el.ELException if any of the expressions in the markup
+     * @throws jakarta.el.ELException if any of the expressions in the markup
      * loaded during the apply fail
 
      */

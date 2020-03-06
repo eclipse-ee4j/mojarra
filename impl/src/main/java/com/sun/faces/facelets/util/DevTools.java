@@ -26,7 +26,7 @@ import jakarta.faces.context.Flash;
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.el.ValueBinding;
 
-import javax.el.Expression;
+import jakarta.el.Expression;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

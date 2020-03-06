@@ -30,9 +30,9 @@ import jakarta.faces.webapp.UIComponentClassicTagBase;
 
 import com.sun.faces.util.FacesLogger;
 
-import javax.el.ValueExpression;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;

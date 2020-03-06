@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  *
@@ -46,7 +46,7 @@ public class WebAppFlowConfigResourceProvider implements
 
 
     /**
-     * @see ConfigurationResourceProvider#getResources(javax.servlet.ServletContext)
+     * @see ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
      */
     @Override
     public Collection<URI> getResources(ServletContext context) {

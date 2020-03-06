@@ -16,7 +16,7 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;

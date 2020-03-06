@@ -34,7 +34,7 @@ import java.lang.annotation.Inherited;
  *
  *
  * @since 2.0
- * @deprecated This has been replaced by {@code javax.enterprise.context.ApplicationScoped}, 
+ * @deprecated This has been replaced by {@code jakarta.enterprise.context.ApplicationScoped}, 
  * which is a CDI build-in scope with similar semantics.
  */
 @Retention(RetentionPolicy.RUNTIME)

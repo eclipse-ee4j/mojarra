@@ -29,8 +29,8 @@ import com.sun.faces.util.Util;
 import javax.el.ValueExpression;
 
 import javax.faces.FacesException;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

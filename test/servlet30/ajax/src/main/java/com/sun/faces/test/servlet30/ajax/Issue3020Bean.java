@@ -16,7 +16,7 @@
 
 package com.sun.faces.test.servlet30.ajax;
     
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.util.ArrayList;

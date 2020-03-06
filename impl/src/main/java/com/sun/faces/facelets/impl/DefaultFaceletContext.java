@@ -26,13 +26,13 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.FunctionMapper;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.FunctionMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 
 import java.io.IOException;
 import java.net.URL;
@@ -133,7 +133,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see jakarta.faces.view.facelets.FaceletContext#setVariableMapper(javax.el.VariableMapper)
+     * @see jakarta.faces.view.facelets.FaceletContext#setVariableMapper(jakarta.el.VariableMapper)
      */
     @Override
     public void setVariableMapper(VariableMapper varMapper) {
@@ -144,7 +144,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see jakarta.faces.view.facelets.FaceletContext#setFunctionMapper(javax.el.FunctionMapper)
+     * @see jakarta.faces.view.facelets.FaceletContext#setFunctionMapper(jakarta.el.FunctionMapper)
      */
     @Override
     public void setFunctionMapper(FunctionMapper fnMapper) {
@@ -167,7 +167,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ELContext#getFunctionMapper()
+     * @see jakarta.el.ELContext#getFunctionMapper()
      */
     @Override
     public FunctionMapper getFunctionMapper() {
@@ -177,7 +177,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ELContext#getVariableMapper()
+     * @see jakarta.el.ELContext#getVariableMapper()
      */
     @Override
     public VariableMapper getVariableMapper() {
@@ -187,7 +187,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ELContext#getContext(java.lang.Class)
+     * @see jakarta.el.ELContext#getContext(java.lang.Class)
      */
     @Override
     public Object getContext(Class key) {
@@ -197,7 +197,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.el.ELContext#putContext(java.lang.Class, java.lang.Object)
+     * @see jakarta.el.ELContext#putContext(java.lang.Class, java.lang.Object)
      */
     @Override
     public void putContext(Class key, Object contextObject) {

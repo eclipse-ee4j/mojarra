@@ -20,10 +20,10 @@ package jakarta.faces.view.facelets;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.FunctionMapper;
+import jakarta.el.VariableMapper;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -136,7 +136,7 @@ public abstract class FaceletContext extends ELContext {
 
      * @throws jakarta.faces.FacesException if unable to create child <code>UIComponent</code> instances
 
-     * @throws javax.el.ELException if any of the expressions in the markup
+     * @throws jakarta.el.ELException if any of the expressions in the markup
      * loaded from <code>relativePath</code> fail
      *
      * @since 2.0
@@ -160,7 +160,7 @@ public abstract class FaceletContext extends ELContext {
 
      * @throws jakarta.faces.FacesException if unable to create child <code>UIComponent</code> instances
 
-     * @throws javax.el.ELException if any of the expressions in the markup
+     * @throws jakarta.el.ELException if any of the expressions in the markup
      * loaded from <code>relativePath</code> fail
 
      */

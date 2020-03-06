@@ -16,7 +16,7 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;

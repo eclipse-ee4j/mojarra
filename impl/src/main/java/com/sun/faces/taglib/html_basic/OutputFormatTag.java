@@ -18,7 +18,7 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -36,56 +36,56 @@ public class OutputFormatTag extends UIComponentELTag {
 
     // Setter Methods
     // PROPERTY: converter
-    private javax.el.ValueExpression converter;
-    public void setConverter(javax.el.ValueExpression converter) {
+    private jakarta.el.ValueExpression converter;
+    public void setConverter(jakarta.el.ValueExpression converter) {
         this.converter = converter;
     }
 
     // PROPERTY: value
-    private javax.el.ValueExpression value;
-    public void setValue(javax.el.ValueExpression value) {
+    private jakarta.el.ValueExpression value;
+    public void setValue(jakarta.el.ValueExpression value) {
         this.value = value;
     }
 
     // PROPERTY: dir
-    private javax.el.ValueExpression dir;
-    public void setDir(javax.el.ValueExpression dir) {
+    private jakarta.el.ValueExpression dir;
+    public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: escape
-    private javax.el.ValueExpression escape;
-    public void setEscape(javax.el.ValueExpression escape) {
+    private jakarta.el.ValueExpression escape;
+    public void setEscape(jakarta.el.ValueExpression escape) {
         this.escape = escape;
     }
 
     // PROPERTY: lang
-    private javax.el.ValueExpression lang;
-    public void setLang(javax.el.ValueExpression lang) {
+    private jakarta.el.ValueExpression lang;
+    public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: role
-    private javax.el.ValueExpression role;
-    public void setRole(javax.el.ValueExpression role) {
+    private jakarta.el.ValueExpression role;
+    public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: style
-    private javax.el.ValueExpression style;
-    public void setStyle(javax.el.ValueExpression style) {
+    private jakarta.el.ValueExpression style;
+    public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
-    private javax.el.ValueExpression styleClass;
-    public void setStyleClass(javax.el.ValueExpression styleClass) {
+    private jakarta.el.ValueExpression styleClass;
+    public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: title
-    private javax.el.ValueExpression title;
-    public void setTitle(javax.el.ValueExpression title) {
+    private jakarta.el.ValueExpression title;
+    public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
 

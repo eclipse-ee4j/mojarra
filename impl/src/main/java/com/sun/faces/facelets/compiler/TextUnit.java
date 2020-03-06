@@ -20,7 +20,7 @@ import com.sun.faces.facelets.el.ELText;
 
 import jakarta.faces.view.facelets.*;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -18,7 +18,7 @@ package com.sun.faces.facelets.el;
 
 import com.sun.faces.facelets.util.ReflectionUtil;
 
-import javax.el.FunctionMapper;
+import jakarta.el.FunctionMapper;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Jacob Hookom
  * @version $Id$
  * @see java.lang.reflect.Method
- * @see javax.el.FunctionMapper
+ * @see jakarta.el.FunctionMapper
  */
 public final class DefaultFunctionMapper extends FunctionMapper implements
                                                                 Externalizable {
@@ -46,7 +46,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements
     /*
       * (non-Javadoc)
       *
-      * @see javax.el.FunctionMapper#resolveFunction(java.lang.String,
+      * @see jakarta.el.FunctionMapper#resolveFunction(java.lang.String,
       *      java.lang.String)
       */
     @Override

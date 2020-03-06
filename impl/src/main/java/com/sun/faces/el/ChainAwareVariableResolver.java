@@ -16,8 +16,8 @@
 
 package com.sun.faces.el;
 
-import javax.el.ELResolver;
-import javax.el.ValueExpression;
+import jakarta.el.ELResolver;
+import jakarta.el.ValueExpression;
 
 import com.sun.faces.util.RequestStateManager;
 

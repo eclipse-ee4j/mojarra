@@ -16,10 +16,10 @@
 
 package com.sun.faces.context.flash;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.ExternalContext;

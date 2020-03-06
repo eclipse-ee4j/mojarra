@@ -23,7 +23,7 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.NumberConverter;
 import jakarta.faces.view.facelets.*;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 /**
  * Register a NumberConverter instance on the UIComponent associated with the

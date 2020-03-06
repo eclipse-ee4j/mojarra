@@ -17,8 +17,8 @@
 package jakarta.faces.flow;
 
 import java.util.List;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * <p class="changed_added_2_2">Represents a method call node in the flow graph.

@@ -18,7 +18,7 @@
 
 package com.sun.faces.taglib.html_basic;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -36,188 +36,188 @@ public class OutputLinkTag extends UIComponentELTag {
 
     // Setter Methods
     // PROPERTY: converter
-    private javax.el.ValueExpression converter;
-    public void setConverter(javax.el.ValueExpression converter) {
+    private jakarta.el.ValueExpression converter;
+    public void setConverter(jakarta.el.ValueExpression converter) {
         this.converter = converter;
     }
 
     // PROPERTY: value
-    private javax.el.ValueExpression value;
-    public void setValue(javax.el.ValueExpression value) {
+    private jakarta.el.ValueExpression value;
+    public void setValue(jakarta.el.ValueExpression value) {
         this.value = value;
     }
 
     // PROPERTY: accesskey
-    private javax.el.ValueExpression accesskey;
-    public void setAccesskey(javax.el.ValueExpression accesskey) {
+    private jakarta.el.ValueExpression accesskey;
+    public void setAccesskey(jakarta.el.ValueExpression accesskey) {
         this.accesskey = accesskey;
     }
 
     // PROPERTY: charset
-    private javax.el.ValueExpression charset;
-    public void setCharset(javax.el.ValueExpression charset) {
+    private jakarta.el.ValueExpression charset;
+    public void setCharset(jakarta.el.ValueExpression charset) {
         this.charset = charset;
     }
 
     // PROPERTY: coords
-    private javax.el.ValueExpression coords;
-    public void setCoords(javax.el.ValueExpression coords) {
+    private jakarta.el.ValueExpression coords;
+    public void setCoords(jakarta.el.ValueExpression coords) {
         this.coords = coords;
     }
 
     // PROPERTY: dir
-    private javax.el.ValueExpression dir;
-    public void setDir(javax.el.ValueExpression dir) {
+    private jakarta.el.ValueExpression dir;
+    public void setDir(jakarta.el.ValueExpression dir) {
         this.dir = dir;
     }
 
     // PROPERTY: disabled
-    private javax.el.ValueExpression disabled;
-    public void setDisabled(javax.el.ValueExpression disabled) {
+    private jakarta.el.ValueExpression disabled;
+    public void setDisabled(jakarta.el.ValueExpression disabled) {
         this.disabled = disabled;
     }
 
     // PROPERTY: hreflang
-    private javax.el.ValueExpression hreflang;
-    public void setHreflang(javax.el.ValueExpression hreflang) {
+    private jakarta.el.ValueExpression hreflang;
+    public void setHreflang(jakarta.el.ValueExpression hreflang) {
         this.hreflang = hreflang;
     }
 
     // PROPERTY: lang
-    private javax.el.ValueExpression lang;
-    public void setLang(javax.el.ValueExpression lang) {
+    private jakarta.el.ValueExpression lang;
+    public void setLang(jakarta.el.ValueExpression lang) {
         this.lang = lang;
     }
 
     // PROPERTY: onblur
-    private javax.el.ValueExpression onblur;
-    public void setOnblur(javax.el.ValueExpression onblur) {
+    private jakarta.el.ValueExpression onblur;
+    public void setOnblur(jakarta.el.ValueExpression onblur) {
         this.onblur = onblur;
     }
 
     // PROPERTY: onclick
-    private javax.el.ValueExpression onclick;
-    public void setOnclick(javax.el.ValueExpression onclick) {
+    private jakarta.el.ValueExpression onclick;
+    public void setOnclick(jakarta.el.ValueExpression onclick) {
         this.onclick = onclick;
     }
 
     // PROPERTY: ondblclick
-    private javax.el.ValueExpression ondblclick;
-    public void setOndblclick(javax.el.ValueExpression ondblclick) {
+    private jakarta.el.ValueExpression ondblclick;
+    public void setOndblclick(jakarta.el.ValueExpression ondblclick) {
         this.ondblclick = ondblclick;
     }
 
     // PROPERTY: onfocus
-    private javax.el.ValueExpression onfocus;
-    public void setOnfocus(javax.el.ValueExpression onfocus) {
+    private jakarta.el.ValueExpression onfocus;
+    public void setOnfocus(jakarta.el.ValueExpression onfocus) {
         this.onfocus = onfocus;
     }
 
     // PROPERTY: onkeydown
-    private javax.el.ValueExpression onkeydown;
-    public void setOnkeydown(javax.el.ValueExpression onkeydown) {
+    private jakarta.el.ValueExpression onkeydown;
+    public void setOnkeydown(jakarta.el.ValueExpression onkeydown) {
         this.onkeydown = onkeydown;
     }
 
     // PROPERTY: onkeypress
-    private javax.el.ValueExpression onkeypress;
-    public void setOnkeypress(javax.el.ValueExpression onkeypress) {
+    private jakarta.el.ValueExpression onkeypress;
+    public void setOnkeypress(jakarta.el.ValueExpression onkeypress) {
         this.onkeypress = onkeypress;
     }
 
     // PROPERTY: onkeyup
-    private javax.el.ValueExpression onkeyup;
-    public void setOnkeyup(javax.el.ValueExpression onkeyup) {
+    private jakarta.el.ValueExpression onkeyup;
+    public void setOnkeyup(jakarta.el.ValueExpression onkeyup) {
         this.onkeyup = onkeyup;
     }
 
     // PROPERTY: onmousedown
-    private javax.el.ValueExpression onmousedown;
-    public void setOnmousedown(javax.el.ValueExpression onmousedown) {
+    private jakarta.el.ValueExpression onmousedown;
+    public void setOnmousedown(jakarta.el.ValueExpression onmousedown) {
         this.onmousedown = onmousedown;
     }
 
     // PROPERTY: onmousemove
-    private javax.el.ValueExpression onmousemove;
-    public void setOnmousemove(javax.el.ValueExpression onmousemove) {
+    private jakarta.el.ValueExpression onmousemove;
+    public void setOnmousemove(jakarta.el.ValueExpression onmousemove) {
         this.onmousemove = onmousemove;
     }
 
     // PROPERTY: onmouseout
-    private javax.el.ValueExpression onmouseout;
-    public void setOnmouseout(javax.el.ValueExpression onmouseout) {
+    private jakarta.el.ValueExpression onmouseout;
+    public void setOnmouseout(jakarta.el.ValueExpression onmouseout) {
         this.onmouseout = onmouseout;
     }
 
     // PROPERTY: onmouseover
-    private javax.el.ValueExpression onmouseover;
-    public void setOnmouseover(javax.el.ValueExpression onmouseover) {
+    private jakarta.el.ValueExpression onmouseover;
+    public void setOnmouseover(jakarta.el.ValueExpression onmouseover) {
         this.onmouseover = onmouseover;
     }
 
     // PROPERTY: onmouseup
-    private javax.el.ValueExpression onmouseup;
-    public void setOnmouseup(javax.el.ValueExpression onmouseup) {
+    private jakarta.el.ValueExpression onmouseup;
+    public void setOnmouseup(jakarta.el.ValueExpression onmouseup) {
         this.onmouseup = onmouseup;
     }
 
     // PROPERTY: rel
-    private javax.el.ValueExpression rel;
-    public void setRel(javax.el.ValueExpression rel) {
+    private jakarta.el.ValueExpression rel;
+    public void setRel(jakarta.el.ValueExpression rel) {
         this.rel = rel;
     }
 
     // PROPERTY: rev
-    private javax.el.ValueExpression rev;
-    public void setRev(javax.el.ValueExpression rev) {
+    private jakarta.el.ValueExpression rev;
+    public void setRev(jakarta.el.ValueExpression rev) {
         this.rev = rev;
     }
 
     // PROPERTY: role
-    private javax.el.ValueExpression role;
-    public void setRole(javax.el.ValueExpression role) {
+    private jakarta.el.ValueExpression role;
+    public void setRole(jakarta.el.ValueExpression role) {
         this.role = role;
     }
 
     // PROPERTY: shape
-    private javax.el.ValueExpression shape;
-    public void setShape(javax.el.ValueExpression shape) {
+    private jakarta.el.ValueExpression shape;
+    public void setShape(jakarta.el.ValueExpression shape) {
         this.shape = shape;
     }
 
     // PROPERTY: style
-    private javax.el.ValueExpression style;
-    public void setStyle(javax.el.ValueExpression style) {
+    private jakarta.el.ValueExpression style;
+    public void setStyle(jakarta.el.ValueExpression style) {
         this.style = style;
     }
 
     // PROPERTY: styleClass
-    private javax.el.ValueExpression styleClass;
-    public void setStyleClass(javax.el.ValueExpression styleClass) {
+    private jakarta.el.ValueExpression styleClass;
+    public void setStyleClass(jakarta.el.ValueExpression styleClass) {
         this.styleClass = styleClass;
     }
 
     // PROPERTY: tabindex
-    private javax.el.ValueExpression tabindex;
-    public void setTabindex(javax.el.ValueExpression tabindex) {
+    private jakarta.el.ValueExpression tabindex;
+    public void setTabindex(jakarta.el.ValueExpression tabindex) {
         this.tabindex = tabindex;
     }
 
     // PROPERTY: target
-    private javax.el.ValueExpression target;
-    public void setTarget(javax.el.ValueExpression target) {
+    private jakarta.el.ValueExpression target;
+    public void setTarget(jakarta.el.ValueExpression target) {
         this.target = target;
     }
 
     // PROPERTY: title
-    private javax.el.ValueExpression title;
-    public void setTitle(javax.el.ValueExpression title) {
+    private jakarta.el.ValueExpression title;
+    public void setTitle(jakarta.el.ValueExpression title) {
         this.title = title;
     }
 
     // PROPERTY: type
-    private javax.el.ValueExpression type;
-    public void setType(javax.el.ValueExpression type) {
+    private jakarta.el.ValueExpression type;
+    public void setType(jakarta.el.ValueExpression type) {
         this.type = type;
     }
 

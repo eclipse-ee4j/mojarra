@@ -19,7 +19,7 @@ package com.sun.faces.application.annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.ejb.EJB;
+import jakarta.ejb.EJB;
 
 import jakarta.faces.context.FacesContext;
 

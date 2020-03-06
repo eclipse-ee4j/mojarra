@@ -38,7 +38,7 @@ import java.util.Map;
  * 
  * @see jakarta.faces.component.UIComponent#getAttributes()
  * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String,
- *      javax.el.ValueExpression)
+ *      jakarta.el.ValueExpression)
  * @author Jacob Hookom
  */
 public final class PassThroughAttributeHandler extends TagHandlerImpl 

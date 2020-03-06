@@ -28,7 +28,7 @@ import jakarta.faces.context.FacesContext;
  * the {@link jakarta.faces.application.Application} instance for this web
  * application.</p>
  *
- * @deprecated This has been replaced by {@link javax.el.ValueExpression}.
+ * @deprecated This has been replaced by {@link jakarta.el.ValueExpression}.
  */
 
 public abstract class ValueBinding {

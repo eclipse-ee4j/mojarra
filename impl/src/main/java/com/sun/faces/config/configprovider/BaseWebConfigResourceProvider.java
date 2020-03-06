@@ -16,7 +16,7 @@
 
 package com.sun.faces.config.configprovider;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesConfigFiles;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesConfigFiles;
 import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.binarySearch;
 import static java.util.logging.Level.WARNING;
@@ -30,7 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
@@ -68,7 +68,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
                         if (LOGGER.isLoggable(WARNING)) {
                             LOGGER.log(WARNING, 
                                     "jsf.config.web_resource_not_found",
-                                    new Object[] { path, JavaxFacesConfigFiles.getQualifiedName() });
+                                    new Object[] { path, JakartaFacesConfigFiles.getQualifiedName() });
                         }
                     }
                 }

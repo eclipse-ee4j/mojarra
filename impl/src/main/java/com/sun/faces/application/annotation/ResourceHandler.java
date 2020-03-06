@@ -18,7 +18,7 @@ package com.sun.faces.application.annotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import jakarta.faces.context.FacesContext;
 

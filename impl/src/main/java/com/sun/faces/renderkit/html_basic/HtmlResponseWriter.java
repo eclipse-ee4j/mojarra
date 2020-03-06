@@ -38,7 +38,7 @@ import jakarta.faces.render.Renderer;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 
 /**

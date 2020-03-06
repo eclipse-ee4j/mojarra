@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;

@@ -16,9 +16,9 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public class VariableMapperWrapper extends VariableMapper {
      * First tries to resolve agains the inner Map, then the wrapped
      * ValueExpression.
      *
-     * @see javax.el.VariableMapper#resolveVariable(java.lang.String)
+     * @see jakarta.el.VariableMapper#resolveVariable(java.lang.String)
      */
     @Override
     public ValueExpression resolveVariable(String variable) {
@@ -71,8 +71,8 @@ public class VariableMapperWrapper extends VariableMapper {
     /**
      * Set the ValueExpression on the inner Map instance.
      *
-     * @see javax.el.VariableMapper#setVariable(java.lang.String,
-     *      javax.el.ValueExpression)
+     * @see jakarta.el.VariableMapper#setVariable(java.lang.String,
+     *      jakarta.el.ValueExpression)
      */
     @Override
     public ValueExpression setVariable(String variable,

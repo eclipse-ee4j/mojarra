@@ -111,7 +111,7 @@ public abstract class RenderKit {
      *
      * <p>Implementors are advised to consult the
      * <code>getCharacterEncoding()</code> method of class {@link
-     * javax.servlet.ServletResponse} to get the required value for the
+     * jakarta.servlet.ServletResponse} to get the required value for the
      * characterEncoding for this method.  Since the <code>Writer</code>
      * for this response will already have been obtained (due to it
      * ultimately being passed to this method), we know that the

@@ -16,7 +16,7 @@
 
 package com.sun.faces.spi;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * This interface is for JSF to check if the app server has HA enabled.

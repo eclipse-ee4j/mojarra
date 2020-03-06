@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.io.Serializable;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;

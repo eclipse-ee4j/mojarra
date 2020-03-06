@@ -16,7 +16,7 @@
 
 package com.sun.faces.spi;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
 import com.sun.faces.util.FacesLogger;

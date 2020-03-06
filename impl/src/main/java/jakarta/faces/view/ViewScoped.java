@@ -22,11 +22,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
-import javax.enterprise.context.NormalScope;
+import jakarta.enterprise.context.NormalScope;
 
 /**
  * <p class="changed_added_2_2">When this annotation, along with {@code
- * javax.inject.Named} is found on a class, the runtime must place the
+ * jakarta.inject.Named} is found on a class, the runtime must place the
  * bean in a CDI scope such that it remains active as long as {@link
  * jakarta.faces.application.NavigationHandler#handleNavigation} does not
  * cause a navigation to a view with a viewId that is different than the

@@ -92,7 +92,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
                 // no message to render, but must render anyway
                 // but if we're writing the dev stage messages,
                 // only write it if messages exist
-                if ("javax_faces_developmentstage_messages".equals(component.getId())) {
+                if ("jakarta_faces_developmentstage_messages".equals(component.getId())) {
                     return;
                 }
                 writer.startElement("div", component);

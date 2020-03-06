@@ -35,8 +35,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
-import javax.validation.ConstraintViolation;
+import jakarta.el.ValueExpression;
+import jakarta.validation.ConstraintViolation;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
@@ -188,7 +188,7 @@ class WholeBeanValidator implements Validator<Object> {
         return wholeBeanCopy;
     }
     
-    private Set<ConstraintViolation<?>> doBeanValidation(javax.validation.Validator beanValidator, Object wholeBeanCopy, Class<?>[] validationGroupArray, ValueExpression wholeBeanVE) {
+    private Set<ConstraintViolation<?>> doBeanValidation(jakarta.validation.Validator beanValidator, Object wholeBeanCopy, Class<?>[] validationGroupArray, ValueExpression wholeBeanVE) {
         
         @SuppressWarnings("rawtypes")
         Set violationsRaw = null;

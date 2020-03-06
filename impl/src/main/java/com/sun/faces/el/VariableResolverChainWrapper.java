@@ -16,10 +16,10 @@
 
 package com.sun.faces.el;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.PropertyNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 
 import java.beans.FeatureDescriptor;
 import java.util.*;

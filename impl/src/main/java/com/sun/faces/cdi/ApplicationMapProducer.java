@@ -19,7 +19,7 @@ package com.sun.faces.cdi;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;

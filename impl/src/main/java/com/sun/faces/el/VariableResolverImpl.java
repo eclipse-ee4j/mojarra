@@ -16,7 +16,7 @@
 
 package com.sun.faces.el;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import com.sun.faces.util.MessageUtils;
 

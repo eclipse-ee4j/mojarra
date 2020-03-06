@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.faces.FactoryFinder;

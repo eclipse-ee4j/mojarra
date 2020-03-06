@@ -18,7 +18,7 @@ package jakarta.faces.component;
 
 import java.util.Map;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 
 import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
 
@@ -704,7 +704,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
          * Make it look like we have dispatched a request using the include method.
          */
         public InstrumentedFacesContext pushViewIntoRequestMap() {
-            getExternalContext().getRequestMap().put("javax.servlet.include.servlet_path", super.getViewRoot().getViewId());
+            getExternalContext().getRequestMap().put("jakarta.servlet.include.servlet_path", super.getViewRoot().getViewId());
             return this;
         }
 

@@ -30,7 +30,7 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagConfig;
 
-import javax.el.VariableMapper;
+import jakarta.el.VariableMapper;
 
 import java.io.IOException;
 import java.util.*;

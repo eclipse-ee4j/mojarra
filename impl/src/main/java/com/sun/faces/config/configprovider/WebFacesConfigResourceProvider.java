@@ -19,10 +19,10 @@ package com.sun.faces.config.configprovider;
 import java.net.URI;
 import java.util.Collection;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesConfigFiles;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesConfigFiles;
 
 /**
  *
@@ -44,7 +44,7 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
 
 
     /**
-     * @see com.sun.faces.spi.ConfigurationResourceProvider#getResources(javax.servlet.ServletContext)
+     * @see com.sun.faces.spi.ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
      */
     @Override
     public Collection<URI> getResources(ServletContext context) {
@@ -70,7 +70,7 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
 
     @Override
     protected WebContextInitParameter getParameter() {
-        return JavaxFacesConfigFiles;
+        return JakartaFacesConfigFiles;
     }
     
     @Override

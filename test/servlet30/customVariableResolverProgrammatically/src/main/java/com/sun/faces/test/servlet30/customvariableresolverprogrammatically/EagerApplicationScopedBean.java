@@ -16,7 +16,7 @@
 
 package com.sun.faces.test.servlet30.customvariableresolverprogrammatically;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.faces.application.Application;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;

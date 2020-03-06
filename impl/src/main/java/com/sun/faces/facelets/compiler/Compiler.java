@@ -28,7 +28,7 @@ import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.TagDecorator;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 
 import java.io.IOException;
 import java.net.URL;

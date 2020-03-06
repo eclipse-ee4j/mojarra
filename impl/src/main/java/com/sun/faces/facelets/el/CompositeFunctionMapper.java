@@ -16,14 +16,14 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.FunctionMapper;
+import jakarta.el.FunctionMapper;
 import java.lang.reflect.Method;
 
 /**
  * Composite FunctionMapper that attempts to load the Method from the first
  * FunctionMapper, then the second if <code>null</code>.
  * 
- * @see javax.el.FunctionMapper
+ * @see jakarta.el.FunctionMapper
  * @see java.lang.reflect.Method
  * 
  * @author Jacob Hookom
@@ -41,7 +41,7 @@ public final class CompositeFunctionMapper extends FunctionMapper {
     }
 
     /**
-     * @see javax.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
+     * @see jakarta.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
      */
     @Override
     public Method resolveFunction(String prefix, String name) {

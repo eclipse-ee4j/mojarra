@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class ToolsUtil {
 
-    public static final String FACES_LOGGER = "javax.enterprise.resource.webcontainer.jsf";
+    public static final String FACES_LOGGER = "jakarta.enterprise.resource.webcontainer.jsf";
 
     public static final String CONFIG_LOGGER = ".config";
 

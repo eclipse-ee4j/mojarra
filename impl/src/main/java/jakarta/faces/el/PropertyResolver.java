@@ -30,7 +30,7 @@ package jakarta.faces.el;
  * instances defined for each method but are allowed to add custom
  * semantics for other types.</p>
  *
- * @deprecated This has been replaced by {@link javax.el.ELResolver}.  
+ * @deprecated This has been replaced by {@link jakarta.el.ELResolver}.  
  */
 
 public abstract class PropertyResolver {

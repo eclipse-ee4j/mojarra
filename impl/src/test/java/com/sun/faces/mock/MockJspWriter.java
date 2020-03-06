@@ -18,7 +18,7 @@ package com.sun.faces.mock;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import javax.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.JspWriter;
 
 // Mock Object for JspWriter
 public class MockJspWriter extends JspWriter {

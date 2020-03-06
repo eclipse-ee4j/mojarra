@@ -21,8 +21,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 import com.sun.faces.mock.MockRenderKit;
 
@@ -156,13 +156,13 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         assertNull(root.getFacet("head"));
         assertNull(root.getFacet("form"));
         assertNull(root.getFacet("body"));
-        assertNotNull(root.getFacet("javax_faces_location_HEAD"));
-        assertNotNull(root.getFacet("javax_faces_location_FORM"));
-        assertNotNull(root.getFacet("javax_faces_location_BODY"));
+        assertNotNull(root.getFacet("jakarta_faces_location_HEAD"));
+        assertNotNull(root.getFacet("jakarta_faces_location_FORM"));
+        assertNotNull(root.getFacet("jakarta_faces_location_BODY"));
 
         // custom locations will also be masked
         root.addComponentResource(facesContext, resource2, "gt");
-        assertNotNull(root.getFacet("javax_faces_location_gt"));
+        assertNotNull(root.getFacet("jakarta_faces_location_gt"));
         components = root.getComponentResources(facesContext, "gt");
         assertTrue(components.size() == 1);
     }

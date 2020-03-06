@@ -32,7 +32,7 @@ import java.lang.annotation.Inherited;
  * was declared for the corresponding managed bean.</p>
  *
  * @since 2.0
- * @deprecated This has been replaced by {@code javax.enterprise.context.Dependent}, 
+ * @deprecated This has been replaced by {@code jakarta.enterprise.context.Dependent}, 
  * which is a CDI build-in scope with approximately similar semantics.
  */
 @Retention(RetentionPolicy.RUNTIME)

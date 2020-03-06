@@ -17,9 +17,9 @@
 package jakarta.faces.validator;
 
 import java.util.Map;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.MethodExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;

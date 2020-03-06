@@ -25,10 +25,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Producer;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Producer;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.flow.FlowDiscoveryCDIExtension;

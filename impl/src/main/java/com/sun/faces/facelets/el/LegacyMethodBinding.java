@@ -16,8 +16,8 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.ELException;
-import javax.el.MethodExpression;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
@@ -54,7 +54,7 @@ public final class LegacyMethodBinding extends
             throws MethodNotFoundException {
         try {
             return m.getMethodInfo(context.getELContext()).getReturnType();
-        } catch (javax.el.MethodNotFoundException e) {
+        } catch (jakarta.el.MethodNotFoundException e) {
             throw new MethodNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
             throw new EvaluationException(e.getMessage(), e.getCause());
@@ -72,7 +72,7 @@ public final class LegacyMethodBinding extends
             throws EvaluationException, MethodNotFoundException {
         try {
             return m.invoke(context.getELContext(), params);
-        } catch (javax.el.MethodNotFoundException e) {
+        } catch (jakarta.el.MethodNotFoundException e) {
             throw new MethodNotFoundException(e.getMessage(), e.getCause());
         } catch (ELException e) {
             throw new EvaluationException(e.getMessage(), e.getCause());

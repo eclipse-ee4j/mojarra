@@ -16,19 +16,38 @@
 
 package com.sun.faces.context;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.context.flash.ELFlash;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-
 import static com.sun.faces.RIConstants.FACES_PREFIX;
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
 import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.isEmpty;
+import static java.lang.Boolean.FALSE;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.context.flash.ELFlash;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.TypedCollections;
 import com.sun.faces.util.Util;
 
@@ -43,39 +62,15 @@ import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.ResponseStateManager;
-
-import java.util.HashSet;
-
-import static java.lang.Boolean.FALSE;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.swing.text.Utilities;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * <p>This implementation of {@link ExternalContext} is specific to the
@@ -1187,13 +1182,13 @@ public class ExternalContextImpl extends ExternalContext {
         Object pbObj = getPushBuilder(context, extContext);
         if (pbObj != null) {
             // and now we also know c) there was no If-Modified-Since header
-            ((javax.servlet.http.PushBuilder)pbObj).path(result).push();
+            ((jakarta.servlet.http.PushBuilder)pbObj).path(result).push();
         }
         
     }
     
     private Object getPushBuilder(FacesContext context, ExternalContext extContext) {
-        javax.servlet.http.PushBuilder result = null;
+        jakarta.servlet.http.PushBuilder result = null;
         
         Object requestObj = extContext.getRequest();
         if (requestObj instanceof HttpServletRequest) {

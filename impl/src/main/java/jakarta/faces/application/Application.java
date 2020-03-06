@@ -23,9 +23,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Map;
 
-import javax.el.ELContextListener;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.NavigationHandler;
@@ -56,8 +56,8 @@ import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.view.ViewDeclarationLanguage;
 
-import javax.el.ELException;
-import javax.el.ELResolver;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
 
 /**
  * <p>
@@ -544,7 +544,7 @@ public abstract class Application {
     /**
      * <p>
      * Return the singleton {@link ELResolver} instance to be used for all Jakarta Expression Language resolution. This is
-     * actually an instance of {@link javax.el.CompositeELResolver} that must contain the following
+     * actually an instance of {@link jakarta.el.CompositeELResolver} that must contain the following
      * <code>ELResolver</code> instances in the following order:
      * </p>
      *
@@ -815,7 +815,7 @@ public abstract class Application {
      * <p>
      * Wrap the argument <code>componentBinding</code> in an implementation of
      * {@link ValueExpression} and call through to
-     * {@link #createComponent(javax.el.ValueExpression,jakarta.faces.context.FacesContext,java.lang.String)}.
+     * {@link #createComponent(jakarta.el.ValueExpression,jakarta.faces.context.FacesContext,java.lang.String)}.
      * </p>
      *
      * @param componentBinding {@link ValueBinding} representing a component value binding
@@ -828,7 +828,7 @@ public abstract class Application {
      * @throws FacesException if a {@link UIComponent} cannot be created
      * @throws NullPointerException if any parameter is <code>null</code>
      * @deprecated This has been replaced by
-     *             {@link #createComponent(javax.el.ValueExpression,jakarta.faces.context.FacesContext,java.lang.String)}.
+     *             {@link #createComponent(jakarta.el.ValueExpression,jakarta.faces.context.FacesContext,java.lang.String)}.
      */
     public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException;
 

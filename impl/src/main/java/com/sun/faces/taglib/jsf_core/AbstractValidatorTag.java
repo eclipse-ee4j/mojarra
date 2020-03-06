@@ -25,9 +25,9 @@ import jakarta.faces.webapp.ValidatorELTag;
 
 import com.sun.faces.util.FacesLogger;
 
-import javax.servlet.jsp.JspException;
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.servlet.jsp.JspException;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +42,7 @@ public class AbstractValidatorTag extends ValidatorELTag {
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
     /**
-     * <p>The {@link javax.el.ValueExpression} that evaluates to an object that
+     * <p>The {@link jakarta.el.ValueExpression} that evaluates to an object that
      * implements {@link jakarta.faces.convert.Converter}.</p>
      */
     protected ValueExpression binding = null;
@@ -60,7 +60,7 @@ public class AbstractValidatorTag extends ValidatorELTag {
 
     /**
      * <p>Set the expression that will be used to create a
-     * {@link javax.el.ValueExpression} that references a backing bean property
+     * {@link jakarta.el.ValueExpression} that references a backing bean property
      * of the {@link jakarta.faces.validator.Validator} instance to be created.</p>
      *
      * @param binding The new expression

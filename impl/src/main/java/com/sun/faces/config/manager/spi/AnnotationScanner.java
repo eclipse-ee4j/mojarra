@@ -44,7 +44,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 
 /**
@@ -76,15 +76,15 @@ public abstract class AnnotationScanner extends AnnotationProvider {
         // JAVASERVERFACES-1835 this collection has the same information twice.
         // Once in javap -s format, and once as fully qualified Java class names.
         Collections.addAll(annotations,
-                           "Ljavax/faces/component/FacesComponent;",
-                           "Ljavax/faces/convert/FacesConverter;",
-                           "Ljavax/faces/validator/FacesValidator;",
-                           "Ljavax/faces/render/FacesRenderer;",
-                           "Ljavax/faces/bean/ManagedBean;",
-                           "Ljavax/faces/event/NamedEvent;",
-                           "Ljavax/faces/component/behavior/FacesBehavior;",
-                           "Ljavax/faces/render/FacesBehaviorRenderer;",
-                           "Ljavax/faces/view/facelets/FaceletsResourceResolver;",
+                           "Ljakarta/faces/component/FacesComponent;",
+                           "Ljakarta/faces/convert/FacesConverter;",
+                           "Ljakarta/faces/validator/FacesValidator;",
+                           "Ljakarta/faces/render/FacesRenderer;",
+                           "Ljakarta/faces/bean/ManagedBean;",
+                           "Ljakarta/faces/event/NamedEvent;",
+                           "Ljakarta/faces/component/behavior/FacesBehavior;",
+                           "Ljakarta/faces/render/FacesBehaviorRenderer;",
+                           "Ljakarta/faces/view/facelets/FaceletsResourceResolver;",
                            "jakarta.faces.component.FacesComponent",
                            "jakarta.faces.convert.FacesConverter",
                            "jakarta.faces.validator.FacesValidator",

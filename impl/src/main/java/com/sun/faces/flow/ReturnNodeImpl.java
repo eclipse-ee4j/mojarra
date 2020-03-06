@@ -22,8 +22,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.ReturnNode;
 
 import java.io.Serializable;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 
 public class ReturnNodeImpl extends ReturnNode implements Serializable {
     

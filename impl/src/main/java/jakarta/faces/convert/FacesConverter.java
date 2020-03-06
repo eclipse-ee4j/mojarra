@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 import java.lang.annotation.Inherited;
 
 import jakarta.faces.convert.Converter;
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 
 /**
  * <p class="changed_added_2_0"><span

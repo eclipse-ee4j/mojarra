@@ -15,8 +15,8 @@
  */
 
 package com.sun.faces.cdi;
-import javax.enterprise.inject.Any;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * An annotation literal for @Any.

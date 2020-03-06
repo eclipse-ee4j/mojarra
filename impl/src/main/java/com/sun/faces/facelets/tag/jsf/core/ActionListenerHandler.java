@@ -27,7 +27,7 @@ import jakarta.faces.event.ActionListener;
 import jakarta.faces.view.ActionSource2AttachedObjectHandler;
 import jakarta.faces.view.facelets.*;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.io.Serializable;
 

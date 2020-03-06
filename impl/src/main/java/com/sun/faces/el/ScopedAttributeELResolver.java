@@ -23,10 +23,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Map;
 
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
-import javax.el.ELContext;
-import javax.el.ELResolver;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 
 import com.sun.faces.util.Util;
 

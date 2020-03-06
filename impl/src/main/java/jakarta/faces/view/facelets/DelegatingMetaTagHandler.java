@@ -17,7 +17,7 @@
 package jakarta.faces.view.facelets;
 
 import java.io.IOException;
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -127,7 +127,7 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
 
      * @throws jakarta.faces.FacesException if thrown by the next {@link FaceletHandler}
 
-     * @throws javax.el.ELException if thrown by the next {@link FaceletHandler}
+     * @throws jakarta.el.ELException if thrown by the next {@link FaceletHandler}
 
      * @since 2.0
      */
