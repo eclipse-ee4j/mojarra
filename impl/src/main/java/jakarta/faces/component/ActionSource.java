@@ -113,6 +113,7 @@ public interface ActionSource {
      *
      * @return the action.
      */
+    @Deprecated
     MethodBinding getAction();
 
     /**
@@ -138,6 +139,7 @@ public interface ActionSource {
      *
      * @deprecated This has been replaced by {@link ActionSource2#setActionExpression(jakarta.el.MethodExpression)}.
      */
+    @Deprecated
     void setAction(MethodBinding action);
 
     /**
@@ -156,6 +158,7 @@ public interface ActionSource {
      * @return the action listener.
      * @deprecated Use {@link #getActionListeners} instead.
      */
+    @Deprecated
     MethodBinding getActionListener();
 
     /**
@@ -174,6 +177,7 @@ public interface ActionSource {
      *
      * @deprecated This has been replaced by {@link #addActionListener(jakarta.faces.event.ActionListener)}.
      */
+    @Deprecated
     void setActionListener(MethodBinding actionListener);
 
 }

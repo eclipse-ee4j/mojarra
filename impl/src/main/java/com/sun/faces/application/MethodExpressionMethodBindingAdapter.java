@@ -61,6 +61,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
 
     private transient MethodInfo info = null;
 
+    @Override
     public MethodInfo getMethodInfo(ELContext context) throws ELException {
         assert (null != binding);
 
@@ -83,6 +84,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
         return info;
     }
 
+    @Override
     public Object invoke(ELContext context, Object[] params) throws ELException {
         assert (null != binding);
 
@@ -102,18 +104,21 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
         return result;
     }
 
+    @Override
     public String getExpressionString() {
         assert (null != binding);
         return binding.getExpressionString();
 
     }
 
+    @Override
     public boolean isLiteralText() {
         assert (binding != null);
         String expr = binding.getExpressionString();
         return (!(expr.startsWith("#{") && expr.endsWith("}")));
     }
 
+    @Override
     public boolean equals(Object other) {
 
         if (other == this) {
@@ -173,6 +178,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
 
     }
 
+    @Override
     public int hashCode() {
         assert (null != binding);
 
@@ -188,6 +194,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
     // Methods from StateHolder
     //
 
+    @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
             throw new NullPointerException();
@@ -211,6 +218,7 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
         return result;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state) {
         if (context == null) {
             throw new NullPointerException();
@@ -247,10 +255,12 @@ public class MethodExpressionMethodBindingAdapter extends MethodExpression imple
 
     private boolean tranzient = false;
 
+    @Override
     public boolean isTransient() {
         return tranzient;
     }
 
+    @Override
     public void setTransient(boolean newTransientMethod) {
         tranzient = newTransientMethod;
     }

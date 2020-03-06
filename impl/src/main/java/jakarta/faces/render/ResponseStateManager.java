@@ -243,6 +243,7 @@ public abstract class ResponseStateManager {
      * @throws IOException if the state cannot be written for any reason
      *
      */
+    @Deprecated
     public void writeState(FacesContext context, SerializedView state) throws IOException {
 
         if (state != null) {
@@ -333,6 +334,7 @@ public abstract class ResponseStateManager {
      *
      * @return the tree structure portion of the state
      */
+    @Deprecated
     public Object getTreeStructureToRestore(FacesContext context, String viewId) {
         return null;
     }
@@ -350,6 +352,7 @@ public abstract class ResponseStateManager {
      * @return the component state portion of the state
      *
      */
+    @Deprecated
     public Object getComponentStateToRestore(FacesContext context) {
         return null;
     }

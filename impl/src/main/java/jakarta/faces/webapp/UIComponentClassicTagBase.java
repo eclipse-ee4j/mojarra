@@ -375,6 +375,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * @deprecated No encoding is done during Jakarta Server Pages page execution. Encoding is deferred until the page has
      * completed executing to allow the entire tree to be built before any encoding occurs.
      */
+    @Deprecated
     protected void encodeBegin() throws IOException {
 
         component.encodeBegin(context);
@@ -392,6 +393,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * @deprecated No encoding is done during Jakarta Server Pages page execution. Encoding is deferred until the page has
      * completed executing to allow the entire tree to be built before any encoding occurs.
      */
+    @Deprecated
     protected void encodeChildren() throws IOException {
 
         component.encodeChildren(context);
@@ -409,6 +411,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * @deprecated No encoding is done during Jakarta Server Pages page execution. Encoding is deferred until the page has
      * completed executing to allow the entire tree to be built before any encoding occurs.
      */
+    @Deprecated
     protected void encodeEnd() throws IOException {
 
         component.encodeEnd(context);
@@ -469,6 +472,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * @deprecated {@link jakarta.faces.application.ViewHandler#renderView} is now responsible for setting up the response
      * writer. This method is now a no-op.
      */
+    @Deprecated
     protected void setupResponseWriter() {
     }
 

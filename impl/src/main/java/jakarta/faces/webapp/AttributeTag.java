@@ -34,6 +34,7 @@ import jakarta.faces.context.FacesContext;
  * @deprecated The Faces implementation must now provide the implementation for this class.
  */
 
+@Deprecated
 public class AttributeTag extends TagSupport {
 
     // ---------------------------------------------------------- Static Members

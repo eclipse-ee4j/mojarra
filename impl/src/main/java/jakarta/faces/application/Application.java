@@ -300,6 +300,7 @@ public abstract class Application {
      * @return the property resolver.
      * @deprecated This has been replaced by {@link #getELResolver}.
      */
+    @Deprecated
     public abstract PropertyResolver getPropertyResolver();
 
     /**
@@ -331,6 +332,7 @@ public abstract class Application {
      * @throws IllegalStateException if called after the first request to the {@link jakarta.faces.webapp.FacesServlet} has
      * been serviced.
      */
+    @Deprecated
     public abstract void setPropertyResolver(PropertyResolver resolver);
 
     /**
@@ -438,6 +440,7 @@ public abstract class Application {
      * @return the variable resolver.
      * @deprecated This has been replaced by {@link #getELResolver}.
      */
+    @Deprecated
     public abstract VariableResolver getVariableResolver();
 
     /**
@@ -471,6 +474,7 @@ public abstract class Application {
      * @throws IllegalStateException if called after the first request to the {@link jakarta.faces.webapp.FacesServlet} has
      * been serviced.
      */
+    @Deprecated
     public abstract void setVariableResolver(VariableResolver resolver);
 
     /**
@@ -782,6 +786,7 @@ public abstract class Application {
      * @deprecated This has been replaced by
      * {@link #createComponent(jakarta.el.ValueExpression,jakarta.faces.context.FacesContext,java.lang.String)}.
      */
+    @Deprecated
     public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException;
 
     /**
@@ -1283,6 +1288,7 @@ public abstract class Application {
      * @deprecated This has been replaced by calling {@link #getExpressionFactory} then
      * {@link ExpressionFactory#createMethodExpression}.
      */
+    @Deprecated
     public abstract MethodBinding createMethodBinding(String ref, Class<?> params[]) throws ReferenceSyntaxException;
 
     /**
@@ -1440,6 +1446,7 @@ public abstract class Application {
      * @deprecated This has been replaced by calling {@link #getExpressionFactory} then
      * {@link ExpressionFactory#createValueExpression}.
      */
+    @Deprecated
     public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
 
     /**

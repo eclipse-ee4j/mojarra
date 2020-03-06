@@ -301,14 +301,17 @@ public class InputFileTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.File";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlInputFile";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UIInput input = null;
@@ -442,6 +445,7 @@ public class InputFileTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -454,6 +458,7 @@ public class InputFileTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -467,6 +472,7 @@ public class InputFileTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

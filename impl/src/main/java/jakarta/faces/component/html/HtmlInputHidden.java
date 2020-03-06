@@ -59,6 +59,7 @@ public class HtmlInputHidden extends UIInput {
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }

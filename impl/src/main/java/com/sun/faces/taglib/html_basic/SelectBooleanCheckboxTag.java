@@ -273,14 +273,17 @@ public class SelectBooleanCheckboxTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Checkbox";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlSelectBooleanCheckbox";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UISelectBoolean selectboolean = null;
@@ -402,6 +405,7 @@ public class SelectBooleanCheckboxTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -414,6 +418,7 @@ public class SelectBooleanCheckboxTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -427,6 +432,7 @@ public class SelectBooleanCheckboxTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

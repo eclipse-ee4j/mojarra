@@ -98,6 +98,7 @@ public abstract class TagHandler implements FaceletHandler {
         return attr;
     }
 
+    @Override
     public String toString() {
         return this.tag.toString();
     }

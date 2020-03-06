@@ -66,6 +66,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
@@ -661,10 +662,12 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
             Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
 
+    @Override
     public Collection<String> getEventNames() {
         return EVENT_NAMES;
     }
 
+    @Override
     public String getDefaultEventName() {
         return null;
     }

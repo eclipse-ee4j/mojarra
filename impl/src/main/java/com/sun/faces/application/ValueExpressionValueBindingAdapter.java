@@ -54,6 +54,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
     // Methods from ValueExpression
     //
 
+    @Override
     public Object getValue(ELContext context) throws ELException {
         assert (null != binding);
         if (context == null) {
@@ -70,6 +71,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         return result;
     }
 
+    @Override
     public void setValue(ELContext context, Object value) throws ELException {
         assert (null != binding);
         if (context == null) {
@@ -84,6 +86,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         }
     }
 
+    @Override
     public boolean isReadOnly(ELContext context) throws ELException {
         assert (null != binding);
         if (context == null) {
@@ -100,6 +103,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         return result;
     }
 
+    @Override
     public Class<?> getType(ELContext context) throws ELException {
         assert (null != binding);
         if (context == null) {
@@ -122,10 +126,12 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
      * </p>
      */
 
+    @Override
     public boolean isLiteralText() {
         return false;
     }
 
+    @Override
     public Class<?> getExpectedType() {
         assert (null != binding);
         Class result = null;
@@ -139,12 +145,14 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         return result;
     }
 
+    @Override
     public String getExpressionString() {
         assert (null != binding);
         return binding.getExpressionString();
 
     }
 
+    @Override
     public boolean equals(Object other) {
 
         if (other == this) {
@@ -166,6 +174,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
 
     }
 
+    @Override
     public int hashCode() {
         assert (null != binding);
 
@@ -181,6 +190,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
     // Methods from StateHolder
     //
 
+    @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
             throw new NullPointerException();
@@ -204,6 +214,7 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
         return result;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state) {
         if (context == null) {
             throw new NullPointerException();
@@ -240,10 +251,12 @@ public class ValueExpressionValueBindingAdapter extends ValueExpression implemen
 
     private boolean tranzient = false;
 
+    @Override
     public boolean isTransient() {
         return tranzient;
     }
 
+    @Override
     public void setTransient(boolean newTransientValue) {
         tranzient = newTransientValue;
     }

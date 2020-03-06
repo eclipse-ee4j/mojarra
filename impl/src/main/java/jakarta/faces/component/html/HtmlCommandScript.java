@@ -61,6 +61,7 @@ public class HtmlCommandScript extends UICommand {
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }

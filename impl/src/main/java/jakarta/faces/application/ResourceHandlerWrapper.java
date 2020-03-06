@@ -143,6 +143,7 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
      *
      * @since 2.3
      */
+    @Override
     public Stream<String> getViewResources(FacesContext facesContext, String path, ResourceVisitOption... options) {
         return getWrapped().getViewResources(facesContext, path, options);
     }

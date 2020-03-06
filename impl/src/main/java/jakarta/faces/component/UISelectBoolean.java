@@ -164,6 +164,7 @@ public class UISelectBoolean extends UIInput {
      *
      * @deprecated This has been replaced by {@link #getValueExpression}.
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name) {
         if ("selected".equals(name)) {
@@ -191,6 +192,7 @@ public class UISelectBoolean extends UIInput {
      *
      * @deprecated This has been replaced by {@link #setValueExpression}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
         if ("selected".equals(name)) {

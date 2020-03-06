@@ -41,6 +41,7 @@ import jakarta.faces.el.ValueBinding;
  * part of Jakarta Server Pages 2.1.
  */
 
+@Deprecated
 public abstract class UIComponentTag extends UIComponentClassicTagBase implements Tag {
 
     // ------------------------------------------------------------- Properties

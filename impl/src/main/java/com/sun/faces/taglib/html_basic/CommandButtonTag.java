@@ -256,14 +256,17 @@ public class CommandButtonTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Button";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlCommandButton";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UICommand command = null;
@@ -373,6 +376,7 @@ public class CommandButtonTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -385,6 +389,7 @@ public class CommandButtonTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -398,6 +403,7 @@ public class CommandButtonTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

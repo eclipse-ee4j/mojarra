@@ -55,6 +55,7 @@ public class HtmlColumn extends UIColumn {
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }

@@ -58,6 +58,7 @@ public class HtmlMessage extends UIMessage {
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }

@@ -321,6 +321,7 @@ public class UISelectMany extends UIInput {
      *
      * @deprecated this has been replaced by {@link #getValueExpression(java.lang.String)}.
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name) {
 
@@ -350,6 +351,7 @@ public class UISelectMany extends UIInput {
      *
      * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
 

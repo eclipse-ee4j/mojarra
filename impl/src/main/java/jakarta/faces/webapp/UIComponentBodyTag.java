@@ -26,6 +26,7 @@ package jakarta.faces.webapp;
  * {@link UIComponentELTag}.
  */
 
+@Deprecated
 public abstract class UIComponentBodyTag extends UIComponentTag {
 
     // remove all methods since UIComponentTag is now a body tag.

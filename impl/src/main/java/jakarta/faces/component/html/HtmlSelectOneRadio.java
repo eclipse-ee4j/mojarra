@@ -67,6 +67,7 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
@@ -246,6 +247,7 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
      * default rendering of the "table" element and any attribute related to the rendering of the "table" element, such as
      * "border", is ignored.
      */
+    @Override
     public java.lang.String getGroup() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.group);
 
@@ -258,6 +260,7 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
      *
      * @param group the new property value
      */
+    @Override
     public void setGroup(java.lang.String group) {
         getStateHelper().put(PropertyKeys.group, group);
     }
@@ -876,10 +879,12 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur", "change", "click", "valueChange", "dblclick",
             "focus", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "select"));
 
+    @Override
     public Collection<String> getEventNames() {
         return EVENT_NAMES;
     }
 
+    @Override
     public String getDefaultEventName() {
         return "valueChange";
     }

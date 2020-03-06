@@ -190,6 +190,7 @@ public abstract class StateManager {
      * returns <code>null</code>
      *
      */
+    @Deprecated
     public SerializedView saveSerializedView(FacesContext context) {
 
         context.getAttributes().put(IS_CALLED_FROM_API_CLASS, TRUE);
@@ -276,6 +277,7 @@ public abstract class StateManager {
      * @deprecated the distinction between tree structure and component state is now an implementation detail. The default
      * implementation returns <code>null</code>.
      */
+    @Deprecated
     protected Object getTreeStructureToSave(FacesContext context) {
         return null;
     }
@@ -298,6 +300,7 @@ public abstract class StateManager {
      * @deprecated the distinction between tree structure and component state is now an implementation detail. The default
      * implementation returns <code>null</code>.
      */
+    @Deprecated
     protected Object getComponentStateToSave(FacesContext context) {
         return null;
     }
@@ -368,6 +371,7 @@ public abstract class StateManager {
      * <code>getState()</code> on the argument <code>state</code>.
      *
      */
+    @Deprecated
     public void writeState(FacesContext context, SerializedView state) throws IOException {
         if (state != null) {
             writeState(context, new Object[] { state.getStructure(), state.getState() });
@@ -423,6 +427,7 @@ public abstract class StateManager {
      * @deprecated the distinction between tree structure and component state is now an implementation detail. The default
      * implementation returns <code>null</code>.
      */
+    @Deprecated
     protected UIViewRoot restoreTreeStructure(FacesContext context, String viewId, String renderKitId) {
         return null;
     }
@@ -441,6 +446,7 @@ public abstract class StateManager {
      * @deprecated the distinction between tree structure and component state is now an implementation detail. The default
      * implementation does nothing.
      */
+    @Deprecated
     protected void restoreComponentState(FacesContext context, UIViewRoot viewRoot, String renderKitId) {
     }
 
@@ -480,6 +486,7 @@ public abstract class StateManager {
      * 1.2 of the spec. The replacement is to use an implementation dependent <code>Object</code>.
      */
 
+    @Deprecated
     public class SerializedView extends Object {
         private Object structure = null;
         private Object state = null;

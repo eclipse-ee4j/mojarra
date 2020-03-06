@@ -315,14 +315,17 @@ public class SelectOneRadioTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Radio";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlSelectOneRadio";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UISelectOne selectone = null;
@@ -462,6 +465,7 @@ public class SelectOneRadioTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -474,6 +478,7 @@ public class SelectOneRadioTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -487,6 +492,7 @@ public class SelectOneRadioTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

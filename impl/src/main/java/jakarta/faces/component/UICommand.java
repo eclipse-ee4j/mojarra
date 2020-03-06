@@ -249,6 +249,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      *
      * @deprecated This has been replaced by {@link #getActionExpression}.
      */
+    @Deprecated
     @Override
     public MethodBinding getAction() {
         MethodBinding result = null;
@@ -274,6 +275,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      *
      * @deprecated This has been replaced by {@link #setActionExpression(jakarta.el.MethodExpression)}.
      */
+    @Deprecated
     @Override
     public void setAction(MethodBinding action) {
         MethodExpressionMethodBindingAdapter adapter;
@@ -290,6 +292,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      *
      * @deprecated Use {@link #getActionListeners} instead.
      */
+    @Deprecated
     @Override
     public MethodBinding getActionListener() {
         return (MethodBinding) getStateHelper().get(PropertyKeys.methodBindingActionListener);
@@ -300,6 +303,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      *
      * @deprecated This has been replaced by {@link #addActionListener(jakarta.faces.event.ActionListener)}.
      */
+    @Deprecated
     @Override
     public void setActionListener(MethodBinding actionListener) {
         getStateHelper().put(PropertyKeys.methodBindingActionListener, actionListener);

@@ -250,14 +250,17 @@ public class OutputLinkTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Link";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlOutputLink";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UIOutput output = null;
@@ -370,6 +373,7 @@ public class OutputLinkTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -382,6 +386,7 @@ public class OutputLinkTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -395,6 +400,7 @@ public class OutputLinkTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

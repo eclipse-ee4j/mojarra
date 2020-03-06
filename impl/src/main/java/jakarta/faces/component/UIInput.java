@@ -507,6 +507,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      *
      * @deprecated {@link #getValidators} should be used instead.
      */
+    @Deprecated
     @Override
     public MethodBinding getValidator() {
         MethodBinding result = null;
@@ -543,6 +544,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by creating an instance of
      * {@link jakarta.faces.validator.MethodExpressionValidator}.
      */
+    @Deprecated
     @Override
     public void setValidator(MethodBinding validatorBinding) {
         Validator[] curValidators = getValidators();
@@ -598,6 +600,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument {@link ValueChangeListener} by
      * creating an instance of {@link jakarta.faces.event.MethodExpressionValueChangeListener}.
      */
+    @Deprecated
     @Override
     public void setValueChangeListener(MethodBinding valueChangeListener) {
 

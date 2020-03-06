@@ -212,6 +212,7 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
      * @see jakarta.faces.component.UIComponent#getValueBinding(java.lang.String)
      * @deprecated
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name) {
         return parent.getValueBinding(name);
@@ -380,6 +381,7 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
      * @see jakarta.faces.component.UIComponent#setValueBinding(java.lang.String, jakarta.faces.el.ValueBinding)
      * @deprecated
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
         parent.setValueBinding(name, binding);

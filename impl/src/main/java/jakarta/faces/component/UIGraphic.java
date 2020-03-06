@@ -156,6 +156,7 @@ public class UIGraphic extends UIComponentBase {
      *
      * @deprecated This has been replaced by {@link #getValueExpression(java.lang.String)}.
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name) {
 
@@ -181,6 +182,7 @@ public class UIGraphic extends UIComponentBase {
      *
      * @deprecated This has been replaced by {@link #setValueExpression}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
 

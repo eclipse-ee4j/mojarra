@@ -33,6 +33,7 @@ import java.io.Serializable;
  * @version $Id$
  * @deprecated
  */
+@Deprecated
 public final class LegacyMethodBinding extends MethodBinding implements Serializable {
 
     private static final long serialVersionUID = 1L;

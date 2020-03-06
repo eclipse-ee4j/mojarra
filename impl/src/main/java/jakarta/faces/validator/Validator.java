@@ -76,6 +76,7 @@ public interface Validator<T> extends EventListener {
      * @deprecated Use {@link DoubleRangeValidator#NOT_IN_RANGE_MESSAGE_ID} or
      * {@link LongRangeValidator#NOT_IN_RANGE_MESSAGE_ID} instead.
      */
+    @Deprecated
     String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.NOT_IN_RANGE";
 
     /**

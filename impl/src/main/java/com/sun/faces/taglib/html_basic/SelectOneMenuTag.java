@@ -294,14 +294,17 @@ public class SelectOneMenuTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Menu";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlSelectOneMenu";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UISelectOne selectone = null;
@@ -432,6 +435,7 @@ public class SelectOneMenuTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -444,6 +448,7 @@ public class SelectOneMenuTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -457,6 +462,7 @@ public class SelectOneMenuTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

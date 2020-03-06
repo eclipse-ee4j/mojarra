@@ -223,6 +223,7 @@ public interface EditableValueHolder extends ValueHolder {
      * @return the validator as a method binding.
      * @deprecated {@link #getValidators} should be used instead.
      */
+    @Deprecated
     MethodBinding getValidator();
 
     /**
@@ -247,6 +248,7 @@ public interface EditableValueHolder extends ValueHolder {
      * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by creating an instance of
      * {@link jakarta.faces.validator.MethodExpressionValidator}.
      */
+    @Deprecated
     void setValidator(MethodBinding validatorBinding);
 
     /**
@@ -259,6 +261,7 @@ public interface EditableValueHolder extends ValueHolder {
      * @return the value change listener.
      * @deprecated Use {@link #getValueChangeListeners} instead.
      */
+    @Deprecated
     MethodBinding getValueChangeListener();
 
     /**
@@ -283,5 +286,6 @@ public interface EditableValueHolder extends ValueHolder {
      * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument {@link ValueChangeListener} by
      * creating an instance of {@link jakarta.faces.event.MethodExpressionValueChangeListener}.
      */
+    @Deprecated
     void setValueChangeListener(MethodBinding valueChangeMethod);
 }

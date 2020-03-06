@@ -35,6 +35,7 @@ import java.util.*;
  * @version $Id$
  * @deprecated
  */
+@Deprecated
 public final class LegacyELContext extends ELContext {
 
     private static final String[] IMPLICIT_OBJECTS = new String[] { "application", "applicationScope", "cookie", "facesContext", "header", "headerValues",

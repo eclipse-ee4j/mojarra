@@ -308,14 +308,17 @@ public class SelectManyListboxTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Listbox";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlSelectManyListbox";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UISelectMany selectmany = null;
@@ -452,6 +455,7 @@ public class SelectManyListboxTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -464,6 +468,7 @@ public class SelectManyListboxTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -477,6 +482,7 @@ public class SelectManyListboxTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

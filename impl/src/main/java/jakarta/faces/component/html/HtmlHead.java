@@ -58,6 +58,7 @@ public class HtmlHead extends UIOutput {
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }

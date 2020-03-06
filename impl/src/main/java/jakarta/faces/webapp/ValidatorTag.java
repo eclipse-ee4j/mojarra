@@ -58,6 +58,7 @@ import jakarta.faces.validator.Validator;
  * the binding facility and the implementation of the {@link #createValidator} method, is now an implementation detail.
  */
 
+@Deprecated
 public class ValidatorTag extends TagSupport {
 
     // ---------------------------------------------------------- Static Members

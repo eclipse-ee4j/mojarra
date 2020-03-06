@@ -2456,6 +2456,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *
      * @deprecated
      */
+    @Deprecated
     public static final String CURRENT_COMPONENT = "jakarta.faces.component.CURRENT_COMPONENT";
 
     /**
@@ -2472,6 +2473,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *
      * @deprecated
      */
+    @Deprecated
     public static final String CURRENT_COMPOSITE_COMPONENT = "jakarta.faces.component.CURRENT_COMPOSITE_COMPONENT";
 
     /**
@@ -2488,6 +2490,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *
      * @deprecated This has been replaced by {@link #getValueExpression}.
      */
+    @Deprecated
     public abstract ValueBinding getValueBinding(String name);
 
     /**
@@ -2504,6 +2507,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *
      * @deprecated This has been replaced by {@link #setValueExpression}.
      */
+    @Deprecated
     public abstract void setValueBinding(String name, ValueBinding binding);
 
     // The set of ValueExpressions for this component, keyed by property

@@ -49,6 +49,7 @@ public class BehaviorHandler extends FaceletsAttachedObjectHandler implements Be
         return this.event;
     }
 
+    @Override
     public String getEventName() {
         if (null != getEvent()) {
             return getEvent().getValue();

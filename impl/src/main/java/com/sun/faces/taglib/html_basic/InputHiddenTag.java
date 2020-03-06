@@ -98,14 +98,17 @@ public class InputHiddenTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Hidden";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlInputHidden";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UIInput input = null;
@@ -152,6 +155,7 @@ public class InputHiddenTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -164,6 +168,7 @@ public class InputHiddenTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -177,6 +182,7 @@ public class InputHiddenTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

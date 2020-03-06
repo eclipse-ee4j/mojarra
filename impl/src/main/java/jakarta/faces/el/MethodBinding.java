@@ -31,6 +31,7 @@ import jakarta.faces.context.FacesContext;
  * @deprecated This has been replaced by {@link jakarta.el.MethodExpression}.
  */
 
+@Deprecated
 public abstract class MethodBinding {
 
     /**

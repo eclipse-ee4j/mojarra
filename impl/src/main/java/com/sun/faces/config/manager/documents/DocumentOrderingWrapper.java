@@ -764,6 +764,11 @@ public class DocumentOrderingWrapper {
 
         // -------------------------------------------------------- Constructors
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 739253127985795440L;
+
         public CircularDependencyException() {
             super();
         }

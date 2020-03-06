@@ -32,6 +32,7 @@ package jakarta.faces.el;
  * @deprecated This has been replaced by {@link jakarta.el.ELResolver}.
  */
 
+@Deprecated
 public abstract class PropertyResolver {
 
     /**

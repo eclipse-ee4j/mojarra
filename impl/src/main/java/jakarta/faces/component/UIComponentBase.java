@@ -2210,6 +2210,10 @@ public abstract class UIComponentBase extends UIComponent {
     // required by UIComponent.getChildren()
     private static class ChildrenList extends ArrayList<UIComponent> {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 8926987612679576963L;
         private UIComponent component;
 
         public ChildrenList(UIComponent component) {
@@ -2520,6 +2524,10 @@ public abstract class UIComponentBase extends UIComponent {
     // required by UIComponent.getFacets()
     private static class FacetsMap extends HashMap<String, UIComponent> {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -1444791615672259097L;
         private UIComponent component;
 
         public FacetsMap(UIComponent component) {
@@ -2810,6 +2818,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         private FacetsMap map = null;
 
+        @Override
         public boolean add(String o) {
             throw new UnsupportedOperationException();
         }
@@ -3403,6 +3412,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @throws NullPointerException {@inheritDoc}
      * @deprecated This has been replaced by {@link #getValueExpression}.
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name) {
 
@@ -3433,6 +3443,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @throws NullPointerException {@inheritDoc}
      * @deprecated This has been replaced by {@link #setValueExpression}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
         if (name == null) {

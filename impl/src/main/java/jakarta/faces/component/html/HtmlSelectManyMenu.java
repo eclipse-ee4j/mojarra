@@ -67,6 +67,7 @@ public class HtmlSelectManyMenu extends UISelectMany implements ClientBehaviorHo
         PropertyKeys() {
         }
 
+        @Override
         public String toString() {
             return ((toString != null) ? toString : super.toString());
         }
@@ -764,10 +765,12 @@ public class HtmlSelectManyMenu extends UISelectMany implements ClientBehaviorHo
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur", "change", "valueChange", "click", "dblclick",
             "focus", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
 
+    @Override
     public Collection<String> getEventNames() {
         return EVENT_NAMES;
     }
 
+    @Override
     public String getDefaultEventName() {
         return "valueChange";
     }

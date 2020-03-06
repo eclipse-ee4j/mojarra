@@ -751,6 +751,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @throws NullPointerException if <code>name</code> is <code>null</code>
      * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) {
 

@@ -38,6 +38,7 @@ import java.io.ObjectOutput;
  * @version $Id$
  * @deprecated
  */
+@Deprecated
 public final class LegacyValueBinding extends ValueBinding implements Externalizable {
 
     private static final long serialVersionUID = 1L;

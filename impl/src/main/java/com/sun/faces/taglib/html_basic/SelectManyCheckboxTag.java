@@ -329,14 +329,17 @@ public class SelectManyCheckboxTag extends UIComponentELTag {
     }
 
     // General Methods
+    @Override
     public String getRendererType() {
         return "jakarta.faces.Checkbox";
     }
 
+    @Override
     public String getComponentType() {
         return "jakarta.faces.HtmlSelectManyCheckbox";
     }
 
+    @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
         jakarta.faces.component.UISelectMany selectmany = null;
@@ -482,6 +485,7 @@ public class SelectManyCheckboxTag extends UIComponentELTag {
     }
 
     // Methods From TagSupport
+    @Override
     public int doStartTag() throws JspException {
         try {
             return super.doStartTag();
@@ -494,6 +498,7 @@ public class SelectManyCheckboxTag extends UIComponentELTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspException {
         try {
             return super.doEndTag();
@@ -507,6 +512,7 @@ public class SelectManyCheckboxTag extends UIComponentELTag {
     }
 
     // RELEASE
+    @Override
     public void release() {
         super.release();
 

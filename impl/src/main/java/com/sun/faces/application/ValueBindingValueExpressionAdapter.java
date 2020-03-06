@@ -57,6 +57,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
      *
      * @see jakarta.faces.el.ValueBinding#getExpressionString()
      */
+    @Override
     public String getExpressionString() {
         assert (null != valueExpression);
         return valueExpression.getExpressionString();
@@ -67,6 +68,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
      *
      * @see jakarta.faces.el.ValueBinding#getType(jakarta.faces.context.FacesContext)
      */
+    @Override
     public Class getType(FacesContext context) throws EvaluationException, PropertyNotFoundException {
 
         if (context == null) {
@@ -88,6 +90,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
      *
      * @see jakarta.faces.el.ValueBinding#getValue(jakarta.faces.context.FacesContext)
      */
+    @Override
     public Object getValue(FacesContext context) throws EvaluationException, PropertyNotFoundException {
         if (context == null) {
             throw new NullPointerException("FacesContext -> null");
@@ -108,6 +111,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
      *
      * @see jakarta.faces.el.ValueBinding#isReadOnly(jakarta.faces.context.FacesContext)
      */
+    @Override
     public boolean isReadOnly(FacesContext context) throws EvaluationException, PropertyNotFoundException {
 
         if (context == null) {
@@ -127,6 +131,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
      *
      * @see jakarta.faces.el.ValueBinding#setValue(jakarta.faces.context.FacesContext, java.lang.Object)
      */
+    @Override
     public void setValue(FacesContext context, Object value) throws EvaluationException, PropertyNotFoundException {
 
         if (context == null) {
@@ -143,14 +148,17 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
         }
     }
 
+    @Override
     public boolean isTransient() {
         return this.tranzient;
     }
 
+    @Override
     public void setTransient(boolean tranzient) {
         this.tranzient = tranzient;
     }
 
+    @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
             throw new NullPointerException();
@@ -175,6 +183,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state) {
         if (context == null) {
             throw new NullPointerException();
@@ -209,6 +218,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
         }
     }
 
+    @Override
     public boolean equals(Object other) {
 
         if (other == this) {
@@ -230,6 +240,7 @@ public class ValueBindingValueExpressionAdapter extends ValueBinding implements 
 
     }
 
+    @Override
     public int hashCode() {
         assert (null != valueExpression);
         return valueExpression.hashCode();

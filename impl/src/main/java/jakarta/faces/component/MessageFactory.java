@@ -254,6 +254,10 @@ class MessageFactory {
      * the expression to be evaluated when that property is available.
      */
     static class BindingFacesMessage extends FacesMessage {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -124099152627362643L;
         BindingFacesMessage(Locale locale, String messageFormat, String detailMessageFormat,
                 // array of parameters, both Strings and ValueBindings
                 Object[] parameters) {
@@ -266,12 +270,14 @@ class MessageFactory {
             }
         }
 
+        @Override
         public String getSummary() {
             String pattern = super.getSummary();
             resolveBindings();
             return getFormattedString(pattern, resolvedParameters);
         }
 
+        @Override
         public String getDetail() {
             String pattern = super.getDetail();
             resolveBindings();

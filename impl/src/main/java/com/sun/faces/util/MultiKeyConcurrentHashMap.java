@@ -194,6 +194,11 @@ public class MultiKeyConcurrentHashMap<K, V> {
          */
 
         /**
+         * 
+         */
+        private static final long serialVersionUID = -5546647604753877171L;
+
+        /**
          * The number of elements in this segment's region.
          */
         volatile int count;
