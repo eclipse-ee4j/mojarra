@@ -543,7 +543,7 @@ public class HtmlUtils {
 
     static public void writeTextForXML(Writer out, String text, char[] outbuf) throws IOException {
         char[] textBuffer = new char[128];
-        int len = text.toString().length();
+        int len = text.length();
         if (textBuffer.length < len) {
             textBuffer = new char[len * 2];
         }
