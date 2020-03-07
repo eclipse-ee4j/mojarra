@@ -320,7 +320,7 @@ public class DebugUtil {
             keyIsSerializable = key instanceof Serializable ? "true" : "+_+_+_+FALSE+_+_+_+_";
             valueIsSerializable = value instanceof Serializable ? "true" : "+_+_+_+FALSE+_+_+_+_";
             out.severe("key: " + key.toString() + " class:" + key.getClass() + " Serializable: " + keyIsSerializable);
-            out.severe("value: " + value.toString() + " class:" + key.getClass() + " Serializable: " + keyIsSerializable);
+            out.severe("value: " + value.toString() + " class:" + value.getClass() + " Serializable: " + valueIsSerializable);
             if (value instanceof Object[]) {
                 printTree((Object[]) value, out);
             }
