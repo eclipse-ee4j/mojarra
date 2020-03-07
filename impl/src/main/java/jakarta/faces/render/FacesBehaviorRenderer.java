@@ -16,10 +16,12 @@
 
 package jakarta.faces.render;
 
-import java.lang.annotation.ElementType;
+import static jakarta.faces.render.RenderKitFactory.HTML_BASIC_RENDER_KIT;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
@@ -31,40 +33,38 @@ import java.lang.annotation.Target;
  * if such a constructor does not exist and the application must not be placed in service. Within that
  * {@link RenderKit}, The value of the {@link #rendererType} attribute is taken to be the <em>renderer-type</em> The
  * implementation must guarantee that for each class annotated with <code>FacesBehaviorRenderer</code>, found with the
- * algorithm in section JSF.11.5, the following actions are taken.
+ * algorithm in section 11.5 of the spec prose document, the following actions are taken.
  * </p>
  *
  * <div class="changed_added_2_0">
  *
  * <ul>
+ *   <li>
+ *     <p>
+ *        Obtain a reference to the {@link RenderKitFactory} for this application.
+ *     </p>
+ *   </li>
  *
- * <li>
- * <p>
- * Obtain a reference to the {@link RenderKitFactory} for this application.
- * </p>
- * </li>
+ *   <li>
+ *     <p>
+ *       See if a <code>RenderKit</code> exists for <em>render-kit-id</em>. If so, let that instance be <em>renderKit</em> for
+ *       discussion. If not, the implementation must indicate a fatal error if such a <code>RenderKit</code> does not exist
+ *       and the application must not be placed in service.
+ *     </p>
+ *   </li>
  *
- * <li>
- * <p>
- * See if a <code>RenderKit</code> exists for <em>render-kit-id</em>. If so, let that instance be <em>renderKit</em> for
- * discussion. If not, the implementation must indicate a fatal error if such a <code>RenderKit</code> does not exist
- * and the application must not be placed in service.
- * </p>
- * </li>
+ *   <li>
+ *     <p>
+ *       Create an instance of this class using the public zero-argument constructor.
+ *     </p>
+ *   </li>
  *
- * <li>
- * <p>
- * Create an instance of this class using the public zero-argument constructor.
- * </p>
- * </li>
- *
- * <li>
- * <p>
- * Call {@link RenderKit#addClientBehaviorRenderer} on <em>renderKit</em>, passing <em>type</em> as the first argument,
- * and a {@link ClientBehaviorRenderer} instance as the second argument.
- * </p>
- * </li>
- *
+ *   <li>
+ *     <p>
+ *       Call {@link RenderKit#addClientBehaviorRenderer} on <em>renderKit</em>, passing <em>type</em> as the first argument,
+ *       and a {@link ClientBehaviorRenderer} instance as the second argument.
+ *     </p>
+ *   </li>
  * </ul>
  *
  *
@@ -74,8 +74,8 @@ import java.lang.annotation.Target;
  *
  */
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention(RUNTIME)
+@Target(TYPE)
 @Inherited
 public @interface FacesBehaviorRenderer {
     /**
@@ -89,7 +89,7 @@ public @interface FacesBehaviorRenderer {
      * @return the <em>render-kit-id</em>
      */
 
-    String renderKitId() default RenderKitFactory.HTML_BASIC_RENDER_KIT;
+    String renderKitId() default HTML_BASIC_RENDER_KIT;
 
     String rendererType();
 }

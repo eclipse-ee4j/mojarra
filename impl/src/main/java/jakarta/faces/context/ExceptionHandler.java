@@ -44,8 +44,8 @@ import jakarta.faces.event.SystemEventListener;
  * </p>
  *
  * <p>
- * This approach allows the <code>ExceptionHandler</code> facility specified in section JSF.6.2 to operate on the
- * <code>Exception</code>.
+ * This approach allows the <code>ExceptionHandler</code> facility specified in section 6.2 of the spec prose document to 
+ * operate on the <code>Exception</code>.
  * </p>
  *
  * </li>
@@ -84,7 +84,8 @@ import jakarta.faces.event.SystemEventListener;
  *
  * <p>
  * With either approach, any <code>ExceptionQueuedEvent</code> instances that are published in this way are accessible
- * to the {@link #handle} method, which is called at the end of each lifecycle phase, as specified in section JSF.6.2.
+ * to the {@link #handle} method, which is called at the end of each lifecycle phase, as specified in section 6.2 of the 
+ * spec prose document.
  * </p>
  *
  * <p class="changed_added_2_3">
@@ -108,7 +109,8 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * <p class="changed_added_2_0">
      * Take action to handle the <code>Exception</code> instances residing inside the {@link ExceptionQueuedEvent} instances
      * that have been queued by calls to <code>Application().publishEvent(ExceptionQueuedEvent.class,
-     * <em>eventContext</em>)</code>. The requirements of the default implementation are detailed in section JSF.6.2.1.
+     * <em>eventContext</em>)</code>. The requirements of the default implementation are detailed in section 6.2.1 of the 
+     * spec prose document.
      * </p>
      *
      * @throws FacesException if and only if a problem occurs while performing the algorithm to handle the

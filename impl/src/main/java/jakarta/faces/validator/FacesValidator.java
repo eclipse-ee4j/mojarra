@@ -16,10 +16,11 @@
 
 package jakarta.faces.validator;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import jakarta.inject.Qualifier;
@@ -29,17 +30,18 @@ import jakarta.inject.Qualifier;
  * <span class="changed_modified_2_2">The</span> presence of this annotation on a class automatically registers the
  * class with the runtime as a {@link Validator}. The value of the {@link #value} attribute is taken to be the
  * <em>validator-id</em> and the fully qualified class name of the class to which this annotation is attached is taken
- * to be the <em>validator-class</em>. The implementation must guarantee that for each class annotated with
- * <code>FacesValidator</code>, found with the algorithm in section JSF.11.5,
+ * to be the <em>validator-class</em>. 
+ * 
+ * The implementation must guarantee that for each class annotated with  * <code>FacesValidator</code>, found with the 
+ * algorithm in section 11.5 of the spec prose document,
  * {@link jakarta.faces.application.Application#addValidator(java.lang.String,java.lang.String)} is called, passing the
  * derived <em>validator-id</em> as the first argument and the derived <em>validator-class</em> as the second argument.
  * The implementation must guarantee that all such calls to <code>addValidator()</code> happen during application
  * startup time and before any requests are serviced.
  * </p>
- *
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention(RUNTIME)
+@Target(TYPE)
 @Inherited
 @Qualifier
 public @interface FacesValidator {

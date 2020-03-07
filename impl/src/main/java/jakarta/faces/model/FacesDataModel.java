@@ -118,7 +118,7 @@ import jakarta.inject.Qualifier;
  *
  * <pre>
  * <code>
- * package test.jsf23;
+ * package test.faces23;
  *
  * &#64;FacesDataModel(forClass = Child1.class)
  * public class Child1Model&lt;E&gt; extends DataModel&lt;E&gt; {
@@ -175,7 +175,7 @@ import jakarta.inject.Qualifier;
  *
  * <p>
  * The result printed should be e.g.: <code>"class
- * test.jsf23.Child1Model"</code>
+ * test.faces23.Child1Model"</code>
  * </p>
  *
  * </div>

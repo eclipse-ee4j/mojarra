@@ -422,7 +422,7 @@ public abstract class ViewHandler {
     /**
      * <p class="changed_added_2_0">
      * Derive and return the viewId from the current request, or the argument input by following the algorithm defined in
-     * specification section JSF.7.6.2.
+     * specification section 7.6.2.
      * </p>
      *
      * <p class="changed_added_2_3">
@@ -450,7 +450,7 @@ public abstract class ViewHandler {
     /**
      * <p class="changed_added_2_1">
      * Derive and return the viewId from the current request, or the argument input by following the algorithm defined in
-     * specification section JSF.7.6.2. Note that unlike <code>deriveViewId()</code>, this method does not require that a
+     * specification section 7.6.2. Note that unlike <code>deriveViewId()</code>, this method does not require that a
      * physical view be present.
      * </p>
      *
@@ -482,7 +482,7 @@ public abstract class ViewHandler {
      * argument to the four-argument constructor for <code>java.net.URL</code> (assuming appropriate values are used for the
      * first three arguments), then a client making a request to the <code>toExternalForm()</code> of that <code>URL</code>
      * will select the argument <code>viewId</code> for traversing the Jakarta Server Faces lifecycle. Please see section
-     * JSF.7.6.2 for the complete specification, <span class="changed_added_2_2">especially for details related to view
+     * 7.6.2 for the complete specification, <span class="changed_added_2_2">especially for details related to view
      * protection using the {@link jakarta.faces.render.ResponseStateManager#NON_POSTBACK_VIEW_TOKEN_PARAM}
      * </span><span class="changed_added_2_3"> and the behavior when the current request is to a URL for which the
      * FacesServlet has an exact mapping as defined by Servlet.12.2</span>.
@@ -504,7 +504,7 @@ public abstract class ViewHandler {
      * <p class="changed_added_2_0">
      * Return a Jakarta Server Faces action URL derived from the <code>viewId</code> argument that is suitable to be used by
      * the {@link NavigationHandler} to issue a redirect request to the URL using a NonFaces request. Compliant
-     * implementations must implement this method as specified in section JSF.7.6.2. The default implementation simply calls
+     * implementations must implement this method as specified in section 7.6.2. The default implementation simply calls
      * through to {@link #getActionURL}, passing the arguments <code>context</code> and <code>viewId</code>.
      * </p>
      *
@@ -523,7 +523,7 @@ public abstract class ViewHandler {
      * <p class="changed_added_2_0">
      * Return a Jakarta Server Faces action URL derived from the viewId argument that is suitable to be used as the target
      * of a link in a Jakarta Server Faces response. Compliant implementations must implement this method as specified in
-     * section JSF.7.6.2. The default implementation simply calls through to {@link #getActionURL}, passing the arguments
+     * section 7.6.2. The default implementation simply calls through to {@link #getActionURL}, passing the arguments
      * <code>context</code> and <code>viewId</code>.
      * </p>
      *
