@@ -57,7 +57,7 @@ public class NavigationCase {
 
     /**
      * <p class="changed_added_2_0">
-     * Construct a new <code>NavigationCase</code> based on the provided arguments. See section JSF.7.4.2 for how a
+     * Construct a new <code>NavigationCase</code> based on the provided arguments. See section 7.4.2 in the Jakarta Faces spec for how a
      * <code>NavigationCase</code> is used by the standard {@link ConfigurableNavigationHandler}
      * </p>
      *
@@ -87,8 +87,8 @@ public class NavigationCase {
 
     /**
      * <p class="changed_added_2_0">
-     * Construct a new <code>NavigationCase</code> based on the provided arguments. See section JSF.7.4.2 for how a
-     * <code>NavigationCase</code> is used by the standard {@link ConfigurableNavigationHandler}
+     * Construct a new <code>NavigationCase</code> based on the provided arguments. See section 7.4.2 of the spec prose document 
+     * for how a <code>NavigationCase</code> is used by the standard {@link ConfigurableNavigationHandler}
      * </p>
      *
      * @param fromViewId return from {@link #getFromViewId}
@@ -129,7 +129,6 @@ public class NavigationCase {
      * @throws MalformedURLException if the process of constructing the URL causes this exception to be thrown.
      */
     public URL getActionURL(FacesContext context) throws MalformedURLException {
-
         ExternalContext extContext = context.getExternalContext();
 
         return new URL(extContext.getRequestScheme(), extContext.getRequestServerName(), extContext.getRequestServerPort(),
@@ -147,7 +146,6 @@ public class NavigationCase {
      * @throws MalformedURLException if the process of constructing the URL causes this exception to be thrown.
      */
     public URL getResourceURL(FacesContext context) throws MalformedURLException {
-
         ExternalContext extContext = context.getExternalContext();
 
         return new URL(extContext.getRequestScheme(), extContext.getRequestServerName(), extContext.getRequestServerPort(),
@@ -165,7 +163,6 @@ public class NavigationCase {
      * @throws MalformedURLException if the process of constructing the URL causes this exception to be thrown.
      */
     public URL getRedirectURL(FacesContext context) throws MalformedURLException {
-
         ExternalContext extContext = context.getExternalContext();
 
         return new URL(extContext.getRequestScheme(), extContext.getRequestServerName(), extContext.getRequestServerPort(), context.getApplication()
@@ -184,8 +181,8 @@ public class NavigationCase {
      * @throws MalformedURLException if the process of constructing the URL causes this exception to be thrown.
      */
     public URL getBookmarkableURL(FacesContext context) throws MalformedURLException {
-
         ExternalContext extContext = context.getExternalContext();
+        
         return new URL(extContext.getRequestScheme(), extContext.getRequestServerName(), extContext.getRequestServerPort(),
                 context.getApplication().getViewHandler().getBookmarkableURL(context, getToViewId(context), getParameters(), isIncludeViewParams()));
     }
@@ -234,7 +231,6 @@ public class NavigationCase {
      * @return the view ID that should be navigated to
      */
     public String getToViewId(FacesContext context) {
-
         if (toViewIdExpr == null) {
             toViewIdExpr = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), toViewId, String.class);
         }
@@ -288,7 +284,6 @@ public class NavigationCase {
      * <code>&lt;navigation-case&gt;</code>, otherwise return the evaluation result of the condition
      */
     public Boolean getCondition(FacesContext context) {
-
         if (conditionExpr == null && condition != null) {
             conditionExpr = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), condition, Boolean.class);
         }
@@ -336,7 +331,6 @@ public class NavigationCase {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) {
             return true;
         }
@@ -358,7 +352,6 @@ public class NavigationCase {
 
     @Override
     public int hashCode() {
-
         if (hashCode == 0) {
             int result = fromViewId != null ? fromViewId.hashCode() : 0;
             result = 31 * result + (fromAction != null ? fromAction.hashCode() : 0);
@@ -370,13 +363,13 @@ public class NavigationCase {
             result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
             hashCode = result;
         }
+        
         return hashCode;
 
     }
 
     @Override
     public String toString() {
-
         if (toString == null) {
             StringBuilder sb = new StringBuilder(64);
             sb.append("NavigationCase{");

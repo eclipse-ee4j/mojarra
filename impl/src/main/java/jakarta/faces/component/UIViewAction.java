@@ -74,7 +74,7 @@ import jakarta.faces.view.ViewMetadata;
  * current viewId, the runtime must force a redirect to that matched navigation case with different viewId, regardless
  * of whether or not the matched navigation case with different viewId called for a redirect.
  * <span class="changed_added_2_3">If the navigation will result in a flow transition, the appropriate metadata must be
- * included in the query string for the redirect. See section JSF.7.4.2 Default NavigationHandler Algorithm, for the
+ * included in the query string for the redirect. See section 7.4.2 Default NavigationHandler Algorithm, for the
  * discussion of how to handle {@code &lt;redirect /&gt;} cases.</span>
  * </p>
  *

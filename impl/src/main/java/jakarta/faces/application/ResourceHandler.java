@@ -42,7 +42,7 @@ import jakarta.faces.context.FacesContext;
  * <p>
  * ResourceHandler defines a path based packaging convention for resources. The default implementation of
  * <code>ResourceHandler</code> must support packaging resources in the classpath or in the web application root. See
- * section JSF.2.6.1 of the spec prose document <a href="../../../overview-summary.html#prose_document">linked in the
+ * section 2.6.1 of the spec prose document <a href="../../../overview-summary.html#prose_document">linked in the
  * overview summary</a> for the normative specification of packaging resources.
  * </p>
  *
@@ -249,7 +249,7 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_0">
      *
      * <p>
-     * The algorithm specified in section JSF.2.6.1.4 of the spec prose document
+     * The algorithm specified in section 2.6.1.4 of the spec prose document
      * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a> must be executed to create
      * the <code>Resource</code>. <span class="changed_added_2_2">New requirements were introduced in version 2.2 of the
      * specification. For historical reasons, this method operate correctly when the argument {@code resourceName} is of the
@@ -399,7 +399,7 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_2">
      *
      * <p>
-     * The resource must be identified according to the specification in JSF.2.6.1.3 of the spec prose document
+     * The resource must be identified according to the specification in 2.6.1.3 of the spec prose document
      * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a>. New requirements were
      * introduced in version 2.2 of the specification.
      * </p>
@@ -429,7 +429,7 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_0">
      *
      * <p>
-     * The algorithm specified in section JSF.2.6.1.4 of the spec prose document
+     * The algorithm specified in section 2.6.1.4 of the spec prose document
      * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a> must be executed to create
      * the <code>Resource</code>. <span class="changed_added_2_2">New requirements were introduced in version 2.2 of the
      * specification.</span>
@@ -460,7 +460,7 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_0">
      *
      * <p>
-     * The algorithm specified in section JSF.2.6.1.4 of the spec prose document
+     * The algorithm specified in section 2.6.1.4 of the spec prose document
      * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a> must be executed to create
      * the <code>Resource</code>. <span class="changed_added_2_2">New requirements were introduced in version 2.2 of the
      * specification.</span>
