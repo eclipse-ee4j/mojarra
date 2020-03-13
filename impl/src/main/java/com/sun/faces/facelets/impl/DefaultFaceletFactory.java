@@ -17,6 +17,8 @@
 package com.sun.faces.facelets.impl;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
 import com.sun.faces.context.FacesFileNotFoundException;
 import java.net.MalformedURLException;
 import javax.faces.FactoryFinder;
@@ -123,11 +125,19 @@ public class DefaultFaceletFactory {
             FaceletCache cache) {
         Util.notNull("compiler", compiler);
         Util.notNull("resolver", resolver);
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null) {
+            throw new IllegalStateException("DefaultFaceletFactory cannot locate the faces context");
+        }
+        ExternalContext externalContext = facesContext.getExternalContext();
+        WebConfiguration config = WebConfiguration.getInstance(externalContext);
+
         this.compiler = compiler;
         this.cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
         this.baseUrl = resolver.resolveUrl("/");
-        this.idMappers = new Cache<>(new IdMapperFactory());
+        this.idMappers = config.isOptionEnabled(UseFaceletsID)? null : new Cache<>(new IdMapperFactory());
         // this.location = url;
         refreshPeriod = (refreshPeriod >= 0) ? refreshPeriod * 1000 : -1;
         this.refreshPeriod = refreshPeriod;

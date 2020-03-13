@@ -19,24 +19,18 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
     <parent>
-        <groupId>com.sun.faces.test</groupId>
+        <groupId>com.sun.faces.test.servlet31</groupId>
         <artifactId>pom</artifactId>
         <version>3.0.0-m01-SNAPSHOT</version>
     </parent>
-    
-    <groupId>com.sun.faces.test.servlet31</groupId>
-    <artifactId>pom</artifactId>
-    <packaging>pom</packaging>
-    
-    <name>Mojarra ${project.version} - Test - Servlet 3.1</name>
-    
-    <modules>
-        <module>facelets</module>
-        <module>faceletsID</module>
-        <module>faceletsEmptyAsNull</module>
-        <module>resourcehandler</module>
-    </modules>
-    
+    <artifactId>faceletsID</artifactId>
+    <packaging>war</packaging>
+    <name>Mojarra ${project.version} - Test - Servlet 3.1 - FaceletsID</name>
+    <build>
+        <finalName>test-servlet31-faceletsID</finalName>
+    </build>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>

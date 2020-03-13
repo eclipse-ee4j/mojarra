@@ -1338,6 +1338,10 @@ public class WebConfiguration {
               "com.sun.faces.enableDistributable",
               false
         ),
+        UseFaceletsID(
+              "com.sun.faces.useFaceletsID",
+              false
+        ),
         EnableFaceletsResourceResolverResolveCompositeComponents(
               "com.sun.faces.enableFaceletsResourceResolverCompositeComponents",
               false
