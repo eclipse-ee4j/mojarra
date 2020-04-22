@@ -1,4 +1,7 @@
-remote_theme: jakartaee/jekyll-theme-jakarta-ee
+github: [metadata]
+
+remote_theme: eclipsefdn/jekyll-theme-eclipsefdn
+#theme: jekyll-theme-eclipsefdn # for local execution
 
 title: [Eclipse Mojarra]
 description: [Eclipse EE4J implementation of Jakarta Faces]
