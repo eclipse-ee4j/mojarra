@@ -297,10 +297,10 @@
                         <Bundle-SymbolicName>org.glassfish.jakarta.faces</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-Name>Mojarra JSF Implementation ${project.version}</Bundle-Name>
-                        <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/2.3) ${project.version}</Bundle-Description>                        
+                        <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/3.0) ${project.version}</Bundle-Description>
                         
                         <Specification-Title>Jakarta Server Faces</Specification-Title>
-                        <Specification-Version>2.3</Specification-Version>
+                        <Specification-Version>3.0</Specification-Version>
                         
                         <Implementation-Title>Mojarra</Implementation-Title> 
                         <Implementation-Version>${project.version}</Implementation-Version>
@@ -310,8 +310,8 @@
                         <Extension-Name>jakarta.faces</Extension-Name>
                         
                         <Export-Package>
-                            jakarta.faces.*;version=2.3,
-                            com.sun.faces.*;version=2.3
+                            jakarta.faces.*;version=3.0,
+                            com.sun.faces.*;version=3.0
                         </Export-Package>
                         
                         <Import-Package>
@@ -325,7 +325,7 @@
                             jakarta.enterprise.util.*,
                             jakarta.enterprise.context.*,
                             jakarta.annotation.processing.*,
-                            jakarta.annotation.*;version="[1.0.0,2.0.0)",
+                            jakarta.annotation.*,
                             javax.crypto.*,
                             jakarta.websocket.*;resolution:=optional,
                             jakarta.json.*;resolution:=optional,
