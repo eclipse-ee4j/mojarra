@@ -986,6 +986,10 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             if (isRequired() && isSetAlwaysValidateRequired(context)) {
                 // continue as below
             } else {
+                if(considerEmptyStringNull(context)) {
+                    // https://github.com/eclipse-ee4j/mojarra/issues/4550
+                    validateValue(context,  getConvertedValue(context, submittedValue));
+                }
                 return;
             }
         }
