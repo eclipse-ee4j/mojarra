@@ -940,7 +940,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
         // If non-null, an instanceof String, and we're configured to treat
         // zero-length Strings as null:
-        //   call setSubmittedValue(null)
+        // call setSubmittedValue(null)
         if ((considerEmptyStringNull(context)
              && submittedValue instanceof String
              && ((String) submittedValue).length() == 0)) {
