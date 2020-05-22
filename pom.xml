@@ -27,7 +27,7 @@
     
     <groupId>org.glassfish</groupId>
     <artifactId>mojarra-parent</artifactId>
-    <version>3.0.0-RC1</version>
+    <version>3.0.0-RC2</version>
     <packaging>pom</packaging>
     
     <name>Mojarra ${project.version} - Project</name>
@@ -54,7 +54,9 @@
    
     <modules>
         <module>impl</module>
+        <!--  Commented out until we have a running Jakarta-ized GF to test against
         <module>test</module>
+        -->
         <module>util</module>
     </modules>
     
