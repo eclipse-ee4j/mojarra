@@ -17,7 +17,7 @@
 package com.sun.faces.util;
 
 import java.security.InvalidKeyException;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
