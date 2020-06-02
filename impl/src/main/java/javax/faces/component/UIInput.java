@@ -849,6 +849,10 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             if (isRequired() && isSetAlwaysValidateRequired(context)) {
                 // continue as below
             } else {
+                if(considerEmptyStringNull(context)) {
+                    // https://github.com/eclipse-ee4j/mojarra/issues/4550
+                    validateValue(context,  getConvertedValue(context, submittedValue));
+                }
                 return;
             }
         }
@@ -856,8 +860,9 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         // If non-null, an instanceof String, and we're configured to treat
         // zero-length Strings as null:
         //   call setSubmittedValue(null)
-        boolean isEmptyStringNull = (considerEmptyStringNull(context) && submittedValue instanceof String && ((String) submittedValue).length() == 0);
-        if (isEmptyStringNull) {
+        if ((considerEmptyStringNull(context)
+             && submittedValue instanceof String
+             && ((String) submittedValue).length() == 0)) {
             setSubmittedValue(null);
             submittedValue = null;
         }
@@ -876,18 +881,13 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
         // If our value is valid, store the new value, erase the
         // "submitted" value, and emit a ValueChangeEvent if appropriate
-        Object previous = getValue();
-        if (isValid() && !isEmptyStringNull) {
+        if (isValid()) {
+            Object previous = getValue();
             setValue(newValue);
             setSubmittedValue(null);
-        } else {
-            if (submittedValue == null) {
-                setSubmittedValue("");
+            if (compareValues(previous, newValue)) {
+                queueEvent(new ValueChangeEvent(context, this, previous, newValue));
             }
-        }
-
-        if (compareValues(previous, newValue)) {
-            queueEvent(new ValueChangeEvent(context, this, previous, newValue));
         }
 
     }
