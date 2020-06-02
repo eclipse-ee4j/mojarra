@@ -268,27 +268,8 @@ public class UIViewParameter extends UIInput {
             context.renderResponse();
         }
         else {
-            if (myConsiderEmptyStringNull(context)) {
-                // JAVASERVERFACES_SPEC_PUBLIC-1329: If the EMPTY_STRING_SUBMITTED_VALUES_AS_NULL
-                // config is set, ensure that logic gets a chance to be executed
-                // in UIInput.processValidators().
-                if (null == submittedValue) {
-                    setSubmittedValue("");
-                }
-            }
             super.processValidators(context);
         }
-    }
-    
-    private boolean myConsiderEmptyStringNull(FacesContext ctx) {
-
-        if (emptyStringIsNull == null) {
-            String val = ctx.getExternalContext().getInitParameter(EMPTY_STRING_AS_NULL_PARAM_NAME);
-            emptyStringIsNull = Boolean.valueOf(val);
-        }
-
-        return emptyStringIsNull;
-        
     }
     
     

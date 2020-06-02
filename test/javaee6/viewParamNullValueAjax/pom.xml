@@ -17,28 +17,20 @@
 
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>com.sun.faces.test</groupId>
-        <artifactId>pom</artifactId>
-        <version>2.3.14-SNAPSHOT</version>
-    </parent>
-
-    <groupId>com.sun.faces.test.javaee6</groupId>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <artifactId>pom</artifactId>
-    <packaging>pom</packaging>
-    <name>Mojarra ${project.version} - Test - JavaEE 6</name>
-
-    <modules>
-        <module>correctScanningEar</module>
-        <module>correctScanningJar</module>
-        <module>correctScanningTest</module>
-        <module>correctScanningWar1</module>
-        <module>correctScanningWar2</module>
-        <module>resource</module>
-        <module>viewParamBeanValidatorNotNull</module>
-        <module>viewParamNullValueAjax</module>
-  </modules>
+    <groupId>com.sun.faces.test.javaee6</groupId>
+    <version>3.0.0-m01-SNAPSHOT</version>
+  </parent>
   
+  <artifactId>viewParamNullValueAjax</artifactId>
+  <packaging>war</packaging>
+  <name>Mojarra ${project.version} - Test - JavaEE 6 - viewParameter with null value for Ajax</name>
+  
+  <build>
+    <finalName>test-javaee6-viewParamNullValueAjax</finalName>
+  </build>
+  
+
 </project>

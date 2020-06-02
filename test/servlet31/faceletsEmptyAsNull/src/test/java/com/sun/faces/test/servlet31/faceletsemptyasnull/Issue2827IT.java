@@ -123,8 +123,8 @@ public class Issue2827IT {
             pageAsText = page.asText();
             assertTrue(pageAsText.contains("VC1 Fired: true"));
             assertTrue(pageAsText.contains("VC2 Fired: true"));
-            assertTrue(pageAsText.contains("String model set with null: false"));
-            assertTrue(pageAsText.contains("Integer model set with null: false"));
+            assertTrue(pageAsText.contains("String model set with null: true"));
+            assertTrue(pageAsText.contains("Integer model set with null: true"));
 
             submit = (HtmlSubmitInput) page.getHtmlElementById("form:command");
             assertNotNull(submit);
@@ -143,10 +143,10 @@ public class Issue2827IT {
             assertEquals(integerInput.getValueAttribute(), "");
 
             pageAsText = page.asText();
-            assertTrue(pageAsText.contains("VC1 Fired: true"));
-            assertTrue(pageAsText.contains("VC2 Fired: true"));
-            assertTrue(pageAsText.contains("String model set with null: false"));
-            assertTrue(pageAsText.contains("Integer model set with null: false"));
+            assertTrue(pageAsText.contains("VC1 Fired: false"));
+            assertTrue(pageAsText.contains("VC2 Fired: false"));
+            assertTrue(pageAsText.contains("String model set with null: true"));
+            assertTrue(pageAsText.contains("Integer model set with null: true"));
         }
     }
 }
