@@ -32,6 +32,7 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -57,8 +58,6 @@ import com.sun.faces.config.processor.FacesFlowDefinitionConfigProcessor;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Timer;
 
-import jakarta.servlet.ServletContext;
-
 /**
  * <p>
  * This <code>Callable</code> will be used by
@@ -78,6 +77,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     private static final String JAVAEE_SCHEMA_LEGACY_DEFAULT_NS = "http://java.sun.com/xml/ns/javaee";
     private static final String JAVAEE_SCHEMA_DEFAULT_NS = "http://xmlns.jcp.org/xml/ns/javaee";
+    private static final String JAKARTAEE_SCHEMA_DEFAULT_NS="https://jakarta.ee/xml/ns/jakartaee";
     private static final String EMPTY_FACES_CONFIG = "com/sun/faces/empty-faces-config.xml";
     private static final String FACES_CONFIG_TAGNAME = "faces-config";
     private static final String FACELET_TAGLIB_TAGNAME = "facelet-taglib";
@@ -100,6 +100,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     private URI documentURI;
     private DocumentBuilderFactory factory;
     private boolean validating;
+    
 
     // --------------------------------------------------------
     // Constructors
@@ -109,10 +110,14 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
      * Constructs a new ParseTask instance
      * </p>
      *
-     * @param servletContext the servlet context.
-     * @param validating whether or not we're validating
-     * @param documentURI a URL to the configuration resource to be parsed
-     * @throws Exception general error
+     * @param servletContext
+     *            the servlet context.
+     * @param validating
+     *            whether or not we're validating
+     * @param documentURI
+     *            a URL to the configuration resource to be parsed
+     * @throws Exception
+     *             general error
      */
     public ParseConfigResourceToDOMTask(ServletContext servletContext, boolean validating, URI documentURI) throws Exception {
         this.servletContext = servletContext;
@@ -125,7 +130,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     /**
      * @return the result of the parse operation (a DOM)
-     * @throws Exception if an error occurs during the parsing process
+     * @throws Exception
+     *             if an error occurs during the parsing process
      */
     @Override
     public DocumentInfo call() throws Exception {
@@ -145,16 +151,19 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
             return new DocumentInfo(document, documentURI);
         } catch (Exception e) {
-            throw new ConfigurationException(format("Unable to parse document ''{0}'': {1}", documentURI.toURL().toExternalForm(), e.getMessage()), e);
+            throw new ConfigurationException(
+                    format("Unable to parse document ''{0}'': {1}", documentURI.toURL().toExternalForm(), e.getMessage()), e);
         }
     }
+    
 
     // ----------------------------------------------------- Private
     // Methods
 
     /**
      * @return <code>Document</code> based on <code>documentURI</code>.
-     * @throws Exception if an error occurs during the process of building a <code>Document</code>
+     * @throws Exception
+     *             if an error occurs during the process of building a <code>Document</code>
      */
     private Document getDocument() throws Exception {
 
@@ -196,7 +205,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
             documentNS = documentElement.getNamespaceURI();
             String rootElementTagName = documentElement.getTagName();
 
-            boolean isNonFacesConfigDocument = !FACES_CONFIG_TAGNAME.equals(rootElementTagName) && !FACELET_TAGLIB_TAGNAME.equals(rootElementTagName);
+            boolean isNonFacesConfigDocument = !FACES_CONFIG_TAGNAME.equals(rootElementTagName)
+                    && !FACELET_TAGLIB_TAGNAME.equals(rootElementTagName);
 
             if (isNonFacesConfigDocument) {
                 ClassLoader loader = this.getClass().getClassLoader();
@@ -204,7 +214,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                 doc = db.parse(is);
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING,
-                            MessageFormat.format("Config document {0} with namespace URI {1} is not a faces-config or facelet-taglib file.  Ignoring.",
+                            MessageFormat.format(
+                                    "Config document {0} with namespace URI {1} is not a faces-config or facelet-taglib file.  Ignoring.",
                                     documentURI.toURL().toExternalForm(), documentNS));
                 }
                 return doc;
@@ -247,9 +258,38 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                     DocumentBuilder builder = getBuilderForSchema(schema);
                     if (builder.isValidating()) {
                         builder.getSchema().newValidator().validate(domSource);
-                        returnDoc = (Document) domSource.getNode();
+                        returnDoc = ((Document) domSource.getNode());
                     } else {
-                        returnDoc = (Document) domSource.getNode();
+                        returnDoc = ((Document) domSource.getNode());
+                    }
+                } else {
+                    // this shouldn't happen, but...
+                    throw new ConfigurationException("No document version available.");
+                }
+                break;
+            }
+            case JAKARTAEE_SCHEMA_DEFAULT_NS: {
+                Attr version = (Attr) documentElement.getAttributes().getNamedItem("version");
+                Schema schema;
+                if (version != null) {
+                    String versionStr = version.getValue();
+                    switch (versionStr) {
+                    case "3.0":
+                        if ("facelet-taglib".equals(documentElement.getLocalName())) {
+                            schema = DbfFactory.getSchema(servletContext, DbfFactory.FacesSchema.FACELET_TAGLIB_22);
+                        } else {
+                            schema = DbfFactory.getSchema(servletContext, DbfFactory.FacesSchema.FACES_30);
+                        }
+                        break;
+                    default:
+                        throw new ConfigurationException("Unknown Schema version: " + versionStr);
+                    }
+                    DocumentBuilder builder = getBuilderForSchema(schema);
+                    if (builder.isValidating()) {
+                        builder.getSchema().newValidator().validate(domSource);
+                        returnDoc = ((Document) domSource.getNode());
+                    } else {
+                        returnDoc = ((Document) domSource.getNode());
                     }
                 } else {
                     // this shouldn't happen, but...
@@ -286,9 +326,9 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                     DocumentBuilder builder = getBuilderForSchema(schema);
                     if (builder.isValidating()) {
                         builder.getSchema().newValidator().validate(domSource);
-                        returnDoc = (Document) domSource.getNode();
+                        returnDoc = ((Document) domSource.getNode());
                     } else {
-                        returnDoc = (Document) domSource.getNode();
+                        returnDoc = ((Document) domSource.getNode());
                     }
                 } else {
                     // this shouldn't happen, but...
@@ -347,16 +387,16 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     }
 
     private boolean streamIsZeroLengthOrEmpty(InputStream is) throws IOException {
-        boolean isZeroLengthOrEmpty = 0 == is.available();
+        boolean isZeroLengthOrEmpty = (0 == is.available());
         final int size = 1024;
         byte[] b = new byte[size];
         String s;
         while (!isZeroLengthOrEmpty && -1 != is.read(b, 0, size)) {
-            s = new String(b, RIConstants.CHAR_ENCODING).trim();
+            s = (new String(b, RIConstants.CHAR_ENCODING)).trim();
             isZeroLengthOrEmpty = 0 == s.length();
             b[0] = 0;
             for (int i = 1; i < size; i += i) {
-                System.arraycopy(b, 0, b, i, size - i < i ? size - i : i);
+                System.arraycopy(b, 0, b, i, ((size - i) < i) ? (size - i) : i);
             }
         }
 
@@ -367,7 +407,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
      * Obtain a <code>Transformer</code> using the style sheet referenced by the <code>XSL</code> constant.
      *
      * @return a new Tranformer instance
-     * @throws Exception if a Tranformer instance could not be created
+     * @throws Exception
+     *             if a Tranformer instance could not be created
      */
     private static Transformer getTransformer(String documentNS) throws Exception {
 
@@ -390,8 +431,10 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     /**
      * @return an <code>InputStream</code> to the resource referred to by <code>url</code>
-     * @param url source <code>URL</code>
-     * @throws IOException if an error occurs
+     * @param url
+     *            source <code>URL</code>
+     * @throws IOException
+     *             if an error occurs
      */
     private static InputStream getInputStream(URL url) throws IOException {
         URLConnection connection = url.openConnection();
@@ -412,7 +455,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     }
 
     private DocumentBuilder getBuilderForSchema(Schema schema) throws Exception {
-        factory = DbfFactory.getFactory();
+        this.factory = DbfFactory.getFactory();
 
         try {
             factory.setSchema(schema);
