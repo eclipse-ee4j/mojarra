@@ -56,6 +56,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
@@ -64,6 +65,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
@@ -1392,10 +1394,24 @@ public class Util {
                 XPath xpath = factory.newXPath();
                 xpath.setNamespaceContext(new JavaeeNamespaceContext());
                 stream = url.openStream();
-                result = xpath.evaluate("string(/javaee:faces-config/@version)", new InputSource(stream));
+                DocumentBuilderFactory dbf = createDocumentBuilderFactory();
+                try {
+                    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                    dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+                } catch (ParserConfigurationException pce) {
+                }
+                dbf.setNamespaceAware(true);
+                dbf.setValidating(false);
+                dbf.setXIncludeAware(false);
+                dbf.setExpandEntityReferences(false);
+                result = xpath.evaluate("string(/javaee:faces-config/@version)",
+                        dbf.newDocumentBuilder().parse(stream));
             }
         } catch (MalformedURLException mue) {
         } catch (XPathExpressionException | IOException xpee) {
+        } catch (Exception e) {
         } finally {
             if (stream != null) {
                 try {
@@ -1423,10 +1439,23 @@ public class Util {
                 XPath xpath = factory.newXPath();
                 xpath.setNamespaceContext(new JavaeeNamespaceContext());
                 stream = url.openStream();
-                result = xpath.evaluate("string(/javaee:web-app/@version)", new InputSource(stream));
+                DocumentBuilderFactory dbf = createDocumentBuilderFactory();
+                try {
+                    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                    dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+                } catch (ParserConfigurationException e) {
+                }
+                dbf.setNamespaceAware(true);
+                dbf.setValidating(false);
+                dbf.setXIncludeAware(false);
+                dbf.setExpandEntityReferences(false);
+                result = xpath.evaluate("string(/javaee:web-app/@version)", dbf.newDocumentBuilder().parse(stream));
             }
         } catch (MalformedURLException mue) {
         } catch (XPathExpressionException | IOException xpee) {
+        } catch (Exception e) {
         } finally {
             if (stream != null) {
                 try {
