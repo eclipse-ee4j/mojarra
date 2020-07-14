@@ -27,7 +27,7 @@
     
     <groupId>org.glassfish</groupId>
     <artifactId>mojarra-parent</artifactId>
-    <version>3.0.0-RC2</version>
+    <version>3.0.0-RC3</version>
     <packaging>pom</packaging>
     
     <name>Mojarra ${project.version} - Project</name>
