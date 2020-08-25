@@ -180,14 +180,6 @@ public class FacesInitializer implements ServletContainerInitializer {
 
         servletContext.setAttribute(FACES_INITIALIZER_MAPPINGS_ADDED, TRUE);
 
-        // The following line is temporary until we can solve an ordering
-        // issue in V3. Right now the JSP container looks for a mapping
-        // of the FacesServlet in the web.xml. If it's not present, then
-        // it assumes that the application isn't a faces application. In this
-        // case the JSP container will not register the ConfigureListener
-        // definition from our TLD nor will it parse cause or JSP TLDs to
-        // be parsed.
-        servletContext.addListener(com.sun.faces.config.ConfigureListener.class);
     }
 
     private ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
