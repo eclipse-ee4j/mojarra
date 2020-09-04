@@ -40,7 +40,7 @@
         <xsl:element name="facelet-taglib"
                      namespace="http://java.sun.com/xml/ns/javaee">
             <xsl:attribute name="xsi:schemaLocation"
-                           namespace="http://www.w3.org/2001/XMLSchema-instance">http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_2.xsd</xsl:attribute>
+                           namespace="http://www.w3.org/2001/XMLSchema-instance">https://jakarta.ee/xml/ns/jakartaee/ https://jakarta.ee/xml/ns/jakartaee/web-facelettaglibrary_3_0.xsd</xsl:attribute>
             <xsl:attribute name="version">2.2</xsl:attribute>
             <xsl:apply-templates select="*"/>
         </xsl:element>
