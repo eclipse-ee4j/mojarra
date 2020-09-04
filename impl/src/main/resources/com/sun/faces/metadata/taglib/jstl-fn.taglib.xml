@@ -18,138 +18,139 @@
 -->
 
 <facelet-taglib xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd"
-                version="2.2">
-  <description>JSTL 1.1 functions library</description>
-  <namespace>http://xmlns.jcp.org/jsp/jstl/functions</namespace>
-  <function>
-    <description>
-      Tests if an input string contains the specified substring.
-    </description>
-    <function-name>contains</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>boolean contains(java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Tests if an input string contains the specified substring in a case insensitive way.
-    </description>
-    <function-name>containsIgnoreCase</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>boolean containsIgnoreCase(java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Tests if an input string ends with the specified suffix.
-    </description>
-    <function-name>endsWith</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>boolean endsWith(java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Escapes characters that could be interpreted as XML markup.
-    </description>
-    <function-name>escapeXml</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String escapeXml(java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Returns the index withing a string of the first occurrence of a specified substring.
-    </description>
-    <function-name>indexOf</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>int indexOf(java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Joins all elements of an array into a string.
-    </description>
-    <function-name>join</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String join(java.lang.String[], java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Returns the number of items in a collection, or the number of characters in a string.
-    </description>
-    <function-name>length</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>int length(java.lang.Object)</function-signature>
-  </function>
-  <function>
-    <description>
-      Returns a string resulting from replacing in an input string all occurrences
-      of a "before" string into an "after" substring.
-    </description>
-    <function-name>replace</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String replace(java.lang.String, java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Splits a string into an array of substrings.
-    </description>
-    <function-name>split</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String[] split(java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Tests if an input string starts with the specified prefix.
-    </description>
-    <function-name>startsWith</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>boolean startsWith(java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Returns a subset of a string.
-    </description>
-    <function-name>substring</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String substring(java.lang.String, int, int)</function-signature>
-  </function>
-  <function>
-    <description>
-      Returns a subset of a string following a specific substring.
-    </description>
-    <function-name>substringAfter</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String substringAfter(java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Returns a subset of a string before a specific substring.
-    </description>
-    <function-name>substringBefore</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String substringBefore(java.lang.String, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Converts all of the characters of a string to lower case.
-    </description>
-    <function-name>toLowerCase</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String toLowerCase(java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Converts all of the characters of a string to upper case.
-    </description>
-    <function-name>toUpperCase</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String toUpperCase(java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>
-      Removes white spaces from both ends of a string.
-    </description>
-    <function-name>trim</function-name>
-    <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
-    <function-signature>java.lang.String trim(java.lang.String)</function-signature>
-  </function>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facelettaglibrary_3_0.xsd"
+    version="3.0">
+    <description>JSTL 1.1 functions library</description>
+    <namespace>http://xmlns.jcp.org/jsp/jstl/functions</namespace>
+    
+    <function>
+        <description>
+            Tests if an input string contains the specified substring.
+        </description>
+        <function-name>contains</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>boolean contains(java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Tests if an input string contains the specified substring in a case insensitive way.
+        </description>
+        <function-name>containsIgnoreCase</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>boolean containsIgnoreCase(java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Tests if an input string ends with the specified suffix.
+        </description>
+        <function-name>endsWith</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>boolean endsWith(java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Escapes characters that could be interpreted as XML markup.
+        </description>
+        <function-name>escapeXml</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String escapeXml(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Returns the index withing a string of the first occurrence of a specified substring.
+        </description>
+        <function-name>indexOf</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>int indexOf(java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Joins all elements of an array into a string.
+        </description>
+        <function-name>join</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String join(java.lang.String[], java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Returns the number of items in a collection, or the number of characters in a string.
+        </description>
+        <function-name>length</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>int length(java.lang.Object)</function-signature>
+    </function>
+    <function>
+        <description>
+            Returns a string resulting from replacing in an input string all occurrences
+            of a "before" string into an "after" substring.
+        </description>
+        <function-name>replace</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String replace(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Splits a string into an array of substrings.
+        </description>
+        <function-name>split</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String[] split(java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Tests if an input string starts with the specified prefix.
+        </description>
+        <function-name>startsWith</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>boolean startsWith(java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Returns a subset of a string.
+        </description>
+        <function-name>substring</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String substring(java.lang.String, int, int)</function-signature>
+    </function>
+    <function>
+        <description>
+            Returns a subset of a string following a specific substring.
+        </description>
+        <function-name>substringAfter</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String substringAfter(java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Returns a subset of a string before a specific substring.
+        </description>
+        <function-name>substringBefore</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String substringBefore(java.lang.String, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Converts all of the characters of a string to lower case.
+        </description>
+        <function-name>toLowerCase</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String toLowerCase(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Converts all of the characters of a string to upper case.
+        </description>
+        <function-name>toUpperCase</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String toUpperCase(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>
+            Removes white spaces from both ends of a string.
+        </description>
+        <function-name>trim</function-name>
+        <function-class>com.sun.faces.facelets.tag.jstl.fn.JstlFunction</function-class>
+        <function-signature>java.lang.String trim(java.lang.String)</function-signature>
+    </function>
 </facelet-taglib>

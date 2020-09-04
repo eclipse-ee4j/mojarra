@@ -32,28 +32,22 @@
 
 -->
 
-<xsl:stylesheet version="1.0"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:old="http://java.sun.com/JSF/Facelet">
-    <xsl:output method="xml"/>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:old="http://java.sun.com/JSF/Facelet">
+    <xsl:output method="xml" />
+    
     <xsl:template match="/old:facelet-taglib">
-        <xsl:element name="facelet-taglib"
-                     namespace="http://java.sun.com/xml/ns/javaee">
-            <xsl:attribute name="xsi:schemaLocation"
-                           namespace="http://www.w3.org/2001/XMLSchema-instance">http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_2.xsd</xsl:attribute>
-            <xsl:attribute name="version">2.2</xsl:attribute>
-            <xsl:apply-templates select="*"/>
+        <xsl:element name="facelet-taglib" namespace="http://java.sun.com/xml/ns/javaee">
+            <xsl:attribute name="xsi:schemaLocation" namespace="http://www.w3.org/2001/XMLSchema-instance">https://jakarta.ee/xml/ns/jakartaee/ https://jakarta.ee/xml/ns/jakartaee/web-facelettaglibrary_3_0.xsd</xsl:attribute>
+            <xsl:attribute name="version">3.0</xsl:attribute>
+            <xsl:apply-templates select="*" />
         </xsl:element>
     </xsl:template>
 
-    <!--
-       Convert all 1.0/1.1 elements to 1.2
-    -->
+    <!-- Convert all 1.0/1.1 elements to 1.2 -->
     <xsl:template match="old:*">
-        <xsl:element name="{local-name()}"
-                     namespace="http://java.sun.com/xml/ns/javaee">
-            <xsl:copy-of select="@*"/>
-            <xsl:apply-templates/>
+        <xsl:element name="{local-name()}" namespace="http://java.sun.com/xml/ns/javaee">
+            <xsl:copy-of select="@*" />
+            <xsl:apply-templates />
         </xsl:element>
     </xsl:template>
 
