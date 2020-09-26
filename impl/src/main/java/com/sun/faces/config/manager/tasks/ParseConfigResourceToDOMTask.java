@@ -32,7 +32,6 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -58,6 +57,8 @@ import com.sun.faces.config.processor.FacesFlowDefinitionConfigProcessor;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Timer;
 
+import jakarta.servlet.ServletContext;
+
 /**
  * <p>
  * This <code>Callable</code> will be used by
@@ -77,7 +78,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     private static final String JAVAEE_SCHEMA_LEGACY_DEFAULT_NS = "http://java.sun.com/xml/ns/javaee";
     private static final String JAVAEE_SCHEMA_DEFAULT_NS = "http://xmlns.jcp.org/xml/ns/javaee";
-    private static final String JAKARTAEE_SCHEMA_DEFAULT_NS="https://jakarta.ee/xml/ns/jakartaee";
+    private static final String JAKARTAEE_SCHEMA_DEFAULT_NS = "https://jakarta.ee/xml/ns/jakartaee";
     private static final String EMPTY_FACES_CONFIG = "com/sun/faces/empty-faces-config.xml";
     private static final String FACES_CONFIG_TAGNAME = "faces-config";
     private static final String FACELET_TAGLIB_TAGNAME = "facelet-taglib";
@@ -100,7 +101,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     private URI documentURI;
     private DocumentBuilderFactory factory;
     private boolean validating;
-    
+
 
     // --------------------------------------------------------
     // Constructors
@@ -155,7 +156,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                     format("Unable to parse document ''{0}'': {1}", documentURI.toURL().toExternalForm(), e.getMessage()), e);
         }
     }
-    
+
 
     // ----------------------------------------------------- Private
     // Methods

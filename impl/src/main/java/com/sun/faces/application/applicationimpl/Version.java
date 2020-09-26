@@ -22,7 +22,6 @@ import static com.sun.faces.util.Util.getWebXmlVersion;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -44,7 +43,7 @@ public class Version {
     private Boolean isJsf23;
 
     /**
-     * Are we running in JSF 2.3
+     * Are we running in JSF 2.3+
      *
      * @return true if we are, false otherwise.
      */
@@ -58,7 +57,10 @@ public class Version {
 
             if (beanManager == null) {
                 // TODO: use version enum and >=
-                if (getFacesConfigXmlVersion(facesContext).equals("2.3") || getWebXmlVersion(facesContext).equals("4.0")) {
+
+                String facesVersion = getFacesConfigXmlVersion(facesContext);
+
+                if (facesVersion.equals("3.0") || getWebXmlVersion(facesContext).equals("4.0")) {
                     throw new FacesException("Unable to find CDI BeanManager");
                 }
                 isJsf23 = false;
@@ -79,45 +81,36 @@ public class Version {
      */
     private String getFacesConfigXmlVersion(FacesContext facesContext) {
         String result = "";
-        InputStream stream = null;
         try {
             URL url = facesContext.getExternalContext().getResource("/WEB-INF/faces-config.xml");
             if (url != null) {
-                XPathFactory factory = XPathFactory.newInstance();
-                XPath xpath = factory.newXPath();
-                xpath.setNamespaceContext(new JavaeeNamespaceContext());
-                stream = url.openStream();
-                result = xpath.evaluate("string(/javaee:faces-config/@version)", new InputSource(stream));
-            }
-        } catch (MalformedURLException mue) {
-            // Ignore
-        } catch (XPathExpressionException | IOException xpee) {
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException ioe) {
-                    // Ignore
+                XPath xpath = XPathFactory.newInstance().newXPath();
+                xpath.setNamespaceContext(new JakartaeeNamespaceContext());
+                try (InputStream stream = url.openStream()) {
+                    result = xpath.evaluate("string(/jakartaee:faces-config/@version)", new InputSource(stream));
                 }
             }
+        } catch (XPathExpressionException | IOException  mue) {
+            // Ignore
         }
+
         return result;
     }
 
-    public class JavaeeNamespaceContext implements NamespaceContext {
+    public class JakartaeeNamespaceContext implements NamespaceContext {
 
         @Override
         public String getNamespaceURI(String prefix) {
-            return "http://xmlns.jcp.org/xml/ns/javaee";
+            return "https://jakarta.ee/xml/ns/jakartaee";
         }
 
         @Override
         public String getPrefix(String namespaceURI) {
-            return "javaee";
+            return "jakartaee";
         }
 
         @Override
-        public Iterator getPrefixes(String namespaceURI) {
+        public Iterator<?> getPrefixes(String namespaceURI) {
             return null;
         }
     }
