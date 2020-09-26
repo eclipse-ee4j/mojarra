@@ -19,7 +19,7 @@
 
 <!--
 
-  Translates a JSF 1.0/1.1 faces-config document into a JSF 1.2 faces-config
+  Translates a JSF 1.0/1.1 faces-config document into a Faces 3.0 faces-config
   document, using the following conversion rules:
 
   1. Change the <facelet-taglib> element to read as follows:
