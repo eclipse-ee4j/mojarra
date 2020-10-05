@@ -24,7 +24,7 @@
   <description>
 <![CDATA[<p>JSTL 1.2 core library</p>
 
-<p>The pre JSF 2.0 version of Facelets incorrectly declared the taglib
+<p>The pre Faces version of Facelets incorrectly declared the taglib
 uri to be <code>http://xmlns.jcp.org/jstl/core</code>.  For backwards
 compatibility implementations must correctly handle inclusions with the
 incorrect uri, and the correct uri, declared here.</p>

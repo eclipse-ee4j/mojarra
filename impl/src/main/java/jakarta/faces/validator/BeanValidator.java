@@ -210,7 +210,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
      * <p>
      * Let <em>valueExpression</em> be the return from calling {@link UIComponent#getValueExpression} on the argument
      * <em>component</em>, passing the literal string &#8220;value&#8221; (without the quotes) as an argument. If this
-     * application is running in an environment with a Unified EL Implementation for Java EE6 or later, obtain the
+     * application is running in an environment with Jakarta Expression Language, obtain the
      * <code>ValueReference</code> from <em>valueExpression</em> and let <em>valueBaseClase</em> be the return from calling
      * <code>ValueReference.getBase()</code> and <em>valueProperty</em> be the return from calling
      * <code>ValueReference.getProperty()</code>. If an earlier version of Jakarta Expression Language is present, use the

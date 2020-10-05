@@ -102,7 +102,7 @@ public class SetHandler extends TagHandlerImpl {
                     scopeStr = scope.getValue(ctx);
                 }
                 if (scopeStr.equals("page")) {
-                    throw new TagException(tag, "page scope does not exist in JSF, consider using view scope instead.");
+                    throw new TagException(tag, "page scope does not exist in Faces, consider using view scope instead.");
                 }
                 if (scopeStr.equals("request") || scopeStr.equals("session") || scopeStr.equals("application") || scopeStr.equals("view")) {
                     scopeStr = scopeStr + "Scope";

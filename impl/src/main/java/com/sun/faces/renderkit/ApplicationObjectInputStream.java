@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * An ObjectInputStream that can deserialize objects relative to the current application's class loader. In particular,
- * this class works around deserialization problems when the JSF JARs are shared (i.e. the classloader has no access to
+ * this class works around deserialization problems when the Faces JARs are shared (i.e. the classloader has no access to
  * application objects).
  */
 public class ApplicationObjectInputStream extends ObjectInputStream {

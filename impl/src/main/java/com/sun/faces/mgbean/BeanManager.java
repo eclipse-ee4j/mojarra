@@ -46,7 +46,7 @@ import jakarta.faces.event.SystemEventListener;
 
 /**
  * <p>
- * Main interface for dealing with JSF managed beans
+ * Main interface for dealing with Faces managed beans
  * </p>
  */
 public class BeanManager implements SystemEventListener {

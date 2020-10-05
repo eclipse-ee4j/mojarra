@@ -102,7 +102,7 @@ import jakarta.servlet.ServletContext;
 
 /**
  * <p>
- * This class manages the initialization of each web application that uses JSF.
+ * This class manages the initialization of each web application that uses Faces.
  * </p>
  */
 public class ConfigManager {
@@ -210,7 +210,7 @@ public class ConfigManager {
 
     /**
      * <p>
-     * This method bootstraps JSF based on the parsed configuration resources.
+     * This method bootstraps Faces based on the parsed configuration resources.
      * </p>
      *
      * @param servletContext the <code>ServletContext</code> for the application that requires initialization

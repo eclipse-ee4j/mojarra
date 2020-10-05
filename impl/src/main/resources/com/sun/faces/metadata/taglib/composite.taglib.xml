@@ -72,7 +72,7 @@
 </code></pre>
 
 <p>This declares that any Facelets2 file in the resource
-library called <code>ezcomp</code> can be used as a regular JSF UI
+library called <code>ezcomp</code> can be used as a regular Faces UI
 component in a view with the above namespace declaration by using the
 "<code>ez</code>" prefix.  For example, placing a file called
 <code>foo.xhtml</code> in a resource library called <code>ezcomp</code>
@@ -84,7 +84,7 @@ would make that file accessible like this.</p>
 
 
   <p>The implementation must also support declaring the
-  namespace of the tag library in a JSF VDL tag library descriptor.
+  namespace of the tag library in a Faces VDL tag library descriptor.
   This descriptor file is optional and is useful for component vendors
   that do not want to use the default XML namespace.  This version of
   the proposal currently uses the facelet taglib descriptor syntax.  For

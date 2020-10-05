@@ -24,9 +24,9 @@
     <description><![CDATA[
 
 <p class="changed_added_2_2">The presence of an <br />
-        attribute from this namespace on an otherwise non-JSF aware<br />
+        attribute from this namespace on an otherwise non-Faces aware<br />
         markup element indicates that the markup element must be treated<br />
-        as a JSF component that will be rendered equivalently to what is<br />
+        as a Faces component that will be rendered equivalently to what is<br />
         specified directly in the Facelet page, with the added benefit<br />
         of being associated with a server side <code>UIComponent</code><br />
         instance.

@@ -39,7 +39,7 @@ public class IdTagParserImpl implements TagParser {
     // *********************************************************************
     // Validation and configuration state (protected)
 
-    private boolean siblingSatisfied; // is there a JSF sibling?
+    private boolean siblingSatisfied; // is there a Faces sibling?
     private int requiresIdCount; // nested count
     private StringBuffer requiresIdList; // list of failing tags
     private boolean failed;

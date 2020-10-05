@@ -61,105 +61,105 @@ public abstract class FacesValidator extends TagLibraryValidator {
 
     private static final String JSTL_NEW_CORE_URI = "http://java.sun.com/jsp/jstl/core";
 
-    // Prefix for JSF HTML tags
+    // Prefix for Faces HTML tags
     protected String JSF_HTML_PRE = null;
 
     public String getJSF_HTML_PRE() {
         return JSF_HTML_PRE;
     }
 
-    // Prefix for JSF CORE tags
+    // Prefix for Faces CORE tags
     protected String JSF_CORE_PRE = null;
 
     public String getJSF_CORE_PRE() {
         return JSF_CORE_PRE;
     }
 
-    // Prefix for JSTL CORE tags
+    // Prefix for Jakarta Standard Tag CORE tags
     protected String JSTL_CORE_PRE = null;
 
     public String getJSTL_CORE_PRE() {
         return JSTL_CORE_PRE;
     }
 
-    // QName for JSTL conditional tag
+    // QName for Jakarta Standard Tag conditional tag
     protected String JSTL_IF_QN = ":if";
 
     public String getJSTL_IF_QN() {
         return JSTL_IF_QN;
     }
 
-    // Local Name for JSTL conditional tag
+    // Local Name for Jakarta Standard Tag conditional tag
     protected String JSTL_IF_LN = "if";
 
     public String getJSTL_IF_LN() {
         return JSTL_IF_LN;
     }
 
-    // QName for JSTL conditional tag
+    // QName for Jakarta Standard Tag conditional tag
     protected String JSTL_CHOOSE_QN = ":choose";
 
     public String getJSTL_CHOOSE_QN() {
         return JSTL_CHOOSE_QN;
     }
 
-    // Local Name for JSTL conditional tag
+    // Local Name for Jakarta Standard Tag conditional tag
     protected String JSTL_CHOOSE_LN = "choose";
 
     public String getJSTL_CHOOSE_LN() {
         return JSTL_CHOOSE_LN;
     }
 
-    // QName for JSTL iterator tag
+    // QName for Jakarta Standard Tag iterator tag
     protected String JSTL_FOREACH_QN = ":forEach";
 
     public String getJSTL_FOREACH_QN() {
         return JSTL_FOREACH_QN;
     }
 
-    // Local Name for JSTL iterator tag
+    // Local Name for Jakarta Standard Tag iterator tag
     protected String JSTL_FOREACH_LN = "forEach";
 
     public String getJSTL_FOREACH_LN() {
         return JSTL_FOREACH_LN;
     }
 
-    // QName for JSTL iterator tag
+    // QName for Jakarta Standard Tag iterator tag
     protected String JSTL_FORTOKENS_QN = ":forTokens";
 
     public String getJSTL_FORTOKENS_QN() {
         return JSTL_FORTOKENS_QN;
     }
 
-    // Local Name for JSTL iterator tag
+    // Local Name for Jakarta Standard Tag iterator tag
     protected String JSTL_FORTOKENS_LN = "forTokens";
 
     public String getJSTL_FORTOKENS_LN() {
         return JSTL_FORTOKENS_LN;
     }
 
-    // QName for JSF Form tag
+    // QName for Faces Form tag
     protected String JSF_FORM_QN = ":form";
 
     public String getJSF_FORM_QN() {
         return JSF_FORM_QN;
     }
 
-    // Local Name for JSF Form tag
+    // Local Name for Faces Form tag
     protected String JSF_FORM_LN = "form";
 
     public String getJSF_FORM_LN() {
         return JSF_FORM_LN;
     }
 
-    // QName for JSF subview tag
+    // QName for Faces subview tag
     protected String JSF_SUBVIEW_QN = ":subview";
 
     public String getJSF_SUBVIEW_QN() {
         return JSF_SUBVIEW_QN;
     }
 
-    // Local Name for JSF subview tag
+    // Local Name for Faces subview tag
     protected String JSF_SUBVIEW_LN = "subview";
 
     public String getJSF_SUBVIEW_LN() {
@@ -198,7 +198,7 @@ public abstract class FacesValidator extends TagLibraryValidator {
     // Validation entry point
 
     /**
-     * Validate a JSP page. Return an an array of Validation Messages if a validation failure occurs. Return null on
+     * Validate a Jakarta Server Pages page. Return an an array of Validation Messages if a validation failure occurs. Return null on
      * success.
      *
      * @param prefix Value of directive prefix argument.
@@ -211,7 +211,7 @@ public abstract class FacesValidator extends TagLibraryValidator {
         ValidationMessage[] result = null;
         try {
 
-// get a handler
+            // get a handler
             DefaultHandler h = getSAXHandler();
 
             // if the subclass doesn't want validation to ocurr
@@ -227,11 +227,11 @@ public abstract class FacesValidator extends TagLibraryValidator {
             SAXParser p = f.newSAXParser();
             p.parse(page.getInputStream(), h);
 
-//on validation failure generate error message
+            // on validation failure generate error message
             if (failed) {
                 result = vmFromString(getFailureMessage(prefix, uri));
             } else {
-//success
+                // success
                 result = null;
             }
 

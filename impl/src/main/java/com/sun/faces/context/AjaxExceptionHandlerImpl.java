@@ -44,7 +44,7 @@ import jakarta.faces.event.SystemEvent;
 
 /**
  * <p>
- * A specialized implementation of {@link ExceptionHandler} for JSF 2.0 that handles exceptions by writing error
+ * A specialized implementation of {@link ExceptionHandler} for Faces that handles exceptions by writing error
  * information to the partial response.
  * </p>
  *

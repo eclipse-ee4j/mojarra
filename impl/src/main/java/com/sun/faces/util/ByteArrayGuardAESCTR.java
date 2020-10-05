@@ -50,7 +50,7 @@ import jakarta.faces.FacesException;
  * </p>
  *
  * <p>
- * Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit JSF needs.
+ * Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit Faces needs.
  * </p>
  */
 public final class ByteArrayGuardAESCTR {

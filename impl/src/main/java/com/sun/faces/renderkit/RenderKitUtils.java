@@ -129,7 +129,7 @@ public class RenderKitUtils {
      * IMPLEMENTATION NOTE: This must be kept in sync with the array in UIComponentBase$AttributesMap and
      * HtmlComponentGenerator.
      *
-     * Hopefully JSF 2.0 will remove the need for this.
+     * Hopefully Faces X will remove the need for this.
      */
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -137,7 +137,7 @@ public class RenderKitUtils {
      * IMPLEMENTATION NOTE: This must be kept in sync with the Key in UIComponentBase$AttributesMap and
      * HtmlComponentGenerator.
      *
-     * Hopefully JSF 2.0 will remove the need for this.
+     * Hopefully Faces X will remove the need for this.
      */
     private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
 

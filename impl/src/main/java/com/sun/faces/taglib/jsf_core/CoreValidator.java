@@ -24,8 +24,8 @@ import com.sun.faces.taglib.ValidatorInfo;
 
 /**
  * <p>
- * A TagLibrary Validator class to allow a TLD to mandate that JSF tag must have an id if it is a child or sibling of a
- * JSTL conditional or iteration tag
+ * A TagLibrary Validator class to allow a TLD to mandate that Faces tag must have an id if it is a child or sibling of a
+ * Jakarta Standard Tag conditional or iteration tag
  * </p>
  *
  * @author Justyna Horwat
@@ -136,7 +136,7 @@ public class CoreValidator extends FacesValidator {
     private class CoreValidatorHandler extends DefaultHandler {
 
         /**
-         * Parse the starting element. If it is a specific JSTL tag make sure that the nested JSF tags have IDs.
+         * Parse the starting element. If it is a specific Jakarta Standard Tag tag make sure that the nested Faces tags have IDs.
          *
          * @param ns Element name space.
          * @param ln Element local name.

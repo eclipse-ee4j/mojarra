@@ -27,16 +27,16 @@
 
         <p><span class="changed_modified_2_3">The</span> tags in this
         library add templating &mdash; a powerful view composition
-        technique &mdash; to JSF.  Templating is so useful that there
+        technique &mdash; to Faces.  Templating is so useful that there
         are entire frameworks, such as Tiles and SiteMesh, that are
         built around the concept of templating. So what is templating,
         how can you benefit from it, and how does this tag library
         implement it?  </p>
 
-        <p>If you've used JSP before, you've probably used <code>jsp:include</code>.
+        <p>If you've used Jakarta Server Pages before, you've probably used <code>jsp:include</code>.
         The prototypical example for
         <code>jsp:include</code> is a header on each page in a web
-        application. One JSP page, say header.jsp,
+        application. One Jakarta Server Pages page, say header.jsp,
         encapsulates the header content, and the header is included by each
         page. You <em>encapsulate and reuse
         content</em>, so that changes to one file, header.jsp, affect the
@@ -214,11 +214,11 @@
         </div></li></ol></div></div>
 
         <p>
-        At runtime, JSF synthesizes the two previous XHTML pages to create a
-        single JSF view by inserting the
+        At runtime, Faces synthesizes the two previous XHTML pages to create a
+        single Faces view by inserting the
         pieces defined in the composition into the template (that template is
         layout.xhtml, which is the first
-        listing above). JSF also disregards everything outside of the <code>composition</code>
+        listing above). Faces also disregards everything outside of the <code>composition</code>
         tag so that we don't
         wind up with two <code>body</code> elements in the view.
         Also, note that we use the <code>ui:include</code>
@@ -304,7 +304,7 @@
         By encapsulating the layout, we can reuse that layout among multiple
         compositions. Just like
         <code>ui:include</code> lets us encapsulate and reuse
-        conent, JSF compositions let us encapsulate and reuse
+        conent, Faces compositions let us encapsulate and reuse
         layout, so that changes to a single layout can affect multiple views.
         Fundamentally, that's what this
         tag library is all about.
@@ -321,7 +321,7 @@
   <p><span class="changed_modified_2_0_rev_a
   changed_added_2_0 changed_modified_2_2">This</span> <span
   class="changed_added_2_0">tag is the same as 
-  <code>ui:composition</code>, except for two things: JSF creates a
+  <code>ui:composition</code>, except for two things: Faces creates a
   component and adds it directly to the tree, and there's no associated
   template.</span>
   </p>
@@ -340,9 +340,9 @@
 
                 <div class="changed_added_2_0">
                 <p>
-                The identifier of the component that JSF inserts into the
+                The identifier of the component that Faces inserts into the
                 component tree. If an identifier is
-                not explicitly specified by the page author, JSF will assign an
+                not explicitly specified by the page author, Faces will assign an
                 identifier based on the algorithm
                 that it uses for all components.
                 </p>
@@ -360,7 +360,7 @@
   <p>
 
 	Binds the component to a backing bean property, as specified in
-	the JSF specification.  <span class="changed_modified_2_2">The
+	the Faces specification.  <span class="changed_modified_2_2">The
 	Java language type of this property must be a class that extends
 	<code>jakarta.faces.component.UIComponent</code>.  The scope of
 	the bean on which this property resides must be no wider than
@@ -399,7 +399,7 @@
 <span class="changed_modified_2_2">Defines</span> a composition that
 optionally uses a template, as outlined in the description of the ui tag
 library. Multiple compositions can use the same template, thus
-encapsulating and reusing layout. JSF disregards everything outside of
+encapsulating and reusing layout. Faces disregards everything outside of
 the composition, which lets developers embed compositions in well-formed
 XHTML pages that can be viewed in an XHTML viewer, such as Dreamweaver
 or a browser, without including extraneous elements such as
@@ -416,7 +416,7 @@ or a browser, without including extraneous elements such as
 <li class="li2"><div class="de2">&nbsp;</div></li>
 <li class="li1"><div class="de1">&nbsp; <span class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>
 <li class="li2"><div class="de2">&nbsp;</div></li>
-<li class="li1"><div class="de1">&nbsp; &nbsp; THIS LINE, AND EVERYTHING ABOVE IT IS DISREGARDED BY JSF</div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; THIS LINE, AND EVERYTHING ABOVE IT IS DISREGARDED BY Faces</div></li>
 <li class="li2"><div class="de2">&nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:composition <span class="re0">template</span>=<span class="st0">&quot;/layout.xhtml&quot;</span><span class="re2">&gt;</span></span></div></li>
 
 <li class="li1"><div class="de1">&nbsp;</div></li>
@@ -430,7 +430,7 @@ or a browser, without including extraneous elements such as
 <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;/ui</span>:define<span class="re2">&gt;</span></span></div></li>
 <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></li>
 <li class="li1"><div class="de1">&nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;/ui</span>:composition<span class="re2">&gt;</span></span></div></li>
-<li class="li2"><div class="de2">&nbsp; &nbsp; THIS LINE, AND EVERYTHING BELOW IT IS DISREGARDED BY JSF</div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; THIS LINE, AND EVERYTHING BELOW IT IS DISREGARDED BY Faces</div></li>
 
 <li class="li1"><div class="de1">&nbsp;</div></li>
 <li class="li2"><div class="de2">&nbsp; <span class="sc3"><span class="re1">&lt;/body<span class="re2">&gt;</span></span></span></div></li>
@@ -477,7 +477,7 @@ starting with "/".</span>
             namely the current state of the component
             tree and the scoped variables in the application, when the component
             is rendered. If the user presses CTRL + SHIFT + d,
-            JSF opens a window that shows the debugging information captured by
+            Faces opens a window that shows the debugging information captured by
             the debug component.
             </p>
 
@@ -516,7 +516,7 @@ starting with "/".</span>
                 <div class="changed_added_2_0">
                 <p>
                 Defines a single character, that, pressed in conjunction with
-                CTRL and SHIFT, will display the JSF debug window.
+                CTRL and SHIFT, will display the Faces debug window.
                 By default, the hotkey is 'd'. <em>The value for the
                 hotkey attribute cannot be an EL expression.</em>
                 </p>
@@ -618,7 +618,7 @@ you might want to decorate a list of items, like this:
 <li class="li2"><div class="de2"><span class="sc2"><span class="kw2">&lt;</span>/ui:decorate&gt;</span> </div></li></ol></div></div>
 </p>
 
-Because JSF does not disregard everything outside of the <code>ui:decorate</code> tag, <code>ui:decorate</code> can
+Because Faces does not disregard everything outside of the <code>ui:decorate</code> tag, <code>ui:decorate</code> can
 be used to decorate pieces of a page.
 
 </div>
@@ -656,7 +656,7 @@ starting with "/".</span>
           class="changed_modified_2_2">The</span> <code>fragment</code>
           tag is identical to the <code>component</code> tag, except
           that <code>ui:fragment</code>, unlike
-          <code>ui:component</code>, JSF does not disregard all content
+          <code>ui:component</code>, Faces does not disregard all content
           outside of the tag.</p>
 
         </div>
@@ -669,9 +669,9 @@ starting with "/".</span>
 
 
                 <div class="changed_added_2_0">
-                The identifier of the component that JSF inserts into the
+                The identifier of the component that Faces inserts into the
                 component tree. If an identifier is
-                not explicitly specified by the page author, JSF will assign an
+                not explicitly specified by the page author, Faces will assign an
                 identifier based on the algorithm
                 that it uses for all components.
                 </div>
@@ -687,7 +687,7 @@ starting with "/".</span>
 <div class="changed_added_2_0">
 
         <p>Binds the component to a backing bean property, as specified
-        in the JSF specification. <span class="changed_added_2_2">The
+        in the Faces specification. <span class="changed_added_2_2">The
 	Java language type of this property must be a class that extends
 	<code>jakarta.faces.component.UIComponent</code>.  The scope of
 	the bean on which this property resides must be no wider than
@@ -734,10 +734,10 @@ starting with "/".</span>
             XHTML, and XHTML pages that have either a
             <code>composition</code> tag or a <code>component</code>
             tag.  </p> <p>You supply a filename, through
-            <code>ui:include</code>'s <code>src</code> attribute for JSF
+            <code>ui:include</code>'s <code>src</code> attribute for Faces
             to include. That filename is relative to the XHTML file that
             was rendered as a result of the last request. So, for
-            example, if JSF loaded the view <code>login.xhtml</code>,
+            example, if Faces loaded the view <code>login.xhtml</code>,
             and that file included
             <code>pageDecorations/header.xhtml</code>, and <code>
             pageDecorations/header.xhtml</code> included

@@ -122,7 +122,7 @@ public class ExternalContextImpl extends ExternalContext {
 
         boolean enabled = ContextParamUtils.getValue(servletContext, SendPoweredByHeader, Boolean.class);
         if (enabled) {
-            ((HttpServletResponse) response).addHeader("X-Powered-By", "JSF/2.3");
+            ((HttpServletResponse) response).addHeader("X-Powered-By", "Faces/3.0");
         }
 
         distributable = ContextParamUtils.getValue(servletContext, ContextParam.EnableDistributable, Boolean.class);

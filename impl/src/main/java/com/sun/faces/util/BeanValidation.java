@@ -30,7 +30,7 @@ import jakarta.validation.ValidatorContext;
 import jakarta.validation.ValidatorFactory;
 
 /**
- * Various utility methods for use with the BeanValidation API in JSF.
+ * Various utility methods for use with the Jakarta Bean Validation API in Jakarta Faces.
  *
  */
 public class BeanValidation {

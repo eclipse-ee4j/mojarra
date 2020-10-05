@@ -46,7 +46,7 @@
     <!-- ###  D E P E N D E N C I E S  ### --> 
     
     <dependencies>
-        <!-- Java EE Dependencies -->
+        <!-- Jakarta EE Dependencies -->
 
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -208,7 +208,7 @@
                     <exclude>**/LogStrings*.properties</exclude>
                 </excludes>
             </resource>
-            <!-- Sets the Main JSF version into the log strings -->
+            <!-- Sets the Main Faces version into the log strings -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
@@ -298,7 +298,7 @@
                     <instructions>
                         <Bundle-SymbolicName>org.glassfish.jakarta.faces</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Bundle-Name>Mojarra JSF Implementation ${project.version}</Bundle-Name>
+                        <Bundle-Name>Mojarra Faces Implementation ${project.version}</Bundle-Name>
                         <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/3.0) ${project.version}</Bundle-Description>
                         
                         <Specification-Title>Jakarta Server Faces</Specification-Title>

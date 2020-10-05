@@ -51,12 +51,11 @@ import jakarta.servlet.jsp.tagext.BodyContent;
 import jakarta.servlet.jsp.tagext.BodyTag;
 
 /**
- * All JSF component tags must be nested within a f:view tag. This tag corresponds to the root of the UIComponent tree.
+ * All Faces component tags must be nested within a f:view tag. This tag corresponds to the root of the UIComponent tree.
  * It does not have a Renderer. It exists mainly to provide a guarantee that all faces components reside inside of this
  * tag.
  *
  */
-
 public class ViewTag extends UIComponentELTag {
 
     //

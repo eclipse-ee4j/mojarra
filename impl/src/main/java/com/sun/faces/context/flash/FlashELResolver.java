@@ -52,7 +52,7 @@ import jakarta.faces.context.FlashFactory;
  * <ul>
  * <p/>
  * <p>
- * Consider three JSF views: viewA, viewB, and viewC. The user first views viewA, then clicks a button and is shown
+ * Consider three Faces views: viewA, viewB, and viewC. The user first views viewA, then clicks a button and is shown
  * viewB, where she clicks a button and is shown viewC. If values are stored into the flash during the rendering or
  * postback phases of viewA, they are available to during the rendering phase of viewB, but are not available during the
  * rendering or postback phases of viewC. In other words, values stored into the flash on "this" request are accessible
@@ -67,7 +67,7 @@ import jakarta.faces.context.FlashFactory;
  * <p/>
  * <li>
  * <p>
- * Using an EL Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a JSP page.
+ * Using an Expression Language Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a Jakarta Server Pages page.
  * </p>
  * </li>
  * <p/>

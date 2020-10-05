@@ -26,7 +26,7 @@ interface RuntimeAnnotationHandler {
 
     /**
      * <p>
-     * Apply the {@link java.lang.annotation.Annotation}(s). The act of doing so should affect the JSF runtime in some
+     * Apply the {@link java.lang.annotation.Annotation}(s). The act of doing so should affect the Faces runtime in some
      * fashion (see the spec for the specific annotation types).
      * </p>
      *
