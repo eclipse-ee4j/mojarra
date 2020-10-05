@@ -3168,19 +3168,16 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
     /**
      * <p class="changed_added_2_2">Return the windowId of the window
      * in which the argument form is rendered.</p>
-
-     * @param {optional String|DomNode} node. Determine the nature of
+     *
+     * @param {DomNode} node Determine the nature of
      * the argument.  If not present, search for the windowId within
      * <code>document.forms</code>.  If present and the value is a
      * string, assume the string is a DOM id and get the element with
      * that id and start the search from there.  If present and the
      * value is a DOM element, start the search from there.
-
      * @returns String The windowId of the current window, or null 
      *  if the windowId cannot be determined.
-
      * @throws an error if more than one unique WindowId is found.
-
      * @function jsf.getClientWindow
      */
     jsf.getClientWindow = function(node) {

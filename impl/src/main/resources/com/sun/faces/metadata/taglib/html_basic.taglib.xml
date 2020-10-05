@@ -53,9 +53,7 @@
             "disabled" attribute is specified, do not render the "onclick" element and assign the
             "disabled" attribute a value of true.</div>]]>
         </description>
-        <tag-name>
-            button
-        </tag-name>
+        <tag-name>button</tag-name>
         <component>
             <component-type>jakarta.faces.HtmlOutcomeTargetButton</component-type>
             <renderer-type>jakarta.faces.Button</renderer-type>
@@ -571,9 +569,7 @@
             of the "class" attribute on the "span".  Render any pass-through attributes
             on the "span".</div>]]>
         </description>
-        <tag-name>
-            link
-        </tag-name>
+        <tag-name>link</tag-name>
         <component>
             <component-type>jakarta.faces.HtmlOutcomeTargetLink</component-type>
             <renderer-type>jakarta.faces.Link</renderer-type>
@@ -1182,9 +1178,7 @@
 
            ]]>
         </description>
-        <tag-name>
-            head
-        </tag-name>
+        <tag-name>head</tag-name>
         <component>
             <component-type>jakarta.faces.Output</component-type>
             <renderer-type>jakarta.faces.Head</renderer-type>
@@ -1274,9 +1268,7 @@
 
           ]]>
         </description>
-        <tag-name>
-            body
-        </tag-name>
+        <tag-name>body</tag-name>
         <component>
             <component-type>jakarta.faces.Output</component-type>
             <renderer-type>jakarta.faces.Body</renderer-type>
@@ -6725,9 +6717,7 @@
             
             </div>]]>
         </description>
-        <tag-name>
-            outputStylesheet
-        </tag-name>
+        <tag-name>outputStylesheet</tag-name>
         <component>
             <component-type>jakarta.faces.Output</component-type>
             <renderer-type>jakarta.faces.resource.Stylesheet</renderer-type>
@@ -7145,9 +7135,7 @@
             
             </div>]]>
         </description>
-        <tag-name>
-            outputScript
-        </tag-name>
+        <tag-name>outputScript</tag-name>
         <component>
             <component-type>jakarta.faces.Output</component-type>
             <renderer-type>jakarta.faces.resource.Script</renderer-type>
