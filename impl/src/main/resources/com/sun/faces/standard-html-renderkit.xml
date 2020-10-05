@@ -329,7 +329,7 @@
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -353,7 +353,7 @@
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void actionListener(jakarta.faces.event.ActionEvent)
@@ -1466,7 +1466,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -1491,7 +1491,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -2933,7 +2933,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -2958,7 +2958,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -3320,7 +3320,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -3344,7 +3344,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void actionListener(jakarta.faces.event.ActionEvent)
@@ -3385,7 +3385,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>actionExpression</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -3894,7 +3894,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -3919,7 +3919,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -4620,7 +4620,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -4645,7 +4645,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -4987,7 +4987,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -5012,7 +5012,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -5446,7 +5446,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             See also 
             <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
             and
-            <a href="http://docs.oracle.com/javaee/7/api/javax/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
+            <a href="https://jakarta.ee/specifications/websocket/2.0/apidocs/jakarta/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
             API for an elaborate list of all close codes.
         ]]></description>
       <icon/>
@@ -5826,7 +5826,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -5850,7 +5850,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void actionListener(jakarta.faces.event.ActionEvent)
@@ -6491,7 +6491,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -6515,7 +6515,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void actionListener(jakarta.faces.event.ActionEvent)
@@ -7142,7 +7142,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -7166,7 +7166,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void actionListener(jakarta.faces.event.ActionEvent)
@@ -9290,7 +9290,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -9315,7 +9315,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -10070,7 +10070,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -10095,7 +10095,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -10431,7 +10431,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -10456,7 +10456,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -11225,7 +11225,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -11250,7 +11250,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -12003,7 +12003,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -12028,7 +12028,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -17677,7 +17677,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -17702,7 +17702,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -18419,7 +18419,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -18444,7 +18444,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -19227,7 +19227,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -19252,7 +19252,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -19983,7 +19983,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -20008,7 +20008,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -20729,7 +20729,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -20754,7 +20754,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -21472,7 +21472,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -21497,7 +21497,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -22207,7 +22207,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
@@ -22232,7 +22232,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 void valueChange(jakarta.faces.event.ValueChangeEvent)
@@ -23259,9 +23259,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
        their user agents.</p>
 
        <p>Compliant implementations must only generate JavaScript in the
-       <a href="jakarta.faces.Commandjavax.faces.Link.html">
-       <code>jakarta.faces.Link</code></a> and <a
-       href="jakarta.faces.Commandjavax.faces.Button.html"><code>jakarta.faces.Button</code></a>
+       <a href="jakarta.faces.commandjakarta.faces.Link.html"><code>jakarta.faces.Link</code></a> and 
+       <a href="jakarta.faces.commandjakarta.faces.Button.html"><code>jakarta.faces.Button</code></a>
        Renderers for the <code>jakarta.faces.Command</code></a> component.
        The generation of JavaScript in any other Renderer in the
        HTML_BASIC renderkit is not permitted.  However, any JavaScript
@@ -23425,9 +23424,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             ]]></description>
       <component-family>jakarta.faces.Command</component-family>
       <renderer-type>jakarta.faces.Button</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.ButtonRenderer
-    </renderer-class>
+      <renderer-class>com.sun.faces.renderkit.html_basic.ButtonRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -24017,9 +24014,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 ]]></description>
       <component-family>jakarta.faces.Command</component-family>
       <renderer-type>jakarta.faces.Link</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.CommandLinkRenderer
-    </renderer-class>
+      <renderer-class>com.sun.faces.renderkit.html_basic.CommandLinkRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -24484,9 +24479,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
                 ]]></description>
       <component-family>jakarta.faces.Command</component-family>
       <renderer-type>jakarta.faces.Script</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.CommandScriptRenderer
-    </renderer-class>
+      <renderer-class>com.sun.faces.renderkit.html_basic.CommandScriptRenderer</renderer-class>
 
       <attribute>
         <description><![CDATA[
@@ -24714,9 +24707,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             ]]></description>
       <component-family>jakarta.faces.Data</component-family>
       <renderer-type>jakarta.faces.Table</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.TableRenderer
-    </renderer-class>
+      <renderer-class>com.sun.faces.renderkit.html_basic.TableRenderer</renderer-class>
       <facet>
         <facet-name>caption</facet-name>
       </facet>
@@ -25264,9 +25255,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       ]]></description>
       <component-family>jakarta.faces.Form</component-family>
       <renderer-type>jakarta.faces.Form</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.FormRenderer
-    </renderer-class>
+      <renderer-class>com.sun.faces.renderkit.html_basic.FormRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -25600,9 +25589,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
   <ul>
 
-    <p>If the "name" attribute is present, execute algorithm <a
-    href="jakarta.faces.Outputjavax.faces.resource.Script.html#ResourceCommonGetResource">Common Algorithm for Obtaining A Resource to Render</a> to obtain a <code>Resource</code> instance.  Call
-    <code>Resource.getRequestPath()</code> and output the result as the
+    <p>If the "name" attribute is present, execute algorithm 
+    <a href="jakarta.faces.Outputjakarta.faces.resource.Script.html#ResourceCommonGetResource">Common Algorithm for Obtaining A Resource to Render</a> 
+    to obtain a <code>Resource</code> instance.  
+    Call <code>Resource.getRequestPath()</code> and output the result as the
     value of the "src" attribute on the rendered markup.</p>
 
     <p>Otherwise, if the "url" attribute is present, treat its value as
@@ -25625,9 +25615,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 </div>]]></description>
       <component-family>jakarta.faces.Graphic</component-family>
       <renderer-type>jakarta.faces.Image</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.ImageRenderer
-    </renderer-class>
+      <renderer-class>com.sun.faces.renderkit.html_basic.ImageRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -26004,9 +25992,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 ]]></description>
       <component-family>jakarta.faces.Panel</component-family>
       <renderer-type>jakarta.faces.passthrough.Element</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.PassthroughRenderer
-    </renderer-class>
+      <renderer-class>com.sun.faces.renderkit.html_basic.PassthroughRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -26175,7 +26161,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       must be an instance of <code>EditableValueHolder</code>, and
       return.  Otherwise, obtain the "request" property from the
       <code>ExternalContext</code> and cast it to
-      <code>javax.servlet.http.HttpServletRequest</code>.  Call
+      <code>jakarta.servlet.http.HttpServletRequest</code>.  Call
       <code>getParts()</code> on the httpServletRequest. Iterate over
       the parts.  If the "name" property of the current part is equal to
       the "clientId", pass the current part to the
@@ -26218,9 +26204,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 </div> ]]></description>
       <component-family>jakarta.faces.Input</component-family>
       <renderer-type>jakarta.faces.File</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.FileRenderer
-    </renderer-class>
+      <renderer-class>com.sun.faces.renderkit.html_basic.FileRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -26654,11 +26638,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <p>Decode Behavior</p>
 
       <ul>
-
-      <p>See the decode description for the <a
-      href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
-      Text</a> renderer.</p>
-
+          <p>See the decode description for the <a href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input Text</a> renderer.</p>
       </ul>
 
       <p>Encode Behavior</p>
@@ -26685,11 +26665,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <p>Decode Behavior</p>
 
       <ul>
-
-      <p>See the decode description for the <a
-      href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
-      Text</a> renderer.</p>
-
+          <p>See the decode description for the <a href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input Text</a> renderer.</p>
       </ul>
 
       <p>Encode Behavior</p>
@@ -27624,7 +27600,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <ul>
 
       <p>See the encode description for the <a
-      href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
+      href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input
       Text</a> renderer.</p>
 
       </ul>
@@ -29639,7 +29615,7 @@ changed_modified_2_1">an HTML "a" anchor element.  The value of the
 component is rendered as the anchor text and the outcome of the
 component is used to determine the target URL rendered in the "href"
 attribute.  Execute the <a
-href="jakarta.faces.OutcomeTargetjavax.faces.Button.html#UIOutcomeTargetGetEncodedTargetUrl">Algorithm
+href="jakarta.faces.OutcomeTargetjakarta.faces.Button.html#UIOutcomeTargetGetEncodedTargetUrl">Algorithm
 to obtain the URL to which the user-agent should issue a GET request
 when clicked</a>.</span></p>
 
@@ -32124,7 +32100,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectMany Components"</a> section.</p>
 
       </ul>
@@ -32188,7 +32164,7 @@ this application, and passing the result through the
       Expression Language coercion rules, before comparing the values.
       If the value of the enclosing UISelectMany matches the current
       value, render "checked" as the value of the "checked" attribute.
-      See the <a href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+      See the <a href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
       elements" </a> specification for <code>ListboxRenderer</code> for
       more detail on how to render the "option" elements in this
       renderer.  <span class="changed_modified_2_0_rev_a">Note that this
@@ -32714,7 +32690,7 @@ this application, and passing the result through the
         <code>setSubmittedValue()</code> with it.</p>
 
         <p class="changed_modified_2_0">Please check the javadoc for <a
-        href="../../javadocs/javax/faces/component/UISelectMany.html#getConvertedvalue">UISelectMany.getConvertedValue()</a>
+        href="../../javadocs/jakarta/faces/component/UISelectMany.html#getConvertedvalue">UISelectMany.getConvertedValue()</a>
         for additional requirements for renderers that render this kind
         of component.</p>
 
@@ -33284,7 +33260,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectMany Components"</a> section.</p>
 
       </ul>
@@ -33300,7 +33276,7 @@ this application, and passing the result through the
       to be rendered is a UISelectMany, render "multiple" as the value of
       the "multiple" attribute.  Render "1" as the value of the "size"
       attribute.  See the <a
-      href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
       elements" </a> specification for <code>ListboxRenderer</code> for
       more detail on how to render the "option" elements in this
       renderer.</p>
@@ -33742,7 +33718,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectOne Components"</a> section.</p>
 
       </ul>
@@ -33758,7 +33734,7 @@ this application, and passing the result through the
       the "multiple" attribute.  If the "size" attribute is specified,
       render its value as the value of the "size" attribute.  Otherwise
       use the number of items as the value of the "size" attribute.  See
-      the <a href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+      the <a href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
       elements" </a> specification for <code>ListboxRenderer</code> for
       more detail on how to render the "option" elements in this
       renderer.</p>
@@ -34195,7 +34171,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectOne Components"</a> section.</p>
 
       </ul>
@@ -34211,7 +34187,7 @@ this application, and passing the result through the
       to be rendered is a UISelectMany, render "true" as the value of
       the "multiple" attribute.  Use the number of items as the value of
       the "size" attribute.  See the <a
-      href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering
       the option elements" </a> specification for
       <code>ListboxRenderer</code> for more detail on how to render the
       "option" elements in this renderer.</p>
@@ -34640,7 +34616,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectOne Components"</a> section.</p>
 
       </ul>
@@ -34682,7 +34658,7 @@ this application, and passing the result through the
       child is equal to the value of the parent UISelectOne, render an
       appropriate HTML boolean value indicating "checked" for the
       enclosing "input".  See the <a
-      href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option elements" </a>
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option elements" </a>
       specification for <code>ListboxRenderer</code> for more detail on
       how to render the "option" elements in this renderer.  <span
       class="changed_modified_2_0_rev_a">Note that this renderer does
@@ -35320,20 +35296,20 @@ Otherwise, get the facet whose name is "facetName".  If found call
 
 <p class="changed_modified_2_0">The implementation of this renderer must
 have a <a target="_"
-href="../../javadocs/javax/faces/event/ListenerFor.html"><code>@ListenerFor</code></a>
+href="../../javadocs/jakarta/faces/event/ListenerFor.html"><code>@ListenerFor</code></a>
 annotation attached to it, at the class level, declaring <a target="_"
-href="../../javadocs/javax/faces/event/PostAddToViewEvent.html"><code>PostAddToViewEvent.class</code></a>
+href="../../javadocs/jakarta/faces/event/PostAddToViewEvent.html"><code>PostAddToViewEvent.class</code></a>
 as the value of the <code>systemEventClass</code> attribute.  The
 presence of this annotation on a renderer implies the renderer
 implements <a target="_"
-href="../../javadocs/javax/faces/event/ComponentSystemEventListener.html"><code>ComponentSystemEventListener</code></a>,
+href="../../javadocs/jakarta/faces/event/ComponentSystemEventListener.html"><code>ComponentSystemEventListener</code></a>,
 which this renderer must do.  The implementation of
 <code>processEvent()</code> must extract the <code>UIComponent</code>
 from the argument event and look for the presence of the key
 "<code>target</code>" in the component's attribute <code>Map</code>.  If
 and only if such a key is present, the implementation of
 <code>processEvent()</code> must pass the component to <a target="_"
-href="../../javadocs/javax/faces/component/UIViewRoot.html#addComponentResource(jakarta.faces.context.FacesContext,%20javax.faces.component.UIComponent)"><code>UIViewRoot.addComponentResource()</code></a>.</p>
+href="../../javadocs/jakarta/faces/component/UIViewRoot.html#addComponentResource(jakarta.faces.context.FacesContext,%20jakarta.faces.component.UIComponent)"><code>UIViewRoot.addComponentResource()</code></a>.</p>
 
       <p class="changed_modified_2_0">Decode Behavior</p>
 
@@ -35538,7 +35514,7 @@ changed_modified_2_1 changed_modified_2_2">Render</span> the markup for a
        <code>getRendersChildren()</code>.</p>
 
         <p>For <code>encodeEnd()</code>, use the algorithm <a
-        href="jakarta.faces.Outputjavax.faces.resource.Script.html#ResourceCommonGetResource">Common
+        href="jakarta.faces.Outputjakarta.faces.resource.Script.html#ResourceCommonGetResource">Common
         Algorithm for Obtaining A Resource to Render</a> to obtain a
         reference to the <code>Resource</code> to be encoded.</p>
 
@@ -35553,16 +35529,16 @@ Otherwise, do not render a media attribute.</span></p>
 
 
 <p>The implementation of this renderer must have a <a target="_"
-href="../../javadocs/javax/faces/event/ListenerFor.html"><code>@ListenerFor</code></a>
+href="../../javadocs/jakarta/faces/event/ListenerFor.html"><code>@ListenerFor</code></a>
 annotation attached to it, at the class level, declaring <a target="_"
-href="../../javadocs/javax/faces/event/PostAddToViewEvent.html"><code>PostAddToViewEvent.class</code></a>
+href="../../javadocs/jakarta/faces/event/PostAddToViewEvent.html"><code>PostAddToViewEvent.class</code></a>
 as the value of the <code>systemEventClass</code> attribute.  The presence of
 this annotation on a renderer implies the renderer implements <a target="_"
-href="../../javadocs/javax/faces/event/ComponentSystemEventListener.html"><code>ComponentSystemEventListener</code></a>,
+href="../../javadocs/jakarta/faces/event/ComponentSystemEventListener.html"><code>ComponentSystemEventListener</code></a>,
 which this renderer must do.  The implementation of
 <code>processEvent()</code> must extract the <code>UIComponent</code>
 from the argument event pass it to <a target="_"
-href="../../javadocs/javax/faces/component/UIViewRoot.html#addComponentResource(jakarta.faces.context.FacesContext,%20javax.faces.component.UIComponent,%20java.lang.String)"><code>UIViewRoot.addComponentResource()</code></a>, specifying
+href="../../javadocs/jakarta/faces/component/UIViewRoot.html#addComponentResource(jakarta.faces.context.FacesContext,%20jakarta.faces.component.UIComponent,%20java.lang.String)"><code>UIViewRoot.addComponentResource()</code></a>, specifying
 the literal string "<code>head</code>" as the last argument.</p>
 
 <p>The stylsheet renderer must ensure that any stylesheets are included in the &lt;head&gt; of the document. 

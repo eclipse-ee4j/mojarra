@@ -51,8 +51,8 @@
             }
         }
         </h:outputScript>
-        <c:set var="e" value="#{requestScope['javax.servlet.error.exception']}" scope="request" />
-        <c:set var="uri" value="#{requestScope['javax.servlet.error.request_uri']}" scope="request" />
+        <c:set var="e" value="#{requestScope['jakarta.servlet.error.exception']}" scope="request" />
+        <c:set var="uri" value="#{requestScope['jakarta.servlet.error.request_uri']}" scope="request" />
         <c:set var="errorView" value="#{requestScope['com.sun.faces.error.view']}" scope="request" />
             <div id="error" style="border: 1px solid #900;">
                 <span style="text-decoration: none; color: #339;">URI: #{uri}</span>

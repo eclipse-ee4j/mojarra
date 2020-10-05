@@ -3011,7 +3011,7 @@
             <ul>
             
             <p>If the "name" attribute is present, execute algorithm <a
-            href="jakarta.faces.Outputjavax.faces.resource.Script.html#ResourceCommonGetResource">Common Algorithm for Obtaining A Resource to Render</a> to obtain a <code>Resource</code> instance.  Call
+            href="jakarta.faces.Outputjakarta.faces.resource.Script.html#ResourceCommonGetResource">Common Algorithm for Obtaining A Resource to Render</a> to obtain a <code>Resource</code> instance.  Call
             <code>Resource.getRequestPath()</code> and output the result as the
             value of the "src" attribute on the rendered markup.</p>
             
@@ -3572,7 +3572,7 @@
             must be an instance of <code>EditableValueHolder</code>, and
             return.  Otherwise, obtain the "request" property from the
             <code>ExternalContext</code> and cast it to
-            <code>javax.servlet.http.HttpServletRequest</code>.  Call
+            <code>jakarta.servlet.http.HttpServletRequest</code>.  Call
             <code>getParts()</code> on the httpServletRequest. Iterate over
             the parts.  If the "name" property of the current part is equal to
             the "clientId", pass the current part to the
@@ -4375,7 +4375,7 @@
             <ul>
             
             <p>See the decode description for the <a
-            href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
+            href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input
             Text</a> renderer.</p>
             
             </ul>
@@ -4636,7 +4636,7 @@
             <ul>
             
             <p>See the decode description for the <a
-            href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
+            href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input
             Text</a> renderer.</p>
             
             </ul>
@@ -6222,7 +6222,7 @@
             <ul>
             
             <p>See the encode description for the <a
-            href="jakarta.faces.Inputjavax.faces.Text.html#encode">Input
+            href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input
             Text</a> renderer.</p>
             
             </ul>
@@ -11186,7 +11186,7 @@
             <ul>
             
             <p>See the <a
-            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
             Behavior for UISelectMany Components"</a> section.</p>
             
             </ul>
@@ -11250,7 +11250,7 @@
             Expression Language coercion rules, before comparing the values.
             If the value of the enclosing UISelectMany matches the current
             value, render "checked" as the value of the "checked" attribute.
-            See the <a href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+            See the <a href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
             elements" </a> specification for <code>ListboxRenderer</code> for
             more detail on how to render the "option" elements in this
             renderer.  <span class="changed_modified_2_0_rev_a">Note that this
@@ -13030,7 +13030,7 @@
             <ul>
             
             <p>See the <a
-            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
             Behavior for UISelectMany Components"</a> section.</p>
             
             </ul>
@@ -13046,7 +13046,7 @@
             to be rendered is a UISelectMany, render "multiple" as the value of
             the "multiple" attribute.  Render "1" as the value of the "size"
             attribute.  See the <a
-            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+            href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
             elements" </a> specification for <code>ListboxRenderer</code> for
             more detail on how to render the "option" elements in this
             renderer.</p>
@@ -13814,7 +13814,7 @@
             <ul>
             
             <p>See the <a
-            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
             Behavior for UISelectOne Components"</a> section.</p>
             
             </ul>
@@ -13830,7 +13830,7 @@
             the "multiple" attribute.  If the "size" attribute is specified,
             render its value as the value of the "size" attribute.  Otherwise
             use the number of items as the value of the "size" attribute.  See
-            the <a href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+            the <a href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
             elements" </a> specification for <code>ListboxRenderer</code> for
             more detail on how to render the "option" elements in this
             renderer.</p>
@@ -14594,7 +14594,7 @@
             <ul>
             
             <p>See the <a
-            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
             Behavior for UISelectOne Components"</a> section.</p>
             
             </ul>
@@ -14610,7 +14610,7 @@
             to be rendered is a UISelectMany, render "true" as the value of
             the "multiple" attribute.  Use the number of items as the value of
             the "size" attribute.  See the <a
-            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering
+            href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering
             the option elements" </a> specification for
             <code>ListboxRenderer</code> for more detail on how to render the
             "option" elements in this renderer.</p>
@@ -15359,7 +15359,7 @@
             <ul>
             
             <p>See the <a
-            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Decode
+            href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
             Behavior for UISelectOne Components"</a> section.</p>
             
             </ul>
@@ -15401,7 +15401,7 @@
             child is equal to the value of the parent UISelectOne, render an
             appropriate HTML boolean value indicating "checked" for the
             enclosing "input".  See the <a
-            href="jakarta.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option elements" </a>
+            href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option elements" </a>
             specification for <code>ListboxRenderer</code> for more detail on
             how to render the "option" elements in this renderer.  <span
             class="changed_modified_2_0_rev_a">Note that this renderer does

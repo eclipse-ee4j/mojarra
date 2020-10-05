@@ -162,7 +162,7 @@ incorrect uri, and the correct uri, declared here.</p>
             <description><![CDATA[
                 Name of the exported scoped variable for the
                 status of the iteration. Object exported is of type
-                javax.servlet.jsp.jstl.core.LoopTagStatus. This scoped variable
+                jakarta.servlet.jsp.jstl.core.LoopTagStatus. This scoped variable
                 has nested
                 visibility.
             ]]></description>

@@ -2020,7 +2020,7 @@ of POJOs.
             values</em>.</p>
 
             <p>Obtain a reference to
-            a <code>javax.validation.Validator</code> instance using the
+            a <code>jakarta.validation.Validator</code> instance using the
             same steps described in the javadoc
             for <code>jakarta.faces.validator.BeanValidator.validate()</code>.
             Let the instance be called <em>beanValidator</em> for
@@ -2613,7 +2613,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             <p class="changed_added_2_0"><span
             class="changed_modified_2_0_rev_a changed_modified_2_2">Used</span> inside of the
             metadata facet of a view, this tag causes a <a target="_"
-            href="../../../javadocs/javax/faces/component/UIViewParameter.html">UIViewParameter</a>
+            href="../../../javadocs/jakarta/faces/component/UIViewParameter.html">UIViewParameter</a>
             to be attached as metadata for the current view.  Because
             <code>UIViewParameter</code> extends <code>UIInput</code>
             all of the attributes and nested child content for any
@@ -2898,7 +2898,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
                     See also 
                     <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
                     and
-                    <a href="http://docs.oracle.com/javaee/7/api/javax/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
+                    <a href="https://jakarta.ee/specifications/websocket/2.0/apidocs/jakarta/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
                     API for an elaborate list of all close codes.
                 </p>
             ]]></description>
