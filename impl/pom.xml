@@ -399,7 +399,7 @@
                     <targetJdk>1.8</targetJdk>
                     <excludes>
                         <exclude>com/sun/faces/taglib/html_basic/**/*.java</exclude>
-                        <exclude>javax/faces/component/html/**/*.java</exclude>
+                        <exclude>jakarta/faces/component/html/**/*.java</exclude>
                     </excludes>
                     <rulesets>
                         <ruleset>${project.build.directory}/../src/main/pmd/ruleset.xml</ruleset>
@@ -529,7 +529,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.9.1</version>
                 <configuration>
-                    <includes>javax/**/*.java</includes>
+                    <includes>jakarta/**/*.java</includes>
                     <configLocation>${project.build.directory}/../checkstyle-config.xml</configLocation>
                 </configuration>
                 <reportSets>
@@ -553,7 +553,7 @@
                     <targetJdk>1.8</targetJdk>
                     <excludes>
                         <exclude>com/sun/faces/taglib/html_basic/**/*.java</exclude>
-                        <exclude>javax/faces/component/html/**/*.java</exclude>
+                        <exclude>jakarta/faces/component/html/**/*.java</exclude>
                     </excludes>
                     <rulesets>
                         <ruleset>${project.build.directory}/../src/main/pmd/ruleset.xml</ruleset>

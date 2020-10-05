@@ -3412,7 +3412,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
          * <code>CloseEvent</code> itself. Note that this will also be invoked on errors and that you can inspect the
          * close reason code if an error occurred and which one (i.e. when the code is not 1000). See also
          * <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> and
-         * <a href="http://docs.oracle.com/javaee/7/api/javax/websocket/CloseReason.CloseCodes.html">CloseCodes</a> API
+         * <a href="https://jakarta.ee/specifications/websocket/2.0/apidocs/jakarta/websocket/CloseReason.CloseCodes.html">CloseCodes</a> API
          * for an elaborate list.
          * @param {Object} behaviors Client behavior functions to be invoked when specific message is received.
          * @param {boolean} autoconnect Whether or not to automatically connect the socket. Defaults to <code>false</code>.

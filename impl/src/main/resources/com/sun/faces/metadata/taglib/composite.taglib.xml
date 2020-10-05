@@ -47,7 +47,7 @@
 
 <h2>Creating a Composite Component</h2>
 
-  <p>A composite component is declared by creating a Facelets2 file
+  <p>A composite component is declared by creating a Facelets file
   inside of a resource library.  (See section JSF.2.6 of the
   specification prose document for more information about resource
   libraries.)  A composite component must reside within a resource
@@ -477,7 +477,7 @@ component tag</em> in the <em>using page</em>.  If the value of the
 &#8220;action&#8221;, &#8220;actionListener&#8221;,
 &#8220;validator&#8221;, or &#8220;valueChangeListener&#8221;, the
 action described in <a target="_"
-href="../../../javadocs/javax/faces/application/ViewHandler.html#retargetMethodExpressions(jakarta.faces.context.FacesContext,%20javax.faces.component.UIComponent)">ViewHandler.retargetMethodExpressions()</a>
+href="../../../javadocs/jakarta/faces/application/ViewHandler.html#retargetMethodExpressions(jakarta.faces.context.FacesContext,%20jakarta.faces.component.UIComponent)">ViewHandler.retargetMethodExpressions()</a>
 must be taken to handle the attribute.  In these cases, the
 <code>method-signature</code> attribute, if present, must be ignored as
 its value is derived as described in
