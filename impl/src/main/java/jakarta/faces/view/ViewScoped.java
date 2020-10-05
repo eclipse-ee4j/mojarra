@@ -31,7 +31,7 @@ import jakarta.enterprise.context.NormalScope;
  * jakarta.inject.Named} is found on a class, the runtime must place the bean in a CDI scope such that it remains active
  * as long as {@link jakarta.faces.application.NavigationHandler#handleNavigation} does not cause a navigation to a view
  * with a viewId that is different than the viewId of the current view. Any injections and notifications required by CDI
- * and the Java EE platform must occur as usual at the expected time.
+ * and the Jakarta EE platform must occur as usual at the expected time.
  * </p>
  *
  * <div class="changed_added_2_2">

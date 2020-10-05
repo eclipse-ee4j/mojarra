@@ -40,14 +40,14 @@ public class ELContextListenerImpl implements ELContextListener {
             return;
         }
         ELContext source = (ELContext) ece.getSource();
-        // Register FacesContext with JSP
+        // Register FacesContext with Jakarta Server Pages
         source.putContext(FacesContext.class, context);
         ExpressionFactory exFactory = ELUtils.getDefaultExpressionFactory(context);
         if (null != exFactory) {
             source.putContext(ExpressionFactory.class, exFactory);
         }
 
-        // dispatch the event to any JSF applications interested in
+        // dispatch the event to any Faces applications interested in
         // the event.
         ELContextListener[] listeners = context.getApplication().getELContextListeners();
         if (listeners == null) {

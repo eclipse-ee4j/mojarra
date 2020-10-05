@@ -36,7 +36,7 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
  * <p>
- * This class is used to register the JSF <code>ELResolver</code> stack with the JSP container.
+ * This class is used to register the Faces <code>ELResolver</code> stack with the Jakarta Server Pages container.
  * </p>
  *
  * <p>

@@ -18,9 +18,9 @@
  */
 
 /**
- @project JSF JavaScript Library
+ @project Faces JavaScript Library
  @version 2.2
- @description This is the standard implementation of the JSF JavaScript Library.
+ @description This is the standard implementation of the Faces JavaScript Library.
  */
 
 // Detect if this is already loaded, and if loaded, if it's a higher version
@@ -2748,9 +2748,9 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * unique within this view, but must not be included in the
              * view state.  This requirement is simply to satisfy XML
              * correctness in parity with what is done in the
-             * corresponding non-partial JSF view.  Locate and update
+             * corresponding non-partial Faces view.  Locate and update
              * the <code>jakarta.faces.ViewState</code> value for all
-             * JSF forms covered in the <code>render</code> target
+             * Faces forms covered in the <code>render</code> target
              * list whose ID starts with the same 
              * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; value.</li>
 
@@ -2775,9 +2775,9 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * unique within this view, but must not be included in the
              * view state.  This requirement is simply to satisfy XML
              * correctness in parity with what is done in the
-             * corresponding non-partial JSF view.  Locate and update
+             * corresponding non-partial Faces view.  Locate and update
              * the <code>jakarta.faces.ClientWindow</code> value for all
-             * JSF forms covered in the <code>render</code> target
+             * Faces forms covered in the <code>render</code> target
              * list whose ID starts with the same 
              * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; value.</li>
 

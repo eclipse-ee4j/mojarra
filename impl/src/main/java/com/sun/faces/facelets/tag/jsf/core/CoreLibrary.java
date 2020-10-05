@@ -37,7 +37,7 @@ import jakarta.faces.validator.RegexValidator;
 import jakarta.faces.validator.RequiredValidator;
 
 /**
- * For Tag details, see JSF Core
+ * For Tag details, see Faces Core
  * <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/tld-summary.html">taglib
  * documentation</a>.
  *

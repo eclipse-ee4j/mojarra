@@ -20,18 +20,18 @@ import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
 
 /**
- * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.
+ * Maintains an ordered composite list of child <code>ELResolver for Faces</code>.
  *
  */
 public abstract class FacesCompositeELResolver extends CompositeELResolver {
 
     /**
      * <p>
-     * <b>JSP</b> indicates this CompositeELResolver instance is the JSP chain, specified in section 5.6.1 of the spec.
+     * <b>JSP</b> indicates this CompositeELResolver instance is the Jakarta Server Pages chain, specified in section 5.6.1 of the spec.
      * </p>
      *
      * <p>
-     * <b>Faces</b> indicates this CompositeELResolver instance is the JSF chain, specified in section 5.6.2 of the spec.
+     * <b>Faces</b> indicates this CompositeELResolver instance is the Faces chain, specified in section 5.6.2 of the spec.
      * </p>
      */
     public enum ELResolverChainType {

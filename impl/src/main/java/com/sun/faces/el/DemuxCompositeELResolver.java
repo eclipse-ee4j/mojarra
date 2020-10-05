@@ -25,7 +25,7 @@ import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 
 /**
- * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.
+ * Maintains an ordered composite list of child <code>ELResolver for Faces</code>.
  *
  */
 public class DemuxCompositeELResolver extends FacesCompositeELResolver {

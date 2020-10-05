@@ -49,7 +49,7 @@ import jakarta.faces.flow.builder.FlowDefinition;
  *  Use AfterBeanDiscovery to add a custom Context.  This is necessary
  *  because it was the only way I found that actually worked that let me
  *  pass in the results of the scanning into something I could invoke in
- *  when processing the JSF PostConstructApplicationEvent.
+ *  when processing the Faces PostConstructApplicationEvent.
  *
  *  Use ProcessBean to build up a tuple for each bean annotated with
  *  @FlowDefinition { definingClass, flow-id, defining-document-id }.  A
@@ -57,7 +57,6 @@ import jakarta.faces.flow.builder.FlowDefinition;
  *  FlowDiscoveryCDIContext.
  *
  */
-
 public class FlowDiscoveryCDIExtension implements Extension {
 
     // Log instance for this class

@@ -54,7 +54,7 @@ import jakarta.servlet.http.HttpSession;
  * </p>
  *
  * <p>
- * Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit JSF needs.
+ * Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit Faces needs.
  * </p>
  */
 public final class ByteArrayGuard {
@@ -169,7 +169,7 @@ public final class ByteArrayGuard {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalStateException
                 | IllegalBlockSizeException | BadPaddingException e) {
             System.err.println("ERROR: Decrypting:" + e.getCause());
-            return null; // Signal to JSF runtime
+            return null; // Signal to Faces runtime
         }
     }
 

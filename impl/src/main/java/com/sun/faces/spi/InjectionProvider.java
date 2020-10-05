@@ -18,8 +18,8 @@ package com.sun.faces.spi;
 
 /**
  * <p>
- * This interface defines an integration point for Java EE vendors. Each vendor will need to provide an implementation
- * of this interface which will provide the JSF implementation the necessary hooks to perform resource injection.
+ * This interface defines an integration point for Jakarta EE vendors. Each vendor will need to provide an implementation
+ * of this interface which will provide the Faces implementation the necessary hooks to perform resource injection.
  * </p>
  *
  * <p>

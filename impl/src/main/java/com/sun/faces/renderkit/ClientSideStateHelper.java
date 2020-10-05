@@ -272,7 +272,7 @@ public class ClientSideStateHelper extends StateHelper {
             throw new FacesException(cnfe);
         } catch (InvalidClassException ice) {
             /*
-             * Thrown when the JSF runtime is trying to deserialize a client-side state that has been saved with a previous version
+             * Thrown when the Faces runtime is trying to deserialize a client-side state that has been saved with a previous version
              * of Mojarra. Instead of blowing up, force a ViewExpiredException.
              */
             return null;

@@ -874,7 +874,7 @@
             return (a()==false) ? false : b();</code></p>
             
             <p>where #USER_FUNCTION# is the user's JavaScript and
-            #JSF_FUNCTION# is the JavaScript rendered by JSF.  The choice
+            #JSF_FUNCTION# is the JavaScript rendered by Faces.  The choice
             function should operate such that if the user's JavaScript returns
             true, then the rendered JavaScript will also execute.</p>
             

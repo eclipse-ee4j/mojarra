@@ -1296,7 +1296,7 @@ for <code>@NamedEvent</code>.</p>
             <description><![CDATA[
 
 <p class="changed_added_2_0">evaluates to a boolean that will
-determine if the rendered markup for the item receives normal JSF HTML
+determine if the rendered markup for the item receives normal Faces HTML
 escaping or not.  <span class="changed_added_2_2">If not specified, the
 runtime must behave as if the value were <code>true</code>.</span></p>
 
@@ -1986,7 +1986,7 @@ of POJOs.
             validations for this class-level validation have passed.</p>
 
             <p>Class-level bean validation must operate on a
-            sufficiently populated bean instance.  This differs from JSF
+            sufficiently populated bean instance.  This differs from Faces
             field-level validation, which prevents beans from being
             populated with invalid values.  To accomodate this
             difference, the <em>candidate bean</em> must be copied,
@@ -2354,8 +2354,8 @@ public class BackingBean implements PasswordHolder, Cloneable {
     <tag>
         <description><![CDATA[
             <p class="changed_deleted_2_0_rev_a">The use of
-            this element has been deprecated in Facelets for JSF 2.0 and
-            beyond. Create and register a child UIOutput component
+            this element has been deprecated in Facelets for Faces. 
+            Create and register a child UIOutput component
             associated with the closest parent UIComponent custom
             action, which renders nested body content.</p>
         ]]></description>
@@ -2507,7 +2507,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
         <description>
             <p class="changed_added_2_2">This action component specifies
             an application-specific command (or action), using an EL
-            method expression, to be invoked during one of the JSF
+            method expression, to be invoked during one of the Faces
             lifecycle phases, by default <em>Invoke Application</em>.</p>
 
         </description>

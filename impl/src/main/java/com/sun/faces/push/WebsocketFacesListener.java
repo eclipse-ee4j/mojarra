@@ -36,7 +36,7 @@ import jakarta.faces.push.Push;
 
 /**
  * <p class="changed_added_2_3">
- * This JSF listener for {@link UIViewRoot} ensures that the necessary JavaScript code to open or close the
+ * This Faces listener for {@link UIViewRoot} ensures that the necessary JavaScript code to open or close the
  * <code>WebSocket</code> is properly rendered depending on <code>rendered</code> and <code>connected</code> attributes.
  *
  * @author Bauke Scholtz

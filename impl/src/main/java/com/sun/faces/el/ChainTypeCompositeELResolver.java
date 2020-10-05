@@ -28,7 +28,7 @@ import jakarta.el.ELResolver;
 import jakarta.faces.context.FacesContext;
 
 /**
- * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.
+ * Maintains an ordered composite list of child <code>ELResolver for Faces</code>.
  *
  */
 public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver {

@@ -40,7 +40,7 @@ import jakarta.faces.event.SystemEvent;
 
 /**
  * <p>
- * The default implementation of {@link ExceptionHandler} for JSF 2.0.
+ * The default implementation of {@link ExceptionHandler} for Faces.
  * </p>
  *
  * <p>

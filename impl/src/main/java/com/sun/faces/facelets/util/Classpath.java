@@ -41,7 +41,7 @@ public final class Classpath {
 
     // discard any urls that begin with rar: and sar:
     // or end with their counterparts
-    // as these should not be looked at for JSF related content.
+    // as these should not be looked at for Faces related content.
     private static final String[] PREFIXES_TO_EXCLUDE = { "rar:", "sar:" };
     private static final String[] EXTENSIONS_TO_EXCLUDE = { ".rar", ".sar" };
 

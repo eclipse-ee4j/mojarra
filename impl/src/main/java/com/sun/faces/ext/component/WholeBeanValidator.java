@@ -95,7 +95,7 @@ class WholeBeanValidator implements Validator<Object> {
                 copyBeanAndPopulateWithCandidateValues(context, wholeBeanVE, wholeBean, copierType, validationCandidate), component.getValidationGroupsArray(),
                 wholeBeanVE);
 
-        // If there are any violations, transform them into a JSF validator exception
+        // If there are any violations, transform them into a Faces validator exception
         if (violations != null && !violations.isEmpty()) {
             ValidatorException toThrow;
 

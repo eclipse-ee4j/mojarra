@@ -64,9 +64,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
@@ -195,7 +192,7 @@ public class Util {
 
     /**
      * <p>
-     * Factory method for creating the varius JSF listener instances that may be referenced by <code>type</code> or
+     * Factory method for creating the various Faces listener instances that may be referenced by <code>type</code> or
      * <code>binding</code>.
      * </p>
      * <p>
@@ -1074,7 +1071,7 @@ public class Util {
      * Not to be confused with {@link Util#isExactMapped(String)}, which checks if a string representing a mapping, not a
      * resource, is an exact mapping.
      * <p>
-     * This should be replaced by the Servlet 4 mapping API when/if that becomes available and JSF/Mojarra can depend on it.
+     * This should be replaced by the Servlet 4 mapping API when/if that becomes available and Faces/Mojarra can depend on it.
      *
      * @param viewId the view id to test
      * @return true if the FacesServlet is exact mapped to the given viewId, false otherwise
@@ -1089,7 +1086,7 @@ public class Util {
      * Not to be confused with {@link Util#isExactMapped(String)}, which checks if a string representing a mapping, not a
      * resource, is an exact mapping.
      * <p>
-     * This should be replaced by the Servlet 4 mapping API when/if that becomes available and JSF/Mojarra can depend on it.
+     * This should be replaced by the Servlet 4 mapping API when/if that becomes available and Faces/Mojarra can depend on it.
      *
      * @param externalContext the external context for this request
      * @param resource the resource to test
@@ -1105,7 +1102,7 @@ public class Util {
     }
 
     public static String getFirstWildCardMappingToFacesServlet(ExternalContext externalContext) {
-        // If needed, cache this after initialization of JSF
+        // If needed, cache this after initialization of Faces
         Object context = externalContext.getContext();
         if (context instanceof ServletContext) {
             return getFacesServletMappings((ServletContext) context).stream().filter(mapping -> mapping.contains("*")).findFirst().orElse(null);
