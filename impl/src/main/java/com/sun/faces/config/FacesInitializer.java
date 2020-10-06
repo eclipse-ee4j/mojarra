@@ -18,6 +18,7 @@ package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED;
+import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.TRUE;
 
@@ -159,7 +160,13 @@ public class FacesInitializer implements ServletContainerInitializer {
     private void handleMappingConcerns(ServletContext servletContext) throws ServletException {
         ServletRegistration existingFacesServletRegistration = getExistingFacesServletRegistration(servletContext);
         if (existingFacesServletRegistration != null) {
-            // FacesServlet has already been defined, so we're not going to add additional mappings;
+            // FacesServlet has already been defined, so we're
+            // not going to add additional mappings;
+            if (isADFApplication()) {
+                // For Bug 21114997 and 21322338 add additional mappings
+                existingFacesServletRegistration.addMapping("*.xhtml", "*.jsf");
+            }
+            servletContext.setAttribute(FACES_SERVLET_MAPPINGS, existingFacesServletRegistration.getMappings());
             return;
         }
 
@@ -172,6 +179,16 @@ public class FacesInitializer implements ServletContainerInitializer {
         }
 
         servletContext.setAttribute(FACES_INITIALIZER_MAPPINGS_ADDED, TRUE);
+        servletContext.setAttribute(FACES_SERVLET_MAPPINGS, reg.getMappings());
+
+        // The following line is temporary until we can solve an ordering
+        // issue in V3. Right now the JSP container looks for a mapping
+        // of the FacesServlet in the web.xml. If it's not present, then
+        // it assumes that the application isn't a faces application. In this
+        // case the JSP container will not register the ConfigureListener
+        // definition from our TLD nor will it parse cause or JSP TLDs to
+        // be parsed.
+        servletContext.addListener(com.sun.faces.config.ConfigureListener.class);
     }
 
     private ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {

@@ -69,6 +69,8 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.io.FastStringWriter;
 
+import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
+
 import jakarta.el.ELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -146,6 +148,12 @@ public class Util {
     }
 
     private static Collection<String> getFacesServletMappings(ServletContext servletContext) {
+        // check servlet context during initialization to avoid ConfigureListener to call the servlet registration
+        Collection<String> mappings = (Collection<String>) servletContext.getAttribute(FACES_SERVLET_MAPPINGS);
+        if (mappings != null) {
+            return mappings;
+        }
+
         ServletRegistration facesRegistration = getExistingFacesServletRegistration(servletContext);
 
         if (facesRegistration != null) {
