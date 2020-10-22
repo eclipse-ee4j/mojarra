@@ -22,19 +22,19 @@ Oracle's implementation of the Jakarta Faces specification
 ## Minimum Requirements
 
 - Java 1.8
-- Jakarta Servlet 3.0 (4.0 recommended)
-- Jakarta Expression Language 3.0
-- CDI 1.2 (2.0 recommended)
-- Jakarta Standard Tag Library 1.2
-- Jakarta JSON Processing  1.1 (optional, only when `<f:websocket>` is used)
-- BV 1.1 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used; 2.0 recommended)
+- Jakarta Servlet 5.0
+- Jakarta Expression Language 4.0
+- CDI 3.0
+- Jakarta Standard Tag Library 2.0
+- Jakarta JSON Processing  2.0 (optional, only when `<f:websocket>` is used)
+- Jakarta Validation 3.0 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used; 2.0 recommended)
 
-Jakarta Servlet 4.0 will enable Jakarta Faces 2.3 to serve resources via HTTP/2 push. CDI is explicitly required because since Jakarta Faces 2.3 the `javax.faces.bean.*` annotations such as `@ManagedBean` are **deprecated**, and several implicit Jakarta Expression Language objects are produced via CDI producers, and `<f:websocket>` manages the Jakarta WebSocket sessions and events via CDI.
+CDI is explicitly required because since Jakarta Faces 2.3 the `javax.faces.bean.*` annotations such as `@ManagedBean` are **deprecated**, and several implicit Jakarta Expression Language objects are produced via CDI producers, and `<f:websocket>` manages the Jakarta WebSocket sessions and events via CDI.
 
 
 ## Installation
 
-Depending on the server used, Jakarta Faces may already be built-in (full fledged Jakarta EE containers such as [WildFly][1], [JBoss EAP][2], [TomEE][3], [Payara][4], [GlassFish][5], [Liberty][6], etc.), or not (barebones Jakarta Server Pages/Jakarta Servlet containers such as [Tomcat][7], [Jetty][8], etc.). If the server doesn't ship with Jakarta Faces built-in, then you need to manually install Jakarta Faces 2.3 along with CDI 1.2+, Jakarta JSON Processing 1.1+ and Jakarta Standard Tag Library 1.2+ as those Jakarta Servlet containers usually also don't even ship with those Jakarta Faces dependencies.
+Depending on the server used, Jakarta Faces may already be built-in (full fledged Jakarta EE containers such as [WildFly][1], [JBoss EAP][2], [TomEE][3], [Payara][4], [GlassFish][5], [Liberty][6], etc.), or not (barebones Jakarta Server Pages/Jakarta Servlet containers such as [Tomcat][7], [Jetty][8], etc.). If the server doesn't ship with Jakarta Faces built-in, then you need to manually install Jakarta Faces 3.0 along with CDI 3.0+, Jakarta JSON Processing 2.0+ and Jakarta Standard Tag Library 2.0+ as those Jakarta Servlet containers usually also don't even ship with those Jakarta Faces dependencies.
 
 ### Non-Maven
 
@@ -48,15 +48,15 @@ In case you're manually carrying around JARs:
 
     Add below JARs to `/WEB-INF/lib`:
 
-    - [`jakarta.faces.2.3.x.jar`][9]
-    - [`weld-servlet-shaded-3.0.0.Final.jar`][10]
-    - [`jstl-1.2.jar`][11]
-    - [`jakarta.json-api-1.1.jar`][12] (optional, only when `<f:websocket>` is used)
-    - [`jakarta.json-1.1.jar`][12a] (optional, only when `<f:websocket>` is used)
-    - [`validation-api-2.0.0.Final.jar`][13] (optional, only when `<f:validateBean|validateWholeBean>` is used)
-    - [`hibernate-validator-6.0.1.Final.jar`][14] (optional, only when `<f:validateBean|validateWholeBean>` is used)
+    - [`jakarta.faces.3.0.x.jar`][9]
+    - [`weld-servlet-shaded-4.0.0.Final.jar`][10]
+    - [`jstl-2.0.jar`][11]
+    - [`jakarta.json-api-2.0.jar`][12] (optional, only when `<f:websocket>` is used)
+    - [`jakarta.json-2.0.jar`][12a] (optional, only when `<f:websocket>` is used)
+    - [`validation-api-3.0.0.Final.jar`][13] (optional, only when `<f:validateBean|validateWholeBean>` is used)
+    - [`hibernate-validator-7.0.z.Final.jar`][14] (optional, only when `<f:validateBean|validateWholeBean>` is used)
 
-    Substitute `x` with latest 2.3.x version number.
+    Substitute `x` with latest 3.0.x version number.
 
 ### Maven
 
@@ -66,14 +66,14 @@ In case you're using Maven, you can find below the necessary coordinates:
 
     ```xml
     <dependency>
-        <groupId>javax</groupId>
-        <artifactId>javaee-web-api</artifactId>
-        <version>8.0</version>
-        <scope>provided</scope>
+       <groupId>jakarta.platform</groupId>
+       <artifactId>jakarta.jakartaee-api</artifactId>
+       <version>9.0.0</version>
+       <scope>provided</scope>
     </dependency>
     ```
 
-    In case you're targeting a Java EE 7.0 runtime, then you should manually upgrade any runtime-provided Jakarta Faces 2.2 library to Jakarta Faces 2.3 depending on the server used. In case of WildFly/JBoss EAP, [you need to manually package `jsf-api.jar` and `jsf-impl.jar` based on `jakarta.faces.jar` first][15]. In case of TomEE, just swap the `myfaces*.jar` files with `jakarta.faces.jar` in the server's `/lib` folder. In case of Payara/GlassFish, just swap the `jakarta.faces.jar` file in the server's `/glassfish/modules` folder.
+In case of WildFly/JBoss EAP, [you need to manually package `jsf-api.jar` and `jsf-impl.jar` based on `jakarta.faces.jar` first][15]. In case of TomEE, just swap the `myfaces*.jar` files with `jakarta.faces.jar` in the server's `/lib` folder. In case of Payara/GlassFish, just swap the `jakarta.faces.jar` file in the server's `/glassfish/modules` folder.
 
 - **Servletcontainers (Tomcat, Jetty, etc)**
 
@@ -81,52 +81,52 @@ In case you're using Maven, you can find below the necessary coordinates:
     <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>jakarta.faces</artifactId>
-        <version><!-- Use latest 2.3.x version. --></version>
+        <version><!-- Use latest 3.0.x version. --></version>
     </dependency>
     <dependency>
         <groupId>org.jboss.weld.servlet</groupId>
         <artifactId>weld-servlet-shaded</artifactId>
-        <version>3.0.0.Final</version>
+        <version>4.0.0.Final</version>
     </dependency>
     <dependency>
         <groupId>jakarta.servlet.jsp.jstl</groupId>
         <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-        <version>1.2.5</version>
+        <version>2.0.0</version>
     </dependency>
     <dependency> <!-- Optional, only when <f:websocket> is used. -->
         <groupId>org.glassfish</groupId>
         <artifactId>jakarta.json</artifactId>
-        <version>1.1.5</version>
+        <version>2.0.0</version>
     </dependency>
     <dependency> <!-- Optional, only when <f:validateBean> or <f:validateWholeBean> is used. -->
         <groupId>org.hibernate.validator</groupId>
         <artifactId>hibernate-validator</artifactId>
-        <version>6.0.1.Final</version>
+        <version>7.0.0.Final</version>
     </dependency>
     ```
 
-    You can check [`org.glassfish:jakarta.faces`][16] repository to find the latest Mojarra 2.3.x version.
+    You can check [`org.glassfish:jakarta.faces`][16] repository to find the latest Mojarra 3.0.x version.
 
 
 ## Hello World Example
 
-We assume that you already know how to create an empty Maven WAR Project or Dynamic Web Project in your favourite IDE with a CDI 1.2+ compatible `/WEB-INF/beans.xml` deployment descriptor file (which can be kept fully empty). Don't forget to add JARs or configure pom.xml if necessary, as instructed in previous chapter.
+We assume that you already know how to create an empty Maven WAR Project or Dynamic Web Project in your favourite IDE with a CDI 3.0+ compatible `/WEB-INF/beans.xml` deployment descriptor file (which can be kept fully empty). Don't forget to add JARs or configure pom.xml if necessary, as instructed in previous chapter.
 
 ### Controller
 
-Optionally, register the `FacesServlet` in a Servlet 3.0+ compatible deployment descriptor file `/WEB-INF/web.xml` as below:
+Optionally, register the `FacesServlet` in a Servlet 5.0+ compatible deployment descriptor file `/WEB-INF/web.xml` as below:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app
-    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-    version="3.1"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+    version="5.0"
 >
     <servlet>
         <servlet-name>facesServlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>facesServlet</servlet-name>
@@ -135,17 +135,17 @@ Optionally, register the `FacesServlet` in a Servlet 3.0+ compatible deployment 
 </web-app>
 ```
 
-Noted should be that Jakarta Faces 2.2+ is already "implicitly" registered and mapped on `*.jsf`, `*.faces` and `/faces/*` when running on a Jakarta Servlet 3.0+ container. This will be overridden altogether when explicitly registering as above. [The `*.xhtml` URL pattern is preferred over above for security and clarity reasons][17]. Jakarta Faces 2.3+ adds `*.xhtml` to set of default patterns, hence the `FacesServlet` registration being optional. But when you don't explicitly map it on `*.xhtml`, then people can still access JSF pages using `*.jsf`, `*.faces` or `/faces/*` URL patterns. This is not nice for SEO as JSF by design doesn't 301-redirect them to a single mapping.
+Noted should be that Jakarta Faces 3.0+ is already "implicitly" registered and mapped on `*.jsf`, `*.faces` and `/faces/*` when running on a Jakarta Servlet 5.0+ container. This will be overridden altogether when explicitly registering as above. [The `*.xhtml` URL pattern is preferred over above for security and clarity reasons][17]. Jakarta Faces 2.3+ adds `*.xhtml` to set of default patterns, hence the `FacesServlet` registration being optional. But when you don't explicitly map it on `*.xhtml`, then people can still access JSF pages using `*.jsf`, `*.faces` or `/faces/*` URL patterns. This is not nice for SEO as JSF by design doesn't 301-redirect them to a single mapping.
 
-The JSF deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional, but if any it must be Jakarta Faces 2.3 compatible, otherwise Jakarta Faces 2.3 will run in a fallback modus matching the exact `version` as declared in `<faces-config>` root element.
+The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional, but if any it must be Jakarta Faces 3.0 compatible, otherwise Jakarta Faces 3.0 will run in a fallback modus matching the exact `version` as declared in `<faces-config>` root element.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <faces-config
-    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
-    version="2.3"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
+    version="3.0"
 >
     <!-- Put any faces config here. -->
 </faces-config>
@@ -158,8 +158,8 @@ Then create a backing bean class as below:
 ```java
 package com.example;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 @Named
 @RequestScoped
@@ -220,11 +220,11 @@ Finally create a [Facelets][20] file `/hello.xhtml` as below:
 
 Start the server and open it by `http://localhost:8080/contextname/hello.xhtml`.
 
-## Activating CDI in Jakarta Faces 2.3
+## Activating CDI in Jakarta Faces 3.0
 
-By default, Jakarta Faces 2.3 will run in Jakarta Faces 2.2 modus as to CDI support. Even when you use a Jakarta Faces 2.3 compatible `faces-config.xml`. In other words, the new Jakarta Faces 2.3 feature of injection and EL resolving of Jakarta Faces artifacts ([spec issue 1316](https://github.com/javaee/javaserverfaces-spec/issues/1316)) won't work until you explicitly activate this. In other words, `@Inject FacesContext` doesn't work by default. This is necessary in order for Jakarta Faces 2.3 to be fully backwards compatible.
+By default, Jakarta Faces 3.0 will run in Jakarta Faces 2.2 modus as to CDI support. Even when you use a Jakarta Faces 2.3 or 3.0 compatible `faces-config.xml`. In other words, the Jakarta Faces 2.3+ feature of injection and EL resolving of Jakarta Faces artifacts ([spec issue 1316](https://github.com/javaee/javaserverfaces-spec/issues/1316)) won't work until you explicitly activate this. In other words, `@Inject FacesContext` doesn't work by default. This was necessary in order for Jakarta Faces 2.3 to stay compatible with 2.2, and this carried over to 3.0.
 
-There is currently only one way to activate CDI in Jakarta Faces 2.3 and herewith make Jakarta Faces 2.3 to run in full Jakarta Faces 2.3 modus. Put the `@FacesConfig` annotation on an arbitrary CDI managed bean. For example, a general startup/configuration bean.
+There is currently only one way to activate CDI in Jakarta Faces 2.3 and 3.0 and herewith make Jakarta Faces 2.3 and 3.0 to run in full Jakarta Faces 2.3/3.0 modus. Put the `@FacesConfig` annotation on an arbitrary CDI managed bean. For example, a general startup/configuration bean.
 
 ```
 @FacesConfig
@@ -238,10 +238,10 @@ public class YourApplicationConfig {
 
 In case you want to checkout this repository and manually build from source yourself (if necessary after editing source code), here are the instructions:
 
-### Master (JSF.next)
+### Jakarta Faces 3.0
 
 1. Make sure that you have JDK 1.8, Ant and Maven installed.
-2. Checkout branch [`master`][28].
+2. Checkout branch [`3.o`][28].
 3. Run the following commands from the root directory of the project:
 
     ```bash
@@ -274,9 +274,9 @@ In case you want to checkout to edit the source code of Mojarra with full IDE su
 
 ### Eclipse
 
-#### Master (Jakarta Faces.next)
+#### Jakarta Faces 3.0
 
-1. Checkout branch [`master`][28] using File -> import -> Git
+1. Checkout branch [`3.0`][28] using File -> import -> Git
 2. Right click the Mojarra project after checkout, choose Configure -> Convert to Maven Project
 
 #### Jakarta Faces 2.3
@@ -292,10 +292,10 @@ In case you want to checkout to edit the source code of Mojarra with full IDE su
 
 Pull requests are accepted on following branches:
 
-- [`master`][28] (Jakarta Faces.next)
+- [`3.0`][28] (3.0.x)
 - [`2.3`][29] (2.3.x)
 
-Note that it's okay to send a PR to the master branch, but this one is for JSF.next and not the current 2.3.x version!
+Note that it's okay to send a PR to the master branch, but this one is for JSF.next and not the current 2.3.x or 3.0.x version.
 
 
 ## Resources
@@ -318,12 +318,12 @@ Note that it's okay to send a PR to the master branch, but this one is for JSF.n
   [7]: http://tomcat.apache.org
   [8]: http://www.eclipse.org/jetty/
   [9]: http://central.maven.org/maven2/org/glassfish/javax.faces/
-  [10]: http://central.maven.org/maven2/org/jboss/weld/servlet/weld-servlet-shaded/3.0.0.Final/weld-servlet-shaded-3.0.0.Final.jar
-  [11]: http://central.maven.org/maven2/javax/servlet/jstl/1.2/jstl-1.2.jar
-  [12]: http://central.maven.org/maven2/javax/json/javax.json-api/1.1/javax.json-api-1.1.jar
-  [12A]: http://central.maven.org/maven2/org/glassfish/javax.json/1.1/javax.json-1.1.jar
-  [13]: http://central.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final.jar
-  [14]: http://central.maven.org/maven2/org/hibernate/validator/hibernate-validator/6.0.1.Final/hibernate-validator-6.0.1.Final.jar
+  [10]: https://repo1.maven.org/maven2/org/jboss/weld/servlet/weld-servlet-shaded/4.0.0.Final/weld-servlet-shaded-4.0.0.Final.jar
+  [11]: http://central.maven.org/maven2/javax/servlet/jstl/2.0/jstl-2.0.jar
+  [12]: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.0.0/jakarta.json-api-2.0.0.jar
+  [12A]: http://central.maven.org/maven2/org/glassfish/javax.json/2.0/javax.json-2.0.jar
+  [13]: https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0.jar
+  [14]: https://repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator/7.0.0.Final/hibernate-validator-7.0.0.Final.jar
   [15]: https://stackoverflow.com/q/35899887/157882
   [16]: http://mvnrepository.com/artifact/org.glassfish/jakarta.faces
   [17]: https://stackoverflow.com/q/3008395/157882
