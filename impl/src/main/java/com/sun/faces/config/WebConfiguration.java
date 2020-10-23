@@ -18,7 +18,9 @@ package com.sun.faces.config;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DefaultSuffix;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
+import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
@@ -26,7 +28,6 @@ import static java.util.regex.Pattern.compile;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -117,10 +118,9 @@ public class WebConfiguration {
     // ------------------------------------------------------------ Constructors
 
     private WebConfiguration(ServletContext servletContext) {
-
         this.servletContext = servletContext;
 
-        String contextName = getServletContextName();
+        String contextName = servletContext.getContextPath();
 
         initSetList(servletContext);
         processBooleanParameters(servletContext, contextName);
@@ -157,13 +157,12 @@ public class WebConfiguration {
      * @return the WebConfiguration for this application
      */
     public static WebConfiguration getInstance(ExternalContext extContext) {
-
         WebConfiguration config = (WebConfiguration) extContext.getApplicationMap().get(WEB_CONFIG_KEY);
         if (config == null) {
             return getInstance((ServletContext) extContext.getContext());
-        } else {
-            return config;
         }
+
+        return config;
     }
 
     /**
@@ -173,7 +172,6 @@ public class WebConfiguration {
      * @return the WebConfiguration for this application or <code>null</code> if no WebConfiguration could be located
      */
     public static WebConfiguration getInstance(ServletContext servletContext) {
-
         WebConfiguration webConfig = (WebConfiguration) servletContext.getAttribute(WEB_CONFIG_KEY);
 
         if (webConfig == null) {
@@ -210,12 +208,11 @@ public class WebConfiguration {
      * @return the value of the specified boolean parameter
      */
     public boolean isOptionEnabled(BooleanWebContextInitParameter param) {
-
         if (booleanContextParameters.get(param) != null) {
             return booleanContextParameters.get(param);
-        } else {
-            return param.getDefaultValue();
         }
+
+        return param.getDefaultValue();
     }
 
     /**
@@ -246,7 +243,6 @@ public class WebConfiguration {
     }
 
     public FaceletsConfiguration getFaceletsConfiguration() {
-
         if (faceletsConfig == null) {
             faceletsConfig = new FaceletsConfiguration(this);
         }
@@ -255,16 +251,13 @@ public class WebConfiguration {
     }
 
     public Map<String, String> getFacesConfigOptionValue(WebContextInitParameter param, boolean create) {
-
-        assert facesConfigParameters != null;
-
         Map<String, String> result = facesConfigParameters.get(param);
         if (result == null) {
             if (create) {
                 result = new ConcurrentHashMap<>(3);
                 facesConfigParameters.put(param, result);
             } else {
-                result = Collections.emptyMap();
+                result = emptyMap();
             }
         }
 
@@ -278,15 +271,13 @@ public class WebConfiguration {
     public String[] getOptionValue(WebContextInitParameter param, String sep) {
         String[] result;
 
-        assert cachedListParams != null;
-
         if ((result = cachedListParams.get(param)) == null) {
             String value = getOptionValue(param);
             if (value == null) {
                 result = new String[0];
             } else {
                 Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-                result = Util.split(appMap, value, sep);
+                result = split(appMap, value, sep);
             }
             cachedListParams.put(param, result);
         }
@@ -320,20 +311,7 @@ public class WebConfiguration {
         return isSet(param.getQualifiedName());
     }
 
-    /**
-     * @return the name of this application
-     */
-    public String getServletContextName() {
-
-        if (servletContext.getMajorVersion() == 2 && servletContext.getMinorVersion() <= 4) {
-            return servletContext.getServletContextName();
-        }
-
-        return servletContext.getContextPath();
-    }
-
     public void overrideContextInitParameter(BooleanWebContextInitParameter param, boolean value) {
-
         if (param == null) {
             return;
         }
@@ -361,7 +339,6 @@ public class WebConfiguration {
     }
 
     public void overrideContextInitParameter(WebContextInitParameter param, String value) {
-
         if (param == null || value == null || value.length() == 0) {
             return;
         }
@@ -375,41 +352,38 @@ public class WebConfiguration {
     }
 
     public void doPostBringupActions() {
-
         if (deferredLoggingActions != null) {
             for (DeferredLoggingAction loggingAction : deferredLoggingActions) {
                 loggingAction.log();
             }
         }
 
-        // add the HttpMethodRestrictionPhaseListener if the parameter is enabled.
+        // Add the HttpMethodRestrictionPhaseListener if the parameter is enabled.
         boolean enabled = isOptionEnabled(BooleanWebContextInitParameter.EnableHttpMethodRestrictionPhaseListener);
         if (enabled) {
             LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            Iterator<String> ids = factory.getLifecycleIds();
             PhaseListener listener = null;
-            Lifecycle cur;
 
-            while (ids.hasNext()) {
-                cur = factory.getLifecycle(ids.next());
+            for (String lifecycleId : toIterable(factory.getLifecycleIds())) {
+                Lifecycle lifecycle = factory.getLifecycle(lifecycleId);
                 boolean foundExistingListenerInstance = false;
-                for (PhaseListener curListener : cur.getPhaseListeners()) {
+                for (PhaseListener curListener : lifecycle.getPhaseListeners()) {
                     if (curListener instanceof HttpMethodRestrictionsPhaseListener) {
                         foundExistingListenerInstance = true;
                         break;
                     }
                 }
+
                 if (!foundExistingListenerInstance) {
-                    if (null == listener) {
+                    if (listener == null) {
                         listener = new HttpMethodRestrictionsPhaseListener();
                     }
-                    cur.addPhaseListener(listener);
+                    lifecycle.addPhaseListener(listener);
                 }
             }
         }
 
         discoverResourceLibraryContracts();
-
     }
 
     private void discoverResourceLibraryContracts() {
@@ -617,14 +591,12 @@ public class WebConfiguration {
      * @param servletContext the ServletContext of interest
      */
     private void initSetList(ServletContext servletContext) {
-
         for (Enumeration e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
             String name = e.nextElement().toString();
             if (name.startsWith("com.sun.faces") || name.startsWith("jakarta.faces")) {
                 setParams.add(name);
             }
         }
-
     }
 
     /**
@@ -632,9 +604,7 @@ public class WebConfiguration {
      * @return <code>true</code> if the name was explicitly specified
      */
     private boolean isSet(String name) {
-
         return setParams.contains(name);
-
     }
 
     /**
@@ -706,19 +676,15 @@ public class WebConfiguration {
      * @param contextName the context name
      */
     private void processJndiEntries(String contextName) {
-
         Context initialContext = null;
+
         try {
             initialContext = new InitialContext();
         } catch (NoClassDefFoundError nde) {
-            // on google app engine InitialContext is forbidden to use and GAE throws NoClassDefFoundError
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, nde.toString(), nde);
-            }
+            // On google app engine InitialContext is forbidden to use and GAE throws NoClassDefFoundError
+            LOGGER.log(FINE, nde, () -> nde.toString());
         } catch (NamingException ne) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, ne.toString(), ne);
-            }
+            LOGGER.log(Level.WARNING, ne, () -> ne.toString());
         }
 
         if (initialContext != null) {
@@ -730,9 +696,7 @@ public class WebConfiguration {
                 try {
                     value = (String) initialContext.lookup(entryName);
                 } catch (NamingException root) {
-                    if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.fine(root.toString());
-                    }
+                    LOGGER.log(Level.FINE, () -> root.toString());
                 }
 
                 if (value != null) {
@@ -748,26 +712,25 @@ public class WebConfiguration {
     }
 
     public boolean canProcessJndiEntries() {
-
         try {
             Util.getCurrentLoader(this).loadClass("javax.naming.InitialContext");
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine("javax.naming is unavailable.  JNDI entries related to Mojarra configuration will not be processed.");
-            }
+            LOGGER.fine("javax.naming is unavailable. JNDI entries related to Mojarra configuration will not be processed.");
             return false;
         }
         return true;
-
     }
 
     private void queueLoggingAction(DeferredLoggingAction loggingAction) {
-
         if (deferredLoggingActions == null) {
             deferredLoggingActions = new ArrayList<>();
         }
-        deferredLoggingActions.add(loggingAction);
 
+        deferredLoggingActions.add(loggingAction);
+    }
+
+    public <T> Iterable<T> toIterable(Iterator<T> iterator) {
+        return () -> iterator;
     }
 
     // ------------------------------------------------------------------- Enums
@@ -780,10 +743,8 @@ public class WebConfiguration {
     public enum WebContextInitParameter {
 
         // implementation note:
-        // if a parameter is to be deprecated,
-        // then the <name>Deprecated enum element
-        // *must* appear after the one that is taking
-        // its place. The reporting logic depends on this
+        // if a parameter is to be deprecated, then the <name>Deprecated enum element *must* appear after the one that is taking
+        // its place. The reporting logic depends on this.
 
         ManagedBeanFactoryDecorator("com.sun.faces.managedBeanFactoryDecoratorClass", ""),
         StateSavingMethod(StateManager.STATE_SAVING_METHOD_PARAM_NAME, "server"),
@@ -831,60 +792,43 @@ public class WebConfiguration {
         // ---------------------------------------------------------- Public Methods
 
         public String getDefaultValue() {
-
             return defaultValue;
-
         }
 
         public String getQualifiedName() {
-
             return qualifiedName;
-
         }
 
         DeprecationLoggingStrategy getDeprecationLoggingStrategy() {
-
             return loggingStrategy;
-
         }
 
         // ------------------------------------------------- Package Private Methods
 
         WebContextInitParameter(String qualifiedName, String defaultValue) {
-
             this(qualifiedName, defaultValue, false, null);
-
         }
 
         WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated, WebContextInitParameter alternate) {
-
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
             this.deprecated = deprecated;
             this.alternate = alternate;
-
         }
 
-        WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated, WebContextInitParameter alternate,
-                DeprecationLoggingStrategy loggingStrategy) {
-
+        WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated, WebContextInitParameter alternate, DeprecationLoggingStrategy loggingStrategy) {
             this(qualifiedName, defaultValue, deprecated, alternate);
             this.loggingStrategy = loggingStrategy;
-
         }
 
         // --------------------------------------------------------- Private Methods
 
         private WebContextInitParameter getAlternate() {
-
             return alternate;
-
         }
 
         private boolean isDeprecated() {
-
             return deprecated;
-
         }
 
     }
@@ -917,13 +861,10 @@ public class WebConfiguration {
         EnableJSStyleHiding("com.sun.faces.enableJSStyleHiding", false), EnableScriptInAttributeValue("com.sun.faces.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("com.sun.faces.writeStateAtFormEnd", true), EnableLazyBeanValidation("com.sun.faces.enableLazyBeanValidation", true),
         EnableLoadBundle11Compatibility("com.sun.faces.enabledLoadBundle11Compatibility", false),
-        EnableRestoreView11Compatibility("com.sun.faces.enableRestoreView11Compatibility", false),
         SerializeServerState(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, false),
         SerializeServerStateDeprecated("com.sun.faces.serializeServerState", false, true, SerializeServerState),
         EnableViewStateIdRendering("com.sun.faces.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("com.sun.faces.registerConverterPropertyEditors", false),
-        DisableFaceletJSFViewHandler(ViewHandler.DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME, false),
-        DisableFaceletJSFViewHandlerDeprecated("DISABLE_FACELET_JSF_VIEWHANDLER", false, true, DisableFaceletJSFViewHandler),
         DisableDefaultBeanValidator(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME, false),
         DateTimeConverterUsesSystemTimezone(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME, false),
         EnableHttpMethodRestrictionPhaseListener("com.sun.faces.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
@@ -955,15 +896,11 @@ public class WebConfiguration {
         // ---------------------------------------------------------- Public Methods
 
         public boolean getDefaultValue() {
-
             return defaultValue;
-
         }
 
         public String getQualifiedName() {
-
             return qualifiedName;
-
         }
 
         DeprecationLoggingStrategy getDeprecationLoggingStrategy() {
@@ -975,23 +912,17 @@ public class WebConfiguration {
         // ------------------------------------------------- Package Private Methods
 
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue) {
-
             this(qualifiedName, defaultValue, false, null);
-
         }
 
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated, BooleanWebContextInitParameter alternate) {
-
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
             this.deprecated = deprecated;
             this.alternate = alternate;
-
         }
 
-        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated, BooleanWebContextInitParameter alternate,
-                DeprecationLoggingStrategy loggingStrategy) {
-
+        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated, BooleanWebContextInitParameter alternate, DeprecationLoggingStrategy loggingStrategy) {
             this(qualifiedName, defaultValue, deprecated, alternate);
             this.loggingStrategy = loggingStrategy;
 
@@ -1000,15 +931,11 @@ public class WebConfiguration {
         // --------------------------------------------------------- Private Methods
 
         private BooleanWebContextInitParameter getAlternate() {
-
             return alternate;
-
         }
 
         private boolean isDeprecated() {
-
             return deprecated;
-
         }
 
     }
@@ -1084,8 +1011,7 @@ public class WebConfiguration {
 
         @Override
         public boolean shouldBeLogged(WebConfiguration configuration) {
-            return !configuration.isOptionEnabled(BooleanWebContextInitParameter.DisableFaceletJSFViewHandler)
-                    && !configuration.isOptionEnabled(BooleanWebContextInitParameter.DisableFaceletJSFViewHandlerDeprecated);
+            return true;
         }
 
     } // END FaceletsConfigParamLoggingStrategy

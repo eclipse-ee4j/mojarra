@@ -201,18 +201,6 @@ public abstract class ViewHandler {
      */
     public static final String FACELETS_DECORATORS_PARAM_NAME = "jakarta.faces.FACELETS_DECORATORS";
 
-    /**
-     * <p class="changed_added_2_2">
-     * If this param is set, and calling toLowerCase().equals("true") on a String representation of its value returns true,
-     * the default ViewHandler must behave as specified in the latest 1.2 version of this specification. Any behavior
-     * specified in Section "Default ViewDeclarationLanguage Implementation" of the spec prose document and implemented in
-     * the default ViewHandler that pertains to handling requests for pages authored in the Jakarta Server Faces View
-     * Declaration Language must not be executed by the runtime.
-     * </p>
-     *
-     * @since 2.0
-     */
-    public static final String DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME = "jakarta.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
 
     // ---------------------------------------------------------- Public Methods
 
