@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.sun.faces.test.servlet31</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>resourcehandler</artifactId>
     <packaging>war</packaging>
