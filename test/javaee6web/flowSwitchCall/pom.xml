@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.sun.faces.test.javaee6web</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>flowSwitchCall</artifactId>
     <packaging>war</packaging>
