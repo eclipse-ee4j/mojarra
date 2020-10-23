@@ -16,25 +16,22 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import static java.util.Arrays.asList;
-
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "inputTextSetBean")
 @SessionScoped
 public class InputTextSetBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected Set<String> tags = new TreeSet<String>(asList("seed"));
+    protected Set<String> tags = new TreeSet<String>(Arrays.asList("seed"));
 
     public Set<String> getTags() {
         return tags;
@@ -44,37 +41,34 @@ public class InputTextSetBean implements Serializable {
         this.tags = tags;
     }
 
-    public static class StringToSetConverter implements Converter<Collection<String>> {
+    public static class StringToSetConverter implements Converter {
 
         @Override
-        public Collection<String> getAsObject(FacesContext ctx, UIComponent component, String value) {
+        public Object getAsObject(FacesContext ctx, UIComponent component, String value) {
             if (value == null) {
                 return null;
             }
-
             Set<String> tagSet = new TreeSet<String>();
             for (String tag : value.split("\\s+")) {
                 if (!tag.isEmpty()) {
                     tagSet.add(tag);
                 }
             }
-
             return tagSet;
         }
 
         @Override
-        public String getAsString(FacesContext ctx, UIComponent component, Collection<String> value) {
+        public String getAsString(FacesContext ctx, UIComponent component, Object value) {
             if (value == null) {
                 return "";
             }
-
             StringBuilder builder = new StringBuilder();
-            Collection<String> tags = value;
+            @SuppressWarnings("unchecked")
+            Collection<String> tags = (Collection<String>) value;
             for (String tag : tags) {
                 builder.append(tag);
                 builder.append(" ");
             }
-
             return builder.toString().trim();
         }
     }
@@ -83,18 +77,16 @@ public class InputTextSetBean implements Serializable {
         if (tags.isEmpty()) {
             return "No tags";
         }
-
         StringBuilder builder = new StringBuilder();
         for (String tag : tags) {
             builder.append("'");
             builder.append(tag);
             builder.append("' ");
         }
-
         return builder.toString().trim();
     }
 
-    public Converter<Collection<String>> getTagsConverter() {
+    public Converter getTagsConverter() {
         return new StringToSetConverter();
     }
 }

@@ -30,8 +30,7 @@ import org.junit.Test;
 
 public class SuppressXmlDeclIT {
 
-    private final static Pattern XmlDeclaration = Pattern
-            .compile("^<\\?xml.+?version=['\"](.+?)['\"](.+?encoding=['\"]((.+?))['\"])?.*?\\?>");
+    private final static Pattern XmlDeclaration = Pattern.compile("^<\\?xml.+?version=['\"](.+?)['\"](.+?encoding=['\"]((.+?))['\"])?.*?\\?>");
 
     private String webUrl;
     private WebClient webClient;
@@ -61,6 +60,6 @@ public class SuppressXmlDeclIT {
 
         page = webClient.getPage(webUrl + "faces/index.xhtml");
         String xml = page.asXml();
-        assertTrue(xml.contains("javax.faces.ViewState"));
+        assertTrue(xml.contains("jakarta.faces.ViewState"));
     }
 }

@@ -22,4 +22,9 @@
               xmlns:xi="http://www.w3.org/2001/XInclude" 
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd" 
               version="1.2">
+  <managed-bean>
+    <managed-bean-name>bean_in_jar</managed-bean-name>
+    <managed-bean-class>com.sun.faces.test.agnostic.vdl.facelets.only_faces_config_in_jar.Bean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
 </faces-config>

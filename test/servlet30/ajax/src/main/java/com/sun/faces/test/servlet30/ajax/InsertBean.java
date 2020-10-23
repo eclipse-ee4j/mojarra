@@ -16,15 +16,18 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import java.util.HashMap;
+import java.util.Map;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.PartialResponseWriter;
-import javax.inject.Named;
+import javax.faces.FacesException;
 
-@Named
+@ManagedBean
 @RequestScoped
+
 public class InsertBean {
 
     public String insertBefore() {
@@ -34,7 +37,8 @@ public class InsertBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer =
+                    ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.startInsertBefore("alpha");
                 writer.write("This is before text");
@@ -56,7 +60,8 @@ public class InsertBean {
             try {
                 extContext.setResponseContentType("text/xml");
                 extContext.addResponseHeader("Cache-Control", "no-cache");
-                PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
+                PartialResponseWriter writer =
+                    ctx.getPartialViewContext().getPartialResponseWriter();
                 writer.startDocument();
                 writer.startInsertAfter("alpha");
                 writer.write("This is after text");

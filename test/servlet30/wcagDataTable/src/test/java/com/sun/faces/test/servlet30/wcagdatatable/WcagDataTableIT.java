@@ -16,14 +16,12 @@
 
 package com.sun.faces.test.servlet30.wcagdatatable;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WcagDataTableIT {
 
@@ -46,9 +44,9 @@ public class WcagDataTableIT {
      */
     @Test
     public void testReplaceStateManager() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/index.jsp");
         String pageText = page.asXml();
-        // System.out.println(pageText);
+        //System.out.println(pageText);
         // (?s) is an "embedded flag expression" for the "DOTALL" operator.
         // It says, "let . match any character including line terminators."
         // Because page.asXml() returns a big string with lots of \r\n chars
@@ -62,16 +60,23 @@ public class WcagDataTableIT {
         // the page contains a table tag followed immediately by the caption element as follows.
         assertTrue(pageText.matches("(?sm).*<table.*>\\s*<caption>.*CODE-PAGE SUPPORT IN MICROSOFT WINDOWS.*</caption>.*"));
         // the page contains a close caption tag followed immediately by a three colgroup tags as follows.
-        assertTrue(pageText.matches("(?sm).*</caption>\\s*" + "<colgroup align=.center.\\s*/>\\s*" + "<colgroup align=.left.\\s*/>\\s*"
-                + "<colgroup align=.center.*span=.2.*/>\\s*" + "<colgroup align=.center.*span=.3.*/>.*"));
+        assertTrue(pageText.matches("(?sm).*</caption>\\s*"
+                + "<colgroup align=.center.\\s*/>\\s*"
+                + "<colgroup align=.left.\\s*/>\\s*"
+                + "<colgroup align=.center.*span=.2.*/>\\s*"
+                + "<colgroup align=.center.*span=.3.*/>.*"));
 
         // A table with a thead, with a tr with a th scope=col
-        assertTrue(pageText.matches("(?sm).*<table.*>.*<thead>\\s*" + "<tr>\\s*" + "<th\\s*scope=.col.*"));
+        assertTrue(pageText.matches("(?sm).*<table.*>.*<thead>\\s*"
+                + "<tr>\\s*"
+                + "<th\\s*scope=.col.*"));
 
         // A table with a tbody, with a tr with a th scope=row
-        assertTrue(pageText.matches("(?sm).*<table.*>.*<tbody>.*" + "<th\\s*scope=.row.*"));
+        assertTrue(pageText.matches("(?sm).*<table.*>.*<tbody>.*"
+                + "<th\\s*scope=.row.*"));
 
         // A table with a tbody, with a tr with a th scope=row
-        assertTrue(pageText.matches("(?sm).*<table.*>.*<tbody>.*" + "</tbody>.*<tbody>.*</tbody>.*</table>.*"));
+        assertTrue(pageText.matches("(?sm).*<table.*>.*<tbody>.*"
+                + "</tbody>.*<tbody>.*</tbody>.*</table>.*"));
     }
 }

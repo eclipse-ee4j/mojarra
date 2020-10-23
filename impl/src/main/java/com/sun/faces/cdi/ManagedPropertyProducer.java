@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,71 +21,63 @@ import static com.sun.faces.cdi.CdiUtils.getCurrentInjectionPoint;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.annotation.ManagedProperty;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.annotation.ManagedProperty;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ManagedPropertyProducer is the CDI producer that allows evaluation 
- * of arbitrary EL expressions.
+ * The ManagedPropertyProducer is the CDI producer that allows evaluation of arbitrary EL expressions.
  * </p>
  *
  * @since 2.3
  * @see ExternalContext
  */
 public class ManagedPropertyProducer extends CdiProducer<Object> {
-    
+
     /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     private Class<?> expectedClass;
-    
+
     public ManagedPropertyProducer(Type type, BeanManager beanManager) {
-        super.beanClass(ManagedPropertyProducer.class)
-             .types(type)
-             .qualifiers(new ManagedPropertyLiteral())
-             .addToId(type)
-             .create(creationalContext -> {
-                 
-                 // TODO: handle no InjectionPoint available
-                 String expression = getCurrentInjectionPoint(beanManager, creationalContext)
-                                         .getAnnotated()
-                                         .getAnnotation(ManagedProperty.class)
-                                         .value();
-                 
-                 return evaluateExpressionGet(beanManager, expression, expectedClass);}
-             
-             );
-        
+        super.beanClass(ManagedPropertyProducer.class).types(type).qualifiers(new ManagedPropertyLiteral()).addToId(type).create(creationalContext -> {
+
+            // TODO: handle no InjectionPoint available
+            String expression = getCurrentInjectionPoint(beanManager, creationalContext).getAnnotated().getAnnotation(ManagedProperty.class).value();
+
+            return evaluateExpressionGet(beanManager, expression, expectedClass);
+        }
+
+        );
+
         expectedClass = getExpectedClass(type);
-        
+
     }
-    
+
     private static Class<?> getExpectedClass(Type type) {
         if (type instanceof Class) {
             return (Class<?>) type;
         }
-        
+
         if (type instanceof ParameterizedTypeImpl) {
-            return getExpectedClass( ((ParameterizedTypeImpl) type).getRawType());
+            return getExpectedClass(((ParameterizedTypeImpl) type).getRawType());
         }
-        
+
         return Object.class;
     }
-    
+
     public static <T> T evaluateExpressionGet(BeanManager beanManager, String expression, Class<T> expectedClass) {
         if (expression == null) {
             return null;
         }
-        
+
         FacesContext context = getBeanReference(beanManager, FacesContext.class);
 
-        return (T) context.getApplication()
-                          .evaluateExpressionGet(context, expression, expectedClass);
+        return context.getApplication().evaluateExpressionGet(context, expression, expectedClass);
     }
 
 }

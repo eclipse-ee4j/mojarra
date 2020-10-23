@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,19 +16,19 @@
 
 package com.sun.faces.el;
 
-import javax.faces.context.FacesContext;
-import javax.faces.application.Application;
-
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
 
 class SharedUtils {
 
     /*
-    * Determine whether String is a mixed value binding expression or not.
-    */
+     * Determine whether String is a mixed value binding expression or not.
+     */
     static boolean isMixedExpression(String expression) {
 
         if (null == expression) {
@@ -36,63 +36,54 @@ class SharedUtils {
         }
 
         // if it doesn't start and end with delimiters
-        return (!(expression.startsWith("#{") && expression.endsWith("}")))
-                  && isExpression(expression);
+        return !(expression.startsWith("#{") && expression.endsWith("}")) && isExpression(expression);
 
     }
 
-
     /*
-    * Determine whether String is a value binding expression or not.
-    */
+     * Determine whether String is a value binding expression or not.
+     */
     static boolean isExpression(String expression) {
 
         if (null == expression) {
             return false;
         }
 
-        //check to see if attribute has an expression
+        // check to see if attribute has an expression
         int start = expression.indexOf("#{");
-        return start != -1 && expression.indexOf('}', start+2) != -1;
+        return start != -1 && expression.indexOf('}', start + 2) != -1;
     }
 
     static Map<String, List<String>> evaluateExpressions(FacesContext context, Map<String, List<String>> map) {
         if (map != null && !map.isEmpty()) {
-            Map<String, List<String>> ret = new HashMap<String, List<String>>(map.size());
+            Map<String, List<String>> ret = new HashMap<>(map.size());
             for (Map.Entry<String, List<String>> entry : map.entrySet()) {
                 ret.put(entry.getKey(), evaluateExpressions(context, entry.getValue()));
             }
-            
+
             return ret;
         }
-        
+
         return map;
     }
-     
+
     static List<String> evaluateExpressions(FacesContext context, List<String> values) {
-         if (!values.isEmpty()) {
-             List<String> ret = new ArrayList<String>(values.size());
-             Application app = context.getApplication();
-             for (String val : values) {
-                 if (val != null) {
-                     String value = val.trim();
-                     if (isExpression(value)) {
-                         value = app.evaluateExpressionGet(context,
-                                                           value,
-                                                           String.class);
-                     }
-                     ret.add(value);
-                 }
-             }
-             
-             return ret;
-         }
-         return values;
-     }
+        if (!values.isEmpty()) {
+            List<String> ret = new ArrayList<>(values.size());
+            Application app = context.getApplication();
+            for (String val : values) {
+                if (val != null) {
+                    String value = val.trim();
+                    if (isExpression(value)) {
+                        value = app.evaluateExpressionGet(context, value, String.class);
+                    }
+                    ret.add(value);
+                }
+            }
 
-
+            return ret;
+        }
+        return values;
+    }
 
 }
-
-     
-

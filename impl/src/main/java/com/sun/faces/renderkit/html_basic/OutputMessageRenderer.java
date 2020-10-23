@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,13 +24,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.renderkit.RenderKitUtils;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /** <B>OutputMessageRenderer</B> is a class that renderes UIOutput */
 
@@ -38,19 +37,15 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -71,7 +66,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
             // get UIParameter children...
 
             for (UIComponent kid : component.getChildren()) {
-                //PENDING(rogerk) ignore if child is not UIParameter?
+                // PENDING(rogerk) ignore if child is not UIParameter?
                 if (!(kid instanceof UIParameter)) {
                     continue;
                 }
@@ -86,19 +81,16 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         // use the string as a MessageFormat instance.
         String message;
         if (parameterList.size() > 0) {
-            MessageFormat fmt = new MessageFormat(currentValue,
-                                                  context.getViewRoot().getLocale());
+            MessageFormat fmt = new MessageFormat(currentValue, context.getViewRoot().getLocale());
             StringBuffer buf = new StringBuffer(currentValue.length() * 2);
-            fmt.format(parameterList.toArray(new Object[parameterList.size()]),
-                       buf,
-                       null);
+            fmt.format(parameterList.toArray(new Object[parameterList.size()]), buf, null);
             message = buf.toString();
         } else {
             message = currentValue;
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
 
         String style = (String) component.getAttributes().get("style");
         String styleClass = (String) component.getAttributes().get("styleClass");
@@ -106,12 +98,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         String dir = (String) component.getAttributes().get("dir");
         String title = (String) component.getAttributes().get("title");
         boolean wroteSpan = false;
-        if (styleClass != null
-             || style != null
-             || dir != null
-             || lang != null
-             || title != null
-             || shouldWriteIdAttribute(component)) {
+        if (styleClass != null || style != null || dir != null || lang != null || title != null || shouldWriteIdAttribute(component)) {
             writer.startElement("span", component);
             writeIdAttributeIfNecessary(context, writer, component);
             wroteSpan = true;
@@ -126,9 +113,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
                 writer.writeAttribute("dir", dir, "dir");
             }
             if (lang != null) {
-                writer.writeAttribute(RenderKitUtils.prefixAttribute("lang", writer),
-                                      lang,
-                                      "lang");
+                writer.writeAttribute(RenderKitUtils.prefixAttribute("lang", writer), lang, "lang");
             }
             if (title != null) {
                 writer.writeAttribute("title", title, "title");
@@ -136,8 +121,8 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         }
 
         Object val = component.getAttributes().get("escape");
-        boolean escape = (val != null) && Boolean.valueOf(val.toString());
-        
+        boolean escape = val != null && Boolean.valueOf(val.toString());
+
         if (escape) {
             writer.writeText(message, component, "value");
         } else {

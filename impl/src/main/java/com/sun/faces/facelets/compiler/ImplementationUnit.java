@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,7 +18,7 @@ package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.facelets.tag.TagLibrary;
 
-import javax.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.Tag;
 
 class ImplementationUnit extends TrimmedTagUnit {
 
@@ -28,18 +28,14 @@ class ImplementationUnit extends TrimmedTagUnit {
 
     @Override
     protected void finishNotify(CompilationManager manager) {
-        ((CompilerPackageCompilationMessageHolder)manager.getCompilationMessageHolder()).
-                setCurrentCompositeComponentCompilationManager(null);
+        ((CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder()).setCurrentCompositeComponentCompilationManager(null);
         super.finishNotify(manager);
     }
 
     @Override
     protected void startNotify(CompilationManager manager) {
         super.startNotify(manager);
-        ((CompilerPackageCompilationMessageHolder)manager.getCompilationMessageHolder()).
-                setCurrentCompositeComponentCompilationManager(manager);
+        ((CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder()).setCurrentCompositeComponentCompilationManager(manager);
     }
-
-
 
 }

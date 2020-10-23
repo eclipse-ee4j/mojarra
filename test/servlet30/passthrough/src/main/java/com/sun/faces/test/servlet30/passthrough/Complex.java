@@ -17,17 +17,13 @@
 package com.sun.faces.test.servlet30.passthrough;
 
 import java.io.Serializable;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ManagedBean;
 
-@Named
+@ManagedBean
 @SessionScoped
 public class Complex implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
     private String name;
     private String tel;
     private String email;
@@ -58,16 +54,16 @@ public class Complex implements Serializable {
 
     public String getProgress() {
         int progress = 0;
-        if (name != null) {
+        if(name != null) {
             progress++;
         }
-        if (tel != null) {
+        if(tel != null) {
             progress++;
         }
-        if (email != null) {
+        if(email != null) {
             progress++;
         }
         return progress + "";
     }
-
+    
 }

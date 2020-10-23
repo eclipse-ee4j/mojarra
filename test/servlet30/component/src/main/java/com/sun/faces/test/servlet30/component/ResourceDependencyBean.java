@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,18 +17,15 @@
 package com.sun.faces.test.servlet30.component;
 
 import java.io.Serializable;
-
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIOutput;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "resourceDependencyBean")
 @ViewScoped
 public class ResourceDependencyBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private int counter;
+    private int counter = 0;
     private UIOutput hello;
 
     public void setHello(UIOutput hello) {

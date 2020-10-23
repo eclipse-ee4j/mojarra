@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,28 +24,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.ContextCallback;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.FacesListener;
-import javax.faces.event.SystemEvent;
-import javax.faces.render.Renderer;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.FacesEvent;
+import jakarta.faces.event.FacesListener;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.render.Renderer;
 
 /**
- * <p class="changed_added_2_0"></p>
+ * <p class="changed_added_2_0">
+ * </p>
  */
-public class BehaviorHolderWrapper extends UIComponent implements
-      ClientBehaviorHolder {
+public class BehaviorHolderWrapper extends UIComponent implements ClientBehaviorHolder {
 
     private final UIComponent parent;
     private final String virtualEvent;
@@ -58,7 +59,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#broadcast(javax.faces.event.FacesEvent)
+     * @see jakarta.faces.component.UIComponent#broadcast(jakarta.faces.event.FacesEvent)
      */
     @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException {
@@ -66,7 +67,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#decode(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#decode(jakarta.faces.context.FacesContext)
      */
     @Override
     public void decode(FacesContext context) {
@@ -74,7 +75,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#encodeBegin(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#encodeBegin(jakarta.faces.context.FacesContext)
      */
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
@@ -82,7 +83,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#encodeChildren(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#encodeChildren(jakarta.faces.context.FacesContext)
      */
     @Override
     public void encodeChildren(FacesContext context) throws IOException {
@@ -90,7 +91,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#encodeEnd(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#encodeEnd(jakarta.faces.context.FacesContext)
      */
     @Override
     public void encodeEnd(FacesContext context) throws IOException {
@@ -98,7 +99,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#findComponent(java.lang.String)
+     * @see jakarta.faces.component.UIComponent#findComponent(java.lang.String)
      */
     @Override
     public UIComponent findComponent(String expr) {
@@ -106,7 +107,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getAttributes()
+     * @see jakarta.faces.component.UIComponent#getAttributes()
      */
     @Override
     public Map<String, Object> getAttributes() {
@@ -119,7 +120,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getChildCount()
+     * @see jakarta.faces.component.UIComponent#getChildCount()
      */
     @Override
     public int getChildCount() {
@@ -127,7 +128,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getChildren()
+     * @see jakarta.faces.component.UIComponent#getChildren()
      */
     @Override
     public List<UIComponent> getChildren() {
@@ -135,7 +136,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getClientId(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#getClientId(jakarta.faces.context.FacesContext)
      */
     @Override
     public String getClientId(FacesContext context) {
@@ -143,7 +144,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getFacet(java.lang.String)
+     * @see jakarta.faces.component.UIComponent#getFacet(java.lang.String)
      */
     @Override
     public UIComponent getFacet(String name) {
@@ -151,7 +152,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getFacets()
+     * @see jakarta.faces.component.UIComponent#getFacets()
      */
     @Override
     public Map<String, UIComponent> getFacets() {
@@ -159,7 +160,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getFacetsAndChildren()
+     * @see jakarta.faces.component.UIComponent#getFacetsAndChildren()
      */
     @Override
     public Iterator<UIComponent> getFacetsAndChildren() {
@@ -167,7 +168,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getFamily()
+     * @see jakarta.faces.component.UIComponent#getFamily()
      */
     @Override
     public String getFamily() {
@@ -175,7 +176,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getId()
+     * @see jakarta.faces.component.UIComponent#getId()
      */
     @Override
     public String getId() {
@@ -183,7 +184,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getParent()
+     * @see jakarta.faces.component.UIComponent#getParent()
      */
     @Override
     public UIComponent getParent() {
@@ -191,7 +192,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getRendererType()
+     * @see jakarta.faces.component.UIComponent#getRendererType()
      */
     @Override
     public String getRendererType() {
@@ -199,7 +200,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getRendersChildren()
+     * @see jakarta.faces.component.UIComponent#getRendersChildren()
      */
     @Override
     public boolean getRendersChildren() {
@@ -207,7 +208,17 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#getValueExpression(java.lang.String)
+     * @see jakarta.faces.component.UIComponent#getValueBinding(java.lang.String)
+     * @deprecated
+     */
+    @Deprecated
+    @Override
+    public ValueBinding getValueBinding(String name) {
+        return parent.getValueBinding(name);
+    }
+
+    /**
+     * @see jakarta.faces.component.UIComponent#getValueExpression(java.lang.String)
      */
     @Override
     public ValueExpression getValueExpression(String name) {
@@ -215,18 +226,16 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#invokeOnComponent(javax.faces.context.FacesContext, java.lang.String, javax.faces.component.ContextCallback)
+     * @see jakarta.faces.component.UIComponent#invokeOnComponent(jakarta.faces.context.FacesContext, java.lang.String,
+     * jakarta.faces.component.ContextCallback)
      */
     @Override
-    public boolean invokeOnComponent(FacesContext context,
-                                     String clientId,
-                                     ContextCallback callback)
-    throws FacesException {
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
         return parent.invokeOnComponent(context, clientId, callback);
     }
 
     /**
-     * @see javax.faces.component.UIComponent#isInView()
+     * @see jakarta.faces.component.UIComponent#isInView()
      */
     @Override
     public boolean isInView() {
@@ -234,7 +243,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#isRendered()
+     * @see jakarta.faces.component.UIComponent#isRendered()
      */
     @Override
     public boolean isRendered() {
@@ -242,7 +251,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.StateHolder#isTransient()
+     * @see jakarta.faces.component.StateHolder#isTransient()
      */
     @Override
     public boolean isTransient() {
@@ -250,7 +259,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#processDecodes(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#processDecodes(jakarta.faces.context.FacesContext)
      */
     @Override
     public void processDecodes(FacesContext context) {
@@ -258,16 +267,15 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#processEvent(javax.faces.event.ComponentSystemEvent)
+     * @see jakarta.faces.component.UIComponent#processEvent(jakarta.faces.event.ComponentSystemEvent)
      */
     @Override
-    public void processEvent(ComponentSystemEvent event)
-          throws AbortProcessingException {
+    public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
         parent.processEvent(event);
     }
 
     /**
-     * @see javax.faces.component.UIComponent#processRestoreState(javax.faces.context.FacesContext, java.lang.Object)
+     * @see jakarta.faces.component.UIComponent#processRestoreState(jakarta.faces.context.FacesContext, java.lang.Object)
      */
     @Override
     public void processRestoreState(FacesContext context, Object state) {
@@ -275,7 +283,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#processSaveState(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#processSaveState(jakarta.faces.context.FacesContext)
      */
     @Override
     public Object processSaveState(FacesContext context) {
@@ -283,7 +291,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#processUpdates(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#processUpdates(jakarta.faces.context.FacesContext)
      */
     @Override
     public void processUpdates(FacesContext context) {
@@ -291,7 +299,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#processValidators(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIComponent#processValidators(jakarta.faces.context.FacesContext)
      */
     @Override
     public void processValidators(FacesContext context) {
@@ -299,7 +307,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#queueEvent(javax.faces.event.FacesEvent)
+     * @see jakarta.faces.component.UIComponent#queueEvent(jakarta.faces.event.FacesEvent)
      */
     @Override
     public void queueEvent(FacesEvent event) {
@@ -307,7 +315,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.StateHolder#restoreState(javax.faces.context.FacesContext, java.lang.Object)
+     * @see jakarta.faces.component.StateHolder#restoreState(jakarta.faces.context.FacesContext, java.lang.Object)
      */
     @Override
     public void restoreState(FacesContext context, Object state) {
@@ -318,7 +326,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.StateHolder#saveState(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.StateHolder#saveState(jakarta.faces.context.FacesContext)
      */
     @Override
     public Object saveState(FacesContext context) {
@@ -329,7 +337,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#setId(java.lang.String)
+     * @see jakarta.faces.component.UIComponent#setId(java.lang.String)
      */
     @Override
     public void setId(String id) {
@@ -337,7 +345,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#setParent(javax.faces.component.UIComponent)
+     * @see jakarta.faces.component.UIComponent#setParent(jakarta.faces.component.UIComponent)
      */
     @Override
     public void setParent(UIComponent parent) {
@@ -345,7 +353,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#setRendered(boolean)
+     * @see jakarta.faces.component.UIComponent#setRendered(boolean)
      */
     @Override
     public void setRendered(boolean rendered) {
@@ -353,7 +361,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#setRendererType(java.lang.String)
+     * @see jakarta.faces.component.UIComponent#setRendererType(java.lang.String)
      */
     @Override
     public void setRendererType(String rendererType) {
@@ -361,7 +369,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.StateHolder#setTransient(boolean)
+     * @see jakarta.faces.component.StateHolder#setTransient(boolean)
      */
     @Override
     public void setTransient(boolean newTransientValue) {
@@ -369,7 +377,17 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#setValueExpression(java.lang.String, javax.el.ValueExpression)
+     * @see jakarta.faces.component.UIComponent#setValueBinding(java.lang.String, jakarta.faces.el.ValueBinding)
+     * @deprecated
+     */
+    @Deprecated
+    @Override
+    public void setValueBinding(String name, ValueBinding binding) {
+        parent.setValueBinding(name, binding);
+    }
+
+    /**
+     * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, jakarta.el.ValueExpression)
      */
     @Override
     public void setValueExpression(String name, ValueExpression binding) {
@@ -377,25 +395,26 @@ public class BehaviorHolderWrapper extends UIComponent implements
     }
 
     /**
-     * @see javax.faces.component.UIComponent#subscribeToEvent(java.lang.Class, javax.faces.event.ComponentSystemEventListener)
+     * @see jakarta.faces.component.UIComponent#subscribeToEvent(java.lang.Class,
+     * jakarta.faces.event.ComponentSystemEventListener)
      */
     @Override
-    public void subscribeToEvent(Class<? extends SystemEvent> eventClass,
-                                 ComponentSystemEventListener componentListener) {
+    public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
         parent.subscribeToEvent(eventClass, componentListener);
     }
 
     /**
-     * @see javax.faces.component.UIComponent#unsubscribeFromEvent(java.lang.Class, javax.faces.event.ComponentSystemEventListener)
+     * @see jakarta.faces.component.UIComponent#unsubscribeFromEvent(java.lang.Class,
+     * jakarta.faces.event.ComponentSystemEventListener)
      */
     @Override
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
-                                     ComponentSystemEventListener componentListener) {
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
         parent.unsubscribeFromEvent(eventClass, componentListener);
     }
 
     /**
-     * @see javax.faces.component.UIComponent#visitTree(javax.faces.component.visit.VisitContext, javax.faces.component.visit.VisitCallback)
+     * @see jakarta.faces.component.UIComponent#visitTree(jakarta.faces.component.visit.VisitContext,
+     * jakarta.faces.component.visit.VisitCallback)
      */
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback) {
@@ -435,9 +454,7 @@ public class BehaviorHolderWrapper extends UIComponent implements
                 parentHolder.addClientBehavior(event, behavior);
             }
         } else {
-            throw new FacesException(
-                  "Unable to attach behavior to non-ClientBehaviorHolder parent:"
-                  + parent);
+            throw new FacesException("Unable to attach behavior to non-ClientBehaviorHolder parent:" + parent);
         }
 
     }
@@ -446,14 +463,11 @@ public class BehaviorHolderWrapper extends UIComponent implements
     public Map<String, List<ClientBehavior>> getClientBehaviors() {
         if (parent instanceof ClientBehaviorHolder) {
             ClientBehaviorHolder parentHolder = (ClientBehaviorHolder) parent;
-            Map<String, List<ClientBehavior>> behaviors = new HashMap<>(
-                  1);
+            Map<String, List<ClientBehavior>> behaviors = new HashMap<>(1);
             behaviors.put(virtualEvent, parentHolder.getClientBehaviors().get(event));
             return Collections.unmodifiableMap(behaviors);
         } else {
-            throw new FacesException(
-                  "Unable to get behaviors from non-ClientBehaviorHolder parent:"
-                  + parent);
+            throw new FacesException("Unable to get behaviors from non-ClientBehaviorHolder parent:" + parent);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,12 +16,12 @@
 
 package com.sun.faces.application.annotation;
 
-import javax.faces.component.FacesComponent;
+import jakarta.faces.component.FacesComponent;
 
 public class FacesComponentUsage {
     private Class<?> target;
     private FacesComponent annotation;
-    
+
     public FacesComponentUsage(Class<?> target, FacesComponent annotation) {
         this.target = target;
         this.annotation = annotation;
@@ -34,8 +34,5 @@ public class FacesComponentUsage {
     public Class<?> getTarget() {
         return target;
     }
-    
-    
-}
 
-    
+}

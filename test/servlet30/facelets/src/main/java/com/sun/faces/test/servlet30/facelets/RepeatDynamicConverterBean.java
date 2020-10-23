@@ -19,20 +19,18 @@ package com.sun.faces.test.servlet30.facelets;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.NumberConverter;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "repeatDynamicConverterBean")
 @SessionScoped
 public class RepeatDynamicConverterBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     private int counter = 0;
     private List<RepeatDynamicConverterItem> items = new LinkedList<RepeatDynamicConverterItem>();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,32 +16,29 @@
 
 package com.sun.faces.ext.taglib;
 
-import javax.faces.webapp.UIComponentELTag;
-import javax.faces.component.UIComponent;
-import javax.el.ValueExpression;
-
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.webapp.UIComponentELTag;
 
 /**
- * Tag to set focus to a given field.  Uses a single attribute, for, which is
- * the id of the field which should receive the focus.
- * 
+ * Tag to set focus to a given field. Uses a single attribute, for, which is the id of the field which should receive
+ * the focus.
+ *
  * @author driscoll
  */
 public class FocusTag extends UIComponentELTag {
-    
+
     private static final String COMPONENT_TYPE = "com.sun.faces.ext.focus";
     private static final String RENDERER_TYPE = "com.sun.faces.ext.render.FocusHTMLRenderer";
-    
-    public ValueExpression forID = null;
 
+    public ValueExpression forID = null;
 
     // Associate the component type.
     @Override
     public String getComponentType() {
         return COMPONENT_TYPE;
     }
-    
-    
+
     @Override
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
@@ -55,7 +52,6 @@ public class FocusTag extends UIComponentELTag {
             }
         }
     }
-
 
     // We'll render our own content
     @Override
@@ -72,5 +68,5 @@ public class FocusTag extends UIComponentELTag {
     public void setFor(ValueExpression forID) {
         this.forID = forID;
     }
-    
+
 }

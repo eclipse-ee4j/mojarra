@@ -16,18 +16,13 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import java.io.Serializable;
-
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
-import javax.inject.Named;
 
-@Named("ajaxecho")
+@ManagedBean(name = "ajaxecho")
 @SessionScoped
-public class EchoBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class EchoBean {
     String str = "";
 
     public String getStr() {

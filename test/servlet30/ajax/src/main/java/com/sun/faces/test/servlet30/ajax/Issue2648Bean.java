@@ -16,35 +16,33 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+import java.io.IOException;
 import java.io.Serializable;
-
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
-@Named
+@ManagedBean(name = "issue2648Bean")
 @SessionScoped
 public class Issue2648Bean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     public void processAjax(AjaxBehaviorEvent event) throws AbortProcessingException {
         FacesContext fctx = FacesContext.getCurrentInstance();
         ExternalContext ectx = fctx.getExternalContext();
-        HttpSession session = (HttpSession) ectx.getSession(true);
+        HttpSession session = (HttpSession)ectx.getSession(true);
         String temp1 = session.getServletContext().getContextPath() + "/faces/issue2648-1.xhtml";
         String temp2 = session.getServletContext().getContextPath() + "/faces/issue2648-2.xhtml";
         try {
-            boolean complete1 = fctx.getResponseComplete();
-            ectx.redirect(temp1);
-            boolean complete2 = fctx.getResponseComplete();
-            ectx.redirect(temp2);
-            boolean complete3 = fctx.getResponseComplete();
+            boolean complete1 = fctx.getResponseComplete(); 
+            ectx.redirect(temp1); 
+            boolean complete2 = fctx.getResponseComplete(); 
+            ectx.redirect(temp2); 
+            boolean complete3 = fctx.getResponseComplete(); 
         } catch (Exception e) {
             if (e instanceof IllegalStateException) {
                 session.setAttribute("IllegalStateException", "true");
@@ -55,18 +53,19 @@ public class Issue2648Bean implements Serializable {
     public void process(ActionEvent event) {
         FacesContext fctx = FacesContext.getCurrentInstance();
         ExternalContext ectx = fctx.getExternalContext();
-        HttpSession session = (HttpSession) ectx.getSession(true);
+        HttpSession session = (HttpSession)ectx.getSession(true);
         String temp1 = session.getServletContext().getContextPath() + "/faces/issue2648-1.xhtml";
         String temp2 = session.getServletContext().getContextPath() + "/faces/issue2648-2.xhtml";
         try {
-            boolean complete1 = fctx.getResponseComplete();
-            ectx.redirect(temp1);
-            boolean complete2 = fctx.getResponseComplete();
-            ectx.redirect(temp2);
-            boolean complete3 = fctx.getResponseComplete();
+            boolean complete1 = fctx.getResponseComplete(); 
+            ectx.redirect(temp1); 
+            boolean complete2 = fctx.getResponseComplete(); 
+            ectx.redirect(temp2); 
+            boolean complete3 = fctx.getResponseComplete(); 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 

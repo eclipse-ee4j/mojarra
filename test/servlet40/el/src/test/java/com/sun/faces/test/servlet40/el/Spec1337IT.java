@@ -42,13 +42,13 @@ public class Spec1337IT {
     @Test
     public void testResourceEL1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/resourceEL1.xhtml");
-        assertTrue(page.asXml().contains("/javax.faces.resource/resourceEL1.gif"));
+        assertTrue(page.asXml().contains("/jakarta.faces.resource/resourceEL1.gif"));
     }
 
     @Test
     public void testResourceEL2() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/resourceEL2.xhtml");
-        assertTrue(page.asXml().contains("/javax.faces.resource/resourceEL2.gif"));
+        assertTrue(page.asXml().contains("/jakarta.faces.resource/resourceEL2.gif"));
         assertTrue(page.asXml().contains("?ln=resourceEL2"));
     }
 

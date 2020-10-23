@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,20 +16,18 @@
 
 package com.sun.faces.context;
 
-
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.ExternalContextFactory;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContextFactory;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 public class ExternalContextFactoryImpl extends ExternalContextFactory {
 
-    public static final String DEFAULT_EXTERNAL_CONTEXT_KEY =
-          ExternalContextFactoryImpl.class.getName() + "_KEY";
+    public static final String DEFAULT_EXTERNAL_CONTEXT_KEY = ExternalContextFactoryImpl.class.getName() + "_KEY";
 
     public ExternalContextFactoryImpl() {
         super(null);
@@ -37,22 +35,16 @@ public class ExternalContextFactoryImpl extends ExternalContextFactory {
 
     // ---------------------------------------- Methods from ExternalContextFactory
 
-
     @Override
-    public ExternalContext getExternalContext(Object servletContext,
-                                        Object request,
-                                        Object response)
+    public ExternalContext getExternalContext(Object servletContext, Object request, Object response)
 
-    throws FacesException {
+            throws FacesException {
 
         Util.notNull("servletContext", servletContext);
         Util.notNull("request", request);
         Util.notNull("response", response);
 
-        ExternalContext extContext = 
-              new ExternalContextImpl((ServletContext) servletContext,
-                                      (ServletRequest) request,
-                                      (ServletResponse) response);
+        ExternalContext extContext = new ExternalContextImpl((ServletContext) servletContext, (ServletRequest) request, (ServletResponse) response);
 
         if (request instanceof ServletRequest) {
             ((ServletRequest) request).setAttribute(DEFAULT_EXTERNAL_CONTEXT_KEY, extContext);

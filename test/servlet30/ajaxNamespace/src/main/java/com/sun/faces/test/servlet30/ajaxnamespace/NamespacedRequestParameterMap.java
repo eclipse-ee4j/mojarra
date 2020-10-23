@@ -16,41 +16,48 @@
 
 package com.sun.faces.test.servlet30.ajaxnamespace;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.ServletRequest;
 
 import com.sun.faces.context.RequestParameterMap;
+import com.sun.faces.util.Util;
 
 public class NamespacedRequestParameterMap extends RequestParameterMap {
 
-    private final ServletRequest request;
+	private final ServletRequest request;
 
-    public NamespacedRequestParameterMap(ServletRequest request) {
-        super(request);
-        this.request = request;
-    }
+	public NamespacedRequestParameterMap(ServletRequest request) {
+		super(request);
+		this.request = request;
+	}
 
-    @Override
-    public String get(Object key) {
-        String mapKey = key.toString();
+	@Override
+	public String get(Object key) {
+		String mapKey = key.toString();
 
-        String value = request.getParameter(getNamingContainerPrefix() + mapKey);
+		String value = request.getParameter(getNamingContainerPrefix() + mapKey);
 
-        if (value == null && !mapKey.equals("param")) {
-            value = request.getParameter(mapKey);
-        }
+		if (value == null && !mapKey.equals("param")) {
+			value = request.getParameter(mapKey);
+		}
+		return value;
+	}
 
-        return value;
-    }
+	@Override
+	public boolean containsKey(Object key) {
+		String mapKey = key.toString();
+		boolean contains = (request.getParameter(getNamingContainerPrefix()
+				+ mapKey) != null);
 
-    @Override
-    public boolean containsKey(Object key) {
-        String mapKey = key.toString();
-        boolean contains = (request.getParameter(getNamingContainerPrefix() + mapKey) != null);
+		if (!contains && !mapKey.equals("param")) {
+			contains = (request.getParameter(mapKey) != null);
+		}
 
-        if (!contains && !mapKey.equals("param")) {
-            contains = (request.getParameter(mapKey) != null);
-        }
-
-        return contains;
-    }
+		return contains;
+	}
 }

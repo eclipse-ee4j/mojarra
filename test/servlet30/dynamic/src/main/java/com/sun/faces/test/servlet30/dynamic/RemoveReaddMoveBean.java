@@ -16,41 +16,41 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @RequestScoped
 public class RemoveReaddMoveBean {
 
-    @Inject
-    private FacesContext context;
 
     public void update() {
+        FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
         UIComponent panelGroupA = root.findComponent(":a");
         UIComponent inputText = root.findComponent(":inputText");
         UIComponent panelGroupB = root.findComponent(":b");
-
+        
         panelGroupA.getChildren().remove(inputText);
         panelGroupA.getChildren().add(inputText);
         panelGroupB.getChildren().add(inputText);
     }
-
+    
     public String getStateSavingMode() {
-        return context.getViewRoot().initialStateMarked() ? "PSS" : "FSS";
+        return FacesContext.getCurrentInstance().
+                getViewRoot().initialStateMarked() ? "PSS" : "FSS";
     }
-
+    
     public String getHasMarkChildrenModified() {
-        boolean result = context.getViewRoot()
-                                .findComponent(":b")
-                                .getAttributes()
-                                .containsKey("com.sun.faces.facelets.MARK_CHILDREN_MODIFIED");
-
+        boolean result = false;
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot root = context.getViewRoot();
+        UIComponent panelGroupB = root.findComponent(":b");
+        result = panelGroupB.getAttributes().containsKey("com.sun.faces.facelets.MARK_CHILDREN_MODIFIED");
+        
         return Boolean.valueOf(result).toString();
 
     }

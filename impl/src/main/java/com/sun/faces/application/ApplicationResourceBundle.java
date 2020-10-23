@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -44,12 +44,12 @@ public class ApplicationResourceBundle {
      * <p>
      * Constructs a new ApplicationResourceBundle
      * </p>
-     * 
+     *
      * @param baseName the base name of the <code>ResourceBundle</code>
-     * @param displayNames any display names that were associated with the resource bundle
-     *            definition in the configuration resource
-     * @param descriptions any descriptions that were associated with the resource bundle definition
-     *            in the configuration resource
+     * @param displayNames any display names that were associated with the resource bundle definition in the configuration
+     * resource
+     * @param descriptions any descriptions that were associated with the resource bundle definition in the configuration
+     * resource
      */
     public ApplicationResourceBundle(String baseName, Map<String, String> displayNames, Map<String, String> descriptions) {
 
@@ -59,15 +59,14 @@ public class ApplicationResourceBundle {
         this.baseName = baseName;
         this.displayNames = displayNames;
         this.descriptions = descriptions;
-        this.resources = new HashMap<>(4, 1.0f);
+        resources = new HashMap<>(4, 1.0f);
     }
-    
 
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * @return the base name of the <code>ResourceBundle</code> associated with this
-     *         <code>ApplicationResourceBundle</code> instance
+     * @return the base name of the <code>ResourceBundle</code> associated with this <code>ApplicationResourceBundle</code>
+     * instance
      */
     public String getBaseName() {
         return baseName;
@@ -75,8 +74,7 @@ public class ApplicationResourceBundle {
 
     /**
      * @param locale a <code>Locale</code>
-     * @return return the <code>ResourceBundle</code> associated with the specified
-     *         </code>locale</code>
+     * @return return the <code>ResourceBundle</code> associated with the specified </code>locale</code>
      */
     public ResourceBundle getResourceBundle(Locale locale) {
 
@@ -101,8 +99,7 @@ public class ApplicationResourceBundle {
 
     /**
      * @param locale a <code>Locale</code>
-     * @return a text of a <code>display-name</code> element associated with the specified
-     *         </code>locale</code>
+     * @return a text of a <code>display-name</code> element associated with the specified </code>locale</code>
      */
     public String getDisplayName(Locale locale) {
 
@@ -116,8 +113,7 @@ public class ApplicationResourceBundle {
 
     /**
      * @param locale a <code>Locale</code>
-     * @return a text of a <code>description</code> element associated with the specified
-     *         </code>locale</code>
+     * @return a text of a <code>description</code> element associated with the specified </code>locale</code>
      */
     public String getDescription(Locale locale) {
 
@@ -129,15 +125,13 @@ public class ApplicationResourceBundle {
         return coalesce(description, "");
     }
 
-    
     // --------------------------------------------------------- Private Methods
 
     /**
      * <p>
-     * Lookup and return the text for the specified <code>Locale</code> from within the specified
-     * <code>Map</code>.
+     * Lookup and return the text for the specified <code>Locale</code> from within the specified <code>Map</code>.
      * </p>
-     * 
+     *
      * @param locale <code>Locale</code> if interest
      * @param map a map containing localized text keyed by <code>Locale</code>
      * @return localized text, if any
@@ -146,10 +140,10 @@ public class ApplicationResourceBundle {
 
         if (locale == null) {
             return map.get(DEFAULT_KEY);
-        } 
-        
+        }
+
         String description = map.get(locale.toString());
-        
+
         if (description == null) {
             return map.get(DEFAULT_KEY);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,21 +16,18 @@
 
 package com.sun.faces.context;
 
-import java.util.Map;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * <p>
- * This is the base Map for those Maps that need to return <code>String[]</code>
- * values.
+ * This is the base Map for those Maps that need to return <code>String[]</code> values.
  * <p>
  */
 abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public boolean containsValue(Object value) {
@@ -50,32 +47,30 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
         return false;
     }
 
-
     @Override
     public boolean equals(Object obj) {
 
-        if (obj == null ||
-            !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) {
+        if (obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) {
             return false;
         }
         Map objMap = (Map) obj;
 
-        if (this.size() != objMap.size()) {
+        if (size() != objMap.size()) {
             return false;
         }
-        String[] thisKeys = keySet().toArray(new String[this.size()]);
+        String[] thisKeys = keySet().toArray(new String[size()]);
         Object[] objKeys = objMap.keySet().toArray();
 
         Arrays.sort(thisKeys);
         Arrays.sort(objKeys);
 
-        if (!(Arrays.equals(thisKeys, objKeys))) {
+        if (!Arrays.equals(thisKeys, objKeys)) {
             return false;
         } else {
             for (Object key : thisKeys) {
-                Object[] thisVal = this.get(key);
+                Object[] thisVal = get(key);
                 Object[] objVal = (Object[]) objMap.get(key);
-                if (!(Arrays.equals(thisVal, objVal))) {
+                if (!Arrays.equals(thisVal, objVal)) {
                     return false;
                 }
             }
@@ -85,26 +80,21 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
 
     }
 
-
     @Override
     public int hashCode() {
         return this.hashCode(this);
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected int hashCode(Object someObject) {
         int hashCode = 7 * someObject.hashCode();
-         for (Object o : entrySet()) {
-             Map.Entry entry = (Map.Entry) o;
-             hashCode += entry.getKey().hashCode();
-             hashCode +=
-                   (Arrays.hashCode((Object[]) entry.getValue()));
-         }
+        for (Object o : entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            hashCode += entry.getKey().hashCode();
+            hashCode += Arrays.hashCode((Object[]) entry.getValue());
+        }
         return hashCode;
     }
-
 
 }

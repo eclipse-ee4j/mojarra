@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.el;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class Issue2638IT {
 
@@ -49,10 +45,11 @@ public class Issue2638IT {
     @Test
     public void testInvalidatedSession2() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/viewInvalidatedSession2.xhtml");
-        assertTrue(page.asText().contains("Invalidated: false"));
-
+        assertTrue(page.asText().indexOf("Local Count: 0") != -1);
+        assertTrue(page.asText().indexOf("Invalidated: false") != -1);
         HtmlElement button = page.getHtmlElementById("form:button");
         page = button.click();
-        assertTrue(page.asText().contains("Invalidated: true"));
+        assertTrue(page.asText().indexOf("Local Count: 0") != -1);
+        assertTrue(page.asText().indexOf("Invalidated: true") != -1);
     }
 }

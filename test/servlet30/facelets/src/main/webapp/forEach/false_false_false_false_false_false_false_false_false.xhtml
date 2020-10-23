@@ -22,34 +22,39 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
-
+    
     <f:view beforePhase="#{forEachBean.modify}">
+
+<h:head>
+<title>forEach</title>
+</h:head>
+
+<h:body>
     
-        <h:head>
-            <title>forEach</title>
-        </h:head>
-    
-        <h:body>
-    
-            <h:form prependId="false" id="form01">
-    
-                <c:forEach items="#{forEachBean.names}" var="outer">
-                    <p>
-                        <h:inputText disabled="true" value="#{outer}" />
-                        <h:inputText disabled="true" id="literalId" value="#{outer}" />
-                    </p>
-                </c:forEach>
-    
-                <h:commandButton id="submit" value="submit" />
-    
-                <h:commandButton id="submitAjax" value="submitAjax">
-                    <f:ajax execute="@form" render="@form" />
-                </h:commandButton>
-    
-            </h:form>
-    
-        </h:body>
-    
+<h:form prependId="false" id="form01">
+
+<c:forEach items="#{forEachBean.names}" var="outer">
+
+<p> 
+
+<h:inputText disabled="true" value="#{outer}" /> 
+
+<h:inputText disabled="true" id="literalId" value="#{outer}" /> 
+
+</p>
+
+</c:forEach>
+
+<h:commandButton id="submit" value="submit" />
+
+<h:commandButton id="submitAjax" value="submitAjax">
+  <f:ajax execute="@form" render="@form" />
+</h:commandButton>
+
+</h:form>
+
+</h:body>
+        
     </f:view>
 
 </html>

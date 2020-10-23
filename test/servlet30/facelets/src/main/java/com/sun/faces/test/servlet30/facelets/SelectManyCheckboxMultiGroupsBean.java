@@ -21,24 +21,20 @@
  */
 package com.sun.faces.test.servlet30.facelets;
 
-import static java.util.Arrays.asList;
-
-import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "selectManyCheckboxMultiGroupsBean")
 @ViewScoped
-public class SelectManyCheckboxMultiGroupsBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class SelectManyCheckboxMultiGroupsBean {
 
     private List<SelectItem> cars;
+
     private List<String> selected;
 
     @PostConstruct
@@ -49,7 +45,7 @@ public class SelectManyCheckboxMultiGroupsBean implements Serializable {
         SelectItemGroup g2 = new SelectItemGroup("American Cars");
         g2.setSelectItems(new SelectItem[]{new SelectItem("Chrysler", "Chrysler"), new SelectItem("GM", "GM"), new SelectItem("Ford", "Ford")});
 
-        cars = asList(g1, g2);
+        cars = Arrays.<SelectItem>asList(g1, g2);
     }
 
     public List<SelectItem> getCars() {

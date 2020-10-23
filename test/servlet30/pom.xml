@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates and others. All rights reserved.
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,60 +15,67 @@
 
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
--->
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"> <modelVersion>4.0.0</modelVersion>
-
+    <modelVersion>4.0.0</modelVersion>
+    
     <parent>
         <groupId>com.sun.faces.test</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.0-m01-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
-
+    
     <groupId>com.sun.faces.test.servlet30</groupId>
     <artifactId>pom</artifactId>
     <packaging>pom</packaging>
     <name>Mojarra ${project.version} - Test - Servlet 3.0</name>
-
+    
     <modules>
         <module>absoluteOrdering</module>
         <module>ajax</module>
         <module>ajaxNamespace</module>
+        <module>annotationRestrictions</module>
         <module>application</module>
         <module>appUsingJarWithExactlyTwoContracts</module>
         <module>bogusRenderKitId</module>
         <module>characterCombat</module>
         <module>clientsideStateSaving</module>
         <module>client-encrypt-by-default</module>
+        <module>client-encrypt-by-default-disabled</module>
         <module>component</module>
         <module>composite</module>
         <module>composite2</module>
-        <module>composite2Jar</module>
+	<module>composite2Jar</module>
         <module>compositeComponentForAttribute</module>
         <module>configBasic</module>
         <module>configEmbed</module>
         <module>configExtra</module>
+        <module>configFile</module>
         <module>configLowercase</module>
-        <module>configInJarOnly</module>
-        <module>configInJarOnlyJar</module>
-        <module>contractBasic</module>
-        <module>contractBasicInJar</module>
-        <module>contractBasicJar</module>
-        <module>contractExtended</module>
-        <module>contractExtendedBase</module>
-        <module>contractExtendedBlue</module>
-        <module>contractExtendedRed</module>
-        <module>contractSample</module>
-        <module>contractSimple</module>
+	<module>configInJarOnly</module>
+	<module>configInJarOnlyJar</module>
+	<module>content-type</module>
+	<module>contractBasic</module>
+	<module>contractBasicInJar</module>
+	<module>contractBasicJar</module>
+	<module>contractExtended</module>
+	<module>contractExtendedBase</module>
+	<module>contractExtendedBlue</module>
+	<module>contractExtendedRed</module>
+	<module>contractSample</module>
+	<module>contractSimple</module>
         <module>contractUsingHostHeader</module>
         <module>contractUsingViewRoot</module>
         <module>converter</module>
         <module>converterNPE</module>
         <module>customFaceletsResolver</module>
         <module>customLifecycle</module>
+        <module>customPropertyResolverJsp</module>
         <module>customResolvers</module>
         <module>customResourcesDirectory</module>
         <module>customStateManager</module>
+        <module>customVariableResolver</module>
+        <module>customVariableResolverProgrammatically</module>
         <module>customViewHandler</module>
         <module>customViewRootViewScope</module>
         <module>disableBeanValidator</module>
@@ -97,24 +104,25 @@
         <module>findResourcesInJar</module>
         <module>flash</module>
         <module>flashBasic</module>
-        <module>flashChunkRedirect</module>
-        <module>flashCustom</module>
+	<module>flashChunkRedirect</module>
+	<module>flashCustom</module>
         <module>flashForceWriteCookie</module>
         <module>flashNoSession</module>
         <module>implicitContract</module>
-        <module>jarOrderingMain</module>
+        <module>jarOrdering</module>
         <module>jarWithExactlyTwoContracts</module>
+        <module>jspFlash</module>
         <module>initRequestParameterMap</module>
         <module>invalidMapping</module>
         <module>lateBindings</module>
         <module>lifecycleBasic</module>
-        <module>lifecycleClientWindow</module>
-        <module>lifecycleCsrf</module>
-        <module>lifecycleDebugOutputStream</module>
-        <module>lifecycleFacesServletAccess</module>
-        <module>lifecycleOptionsRequest</module>
-        <module>lifecycleServerStateNegative</module>
-        <module>lifecycleServerStatePositive</module>
+	<module>lifecycleClientWindow</module>
+	<module>lifecycleCsrf</module>
+	<module>lifecycleDebugOutputStream</module>
+	<module>lifecycleFacesServletAccess</module>
+	<module>lifecycleOptionsRequest</module>
+	<module>lifecycleServerStateNegative</module>
+	<module>lifecycleServerStatePositive</module>
         <module>listener</module>
         <module>localeConfig</module>
         <module>multiTenantSetsTccl</module>
@@ -128,16 +136,19 @@
         <module>noWebXml</module>
         <module>passthrough</module>
         <module>processAsHtml5</module>
+        <module>processAsJspx</module>
         <module>processAsXhtml5</module>
         <module>renderKit</module>
         <module>requestCharEncodingNoSession</module>
         <module>resource</module>
         <module>resourceExposure</module>
+        <module>runtimeConfig</module>
         <module>serializeServerState</module>
         <module>sessionScope</module>
         <module>stateViewExpiredExceptionMissing</module>
         <module>stringConverter</module>
         <module>suppressXmlDeclaration</module>
+        <module>systest</module>
         <module>viewExpiredException</module>
         <module>viewRootPhaseListener</module>
         <module>viewRootPhaseListenerNoContextParam</module>
@@ -145,5 +156,5 @@
         <module>wcagDataTable</module>
         <module>writeAttributeScriptDisabled</module>
         <module>writeAttributeScriptEnabled</module>
-    </modules>
+  </modules>
 </project>

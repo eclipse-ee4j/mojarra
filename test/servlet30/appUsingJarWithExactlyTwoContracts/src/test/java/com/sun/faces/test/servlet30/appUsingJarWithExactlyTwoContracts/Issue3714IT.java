@@ -71,13 +71,13 @@ public class Issue3714IT {
         HtmlImage image = page.getHtmlElementById("img01");
         String src = image.getSrcAttribute();
         
-        assertTrue(src.contains("/faces/javax.faces.resource/img01.gif"));
+        assertTrue(src.contains("/faces/jakarta.faces.resource/img01.gif"));
         assertTrue(src.contains("con=resourcesInContractInJar"));
         
         image = page.getHtmlElementById("img02");
         src = image.getSrcAttribute();
         
-        assertTrue(src.contains("/faces/javax.faces.resource/img02.gif"));
+        assertTrue(src.contains("/faces/jakarta.faces.resource/img02.gif"));
         assertTrue(src.contains("con=resourcesInContractInJar"));
         
     }

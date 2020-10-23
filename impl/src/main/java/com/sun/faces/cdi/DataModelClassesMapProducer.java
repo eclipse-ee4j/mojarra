@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,17 +18,17 @@ package com.sun.faces.cdi;
 
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.CDI;
-import javax.faces.model.DataModel;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.faces.model.DataModel;
 
 /**
  * <p class="changed_added_2_3">
- * The DataModelClassesMapProducer is the CDI producer that allows UIData, UIRepeat and
- * possible other components that need a DataModel wrapper for a given type to obtain
- * a Map of types to DataModel implementations capable of wrapping that type.
+ * The DataModelClassesMapProducer is the CDI producer that allows UIData, UIRepeat and possible other components that
+ * need a DataModel wrapper for a given type to obtain a Map of types to DataModel implementations capable of wrapping
+ * that type.
  * </p>
- * 
+ *
  * <p>
  * Components can obtain this Map by querying the bean manager for beans named "comSunFacesDataModelClassesMap".
  * </p>
@@ -42,20 +42,10 @@ public class DataModelClassesMapProducer extends CdiProducer<Map<Class<?>, Class
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public DataModelClassesMapProducer() {
-        super.name("comSunFacesDataModelClassesMap")
-             .scope(ApplicationScoped.class)
-             .qualifiers(new DataModelClassesAnnotationLiteral())
-             .types(
-                 Map.class, 
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> CDI
-                 .current()
-                 .select(CdiExtension.class)
-                 .get()
-                 .getForClassToDataModelClass());
+        super.name("comSunFacesDataModelClassesMap").scope(ApplicationScoped.class).qualifiers(new DataModelClassesAnnotationLiteral())
+                .types(Map.class, Object.class).beanClass(Map.class).create(e -> CDI.current().select(CdiExtension.class).get().getForClassToDataModelClass());
     }
 
 }

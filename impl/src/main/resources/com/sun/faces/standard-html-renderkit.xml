@@ -2,7 +2,7 @@
 
 <!--
 
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,13 +19,12 @@
 -->
 
 <!-- =========== FULL CONFIGURATION FILE ================================== -->
-
 <faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd" version="2.2">
   <!-- Generic User Interface Components -->
 
   <component>
-    <component-type>javax.faces.Column</component-type>
-    <component-class>javax.faces.component.UIColumn</component-class>
+    <component-type>jakarta.faces.Column</component-type>
+    <component-class>jakarta.faces.component.UIColumn</component-class>
     <facet>
       <facet-name>header</facet-name>
     </facet>
@@ -123,7 +122,7 @@
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -173,12 +172,12 @@
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Column</component-family>
+      <component-family>jakarta.faces.Column</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Command</component-type>
-    <component-class>javax.faces.component.UICommand</component-class>
+    <component-type>jakarta.faces.Command</component-type>
+    <component-class>jakarta.faces.component.UICommand</component-class>
 
     <property>
       <description><![CDATA[
@@ -270,7 +269,7 @@
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -330,7 +329,7 @@
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -354,10 +353,10 @@
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void actionListener(javax.faces.event.ActionEvent)
+                void actionListener(jakarta.faces.event.ActionEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -397,13 +396,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Command</component-family>
-      <renderer-type>javax.faces.Button</renderer-type>
+      <component-family>jakarta.faces.Command</component-family>
+      <renderer-type>jakarta.faces.Button</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Data</component-type>
-    <component-class>javax.faces.component.UIData</component-class>
+    <component-type>jakarta.faces.Data</component-type>
+    <component-class>jakarta.faces.component.UIData</component-class>
 
     <property>
       <description><![CDATA[
@@ -495,7 +494,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -668,13 +667,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Data</component-family>
-      <renderer-type>javax.faces.Table</renderer-type>
+      <component-family>jakarta.faces.Data</component-family>
+      <renderer-type>jakarta.faces.Table</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Form</component-type>
-    <component-class>javax.faces.component.UIForm</component-class>
+    <component-type>jakarta.faces.Form</component-type>
+    <component-class>jakarta.faces.component.UIForm</component-class>
 
     <property>
       <description><![CDATA[
@@ -766,7 +765,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -845,13 +844,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Form</component-family>
-      <renderer-type>javax.faces.Form</renderer-type>
+      <component-family>jakarta.faces.Form</component-family>
+      <renderer-type>jakarta.faces.Form</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Graphic</component-type>
-    <component-class>javax.faces.component.UIGraphic</component-class>
+    <component-type>jakarta.faces.Graphic</component-type>
+    <component-class>jakarta.faces.component.UIGraphic</component-class>
 
     <property>
       <description><![CDATA[
@@ -943,7 +942,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -1018,13 +1017,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Graphic</component-family>
-      <renderer-type>javax.faces.Image</renderer-type>
+      <component-family>jakarta.faces.Graphic</component-family>
+      <renderer-type>jakarta.faces.Image</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.ImportConstants</component-type>
-    <component-class>javax.faces.component.UIImportConstants</component-class>
+    <component-type>jakarta.faces.ImportConstants</component-type>
+    <component-class>jakarta.faces.component.UIImportConstants</component-class>
 
     <property>
       <description><![CDATA[
@@ -1116,7 +1115,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -1183,12 +1182,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.ImportConstants</component-family>
+      <component-family>jakarta.faces.ImportConstants</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Input</component-type>
-    <component-class>javax.faces.component.UIInput</component-class>
+    <component-type>jakarta.faces.Input</component-type>
+    <component-class>jakarta.faces.component.UIInput</component-class>
 
     <property>
       <description><![CDATA[
@@ -1280,7 +1279,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -1338,7 +1337,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -1467,10 +1466,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -1492,10 +1491,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -1536,13 +1535,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Input</component-family>
-      <renderer-type>javax.faces.Text</renderer-type>
+      <component-family>jakarta.faces.Input</component-family>
+      <renderer-type>jakarta.faces.Text</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Message</component-type>
-    <component-class>javax.faces.component.UIMessage</component-class>
+    <component-type>jakarta.faces.Message</component-type>
+    <component-class>jakarta.faces.component.UIMessage</component-class>
 
     <property>
       <description><![CDATA[
@@ -1634,7 +1633,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -1728,13 +1727,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Message</component-family>
-      <renderer-type>javax.faces.Message</renderer-type>
+      <component-family>jakarta.faces.Message</component-family>
+      <renderer-type>jakarta.faces.Message</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Messages</component-type>
-    <component-class>javax.faces.component.UIMessages</component-class>
+    <component-type>jakarta.faces.Messages</component-type>
+    <component-class>jakarta.faces.component.UIMessages</component-class>
 
     <property>
       <description><![CDATA[
@@ -1826,7 +1825,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -1937,13 +1936,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Messages</component-family>
-      <renderer-type>javax.faces.Messages</renderer-type>
+      <component-family>jakarta.faces.Messages</component-family>
+      <renderer-type>jakarta.faces.Messages</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.NamingContainer</component-type>
-    <component-class>javax.faces.component.UINamingContainer</component-class>
+    <component-type>jakarta.faces.NamingContainer</component-type>
+    <component-class>jakarta.faces.component.UINamingContainer</component-class>
 
     <property>
       <description><![CDATA[
@@ -2035,7 +2034,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -2085,12 +2084,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.NamingContainer</component-family>
+      <component-family>jakarta.faces.NamingContainer</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Output</component-type>
-    <component-class>javax.faces.component.UIOutput</component-class>
+    <component-type>jakarta.faces.Output</component-type>
+    <component-class>jakarta.faces.component.UIOutput</component-class>
 
     <property>
       <description><![CDATA[
@@ -2182,7 +2181,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -2240,7 +2239,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -2275,13 +2274,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Text</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Text</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.OutcomeTarget</component-type>
-    <component-class>javax.faces.component.UIOutcomeTarget</component-class>
+    <component-type>jakarta.faces.OutcomeTarget</component-type>
+    <component-class>jakarta.faces.component.UIOutcomeTarget</component-class>
 
     <property>
       <description><![CDATA[
@@ -2373,7 +2372,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -2431,7 +2430,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -2502,13 +2501,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.OutcomeTarget</component-family>
-      <renderer-type>javax.faces.Link</renderer-type>
+      <component-family>jakarta.faces.OutcomeTarget</component-family>
+      <renderer-type>jakarta.faces.Link</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Panel</component-type>
-    <component-class>javax.faces.component.UIPanel</component-class>
+    <component-type>jakarta.faces.Panel</component-type>
+    <component-class>jakarta.faces.component.UIPanel</component-class>
 
     <property>
       <description><![CDATA[
@@ -2600,7 +2599,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -2650,12 +2649,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Panel</component-family>
+      <component-family>jakarta.faces.Panel</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.ViewParameter</component-type>
-    <component-class>javax.faces.component.UIViewParameter</component-class>
+    <component-type>jakarta.faces.ViewParameter</component-type>
+    <component-class>jakarta.faces.component.UIViewParameter</component-class>
 
     <property>
       <description><![CDATA[
@@ -2747,7 +2746,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -2805,7 +2804,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -2934,10 +2933,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -2959,10 +2958,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -3093,7 +3092,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -3164,12 +3163,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.ViewParameter</component-family>
+      <component-family>jakarta.faces.ViewParameter</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.ViewAction</component-type>
-    <component-class>javax.faces.component.UIViewAction</component-class>
+    <component-type>jakarta.faces.ViewAction</component-type>
+    <component-class>jakarta.faces.component.UIViewAction</component-class>
 
     <property>
       <description><![CDATA[
@@ -3261,7 +3260,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -3321,7 +3320,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -3345,10 +3344,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void actionListener(javax.faces.event.ActionEvent)
+                void actionListener(jakarta.faces.event.ActionEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -3386,7 +3385,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>actionExpression</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -3446,12 +3445,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.ViewAction</component-family>
+      <component-family>jakarta.faces.ViewAction</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Parameter</component-type>
-    <component-class>javax.faces.component.UIParameter</component-class>
+    <component-type>jakarta.faces.Parameter</component-type>
+    <component-class>jakarta.faces.component.UIParameter</component-class>
 
     <property>
       <description><![CDATA[
@@ -3543,7 +3542,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -3614,12 +3613,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Parameter</component-family>
+      <component-family>jakarta.faces.Parameter</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.SelectBoolean</component-type>
-    <component-class>javax.faces.component.UISelectBoolean</component-class>
+    <component-type>jakarta.faces.SelectBoolean</component-type>
+    <component-class>jakarta.faces.component.UISelectBoolean</component-class>
 
     <property>
       <description><![CDATA[
@@ -3711,7 +3710,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -3766,7 +3765,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -3895,10 +3894,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -3920,10 +3919,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -3977,13 +3976,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.SelectBoolean</component-family>
-      <renderer-type>javax.faces.Checkbox</renderer-type>
+      <component-family>jakarta.faces.SelectBoolean</component-family>
+      <renderer-type>jakarta.faces.Checkbox</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.SelectItem</component-type>
-    <component-class>javax.faces.component.UISelectItem</component-class>
+    <component-type>jakarta.faces.SelectItem</component-type>
+    <component-class>jakarta.faces.component.UISelectItem</component-class>
 
     <property>
       <description><![CDATA[
@@ -4075,7 +4074,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -4178,12 +4177,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.SelectItem</component-family>
+      <component-family>jakarta.faces.SelectItem</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.SelectItems</component-type>
-    <component-class>javax.faces.component.UISelectItems</component-class>
+    <component-type>jakarta.faces.SelectItems</component-type>
+    <component-class>jakarta.faces.component.UISelectItems</component-class>
 
     <property>
       <description><![CDATA[
@@ -4275,7 +4274,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -4337,12 +4336,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.SelectItems</component-family>
+      <component-family>jakarta.faces.SelectItems</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.SelectMany</component-type>
-    <component-class>javax.faces.component.UISelectMany</component-class>
+    <component-type>jakarta.faces.SelectMany</component-type>
+    <component-class>jakarta.faces.component.UISelectMany</component-class>
 
     <property>
       <description><![CDATA[
@@ -4434,7 +4433,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -4492,7 +4491,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -4621,10 +4620,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -4646,10 +4645,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -4703,13 +4702,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.SelectMany</component-family>
-      <renderer-type>javax.faces.Listbox</renderer-type>
+      <component-family>jakarta.faces.SelectMany</component-family>
+      <renderer-type>jakarta.faces.Listbox</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.SelectOne</component-type>
-    <component-class>javax.faces.component.UISelectOne</component-class>
+    <component-type>jakarta.faces.SelectOne</component-type>
+    <component-class>jakarta.faces.component.UISelectOne</component-class>
 
     <property>
       <description><![CDATA[
@@ -4801,7 +4800,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -4859,7 +4858,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -4988,10 +4987,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -5013,10 +5012,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -5057,13 +5056,13 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.SelectOne</component-family>
-      <renderer-type>javax.faces.Menu</renderer-type>
+      <component-family>jakarta.faces.SelectOne</component-family>
+      <renderer-type>jakarta.faces.Menu</renderer-type>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.ViewRoot</component-type>
-    <component-class>javax.faces.component.UIViewRoot</component-class>
+    <component-type>jakarta.faces.ViewRoot</component-type>
+    <component-class>jakarta.faces.component.UIViewRoot</component-class>
 
     <property>
       <description><![CDATA[
@@ -5155,7 +5154,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -5241,12 +5240,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.ViewRoot</component-family>
+      <component-family>jakarta.faces.ViewRoot</component-family>
     </component-extension>
   </component>
   <component>
-    <component-type>javax.faces.Websocket</component-type>
-    <component-class>javax.faces.component.UIWebsocket</component-class>
+    <component-type>jakarta.faces.Websocket</component-type>
+    <component-class>jakarta.faces.component.UIWebsocket</component-class>
 
     <property>
       <description><![CDATA[
@@ -5338,7 +5337,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -5447,7 +5446,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             See also 
             <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
             and
-            <a href="http://docs.oracle.com/javaee/7/api/javax/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
+            <a href="https://jakarta.ee/specifications/websocket/2.0/apidocs/jakarta/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
             API for an elaborate list of all close codes.
         ]]></description>
       <icon/>
@@ -5469,8 +5468,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <component-family>javax.faces.Script</component-family>
-      <renderer-type>javax.faces.Websocket</renderer-type>
+      <component-family>jakarta.faces.Script</component-family>
+      <renderer-type>jakarta.faces.Websocket</renderer-type>
     </component-extension>
   </component>
 
@@ -5480,8 +5479,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     <description><![CDATA[<p>Represents a column that will be rendered 
       in an HTML <code>table</code> element.</p>]]></description>
     <display-name>Column</display-name>
-    <component-type>javax.faces.HtmlColumn</component-type>
-    <component-class>javax.faces.component.html.HtmlColumn</component-class>
+    <component-type>jakarta.faces.HtmlColumn</component-type>
+    <component-class>jakarta.faces.component.html.HtmlColumn</component-class>
 
     <property>
       <description><![CDATA[
@@ -5573,7 +5572,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -5666,7 +5665,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Column</base-component-type>
+      <base-component-type>jakarta.faces.Column</base-component-type>
     </component-extension>
   </component>
   <component>
@@ -5674,8 +5673,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       for a button of type <code>submit</code> or <code>reset</code>.
       The label text is specified by the component value.</p>]]></description>
     <display-name>Command Button</display-name>
-    <component-type>javax.faces.HtmlCommandButton</component-type>
-    <component-class>javax.faces.component.html.HtmlCommandButton</component-class>
+    <component-type>jakarta.faces.HtmlCommandButton</component-type>
+    <component-class>jakarta.faces.component.html.HtmlCommandButton</component-class>
 
     <property>
       <description><![CDATA[
@@ -5767,7 +5766,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -5827,7 +5826,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -5851,10 +5850,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void actionListener(javax.faces.event.ActionEvent)
+                void actionListener(jakarta.faces.event.ActionEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -6330,8 +6329,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Command</base-component-type>
-      <renderer-type>javax.faces.Button</renderer-type>
+      <base-component-type>jakarta.faces.Command</base-component-type>
+      <renderer-type>jakarta.faces.Button</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -6339,8 +6338,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       like a submit button.  This component must be placed inside
       a form, and requires JavaScript to be enabled in the client.</p>]]></description>
     <display-name>Command Hyperlink</display-name>
-    <component-type>javax.faces.HtmlCommandLink</component-type>
-    <component-class>javax.faces.component.html.HtmlCommandLink</component-class>
+    <component-type>jakarta.faces.HtmlCommandLink</component-type>
+    <component-class>jakarta.faces.component.html.HtmlCommandLink</component-class>
 
     <property>
       <description><![CDATA[
@@ -6432,7 +6431,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -6492,7 +6491,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -6516,10 +6515,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void actionListener(javax.faces.event.ActionEvent)
+                void actionListener(jakarta.faces.event.ActionEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -6979,8 +6978,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Command</base-component-type>
-      <renderer-type>javax.faces.Link</renderer-type>
+      <base-component-type>jakarta.faces.Command</base-component-type>
+      <renderer-type>jakarta.faces.Link</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -6988,8 +6987,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       like an ajax form submit.  This component must be placed inside
       a form, and requires JavaScript to be enabled in the client.</p>]]></description>
     <display-name>Command Script</display-name>
-    <component-type>javax.faces.HtmlCommandScript</component-type>
-    <component-class>javax.faces.component.html.HtmlCommandScript</component-class>
+    <component-type>jakarta.faces.HtmlCommandScript</component-type>
+    <component-class>jakarta.faces.component.html.HtmlCommandScript</component-class>
 
     <property>
       <description><![CDATA[
@@ -7081,7 +7080,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -7143,7 +7142,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Application Action</display-name>
       <icon/>
       <property-name>action</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
                 java.lang.Object action()
@@ -7167,10 +7166,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Action Listener</display-name>
       <icon/>
       <property-name>actionListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void actionListener(javax.faces.event.ActionEvent)
+                void actionListener(jakarta.faces.event.ActionEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -7273,8 +7272,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Command</base-component-type>
-      <renderer-type>javax.faces.Script</renderer-type>
+      <base-component-type>jakarta.faces.Command</base-component-type>
+      <renderer-type>jakarta.faces.Script</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -7282,8 +7281,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       columns by child UIColumn components) that will
       be rendered in an HTML <code>table</code> element.</p>]]></description>
     <display-name>Data Table</display-name>
-    <component-type>javax.faces.HtmlDataTable</component-type>
-    <component-class>javax.faces.component.html.HtmlDataTable</component-class>
+    <component-type>jakarta.faces.HtmlDataTable</component-type>
+    <component-class>jakarta.faces.component.html.HtmlDataTable</component-class>
 
     <property>
       <description><![CDATA[
@@ -7375,7 +7374,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -8013,16 +8012,16 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       </property-extension>
     </property>
     <component-extension>
-      <base-component-type>javax.faces.Data</base-component-type>
-      <renderer-type>javax.faces.Table</renderer-type>
+      <base-component-type>jakarta.faces.Data</base-component-type>
+      <renderer-type>jakarta.faces.Table</renderer-type>
     </component-extension>
   </component>
   <component>
     <description><![CDATA[<p>Represents an HTML <code>form</code> element.  Child input components
       will be submitted unless they have been disabled.</p>]]></description>
     <display-name>Form</display-name>
-    <component-type>javax.faces.HtmlForm</component-type>
-    <component-class>javax.faces.component.html.HtmlForm</component-class>
+    <component-type>jakarta.faces.HtmlForm</component-type>
+    <component-class>jakarta.faces.component.html.HtmlForm</component-class>
 
     <property>
       <description><![CDATA[
@@ -8114,7 +8113,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -8509,16 +8508,16 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Form</base-component-type>
-      <renderer-type>javax.faces.Form</renderer-type>
+      <base-component-type>jakarta.faces.Form</base-component-type>
+      <renderer-type>jakarta.faces.Form</renderer-type>
     </component-extension>
   </component>
   <component>
     <description><![CDATA[<p>Represents an HTML <code>img</code> element, used to retrieve
       and render a graphical image.</p>]]></description>
     <display-name>Graphic Image</display-name>
-    <component-type>javax.faces.HtmlGraphicImage</component-type>
-    <component-class>javax.faces.component.html.HtmlGraphicImage</component-class>
+    <component-type>jakarta.faces.HtmlGraphicImage</component-type>
+    <component-class>jakarta.faces.component.html.HtmlGraphicImage</component-class>
 
     <property>
       <description><![CDATA[
@@ -8610,7 +8609,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -9003,16 +9002,16 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Graphic</base-component-type>
-      <renderer-type>javax.faces.Image</renderer-type>
+      <base-component-type>jakarta.faces.Graphic</base-component-type>
+      <renderer-type>jakarta.faces.Image</renderer-type>
     </component-extension>
   </component>
   <component>
     <description><![CDATA[<p>Represents an HTML <code>input</code> element
       of type <code>file</code>.</p>]]></description>
     <display-name>Input File</display-name>
-    <component-type>javax.faces.HtmlInputFile</component-type>
-    <component-class>javax.faces.component.html.HtmlInputFile</component-class>
+    <component-type>jakarta.faces.HtmlInputFile</component-type>
+    <component-class>jakarta.faces.component.html.HtmlInputFile</component-class>
 
     <property>
       <description><![CDATA[
@@ -9104,7 +9103,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -9162,7 +9161,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -9291,10 +9290,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -9316,10 +9315,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -9783,16 +9782,16 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
     <component-extension>
       <ignore>true</ignore>
-      <base-component-type>javax.faces.Input</base-component-type>
-      <renderer-type>javax.faces.File</renderer-type>
+      <base-component-type>jakarta.faces.Input</base-component-type>
+      <renderer-type>jakarta.faces.File</renderer-type>
     </component-extension>
   </component>
   <component>
     <description><![CDATA[<p>Represents an HTML <code>input</code> element
       of type <code>hidden</code>.</p>]]></description>
     <display-name>Input Hidden</display-name>
-    <component-type>javax.faces.HtmlInputHidden</component-type>
-    <component-class>javax.faces.component.html.HtmlInputHidden</component-class>
+    <component-type>jakarta.faces.HtmlInputHidden</component-type>
+    <component-class>jakarta.faces.component.html.HtmlInputHidden</component-class>
 
     <property>
       <description><![CDATA[
@@ -9884,7 +9883,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -9942,7 +9941,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -10071,10 +10070,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -10096,10 +10095,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -10140,8 +10139,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Input</base-component-type>
-      <renderer-type>javax.faces.Hidden</renderer-type>
+      <base-component-type>jakarta.faces.Input</base-component-type>
+      <renderer-type>jakarta.faces.Hidden</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -10152,8 +10151,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <code>redisplay</code> property is set to
       <code>true</code>.</p>]]></description>
     <display-name>Input Secret</display-name>
-    <component-type>javax.faces.HtmlInputSecret</component-type>
-    <component-class>javax.faces.component.html.HtmlInputSecret</component-class>
+    <component-type>jakarta.faces.HtmlInputSecret</component-type>
+    <component-class>jakarta.faces.component.html.HtmlInputSecret</component-class>
 
     <property>
       <description><![CDATA[
@@ -10245,7 +10244,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -10303,7 +10302,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -10432,10 +10431,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -10457,10 +10456,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -10938,16 +10937,16 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Input</base-component-type>
-      <renderer-type>javax.faces.Secret</renderer-type>
+      <base-component-type>jakarta.faces.Input</base-component-type>
+      <renderer-type>jakarta.faces.Secret</renderer-type>
     </component-extension>
   </component>
   <component>
     <description><![CDATA[<p>Represents an HTML <code>input</code> element
       of type <code>text</code>.</p>]]></description>
     <display-name>Input Text</display-name>
-    <component-type>javax.faces.HtmlInputText</component-type>
-    <component-class>javax.faces.component.html.HtmlInputText</component-class>
+    <component-type>jakarta.faces.HtmlInputText</component-type>
+    <component-class>jakarta.faces.component.html.HtmlInputText</component-class>
 
     <property>
       <description><![CDATA[
@@ -11039,7 +11038,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -11097,7 +11096,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -11226,10 +11225,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -11251,10 +11250,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -11717,15 +11716,15 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Input</base-component-type>
-      <renderer-type>javax.faces.Text</renderer-type>
+      <base-component-type>jakarta.faces.Input</base-component-type>
+      <renderer-type>jakarta.faces.Text</renderer-type>
     </component-extension>
   </component>
   <component>
     <description><![CDATA[<p>Represents an HTML <code>textarea</code> element.</p>]]></description>
     <display-name>Input Textarea</display-name>
-    <component-type>javax.faces.HtmlInputTextarea</component-type>
-    <component-class>javax.faces.component.html.HtmlInputTextarea</component-class>
+    <component-type>jakarta.faces.HtmlInputTextarea</component-type>
+    <component-class>jakarta.faces.component.html.HtmlInputTextarea</component-class>
 
     <property>
       <description><![CDATA[
@@ -11817,7 +11816,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -11875,7 +11874,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -12004,10 +12003,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -12029,10 +12028,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -12467,14 +12466,14 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Input</base-component-type>
-      <renderer-type>javax.faces.Textarea</renderer-type>
+      <base-component-type>jakarta.faces.Input</base-component-type>
+      <renderer-type>jakarta.faces.Textarea</renderer-type>
     </component-extension>
   </component>
   <component>
     <display-name>Message</display-name>
-    <component-type>javax.faces.HtmlMessage</component-type>
-    <component-class>javax.faces.component.html.HtmlMessage</component-class>
+    <component-type>jakarta.faces.HtmlMessage</component-type>
+    <component-class>jakarta.faces.component.html.HtmlMessage</component-class>
 
     <property>
       <description><![CDATA[
@@ -12566,7 +12565,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -12847,14 +12846,14 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Message</base-component-type>
-      <renderer-type>javax.faces.Message</renderer-type>
+      <base-component-type>jakarta.faces.Message</base-component-type>
+      <renderer-type>jakarta.faces.Message</renderer-type>
     </component-extension>
   </component>
   <component>
     <display-name>Messages</display-name>
-    <component-type>javax.faces.HtmlMessages</component-type>
-    <component-class>javax.faces.component.html.HtmlMessages</component-class>
+    <component-type>jakarta.faces.HtmlMessages</component-type>
+    <component-class>jakarta.faces.component.html.HtmlMessages</component-class>
 
     <property>
       <description><![CDATA[
@@ -12946,7 +12945,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -13259,8 +13258,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Messages</base-component-type>
-      <renderer-type>javax.faces.Messages</renderer-type>
+      <base-component-type>jakarta.faces.Messages</base-component-type>
+      <renderer-type>jakarta.faces.Messages</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -13272,8 +13271,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       present, render a <code>span</code> element and pass them through
       as attributes on the span.</p>]]></description>
     <display-name>Output Format</display-name>
-    <component-type>javax.faces.HtmlOutputFormat</component-type>
-    <component-class>javax.faces.component.html.HtmlOutputFormat</component-class>
+    <component-type>jakarta.faces.HtmlOutputFormat</component-type>
+    <component-class>jakarta.faces.component.html.HtmlOutputFormat</component-class>
 
     <property>
       <description><![CDATA[
@@ -13365,7 +13364,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -13423,7 +13422,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -13569,16 +13568,16 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Output</base-component-type>
-      <renderer-type>javax.faces.Format</renderer-type>
+      <base-component-type>jakarta.faces.Output</base-component-type>
+      <renderer-type>jakarta.faces.Format</renderer-type>
     </component-extension>
   </component>
   <component>
     <description><![CDATA[<p>Represents an HTML <code>label</code> element, used to define
       an accessible label for a corresponding input element.</p>]]></description>
     <display-name>Output Label</display-name>
-    <component-type>javax.faces.HtmlOutputLabel</component-type>
-    <component-class>javax.faces.component.html.HtmlOutputLabel</component-class>
+    <component-type>jakarta.faces.HtmlOutputLabel</component-type>
+    <component-class>jakarta.faces.component.html.HtmlOutputLabel</component-class>
 
     <property>
       <description><![CDATA[
@@ -13670,7 +13669,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -13728,7 +13727,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -14087,8 +14086,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Output</base-component-type>
-      <renderer-type>javax.faces.Label</renderer-type>
+      <base-component-type>jakarta.faces.Output</base-component-type>
+      <renderer-type>jakarta.faces.Label</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -14096,8 +14095,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       used to link to an arbitrary URL defined by the <code>value</code>
       property.</p>]]></description>
     <display-name>Output Hyperlink</display-name>
-    <component-type>javax.faces.HtmlOutputLink</component-type>
-    <component-class>javax.faces.component.html.HtmlOutputLink</component-class>
+    <component-type>jakarta.faces.HtmlOutputLink</component-type>
+    <component-class>jakarta.faces.component.html.HtmlOutputLink</component-class>
 
     <property>
       <description><![CDATA[
@@ -14189,7 +14188,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -14247,7 +14246,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -14859,8 +14858,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Output</base-component-type>
-      <renderer-type>javax.faces.Link</renderer-type>
+      <base-component-type>jakarta.faces.Output</base-component-type>
+      <renderer-type>jakarta.faces.Link</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -14868,8 +14867,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       used to link to a URL handled by the Faces Servlet resolved preemptively using the logical
       outcome defined by the <code>outcome</code> property.]]></description>
     <display-name>Outcome Target Hyperlink</display-name>
-    <component-type>javax.faces.HtmlOutcomeTargetLink</component-type>
-    <component-class>javax.faces.component.html.HtmlOutcomeTargetLink</component-class>
+    <component-type>jakarta.faces.HtmlOutcomeTargetLink</component-type>
+    <component-class>jakarta.faces.component.html.HtmlOutcomeTargetLink</component-class>
 
     <property>
       <description><![CDATA[
@@ -14961,7 +14960,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -15019,7 +15018,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -15525,8 +15524,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.OutcomeTarget</base-component-type>
-      <renderer-type>javax.faces.Link</renderer-type>
+      <base-component-type>jakarta.faces.OutcomeTarget</base-component-type>
+      <renderer-type>jakarta.faces.Link</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -15536,8 +15535,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             a link, so the current form is not submitted when it is activated (the transitive of how
             the UICommandLink behaves like a submit button).]]></description>
     <display-name>Outcome Target Button</display-name>
-    <component-type>javax.faces.HtmlOutcomeTargetButton</component-type>
-    <component-class>javax.faces.component.html.HtmlOutcomeTargetButton</component-class>
+    <component-type>jakarta.faces.HtmlOutcomeTargetButton</component-type>
+    <component-class>jakarta.faces.component.html.HtmlOutcomeTargetButton</component-class>
 
     <property>
       <description><![CDATA[
@@ -15629,7 +15628,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -15687,7 +15686,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -16121,8 +16120,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.OutcomeTarget</base-component-type>
-      <renderer-type>javax.faces.Button</renderer-type>
+      <base-component-type>jakarta.faces.OutcomeTarget</base-component-type>
+      <renderer-type>jakarta.faces.Button</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -16139,8 +16138,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
               </p>
             ]]></description>
     <display-name>Output Text</display-name>
-    <component-type>javax.faces.HtmlOutputText</component-type>
-    <component-class>javax.faces.component.html.HtmlOutputText</component-class>
+    <component-type>jakarta.faces.HtmlOutputText</component-type>
+    <component-class>jakarta.faces.component.html.HtmlOutputText</component-class>
 
     <property>
       <description><![CDATA[
@@ -16232,7 +16231,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -16290,7 +16289,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -16436,16 +16435,16 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Output</base-component-type>
-      <renderer-type>javax.faces.Text</renderer-type>
+      <base-component-type>jakarta.faces.Output</base-component-type>
+      <renderer-type>jakarta.faces.Text</renderer-type>
     </component-extension>
   </component>
   <component>
     <description><![CDATA[<p>Renders child components in a table, starting a new
       row after the specified number of columns.</p>]]></description>
     <display-name>Panel Grid</display-name>
-    <component-type>javax.faces.HtmlPanelGrid</component-type>
-    <component-class>javax.faces.component.html.HtmlPanelGrid</component-class>
+    <component-type>jakarta.faces.HtmlPanelGrid</component-type>
+    <component-class>jakarta.faces.component.html.HtmlPanelGrid</component-class>
 
     <property>
       <description><![CDATA[
@@ -16537,7 +16536,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -17054,8 +17053,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Panel</base-component-type>
-      <renderer-type>javax.faces.Grid</renderer-type>
+      <base-component-type>jakarta.faces.Panel</base-component-type>
+      <renderer-type>jakarta.faces.Grid</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -17065,8 +17064,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       component to be present, but the application
       wishes to render more than one.</p>]]></description>
     <display-name>Panel Group</display-name>
-    <component-type>javax.faces.HtmlPanelGroup</component-type>
-    <component-class>javax.faces.component.html.HtmlPanelGroup</component-class>
+    <component-type>jakarta.faces.HtmlPanelGroup</component-type>
+    <component-class>jakarta.faces.component.html.HtmlPanelGroup</component-class>
 
     <property>
       <description><![CDATA[
@@ -17158,7 +17157,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -17390,8 +17389,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Panel</base-component-type>
-      <renderer-type>javax.faces.Group</renderer-type>
+      <base-component-type>jakarta.faces.Panel</base-component-type>
+      <renderer-type>jakarta.faces.Group</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -17401,8 +17400,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             The checkbox will be rendered as checked, or not, based on
             the value of the <code>value</code> property.</p>]]></description>
     <display-name>Checkbox</display-name>
-    <component-type>javax.faces.HtmlSelectBooleanCheckbox</component-type>
-    <component-class>javax.faces.component.html.HtmlSelectBooleanCheckbox</component-class>
+    <component-type>jakarta.faces.HtmlSelectBooleanCheckbox</component-type>
+    <component-class>jakarta.faces.component.html.HtmlSelectBooleanCheckbox</component-class>
 
     <property>
       <description><![CDATA[
@@ -17494,7 +17493,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -17549,7 +17548,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -17678,10 +17677,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -17703,10 +17702,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -18129,8 +18128,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.SelectBoolean</base-component-type>
-      <renderer-type>javax.faces.Checkbox</renderer-type>
+      <base-component-type>jakarta.faces.SelectBoolean</base-component-type>
+      <renderer-type>jakarta.faces.Checkbox</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -18140,8 +18139,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             HTML <code>input</code> elements of type
             <code>checkbox</code>.</p>]]></description>
     <display-name>Multi-Select Checkbox</display-name>
-    <component-type>javax.faces.HtmlSelectManyCheckbox</component-type>
-    <component-class>javax.faces.component.html.HtmlSelectManyCheckbox</component-class>
+    <component-type>jakarta.faces.HtmlSelectManyCheckbox</component-type>
+    <component-class>jakarta.faces.component.html.HtmlSelectManyCheckbox</component-class>
 
     <property>
       <description><![CDATA[
@@ -18233,7 +18232,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -18291,7 +18290,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -18420,10 +18419,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -18445,10 +18444,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -18939,8 +18938,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.SelectMany</base-component-type>
-      <renderer-type>javax.faces.Checkbox</renderer-type>
+      <base-component-type>jakarta.faces.SelectMany</base-component-type>
+      <renderer-type>jakarta.faces.Checkbox</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -18948,8 +18947,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       as an HTML <code>select</code> element, showing either all
       available options or the specified number of options.</p>]]></description>
     <display-name>Multi-Select Listbox</display-name>
-    <component-type>javax.faces.HtmlSelectManyListbox</component-type>
-    <component-class>javax.faces.component.html.HtmlSelectManyListbox</component-class>
+    <component-type>jakarta.faces.HtmlSelectManyListbox</component-type>
+    <component-class>jakarta.faces.component.html.HtmlSelectManyListbox</component-class>
 
     <property>
       <description><![CDATA[
@@ -19041,7 +19040,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -19099,7 +19098,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -19228,10 +19227,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -19253,10 +19252,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -19695,8 +19694,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.SelectMany</base-component-type>
-      <renderer-type>javax.faces.Listbox</renderer-type>
+      <base-component-type>jakarta.faces.SelectMany</base-component-type>
+      <renderer-type>jakarta.faces.Listbox</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -19704,8 +19703,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       as an HTML <code>select</code> element, showing a single
       available option at a time.</p>]]></description>
     <display-name>Multi-Select Menu</display-name>
-    <component-type>javax.faces.HtmlSelectManyMenu</component-type>
-    <component-class>javax.faces.component.html.HtmlSelectManyMenu</component-class>
+    <component-type>jakarta.faces.HtmlSelectManyMenu</component-type>
+    <component-class>jakarta.faces.component.html.HtmlSelectManyMenu</component-class>
 
     <property>
       <description><![CDATA[
@@ -19797,7 +19796,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -19855,7 +19854,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -19984,10 +19983,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -20009,10 +20008,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -20441,8 +20440,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.SelectMany</base-component-type>
-      <renderer-type>javax.faces.Menu</renderer-type>
+      <base-component-type>jakarta.faces.SelectMany</base-component-type>
+      <renderer-type>jakarta.faces.Menu</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -20450,8 +20449,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       as an HTML <code>select</code> element, showing either all
       available options or the specified number of options.</p>]]></description>
     <display-name>Listbox</display-name>
-    <component-type>javax.faces.HtmlSelectOneListbox</component-type>
-    <component-class>javax.faces.component.html.HtmlSelectOneListbox</component-class>
+    <component-type>jakarta.faces.HtmlSelectOneListbox</component-type>
+    <component-class>jakarta.faces.component.html.HtmlSelectOneListbox</component-class>
 
     <property>
       <description><![CDATA[
@@ -20543,7 +20542,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -20601,7 +20600,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -20730,10 +20729,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -20755,10 +20754,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -21184,8 +21183,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.SelectOne</base-component-type>
-      <renderer-type>javax.faces.Listbox</renderer-type>
+      <base-component-type>jakarta.faces.SelectOne</base-component-type>
+      <renderer-type>jakarta.faces.Listbox</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -21193,8 +21192,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       as an HTML <code>select</code> element, showing a single
       available option at a time.</p>]]></description>
     <display-name>Menu</display-name>
-    <component-type>javax.faces.HtmlSelectOneMenu</component-type>
-    <component-class>javax.faces.component.html.HtmlSelectOneMenu</component-class>
+    <component-type>jakarta.faces.HtmlSelectOneMenu</component-type>
+    <component-class>jakarta.faces.component.html.HtmlSelectOneMenu</component-class>
 
     <property>
       <description><![CDATA[
@@ -21286,7 +21285,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -21344,7 +21343,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -21473,10 +21472,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -21498,10 +21497,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -21917,8 +21916,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.SelectOne</base-component-type>
-      <renderer-type>javax.faces.Menu</renderer-type>
+      <base-component-type>jakarta.faces.SelectOne</base-component-type>
+      <renderer-type>jakarta.faces.Menu</renderer-type>
     </component-extension>
   </component>
   <component>
@@ -21928,8 +21927,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             <code>input</code> elements of type
             <code>radio</code>.</p>]]></description>
     <display-name>Radio</display-name>
-    <component-type>javax.faces.HtmlSelectOneRadio</component-type>
-    <component-class>javax.faces.component.html.HtmlSelectOneRadio</component-class>
+    <component-type>jakarta.faces.HtmlSelectOneRadio</component-type>
+    <component-class>jakarta.faces.component.html.HtmlSelectOneRadio</component-class>
 
     <property>
       <description><![CDATA[
@@ -22021,7 +22020,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Parent Component</display-name>
       <icon/>
       <property-name>parent</property-name>
-      <property-class>javax.faces.component.UIComponent</property-class>
+      <property-class>jakarta.faces.component.UIComponent</property-class>
       <property-extension>
         <tag-attribute>false</tag-attribute>
         <read-only>true</read-only>
@@ -22079,7 +22078,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Converter</display-name>
       <icon/>
       <property-name>converter</property-name>
-      <property-class>javax.faces.convert.Converter</property-class>
+      <property-class>jakarta.faces.convert.Converter</property-class>
       <property-extension>
         <value-expression-enabled>true</value-expression-enabled>
       </property-extension>
@@ -22208,10 +22207,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Validator</display-name>
       <icon/>
       <property-name>validator</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+                void validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)
             </method-signature>
       </property-extension>
     </property>
@@ -22233,10 +22232,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <display-name>Value Change Listener</display-name>
       <icon/>
       <property-name>valueChangeListener</property-name>
-      <property-class>javax.el.MethodExpression</property-class>
+      <property-class>jakarta.el.MethodExpression</property-class>
       <property-extension>
         <method-signature>
-                void valueChange(javax.faces.event.ValueChangeEvent)
+                void valueChange(jakarta.faces.event.ValueChangeEvent)
             </method-signature>
         <!-- PENDING modify tlddoc to handle an OR of method signatures 
 as required by 
@@ -22715,15 +22714,15 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.SelectOne</base-component-type>
-      <renderer-type>javax.faces.Radio</renderer-type>
+      <base-component-type>jakarta.faces.SelectOne</base-component-type>
+      <renderer-type>jakarta.faces.Radio</renderer-type>
     </component-extension>
   </component>
   <component>
     <description>NONE</description>
     <display-name>doctype</display-name>
-    <component-type>javax.faces.OutputDoctype</component-type>
-    <component-class>javax.faces.component.html.HtmlDoctype</component-class>
+    <component-type>jakarta.faces.OutputDoctype</component-type>
+    <component-class>jakarta.faces.component.html.HtmlDoctype</component-class>
 
     <property>
       <description><![CDATA[<div class="changed_added_2_1">
@@ -22766,15 +22765,15 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Output</base-component-type>
-      <renderer-type>javax.faces.Doctype</renderer-type>
+      <base-component-type>jakarta.faces.Output</base-component-type>
+      <renderer-type>jakarta.faces.Doctype</renderer-type>
     </component-extension>
   </component>
   <component>
     <description>NONE</description>
     <display-name>head</display-name>
-    <component-type>javax.faces.OutputHead</component-type>
-    <component-class>javax.faces.component.html.HtmlHead</component-class>
+    <component-type>jakarta.faces.OutputHead</component-type>
+    <component-class>jakarta.faces.component.html.HtmlHead</component-class>
 
     <property>
       <description>
@@ -22820,15 +22819,15 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
 
     <component-extension>
-      <base-component-type>javax.faces.Output</base-component-type>
-      <renderer-type>javax.faces.Head</renderer-type>
+      <base-component-type>jakarta.faces.Output</base-component-type>
+      <renderer-type>jakarta.faces.Head</renderer-type>
     </component-extension>
   </component>
   <component>
     <description>NONE</description>
     <display-name>body</display-name>
-    <component-type>javax.faces.OutputBody</component-type>
-    <component-class>javax.faces.component.html.HtmlBody</component-class>
+    <component-type>jakarta.faces.OutputBody</component-type>
+    <component-class>jakarta.faces.component.html.HtmlBody</component-class>
 
     <property>
       <description>
@@ -23105,8 +23104,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       </property-extension>
     </property>
     <component-extension>
-      <base-component-type>javax.faces.Output</base-component-type>
-      <renderer-type>javax.faces.Body</renderer-type>
+      <base-component-type>jakarta.faces.Output</base-component-type>
+      <renderer-type>jakarta.faces.Body</renderer-type>
     </component-extension>
   </component>
 
@@ -23124,21 +23123,21 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
      based views.</p>
 
 <dl>
-<dt>javax.faces.Output</dt>
+<dt>jakarta.faces.Output</dt>
 
-<dd>javax.faces.Body
+<dd>jakarta.faces.Body
 </dd>
 
-<dd>javax.faces.Head
+<dd>jakarta.faces.Head
 </dd>
 
-<dd>javax.faces.resource.Script
+<dd>jakarta.faces.resource.Script
 </dd>
 
-<dd>javax.faces.resource.Stylesheet
+<dd>jakarta.faces.resource.Stylesheet
 </dd>
 
-<dd>javax.faces.Composite
+<dd>jakarta.faces.Composite
 </dd>
 
 
@@ -23153,12 +23152,12 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
      <p>Only Renderers for components which cause data to sent to the
      server on a page submit need to implement decode behavior.  In
      practical terms, this means Renderers for components that implement
-     from <code>javax.faces.component.EditableValueHolder</code> or
-     <code>javax.faces.component.ActionSource</code> or Renderers for
-     <code>javax.faces.component.UIForm</code> components.  Renderers
+     from <code>jakarta.faces.component.EditableValueHolder</code> or
+     <code>jakarta.faces.component.ActionSource</code> or Renderers for
+     <code>jakarta.faces.component.UIForm</code> components.  Renderers
      for components that do not send data to the server on page submit
      may choose to accept the no-op decode behavior of the
-     <code>javax.faces.render.Renderer</code> abstract class.  In the
+     <code>jakarta.faces.render.Renderer</code> abstract class.  In the
      Renderer descriptions that follow, the omission of a Decode
      Behavior section indicates that this Renderer does no decoding.</p>
 
@@ -23170,24 +23169,24 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
      <div class="changed_added_2_0">
      <p>If the component associated with the Renderer implements the
-     <code>javax.faces.component.behavior.ClientBehaviorHolder</code> interface,
-     process <code>javax.faces.component.behavior.ClientBehavior</code>s as follows:
+     <code>jakarta.faces.component.behavior.ClientBehaviorHolder</code> interface,
+     process <code>jakarta.faces.component.behavior.ClientBehavior</code>s as follows:
       <ul>
-      <li>Determine if there are <code>javax.faces.component.behavior.ClientBehavior</code>s
+      <li>Determine if there are <code>jakarta.faces.component.behavior.ClientBehavior</code>s
       associated with this component by calling the implementation of
-      <code>javax.faces.component.behavior.ClientBehaviorHolder.getClientBehaviors</code>.</li>
+      <code>jakarta.faces.component.behavior.ClientBehaviorHolder.getClientBehaviors</code>.</li>
       <li>If there are <code>client behaviors</code>, determine the
-      client behavior event name from the request parameter given by the value of the constant <code>javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME</code>.</li>
+      client behavior event name from the request parameter given by the value of the constant <code>jakarta.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME</code>.</li>
       <li>If that request parameter exists, get the <code>List</code> of
-      <code>javax.faces.component.behavior.ClientBehavior</code>s for the
+      <code>jakarta.faces.component.behavior.ClientBehavior</code>s for the
       behavior event name from the <code>Map</code> returned from
-      <code>javax.faces.component.behavior.ClientBehaviorHolder.getClientBehaviors</code>.</li>
+      <code>jakarta.faces.component.behavior.ClientBehaviorHolder.getClientBehaviors</code>.</li>
       <li>If there are <code>client behaviors</code> for the <code>behavior event name</code>,
       determine the behavior source name from the request parameter given by the value
-      of the constant <code>javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME</code>.</li>
+      of the constant <code>jakarta.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME</code>.</li>
       <li>If the request parameter exists, and its value is the same as this
       component's <code>clientId</code>, iterate over the <code>List</code> of
-      <code>javax.faces.component.behavior.ClientBehavior</code>s and call the
+      <code>jakarta.faces.component.behavior.ClientBehavior</code>s and call the
       <code>decode()</code> method for each one.</li>
       </ul>
       Behavior decoding is applicable to components that are "readonly", but it is
@@ -23260,10 +23259,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
        their user agents.</p>
 
        <p>Compliant implementations must only generate JavaScript in the
-       <a href="javax.faces.Commandjavax.faces.Link.html">
-       <code>javax.faces.Link</code></a> and <a
-       href="javax.faces.Commandjavax.faces.Button.html"><code>javax.faces.Button</code></a>
-       Renderers for the <code>javax.faces.Command</code></a> component.
+       <a href="jakarta.faces.commandjakarta.faces.Link.html"><code>jakarta.faces.Link</code></a> and 
+       <a href="jakarta.faces.commandjakarta.faces.Button.html"><code>jakarta.faces.Button</code></a>
+       Renderers for the <code>jakarta.faces.Command</code></a> component.
        The generation of JavaScript in any other Renderer in the
        HTML_BASIC renderkit is not permitted.  However, any JavaScript
        code provided by the user as the value of an <code>ignored-by-renderer</code> 
@@ -23276,7 +23274,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
      <ul>
 
-       <p>Components that implement the <code>javax.faces.component.behavior.ClientBehaviorHolder</code>
+       <p>Components that implement the <code>jakarta.faces.component.behavior.ClientBehaviorHolder</code>
        interface are eligable to have <code>ClientBehavior</code> instances attached to them. The standard
        renderers are responsible for inserting the scripts produced by client behaviors into the component's
        rendered content.  Components may obtain script from multiple sources.  Event handler scripts may be specified 
@@ -23350,7 +23348,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       attribute, and convert it to lower case.  If the result is equal
       to the String "reset" (without the quotes), return from
       <code>decode()</code>.  Otherwise, create a
-      <code>javax.faces.event.ActionEvent</code> around the component,
+      <code>jakarta.faces.event.ActionEvent</code> around the component,
       and pass it to the <code>queueEvent()</code> method of the
       component, which must be an instance of
       <code>UICommand</code>.</p>
@@ -23386,9 +23384,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <p class="changed_added_2_0">If the component being rendered by
       this renderer has any <code>UIParameter</code> children, each one
       of them must be rendered using the renderer for component-family:
-      "javax.faces.Input" and renderer-type: "javax.faces.Hidden".  For
+      "jakarta.faces.Input" and renderer-type: "jakarta.faces.Hidden".  For
       discussion, this is called the hiddenRenderer.  A component with
-      component-type "javax.faces.Input" must be created for local use
+      component-type "jakarta.faces.Input" must be created for local use
       in rendering each <code>UIParameter</code> child.  The "id"
       property of the temporary component must be set to the "name" of
       the <code>UIParameter</code>.  The "value" property of the
@@ -23410,7 +23408,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
         document id and a flow id, add a component attribute to this
         component whose name is given by the value of the symbolic
         constant
-        <code>javax.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
+        <code>jakarta.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
         and whose value is the defining document id.  For example, when
         using this component in a facelet page, the following markup
         would cause such an attribute to be added.</p>
@@ -23424,11 +23422,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
       </ul>
             ]]></description>
-      <component-family>javax.faces.Command</component-family>
-      <renderer-type>javax.faces.Button</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.ButtonRenderer
-    </renderer-class>
+      <component-family>jakarta.faces.Command</component-family>
+      <renderer-type>jakarta.faces.Button</renderer-type>
+      <renderer-class>com.sun.faces.renderkit.html_basic.ButtonRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -23912,7 +23908,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       empty String, or the entry is not equal to the value of the
       "clientId" property, return immediately.  If there is an entry,
       and its value is equal to the value of the "clientId" property,
-      create a new <code>javax.faces.event.ActionEvent</code> instance
+      create a new <code>jakarta.faces.event.ActionEvent</code> instance
       around the component and call <code>queueActionEvent()</code> on
       the component, passing the event.</p>
 
@@ -24003,7 +23999,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
         document id and a flow id, add a component attribute to this
         component whose name is given by the value of the symbolic
         constant
-        <code>javax.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
+        <code>jakarta.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
         and whose value is the defining document id.  For example, when
         using this component in a facelet page, the following markup
         would cause such an attribute to be added.</p>
@@ -24016,11 +24012,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 </div>
 
 ]]></description>
-      <component-family>javax.faces.Command</component-family>
-      <renderer-type>javax.faces.Link</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.CommandLinkRenderer
-    </renderer-class>
+      <component-family>jakarta.faces.Command</component-family>
+      <renderer-type>jakarta.faces.Link</renderer-type>
+      <renderer-class>com.sun.faces.renderkit.html_basic.CommandLinkRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -24477,17 +24471,15 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
                     <h3>Decode Behavior</h3>
                     <p>
                         Obtain the <code>Map</code> from the "requestParameterMap" property of the <code>ExternalContext</code>.
-                        If the value in the <code>Map</code> for the value of the "javax.faces.source" equals to the "clientId" property of the component,
-                        create a <code>javax.faces.event.ActionEvent</code> around the component, and pass it to the <code>queueEvent()</code> method of the component,
+                        If the value in the <code>Map</code> for the value of the "jakarta.faces.source" equals to the "clientId" property of the component,
+                        create a <code>jakarta.faces.event.ActionEvent</code> around the component, and pass it to the <code>queueEvent()</code> method of the component,
                         which must be an instance of <code>UICommand</code>.
                         </p>
 </div>                        
                 ]]></description>
-      <component-family>javax.faces.Command</component-family>
-      <renderer-type>javax.faces.Script</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.CommandScriptRenderer
-    </renderer-class>
+      <component-family>jakarta.faces.Command</component-family>
+      <renderer-type>jakarta.faces.Script</renderer-type>
+      <renderer-class>com.sun.faces.renderkit.html_basic.CommandScriptRenderer</renderer-class>
 
       <attribute>
         <description><![CDATA[
@@ -24713,11 +24705,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
      the <code>UIData</code> to -1, and close out the "table"
      element.</p>
             ]]></description>
-      <component-family>javax.faces.Data</component-family>
-      <renderer-type>javax.faces.Table</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.TableRenderer
-    </renderer-class>
+      <component-family>jakarta.faces.Data</component-family>
+      <renderer-type>jakarta.faces.Table</renderer-type>
+      <renderer-class>com.sun.faces.renderkit.html_basic.TableRenderer</renderer-class>
       <facet>
         <facet-name>caption</facet-name>
       </facet>
@@ -25242,7 +25232,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <code>ExternalContext.encodePartialActionURL</code> using <code>action URL</code> as the argument.
       Compare the result from <code>ExternalContext.encodePartialActionURL</code> with the
       value from <code>ExternalContext.encodeActionURL()</code>.  If they are different, 
-      render a hidden field with the name <code>javax.faces.encodedURL</code> and the value
+      render a hidden field with the name <code>jakarta.faces.encodedURL</code> and the value
       of this hidden field as the value from <code>ExternalContext.encodePartialActionURL</code>.</p>
       Call <code>ViewHandler.writeState()</code>
       before the the close of the "form" element. 
@@ -25263,11 +25253,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       </p>
       </ul>
       ]]></description>
-      <component-family>javax.faces.Form</component-family>
-      <renderer-type>javax.faces.Form</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.FormRenderer
-    </renderer-class>
+      <component-family>jakarta.faces.Form</component-family>
+      <renderer-type>jakarta.faces.Form</renderer-type>
+      <renderer-class>com.sun.faces.renderkit.html_basic.FormRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -25601,9 +25589,10 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
   <ul>
 
-    <p>If the "name" attribute is present, execute algorithm <a
-    href="javax.faces.Outputjavax.faces.resource.Script.html#ResourceCommonGetResource">Common Algorithm for Obtaining A Resource to Render</a> to obtain a <code>Resource</code> instance.  Call
-    <code>Resource.getRequestPath()</code> and output the result as the
+    <p>If the "name" attribute is present, execute algorithm 
+    <a href="jakarta.faces.Outputjakarta.faces.resource.Script.html#ResourceCommonGetResource">Common Algorithm for Obtaining A Resource to Render</a> 
+    to obtain a <code>Resource</code> instance.  
+    Call <code>Resource.getRequestPath()</code> and output the result as the
     value of the "src" attribute on the rendered markup.</p>
 
     <p>Otherwise, if the "url" attribute is present, treat its value as
@@ -25624,11 +25613,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
   </ul>
 
 </div>]]></description>
-      <component-family>javax.faces.Graphic</component-family>
-      <renderer-type>javax.faces.Image</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.ImageRenderer
-    </renderer-class>
+      <component-family>jakarta.faces.Graphic</component-family>
+      <renderer-type>jakarta.faces.Image</renderer-type>
+      <renderer-class>com.sun.faces.renderkit.html_basic.ImageRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -26003,11 +25990,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
 
 ]]></description>
-      <component-family>javax.faces.Panel</component-family>
-      <renderer-type>javax.faces.passthrough.Element</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.PassthroughRenderer
-    </renderer-class>
+      <component-family>jakarta.faces.Panel</component-family>
+      <renderer-type>jakarta.faces.passthrough.Element</renderer-type>
+      <renderer-class>com.sun.faces.renderkit.html_basic.PassthroughRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -26176,7 +26161,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       must be an instance of <code>EditableValueHolder</code>, and
       return.  Otherwise, obtain the "request" property from the
       <code>ExternalContext</code> and cast it to
-      <code>javax.servlet.http.HttpServletRequest</code>.  Call
+      <code>jakarta.servlet.http.HttpServletRequest</code>.  Call
       <code>getParts()</code> on the httpServletRequest. Iterate over
       the parts.  If the "name" property of the current part is equal to
       the "clientId", pass the current part to the
@@ -26217,11 +26202,9 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       </ul>
 
 </div> ]]></description>
-      <component-family>javax.faces.Input</component-family>
-      <renderer-type>javax.faces.File</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.FileRenderer
-    </renderer-class>
+      <component-family>jakarta.faces.Input</component-family>
+      <renderer-type>jakarta.faces.File</renderer-type>
+      <renderer-class>com.sun.faces.renderkit.html_basic.FileRenderer</renderer-class>
 
       <attribute>
         <description>
@@ -26655,11 +26638,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <p>Decode Behavior</p>
 
       <ul>
-
-      <p>See the decode description for the <a
-      href="javax.faces.Inputjavax.faces.Text.html#encode">Input
-      Text</a> renderer.</p>
-
+          <p>See the decode description for the <a href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input Text</a> renderer.</p>
       </ul>
 
       <p>Encode Behavior</p>
@@ -26671,8 +26650,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       the value of the "value" attribute.</p>
 
       </ul>]]></description>
-      <component-family>javax.faces.Input</component-family>
-      <renderer-type>javax.faces.Hidden</renderer-type>
+      <component-family>jakarta.faces.Input</component-family>
+      <renderer-type>jakarta.faces.Hidden</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.HiddenRenderer
     </renderer-class>
@@ -26686,11 +26665,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <p>Decode Behavior</p>
 
       <ul>
-
-      <p>See the decode description for the <a
-      href="javax.faces.Inputjavax.faces.Text.html#encode">Input
-      Text</a> renderer.</p>
-
+          <p>See the decode description for the <a href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input Text</a> renderer.</p>
       </ul>
 
       <p>Encode Behavior</p>
@@ -26706,8 +26681,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       attribute.</p>
 
       </ul>]]></description>
-      <component-family>javax.faces.Input</component-family>
-      <renderer-type>javax.faces.Secret</renderer-type>
+      <component-family>jakarta.faces.Input</component-family>
+      <renderer-type>jakarta.faces.Secret</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.SecretRenderer
     </renderer-class>
@@ -27186,8 +27161,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       children.</p>
 
       </ul>]]></description>
-      <component-family>javax.faces.Input</component-family>
-      <renderer-type>javax.faces.Text</renderer-type>
+      <component-family>jakarta.faces.Input</component-family>
+      <renderer-type>jakarta.faces.Text</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.TextRenderer
     </renderer-class>
@@ -27625,7 +27600,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       <ul>
 
       <p>See the encode description for the <a
-      href="javax.faces.Inputjavax.faces.Text.html#encode">Input
+      href="jakarta.faces.Inputjakarta.faces.Text.html#encode">Input
       Text</a> renderer.</p>
 
       </ul>
@@ -27638,8 +27613,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       clientId as the value of the "name" attribute.  Render the current
       valu eof the component inside the "textarea"
       element.</p> </ul>]]></description>
-      <component-family>javax.faces.Input</component-family>
-      <renderer-type>javax.faces.Textarea</renderer-type>
+      <component-family>jakarta.faces.Input</component-family>
+      <renderer-type>jakarta.faces.Textarea</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.TextareaRenderer
     </renderer-class>
@@ -28099,8 +28074,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       Close out the span if necessary.</p>
 
       </ul>]]></description>
-      <component-family>javax.faces.Message</component-family>
-      <renderer-type>javax.faces.Message</renderer-type>
+      <component-family>jakarta.faces.Message</component-family>
+      <renderer-type>jakarta.faces.Message</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.MessageRenderer
     </renderer-class>
@@ -28324,8 +28299,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
      elements, otherwise, close out the list elements.</p>
 
             ]]></description>
-      <component-family>javax.faces.Messages</component-family>
-      <renderer-type>javax.faces.Messages</renderer-type>
+      <component-family>jakarta.faces.Messages</component-family>
+      <renderer-type>jakarta.faces.Messages</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.MessagesRenderer
     </renderer-class>
@@ -28553,8 +28528,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       the array of parameter values as the second argument, and render
       the result.  Otherwise, render the <code>value</code> of this
       component unmodified.</p>]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Format</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Format</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.OutputMessageRenderer
     </renderer-class>
@@ -28691,8 +28666,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             </p>
 
             ]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Label</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Label</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.LabelRenderer
     </renderer-class>
@@ -29059,8 +29034,8 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             ignored-by-renderer attributes on the "span".
 
             </p>]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Link</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Link</renderer-type>
       <renderer-class>
        com.sun.faces.renderkit.html_basic.OutputLinkRenderer
     </renderer-class>
@@ -29640,7 +29615,7 @@ changed_modified_2_1">an HTML "a" anchor element.  The value of the
 component is rendered as the anchor text and the outcome of the
 component is used to determine the target URL rendered in the "href"
 attribute.  Execute the <a
-href="javax.faces.OutcomeTargetjavax.faces.Button.html#UIOutcomeTargetGetEncodedTargetUrl">Algorithm
+href="jakarta.faces.OutcomeTargetjakarta.faces.Button.html#UIOutcomeTargetGetEncodedTargetUrl">Algorithm
 to obtain the URL to which the user-agent should issue a GET request
 when clicked</a>.</span></p>
 
@@ -29678,7 +29653,7 @@ attributes on the "span".</p>
         document id and a flow id, add a component attribute to this
         component whose name is given by the value of the symbolic
         constant
-        <code>javax.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
+        <code>jakarta.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
         and whose value is the defining document id.  For example, when
         using this component in a facelet page, the following markup
         would cause such an attribute to be added.</p>
@@ -29691,8 +29666,8 @@ attributes on the "span".</p>
 </div>
 
 ]]></description>
-      <component-family>javax.faces.OutcomeTarget</component-family>
-      <renderer-type>javax.faces.Link</renderer-type>
+      <component-family>jakarta.faces.OutcomeTarget</component-family>
+      <renderer-type>jakarta.faces.Link</renderer-type>
       <renderer-class>
        com.sun.faces.renderkit.html_basic.OutcomeTargetLinkRenderer
     </renderer-class>
@@ -30321,7 +30296,7 @@ this application, and passing the result through the
   component instance for this <code>Renderer</code>.</p>
 
   <p>Obtain an instance of
-  <code>javax.faces.application.ConfigurableNavigationHandler</code>
+  <code>jakarta.faces.application.ConfigurableNavigationHandler</code>
   from the <code>ViewHandler</code>.  If no such instance can be
   obtained, write the "disabled" attribute on the button.  Otherwise,
   let <em>outcome</em> be the result of calling
@@ -30332,7 +30307,7 @@ this application, and passing the result through the
   reference to the <code>NavigationCase</code>, called <em>navCase</em>
   for discussion.  If the component has a non-<code>null</code>
   attribute named by the value of the symbolic constant
-  <code>javax.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
+  <code>jakarta.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
   let <em>navCase</em> be the return from calling
   <code>getNavigationCase()</code> on the
   <code>ConfigurableNavigationHandler</code>, passing the current
@@ -30454,7 +30429,7 @@ this application, and passing the result through the
         document id and a flow id, add a component attribute to this
         component whose name is given by the value of the symbolic
         constant
-        <code>javax.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
+        <code>jakarta.faces.event.ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME</code>,
         and whose value is the defining document id.  For example, when
         using this component in a facelet page, the following markup
         would cause such an attribute to be added.</p>
@@ -30469,8 +30444,8 @@ this application, and passing the result through the
 </div>
 
 ]]></description>
-      <component-family>javax.faces.OutcomeTarget</component-family>
-      <renderer-type>javax.faces.Button</renderer-type>
+      <component-family>jakarta.faces.OutcomeTarget</component-family>
+      <renderer-type>jakarta.faces.Button</renderer-type>
       <renderer-class>
        com.sun.faces.renderkit.html_basic.OutcomeTargetButtonRenderer
     </renderer-class>
@@ -30875,8 +30850,8 @@ this application, and passing the result through the
       they must be ignored by default.  Implementions may provide a
       configuration option that allows this element to render its
       children.</p>]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Text</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Text</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.TextRenderer
     </renderer-class>
@@ -31024,8 +30999,8 @@ this application, and passing the result through the
       Close out the "td" element.  When done with the row, close out the 
       "tr" element.  If a child has "rendered==false" it is not rendered, 
       and the column counter must not be incremented.]]></description>
-      <component-family>javax.faces.Panel</component-family>
-      <renderer-type>javax.faces.Grid</renderer-type>
+      <component-family>jakarta.faces.Panel</component-family>
+      <renderer-type>jakarta.faces.Grid</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.GridRenderer
     </renderer-class>
@@ -31519,8 +31494,8 @@ this application, and passing the result through the
       "style" attribute as the value of the "style" attribute, and the value 
       of the "styleClass" attribute as the value of the "class"
       attribute. </description>
-      <component-family>javax.faces.Panel</component-family>
-      <renderer-type>javax.faces.Group</renderer-type>
+      <component-family>jakarta.faces.Panel</component-family>
+      <renderer-type>jakarta.faces.Group</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.GroupRenderer
     </renderer-class>
@@ -31739,8 +31714,8 @@ this application, and passing the result through the
       output the "checked" attribute (must be rendered as checked="checked").  
       If the "styleClass" attribute is specified, render its value as the value 
       of the "class" attribute.</p> </ul>]]></description>
-      <component-family>javax.faces.SelectBoolean</component-family>
-      <renderer-type>javax.faces.Checkbox</renderer-type>
+      <component-family>jakarta.faces.SelectBoolean</component-family>
+      <renderer-type>jakarta.faces.Checkbox</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.CheckboxRenderer
     </renderer-class>
@@ -32125,7 +32100,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectMany Components"</a> section.</p>
 
       </ul>
@@ -32189,7 +32164,7 @@ this application, and passing the result through the
       Expression Language coercion rules, before comparing the values.
       If the value of the enclosing UISelectMany matches the current
       value, render "checked" as the value of the "checked" attribute.
-      See the <a href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+      See the <a href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
       elements" </a> specification for <code>ListboxRenderer</code> for
       more detail on how to render the "option" elements in this
       renderer.  <span class="changed_modified_2_0_rev_a">Note that this
@@ -32199,8 +32174,8 @@ this application, and passing the result through the
       renderer.</span></p>
 
       </ul>]]></description>
-      <component-family>javax.faces.SelectMany</component-family>
-      <renderer-type>javax.faces.Checkbox</renderer-type>
+      <component-family>jakarta.faces.SelectMany</component-family>
+      <renderer-type>jakarta.faces.Checkbox</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.SelectManyCheckboxListRenderer
     </renderer-class>
@@ -32688,7 +32663,7 @@ this application, and passing the result through the
 
       <p>If the collection type of the collection that provides the
       value of this component is not one of the types handled by a
-      converter in the package <code>javax.faces.convert</code>, a
+      converter in the package <code>jakarta.faces.convert</code>, a
       converter must explicitly be specified using the appropriate code
       in the VDL.  For example, use <code>&lt;f:converter&gt;</code> in
       JSP or Facelet pages.</p>
@@ -32715,7 +32690,7 @@ this application, and passing the result through the
         <code>setSubmittedValue()</code> with it.</p>
 
         <p class="changed_modified_2_0">Please check the javadoc for <a
-        href="../../javadocs/javax/faces/component/UISelectMany.html#getConvertedvalue">UISelectMany.getConvertedValue()</a>
+        href="../../javadocs/jakarta/faces/component/UISelectMany.html#getConvertedvalue">UISelectMany.getConvertedValue()</a>
         for additional requirements for renderers that render this kind
         of component.</p>
 
@@ -32759,7 +32734,7 @@ this application, and passing the result through the
       <p>The only valid children of this component are
       <code>UISelectItem</code> or <code>UISelectItems</code>
       instances. Iterate over the children of this component, and accrue
-      a list of <code>javax.faces.model.SelectItem</code> instances.
+      a list of <code>jakarta.faces.model.SelectItem</code> instances.
       <span class="changed_added_2_0">If the current child is a
       <code>SelectItem</code> whose <code>noSelctionProperty</code> is
       <code>true</code>, <b>and</b> the <code>UISelectOne</code> or
@@ -32837,8 +32812,8 @@ this application, and passing the result through the
       </ul>
 
 </ul>]]></description>
-      <component-family>javax.faces.SelectMany</component-family>
-      <renderer-type>javax.faces.Listbox</renderer-type>
+      <component-family>jakarta.faces.SelectMany</component-family>
+      <renderer-type>jakarta.faces.Listbox</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.ListboxRenderer
     </renderer-class>
@@ -33285,7 +33260,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectMany Components"</a> section.</p>
 
       </ul>
@@ -33301,14 +33276,14 @@ this application, and passing the result through the
       to be rendered is a UISelectMany, render "multiple" as the value of
       the "multiple" attribute.  Render "1" as the value of the "size"
       attribute.  See the <a
-      href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
       elements" </a> specification for <code>ListboxRenderer</code> for
       more detail on how to render the "option" elements in this
       renderer.</p>
 
       </ul>]]></description>
-      <component-family>javax.faces.SelectMany</component-family>
-      <renderer-type>javax.faces.Menu</renderer-type>
+      <component-family>jakarta.faces.SelectMany</component-family>
+      <renderer-type>jakarta.faces.Menu</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.MenuRenderer
     </renderer-class>
@@ -33743,7 +33718,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectOne Components"</a> section.</p>
 
       </ul>
@@ -33759,14 +33734,14 @@ this application, and passing the result through the
       the "multiple" attribute.  If the "size" attribute is specified,
       render its value as the value of the "size" attribute.  Otherwise
       use the number of items as the value of the "size" attribute.  See
-      the <a href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option
+      the <a href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option
       elements" </a> specification for <code>ListboxRenderer</code> for
       more detail on how to render the "option" elements in this
       renderer.</p>
 
       </ul>]]></description>
-      <component-family>javax.faces.SelectOne</component-family>
-      <renderer-type>javax.faces.Listbox</renderer-type>
+      <component-family>jakarta.faces.SelectOne</component-family>
+      <renderer-type>jakarta.faces.Listbox</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.ListboxRenderer
     </renderer-class>
@@ -34196,7 +34171,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectOne Components"</a> section.</p>
 
       </ul>
@@ -34212,14 +34187,14 @@ this application, and passing the result through the
       to be rendered is a UISelectMany, render "true" as the value of
       the "multiple" attribute.  Use the number of items as the value of
       the "size" attribute.  See the <a
-      href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering
       the option elements" </a> specification for
       <code>ListboxRenderer</code> for more detail on how to render the
       "option" elements in this renderer.</p>
 
       </ul>]]></description>
-      <component-family>javax.faces.SelectOne</component-family>
-      <renderer-type>javax.faces.Menu</renderer-type>
+      <component-family>jakarta.faces.SelectOne</component-family>
+      <renderer-type>jakarta.faces.Menu</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.MenuRenderer
     </renderer-class>
@@ -34641,7 +34616,7 @@ this application, and passing the result through the
       <ul>
 
       <p>See the <a
-      href="javax.faces.SelectManyjavax.faces.Listbox.html">"Decode
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Decode
       Behavior for UISelectOne Components"</a> section.</p>
 
       </ul>
@@ -34683,7 +34658,7 @@ this application, and passing the result through the
       child is equal to the value of the parent UISelectOne, render an
       appropriate HTML boolean value indicating "checked" for the
       enclosing "input".  See the <a
-      href="javax.faces.SelectManyjavax.faces.Listbox.html">"Rendering the option elements" </a>
+      href="jakarta.faces.SelectManyjakarta.faces.Listbox.html">"Rendering the option elements" </a>
       specification for <code>ListboxRenderer</code> for more detail on
       how to render the "option" elements in this renderer.  <span
       class="changed_modified_2_0_rev_a">Note that this renderer does
@@ -34692,8 +34667,8 @@ this application, and passing the result through the
       not apply to this renderer.</span></p>
 
       </ul>]]></description>
-      <component-family>javax.faces.SelectOne</component-family>
-      <renderer-type>javax.faces.Radio</renderer-type>
+      <component-family>jakarta.faces.SelectOne</component-family>
+      <renderer-type>jakarta.faces.Radio</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.RadioRenderer
     </renderer-class>
@@ -35254,8 +35229,8 @@ this application, and passing the result through the
 
 
 </div>]]></description>
-      <component-family>javax.faces.NamingContainer</component-family>
-      <renderer-type>javax.faces.Composite</renderer-type>
+      <component-family>jakarta.faces.NamingContainer</component-family>
+      <renderer-type>jakarta.faces.Composite</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.CompositeRenderer
     </renderer-class>
@@ -35284,7 +35259,7 @@ action for this renderer.  Due to the specification of the
 <code>&lt;composite:insertChildren&gt;</code> tag handler, the component
 passed to the <code>encodeChildern()</code> method of this renderer will
 be the component with <code>component-family</code>
-<code>javax.faces.Output</code> and <code>renderer-type</code> equal to
+<code>jakarta.faces.Output</code> and <code>renderer-type</code> equal to
 the one for this renderer.  The implementation of
 <code><span class="changed_modified_2_0_rev_a">encodeChildren()</span></code>, must obtain the component attribute value
 under the key given by the value of the symbolic constant
@@ -35299,8 +35274,8 @@ Otherwise, get the facet whose name is "facetName".  If found call
 
 
 </div>]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.CompositeFacet</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.CompositeFacet</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.CompositeFacetRenderer
     </renderer-class>
@@ -35321,20 +35296,20 @@ Otherwise, get the facet whose name is "facetName".  If found call
 
 <p class="changed_modified_2_0">The implementation of this renderer must
 have a <a target="_"
-href="../../javadocs/javax/faces/event/ListenerFor.html"><code>@ListenerFor</code></a>
+href="../../javadocs/jakarta/faces/event/ListenerFor.html"><code>@ListenerFor</code></a>
 annotation attached to it, at the class level, declaring <a target="_"
-href="../../javadocs/javax/faces/event/PostAddToViewEvent.html"><code>PostAddToViewEvent.class</code></a>
+href="../../javadocs/jakarta/faces/event/PostAddToViewEvent.html"><code>PostAddToViewEvent.class</code></a>
 as the value of the <code>systemEventClass</code> attribute.  The
 presence of this annotation on a renderer implies the renderer
 implements <a target="_"
-href="../../javadocs/javax/faces/event/ComponentSystemEventListener.html"><code>ComponentSystemEventListener</code></a>,
+href="../../javadocs/jakarta/faces/event/ComponentSystemEventListener.html"><code>ComponentSystemEventListener</code></a>,
 which this renderer must do.  The implementation of
 <code>processEvent()</code> must extract the <code>UIComponent</code>
 from the argument event and look for the presence of the key
 "<code>target</code>" in the component's attribute <code>Map</code>.  If
 and only if such a key is present, the implementation of
 <code>processEvent()</code> must pass the component to <a target="_"
-href="../../javadocs/javax/faces/component/UIViewRoot.html#addComponentResource(javax.faces.context.FacesContext,%20javax.faces.component.UIComponent)"><code>UIViewRoot.addComponentResource()</code></a>.</p>
+href="../../javadocs/jakarta/faces/component/UIViewRoot.html#addComponentResource(jakarta.faces.context.FacesContext,%20jakarta.faces.component.UIComponent)"><code>UIViewRoot.addComponentResource()</code></a>.</p>
 
       <p class="changed_modified_2_0">Decode Behavior</p>
 
@@ -35451,8 +35426,8 @@ href="../../javadocs/javax/faces/component/UIViewRoot.html#addComponentResource(
 
 
 ]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.resource.Script</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.resource.Script</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.ScriptRenderer
     </renderer-class>
@@ -35539,7 +35514,7 @@ changed_modified_2_1 changed_modified_2_2">Render</span> the markup for a
        <code>getRendersChildren()</code>.</p>
 
         <p>For <code>encodeEnd()</code>, use the algorithm <a
-        href="javax.faces.Outputjavax.faces.resource.Script.html#ResourceCommonGetResource">Common
+        href="jakarta.faces.Outputjakarta.faces.resource.Script.html#ResourceCommonGetResource">Common
         Algorithm for Obtaining A Resource to Render</a> to obtain a
         reference to the <code>Resource</code> to be encoded.</p>
 
@@ -35554,16 +35529,16 @@ Otherwise, do not render a media attribute.</span></p>
 
 
 <p>The implementation of this renderer must have a <a target="_"
-href="../../javadocs/javax/faces/event/ListenerFor.html"><code>@ListenerFor</code></a>
+href="../../javadocs/jakarta/faces/event/ListenerFor.html"><code>@ListenerFor</code></a>
 annotation attached to it, at the class level, declaring <a target="_"
-href="../../javadocs/javax/faces/event/PostAddToViewEvent.html"><code>PostAddToViewEvent.class</code></a>
+href="../../javadocs/jakarta/faces/event/PostAddToViewEvent.html"><code>PostAddToViewEvent.class</code></a>
 as the value of the <code>systemEventClass</code> attribute.  The presence of
 this annotation on a renderer implies the renderer implements <a target="_"
-href="../../javadocs/javax/faces/event/ComponentSystemEventListener.html"><code>ComponentSystemEventListener</code></a>,
+href="../../javadocs/jakarta/faces/event/ComponentSystemEventListener.html"><code>ComponentSystemEventListener</code></a>,
 which this renderer must do.  The implementation of
 <code>processEvent()</code> must extract the <code>UIComponent</code>
 from the argument event pass it to <a target="_"
-href="../../javadocs/javax/faces/component/UIViewRoot.html#addComponentResource(javax.faces.context.FacesContext,%20javax.faces.component.UIComponent,%20java.lang.String)"><code>UIViewRoot.addComponentResource()</code></a>, specifying
+href="../../javadocs/jakarta/faces/component/UIViewRoot.html#addComponentResource(jakarta.faces.context.FacesContext,%20jakarta.faces.component.UIComponent,%20java.lang.String)"><code>UIViewRoot.addComponentResource()</code></a>, specifying
 the literal string "<code>head</code>" as the last argument.</p>
 
 <p>The stylsheet renderer must ensure that any stylesheets are included in the &lt;head&gt; of the document. 
@@ -35572,8 +35547,8 @@ the literal string "<code>head</code>" as the last argument.</p>
 </ul>
 
 ]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.resource.Stylesheet</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.resource.Stylesheet</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.StylesheetRenderer
     </renderer-class>
@@ -35673,8 +35648,8 @@ must be ignored.</p>
 
 
 </div>]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Doctype</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Doctype</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.DoctypeRenderer
     </renderer-class>
@@ -35781,8 +35756,8 @@ unmodified to the rendered output.</p>
 </div>
 
 </div>]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Head</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Head</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.HeadRenderer
     </renderer-class>
@@ -35887,8 +35862,8 @@ unmodified to the rendered output.</p>
 unmodified to the rendered output.</p>
 
 </div>]]></description>
-      <component-family>javax.faces.Output</component-family>
-      <renderer-type>javax.faces.Body</renderer-type>
+      <component-family>jakarta.faces.Output</component-family>
+      <renderer-type>jakarta.faces.Body</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.BodyRenderer
     </renderer-class>
@@ -36204,8 +36179,8 @@ unmodified to the rendered output.</p>
                     </p>
    </div>                    
                 ]]></description>
-      <component-family>javax.faces.Script</component-family>
-      <renderer-type>javax.faces.Websocket</renderer-type>
+      <component-family>jakarta.faces.Script</component-family>
+      <renderer-type>jakarta.faces.Websocket</renderer-type>
       <renderer-class>
         com.sun.faces.renderkit.html_basic.WebsocketRenderer
     </renderer-class>

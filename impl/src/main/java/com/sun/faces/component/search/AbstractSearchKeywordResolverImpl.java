@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,17 +16,17 @@
 
 package com.sun.faces.component.search;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHint;
-import javax.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.component.search.SearchKeywordResolver;
 
 public abstract class AbstractSearchKeywordResolverImpl extends SearchKeywordResolver {
-    
-    protected <T> T closest(Class<T> type, UIComponent base)  {
+
+    protected <T> T closest(Class<T> type, UIComponent base) {
         UIComponent parent = base.getParent();
 
-        while (parent != null)  {
+        while (parent != null) {
             if (type.isAssignableFrom(parent.getClass())) {
                 return (T) parent;
             }

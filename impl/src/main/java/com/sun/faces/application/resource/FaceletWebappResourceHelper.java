@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,10 +20,10 @@ import static com.sun.faces.RIConstants.FLOW_IN_JAR_PREFIX;
 import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.WebAppContractsDirectory;
+import static jakarta.faces.application.ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY;
 import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.StreamSupport.stream;
-import static javax.faces.application.ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,20 +34,20 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
-import javax.faces.FacesException;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+
 public class FaceletWebappResourceHelper extends ResourceHelper {
-    
+
     private static final String[] RESTRICTED_DIRECTORIES = { "/WEB-INF/", "/META-INF/" };
-    
+
     private final String webAppContractsDirectory;
     private final String[] configuredExtensions;
 
@@ -79,60 +79,56 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
             // FCAPUTO localized facelets are not yet allowed
             return null;
         }
-        
+
         FaceletResourceInfo result = null;
         try {
-            
+
             List<String> contracts = ctx.getResourceLibraryContracts();
-            ContractInfo [] outContract = new ContractInfo[1];
+            ContractInfo[] outContract = new ContractInfo[1];
             boolean[] outDoNotCache = new boolean[1];
 
             URL url = null;
-            
+
             // if the library is not null, we must not consider contracts here!
             if (library == null && !contracts.isEmpty()) {
                 url = findResourceInfoConsideringContracts(ctx, resourceName, outContract, contracts);
             }
-            
+
             if (url == null) {
                 url = Resource.getResourceUrl(ctx, createPath(library, resourceName));
             }
-            
+
             if (url == null) {
                 url = findResourceUrlConsideringFlows(resourceName, outDoNotCache);
             }
-            
+
             if (url != null) {
                 result = new FaceletResourceInfo(outContract[0], resourceName, null, this, url);
                 result.setDoNotCache(outDoNotCache[0]);
             }
         } catch (IOException ex) {
             throw new FacesException(ex);
-        } 
-        
+        }
+
         return result;
     }
- 
+
     public Stream<String> getViewResources(FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options) {
-        return stream(
-            spliteratorUnknownSize(
-                new ResourcePathsIterator(path, maxDepth, configuredExtensions, getRestrictedDirectories(options), facesContext.getExternalContext()), 
-                DISTINCT
-            ), 
-            false
-        );
+        return stream(spliteratorUnknownSize(
+                new ResourcePathsIterator(path, maxDepth, configuredExtensions, getRestrictedDirectories(options), facesContext.getExternalContext()),
+                DISTINCT), false);
     }
-    
+
     private static String[] getRestrictedDirectories(final ResourceVisitOption... options) {
         for (ResourceVisitOption option : options) {
             if (option == TOP_LEVEL_VIEWS_ONLY) {
                 return RESTRICTED_DIRECTORIES;
             }
         }
-        
+
         return null;
     }
-    
+
     private String createPath(LibraryInfo library, String resourceName) {
         String path = resourceName;
         if (library != null) {
@@ -143,23 +139,24 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
                 path = "/" + path;
             }
         }
-        
+
         return path;
     }
-    
-    private URL findResourceInfoConsideringContracts(FacesContext ctx, String baseResourceName, ContractInfo [] outContract, List<String> contracts) throws MalformedURLException {
+
+    private URL findResourceInfoConsideringContracts(FacesContext ctx, String baseResourceName, ContractInfo[] outContract, List<String> contracts)
+            throws MalformedURLException {
         URL url = null;
         String resourceName;
-        
+
         for (String contract : contracts) {
             if (baseResourceName.startsWith("/")) {
                 resourceName = webAppContractsDirectory + "/" + contract + baseResourceName;
             } else {
                 resourceName = webAppContractsDirectory + "/" + contract + "/" + baseResourceName;
             }
-            
+
             url = Resource.getResourceUrl(ctx, resourceName);
-            
+
             if (url != null) {
                 outContract[0] = new ContractInfo(contract);
                 break;
@@ -173,18 +170,18 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
                 if (url != null) {
                     outContract[0] = new ContractInfo(contract);
                     break;
-                }                
+                }
             }
-            
+
         }
-        
+
         return url;
     }
-    
+
     private URL findResourceUrlConsideringFlows(String resourceName, boolean[] outDoNotCache) throws IOException {
-        
+
         URL url = null;
-        
+
         ClassLoader cl = Util.getCurrentLoader(this);
         Enumeration<URL> matches = cl.getResources(FLOW_IN_JAR_PREFIX + resourceName);
         try {
@@ -192,7 +189,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
         } catch (NoSuchElementException nsee) {
             url = null;
         }
-        
+
         if (url != null && matches.hasMoreElements()) {
             boolean keepGoing = true;
             FacesContext context = FacesContext.getCurrentInstance();
@@ -218,10 +215,9 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
                 }
             } while (keepGoing);
         }
-        
+
         return url;
     }
-    
 
     @Override
     public String getBaseResourcePath() {
@@ -240,7 +236,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     @Override
     public URL getURL(ResourceInfo resource, FacesContext ctx) {
-        return ((FaceletResourceInfo)resource).getUrl();
+        return ((FaceletResourceInfo) resource).getUrl();
     }
-    
+
 }

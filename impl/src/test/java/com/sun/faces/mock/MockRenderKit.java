@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,17 +18,19 @@ package com.sun.faces.mock;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIData;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.context.ResponseStream;
-import javax.faces.render.Renderer;
-import javax.faces.render.RenderKit;
-import javax.faces.render.ResponseStateManager;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseStream;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.render.ResponseStateManager;
+
 import java.io.Writer;
 import java.io.OutputStream;
 import java.io.IOException;
@@ -37,17 +39,17 @@ public class MockRenderKit extends RenderKit {
 
     public MockRenderKit() {
         addRenderer(UIData.COMPONENT_FAMILY,
-                "javax.faces.Table", new TestRenderer(true));
+                "jakarta.faces.Table", new TestRenderer(true));
         addRenderer(UIInput.COMPONENT_FAMILY,
                 "TestRenderer", new TestRenderer());
         addRenderer(UIInput.COMPONENT_FAMILY,
-                "javax.faces.Text", new TestRenderer());
+                "jakarta.faces.Text", new TestRenderer());
         addRenderer(UIOutput.COMPONENT_FAMILY,
                 "TestRenderer", new TestRenderer());
         addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new TestRenderer());
+                "jakarta.faces.Text", new TestRenderer());
         addRenderer(UIPanel.COMPONENT_FAMILY,
-                "javax.faces.Grid", new TestRenderer(true));
+                "jakarta.faces.Grid", new TestRenderer(true));
         responseStateManager = new MockResponseStateManager();
     }
 

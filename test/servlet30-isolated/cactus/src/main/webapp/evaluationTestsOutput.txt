@@ -245,10 +245,10 @@ With type: class java.lang.Boolean
 
 Expression: #{false < true}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: Attempt to apply operator "<" to arguments of type "java.lang.Boolean" and "java.lang.Boolean"
+Causes an error: jakarta.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: Attempt to apply operator "<" to arguments of type "java.lang.Boolean" and "java.lang.Boolean"
 Expression: #{false > true}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: Attempt to apply operator ">" to arguments of type "java.lang.Boolean" and "java.lang.Boolean"
+Causes an error: jakarta.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: Attempt to apply operator ">" to arguments of type "java.lang.Boolean" and "java.lang.Boolean"
 Expression: #{true >= true}
 ExpectedType: class java.lang.Object
 Evaluates to: true
@@ -692,7 +692,7 @@ With type: class java.lang.Boolean
 
 Expression: #{bean1a.bean1 < 14}
 ExpectedType: boolean
-Causes an error: javax.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: Attempt to coerce a value of type "com.sun.faces.el.impl.Bean1" to type "java.lang.Long"
+Causes an error: jakarta.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: Attempt to coerce a value of type "com.sun.faces.el.impl.Bean1" to type "java.lang.Long"
 Expression: #{bean1a.bean1 == "hello"}
 ExpectedType: boolean
 Evaluates to: false
@@ -751,13 +751,13 @@ Evaluates to: null
 
 Expression: #{bean1a.noProperty}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'noProperty' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'noProperty' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{bean1a.noGetter}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'noGetter' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'noGetter' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{bean1a.errorInGetter}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.EvaluationException: javax.faces.el.EvaluationException: Error getting property 'errorInGetter' from bean of type com.sun.faces.el.impl.Bean1: java.lang.NullPointerException: Error!
+Causes an error: jakarta.faces.el.EvaluationException: jakarta.faces.el.EvaluationException: Error getting property 'errorInGetter' from bean of type com.sun.faces.el.impl.Bean1: java.lang.NullPointerException: Error!
 Expression: #{bean1a.bean2.string2}
 ExpectedType: class java.lang.Object
 Evaluates to: null
@@ -808,31 +808,31 @@ With type: class java.lang.String
 
 Expression: #{and}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: and
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: and
 Expression: #{or}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: or
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: or
 Expression: #{not}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: not
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: not
 Expression: #{eq}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: eq
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: eq
 Expression: #{ne}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: ne
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: ne
 Expression: #{lt}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: lt
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: lt
 Expression: #{gt}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: gt
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: gt
 Expression: #{le}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: le
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: le
 Expression: #{ge}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: ge
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: ge
 Expression: #{instanceof}
 ExpectedType: class java.lang.Object
 Evaluates to: null
@@ -858,55 +858,55 @@ Evaluates to: null
 
 Expression: #{bean1a.and}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.and
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.and
 Expression: #{bean1a.or}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.or
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.or
 Expression: #{bean1a.not}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.not
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.not
 Expression: #{bean1a.eq}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.eq
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.eq
 Expression: #{bean1a.ne}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.ne
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.ne
 Expression: #{bean1a.lt}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.lt
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.lt
 Expression: #{bean1a.gt}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.gt
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.gt
 Expression: #{bean1a.le}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.le
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.le
 Expression: #{bean1a.ge}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.ge
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.ge
 Expression: #{bean1a.instanceof}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'instanceof' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'instanceof' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{bean1a.page}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'page' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'page' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{bean1a.request}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'request' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'request' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{bean1a.session}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'session' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'session' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{bean1a.application}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'application' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'application' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{bean1a.true}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.true
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.true
 Expression: #{bean1a.false}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.false
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.false
 Expression: #{bean1a.null}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.ReferenceSyntaxException: bean1a.null
+Causes an error: jakarta.faces.el.ReferenceSyntaxException: bean1a.null
 
 *######################################################
 * test arithmetic
@@ -1108,22 +1108,22 @@ With type: class java.lang.String
 * Test as indexed property accessor
 Expression: #{ bean1a.indexed1[-1]}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{ bean1a.indexed1[0]}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{ bean1a.indexed1[1]}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{ bean1a.indexed1[2]}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{ bean1a.indexed1[3]}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
 Expression: #{ bean1a.indexed1[4]}
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
+Causes an error: jakarta.faces.el.PropertyNotFoundException: Error getting property 'indexed1' from bean of type com.sun.faces.el.impl.Bean1
 
 * Test as map accessor
 Expression: #{ bean1a.map1.noKey }
@@ -1183,13 +1183,13 @@ With type: class java.lang.Boolean
 
 Expression: #{ "a" + "bcd" }
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: An exception occured trying to convert String "a" to type "java.lang.Long"
+Causes an error: jakarta.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: An exception occured trying to convert String "a" to type "java.lang.Long"
 Expression: #{ "a" + (4*3) }
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: An exception occured trying to convert String "a" to type "java.lang.Long"
+Causes an error: jakarta.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: An exception occured trying to convert String "a" to type "java.lang.Long"
 Expression: #{ bean1a.map1 ["key" + (5-4)] }
 ExpectedType: class java.lang.Object
-Causes an error: javax.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: An exception occured trying to convert String "key" to type "java.lang.Double"
+Causes an error: jakarta.faces.el.EvaluationException: com.sun.faces.el.impl.ElException: An exception occured trying to convert String "key" to type "java.lang.Double"
 
 *######################################################
 * test String comparisons

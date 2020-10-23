@@ -16,18 +16,16 @@
 
 package com.sun.faces.test.javaee6web.facelets;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.sun.faces.test.junit.JsfTestRunner;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 
 @RunWith(JsfTestRunner.class)
 public class Issue3058IT {
@@ -45,13 +43,12 @@ public class Issue3058IT {
     public void tearDown() {
         webClient.close();
     }
-
+    
     @Test
     public void testValidateRequired() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/faces/validateRequired.xhtml");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("submit");
         page = button.click();
-
         assertTrue(page.asText().contains("input2"));
     }
 
@@ -62,8 +59,7 @@ public class Issue3058IT {
         input.setText("Some Value");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("submit");
         page = button.click();
-
         assertTrue(!page.asText().contains("input2"));
     }
-
+    
 }

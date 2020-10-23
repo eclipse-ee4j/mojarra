@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,21 +19,17 @@ package com.sun.faces.test;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @ViewScoped
 public class Bean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    private String valueFromQueryParamAtCtorTime;
-    private List<Foo> foos;
-    private Foo selectedFoo;
-
+    
+    String valueFromQueryParamAtCtorTime;
+    
     public Bean() {
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         valueFromQueryParamAtCtorTime = extContext.getRequestParameterMap().get("pageWithViewScopedBean");
@@ -45,10 +39,12 @@ public class Bean implements Serializable {
         foos.add(new Foo("Cole"));
 
     }
-
-    public String getBob() {
-        return "Bob created with param " + valueFromQueryParamAtCtorTime;
-    }
+    
+    
+    public String getBob() { return "Bob created with param " + valueFromQueryParamAtCtorTime; }
+    
+    
+    List<Foo> foos;
 
     public List<Foo> getFoos() {
         return foos;
@@ -57,6 +53,8 @@ public class Bean implements Serializable {
     public void setFoos(List<Foo> foos) {
         this.foos = foos;
     }
+        
+    private Foo selectedFoo;
 
     public Foo getSelectedFoo() {
         return selectedFoo;
@@ -65,5 +63,6 @@ public class Bean implements Serializable {
     public void setSelectedFoo(Foo selectedFoo) {
         this.selectedFoo = selectedFoo;
     }
-
+    
+    
 }

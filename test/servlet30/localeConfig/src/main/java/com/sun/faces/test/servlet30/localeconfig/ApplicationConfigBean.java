@@ -16,29 +16,27 @@
 
 package com.sun.faces.test.servlet30.localeconfig;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.Serializable;
+import javax.faces.application.Application;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.inject.Named;
+import static org.junit.Assert.*;
 
-@Named
+@ManagedBean
 @SessionScoped
-public class ApplicationConfigBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ApplicationConfigBean {
 
     private String title = "Test Application Config";
 
     public String getTitle() {
         return title;
+    }
+
+    public ApplicationConfigBean() {
+
     }
 
     public String getLocaleConfigPositive() {
@@ -52,21 +50,30 @@ public class ApplicationConfigBean implements Serializable {
         Iterator iter;
         int j = 0, len = 0;
         boolean found = false;
-        String[][] expected = { { "de", "DE" }, { "en", "US" }, { "fr", "FR" }, { "ps", "PS" } };
+        String[][] expected = {
+            {"de", "DE"},
+            {"en", "US"},
+            {"fr", "FR"},
+            {"ps", "PS"}
+        };
         len = expected.length;
 
         // test that the supported locales are a superset of the
         // expected locales
         for (j = 0; j < len; j++) {
-            assertNotNull("Can't get supportedLocales from Application", iter = app.getSupportedLocales());
+            assertNotNull("Can't get supportedLocales from Application",
+                    iter = app.getSupportedLocales());
             found = false;
             while (iter.hasNext()) {
                 locale = (Locale) iter.next();
-                if (expected[j][0].equals(locale.getLanguage()) && expected[j][1].equals(locale.getCountry())) {
+                if (expected[j][0].equals(locale.getLanguage())
+                        && expected[j][1].equals(locale.getCountry())) {
                     found = true;
                 }
             }
-            assertTrue("Can't find expected locale " + expected[j][0] + "_" + expected[j][1] + " in supported-locales list", found);
+            assertTrue("Can't find expected locale " + expected[j][0] + "_"
+                    + expected[j][1] + " in supported-locales list",
+                    found);
         }
 
         return "SUCCESS";

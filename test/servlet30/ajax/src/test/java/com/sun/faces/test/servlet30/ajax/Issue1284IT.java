@@ -46,8 +46,8 @@ public class Issue1284IT {
     @Test
     public void testCdataEscape5() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue1284.xhtml");
-        assertTrue(page.getHtmlElementById("form1:out1").asText().equals(""));
-        assertTrue(page.getHtmlElementById("form1:in1").asText().equals(""));
+        assertTrue(page.getHtmlElementById("form1:out1").asText().equals("")); 
+        assertTrue(page.getHtmlElementById("form1:in1").asText().equals("")); 
 
         HtmlTextInput in1 = (HtmlTextInput) page.getHtmlElementById("form1:in1");
         in1.type("[");
@@ -58,14 +58,14 @@ public class Issue1284IT {
         webClient.waitForBackgroundJavaScript(60000);
 
         // Check that the ajax request succeeds
-        assertTrue(page.getHtmlElementById("form1:out1").asText().equals("["));
+        assertTrue(page.getHtmlElementById("form1:out1").asText().equals("[")); 
     }
 
     @Test
     public void testCdataEscape6() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue1284.xhtml");
-        assertTrue(page.getHtmlElementById("form1:out1").asText().equals(""));
-        assertTrue(page.getHtmlElementById("form1:in1").asText().equals(""));
+        assertTrue(page.getHtmlElementById("form1:out1").asText().equals("")); 
+        assertTrue(page.getHtmlElementById("form1:in1").asText().equals("")); 
 
         HtmlTextInput in1 = (HtmlTextInput) page.getHtmlElementById("form1:in1");
         in1.type("var a=[");
@@ -76,6 +76,6 @@ public class Issue1284IT {
         webClient.waitForBackgroundJavaScript(60000);
 
         // Check that the ajax request succeeds
-        assertTrue(page.getHtmlElementById("form1:out1").asText().equals("var a=["));
+        assertTrue(page.getHtmlElementById("form1:out1").asText().equals("var a=[")); 
     }
 }

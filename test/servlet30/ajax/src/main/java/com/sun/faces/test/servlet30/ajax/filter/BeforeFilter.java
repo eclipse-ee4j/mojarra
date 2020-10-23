@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
-
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.Filter;
@@ -32,10 +31,18 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 public class BeforeFilter implements Filter {
-
+    
+    private FilterConfig filterConfig = null;
+    
+    public BeforeFilter() {
+    }    
+    
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain)
+            throws IOException, ServletException {
+        
+        
         try {
             HttpServletResponse resp = (HttpServletResponse) response;
             PrintWriter pw = resp.getWriter();
@@ -43,10 +50,9 @@ public class BeforeFilter implements Filter {
             ResponseWriter responseWriter;
             Class htmlResponseWriterClass = Class.forName("com.sun.faces.renderkit.html_basic.HtmlResponseWriter");
             Constructor ctor = htmlResponseWriterClass.getConstructor(Writer.class, String.class, String.class);
-
             responseWriter = (ResponseWriter) ctor.newInstance(pw, "text/xml", "UTF-8");
-
             PartialResponseWriter partialResponseWriter = new PartialResponseWriter(responseWriter);
+//            partialResponseWriter.writePreamble("<?xml version='1.0' encoding='UTF-8'?>\n");
             partialResponseWriter.startDocument();
             partialResponseWriter.startUpdate("foo");
             partialResponseWriter.endUpdate();
@@ -68,9 +74,9 @@ public class BeforeFilter implements Filter {
                     indent = indentBuilder.toString();
                     pw.print("<p>" + indent + " Exception: " + cause.getClass().getName() + "</p>");
                     pw.print("<p>" + indent + " Exception Message: " + cause.getLocalizedMessage() + "</p>");
-                    pw.print("<code><pre>");
-                    cause.printStackTrace(pw);
-                    pw.print("</pre></code>");
+                        pw.print("<code><pre>");
+                        cause.printStackTrace(pw);
+                        pw.print("</pre></code>");
                 } while (null != (cause = cause.getCause()));
                 pw.print("</body></html>");
                 resp.setStatus(200);
@@ -78,15 +84,14 @@ public class BeforeFilter implements Filter {
             } catch (Exception e) {
             }
         }
-
+        
     }
 
-    @Override
-    public void destroy() {
+    public void destroy() {        
     }
 
-    @Override
-    public void init(FilterConfig filterConfig) {
+    public void init(FilterConfig filterConfig) {        
+        this.filterConfig = filterConfig;
     }
-
+    
 }

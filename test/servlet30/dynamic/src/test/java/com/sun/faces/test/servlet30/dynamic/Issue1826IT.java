@@ -16,15 +16,14 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class Issue1826IT {
 
@@ -46,7 +45,7 @@ public class Issue1826IT {
     public void testAddComponent() throws Exception {
 
         /*
-         * Make sure the added component is contained within the outer component.
+         * Make sure the added component is contained within the outer component. 
          */
         HtmlPage page = webClient.getPage(webUrl + "faces/add.xhtml");
         assertTrue(page.asXml().indexOf("encodeBegin") < page.asXml().indexOf(" Dynamically added child"));
@@ -64,12 +63,12 @@ public class Issue1826IT {
     @Test
     public void testStable() throws Exception {
 
-        String inputValue1 = "value=" + '"' + "1" + '"';
-        String inputValue2 = "value=" + '"' + "2" + '"';
-        String idText3 = "id=" + '"' + "text3" + '"';
+         String inputValue1 = "value=" + '"' + "1" + '"';
+         String inputValue2 = "value=" + '"' + "2" + '"';
+         String idText3 = "id=" + '"' + "text3" + '"';
 
         /*
-         * Make sure the three dynamically added input components are in their proper place.
+         * Make sure the three dynamically added input components are in their proper place. 
          */
         HtmlPage page = webClient.getPage(webUrl + "faces/stable.xhtml");
         assertTrue(page.asXml().indexOf("encodeBegin") < page.asXml().indexOf(inputValue1));
@@ -78,9 +77,9 @@ public class Issue1826IT {
         assertTrue(page.asXml().indexOf("text3") < page.asXml().indexOf("encodeEnd"));
 
         /**
-         * After clicking make sure the added component is still in its proper place. Also verify the
-         * validation required error message appears as the third input component has required attribute set
-         * to true.
+         * After clicking make sure the added component is still in its proper place.
+         * Also verify the validation required error message appears as the third input
+         * component has required attribute set to true.
          */
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
@@ -104,9 +103,9 @@ public class Issue1826IT {
         assertTrue(page.asXml().indexOf("Baz") < page.asXml().indexOf("encodeEnd"));
 
         /**
-         * After clicking make sure the added component is still in its proper place. Also verify the
-         * validation required error message appears as the third input component has required attribute set
-         * to true.
+         * After clicking make sure the added component is still in its proper place.
+         * Also verify the validation required error message appears as the third input
+         * component has required attribute set to true.
          */
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
@@ -119,7 +118,7 @@ public class Issue1826IT {
     @Test
     public void testRecursive() throws Exception {
         /*
-         * Make sure the added component and nested component is in the proper place.
+         * Make sure the added component and nested component is in the proper place. 
          */
         HtmlPage page = webClient.getPage(webUrl + "faces/recursive.xhtml");
         String text = page.asText();
@@ -128,7 +127,8 @@ public class Issue1826IT {
         assertTrue(first < next);
 
         /**
-         * After clicking make sure the added component and nested component is still in its proper place.
+         * After clicking make sure the added component and nested component is still in 
+         * its proper place.
          */
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
@@ -137,5 +137,6 @@ public class Issue1826IT {
         next = text.indexOf("Dynamically", first + ("Dynamically").length());
         assertTrue(first < next);
     }
+
 
 }

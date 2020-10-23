@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,32 +16,28 @@
 
 package com.sun.faces.config;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * <p>
- *  This represents any configuration processing problems that could
- *  occur.
+ * This represents any configuration processing problems that could occur.
  * </p>
  */
 public class ConfigurationException extends FacesException {
 
-     private static final long serialVersionUID = 5088235742267602695L;
+    private static final long serialVersionUID = 5088235742267602695L;
 
     public ConfigurationException() {
         super();
     }
 
-
     public ConfigurationException(String message) {
         super(message);
     }
 
-
     public ConfigurationException(Throwable t) {
         super(t);
     }
-
 
     public ConfigurationException(String message, Throwable t) {
         super(message, t);

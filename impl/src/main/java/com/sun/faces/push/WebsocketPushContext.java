@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,12 +30,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
-
 import com.sun.faces.cdi.CdiUtils;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.push.Push;
+import jakarta.faces.push.PushContext;
 
 /**
  * <p class="changed_added_2_3">
@@ -63,9 +63,9 @@ public class WebsocketPushContext implements PushContext {
     // Constructors ---------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a socket push context whereby the mutable map of session and view scope channel identifiers is
-     * referenced, so it's still available when another thread invokes {@link #send(Object)} during which the session
-     * and view scope is not necessarily active anymore.
+     * Creates a socket push context whereby the mutable map of session and view scope channel identifiers is referenced, so
+     * it's still available when another thread invokes {@link #send(Object)} during which the session and view scope is not
+     * necessarily active anymore.
      */
     public WebsocketPushContext(String channel, WebsocketSessionManager socketSessions, WebsocketUserManager socketUsers) {
         this.channel = channel;

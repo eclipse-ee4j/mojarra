@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,190 +16,165 @@
 
 package com.sun.faces.el;
 
-import com.sun.faces.util.RequestStateManager;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.faces.context.FacesContext;
+
+import com.sun.faces.util.RequestStateManager;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.faces.context.FacesContext;
 
 /**
- * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.
+ * Maintains an ordered composite list of child <code>ELResolver for Faces</code>.
  *
  */
-public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver
-{
-  @Override
-  public void addRootELResolver(ELResolver elResolver)
-  {
-    _wrapped.addRootELResolver(elResolver);
-  }
-
-  @Override
-  public void addPropertyELResolver(ELResolver elResolver)
-  {
-    _wrapped.addPropertyELResolver(elResolver);
-  }
-
-  @Override
-  public void add(ELResolver elResolver)
-  {
-    _wrapped.add(elResolver);    
-  }
-
-  @Override
-  public Object getValue(ELContext context, Object base, Object property) throws ELException
-  {      
-    FacesContext ctx = getFacesContext(context);
-    if (ctx == null)
-    {
-      return null;
+public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver {
+    @Override
+    public void addRootELResolver(ELResolver elResolver) {
+        _wrapped.addRootELResolver(elResolver);
     }
 
-    Map<String,Object> stateMap = 
-	RequestStateManager.getStateMap(ctx);
-    
-    stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME,
-		 _chainType);
-    Object result = null;
-    try {
-        result = _wrapped.getValue(context, base, property);
-    } finally {
-        stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
-    }
-    
-    return result;
-  }
-  
-  @Override
-  public Class<?> getType(ELContext context, Object base, Object property) throws ELException
-  {
-
-    FacesContext ctx = getFacesContext(context);
-    
-    if (ctx == null)
-    {
-      return null;
-    }
-    
-    Map<String,Object> stateMap =
-	RequestStateManager.getStateMap(ctx);
-
-    stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME,
-		 _chainType);
-    Class<?> result = null;
-    try {
-        result = _wrapped.getType(context, base, property);
-    } finally {
-        stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
+    @Override
+    public void addPropertyELResolver(ELResolver elResolver) {
+        _wrapped.addPropertyELResolver(elResolver);
     }
 
-    return result;
-  }
-  
-  @Override
-  public void setValue(ELContext context, Object base, Object property, Object val)
-    throws ELException
-  {
-    FacesContext ctx = getFacesContext(context);
-    if (ctx == null)
-    {
-      return;
+    @Override
+    public void add(ELResolver elResolver) {
+        _wrapped.add(elResolver);
     }
-    
-    Map<String,Object> stateMap =
-	RequestStateManager.getStateMap(ctx);
 
-    stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME,
-		 _chainType);
-    try {
-        _wrapped.setValue(context, base, property, val);
-    } finally {
-        stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
-    }
-  }
-    
-  @Override
-  public boolean isReadOnly(ELContext context, Object base, Object property) throws ELException
-  {
-    FacesContext ctx = getFacesContext(context);
-    if (ctx == null)
-    {
-      return false;
-    }
-    
-    Map<String,Object> stateMap =
-	RequestStateManager.getStateMap(ctx);
+    @Override
+    public Object getValue(ELContext context, Object base, Object property) throws ELException {
+        FacesContext ctx = getFacesContext(context);
+        if (ctx == null) {
+            return null;
+        }
 
-    stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME,
-		 _chainType);
-    boolean result = false;
-    try {
-        result = _wrapped.isReadOnly(context, base, property);
-    } finally {
-        stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
-    }
-    
-    return result;
-  }
-  
-  @Override
-  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
-  {
-    FacesContext ctx = getFacesContext(context);
-    Iterator<FeatureDescriptor> result = null;
-    if (ctx != null) {
-        Map<String,Object> stateMap =
-            RequestStateManager.getStateMap(ctx);
+        Map<String, Object> stateMap = RequestStateManager.getStateMap(ctx);
 
-        stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME,
-                     _chainType);
+        stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME, _chainType);
+        Object result = null;
         try {
-            result = _wrapped.getFeatureDescriptors(context, base);
+            result = _wrapped.getValue(context, base, property);
+        } finally {
+            stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property) throws ELException {
+
+        FacesContext ctx = getFacesContext(context);
+
+        if (ctx == null) {
+            return null;
+        }
+
+        Map<String, Object> stateMap = RequestStateManager.getStateMap(ctx);
+
+        stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME, _chainType);
+        Class<?> result = null;
+        try {
+            result = _wrapped.getType(context, base, property);
+        } finally {
+            stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void setValue(ELContext context, Object base, Object property, Object val) throws ELException {
+        FacesContext ctx = getFacesContext(context);
+        if (ctx == null) {
+            return;
+        }
+
+        Map<String, Object> stateMap = RequestStateManager.getStateMap(ctx);
+
+        stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME, _chainType);
+        try {
+            _wrapped.setValue(context, base, property, val);
         } finally {
             stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
         }
     }
-    return result;
-  }
-   
-  @Override
-  public ELResolverChainType getChainType()
-  {
-    return _chainType;
-  }
-    
-  private final FacesCompositeELResolver _wrapped;
-  private final ELResolverChainType _chainType;
 
-  /**
-   * <p>Guarantee that this instance knows of what chain it is a
-   * member.</p>
-   * @param chainType the ELResolverChainType
-   */
-  public ChainTypeCompositeELResolver(ELResolverChainType chainType)
-  {
-    _wrapped = new DemuxCompositeELResolver(chainType);
-    _chainType = chainType;
-  }
+    @Override
+    public boolean isReadOnly(ELContext context, Object base, Object property) throws ELException {
+        FacesContext ctx = getFacesContext(context);
+        if (ctx == null) {
+            return false;
+        }
 
-  public ChainTypeCompositeELResolver(FacesCompositeELResolver delegate)
-  {
-    _wrapped = delegate;
-    _chainType = delegate.getChainType();
-  }
+        Map<String, Object> stateMap = RequestStateManager.getStateMap(ctx);
 
-  /**
-   * @param elContext context for the current expression evaluation
-   * @return the <code>FacesContext</code> associated with this expression
-   *  evaluation
-   */
-  private FacesContext getFacesContext(ELContext elContext) {
+        stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME, _chainType);
+        boolean result = false;
+        try {
+            result = _wrapped.isReadOnly(context, base, property);
+        } finally {
+            stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
+        }
 
-      return (FacesContext) elContext.getContext(FacesContext.class);
+        return result;
+    }
 
-  }
+    @Override
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
+        FacesContext ctx = getFacesContext(context);
+        Iterator<FeatureDescriptor> result = null;
+        if (ctx != null) {
+            Map<String, Object> stateMap = RequestStateManager.getStateMap(ctx);
+
+            stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME, _chainType);
+            try {
+                result = _wrapped.getFeatureDescriptors(context, base);
+            } finally {
+                stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public ELResolverChainType getChainType() {
+        return _chainType;
+    }
+
+    private final FacesCompositeELResolver _wrapped;
+    private final ELResolverChainType _chainType;
+
+    /**
+     * <p>
+     * Guarantee that this instance knows of what chain it is a member.
+     * </p>
+     *
+     * @param chainType the ELResolverChainType
+     */
+    public ChainTypeCompositeELResolver(ELResolverChainType chainType) {
+        _wrapped = new DemuxCompositeELResolver(chainType);
+        _chainType = chainType;
+    }
+
+    public ChainTypeCompositeELResolver(FacesCompositeELResolver delegate) {
+        _wrapped = delegate;
+        _chainType = delegate.getChainType();
+    }
+
+    /**
+     * @param elContext context for the current expression evaluation
+     * @return the <code>FacesContext</code> associated with this expression evaluation
+     */
+    private FacesContext getFacesContext(ELContext elContext) {
+
+        return (FacesContext) elContext.getContext(FacesContext.class);
+
+    }
 }
-

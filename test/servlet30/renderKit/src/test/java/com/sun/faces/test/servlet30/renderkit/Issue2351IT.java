@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.renderkit;
+package com.sun.faces.test.servlet30.renderkit; 
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -44,18 +44,18 @@ public class Issue2351IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies that using a null value for the value of outputFormat works. It should just
-     * dispaly nothing.
+     * This test verifies that using a null value for the value of outputFormat works.
+     * It should just dispaly nothing. 
      */
     @Test
     public void testNullValueForOutputFormat() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/outputFormat.xhtml");
+        HtmlPage page = webClient.getPage(webUrl+"faces/outputFormat.xhtml");
         assertTrue(page.asText().contains("outputFormat with no arguements: end outputFormat with no arguements"));
         assertTrue(page.asText().contains("outputFormat with null expression: end outputFormat with null expression"));
-        assertTrue(page.asText().contains(
-                "outputFormat with expression that evaluates to null (via bean) : end outputFormat with expression that evaluates to null (via bean)"));
+        assertTrue(page.asText().contains("outputFormat with expression that evaluates to null (via bean) : end outputFormat with expression that evaluates to null (via bean)"));
     }
 }

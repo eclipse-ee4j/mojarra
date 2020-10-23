@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,16 +25,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 
 /**
- * Classifier for obtaining the map 
- * that {@link DataModelClassesMapProducer} producer produces
- * 
+ * Classifier for obtaining the map that {@link DataModelClassesMapProducer} producer produces
+ *
  * @since 2.3
  *
  */
-@Target({TYPE, METHOD, PARAMETER, FIELD})
+@Target({ TYPE, METHOD, PARAMETER, FIELD })
 @Qualifier
 @Retention(value = RUNTIME)
 @interface DataModelClasses {

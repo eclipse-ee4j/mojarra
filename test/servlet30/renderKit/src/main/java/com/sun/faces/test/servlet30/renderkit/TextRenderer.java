@@ -38,14 +38,19 @@ import com.sun.faces.util.MessageFactory;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+
 /**
- * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput<code> or
- * <code>UIOutput<code> component as a input field or static text.
+ * <B>TextRenderer</B> is a class that renders the current value of
+ * <code>UIInput<code> or <code>UIOutput<code> component as a input field or
+ * static text.
  */
 public class TextRenderer extends Renderer {
 
-    private static final Attribute[] INPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
-    private static final Attribute[] OUTPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTTEXT);
+    private static final Attribute[] INPUT_ATTRIBUTES =
+              AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
+        private static final Attribute[] OUTPUT_ATTRIBUTES =
+              AttributeManager.getAttributes(AttributeManager.Key.OUTPUTTEXT);
+
 
     //
     // Protected Constants
@@ -61,6 +66,7 @@ public class TextRenderer extends Renderer {
     //
 
     // Attribute Instance Variables
+
 
     // Relationship Instance Variables
 
@@ -84,20 +90,20 @@ public class TextRenderer extends Renderer {
     // Methods From Renderer
     //
 
-    @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component)
+        throws IOException {
         if (context == null) {
             throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
         if (component == null) {
             throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
         }
     }
 
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component)
+        throws IOException {
 
         String currentValue = null;
         ResponseWriter writer = null;
@@ -105,12 +111,13 @@ public class TextRenderer extends Renderer {
 
         if (context == null) {
             throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
         if (component == null) {
             throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
         }
+
 
         // suppress rendering if "rendered" property on the component is
         // false.
@@ -142,11 +149,15 @@ public class TextRenderer extends Renderer {
         return currentValue;
     }
 
-    protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
+    protected void getEndTextToRender(FacesContext context,
+                                      UIComponent component, String currentValue)
+        throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         assert (writer != null);
-        boolean shouldWriteIdAttribute = false, isOutput = false;
+        boolean
+            shouldWriteIdAttribute = false,
+            isOutput = false;
 
         String style = (String) component.getAttributes().get("style");
         String styleClass = (String) component.getAttributes().get("styleClass");
@@ -157,7 +168,8 @@ public class TextRenderer extends Renderer {
             writer.startElement("input", component);
             writeIdAttributeIfNecessary(context, writer, component);
             writer.writeAttribute("type", "text", null);
-            writer.writeAttribute("name", (component.getClientId(context)), "clientId");
+            writer.writeAttribute("name", (component.getClientId(context)),
+                                  "clientId");
 
             // render default text specified
             if (currentValue != null) {
@@ -168,21 +180,31 @@ public class TextRenderer extends Renderer {
             }
 
             // style is rendered as a passthur attribute
-            RenderKitUtils.renderPassThruAttributes(context, writer, component, INPUT_ATTRIBUTES);
+            RenderKitUtils.renderPassThruAttributes(context,
+                  writer,
+                                                    component,
+                                                    INPUT_ATTRIBUTES);
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             writer.endElement("input");
 
         } else if (isOutput = (component instanceof UIOutput)) {
-            if (styleClass != null || style != null || dir != null || lang != null || title != null
-                    || (shouldWriteIdAttribute = shouldWriteIdAttribute(component))) {
+            if (styleClass != null
+                 || style != null
+                 || dir != null
+                 || lang != null
+                 || title != null
+                 || (shouldWriteIdAttribute = shouldWriteIdAttribute(component))) {
                 writer.startElement("span", component);
                 writeIdAttributeIfNecessary(context, writer, component);
                 if (null != styleClass) {
                     writer.writeAttribute("class", styleClass, "styleClass");
                 }
                 // style is rendered as a passthru attribute
-                RenderKitUtils.renderPassThruAttributes(context, writer, component, OUTPUT_ATTRIBUTES);
+                RenderKitUtils.renderPassThruAttributes(context,
+                      writer,
+                                                        component,
+                                                        OUTPUT_ATTRIBUTES);
                 RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             }
@@ -194,7 +216,8 @@ public class TextRenderer extends Renderer {
                         escape = ((Boolean) val).booleanValue();
                     } else if (val instanceof String) {
                         try {
-                            escape = Boolean.valueOf((String) val).booleanValue();
+                            escape =
+                                Boolean.valueOf((String) val).booleanValue();
                         } catch (Throwable e) {
                         }
                     }
@@ -207,7 +230,12 @@ public class TextRenderer extends Renderer {
                 writer.writeText(" FROM THE CUSTOM RENDERER", null);
             }
         }
-        if (isOutput && (styleClass != null || style != null || dir != null || lang != null || title != null || (shouldWriteIdAttribute))) {
+        if (isOutput && (styleClass != null
+                 || style != null
+                 || dir != null
+                 || lang != null
+                 || title != null
+                 || (shouldWriteIdAttribute))) {
             writer.endElement("span");
         }
     }
@@ -221,7 +249,9 @@ public class TextRenderer extends Renderer {
         return null;
     }
 
-    protected String getFormattedValue(FacesContext context, UIComponent component, Object currentValue) throws ConverterException {
+    protected String getFormattedValue(FacesContext context, UIComponent component,
+                                       Object currentValue)
+        throws ConverterException {
 
         String result = null;
         // formatting is supported only for components that support
@@ -275,27 +305,37 @@ public class TextRenderer extends Renderer {
         } else {
             // throw converter exception if no converter can be
             // identified
-            Object[] params = { currentValue, "null Converter" };
+	    Object [] params = {
+		currentValue,
+		"null Converter"
+	    };
 
-            throw new ConverterException(MessageFactory.getMessage(context, MessageUtils.CONVERSION_ERROR_MESSAGE_ID, params));
+            throw new ConverterException(MessageFactory.getMessage(
+                context, MessageUtils.CONVERSION_ERROR_MESSAGE_ID, params));
         }
     }
-
     private boolean shouldWriteIdAttribute(UIComponent component) {
         String id;
-        return (null != (id = component.getId()) && !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX));
+        return (null != (id = component.getId()) &&
+            !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX));
     }
 
-    private void writeIdAttributeIfNecessary(FacesContext context, ResponseWriter writer, UIComponent component) {
+    private void writeIdAttributeIfNecessary(FacesContext context,
+                                               ResponseWriter writer,
+                                               UIComponent component) {
         String id;
         if (shouldWriteIdAttribute(component)) {
             try {
-                writer.writeAttribute("id", component.getClientId(context), "id");
+                writer.writeAttribute("id", component.getClientId(context),
+                                      "id");
             } catch (IOException e) {
             }
         }
     }
 
+
     // The testcase for this class is TestRenderers_2.java
 
 } // end of class TextRenderer
+
+

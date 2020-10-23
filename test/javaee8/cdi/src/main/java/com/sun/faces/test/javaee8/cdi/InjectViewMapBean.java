@@ -20,7 +20,8 @@ import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.faces.annotation.ViewMap;
+
+import jakarta.faces.annotation.ViewMap;
 
 @Named(value = "injectViewMapBean")
 @RequestScoped

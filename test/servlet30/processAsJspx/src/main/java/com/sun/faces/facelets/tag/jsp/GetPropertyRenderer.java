@@ -28,7 +28,8 @@ import javax.faces.render.FacesRenderer;
 import javax.faces.render.Renderer;
 import javax.faces.view.facelets.FaceletException;
 
-@FacesRenderer(componentFamily = "javax.faces.Output", rendererType = "jsp.GetProperty")
+
+@FacesRenderer(componentFamily="jakarta.faces.Output", rendererType="jsp.GetProperty")
 public class GetPropertyRenderer extends Renderer {
 
     @Override
@@ -40,7 +41,8 @@ public class GetPropertyRenderer extends Renderer {
         ExpressionFactory ef = facesContext.getApplication().getExpressionFactory();
 
         // Get the bean
-        ValueExpression valExpression = ef.createValueExpression(elContext, "#{" + nameVal + "." + propVal + "}", Object.class);
+        ValueExpression valExpression = ef.createValueExpression(elContext,
+                "#{" + nameVal + "." + propVal + "}", Object.class);
         Object bean = null;
         try {
             bean = valExpression.getValue(elContext);
@@ -63,5 +65,6 @@ public class GetPropertyRenderer extends Renderer {
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
     }
+
 
 }

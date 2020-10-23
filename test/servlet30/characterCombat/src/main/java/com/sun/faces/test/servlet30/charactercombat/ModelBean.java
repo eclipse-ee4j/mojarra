@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,18 +16,15 @@
 
 package com.sun.faces.test.servlet30.charactercombat;
 
-import java.io.Serializable;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 
 
 /**
@@ -38,11 +33,7 @@ import javax.inject.Named;
  * action handlers that process current bean state and return appropriate
  * results based on the action.</p>
  */
-@Named
-@SessionScoped
-public class ModelBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ModelBean {
 
     // -------------------------------------------------------------------------
     // Class Variables ---------------------------------------------------------
@@ -70,11 +61,7 @@ public class ModelBean implements Serializable {
      * <p>Map of available species and their respective properties. Map
      * is keyed by species type and contains SpeciesBean entries</p>
      */
-    private HashMap<String, SpeciesBean> speciesPropertyMap;
-    private String customName;
-    private String customSpecies;
-    private String secondSelection;
-
+    private HashMap<String, SpeciesBean> speciesPropertyMap = null;
 
     // -------------------------------------------------------------------------
     // Constructor -------------------------------------------------------------
@@ -113,6 +100,8 @@ public class ModelBean implements Serializable {
         this.dataList = dataList;
     }
 
+    private String customName = null;
+
     /**
      * <p>Get the custom entry's name</p>
      *
@@ -130,6 +119,8 @@ public class ModelBean implements Serializable {
     public void setCustomName(String customName) {
         this.customName = customName;
     }
+
+    private String customSpecies = null;
 
     /**
      * <p>Get the custom entry's species</p>
@@ -178,10 +169,9 @@ public class ModelBean implements Serializable {
      * @return first selected character name String
      */
     public String getFirstSelection() {
-        if (firstSelection == null) {
-            firstSelection = dataList.get(0).getName();
+        if (null == firstSelection) {
+            firstSelection = (dataList.get(0)).getName();
         }
-
         return firstSelection;
     }
 
@@ -194,17 +184,18 @@ public class ModelBean implements Serializable {
         this.firstSelection = firstSelection;
     }
 
+    private String secondSelection = null;
+
     /**
      * <p>Get the second selected character name</p>
      *
      * @return second selected character name String
      */
     public String getSecondSelection() {
-        if (secondSelection == null) {
+        if (null == secondSelection) {
             List<SelectItem> available = getCharactersToSelect();
             secondSelection = (String) (available.get(0)).getValue();
         }
-
         return secondSelection;
     }
 
@@ -216,7 +207,6 @@ public class ModelBean implements Serializable {
     public void setSecondSelection(String secondSelection) {
         this.secondSelection = secondSelection;
     }
-
 
     // -------------------------------------------------------------------------
     // Data Properties ---------------------------------------------------------
@@ -232,11 +222,11 @@ public class ModelBean implements Serializable {
     }
 
     /**
-     * <p>
-     * Get list of characters available for selection. If a character has already been selected, do not
-     * display it in the available characters list. Wrap the list in SelectItems so that the items can
-     * be handled by the JSF framework as selectable items
-     * </p>
+     * <p>Get list of characters available for selection.
+     * If a character has already been selected, do not
+     * display it in the available characters list. Wrap
+     * the list in SelectItems so that the items can
+     * be handled by the JSF framework as selectable items</p>
      *
      * @return List of available SelectItem characters
      */
@@ -248,7 +238,7 @@ public class ModelBean implements Serializable {
         while (iter.hasNext()) {
             CharacterBean item = iter.next();
 
-            // If a character has been selected, do not include it
+            //If a character has been selected, do not include it
             if (!item.getName().equals(firstSelection)) {
                 selectItem = new SelectItem(item.getName());
                 selectItemList.add(selectItem);
@@ -259,9 +249,8 @@ public class ModelBean implements Serializable {
     }
 
     /**
-     * <p>
-     * Get the list of all characters, regardless of whether or not they are selected
-     * </p>
+     * <p>Get the list of all characters, regardless of whether or not
+     * they are selected</p>
      *
      * @return List of all SelectItem characters
      */
@@ -281,13 +270,11 @@ public class ModelBean implements Serializable {
     }
 
     /**
-     * <p>
-     * Very simple algorithm to determine combat winner based on species. If both characters are the
-     * same species, the result is a tie.
-     * </p>
-     * <p>
-     * This method could be expanded to include other criteria and randomization.
-     * </p>
+     * <p>Very simple algorithm to determine combat winner based on
+     * species. If both characters are the same species, the result is
+     * a tie.</p>
+     * <p>This method could be expanded to include other criteria
+     * and randomization.</p>
      *
      * @return combat winner name String
      */
@@ -298,10 +285,12 @@ public class ModelBean implements Serializable {
         int firstCount = -1;
         int secondCount = -1;
         for (int i = 0; i < characterSpeciesOptions.length; i++) {
-            if (firstSelectionSpecies.equals(characterSpeciesOptions[i].getLabel())) {
+            if (firstSelectionSpecies.equals(
+                  characterSpeciesOptions[i].getLabel())) {
                 firstCount = i;
             }
-            if (secondSelectionSpecies.equals(characterSpeciesOptions[i].getLabel())) {
+            if (secondSelectionSpecies.equals(
+                  characterSpeciesOptions[i].getLabel())) {
                 secondCount = i;
             }
         }
@@ -309,26 +298,25 @@ public class ModelBean implements Serializable {
         if (firstCount == secondCount) {
             return tieResult;
         }
-        return firstCount < secondCount ? firstSelection : secondSelection;
+        return (firstCount < secondCount) ? firstSelection : secondSelection;
     }
-
 
     // -------------------------------------------------------------------------
     // Action Handlers ---------------------------------------------------------
     // -------------------------------------------------------------------------
 
     /**
-     * <p>
-     * Add the new name to character list if name is not empty or does not already exist in the list
-     * <p>
+     * <p>Add the new name to character list if name is not empty or does
+     * not already exist in the list<p>
      *
      * @param event the ActionEvent that triggered the action
      */
-    public void addCustomName(ActionEvent event) throws AbortProcessingException {
+    public void addCustomName(ActionEvent event)
+          throws AbortProcessingException {
         if ((customName != null) && (!customName.trim().equals(""))) {
             customName = customName.trim();
 
-            // check to see if name already exists in list
+            //check to see if name already exists in list
             for (CharacterBean item : dataList) {
                 if (item.getName().equals(customName)) {
                     reset();
@@ -336,7 +324,7 @@ public class ModelBean implements Serializable {
                 }
             }
 
-            // create new entry
+            //create new entry
             CharacterBean item = new CharacterBean();
             item.setName(customName);
             item.setSpecies(speciesPropertyMap.get(customSpecies));
@@ -344,15 +332,12 @@ public class ModelBean implements Serializable {
         }
     }
 
-
     // -------------------------------------------------------------------------
     // Private Methods ---------------------------------------------------------
     // -------------------------------------------------------------------------
 
     /**
-     * <p>
-     * Get species type based on character name
-     * <p>
+     * <p>Get species type based on character name<p>
      *
      * @param name
      *
@@ -369,21 +354,17 @@ public class ModelBean implements Serializable {
     }
 
     /**
-     * <p>
-     * Populate both the species property map of species type to species property bean mappings as well
-     * as initial list of available characters
-     * </p>
+     * <p>Populate both the species property map of species type to
+     * species property bean mappings as well as initial list of
+     * available characters</p>
      */
     private void populate() {
         populateSpeciesMap();
         populateCharacterList();
     }
 
-    /**
-     * <p>
-     * Populate species type to properties mappings
-     * </p>
-     */
+
+    /** <p>Populate species type to properties mappings</p> */
     private void populateSpeciesMap() {
         speciesPropertyMap = new HashMap<String, SpeciesBean>();
         SpeciesBean species = new SpeciesBean();
@@ -429,11 +410,7 @@ public class ModelBean implements Serializable {
         speciesPropertyMap.put(species.getType(), species);
     }
 
-    /**
-     * <p>
-     * Populate initial characters list
-     * </p>
-     */
+    /** <p>Populate initial characters list</p> */
     private void populateCharacterList() {
         dataList = new ArrayList<CharacterBean>();
         CharacterBean item = new CharacterBean();
@@ -453,9 +430,8 @@ public class ModelBean implements Serializable {
     }
 
     /**
-     * <p>
-     * Clear out internal selection strings in preparation to go to the selection pages
-     * </p>
+     * <p>Clear out internal selection strings in preparation to go
+     * to the selection pages</p>
      */
     private void reset() {
         currentSelection = null;

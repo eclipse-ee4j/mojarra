@@ -16,10 +16,10 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
-@Named
+@ManagedBean(name="outputTextWithEscapeBean")
 @RequestScoped
 public class OutputTextWithEscapeBean {
     public String getText() {

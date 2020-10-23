@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,14 +19,13 @@ package com.sun.faces.cdi;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 
 /**
  * <p class="changed_added_2_3">
- * The Flash producer is the CDI producer that allows EL resolving of
- * #{flash}
+ * The Flash producer is the CDI producer that allows EL resolving of #{flash}
  * </p>
  *
  * @since 2.3
@@ -37,18 +36,14 @@ public class FlashProducer extends CdiProducer<Object> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
-    private static class Dummy {}
-    
+
+    private static class Dummy {
+    }
+
     public FlashProducer() {
-        super.name("flash")
-             .beanClass(Flash.class)
-             .types(
-                 Flash.class, 
-                 new ParameterizedTypeImpl(Map.class, new Type[]{Dummy.class, Dummy.class}),
-                 Object.class)
-             .scope(RequestScoped.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getFlash());
+        super.name("flash").beanClass(Flash.class)
+                .types(Flash.class, new ParameterizedTypeImpl(Map.class, new Type[] { Dummy.class, Dummy.class }), Object.class).scope(RequestScoped.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getFlash());
     }
 
 }

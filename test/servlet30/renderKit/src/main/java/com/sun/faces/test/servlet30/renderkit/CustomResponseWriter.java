@@ -26,10 +26,11 @@ import java.io.Writer;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
 
+
 /**
- * <p>
- * <strong>CustomResponseWriter</strong> is an Html specific implementation of the
- * <code>ResponseWriter</code> abstract class. Kudos to Adam Winer (Oracle) for much of this code.
+ * <p><strong>CustomResponseWriter</strong> is an Html specific implementation
+ * of the <code>ResponseWriter</code> abstract class.
+ * Kudos to Adam Winer (Oracle) for much of this code.
  */
 public class CustomResponseWriter extends ResponseWriter {
 
@@ -62,21 +63,24 @@ public class CustomResponseWriter extends ResponseWriter {
 
     // Internal buffer for to store the result of String.getChars() for
     // values passed to the writer as String to reduce the overhead
-    // of String.charAt(). This buffer will be grown, if necessary, to
+    // of String.charAt().  This buffer will be grown, if necessary, to
     // accomodate larger values.
     private char[] textBuffer = new char[128];
 
     private char[] charHolder = new char[1];
 
+
     /**
-     * Constructor sets the <code>ResponseWriter</code> and encoding.
+     * Constructor sets the <code>ResponseWriter</code> and
+     * encoding.
      *
-     * @param writer the <code>ResponseWriter</code>
+     * @param writer      the <code>ResponseWriter</code>
      * @param contentType the content type.
-     * @param encoding the character encoding.
+     * @param encoding    the character encoding.
      * @throws if the encoding is not recognized.
      */
-    public CustomResponseWriter(Writer writer, String contentType, String encoding) throws FacesException {
+    public CustomResponseWriter(Writer writer, String contentType, String encoding)
+        throws FacesException {
         this.writer = writer;
         if (null != contentType) {
             this.contentType = contentType;
@@ -86,54 +90,54 @@ public class CustomResponseWriter extends ResponseWriter {
         // Check the character encoding
         // Check the character encoding
         if (!HtmlUtils.validateEncoding(encoding)) {
-            throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(MessageUtils.ENCODING_ERROR_MESSAGE_ID));
+            throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(
+                  MessageUtils.ENCODING_ERROR_MESSAGE_ID));    
         }
     }
+
 
     /**
      * @return the content type such as "text/html" for this ResponseWriter.
      */
-    @Override
     public String getContentType() {
         return contentType;
     }
 
+
     /**
-     * @return the character encoding, such as "ISO-8859-1" for this ResponseWriter. Refer to:
-     * <a href="http://www.iana.org/assignments/character-sets">theIANA</a> for a list of character
-     * encodings.
+     * @return the character encoding, such as "ISO-8859-1" for this
+     *         ResponseWriter.  Refer to:
+     *         <a href="http://www.iana.org/assignments/character-sets">theIANA</a>
+     *         for a list of character encodings.
      */
-    @Override
     public String getCharacterEncoding() {
         return encoding;
     }
 
+
     /**
-     * <p>
-     * Write the text that should begin a response.
-     * </p>
+     * <p>Write the text that should begin a response.</p>
      *
      * @throws IOException if an input/output error occurs
      */
-    @Override
     public void startDocument() throws IOException {
         // do nothing;
     }
 
+
     /**
      * Output the text for the end of a document.
      */
-    @Override
     public void endDocument() throws IOException {
         writer.flush();
     }
+
 
     /**
      * Flush any buffered output to the contained writer.
      *
      * @throws IOException if an input/output error occurs.
      */
-    @Override
     public void flush() throws IOException {
         // NOTE: Internal buffer's contents (the ivar "buffer") is
         // written to the contained writer in the HtmlUtils class - see
@@ -145,51 +149,59 @@ public class CustomResponseWriter extends ResponseWriter {
         closeStartIfNecessary();
     }
 
+
     /**
-     * <p>
-     * Write the start of an element, up to and including the element name. Clients call
-     * <code>writeAttribute()</code> or <code>writeURIAttribute()</code> methods to add attributes after
+     * <p>Write the start of an element, up to and including the
+     * element name.  Clients call <code>writeAttribute()</code> or
+     * <code>writeURIAttribute()</code> methods to add attributes after
      * calling this method.
      *
-     * @param name Name of the starting element
-     * @param componentForElement The UIComponent instance that applies to this element. This argument
-     * may be <code>null</code>.
-     * @throws IOException if an input/output error occurs
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
+     * @param name                Name of the starting element
+     * @param componentForElement The UIComponent instance that applies to this
+     *                            element.  This argument may be <code>null</code>.
+     * @throws IOException          if an input/output error occurs
+     * @throws NullPointerException if <code>name</code>
+     *                              is <code>null</code>
      */
-    @Override
-    public void startElement(String name, UIComponent componentForElement) throws IOException {
+    public void startElement(String name, UIComponent componentForElement)
+        throws IOException {
         if (name == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
         closeStartIfNecessary();
         char firstChar = name.charAt(0);
-        if ((firstChar == 's') || (firstChar == 'S')) {
-            if ("script".equalsIgnoreCase(name) || "style".equalsIgnoreCase(name)) {
+        if ((firstChar == 's') ||
+            (firstChar == 'S')) {
+            if ("script".equalsIgnoreCase(name) ||
+                "style".equalsIgnoreCase(name)) {
                 dontEscape = true;
             }
         }
-
-        // PENDING (horwat) using String as a result of Tomcat char writer
-        // ArrayIndexOutOfBoundsException (3584)
+        
+        
+        //PENDING (horwat) using String as a result of Tomcat char writer
+        //         ArrayIndexOutOfBoundsException (3584)
         writer.write("<");
         writer.write(name);
         closeStart = true;
     }
 
+
     /**
-     * <p>
-     * Write the end of an element. This method will first close any open element created by a call to
+     * <p>Write the end of an element. This method will first
+     * close any open element created by a call to
      * <code>startElement()</code>.
      *
      * @param name Name of the element to be ended
-     * @throws IOException if an input/output error occurs
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
+     * @throws IOException          if an input/output error occurs
+     * @throws NullPointerException if <code>name</code>
+     *                              is <code>null</code>
      */
-    @Override
     public void endElement(String name) throws IOException {
         if (name == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
 
         // always turn escaping back on once an element ends
@@ -210,33 +222,39 @@ public class CustomResponseWriter extends ResponseWriter {
 
         writer.write("</");
         writer.write(name);
-        // PENDING (horwat) using String as a result of Tomcat char writer
-        // ArrayIndexOutOfBoundsException (3584)
+        //PENDING (horwat) using String as a result of Tomcat char writer
+        //         ArrayIndexOutOfBoundsException (3584)
         writer.write(">");
     }
 
+
     /**
-     * <p>
-     * Write a properly escaped attribute name and the corresponding value. The value text will be
-     * converted to a String if necessary. This method may only be called after a call to
-     * <code>startElement()</code>, and before the opened element has been closed.
-     * </p>
+     * <p>Write a properly escaped attribute name and the corresponding
+     * value.  The value text will be converted to a String if
+     * necessary.  This method may only be called after a call to
+     * <code>startElement()</code>, and before the opened element has been
+     * closed.</p>
      *
-     * @param name Attribute name to be added
-     * @param value Attribute value to be added
-     * @param componentPropertyName The name of the component property to which this attribute argument
-     * applies. This argument may be <code>null</code>.
-     * @throws IllegalStateException if this method is called when there is no currently open element
-     * @throws IOException if an input/output error occurs
-     * @throws NullPointerException if <code>name</code> or <code>value</code> is <code>null</code>
+     * @param name                  Attribute name to be added
+     * @param value                 Attribute value to be added
+     * @param componentPropertyName The name of the component property to
+     *                              which this attribute argument applies.  This argument may be
+     *                              <code>null</code>.
+     * @throws IllegalStateException if this method is called when there
+     *                               is no currently open element
+     * @throws IOException           if an input/output error occurs
+     * @throws NullPointerException  if <code>name</code> or
+     *                               <code>value</code> is <code>null</code>
      */
-    @Override
-    public void writeAttribute(String name, Object value, String componentPropertyName) throws IOException {
+    public void writeAttribute(String name, Object value, String componentPropertyName)
+        throws IOException {
         if (name == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
         if (value == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "value"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "value"));
         }
 
         Class valueClass = value.getClass();
@@ -244,8 +262,8 @@ public class CustomResponseWriter extends ResponseWriter {
         // Output Boolean values specially
         if (valueClass == Boolean.class) {
             if (Boolean.TRUE.equals(value)) {
-                // PENDING (horwat) using String as a result of
-                // Tomcat char writer ArrayIndexOutOfBoundsException (3584)
+                //PENDING (horwat) using String as a result of
+                //Tomcat char writer ArrayIndexOutOfBoundsException (3584)
                 writer.write(" ");
                 writer.write(name);
             } else {
@@ -255,42 +273,49 @@ public class CustomResponseWriter extends ResponseWriter {
             writer.write(" ");
             writer.write(name);
             writer.write("=\"");
-
+            
             // write the attribute value
             ensureTextBufferCapacity(value.toString());
             HtmlUtils.writeAttribute(writer, true, true, buffer, value.toString(), textBuffer, true);
-            // PENDING (horwat) using String as a result of Tomcat char
-            // writer ArrayIndexOutOfBoundsException (3584)
+            //PENDING (horwat) using String as a result of Tomcat char
+            //        writer ArrayIndexOutOfBoundsException (3584)
             writer.write("\"");
         }
     }
 
+
     /**
-     * <p>
-     * Write a properly encoded URI attribute name and the corresponding value. The value text will be
-     * converted to a String if necessary). This method may only be called after a call to
-     * <code>startElement()</code>, and before the opened element has been closed.
-     * </p>
+     * <p>Write a properly encoded URI attribute name and the corresponding
+     * value. The value text will be converted to a String if necessary).
+     * This method may only be called after a call to
+     * <code>startElement()</code>, and before the opened element has been
+     * closed.</p>
      *
-     * @param name Attribute name to be added
-     * @param value Attribute value to be added
-     * @param componentPropertyName The name of the component property to which this attribute argument
-     * applies. This argument may be <code>null</code>.
-     * @throws IllegalStateException if this method is called when there is no currently open element
-     * @throws IOException if an input/output error occurs
-     * @throws NullPointerException if <code>name</code> or <code>value</code> is <code>null</code>
+     * @param name                  Attribute name to be added
+     * @param value                 Attribute value to be added
+     * @param componentPropertyName The name of the component property to
+     *                              which this attribute argument applies.  This argument may be
+     *                              <code>null</code>.
+     * @throws IllegalStateException if this method is called when there
+     *                               is no currently open element
+     * @throws IOException           if an input/output error occurs
+     * @throws NullPointerException  if <code>name</code> or
+     *                               <code>value</code> is <code>null</code>
      */
-    @Override
-    public void writeURIAttribute(String name, Object value, String componentPropertyName) throws IOException {
+    public void writeURIAttribute(String name, Object value,
+                                  String componentPropertyName)
+        throws IOException {
         if (name == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
         if (value == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "value"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "value"));
         }
 
-        // PENDING (horwat) using String as a result of Tomcat char writer
-        // ArrayIndexOutOfBoundsException (3584)
+        //PENDING (horwat) using String as a result of Tomcat char writer
+        //         ArrayIndexOutOfBoundsException (3584)
         writer.write(" ");
         writer.write(name);
         writer.write("=\"");
@@ -303,28 +328,29 @@ public class CustomResponseWriter extends ResponseWriter {
         } else {
             HtmlUtils.writeURL(writer, stringValue, textBuffer, encoding);
         }
-
-        // PENDING (horwat) using String as a result of Tomcat char writer
-        // ArrayIndexOutOfBoundsException (3584)
+        
+        //PENDING (horwat) using String as a result of Tomcat char writer
+        //         ArrayIndexOutOfBoundsException (3584)
         writer.write("\"");
     }
 
+
     /**
-     * <p>
-     * Write a comment string containing the specified text. The text will be converted to a String if
-     * necessary. If there is an open element that has been created by a call to
-     * <code>startElement()</code>, that element will be closed first.
-     * </p>
+     * <p>Write a comment string containing the specified text.
+     * The text will be converted to a String if necessary.
+     * If there is an open element that has been created by a call
+     * to <code>startElement()</code>, that element will be closed
+     * first.</p>
      *
      * @param comment Text content of the comment
-     * @throws IOException if an input/output error occurs
-     * @throws NullPointerException if <code>comment</code> is <code>null</code>
+     * @throws IOException          if an input/output error occurs
+     * @throws NullPointerException if <code>comment</code>
+     *                              is <code>null</code>
      */
-    @Override
     public void writeComment(Object comment) throws IOException {
         if (comment == null) {
-            throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "comment"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "comment"));
         }
         closeStartIfNecessary();
         writer.write("<!-- ");
@@ -332,23 +358,25 @@ public class CustomResponseWriter extends ResponseWriter {
         writer.write(" -->");
     }
 
+
     /**
-     * <p>
-     * Write a properly escaped object. The object will be converted to a String if necessary. If there
-     * is an open element that has been created by a call to <code>startElement()</code>, that element
-     * will be closed first.
-     * </p>
+     * <p>Write a properly escaped object. The object will be converted
+     * to a String if necessary.  If there is an open element
+     * that has been created by a call to <code>startElement()</code>,
+     * that element will be closed first.</p>
      *
-     * @param text Text to be written
-     * @param componentPropertyName The name of the component property to which this text argument
-     * applies. This argument may be <code>null</code>.
-     * @throws IOException if an input/output error occurs
-     * @throws NullPointerException if <code>text</code> is <code>null</code>
+     * @param text                  Text to be written
+     * @param componentPropertyName The name of the component property to
+     *                              which this text argument applies.  This argument may be <code>null</code>.
+     * @throws IOException          if an input/output error occurs
+     * @throws NullPointerException if <code>text</code>
+     *                              is <code>null</code>
      */
-    @Override
-    public void writeText(Object text, String componentPropertyName) throws IOException {
+    public void writeText(Object text, String componentPropertyName)
+        throws IOException {
         if (text == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
         closeStartIfNecessary();
         if (dontEscape) {
@@ -359,15 +387,14 @@ public class CustomResponseWriter extends ResponseWriter {
         }
     }
 
+
     /**
-     * <p>
-     * Write a properly escaped single character, If there is an open element that has been created by a
-     * call to <code>startElement()</code>, that element will be closed first.
-     * </p>
+     * <p>Write a properly escaped single character, If there
+     * is an open element that has been created by a call to
+     * <code>startElement()</code>, that element will be closed first.</p>
      * <p/>
-     * <p>
-     * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
-     * </p>
+     * <p>All angle bracket occurrences in the argument must be escaped
+     * using the &amp;gt; &amp;lt; syntax.</p>
      *
      * @param text Text to be written
      * @throws IOException if an input/output error occurs
@@ -382,25 +409,27 @@ public class CustomResponseWriter extends ResponseWriter {
         }
     }
 
+
     /**
-     * <p>
-     * Write properly escaped text from a character array. The output from this command is identical to
-     * the invocation: <code>writeText(c, 0, c.length)</code>. If there is an open element that has been
-     * created by a call to <code>startElement()</code>, that element will be closed first.
-     * </p>
+     * <p>Write properly escaped text from a character array.
+     * The output from this command is identical to the invocation:
+     * <code>writeText(c, 0, c.length)</code>.
+     * If there is an open element that has been created by a call to
+     * <code>startElement()</code>, that element will be closed first.</p>
      * </p>
      * <p/>
-     * <p>
-     * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
-     * </p>
+     * <p>All angle bracket occurrences in the argument must be escaped
+     * using the &amp;gt; &amp;lt; syntax.</p>
      *
      * @param text Text to be written
-     * @throws IOException if an input/output error occurs
-     * @throws NullPointerException if <code>text</code> is <code>null</code>
+     * @throws IOException          if an input/output error occurs
+     * @throws NullPointerException if <code>text</code>
+     *                              is <code>null</code>
      */
     public void writeText(char text[]) throws IOException {
         if (text == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
         closeStartIfNecessary();
         if (dontEscape) {
@@ -410,28 +439,30 @@ public class CustomResponseWriter extends ResponseWriter {
         }
     }
 
+
     /**
-     * <p>
-     * Write properly escaped text from a character array. If there is an open element that has been
-     * created by a call to <code>startElement()</code>, that element will be closed first.
-     * </p>
+     * <p>Write properly escaped text from a character array.
+     * If there is an open element that has been created by a call
+     * to <code>startElement()</code>, that element will be closed
+     * first.</p>
      * <p/>
-     * <p>
-     * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
-     * </p>
+     * <p>All angle bracket occurrences in the argument must be escaped
+     * using the &amp;gt; &amp;lt; syntax.</p>
      *
      * @param text Text to be written
-     * @param off Starting offset (zero-relative)
-     * @param len Number of characters to be written
-     * @throws IndexOutOfBoundsException if the calculated starting or ending position is outside the
-     * bounds of the character array
-     * @throws IOException if an input/output error occurs
-     * @throws NullPointerException if <code>text</code> is <code>null</code>
+     * @param off  Starting offset (zero-relative)
+     * @param len  Number of characters to be written
+     * @throws IndexOutOfBoundsException if the calculated starting or
+     *                                   ending position is outside the bounds of the character array
+     * @throws IOException               if an input/output error occurs
+     * @throws NullPointerException      if <code>text</code>
+     *                                   is <code>null</code>
      */
-    @Override
-    public void writeText(char text[], int off, int len) throws IOException {
+    public void writeText(char text[], int off, int len)
+        throws IOException {
         if (text == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(
+                MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
         if (off < 0 || off > text.length || len < 0 || len > text.length) {
             throw new IndexOutOfBoundsException();
@@ -444,80 +475,81 @@ public class CustomResponseWriter extends ResponseWriter {
         }
     }
 
+
     // PENDING - Do we need to implement these for this test?
-    @Override
     public void startCDATA() {
         throw new IllegalStateException();
     }
-
-    @Override
     public void endCDATA() {
         throw new IllegalStateException();
     }
 
     /**
-     * <p>
-     * Create a new instance of this <code>ResponseWriter</code> using a different <code>Writer</code>.
+     * <p>Create a new instance of this <code>ResponseWriter</code> using
+     * a different <code>Writer</code>.
      *
-     * @param writer The <code>Writer</code> that will be used to create another
-     * <code>ResponseWriter</code>.
+     * @param writer The <code>Writer</code> that will be used to create
+     *               another <code>ResponseWriter</code>.
      */
-    @Override
     public ResponseWriter cloneWithWriter(Writer writer) {
         try {
-            return new CustomResponseWriter(writer, getContentType(), getCharacterEncoding());
+            return new CustomResponseWriter(writer, getContentType(),
+                                          getCharacterEncoding());
         } catch (FacesException e) {
             // This should never happen
             throw new IllegalStateException();
         }
     }
 
+
     /**
-     * This method automatically closes a previous element (if not already closed).
+     * This method automatically closes a previous element (if not
+     * already closed).
      */
     private void closeStartIfNecessary() throws IOException {
         if (closeStart) {
-            // PENDING (horwat) using String as a result of Tomcat char
-            // writer ArrayIndexOutOfBoundsException (3584)
+            //PENDING (horwat) using String as a result of Tomcat char 
+            //         writer ArrayIndexOutOfBoundsException (3584)
             writer.write(">");
             closeStart = false;
         }
     }
 
+
     /**
      * Methods From <code>java.io.Writer</code>
      */
 
-    @Override
     public void close() throws IOException {
         closeStartIfNecessary();
         writer.close();
     }
+
 
     public void write(char cbuf) throws IOException {
         closeStartIfNecessary();
         writer.write(cbuf);
     }
 
-    @Override
+
     public void write(char[] cbuf, int off, int len) throws IOException {
         closeStartIfNecessary();
         writer.write(cbuf, off, len);
     }
 
-    @Override
+
     public void write(int c) throws IOException {
         closeStartIfNecessary();
         writer.write(c);
     }
 
-    @Override
+
     public void write(String str) throws IOException {
         closeStartIfNecessary();
         writer.write(str);
     }
 
-    @Override
+
     public void write(String str, int off, int len) throws IOException {
         closeStartIfNecessary();
         writer.write(str, off, len);

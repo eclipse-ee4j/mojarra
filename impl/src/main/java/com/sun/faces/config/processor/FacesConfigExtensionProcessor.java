@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,9 +24,6 @@ import java.text.MessageFormat;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,10 +33,12 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/factory</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/factory</code>.
  * </p>
  */
 public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
@@ -74,21 +73,20 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
      */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 
         for (int i = 0; i < documentInfos.length; i++) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE,
-                        format("Processing faces-config-extension elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing faces-config-extension elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList facesConfigExtensions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_CONFIG_EXTENSION);
-            
+
             if (facesConfigExtensions != null && facesConfigExtensions.getLength() > 0) {
                 processFacesConfigExtensions(facesConfigExtensions, namespace, documentInfos[i]);
             }

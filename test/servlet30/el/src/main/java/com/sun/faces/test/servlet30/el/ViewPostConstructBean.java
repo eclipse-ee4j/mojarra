@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,43 +16,38 @@
 
 package com.sun.faces.test.servlet30.el;
 
-import java.io.Serializable;
-
-import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
 /**
  * A ViewScoped bean testing @PostConstruct functionality.
  */
-
-@Named
+@ManagedBean(name = "viewPostConstructBean")
 @ViewScoped
-public class ViewPostConstructBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ViewPostConstructBean {
 
     /**
      * Stores the text.
      */
     private String text;
-
+    
     /**
      * Constructor.
      */
     public ViewPostConstructBean() {
-        text = "This is from the constructor";
+        this.text = "This is from the constructor";
     }
-
+    
     /**
      * Post-construct.
-     *
+     * 
      */
     @PostConstruct
     public void init() {
-        text = "This is from the @PostConstruct";
+        this.text = "This is from the @PostConstruct";
     }
-
+    
     /**
      * Get the text.
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,27 +16,32 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
-import com.sun.faces.facelets.util.ReflectionUtil;
-
-import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.view.facelets.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.jsf.ComponentSupport;
+import com.sun.faces.facelets.util.ReflectionUtil;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+
 public class PhaseListenerHandler extends TagHandlerImpl {
 
-    private final static class LazyPhaseListener implements PhaseListener,
-                                                            Serializable {
+    private final static class LazyPhaseListener implements PhaseListener, Serializable {
 
         private static final long serialVersionUID = -6496143057319213401L;
 
@@ -55,19 +60,16 @@ public class PhaseListenerHandler extends TagHandlerImpl {
             if (faces == null) {
                 return null;
             }
-            if (this.binding != null) {
-                instance = (PhaseListener) binding.getValue(faces
-                      .getELContext());
+            if (binding != null) {
+                instance = (PhaseListener) binding.getValue(faces.getELContext());
             }
             if (instance == null && type != null) {
                 try {
-                    instance = (PhaseListener) ReflectionUtil.forName(
-                          this.type).newInstance();
+                    instance = (PhaseListener) ReflectionUtil.forName(type).newInstance();
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                    throw new AbortProcessingException(
-                          "Couldn't Lazily instantiate PhaseListener", e);
+                    throw new AbortProcessingException("Couldn't Lazily instantiate PhaseListener", e);
                 }
-                if (this.binding != null) {
+                if (binding != null) {
                     binding.setValue(faces.getELContext(), instance);
                 }
             }
@@ -76,7 +78,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
         @Override
         public void afterPhase(PhaseEvent event) {
-            PhaseListener pl = this.getInstance();
+            PhaseListener pl = getInstance();
             if (pl != null) {
                 pl.afterPhase(event);
             }
@@ -84,7 +86,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
         @Override
         public void beforePhase(PhaseEvent event) {
-            PhaseListener pl = this.getInstance();
+            PhaseListener pl = getInstance();
             if (pl != null) {
                 pl.beforePhase(event);
             }
@@ -92,8 +94,8 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
         @Override
         public PhaseId getPhaseId() {
-            PhaseListener pl = this.getInstance();
-            return (pl != null) ? pl.getPhaseId() : PhaseId.ANY_PHASE;
+            PhaseListener pl = getInstance();
+            return pl != null ? pl.getPhaseId() : PhaseId.ANY_PHASE;
         }
 
         @Override
@@ -108,9 +110,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
             LazyPhaseListener that = (LazyPhaseListener) o;
 
-            if (binding != null
-                ? !binding.equals(that.binding)
-                : that.binding != null) {
+            if (binding != null ? !binding.equals(that.binding) : that.binding != null) {
                 return false;
             }
             if (type != null ? !type.equals(that.type) : that.type != null) {
@@ -140,38 +140,37 @@ public class PhaseListenerHandler extends TagHandlerImpl {
 
     public PhaseListenerHandler(TagConfig config) {
         super(config);
-        this.binding = this.getAttribute("binding");
-        this.typeAttribute = this.getAttribute("type");
-        if (null != this.typeAttribute) {
+        binding = getAttribute("binding");
+        typeAttribute = getAttribute("type");
+        if (null != typeAttribute) {
             String stringType = null;
-            if (!this.typeAttribute.isLiteral()) {
+            if (!typeAttribute.isLiteral()) {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                stringType = (String) this.typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
+                stringType = (String) typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
             } else {
-                stringType = this.typeAttribute.getValue();
+                stringType = typeAttribute.getValue();
             }
             checkType(stringType);
-            this.listenerType = stringType;
+            listenerType = stringType;
         } else {
-            this.listenerType = null;
+            listenerType = null;
         }
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-          throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (ComponentHandler.isNew(parent)) {
             UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
             if (root == null) {
-                throw new TagException(this.tag, "UIViewRoot not available");
+                throw new TagException(tag, "UIViewRoot not available");
             }
             ValueExpression b = null;
-            if (this.binding != null) {
-                b = this.binding.getValueExpression(ctx, PhaseListener.class);
+            if (binding != null) {
+                b = binding.getValueExpression(ctx, PhaseListener.class);
             }
 
-            PhaseListener pl = new LazyPhaseListener(this.listenerType, b);
+            PhaseListener pl = new LazyPhaseListener(listenerType, b);
 
             List<PhaseListener> listeners = root.getPhaseListeners();
             if (!listeners.contains(pl)) {
@@ -184,8 +183,7 @@ public class PhaseListenerHandler extends TagHandlerImpl {
         try {
             ReflectionUtil.forName(type);
         } catch (ClassNotFoundException e) {
-            throw new TagAttributeException(typeAttribute,
-                "Couldn't qualify ActionListener", e);
+            throw new TagAttributeException(typeAttribute, "Couldn't qualify ActionListener", e);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,14 +18,16 @@ package com.sun.faces.mock;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
-import javax.faces.FacesException;
-import javax.servlet.jsp.jstl.sql.Result;
+
+import jakarta.servlet.jsp.jstl.sql.Result;
 import org.apache.commons.beanutils.PropertyUtils;
+
+import jakarta.faces.FacesException;
 
 /**
  * <p>
  * Mock object that implements enough of
- * <code>javax.servlet.jsp.jstl.sql.ResultSet</code> to exercise the
+ * <code>jakarta.servlet.jsp.jstl.sql.ResultSet</code> to exercise the
  * <code>ResultDataModel</code> functionality. It wraps an array of JavaBeans
  * objects that are passed to the constructor.</p>
  *

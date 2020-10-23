@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.sun.faces.test</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.0-m01-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     
     <groupId>com.sun.faces.test.javaee8</groupId>
@@ -51,6 +51,8 @@
         <module>commandScript</module>
         <module>converter</module>
         <module>disableFaceletToXhtmlMapping</module>
+        <module>disableFaceletsViewHandler</module>
+        <module>disableFaceletsViewHandlerDeprecated</module>
         <module>el</module>
         <module>facelets</module>
         <module>flash</module>

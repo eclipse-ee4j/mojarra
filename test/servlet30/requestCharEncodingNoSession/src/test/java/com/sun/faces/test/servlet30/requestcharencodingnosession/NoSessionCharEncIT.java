@@ -49,7 +49,8 @@ public class NoSessionCharEncIT {
 
         // try again, this time make sure the session shows the encoding
         page = webClient.getPage(webUrl + "faces/utf8.xhtml");
-        assertTrue("Incorrect encoding.  extContextCharEnc: UTF-8 hasSession: true sessionCharEnc: UTF-8\n" + "\nactual: " + page.asText(),
+        assertTrue("Incorrect encoding.  extContextCharEnc: UTF-8 hasSession: true sessionCharEnc: UTF-8\n"
+                + "\nactual: " + page.asText(),
                 page.asText().matches("(?s).*extContextCharEnc:.*UTF-8.*hasSession:.*true.*sessionCharEnc:.*UTF-8.*"));
 
         page = webClient.getPage(webUrl + "faces/ascii.xhtml");

@@ -16,14 +16,12 @@
 
 package com.sun.faces.test.servlet30.component;
 
-import static org.junit.Assert.assertTrue;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.assertTrue;
 
 public class Spec599IT {
 
@@ -43,7 +41,7 @@ public class Spec599IT {
 
     @Test
     public void testCreateComponent() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "createComponent.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/createComponent.xhtml");
         assertTrue(page.asText().contains("SUCCESS"));
     }
 }

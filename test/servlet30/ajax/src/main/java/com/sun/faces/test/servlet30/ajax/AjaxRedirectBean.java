@@ -16,38 +16,42 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import static java.util.logging.Level.SEVERE;
-
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @RequestScoped
 public class AjaxRedirectBean {
 
+    public AjaxRedirectBean() {
+    }
+    
     public void causeRedirect() {
-        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
-
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext extContext = facesContext.getExternalContext();
+        String scheme = extContext.getRequestScheme();
+        String host = extContext.getRequestServerName();
+        int port = extContext.getRequestServerPort();
+        String contextPath = extContext.getRequestContextPath();
         StringBuilder sb = new StringBuilder();
-        sb.append(extContext.getRequestScheme())
-          .append("://")
-          .append(extContext.getRequestServerName())
-          .append(":")
-          .append(extContext.getRequestServerPort())
-          .append(extContext.getRequestContextPath())
-          .append("/ajaxRedirect02.html");
-
+        sb.append(scheme).
+           append("://").
+           append(host).
+           append(":").
+           append(port).
+           append(contextPath).
+           append("/ajaxRedirect02.html");        
         try {
             extContext.redirect(sb.toString());
         } catch (IOException ex) {
-            Logger.getLogger(AjaxRedirectBean.class.getName()).log(SEVERE, null, ex);
+            Logger.getLogger(AjaxRedirectBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+                
     }
-
+    
 }

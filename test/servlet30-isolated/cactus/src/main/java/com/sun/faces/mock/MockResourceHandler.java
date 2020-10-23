@@ -56,9 +56,9 @@ public class MockResourceHandler extends ResourceHandler {
 
     public String getRendererTypeForResourceName(String resourceName) {
         if (resourceName.endsWith(".js")) {
-            return "javax.faces.resource.Script";
+            return "jakarta.faces.resource.Script";
         } else if (resourceName.endsWith(".css")) {
-            return "javax.faces.resource.Stylesheet";
+            return "jakarta.faces.resource.Stylesheet";
         } else {
             return null;  
         }

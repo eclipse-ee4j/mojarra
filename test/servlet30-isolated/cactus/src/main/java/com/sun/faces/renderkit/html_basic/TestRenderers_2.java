@@ -343,7 +343,7 @@ public class TestRenderers_2 extends JspFacesTestCase {
         SelectItem[] selectItems = {item1, item2, item3, item4};
         uiSelectItems.setValue(selectItems);
         uiSelectItems.setId("items");
-        Converter converter = application.createConverter("javax.faces.Number");
+        Converter converter = application.createConverter("jakarta.faces.Number");
         selectOne.setConverter(converter);
         selectOne.getChildren().add(uiSelectItems);
         root.getChildren().add(selectOne);

@@ -28,7 +28,7 @@
     <composite:interface>
         <composite:attribute name="timing"/>
         <composite:attribute name="method" 
-                             method-signature="void listener(javax.faces.event.ComponentSystemEvent)"/>
+                             method-signature="void listener(jakarta.faces.event.ComponentSystemEvent)"/>
     </composite:interface>
     <composite:implementation>
         <f:event type="#{cc.attrs.timing}" listener="#{cc.attrs.method}" />

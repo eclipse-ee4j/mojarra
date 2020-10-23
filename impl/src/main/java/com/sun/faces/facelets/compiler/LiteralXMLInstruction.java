@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,29 +16,30 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 import java.io.IOException;
+
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 final class LiteralXMLInstruction implements Instruction {
 
     private final static char[] STOP = new char[0];
-    
+
     private final char[] instruction;
     private final int len;
-    
+
     public LiteralXMLInstruction(String literal) {
-        this.instruction = literal.toCharArray();
-        this.len = this.instruction.length;
+        instruction = literal.toCharArray();
+        len = instruction.length;
     }
 
     @Override
     public void write(FacesContext context) throws IOException {
         ResponseWriter rw = context.getResponseWriter();
         rw.writeText(STOP, 0, 0); // hack to get closing elements
-        rw.write(this.instruction, 0, this.len);
+        rw.write(instruction, 0, len);
     }
 
     @Override

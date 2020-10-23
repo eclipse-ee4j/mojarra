@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,19 +16,19 @@
 
 package com.sun.faces.component;
 
-import javax.faces.component.UIPanel;
-import javax.faces.context.FacesContext;
 import java.io.IOException;
+
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
 
 public class ComponentResourceContainer extends UIPanel {
 
     /**
-     * Take no action to prevent component resources from inadvertantly
-     * being rendered.
+     * Take no action to prevent component resources from inadvertantly being rendered.
      */
     @Override
     public void encodeAll(FacesContext context) throws IOException {
         // no-op
     }
-    
+
 }

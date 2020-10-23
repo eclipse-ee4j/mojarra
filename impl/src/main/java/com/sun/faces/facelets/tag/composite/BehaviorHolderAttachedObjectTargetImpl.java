@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,28 +16,29 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.BehaviorHolderAttachedObjectTarget;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
 
-public class BehaviorHolderAttachedObjectTargetImpl extends
-      AttachedObjectTargetImpl implements BehaviorHolderAttachedObjectTarget {
+public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTargetImpl implements BehaviorHolderAttachedObjectTarget {
 
     private String event;
 
     private boolean defaultEvent;
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      */
     public BehaviorHolderAttachedObjectTargetImpl() {
 
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      *
      * @return the event
      */
@@ -46,7 +47,8 @@ public class BehaviorHolderAttachedObjectTargetImpl extends
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      *
      * @param event the event to set
      */
@@ -55,7 +57,8 @@ public class BehaviorHolderAttachedObjectTargetImpl extends
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      *
      * @return the defaultEvent
      */
@@ -65,7 +68,8 @@ public class BehaviorHolderAttachedObjectTargetImpl extends
     }
 
     /**
-     * <p class="changed_added_2_0"></p>
+     * <p class="changed_added_2_0">
+     * </p>
      *
      * @param defaultEvent the defaultEvent to set
      */
@@ -78,10 +82,9 @@ public class BehaviorHolderAttachedObjectTargetImpl extends
         List<UIComponent> targets = super.getTargets(topLevelComponent);
         List<UIComponent> wrappedTargets = new ArrayList<>(targets.size());
         for (UIComponent component : targets) {
-            wrappedTargets
-                  .add(new BehaviorHolderWrapper(component, getName(), getEvent()));
-		}
-		return wrappedTargets;
-	}
+            wrappedTargets.add(new BehaviorHolderWrapper(component, getName(), getEvent()));
+        }
+        return wrappedTargets;
+    }
 
 }

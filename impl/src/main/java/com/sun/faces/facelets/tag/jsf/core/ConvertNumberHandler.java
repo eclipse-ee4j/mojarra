@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,18 +18,23 @@ package com.sun.faces.facelets.tag.jsf.core;
 
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
-import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.convert.Converter;
-import javax.faces.convert.NumberConverter;
-import javax.faces.view.facelets.*;
+import jakarta.el.ELException;
+import jakarta.faces.FacesException;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.NumberConverter;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
- * Register a NumberConverter instance on the UIComponent associated with the
- * closest parent UIComponent custom action. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertNumber.html">tag
+ * Register a NumberConverter instance on the UIComponent associated with the closest parent UIComponent custom action.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertNumber.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -42,28 +47,29 @@ public final class ConvertNumberHandler extends ConverterHandler {
      */
     public ConvertNumberHandler(ConverterConfig config) {
         super(config);
-        this.locale = this.getAttribute("locale");
+        locale = getAttribute("locale");
     }
 
     /**
      * Returns a new NumberConverter
-     * 
+     *
      * @see NumberConverter
      */
-    protected Converter createConverter(FaceletContext ctx)
-            throws FacesException, ELException, FaceletException {
+    protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
         return ctx.getFacesContext().getApplication().createConverter(NumberConverter.CONVERTER_ID);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see com.sun.facelets.tag.ObjectHandler#setAttributes(com.sun.facelets.FaceletContext, java.lang.Object)
      */
     @Override
     public void setAttributes(FaceletContext ctx, Object obj) {
         super.setAttributes(ctx, obj);
         NumberConverter c = (NumberConverter) obj;
-        if (this.locale != null) {
-            c.setLocale(ComponentSupport.getLocale(ctx, this.locale));
+        if (locale != null) {
+            c.setLocale(ComponentSupport.getLocale(ctx, locale));
         }
     }
 

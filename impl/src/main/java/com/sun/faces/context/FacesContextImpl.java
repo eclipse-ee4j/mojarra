@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,29 +27,6 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELContext;
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
-import javax.el.ExpressionFactory;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.PartialViewContextFactory;
-import javax.faces.context.ResponseStream;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.PhaseId;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-
 import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -57,14 +34,35 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.PartialViewContextFactory;
+import jakarta.faces.context.ResponseStream;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+
 public class FacesContextImpl extends FacesContext {
 
-    private static final String POST_BACK_MARKER =
-          FacesContextImpl.class.getName() + "_POST_BACK";
+    private static final String POST_BACK_MARKER = FacesContextImpl.class.getName() + "_POST_BACK";
 
     // Queried by InjectionFacesContextFactory
-    private static final ThreadLocal<FacesContext> DEFAULT_FACES_CONTEXT =
-          new ThreadLocal<>();
+    private static final ThreadLocal<FacesContext> DEFAULT_FACES_CONTEXT = new ThreadLocal<>();
 
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
@@ -92,29 +90,24 @@ public class FacesContextImpl extends FacesContext {
     private ExceptionHandler exceptionHandler = null;
 
     /**
-     * Store mapping of clientId to ArrayList of FacesMessage instances.  The
-     * null key is used to represent FacesMessage instances that are not
-     * associated with a clientId instance.
+     * Store mapping of clientId to ArrayList of FacesMessage instances. The null key is used to represent FacesMessage
+     * instances that are not associated with a clientId instance.
      */
     private Map<String, List<FacesMessage>> componentMessageLists;
-
 
     public FacesContextImpl(ExternalContext ec, Lifecycle lifecycle) {
         Util.notNull("ec", ec);
         Util.notNull("lifecycle", lifecycle);
-        this.externalContext = ec;
+        externalContext = ec;
         setCurrentInstance(this);
         DEFAULT_FACES_CONTEXT.set(this);
-        rkFactory = (RenderKitFactory)
-              FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        rkFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
     }
-
 
     // ---------------------------------------------- Methods from FacesContext
 
-
     /**
-     * @see javax.faces.context.FacesContext#getExternalContext()
+     * @see jakarta.faces.context.FacesContext#getExternalContext()
      */
     @Override
     public ExternalContext getExternalContext() {
@@ -122,9 +115,8 @@ public class FacesContextImpl extends FacesContext {
         return externalContext;
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getApplication()
+     * @see jakarta.faces.context.FacesContext#getApplication()
      */
     @Override
     public Application getApplication() {
@@ -132,70 +124,62 @@ public class FacesContextImpl extends FacesContext {
         if (null != application) {
             return application;
         }
-        ApplicationFactory aFactory =
-              (ApplicationFactory) FactoryFinder.getFactory(
-                    FactoryFinder.APPLICATION_FACTORY);
+        ApplicationFactory aFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         application = aFactory.getApplication();
-        assert (null != application);
+        assert null != application;
         return application;
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getExceptionHandler()
+     * @see jakarta.faces.context.FacesContext#getExceptionHandler()
      */
     @Override
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#setExceptionHandler(javax.faces.context.ExceptionHandler)
+     * @see jakarta.faces.context.FacesContext#setExceptionHandler(jakarta.faces.context.ExceptionHandler)
      */
     @Override
     public void setExceptionHandler(ExceptionHandler exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getPartialViewContext()
+     * @see jakarta.faces.context.FacesContext#getPartialViewContext()
      */
     @Override
     public PartialViewContext getPartialViewContext() {
 
         assertNotReleased();
         if (partialViewContext == null) {
-            PartialViewContextFactory f = (PartialViewContextFactory)
-                  FactoryFinder.getFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
+            PartialViewContextFactory f = (PartialViewContextFactory) FactoryFinder.getFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
             partialViewContext = f.getPartialViewContext(FacesContext.getCurrentInstance());
         }
         return partialViewContext;
-        
+
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#isPostback()
+     * @see jakarta.faces.context.FacesContext#isPostback()
      */
     @Override
     public boolean isPostback() {
 
         assertNotReleased();
-        Boolean postback = (Boolean) this.getAttributes().get(POST_BACK_MARKER);
+        Boolean postback = (Boolean) getAttributes().get(POST_BACK_MARKER);
         if (postback == null) {
-            RenderKit rk = this.getRenderKit();
+            RenderKit rk = getRenderKit();
             if (rk != null) {
                 postback = rk.getResponseStateManager().isPostback(this);
             } else {
                 // ViewRoot hasn't been set yet, so calculate the RK
-                ViewHandler vh = this.getApplication().getViewHandler();
+                ViewHandler vh = getApplication().getViewHandler();
                 String rkId = vh.calculateRenderKitId(this);
-                postback = RenderKitUtils.getResponseStateManager(this, rkId)
-                      .isPostback(this);
+                postback = RenderKitUtils.getResponseStateManager(this, rkId).isPostback(this);
             }
-            this.getAttributes().put(POST_BACK_MARKER, postback);
+            getAttributes().put(POST_BACK_MARKER, postback);
         }
 
         return postback;
@@ -203,7 +187,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#isReleased()
+     * @see jakarta.faces.context.FacesContext#isReleased()
      */
     @Override
     public boolean isReleased() {
@@ -211,7 +195,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#getAttributes()
+     * @see jakarta.faces.context.FacesContext#getAttributes()
      */
     @Override
     public Map<Object, Object> getAttributes() {
@@ -224,9 +208,8 @@ public class FacesContextImpl extends FacesContext {
 
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getELContext()
+     * @see jakarta.faces.context.FacesContext#getELContext()
      */
     @Override
     public ELContext getELContext() {
@@ -240,47 +223,40 @@ public class FacesContextImpl extends FacesContext {
             if (null != exFactory) {
                 elContext.putContext(ExpressionFactory.class, exFactory);
             }
-            UIViewRoot root = this.getViewRoot();
+            UIViewRoot root = getViewRoot();
             if (null != root) {
                 elContext.setLocale(root.getLocale());
             }
             ELContextListener[] listeners = app.getELContextListeners();
             if (listeners.length > 0) {
                 ELContextEvent event = new ELContextEvent(elContext);
-                for (ELContextListener listener: listeners) {
+                for (ELContextListener listener : listeners) {
                     listener.contextCreated(event);
                 }
             }
         }
         return elContext;
-        
+
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getClientIdsWithMessages()
+     * @see jakarta.faces.context.FacesContext#getClientIdsWithMessages()
      */
     @Override
     public Iterator<String> getClientIdsWithMessages() {
         assertNotReleased();
-        return ((componentMessageLists == null)
-                ? Collections.<String>emptyList().iterator()
-                : componentMessageLists.keySet().iterator());
+        return componentMessageLists == null ? Collections.<String>emptyList().iterator() : componentMessageLists.keySet().iterator();
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getMaximumSeverity()
+     * @see jakarta.faces.context.FacesContext#getMaximumSeverity()
      */
     @Override
     public Severity getMaximumSeverity() {
         assertNotReleased();
         Severity result = null;
-        if (componentMessageLists != null
-            && !(componentMessageLists.isEmpty())) {
-            for (Iterator<FacesMessage> i =
-                  new ComponentMessagesIterator(componentMessageLists);
-                 i.hasNext();) {
+        if (componentMessageLists != null && !componentMessageLists.isEmpty()) {
+            for (Iterator<FacesMessage> i = new ComponentMessagesIterator(componentMessageLists); i.hasNext();) {
                 Severity severity = i.next().getSeverity();
                 if (result == null || severity.compareTo(result) > 0) {
                     result = severity;
@@ -293,9 +269,8 @@ public class FacesContextImpl extends FacesContext {
         return result;
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getMessageList()
+     * @see jakarta.faces.context.FacesContext#getMessageList()
      */
     @Override
     public List<FacesMessage> getMessageList() {
@@ -303,8 +278,7 @@ public class FacesContextImpl extends FacesContext {
         assertNotReleased();
 
         if (null == componentMessageLists) {
-            return Collections
-                  .unmodifiableList(Collections.<FacesMessage>emptyList());
+            return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
         } else {
             List<FacesMessage> messages = new ArrayList<>();
             for (List<FacesMessage> list : componentMessageLists.values()) {
@@ -315,9 +289,8 @@ public class FacesContextImpl extends FacesContext {
 
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getMessageList(String)
+     * @see jakarta.faces.context.FacesContext#getMessageList(String)
      */
     @Override
     public List<FacesMessage> getMessageList(String clientId) {
@@ -325,34 +298,30 @@ public class FacesContextImpl extends FacesContext {
         assertNotReleased();
 
         if (null == componentMessageLists) {
-            return Collections
-                  .unmodifiableList(Collections.<FacesMessage>emptyList());
+            return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
         } else {
             List<FacesMessage> list = componentMessageLists.get(clientId);
-            return Collections.unmodifiableList((list != null)
-                                                ? list
-                                                : Collections.<FacesMessage>emptyList());
+            return Collections.unmodifiableList(list != null ? list : Collections.<FacesMessage>emptyList());
         }
 
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getMessages()
+     * @see jakarta.faces.context.FacesContext#getMessages()
      */
     @Override
     public Iterator<FacesMessage> getMessages() {
         assertNotReleased();
         if (null == componentMessageLists) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
 
         if (componentMessageLists.size() > 0) {
             return new ComponentMessagesIterator(componentMessageLists);
         } else {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
     }
 
@@ -367,27 +336,26 @@ public class FacesContextImpl extends FacesContext {
         // return an empty List Iterator
         if (null == componentMessageLists) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
 
         List<FacesMessage> list = componentMessageLists.get(clientId);
         if (list == null) {
             List<FacesMessage> emptyList = Collections.emptyList();
-            return (emptyList.iterator());
+            return emptyList.iterator();
         }
-        return (list.iterator());
+        return list.iterator();
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getRenderKit()
+     * @see jakarta.faces.context.FacesContext#getRenderKit()
      */
     @Override
     public RenderKit getRenderKit() {
         assertNotReleased();
         UIViewRoot vr = getViewRoot();
         if (vr == null) {
-            return (null);
+            return null;
         }
         String renderKitId = vr.getRenderKitId();
 
@@ -401,10 +369,8 @@ public class FacesContextImpl extends FacesContext {
             lastRk = rkFactory.getRenderKit(this, renderKitId);
             if (lastRk == null) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Unable to locate renderkit "
-                            + "instance for render-kit-id {0}.  Using {1} instead.",
-                            new String[]{renderKitId,
-                                RenderKitFactory.HTML_BASIC_RENDER_KIT});
+                    LOGGER.log(Level.SEVERE, "Unable to locate renderkit " + "instance for render-kit-id {0}.  Using {1} instead.",
+                            new String[] { renderKitId, RenderKitFactory.HTML_BASIC_RENDER_KIT });
                 }
             }
             lastRkId = renderKitId;
@@ -412,9 +378,8 @@ public class FacesContextImpl extends FacesContext {
         }
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getResponseStream()
+     * @see jakarta.faces.context.FacesContext#getResponseStream()
      */
     @Override
     public ResponseStream getResponseStream() {
@@ -422,9 +387,8 @@ public class FacesContextImpl extends FacesContext {
         return responseStream;
     }
 
-
     /**
-     * @see FacesContext#setResponseStream(javax.faces.context.ResponseStream)
+     * @see FacesContext#setResponseStream(jakarta.faces.context.ResponseStream)
      */
     @Override
     public void setResponseStream(ResponseStream responseStream) {
@@ -433,9 +397,8 @@ public class FacesContextImpl extends FacesContext {
         this.responseStream = responseStream;
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getViewRoot()
+     * @see jakarta.faces.context.FacesContext#getViewRoot()
      */
     @Override
     public UIViewRoot getViewRoot() {
@@ -443,9 +406,8 @@ public class FacesContextImpl extends FacesContext {
         return viewRoot;
     }
 
-
     /**
-     * @see FacesContext#setViewRoot(javax.faces.component.UIViewRoot)
+     * @see FacesContext#setViewRoot(jakarta.faces.component.UIViewRoot)
      */
     @Override
     public void setViewRoot(UIViewRoot root) {
@@ -463,9 +425,8 @@ public class FacesContextImpl extends FacesContext {
         viewRoot = root;
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getResponseWriter()
+     * @see jakarta.faces.context.FacesContext#getResponseWriter()
      */
     @Override
     public ResponseWriter getResponseWriter() {
@@ -473,9 +434,8 @@ public class FacesContextImpl extends FacesContext {
         return responseWriter;
     }
 
-
     /**
-     * @see FacesContext#setResponseWriter(javax.faces.context.ResponseWriter)
+     * @see FacesContext#setResponseWriter(jakarta.faces.context.ResponseWriter)
      */
     @Override
     public void setResponseWriter(ResponseWriter responseWriter) {
@@ -485,7 +445,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see FacesContext#addMessage(String, javax.faces.application.FacesMessage)
+     * @see FacesContext#addMessage(String, jakarta.faces.application.FacesMessage)
      */
     @Override
     public void addMessage(String clientId, FacesMessage message) {
@@ -503,8 +463,7 @@ public class FacesContextImpl extends FacesContext {
         }
 
         if (componentMessageLists == null) {
-            componentMessageLists =
-                  new LinkedHashMap<>();
+            componentMessageLists = new LinkedHashMap<>();
         }
 
         // Add this message to our internal queue
@@ -515,16 +474,13 @@ public class FacesContextImpl extends FacesContext {
         }
         list.add(message);
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Adding Message[sourceId=" +
-                        (clientId != null ? clientId : "<<NONE>>") +
-                        ",summary=" + message.getSummary() + ")");
+            LOGGER.fine("Adding Message[sourceId=" + (clientId != null ? clientId : "<<NONE>>") + ",summary=" + message.getSummary() + ")");
         }
 
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#getCurrentPhaseId()
+     * @see jakarta.faces.context.FacesContext#getCurrentPhaseId()
      */
     @Override
     public PhaseId getCurrentPhaseId() {
@@ -533,12 +489,9 @@ public class FacesContextImpl extends FacesContext {
         return currentPhaseId;
 
     }
-    
-    
-
 
     /**
-     * @see javax.faces.context.FacesContext#setCurrentPhaseId(javax.faces.event.PhaseId)
+     * @see jakarta.faces.context.FacesContext#setCurrentPhaseId(jakarta.faces.event.PhaseId)
      */
     @Override
     public void setCurrentPhaseId(PhaseId currentPhaseId) {
@@ -548,9 +501,8 @@ public class FacesContextImpl extends FacesContext {
 
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#release()
+     * @see jakarta.faces.context.FacesContext#release()
      */
     @Override
     public void release() {
@@ -586,7 +538,7 @@ public class FacesContextImpl extends FacesContext {
         lastRkId = null;
 
         // PENDING(edburns): write testcase that verifies that release
-        // actually works.  This will be important to keep working as
+        // actually works. This will be important to keep working as
         // ivars are added and removed on this class over time.
 
         // Make sure to clear our ThreadLocal instance.
@@ -597,9 +549,8 @@ public class FacesContextImpl extends FacesContext {
 
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#renderResponse()
+     * @see jakarta.faces.context.FacesContext#renderResponse()
      */
     @Override
     public void renderResponse() {
@@ -607,9 +558,8 @@ public class FacesContextImpl extends FacesContext {
         renderResponse = true;
     }
 
-
     /**
-     * @see javax.faces.context.FacesContext#responseComplete()
+     * @see jakarta.faces.context.FacesContext#responseComplete()
      */
     @Override
     public void responseComplete() {
@@ -618,7 +568,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#validationFailed()
+     * @see jakarta.faces.context.FacesContext#validationFailed()
      */
     @Override
     public void validationFailed() {
@@ -627,7 +577,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#getRenderResponse()
+     * @see jakarta.faces.context.FacesContext#getRenderResponse()
      */
     @Override
     public boolean getRenderResponse() {
@@ -638,7 +588,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public List<String> getResourceLibraryContracts() {
         assertNotReleased();
-        return (null == resourceLibraryContracts) ? Collections.emptyList() : resourceLibraryContracts;
+        return null == resourceLibraryContracts ? Collections.emptyList() : resourceLibraryContracts;
     }
 
     @Override
@@ -652,13 +602,11 @@ public class FacesContextImpl extends FacesContext {
         } else {
             resourceLibraryContracts = new ArrayList<>(contracts);
         }
-        
+
     }
 
-    
-
     /**
-     * @see javax.faces.context.FacesContext#getResponseComplete()
+     * @see jakarta.faces.context.FacesContext#getResponseComplete()
      */
     @Override
     public boolean getResponseComplete() {
@@ -667,7 +615,7 @@ public class FacesContextImpl extends FacesContext {
     }
 
     /**
-     * @see javax.faces.context.FacesContext#isValidationFailed()
+     * @see jakarta.faces.context.FacesContext#isValidationFailed()
      */
     @Override
     public boolean isValidationFailed() {
@@ -677,7 +625,6 @@ public class FacesContextImpl extends FacesContext {
 
     // --------------------------------------------------------- Public Methods
 
-
     public static FacesContext getDefaultFacesContext() {
 
         return DEFAULT_FACES_CONTEXT.get();
@@ -686,20 +633,15 @@ public class FacesContextImpl extends FacesContext {
 
     // -------------------------------------------------------- Private Methods
 
-
     private void assertNotReleased() {
         if (released) {
             throw new IllegalStateException();
         }
     }
 
-    
     // ---------------------------------------------------------- Inner Classes
 
-
-    private static final class ComponentMessagesIterator
-          implements Iterator<FacesMessage> {
-
+    private static final class ComponentMessagesIterator implements Iterator<FacesMessage> {
 
         private Map<String, List<FacesMessage>> messages;
         private int outerIndex = -1;
@@ -708,7 +650,6 @@ public class FacesContextImpl extends FacesContext {
         private Iterator<String> keys;
 
         // ------------------------------------------------------- Constructors
-
 
         ComponentMessagesIterator(Map<String, List<FacesMessage>> messages) {
 
@@ -719,7 +660,6 @@ public class FacesContextImpl extends FacesContext {
         }
 
         // ---------------------------------------------- Methods from Iterator
-
 
         @Override
         public boolean hasNext() {
@@ -732,7 +672,7 @@ public class FacesContextImpl extends FacesContext {
             }
             while (!inner.hasNext()) {
                 outerIndex++;
-                if ((outerIndex) < messagesSize) {
+                if (outerIndex < messagesSize) {
                     inner = messages.get(keys.next()).iterator();
                 } else {
                     return false;
@@ -752,7 +692,7 @@ public class FacesContextImpl extends FacesContext {
                 return inner.next();
             } else {
                 // call this.hasNext() to properly initialize/position 'inner'
-                if (!this.hasNext()) {
+                if (!hasNext()) {
                     throw new NoSuchElementException();
                 } else {
                     return inner.next();

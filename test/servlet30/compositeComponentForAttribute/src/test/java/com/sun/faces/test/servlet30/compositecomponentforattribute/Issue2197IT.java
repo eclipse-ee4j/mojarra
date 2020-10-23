@@ -16,16 +16,15 @@
 
 package com.sun.faces.test.servlet30.compositecomponentforattribute;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import javax.faces.component.NamingContainer;
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class Issue2197IT {
 
@@ -47,13 +46,13 @@ public class Issue2197IT {
     public void testConvertNumber() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/convertNumber.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("Foo");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("could not be understood as a percentage"));
@@ -63,13 +62,13 @@ public class Issue2197IT {
     public void testConverter() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/converter.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("Foo");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("must be a number consisting of one or more digits"));
@@ -79,13 +78,13 @@ public class Issue2197IT {
     public void testConvertDateTime() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/convertDateTime.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("Foo");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("could not be understood as a date"));
@@ -95,13 +94,13 @@ public class Issue2197IT {
     public void testValidateLength() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/validateLength.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("FooFoo");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("Length is greater than allowable maximum"));
@@ -111,9 +110,9 @@ public class Issue2197IT {
     public void testActionListener() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/actionListener.xhtml");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "mybutton"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("name was pressed"));
@@ -123,13 +122,13 @@ public class Issue2197IT {
     public void testValueChangeListener() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/valueChangeListener.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("FooFoo");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("name value was changed"));
@@ -139,9 +138,9 @@ public class Issue2197IT {
     public void testSetPropertyActionListener() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/setPropertyActionListener.xhtml");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "mybutton"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("foo"));
@@ -151,13 +150,13 @@ public class Issue2197IT {
     public void testValidateDoubleRange() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/validateDoubleRange.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("123456");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("Specified attribute is not between the expected values of 2 and 5"));
@@ -167,13 +166,13 @@ public class Issue2197IT {
     public void testValidateLongRange() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/validateLongRange.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("123456");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("Specified attribute is not between the expected values of 2 and 5"));
@@ -183,7 +182,7 @@ public class Issue2197IT {
     public void testValidateRequired() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/validateRequired.xhtml");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("Value is required"));
@@ -193,13 +192,13 @@ public class Issue2197IT {
     public void testValidator() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/validator.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("123456");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("name was validated"));
@@ -209,13 +208,13 @@ public class Issue2197IT {
     public void testValidateRegex() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/validateRegex.xhtml");
         HtmlTextInput input = (HtmlTextInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "register"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "name");
         input.setValueAttribute("$$$$$$$$$$$");
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getElementById("form"
-                + ":"
+                + NamingContainer.SEPARATOR_CHAR
                 + "button");
         page = (HtmlPage) submit.click();
         assertTrue(page.asText().contains("Regex Pattern not matched"));

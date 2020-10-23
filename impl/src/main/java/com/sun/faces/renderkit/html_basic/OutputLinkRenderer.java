@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,56 +22,49 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * <B>OutputLinkRenderer</B> is a class ...
  * <p/>
- * <B>Lifetime And Scope</B> <P>
+ * <B>Lifetime And Scope</B>
+ * <P>
  *
  */
 
 public class OutputLinkRenderer extends LinkRenderer {
 
-
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLINK);
-
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLINK);
 
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
 
         rendererParamsNotNull(context, component);
 
-
         if (shouldDecode(component)) {
             decodeBehaviors(context, component);
         }
     }
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
         UIOutput output = (UIOutput) component;
         boolean componentDisabled = false;
         if (output.getAttributes().get("disabled") != null) {
-            if ((output.getAttributes().get("disabled")).equals(Boolean.TRUE)) {
+            if (output.getAttributes().get("disabled").equals(Boolean.TRUE)) {
                 componentDisabled = true;
             }
         }
@@ -84,8 +77,7 @@ public class OutputLinkRenderer extends LinkRenderer {
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -101,10 +93,8 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -113,18 +103,17 @@ public class OutputLinkRenderer extends LinkRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
 
         if (Boolean.TRUE.equals(component.getAttributes().get("disabled"))) {
             writer.endElement("span");
         } else {
-            //Write Anchor inline elements
-            //Done writing Anchor element
+            // Write Anchor inline elements
+            // Done writing Anchor element
             writer.endElement("a");
         }
 
     }
-
 
     @Override
     public boolean getRendersChildren() {
@@ -135,11 +124,10 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-
     protected String getFragment(UIComponent component) {
 
         String fragment = (String) component.getAttributes().get("fragment");
-        fragment = (fragment != null ? fragment.trim() : "");
+        fragment = fragment != null ? fragment.trim() : "";
         if (fragment.length() > 0) {
             fragment = "#" + fragment;
         }
@@ -158,10 +146,8 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     }
 
-
     @Override
-    protected void renderAsActive(FacesContext context, UIComponent component)
-          throws IOException {
+    protected void renderAsActive(FacesContext context, UIComponent component) throws IOException {
 
         String hrefVal = getCurrentValue(context, component);
         if (logger.isLoggable(Level.FINE)) {
@@ -172,17 +158,14 @@ public class OutputLinkRenderer extends LinkRenderer {
         // false
         if (!component.isRendered()) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("End encoding component "
-                            + component.getId() + " since " +
-                            "rendered attribute is set to false ");
+                logger.fine("End encoding component " + component.getId() + " since " + "rendered attribute is set to false ");
             }
             return;
         }
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
         writer.startElement("a", component);
-        String writtenId =
-              writeIdAttributeIfNecessary(context, writer, component);
+        String writtenId = writeIdAttributeIfNecessary(context, writer, component);
         if (null != writtenId) {
             writer.writeAttribute("name", writtenId, "name");
         }
@@ -191,18 +174,18 @@ public class OutputLinkRenderer extends LinkRenderer {
             hrefVal = "";
         }
 
-        //Write Anchor attributes
+        // Write Anchor attributes
 
         Param paramList[] = getParamList(component);
         StringBuffer sb = new StringBuffer();
         sb.append(hrefVal);
-        boolean paramWritten = (hrefVal.indexOf('?') > 0);
+        boolean paramWritten = hrefVal.indexOf('?') > 0;
 
         for (int i = 0, len = paramList.length; i < len; i++) {
             String pn = paramList[i].name;
             if (pn != null && pn.length() != 0) {
                 String pv = paramList[i].value;
-                sb.append((paramWritten) ? '&' : '?');
+                sb.append(paramWritten ? '&' : '?');
                 sb.append(URLEncoder.encode(pn, "UTF-8"));
                 sb.append('=');
                 if (pv != null && pv.length() != 0) {
@@ -212,14 +195,8 @@ public class OutputLinkRenderer extends LinkRenderer {
             }
         }
         sb.append(getFragment(component));
-        writer.writeURIAttribute("href",
-                                 context.getExternalContext()
-                                       .encodeResourceURL(sb.toString()),
-                                 "href");
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
+        writer.writeURIAttribute("href", context.getExternalContext().encodeResourceURL(sb.toString()), "href");
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         String target = (String) component.getAttributes().get("target");

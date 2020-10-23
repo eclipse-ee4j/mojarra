@@ -18,7 +18,7 @@ package com.sun.faces.test.javaee7.cdiinitdestroyevent;
 
 import com.sun.faces.test.javaee7.cdiinitdestroyevent.UserBean;
 import java.io.Serializable;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import javax.faces.flow.FlowScoped;
 import javax.inject.Inject;
 import javax.inject.Named;

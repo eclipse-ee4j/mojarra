@@ -25,7 +25,7 @@ public class FacesConfigPhaseListener implements PhaseListener {
 
     @Override
     public void afterPhase(PhaseEvent event) {
-
+        
     }
 
     @Override
@@ -37,5 +37,7 @@ public class FacesConfigPhaseListener implements PhaseListener {
     public PhaseId getPhaseId() {
         return PhaseId.ANY_PHASE;
     }
+    
+    
 
 }

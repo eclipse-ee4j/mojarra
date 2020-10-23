@@ -20,6 +20,8 @@ package com.sun.faces.el;
 
 import com.sun.faces.cactus.ServletFacesTestCase;
 import com.sun.faces.TestBean;
+import com.sun.faces.mgbean.ManagedBeanInfo;
+import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.cactus.TestBean.InnerBean;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.Util;
@@ -244,6 +246,38 @@ public class TestVariableResolverImpl extends ServletFacesTestCase {
             ; // Expected result
         } 
 
+    }
+
+
+    /**
+     * This test verifies that if the variable resolver does not find a
+     * managed bean it tries to instantiate it if it was added to the
+     * application's managed bean factory list.
+     */
+    public void testManagedBean() throws Exception {
+        String beanName = "com.sun.faces.TestBean";
+
+        ManagedBeanInfo beanInfo = new ManagedBeanInfo(beanName,
+                                                       beanName,
+                                                       "session",
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       null);
+
+        ApplicationFactory aFactory = (ApplicationFactory) FactoryFinder.getFactory(
+            FactoryFinder.APPLICATION_FACTORY);
+        Application application = (Application) aFactory.getApplication();
+        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
+        BeanManager manager = associate.getBeanManager();
+        manager.register(beanInfo);
+
+        VariableResolver variableResolver = application.getVariableResolver();
+
+        Object result = variableResolver.resolveVariable(getFacesContext(),
+                                                         beanName);
+
+        assertTrue(result instanceof TestBean);
     }
 
 } // end of class TestVariableResolverImpl

@@ -16,21 +16,16 @@
 
 package com.sun.faces.systest;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
-
 /**
  * @author youngm
  */
-@Named
-@ApplicationScoped
 public class UnicodeBean {
 
     /**
      * The unicode value \u1234 should be encoded with ISO-8859-1 and US-ASCII output.
      * The unicode value \u00c4 should be encoded with US-ASCII only.
      * No encoding should happen with UTF-8 output as the stream will be able
-     * to represent the UTF-16 representation of the string.
+     * to represent the UTF-16 representation of the string. 
      */
     public String getValue() {
         return "a\u1234a Unicode, german umlaut a=b\u00c4b";

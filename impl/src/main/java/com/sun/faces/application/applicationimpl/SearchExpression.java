@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,9 +23,6 @@ import static java.util.logging.Level.FINE;
 import java.text.MessageFormat;
 import java.util.logging.Logger;
 
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.component.search.CompositeSearchKeywordResolver;
 import com.sun.faces.component.search.SearchKeywordResolverImplAll;
@@ -43,19 +40,22 @@ import com.sun.faces.component.search.SearchKeywordResolverImplThis;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
+
 public class SearchExpression {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private final ApplicationAssociate associate;
-    
+
     private CompositeSearchKeywordResolver searchKeywordResolvers;
 
     public SearchExpression(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
-        
+        associate = applicationAssociate;
+
         searchKeywordResolvers = new CompositeSearchKeywordResolver();
-        
+
         searchKeywordResolvers.add(new SearchKeywordResolverImplThis());
         searchKeywordResolvers.add(new SearchKeywordResolverImplParent());
         searchKeywordResolvers.add(new SearchKeywordResolverImplForm());
@@ -68,14 +68,8 @@ public class SearchExpression {
         searchKeywordResolvers.add(new SearchKeywordResolverImplId());
         searchKeywordResolvers.add(new SearchKeywordResolverImplChild());
         searchKeywordResolvers.add(new SearchKeywordResolverImplAll());
-        
-        if (associate.getSearchKeywordResolversFromFacesConfig() != null) {
-            for (SearchKeywordResolver resolver : associate.getSearchKeywordResolversFromFacesConfig()) {
-                searchKeywordResolvers.add(resolver);
-            }
-        }
     }
-    
+
     public SearchExpressionHandler getSearchExpressionHandler() {
         return associate.getSearchExpressionHandler();
     }
@@ -92,8 +86,7 @@ public class SearchExpression {
 
     public void addSearchKeywordResolver(SearchKeywordResolver resolver) {
         if (associate.hasRequestBeenServiced()) {
-            throw new IllegalStateException(
-                    MessageUtils.getExceptionMessageString(ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID, "SearchKeywordResolver"));
+            throw new IllegalStateException(MessageUtils.getExceptionMessageString(ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID, "SearchKeywordResolver"));
         }
 
         searchKeywordResolvers.add(resolver);
@@ -102,5 +95,5 @@ public class SearchExpression {
     public SearchKeywordResolver getSearchKeywordResolver() {
         return searchKeywordResolvers;
     }
-    
+
 }

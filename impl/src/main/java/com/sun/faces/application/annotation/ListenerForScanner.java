@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,19 +18,17 @@ package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
 
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ListenersFor;
-
 import com.sun.faces.util.Util;
+
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.ListenersFor;
 
 /**
  * <code>Scanner</code> implementation responsible for {@link ListenerFor} annotations.
  */
 class ListenerForScanner implements Scanner {
 
-
     // ---------------------------------------------------- Methods from Scanner
-
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
@@ -38,7 +36,6 @@ class ListenerForScanner implements Scanner {
         return ListenerFor.class;
 
     }
-
 
     @Override
     public RuntimeAnnotationHandler scan(Class<?> clazz) {
@@ -59,5 +56,5 @@ class ListenerForScanner implements Scanner {
         return handler;
 
     }
-    
+
 }

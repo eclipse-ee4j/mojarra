@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,39 +17,37 @@
 package com.sun.faces.ext.component;
 
 import static com.sun.faces.util.Util.reverse;
+import static jakarta.faces.validator.BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN;
+import static jakarta.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME;
+import static jakarta.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
 import static java.lang.Boolean.TRUE;
-import static javax.faces.validator.BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN;
-import static javax.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME;
-import static javax.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.FacesException;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.validator.Validator;
-import javax.validation.groups.Default;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.validator.Validator;
+import jakarta.validation.groups.Default;
 
 public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
 
-    private static final String ERROR_MISSING_FORM
-            = "f:validateWholeBean must be nested directly in an UIForm.";
+    private static final String ERROR_MISSING_FORM = "f:validateWholeBean must be nested directly in an UIForm.";
 
-    private static final String ERROR_MISPLACED_COMPONENT
-            = "f:validateWholeBean must be placed at the end of UIForm.";
+    private static final String ERROR_MISPLACED_COMPONENT = "f:validateWholeBean must be placed at the end of UIForm.";
 
     public static final String FAMILY = "com.sun.faces.ext.validateWholeBean";
 
     private transient Class<?>[] cachedValidationGroups;
     private transient String validationGroups = "";
-    
+
     private boolean transientValue;
     private boolean initialState;
 
@@ -82,7 +80,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     public void setValidationGroups(String validationGroups) {
         clearInitialState();
         String newValidationGroups = validationGroups;
-        
+
         // Treat empty list as null
         if (newValidationGroups != null && newValidationGroups.matches(EMPTY_VALIDATION_GROUPS_PATTERN)) {
             newValidationGroups = null;
@@ -114,14 +112,19 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
             WholeBeanValidator validator = new WholeBeanValidator();
             addValidator(validator);
         }
-        
+
         super.validate(context);
+    }
+
+    @Override
+    public void updateModel(FacesContext context) {
+        // Don't update the model. #4313
     }
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
 
-        // Check if the parent of this f:validateWholeBean is a form                   
+        // Check if the parent of this f:validateWholeBean is a form
         UIForm parent = getClosestParent(this, UIForm.class);
         if (parent == null) {
             throw new IllegalArgumentException(ERROR_MISSING_FORM);
@@ -134,7 +137,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
         try {
             reverse(parentComponent.getChildren()).stream().forEach((UIComponent childComponent) -> {
                 if (childComponent.isRendered()) {
-                    if ((childComponent instanceof EditableValueHolder) && (!(childComponent instanceof UIValidateWholeBean))) {
+                    if (childComponent instanceof EditableValueHolder && !(childComponent instanceof UIValidateWholeBean)) {
                         throw new IllegalArgumentException(ERROR_MISPLACED_COMPONENT);
                     } else {
                         if (!childComponent.getClientId().equals(clientId)) {
@@ -149,7 +152,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
             // STOP
         }
     }
-    
+
     public static <C extends UIComponent> C getClosestParent(UIComponent component, Class<C> parentType) {
         UIComponent parent = component.getParent();
 
@@ -169,11 +172,11 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     }
 
     Class<?>[] getValidationGroupsArray() {
-        
+
         if (cachedValidationGroups != null) {
             return cachedValidationGroups;
         }
-        
+
         String validationGroupsStr = getValidationGroups();
         List<Class<?>> validationGroupsList = new ArrayList<>();
 
@@ -182,16 +185,16 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
             if (className.length() == 0) {
                 continue;
             }
-            
+
             if (className.equals(Default.class.getName())) {
                 validationGroupsList.add(Default.class);
             } else {
                 validationGroupsList.add(classForName(className));
             }
         }
-        
+
         cachedValidationGroups = validationGroupsList.toArray(new Class[validationGroupsList.size()]);
-        
+
         return cachedValidationGroups;
     }
 
@@ -216,7 +219,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
 
     @Override
     public boolean isTransient() {
-        return this.transientValue;
+        return transientValue;
     }
 
     @Override
@@ -225,7 +228,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     }
 
     // ----------------------------------------------------- StateHolder Methods
-    
+
     @Override
     public Object saveState(FacesContext context) {
         if (context == null) {
@@ -253,9 +256,9 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
             super.restoreState(context, parentState);
         }
     }
-    
+
     // ----------------------------------------------------- Private helper methods
-    
+
     private Class<?> classForName(String className) {
         try {
             return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
@@ -267,7 +270,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
             }
         }
     }
-    
+
     private static class BreakException extends RuntimeException {
         private static final long serialVersionUID = 1L;
     }

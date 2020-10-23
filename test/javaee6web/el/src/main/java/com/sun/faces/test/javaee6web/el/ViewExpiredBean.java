@@ -18,7 +18,7 @@ package com.sun.faces.test.javaee6web.el;
 
 import java.io.Serializable;
 import java.util.Map;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;

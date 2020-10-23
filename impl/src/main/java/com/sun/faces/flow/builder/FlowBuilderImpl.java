@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,40 +19,41 @@ package com.sun.faces.flow.builder;
 import com.sun.faces.flow.FlowImpl;
 import com.sun.faces.flow.ParameterImpl;
 import com.sun.faces.util.Util;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.builder.FlowBuilder;
-import javax.faces.flow.builder.FlowCallBuilder;
-import javax.faces.flow.builder.MethodCallBuilder;
-import javax.faces.flow.builder.NavigationCaseBuilder;
-import javax.faces.flow.builder.ReturnBuilder;
-import javax.faces.flow.builder.SwitchBuilder;
-import javax.faces.flow.builder.ViewBuilder;
+
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.builder.FlowBuilder;
+import jakarta.faces.flow.builder.FlowCallBuilder;
+import jakarta.faces.flow.builder.MethodCallBuilder;
+import jakarta.faces.flow.builder.NavigationCaseBuilder;
+import jakarta.faces.flow.builder.ReturnBuilder;
+import jakarta.faces.flow.builder.SwitchBuilder;
+import jakarta.faces.flow.builder.ViewBuilder;
 
 public class FlowBuilderImpl extends FlowBuilder {
-    
+
     private FlowImpl flow;
     private ExpressionFactory expressionFactory;
     private ELContext elContext;
     private FacesContext context;
     private boolean didInit;
     private boolean hasId;
-    
+
     public FlowBuilderImpl(FacesContext context) {
         flow = new FlowImpl();
         this.context = context;
-        this.expressionFactory = context.getApplication().getExpressionFactory();
-        this.elContext = context.getELContext();
-        this.didInit = false;
-        this.hasId = false;
+        expressionFactory = context.getApplication().getExpressionFactory();
+        elContext = context.getELContext();
+        didInit = false;
+        hasId = false;
 
     }
-    
-    // <editor-fold defaultstate="collapsed" desc="Create Flow Nodes">   
+
+    // <editor-fold defaultstate="collapsed" desc="Create Flow Nodes">
 
     @Override
     public NavigationCaseBuilder navigationCase() {
@@ -72,19 +73,19 @@ public class FlowBuilderImpl extends FlowBuilder {
         Util.notNull("switchNodeId", switchNodeId);
         return new SwitchBuilderImpl(this, switchNodeId);
     }
-    
+
     @Override
     public ReturnBuilder returnNode(String returnNodeId) {
         Util.notNull("returnNodeId", returnNodeId);
         return new ReturnBuilderImpl(this, returnNodeId);
     }
-    
+
     @Override
     public MethodCallBuilder methodCallNode(String methodCallNodeId) {
         Util.notNull("methodCallNodeId", methodCallNodeId);
         return new MethodCallBuilderImpl(this, methodCallNodeId);
     }
-    
+
     @Override
     public FlowCallBuilder flowCallNode(String flowCallNodeId) {
         return new FlowCallBuilderImpl(this, flowCallNodeId);
@@ -92,17 +93,17 @@ public class FlowBuilderImpl extends FlowBuilder {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Flow-wide Settings">     
-    
+    // <editor-fold defaultstate="collapsed" desc="Flow-wide Settings">
+
     @Override
     public FlowBuilder id(String definingDocumentId, String flowId) {
         Util.notNull("definingDocumentId", definingDocumentId);
         Util.notNull("flowId", flowId);
         flow.setId(definingDocumentId, flowId);
-        this.hasId = true;
+        hasId = true;
         return this;
     }
-    
+
     @Override
     public FlowBuilder initializer(MethodExpression methodExpression) {
         Util.notNull("methodExpression", methodExpression);
@@ -117,7 +118,7 @@ public class FlowBuilderImpl extends FlowBuilder {
         flow.setInitializer(me);
         return this;
     }
-    
+
     @Override
     public FlowBuilder finalizer(MethodExpression methodExpression) {
         flow.setFinalizer(methodExpression);
@@ -130,12 +131,12 @@ public class FlowBuilderImpl extends FlowBuilder {
         flow.setFinalizer(me);
         return this;
     }
-    
+
     @Override
     public FlowBuilder inboundParameter(String name, ValueExpression value) {
         ParameterImpl param = new ParameterImpl(name, value);
         flow._getInboundParameters().put(name, param);
-        
+
         return this;
     }
 
@@ -147,7 +148,7 @@ public class FlowBuilderImpl extends FlowBuilder {
     }
 
     // </editor-fold>
-        
+
     @Override
     public Flow getFlow() {
         if (!hasId) {
@@ -158,28 +159,27 @@ public class FlowBuilderImpl extends FlowBuilder {
             String startNodeId = flow.getStartNodeId();
             if (null == startNodeId) {
                 String flowId = flow.getId();
-                this.viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml").markAsStartNode();
+                viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml").markAsStartNode();
             }
             didInit = true;
         }
         return flow;
     }
-    
+
     public FlowImpl _getFlow() {
         return flow;
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="Package private helpers">
-    
+
     ExpressionFactory getExpressionFactory() {
         return expressionFactory;
     }
-    
+
     ELContext getELContext() {
         return elContext;
     }
-    
+
     // </editor-fold>
 
-    
 }

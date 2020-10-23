@@ -14,13 +14,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax;
+package com.sun.faces.test.servlet30.ajax; 
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 import org.junit.*;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -46,23 +48,24 @@ public class Issue2500IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies that an attribute nameed 'value' can be successfully updated from a partial
-     * response (over Ajax).
+     * This test verifies that an attribute nameed 'value' can be successfully updated
+     * from a partial response (over Ajax). 
      */
     @Test
     public void testNoDuplicateViewState() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/dupViewState.xhtml");
-        HtmlSubmitInput button1 = (HtmlSubmitInput) page.getElementById("btn5");
+        HtmlPage page = webClient.getPage(webUrl+"faces/dupViewState.xhtml");
+        HtmlSubmitInput button1 = (HtmlSubmitInput)page.getElementById("btn5");
         page = button1.click();
         webClient.waitForBackgroundJavaScript(60000);
-        HtmlSubmitInput button2 = (HtmlSubmitInput) page.getElementById("button1");
+        HtmlSubmitInput button2 = (HtmlSubmitInput)page.getElementById("button1");
         page = button2.click();
         webClient.waitForBackgroundJavaScript(60000);
         page = button2.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.asXml().contains("javax.faces.ViewState Has One Value"));
+        assertTrue(page.asXml().contains("jakarta.faces.ViewState Has One Value"));
     }
 }

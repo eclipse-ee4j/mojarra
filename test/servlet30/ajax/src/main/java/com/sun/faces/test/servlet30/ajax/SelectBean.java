@@ -16,21 +16,17 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
-@Named("ajaxselect")
+@ManagedBean(name = "ajaxselect")
 @SessionScoped
-public class SelectBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class SelectBean {
     private String string = "Pending";
     private String[] sarray;
 
-    public String getString() {
+        public String getString() {
         return string;
     }
 

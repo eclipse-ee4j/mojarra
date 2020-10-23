@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,17 +28,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.StateManagementStrategy;
-
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
 
 /**
  * A state management strategy for JSP.
@@ -150,7 +150,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         }
 
         try {
-            Class<?> t = ((classMap != null) ? classMap.get(n.componentType) : null);
+            Class<?> t = classMap != null ? classMap.get(n.componentType) : null;
             if (t == null) {
                 t = Util.loadClass(n.componentType, n);
                 if (t != null && classMap != null) {
@@ -162,7 +162,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
                 }
             }
 
-            assert (t != null);
+            assert t != null;
             UIComponent c = (UIComponent) t.newInstance();
             c.setId(n.id);
 
@@ -181,9 +181,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
      * @return the view root.
      * @throws FacesException when a serious error occurs.
      */
-    private UIViewRoot restoreTree(FacesContext context,
-                                   String renderKitId,
-                                   Object[] tree) throws FacesException {
+    private UIViewRoot restoreTree(FacesContext context, String renderKitId, Object[] tree) throws FacesException {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.log(Level.FINEST, "restoreTree", renderKitId);
         }
@@ -207,7 +205,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
                 if (i != tn.parent) {
                     ((UIComponent) tree[tn.parent]).getChildren().add(c);
                 } else {
-                    assert (c instanceof UIViewRoot);
+                    assert c instanceof UIViewRoot;
                     UIViewRoot viewRoot = (UIViewRoot) c;
                     context.setViewRoot(viewRoot);
                     viewRoot.setRenderKitId(renderKitId);
@@ -229,7 +227,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "restoreView", new Object[]{viewId, renderKitId});
+            LOGGER.log(Level.FINEST, "restoreView", new Object[] { viewId, renderKitId });
         }
 
         UIViewRoot result = null;
@@ -288,7 +286,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         captureChild(treeList, 0, viewRoot);
         Object[] tree = treeList.toArray();
 
-        result = new Object[]{tree, state};
+        result = new Object[] { tree, state };
         return result;
     }
 
@@ -301,7 +299,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
          * Stores the serial version UID.
          */
         private static final long serialVersionUID = -3777170310958005106L;
-        
+
         /**
          * Stores the facet name.
          */
@@ -322,7 +320,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
          */
         public FacetNode(int parent, String name, UIComponent c) {
             super(parent, c);
-            this.facetName = name;
+            facetName = name;
         }
 
         /**
@@ -335,7 +333,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             super.readExternal(in);
-            this.facetName = in.readUTF();
+            facetName = in.readUTF();
         }
 
         /**
@@ -348,7 +346,7 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         public void writeExternal(ObjectOutput out) throws IOException {
 
             super.writeExternal(out);
-            out.writeUTF(this.facetName);
+            out.writeUTF(facetName);
 
         }
     }
@@ -366,22 +364,22 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
          * Stores the NULL_ID constant.
          */
         private static final String NULL_ID = "";
-        
+
         /**
          * Stores the component type.
          */
         private String componentType;
-        
+
         /**
          * Stores the id.
          */
         private String id;
-        
+
         /**
          * Stores the parent.
          */
         private int parent;
-       
+
         /**
          * Constructor.
          */
@@ -397,8 +395,8 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         public TreeNode(int parent, UIComponent c) {
 
             this.parent = parent;
-            this.id = c.getId();
-            this.componentType = c.getClass().getName();
+            id = c.getId();
+            componentType = c.getClass().getName();
 
         }
 
@@ -412,9 +410,9 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
-            this.parent = in.readInt();
-            this.componentType = in.readUTF();
-            this.id = in.readUTF();
+            parent = in.readInt();
+            componentType = in.readUTF();
+            id = in.readUTF();
             if (id.length() == 0) {
                 id = null;
             }
@@ -429,15 +427,15 @@ public class JspStateManagementStrategy extends StateManagementStrategy {
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
 
-            out.writeInt(this.parent);
-            out.writeUTF(this.componentType);
-            if (this.id != null) {
-                out.writeUTF(this.id);
+            out.writeInt(parent);
+            out.writeUTF(componentType);
+            if (id != null) {
+                out.writeUTF(id);
             } else {
                 out.writeUTF(NULL_ID);
             }
         }
-        
+
         public int getParent() {
             return parent;
         }

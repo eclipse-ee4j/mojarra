@@ -16,10 +16,7 @@
 
 package com.sun.faces.test.servlet30.charactercombat;
 
-import java.util.Iterator;
-
 import javax.el.ELContext;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
@@ -30,68 +27,72 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKit;
-import javax.inject.Named;
+
+import java.util.Iterator;
 
 /**
- * <p>
- * Backing bean for wizard style navigation. This class provides methods that you can point to from
- * your wizard buttons that will return true or false depending on the current page in the
- * application.
- * </p>
+ * <p>Backing bean for wizard style navigation.  This class provides
+ * methods that you can point to from your wizard buttons that will
+ * return true or false depending on the current page in the
+ * application.</p>
  */
-@Named
-@RequestScoped
 public class WizardButtons {
 
     /**
-     * <p>
-     * Check to see whether the current page should have a back button
-     * </p>
+     * <p>Check to see whether the current page should have a back button</p>
      *
      * @return true if the current page has a "back" page.
      */
     public boolean isHasBack() {
-        FacesContext realContext = FacesContext.getCurrentInstance(), copyContext = createShadowFacesContext(realContext);
-        NavigationHandler nav = copyContext.getApplication().getNavigationHandler();
+        FacesContext
+              realContext = FacesContext.getCurrentInstance(),
+              copyContext = createShadowFacesContext(realContext);
+        NavigationHandler nav =
+              copyContext.getApplication().getNavigationHandler();
         nav.handleNavigation(copyContext, null, "back");
-        return compareUIViewRoots(realContext.getViewRoot(), copyContext.getViewRoot());
+        return compareUIViewRoots(realContext.getViewRoot(),
+                                  copyContext.getViewRoot());
     }
 
     /**
-     * <p>
-     * Check to see whether the current page should have a next button
-     * </p>
+     * <p>Check to see whether the current page should have a next button</p>
      *
      * @return true if the current page has a "next" page.
      */
     public boolean isHasNext() {
-        FacesContext realContext = FacesContext.getCurrentInstance(), copyContext = createShadowFacesContext(realContext);
-        NavigationHandler nav = copyContext.getApplication().getNavigationHandler();
+        FacesContext
+              realContext = FacesContext.getCurrentInstance(),
+              copyContext = createShadowFacesContext(realContext);
+        NavigationHandler nav =
+              copyContext.getApplication().getNavigationHandler();
         nav.handleNavigation(copyContext, null, "next");
-        return compareUIViewRoots(realContext.getViewRoot(), copyContext.getViewRoot());
+        return compareUIViewRoots(realContext.getViewRoot(),
+                                  copyContext.getViewRoot());
     }
 
     /**
-     * <p>
-     * Check to see whether the current page should have a finish button
-     * </p>
+     * <p>Check to see whether the current page should have a finish button</p>
      *
-     * @return true if the current page should have a "finish" button instead of a "next" button
+     * @return true if the current page should have a "finish" button
+     *         instead of a "next" button
      */
     public boolean isFinishPage() {
-        FacesContext realContext = FacesContext.getCurrentInstance(), copyContext = createShadowFacesContext(realContext), nextCopyContext;
-        NavigationHandler nav = copyContext.getApplication().getNavigationHandler();
+        FacesContext
+              realContext = FacesContext.getCurrentInstance(),
+              copyContext = createShadowFacesContext(realContext),
+              nextCopyContext;
+        NavigationHandler nav =
+              copyContext.getApplication().getNavigationHandler();
         // get the next outcome
         nav.handleNavigation(copyContext, null, "next");
         nextCopyContext = createShadowFacesContext(copyContext);
         nav.handleNavigation(nextCopyContext, null, "next");
-        return compareUIViewRoots(copyContext.getViewRoot(), nextCopyContext.getViewRoot());
+        return compareUIViewRoots(copyContext.getViewRoot(),
+                                  nextCopyContext.getViewRoot());
     }
 
     /**
-     * <p>
-     * Get the label for the "next" button.
-     * </p>
+     * <p>Get the label for the "next" button.</p>
      *
      * @return String next button label
      */
@@ -104,9 +105,7 @@ public class WizardButtons {
     }
 
     /**
-     * <p>
-     * Take two View roots and compare them.
-     * </p>
+     * <p>Take two View roots and compare them.</p>
      *
      * @param one the first ViewRoot
      * @param two the second ViewRoot
@@ -131,125 +130,126 @@ public class WizardButtons {
     }
 
     /**
-     * <p>
-     * createShadowFacesContext creates a shallow copy of the argument FacesContext, but with a deep
-     * copy of the viewRoot property. This allows us to call the NavigationHandler.handleNavigaton
-     * method without modifying the real FacesContext.
-     * </p>
+     * <p>createShadowFacesContext creates a shallow copy of the
+     * argument FacesContext, but with a deep copy of the viewRoot
+     * property.  This allows us to call the NavigationHandler.handleNavigaton
+     * method without modifying the real FacesContext.</p>
      *
      * @param context the FacesContext to be copied
      *
      * @return FacesContext shallow copy of FacesContext
      */
     public FacesContext createShadowFacesContext(FacesContext context) {
-        // final FacesContext oldContext = context;
+        //final FacesContext oldContext = context;
 
-        class FacesContextImpl extends FacesContext {
+        class FacesContextImpl extends FacesContext
+        {
             private FacesContext oldContext = null;
             private UIViewRoot root = null;
             private Application application = null;
 
-            public FacesContextImpl(FacesContext context) {
+            public FacesContextImpl(FacesContext context)
+            {
                 this.oldContext = context;
                 this.root = oldContext.getViewRoot();
                 this.application = oldContext.getApplication();
             }
 
-            @Override
-            public Application getApplication() {
+            public Application getApplication()
+            {
                 return this.application;
             }
 
-            @Override
-            public Iterator<String> getClientIdsWithMessages() {
+            public Iterator<String> getClientIdsWithMessages()
+            {
                 return oldContext.getClientIdsWithMessages();
             }
 
-            @Override
-            public ExternalContext getExternalContext() {
+            public ExternalContext getExternalContext()
+            {
                 return oldContext.getExternalContext();
             }
 
-            @Override
-            public Severity getMaximumSeverity() {
+            public Severity getMaximumSeverity()
+            {
                 return oldContext.getMaximumSeverity();
             }
 
-            @Override
-            public Iterator<FacesMessage> getMessages() {
+            public Iterator<FacesMessage> getMessages()
+            {
                 return oldContext.getMessages();
             }
 
-            @Override
-            public Iterator<FacesMessage> getMessages(String clientId) {
+            public Iterator<FacesMessage> getMessages(String clientId)
+            {
                 return oldContext.getMessages(clientId);
             }
 
-            @Override
-            public RenderKit getRenderKit() {
+            public RenderKit getRenderKit()
+            {
                 return oldContext.getRenderKit();
             }
 
-            @Override
-            public boolean getRenderResponse() {
+            public boolean getRenderResponse()
+            {
                 return oldContext.getRenderResponse();
             }
 
-            @Override
-            public boolean getResponseComplete() {
+            public boolean getResponseComplete()
+            {
                 return oldContext.getResponseComplete();
             }
 
-            @Override
-            public ResponseStream getResponseStream() {
+            public ResponseStream getResponseStream()
+            {
                 return oldContext.getResponseStream();
             }
 
-            @Override
-            public void setResponseStream(ResponseStream responseStream) {
+            public void setResponseStream(ResponseStream responseStream)
+            {
                 oldContext.setResponseStream(responseStream);
             }
 
-            @Override
-            public ResponseWriter getResponseWriter() {
+            public ResponseWriter getResponseWriter()
+            {
                 return oldContext.getResponseWriter();
             }
 
-            @Override
-            public void setResponseWriter(ResponseWriter responseWriter) {
+            public void setResponseWriter(ResponseWriter responseWriter)
+            {
                 oldContext.setResponseWriter(responseWriter);
             }
 
-            @Override
-            public UIViewRoot getViewRoot() {
+            public UIViewRoot getViewRoot()
+            {
                 return this.root;
             }
 
-            @Override
-            public void setViewRoot(UIViewRoot root) {
+            public void setViewRoot(UIViewRoot root)
+            {
                 this.root = root;
             }
 
-            @Override
-            public void addMessage(String clientId, FacesMessage message) {
+            public void addMessage(String clientId, FacesMessage message)
+            {
                 oldContext.addMessage(clientId, message);
             }
 
-            @Override
-            public void release() {
+            public void release()
+            {
             }
 
-            @Override
-            public void renderResponse() {
+            public void renderResponse()
+            {
             }
 
-            @Override
-            public ELContext getELContext() {
+            public ELContext getELContext()
+            {
                 return oldContext.getELContext();
             }
 
-            @Override
-            public void responseComplete() {
+            public void responseComplete()
+            {
             }
         }
 

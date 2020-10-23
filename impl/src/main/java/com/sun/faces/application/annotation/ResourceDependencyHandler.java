@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,19 +16,19 @@
 
 package com.sun.faces.application.annotation;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
-
-import javax.el.ValueExpression;
-import javax.faces.application.ResourceDependency;
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import java.util.Map;
+import java.util.Set;
 
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * {@link RuntimeAnnotationHandler} responsible for processing {@link ResourceDependency} annotations.
@@ -36,11 +36,9 @@ import com.sun.faces.util.RequestStateManager;
 class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     private ResourceDependency[] dependencies;
-    private Map<ResourceDependency,Expressions> expressionsMap;
-
+    private Map<ResourceDependency, Expressions> expressionsMap;
 
     // ------------------------------------------------------------ Constructors
-
 
     public ResourceDependencyHandler(ResourceDependency[] dependencies) {
 
@@ -54,9 +52,8 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
             if (lib.length() > 0) {
                 // Take special action to resolve the "this" library name
                 if ("this".equals(lib)) {
-                    String thisLibrary = (String)
-                            attrs.get(com.sun.faces.application.ApplicationImpl.THIS_LIBRARY);
-                    assert(null != thisLibrary);
+                    String thisLibrary = (String) attrs.get(com.sun.faces.application.ApplicationImpl.THIS_LIBRARY);
+                    assert null != thisLibrary;
                     lib = thisLibrary;
                 }
 
@@ -71,11 +68,9 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     }
 
-
     // ----------------------------------- Methods from RuntimeAnnotationHandler
-    
 
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
 
@@ -88,48 +83,40 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
 
-
     /**
-     * Adds the specified {@link UIComponent} as a component resource to the
-     * {@link javax.faces.component.UIViewRoot}
+     * Adds the specified {@link UIComponent} as a component resource to the {@link jakarta.faces.component.UIViewRoot}
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param c the component resource
      */
     private void pushResourceToRoot(FacesContext ctx, UIComponent c) {
 
-        ctx.getViewRoot().addComponentResource(ctx, c, (String) c .getAttributes().get("target"));
+        ctx.getViewRoot().addComponentResource(ctx, c, (String) c.getAttributes().get("target"));
 
     }
 
-
     /**
-     * Determines of the specified {@link ResourceDependency} has already been
-     * previously processed.
+     * Determines of the specified {@link ResourceDependency} has already been previously processed.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param dep the {@link ResourceDependency} in question
-     * @return <code>true</code> if the {@link ResourceDependency} has been
-     *  processed, otherwise <code>false</code>
+     * @return <code>true</code> if the {@link ResourceDependency} has been processed, otherwise <code>false</code>
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     private boolean hasBeenProcessed(FacesContext ctx, ResourceDependency dep) {
 
-        Set<ResourceDependency> dependencies = (Set<ResourceDependency>)
-              RequestStateManager.get(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES);
-        return ((dependencies != null) && dependencies.contains(dep));
+        Set<ResourceDependency> dependencies = (Set<ResourceDependency>) RequestStateManager.get(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES);
+        return dependencies != null && dependencies.contains(dep);
 
     }
-
 
     /**
      * Construct a new component resource based off the provided {@link ValueExpression}s.
      *
      * @param ctx the {@link FacesContext} for the current request
-     * @param dep the ResourceDependency that the component resource will be
-     *  constructed from
+     * @param dep the ResourceDependency that the component resource will be constructed from
      * @return a new component resource based of the provided annotation
      */
     private UIComponent createComponentResource(FacesContext ctx, ResourceDependency dep) {
@@ -137,9 +124,9 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
         Expressions exprs = expressionsMap.get(dep);
         Application app = ctx.getApplication();
         String resname = exprs.getName(ctx);
-        UIComponent c = ctx.getApplication().createComponent("javax.faces.Output");
+        UIComponent c = ctx.getApplication().createComponent("jakarta.faces.Output");
         c.setRendererType(app.getResourceHandler().getRendererTypeForResourceName(resname));
-        Map<String,Object> attrs = c.getAttributes();
+        Map<String, Object> attrs = c.getAttributes();
         attrs.put("name", resname);
         if (exprs.library != null) {
             attrs.put("library", exprs.getLibrary(ctx));
@@ -151,28 +138,25 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     }
 
-
     /**
      * Indicates that the specified ResourceDependency has been processed.
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param dep the {@link ResourceDependency}
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     private void markProcssed(FacesContext ctx, ResourceDependency dep) {
 
-        Set<ResourceDependency> dependencies = (Set<ResourceDependency>)
-              RequestStateManager.get(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES);
+        Set<ResourceDependency> dependencies = (Set<ResourceDependency>) RequestStateManager.get(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES);
         if (dependencies == null) {
             dependencies = new HashSet<>(6);
             RequestStateManager.set(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES, dependencies);
         }
         dependencies.add(dep);
-        
+
     }
 
-
     // ----------------------------------------------------------- Inner Classes
-
 
     /**
      * This helper class hides expression evaluation complexity.
@@ -213,8 +197,6 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
             return null;
         }
 
-
     }
-
 
 }

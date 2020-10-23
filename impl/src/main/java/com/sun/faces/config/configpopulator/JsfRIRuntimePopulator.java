@@ -1,33 +1,15 @@
-/*
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0, which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * This Source Code may also be made available under the following Secondary
- * Licenses when the conditions for such availability set forth in the
- * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
- * version 2 with the GNU Classpath Exception, which is available at
- * https://www.gnu.org/software/classpath/license.html.
- *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
- */
 package com.sun.faces.config.configpopulator;
-
-import javax.faces.application.ApplicationConfigurationPopulator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulator {
+import jakarta.faces.application.ApplicationConfigurationPopulator;
 
+public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulator {
     @Override
     public void populateApplicationConfiguration(Document toPopulate) {
         String ns = toPopulate.getDocumentElement().getNamespaceURI();
         Element faces_configElement = toPopulate.getDocumentElement();
-
         {
             Element factoryElement = toPopulate.createElementNS(ns, "factory");
             {
@@ -109,9 +91,6 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             faces_configElement.appendChild(factoryElement);
         }
-
-        // Application
-
         {
             Element applicationElement = toPopulate.createElementNS(ns, "application");
             {
@@ -148,17 +127,17 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element system_event_listenerElement = toPopulate.createElementNS(ns, "system-event-listener");
                 {
                     Element system_event_listener_classElement = toPopulate.createElementNS(ns, "system-event-listener-class");
-                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.cdi.ViewScopeEventListener"));
+                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.view.ViewScopeEventListener"));
                     system_event_listenerElement.appendChild(system_event_listener_classElement);
                 }
                 {
                     Element system_event_classElement = toPopulate.createElementNS(ns, "system-event-class");
-                    system_event_classElement.appendChild(toPopulate.createTextNode("javax.faces.event.PostConstructViewMapEvent"));
+                    system_event_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.event.PostConstructViewMapEvent"));
                     system_event_listenerElement.appendChild(system_event_classElement);
                 }
                 {
                     Element source_classElement = toPopulate.createElementNS(ns, "source-class");
-                    source_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIViewRoot"));
+                    source_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewRoot"));
                     system_event_listenerElement.appendChild(source_classElement);
                 }
                 applicationElement.appendChild(system_event_listenerElement);
@@ -167,37 +146,33 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element system_event_listenerElement = toPopulate.createElementNS(ns, "system-event-listener");
                 {
                     Element system_event_listener_classElement = toPopulate.createElementNS(ns, "system-event-listener-class");
-                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.cdi.ViewScopeEventListener"));
+                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.view.ViewScopeEventListener"));
                     system_event_listenerElement.appendChild(system_event_listener_classElement);
                 }
                 {
                     Element system_event_classElement = toPopulate.createElementNS(ns, "system-event-class");
-                    system_event_classElement.appendChild(toPopulate.createTextNode("javax.faces.event.PreDestroyViewMapEvent"));
+                    system_event_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.event.PreDestroyViewMapEvent"));
                     system_event_listenerElement.appendChild(system_event_classElement);
                 }
                 {
                     Element source_classElement = toPopulate.createElementNS(ns, "source-class");
-                    source_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIViewRoot"));
+                    source_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewRoot"));
                     system_event_listenerElement.appendChild(source_classElement);
                 }
                 applicationElement.appendChild(system_event_listenerElement);
             }
             faces_configElement.appendChild(applicationElement);
         }
-
-
-        // Converter
-
         {
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.BigDecimal"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.BigDecimal"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.BigDecimalConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BigDecimalConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -206,12 +181,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.BigInteger"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.BigInteger"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.BigIntegerConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BigIntegerConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -220,12 +195,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Boolean"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Boolean"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.BooleanConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BooleanConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -234,12 +209,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Byte"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Byte"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.ByteConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ByteConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -248,12 +223,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Character"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Character"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.CharacterConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.CharacterConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -262,12 +237,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.DateTime"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.DateTime"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.DateTimeConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.DateTimeConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -276,12 +251,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Double"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Double"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.DoubleConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.DoubleConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -290,12 +265,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Float"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Float"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.FloatConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.FloatConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -304,12 +279,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Integer"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Integer"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.IntegerConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.IntegerConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -318,12 +293,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Long"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Long"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.LongConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.LongConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -332,12 +307,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Number"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Number"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.NumberConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.NumberConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -346,12 +321,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element converterElement = toPopulate.createElementNS(ns, "converter");
             {
                 Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("javax.faces.Short"));
+                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Short"));
                 converterElement.appendChild(converter_idElement);
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.ShortConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ShortConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -365,7 +340,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.BigDecimalConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BigDecimalConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -379,7 +354,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.BigIntegerConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BigIntegerConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -393,7 +368,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.BooleanConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BooleanConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -407,7 +382,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.ByteConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ByteConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -421,7 +396,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.CharacterConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.CharacterConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -435,7 +410,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.DoubleConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.DoubleConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -449,7 +424,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.FloatConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.FloatConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -463,7 +438,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.IntegerConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.IntegerConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -477,7 +452,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.LongConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.LongConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -491,7 +466,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.ShortConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ShortConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
@@ -505,15 +480,11 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("javax.faces.convert.EnumConverter"));
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.EnumConverter"));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
         }
-
-
-        // Lifecycle
-
         {
             Element lifecycleElement = toPopulate.createElementNS(ns, "lifecycle");
             {
@@ -523,38 +494,30 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             faces_configElement.appendChild(lifecycleElement);
         }
-
-
-        // Behavior
-
         {
             Element behaviorElement = toPopulate.createElementNS(ns, "behavior");
             {
                 Element behavior_idElement = toPopulate.createElementNS(ns, "behavior-id");
-                behavior_idElement.appendChild(toPopulate.createTextNode("javax.faces.behavior.Ajax"));
+                behavior_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.behavior.Ajax"));
                 behaviorElement.appendChild(behavior_idElement);
             }
             {
                 Element behavior_classElement = toPopulate.createElementNS(ns, "behavior-class");
-                behavior_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.behavior.AjaxBehavior"));
+                behavior_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.behavior.AjaxBehavior"));
                 behaviorElement.appendChild(behavior_classElement);
             }
             faces_configElement.appendChild(behaviorElement);
         }
-
-
-        // Validator
-
         {
             Element validatorElement = toPopulate.createElementNS(ns, "validator");
             {
                 Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("javax.faces.Bean"));
+                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Bean"));
                 validatorElement.appendChild(validator_idElement);
             }
             {
                 Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("javax.faces.validator.BeanValidator"));
+                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.BeanValidator"));
                 validatorElement.appendChild(validator_classElement);
             }
             faces_configElement.appendChild(validatorElement);
@@ -563,12 +526,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element validatorElement = toPopulate.createElementNS(ns, "validator");
             {
                 Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("javax.faces.DoubleRange"));
+                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.DoubleRange"));
                 validatorElement.appendChild(validator_idElement);
             }
             {
                 Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("javax.faces.validator.DoubleRangeValidator"));
+                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.DoubleRangeValidator"));
                 validatorElement.appendChild(validator_classElement);
             }
             faces_configElement.appendChild(validatorElement);
@@ -577,12 +540,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element validatorElement = toPopulate.createElementNS(ns, "validator");
             {
                 Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("javax.faces.Length"));
+                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Length"));
                 validatorElement.appendChild(validator_idElement);
             }
             {
                 Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("javax.faces.validator.LengthValidator"));
+                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.LengthValidator"));
                 validatorElement.appendChild(validator_classElement);
             }
             faces_configElement.appendChild(validatorElement);
@@ -591,12 +554,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element validatorElement = toPopulate.createElementNS(ns, "validator");
             {
                 Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("javax.faces.LongRange"));
+                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.LongRange"));
                 validatorElement.appendChild(validator_idElement);
             }
             {
                 Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("javax.faces.validator.LongRangeValidator"));
+                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.LongRangeValidator"));
                 validatorElement.appendChild(validator_classElement);
             }
             faces_configElement.appendChild(validatorElement);
@@ -605,12 +568,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element validatorElement = toPopulate.createElementNS(ns, "validator");
             {
                 Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("javax.faces.RegularExpression"));
+                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.RegularExpression"));
                 validatorElement.appendChild(validator_idElement);
             }
             {
                 Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("javax.faces.validator.RegexValidator"));
+                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.RegexValidator"));
                 validatorElement.appendChild(validator_classElement);
             }
             faces_configElement.appendChild(validatorElement);
@@ -619,12 +582,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element validatorElement = toPopulate.createElementNS(ns, "validator");
             {
                 Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("javax.faces.Required"));
+                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Required"));
                 validatorElement.appendChild(validator_idElement);
             }
             {
                 Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("javax.faces.validator.RequiredValidator"));
+                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.RequiredValidator"));
                 validatorElement.appendChild(validator_classElement);
             }
             faces_configElement.appendChild(validatorElement);
@@ -643,10 +606,6 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             faces_configElement.appendChild(validatorElement);
         }
-
-
-        // Component
-
         {
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
@@ -721,7 +680,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Composite"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Composite"));
                 componentElement.appendChild(component_typeElement);
             }
             {
@@ -735,7 +694,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.ComponentResourceContainer"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ComponentResourceContainer"));
                 componentElement.appendChild(component_typeElement);
             }
             {
@@ -745,10 +704,6 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             faces_configElement.appendChild(componentElement);
         }
-
-
-        // Render Kit
-
         {
             Element render_kitElement = toPopulate.createElementNS(ns, "render-kit");
             {
@@ -798,7 +753,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element client_behavior_rendererElement = toPopulate.createElementNS(ns, "client-behavior-renderer");
                 {
                     Element client_behavior_renderer_typeElement = toPopulate.createElementNS(ns, "client-behavior-renderer-type");
-                    client_behavior_renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.behavior.Ajax"));
+                    client_behavior_renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.behavior.Ajax"));
                     client_behavior_rendererElement.appendChild(client_behavior_renderer_typeElement);
                 }
                 {
@@ -814,12 +769,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Column"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Column"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIColumn"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIColumn"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -828,12 +783,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Command"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Command"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UICommand"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UICommand"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -842,12 +797,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Data"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Data"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIData"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIData"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -856,12 +811,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Form"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Form"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIForm"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIForm"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -870,12 +825,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Graphic"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Graphic"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIGraphic"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIGraphic"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -884,12 +839,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.ImportConstants"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ImportConstants"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIImportConstants"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIImportConstants"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -898,12 +853,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Input"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIInput"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIInput"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -912,12 +867,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Message"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Message"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIMessage"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIMessage"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -926,12 +881,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Messages"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Messages"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIMessages"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIMessages"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -940,12 +895,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.NamingContainer"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.NamingContainer"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UINamingContainer"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UINamingContainer"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -954,12 +909,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIOutput"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIOutput"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -968,12 +923,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.OutcomeTarget"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutcomeTarget"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIOutcomeTarget"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIOutcomeTarget"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -982,12 +937,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Panel"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Panel"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIPanel"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIPanel"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -996,12 +951,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.ViewParameter"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ViewParameter"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIViewParameter"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewParameter"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1010,12 +965,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.ViewAction"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ViewAction"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIViewAction"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewAction"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1024,12 +979,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Parameter"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Parameter"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIParameter"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIParameter"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1038,12 +993,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.SelectBoolean"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectBoolean"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UISelectBoolean"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectBoolean"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1052,12 +1007,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.SelectItem"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectItem"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UISelectItem"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectItem"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1066,12 +1021,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.SelectItems"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectItems"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UISelectItems"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectItems"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1080,12 +1035,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.SelectMany"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UISelectMany"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectMany"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1094,12 +1049,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.SelectOne"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectOne"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UISelectOne"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectOne"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1108,12 +1063,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.ViewRoot"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ViewRoot"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIViewRoot"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewRoot"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1122,12 +1077,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Websocket"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Websocket"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.UIWebsocket"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIWebsocket"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1136,12 +1091,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlColumn"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlColumn"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlColumn"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlColumn"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1150,12 +1105,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlCommandButton"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlCommandButton"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlCommandButton"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlCommandButton"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1164,12 +1119,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlCommandLink"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlCommandLink"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlCommandLink"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlCommandLink"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1178,12 +1133,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlCommandScript"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlCommandScript"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlCommandScript"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlCommandScript"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1192,12 +1147,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlDataTable"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlDataTable"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlDataTable"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlDataTable"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1206,12 +1161,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlForm"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlForm"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlForm"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlForm"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1220,12 +1175,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlGraphicImage"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlGraphicImage"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlGraphicImage"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlGraphicImage"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1234,12 +1189,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlInputFile"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputFile"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlInputFile"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputFile"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1248,12 +1203,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlInputHidden"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputHidden"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlInputHidden"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputHidden"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1262,12 +1217,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlInputSecret"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputSecret"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlInputSecret"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputSecret"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1276,12 +1231,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlInputText"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputText"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlInputText"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputText"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1290,12 +1245,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlInputTextarea"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputTextarea"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlInputTextarea"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputTextarea"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1304,12 +1259,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlMessage"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlMessage"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlMessage"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlMessage"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1318,12 +1273,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlMessages"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlMessages"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlMessages"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlMessages"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1332,12 +1287,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlOutputFormat"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutputFormat"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlOutputFormat"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutputFormat"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1346,12 +1301,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlOutputLabel"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutputLabel"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlOutputLabel"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutputLabel"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1360,12 +1315,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlOutputLink"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutputLink"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlOutputLink"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutputLink"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1374,12 +1329,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlOutcomeTargetLink"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutcomeTargetLink"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlOutcomeTargetLink"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutcomeTargetLink"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1388,12 +1343,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlOutcomeTargetButton"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutcomeTargetButton"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlOutcomeTargetButton"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutcomeTargetButton"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1402,12 +1357,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlOutputText"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutputText"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlOutputText"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutputText"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1416,12 +1371,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlPanelGrid"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlPanelGrid"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlPanelGrid"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlPanelGrid"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1430,12 +1385,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlPanelGroup"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlPanelGroup"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlPanelGroup"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlPanelGroup"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1444,12 +1399,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlSelectBooleanCheckbox"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectBooleanCheckbox"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlSelectBooleanCheckbox"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectBooleanCheckbox"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1458,12 +1413,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlSelectManyCheckbox"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectManyCheckbox"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlSelectManyCheckbox"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectManyCheckbox"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1472,12 +1427,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlSelectManyListbox"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectManyListbox"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlSelectManyListbox"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectManyListbox"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1486,12 +1441,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlSelectManyMenu"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectManyMenu"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlSelectManyMenu"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectManyMenu"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1500,12 +1455,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlSelectOneListbox"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectOneListbox"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlSelectOneListbox"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectOneListbox"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1514,12 +1469,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlSelectOneMenu"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectOneMenu"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlSelectOneMenu"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectOneMenu"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1528,12 +1483,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.HtmlSelectOneRadio"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectOneRadio"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlSelectOneRadio"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectOneRadio"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1542,12 +1497,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.OutputDoctype"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutputDoctype"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlDoctype"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlDoctype"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1556,12 +1511,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.OutputHead"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutputHead"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlHead"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlHead"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1570,12 +1525,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("javax.faces.OutputBody"));
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutputBody"));
                 componentElement.appendChild(component_typeElement);
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("javax.faces.component.html.HtmlBody"));
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlBody"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);
@@ -1586,12 +1541,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Command"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Command"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Button"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Button"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1605,12 +1560,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Command"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Command"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Link"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Link"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1624,12 +1579,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Command"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Command"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Script"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Script"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1643,12 +1598,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Data"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Data"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Table"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Table"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1662,12 +1617,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Form"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Form"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Form"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Form"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1681,12 +1636,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Graphic"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Graphic"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Image"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Image"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1700,12 +1655,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Panel"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Panel"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.passthrough.Element"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.passthrough.Element"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1719,12 +1674,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Input"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.File"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.File"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1738,12 +1693,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Input"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Hidden"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Hidden"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1757,12 +1712,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Input"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Secret"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Secret"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1776,12 +1731,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Input"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Text"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Text"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1795,12 +1750,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Input"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Textarea"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Textarea"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1814,12 +1769,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Message"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Message"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Message"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Message"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1833,12 +1788,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Messages"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Messages"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Messages"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Messages"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1852,12 +1807,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Format"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Format"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1871,12 +1826,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Label"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Label"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1890,12 +1845,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Link"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Link"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1909,12 +1864,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.OutcomeTarget"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutcomeTarget"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Link"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Link"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1928,12 +1883,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.OutcomeTarget"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutcomeTarget"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Button"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Button"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1947,12 +1902,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Text"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Text"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1966,12 +1921,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Panel"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Panel"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Grid"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Grid"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -1985,12 +1940,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Panel"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Panel"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Group"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Group"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2004,12 +1959,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.SelectBoolean"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectBoolean"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Checkbox"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Checkbox"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2023,12 +1978,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.SelectMany"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Checkbox"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Checkbox"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2042,12 +1997,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.SelectMany"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Listbox"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Listbox"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2061,12 +2016,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.SelectMany"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Menu"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Menu"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2080,12 +2035,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.SelectOne"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectOne"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Listbox"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Listbox"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2099,12 +2054,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.SelectOne"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectOne"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Menu"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Menu"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2118,12 +2073,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.SelectOne"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectOne"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Radio"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Radio"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2137,12 +2092,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.NamingContainer"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.NamingContainer"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Composite"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Composite"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2156,12 +2111,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.CompositeFacet"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.CompositeFacet"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2175,12 +2130,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.resource.Script"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.resource.Script"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2194,12 +2149,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.resource.Stylesheet"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.resource.Stylesheet"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2213,12 +2168,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Doctype"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Doctype"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2232,12 +2187,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Head"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Head"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2251,12 +2206,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Output"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Body"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Body"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {
@@ -2270,12 +2225,12 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
                 {
                     Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("javax.faces.Script"));
+                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Script"));
                     rendererElement.appendChild(component_familyElement);
                 }
                 {
                     Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("javax.faces.Websocket"));
+                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Websocket"));
                     rendererElement.appendChild(renderer_typeElement);
                 }
                 {

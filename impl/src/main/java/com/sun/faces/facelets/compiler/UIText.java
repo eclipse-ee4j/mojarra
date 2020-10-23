@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,12 +16,13 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.el.ELText;
 
-import javax.el.ELException;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import java.io.IOException;
+import jakarta.el.ELException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * @author Jacob Hookom
@@ -30,7 +31,7 @@ import java.io.IOException;
 public final class UIText extends UILeaf {
 
     private final ELText txt;
-    
+
     private final String alias;
 
     public UIText(String alias, ELText txt) {
@@ -45,15 +46,14 @@ public final class UIText extends UILeaf {
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        if (this.isRendered()) {
+        if (isRendered()) {
             ResponseWriter out = context.getResponseWriter();
             try {
                 txt.write(out, context.getELContext());
             } catch (ELException e) {
-                throw new ELException(this.alias + ": " + e.getMessage(),
-                                      e.getCause());
+                throw new ELException(alias + ": " + e.getMessage(), e.getCause());
             } catch (IOException e) {
-                throw new ELException(this.alias + ": " + e.getMessage(), e);
+                throw new ELException(alias + ": " + e.getMessage(), e);
             }
         }
     }
@@ -70,6 +70,6 @@ public final class UIText extends UILeaf {
 
     @Override
     public String toString() {
-        return this.txt.toString();
+        return txt.toString();
     }
 }

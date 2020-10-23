@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,37 +17,33 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-import javax.faces.context.FacesContext;
-import javax.faces.application.Application;
-import javax.faces.validator.FacesValidator;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.FacesValidator;
 
 /**
  * <p>
- * <code>ConfigAnnotationHandler</code> for {@link FacesValidator} annotated
- * classes.
+ * <code>ConfigAnnotationHandler</code> for {@link FacesValidator} annotated classes.
  * </p>
  */
 public class ValidatorConfigHandler implements ConfigAnnotationHandler {
 
     private static final Collection<Class<? extends Annotation>> HANDLES;
     static {
-        Collection<Class<? extends Annotation>> handles =
-              new ArrayList<>(1);
+        Collection<Class<? extends Annotation>> handles = new ArrayList<>(1);
         handles.add(FacesValidator.class);
         HANDLES = Collections.unmodifiableCollection(handles);
     }
 
-    private Map<ValidatorInfo,String> validators;
-
+    private Map<ValidatorInfo, String> validators;
 
     // ------------------------------------- Methods from ComponentConfigHandler
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#getHandledAnnotations()
@@ -58,7 +54,6 @@ public class ValidatorConfigHandler implements ConfigAnnotationHandler {
         return HANDLES;
 
     }
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#collect(Class, java.lang.annotation.Annotation)
@@ -80,16 +75,15 @@ public class ValidatorConfigHandler implements ConfigAnnotationHandler {
 
     }
 
-
     /**
-     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(javax.faces.context.FacesContext)
+     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)
      */
     @Override
     public void push(FacesContext ctx) {
 
         if (validators != null) {
             Application app = ctx.getApplication();
-            for (Map.Entry<ValidatorInfo,String> entry : validators.entrySet()) {
+            for (Map.Entry<ValidatorInfo, String> entry : validators.entrySet()) {
                 app.addValidator(entry.getKey().validatorId, entry.getValue());
                 if (entry.getKey().isDefault) {
                     app.addDefaultValidatorId(entry.getKey().validatorId);
@@ -99,9 +93,7 @@ public class ValidatorConfigHandler implements ConfigAnnotationHandler {
 
     }
 
-
     // ---------------------------------------------------------- Nested Classes
-
 
     private static class ValidatorInfo {
 

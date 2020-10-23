@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,10 +19,10 @@ package com.sun.faces.component.visit;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
@@ -36,25 +36,20 @@ public class VisitContextFactoryImpl extends VisitContextFactory {
     }
 
     @Override
-    public VisitContext getVisitContext(FacesContext context, 
-            Collection<String> ids, 
-            Set<VisitHint> hints) {
+    public VisitContext getVisitContext(FacesContext context, Collection<String> ids, Set<VisitHint> hints) {
         VisitContext result = null;
 
         // If ids null (not empty), we create a FullVisitContext.
-        // Otherwise, we create a PartialVisitContext.  Note that
+        // Otherwise, we create a PartialVisitContext. Note that
         // an empty collection still means partial - the client
         // can add ids to visit after they create the VisitContext.
         if (null == ids) {
             result = new FullVisitContext(context, hints);
-        }
-        else {
+        } else {
             result = new PartialVisitContext(context, ids, hints);
         }
-        
+
         return result;
     }
 
-    
-    
 }

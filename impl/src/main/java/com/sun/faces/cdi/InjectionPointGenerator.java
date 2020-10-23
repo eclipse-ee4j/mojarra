@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,14 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 /**
  * <p class="changed_added_2_3">
- * This is a work around in order to be able to get {@link InjectionPoint} in {@link CdiProducer}.
- * It is broken in some Weld versions.
+ * This is a work around in order to be able to get {@link InjectionPoint} in {@link CdiProducer}. It is broken in some
+ * Weld versions.
  * </p>
  *
  * @since 2.3

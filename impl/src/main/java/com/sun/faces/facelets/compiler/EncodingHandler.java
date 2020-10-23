@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,41 +16,41 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.RIConstants;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
 import java.io.IOException;
 import java.util.Map;
-import javax.faces.context.FacesContext;
+
+import com.sun.faces.RIConstants;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 public class EncodingHandler implements FaceletHandler {
 
     private final FaceletHandler next;
     private final String encoding;
     private final CompilationMessageHolder messageHolder;
-    
-    public EncodingHandler(FaceletHandler next, String encoding,
-            CompilationMessageHolder messageHolder) {
+
+    public EncodingHandler(FaceletHandler next, String encoding, CompilationMessageHolder messageHolder) {
         this.next = next;
         this.encoding = encoding;
         this.messageHolder = messageHolder;
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         FacesContext context = ctx.getFacesContext();
-        Map<Object,Object> ctxAttributes = context.getAttributes();
-        ctxAttributes.put("facelets.compilationMessages", this.messageHolder);
-        this.next.apply(ctx, parent);
+        Map<Object, Object> ctxAttributes = context.getAttributes();
+        ctxAttributes.put("facelets.compilationMessages", messageHolder);
+        next.apply(ctx, parent);
         ctxAttributes.remove("facelets.compilationMessages");
-        this.messageHolder.processCompilationMessages(ctx.getFacesContext());
+        messageHolder.processCompilationMessages(ctx.getFacesContext());
         if (!ctxAttributes.containsKey(RIConstants.FACELETS_ENCODING_KEY)) {
-            ctx.getFacesContext().getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, this.encoding);
+            ctx.getFacesContext().getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, encoding);
         }
     }
-    
+
     public static CompilationMessageHolder getCompilationMessageHolder(FaceletContext ctx) {
 
         return (CompilationMessageHolder) ctx.getFacesContext().getAttributes().get("facelets.compilationMessages");

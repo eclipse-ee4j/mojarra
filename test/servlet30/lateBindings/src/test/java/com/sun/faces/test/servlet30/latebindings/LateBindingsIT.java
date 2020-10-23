@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.latebindings;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class LateBindingsIT {
 
@@ -45,45 +43,22 @@ public class LateBindingsIT {
     @Test
     public void testLateBindings() throws Exception {
 
-        System.out.print("Getting page: " + webUrl + "Test.xhtml");
-
-        HtmlPage page = webClient.getPage(webUrl + "Test.xhtml");
-
-        System.out.println("BEFORE CLICK");
-
-        System.out.println("\n" + page.asText() + "\n");
-        System.out.println("\n" + page.asXml() + "\n");
-
-        assertTrue(
-            !(page.asText().contains("Custom Converter") &&
-            (page.asText().contains("Custom Validator"))));
+        HtmlPage page = webClient.getPage(webUrl + "faces/Test.jsp");
+        assertTrue(!(page.asText().contains("Custom Converter")
+                && (page.asText().contains("Custom Validator"))));
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = (HtmlPage) button.click();
-
-        System.out.println("AFTER CLICK 1");
-
-        System.out.println("\n" + page.asText() + "\n");
-        System.out.println("\n" + page.asXml() + "\n");
-
-        assertTrue(
-            (page.asText().contains("CustomConverter2 invoked")) &&
-            (page.asText().contains("CustomValidator1 invoked")) &&
-            !(page.asText().contains("CustomConverter1 invoked")) &&
-            !(page.asText().contains("CustomValidator2 invoked")));
+        assertTrue((page.asText().contains("CustomConverter1 invoked"))
+                && (page.asText().contains("CustomValidator2 invoked"))
+                && !(page.asText().contains("CustomConverter2 invoked"))
+                && !(page.asText().contains("CustomValidator1 invoked")));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = (HtmlPage) button.click();
-
-        System.out.println("AFTER CLICK 2");
-
-        System.out.println("\n" + page.asText() + "\n");
-        System.out.println("\n" + page.asXml() + "\n");
-
-        assertTrue(
-            (page.asText().contains("CustomConverter1 invoked")) &&
-            (page.asText().contains("CustomValidator2 invoked")) &&
-            !(page.asText().contains("CustomConverter2 invoked"))
-            && !(page.asText().contains("CustomValidator1 invoked")));
+        assertTrue((page.asText().contains("CustomConverter2 invoked"))
+                && (page.asText().contains("CustomValidator1 invoked"))
+                && !(page.asText().contains("CustomConverter1 invoked"))
+                && !(page.asText().contains("CustomValidator2 invoked")));
     }
 }

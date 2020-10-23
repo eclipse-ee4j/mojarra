@@ -16,23 +16,18 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import static java.util.Locale.ITALIAN;
-
-import java.io.Serializable;
 import java.util.Locale;
-
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.convert.Converter;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @SessionScoped
-public class ViewParamLocaleBean implements Serializable {
+public class ViewParamLocaleBean {
 
-    private static final long serialVersionUID = 1L;
-    private Locale locale = ITALIAN;
-
-    public Converter<Object> getConverter() {
+    private Locale locale = Locale.ITALIAN;
+    
+    public Converter getConverter() {
         return new ViewParamLocaleConverter();
     }
 
