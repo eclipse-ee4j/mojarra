@@ -14,9 +14,9 @@
 [//]: # " SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 "
 -->
 
-# Mojarra
+# Mojarra 4.0 WIP
 
-Oracle's implementation of the Jakarta Faces specification 
+Eclipse's implementation of the Jakarta Faces specification 
 
 
 ## Minimum Requirements
@@ -238,10 +238,23 @@ public class YourApplicationConfig {
 
 In case you want to checkout this repository and manually build from source yourself (if necessary after editing source code), here are the instructions:
 
+### Jakarta Faces 4.0
+
+1. Make sure that you have JDK 1.8, Ant and Maven installed.
+2. Checkout branch [`master`][28].
+3. Run the following commands from the root directory of the project:
+
+    ```bash
+    # under the root dir of project
+    mvn clean install
+    ```
+
+4. The binary is now available as `impl/target/jakarta.faces-4.0.x-SNAPSHOT.jar`.
+
 ### Jakarta Faces 3.0
 
 1. Make sure that you have JDK 1.8, Ant and Maven installed.
-2. Checkout branch [`3.o`][28].
+2. Checkout branch [`3.0`][28].
 3. Run the following commands from the root directory of the project:
 
     ```bash
