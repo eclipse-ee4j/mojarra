@@ -185,7 +185,6 @@ public class ConfigManager {
      * @return the results of the annotation scan task
      */
     public static Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(FacesContext ctx) {
-
         Map<String, Object> appMap = ctx.getExternalContext().getApplicationMap();
 
         @SuppressWarnings("unchecked")
@@ -214,7 +213,6 @@ public class ConfigManager {
      * @param servletContext the <code>ServletContext</code> for the application that requires initialization
      */
     public void initialize(ServletContext servletContext, InitFacesContext facesContext) {
-
         if (!hasBeenInitialized(servletContext)) {
 
             initializedContexts.add(servletContext);
@@ -339,9 +337,7 @@ public class ConfigManager {
      * Execute the Task responsible for finding annotation classes
      *
      */
-    private void findAnnotations(DocumentInfo[] facesDocuments, InjectionProvider containerConnector, ServletContext servletContext, InitFacesContext context,
-            ExecutorService executor) {
-
+    private void findAnnotations(DocumentInfo[] facesDocuments, InjectionProvider containerConnector, ServletContext servletContext, InitFacesContext context, ExecutorService executor) {
         ProvideMetadataToAnnotationScanTask taskMetadata = new ProvideMetadataToAnnotationScanTask(facesDocuments, containerConnector);
 
         Future<Map<Class<? extends Annotation>, Set<Class<?>>>> annotationScan;
@@ -359,8 +355,8 @@ public class ConfigManager {
     /**
      * Push the provided <code>Future</code> to the specified <code>ServletContext</code>.
      */
-    private void pushTaskToContext(ServletContext sc, Future<Map<Class<? extends Annotation>, Set<Class<?>>>> scanTask) {
-        sc.setAttribute(ANNOTATIONS_SCAN_TASK_KEY, scanTask);
+    private void pushTaskToContext(ServletContext servletContext, Future<Map<Class<? extends Annotation>, Set<Class<?>>>> scanTask) {
+        servletContext.setAttribute(ANNOTATIONS_SCAN_TASK_KEY, scanTask);
     }
 
     private boolean useThreads(ServletContext ctx) {
@@ -375,9 +371,7 @@ public class ConfigManager {
         return getConfigurationResourceProviders(facesletsTagLibConfigProviders, FaceletConfig);
     }
 
-    private List<ConfigurationResourceProvider> getConfigurationResourceProviders(List<ConfigurationResourceProvider> defaultProviders,
-            ConfigurationResourceProviderFactory.ProviderType providerType) {
-
+    private List<ConfigurationResourceProvider> getConfigurationResourceProviders(List<ConfigurationResourceProvider> defaultProviders, ConfigurationResourceProviderFactory.ProviderType providerType) {
         ConfigurationResourceProvider[] customProviders = createProviders(providerType);
         if (customProviders.length == 0) {
             return defaultProviders;
@@ -397,7 +391,6 @@ public class ConfigManager {
     }
 
     private List<ApplicationConfigurationPopulator> getConfigPopulators() {
-
         List<ApplicationConfigurationPopulator> configPopulators = new ArrayList<>();
 
         configPopulators.add(new JsfRIRuntimePopulator());
@@ -412,24 +405,23 @@ public class ConfigManager {
      * instance.
      */
     void publishPostConfigEvent() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Application application = facesContext.getApplication();
 
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        Application app = ctx.getApplication();
-
-        if (null == ((InitFacesContext) ctx).getELContext()) {
-            ELContext elContext = new ELContextImpl(app.getELResolver());
-            elContext.putContext(FacesContext.class, ctx);
-            ExpressionFactory exFactory = ELUtils.getDefaultExpressionFactory(ctx);
+        if (((InitFacesContext) facesContext).getELContext() == null) {
+            ELContext elContext = new ELContextImpl(application.getELResolver());
+            elContext.putContext(FacesContext.class, facesContext);
+            ExpressionFactory exFactory = ELUtils.getDefaultExpressionFactory(facesContext);
             if (null != exFactory) {
                 elContext.putContext(ExpressionFactory.class, exFactory);
             }
 
-            UIViewRoot root = ctx.getViewRoot();
+            UIViewRoot root = facesContext.getViewRoot();
             if (null != root) {
                 elContext.setLocale(root.getLocale());
             }
 
-            ELContextListener[] listeners = app.getELContextListeners();
+            ELContextListener[] listeners = application.getELContextListeners();
             if (listeners.length > 0) {
                 ELContextEvent event = new ELContextEvent(elContext);
                 for (ELContextListener listener : listeners) {
@@ -437,17 +429,16 @@ public class ConfigManager {
                 }
             }
 
-            ((InitFacesContext) ctx).setELContext(elContext);
+            ((InitFacesContext) facesContext).setELContext(elContext);
         }
 
-        app.publishEvent(ctx, PostConstructApplicationEvent.class, Application.class, app);
+        application.publishEvent(facesContext, PostConstructApplicationEvent.class, Application.class, application);
     }
 
     /**
      * Create a new <code>ExecutorService</code> with {@link #NUMBER_OF_TASK_THREADS} threads.
      */
     private static ExecutorService createExecutorService() {
-
         int tc = Runtime.getRuntime().availableProcessors();
         if (tc > NUMBER_OF_TASK_THREADS) {
             tc = NUMBER_OF_TASK_THREADS;

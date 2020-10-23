@@ -16,6 +16,8 @@
 
 package com.sun.faces.application.view;
 
+import java.util.Arrays;
+
 /**
  * Interface for working with multiple {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations.
  */
@@ -49,14 +51,10 @@ public class ViewHandlingStrategyManager {
      * @return a {@link com.sun.faces.application.view.ViewHandlingStrategy} for the specifed <code>viewId</code>
      */
     public ViewHandlingStrategy getStrategy(String viewId) {
-
-        for (ViewHandlingStrategy strategy : strategies) {
-            if (strategy.handlesViewId(viewId)) {
-                return strategy;
-            }
-        }
-
-        throw new ViewHandlingStrategyNotFoundException();
+        return Arrays.stream(strategies)
+                     .filter(strategy -> strategy.handlesViewId(viewId))
+                     .findFirst()
+                     .orElseThrow(ViewHandlingStrategyNotFoundException::new);
     }
 
     /**
@@ -68,7 +66,7 @@ public class ViewHandlingStrategyManager {
 
     /**
      * Update the {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations to be applied when processing
-     * JSF requests.
+     * Faces requests.
      *
      * @param stratagies the new view handling strategies
      */

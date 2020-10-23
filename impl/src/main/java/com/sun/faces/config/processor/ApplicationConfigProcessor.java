@@ -75,7 +75,6 @@ import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.servlet.ServletContext;
 import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
 /**
@@ -234,7 +233,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
      */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
-
         Application application = getApplication();
         ApplicationAssociate associate = ApplicationAssociate.getInstance(facesContext.getExternalContext());
         LinkedHashMap<String, Node> viewHandlers = new LinkedHashMap<>();
@@ -383,7 +381,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
     }
 
     static boolean isBeanValidatorAvailable(FacesContext facesContext) {
-
         boolean result = false;
         final String beansValidationAvailabilityCacheKey = "jakarta.faces.BEANS_VALIDATION_AVAILABLE";
         Map<String, Object> appMap = facesContext.getExternalContext().getApplicationMap();
@@ -393,6 +390,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         } else {
             try {
                 Thread.currentThread().getContextClassLoader().loadClass("jakarta.validation.MessageInterpolator");
+
                 // Check if the Implementation is available.
                 Object cachedObject = appMap.get(BeanValidator.VALIDATOR_FACTORY_KEY);
                 if (cachedObject instanceof ValidatorFactory) {
@@ -402,33 +400,27 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     try {
                         initialContext = new InitialContext();
                     } catch (NoClassDefFoundError nde) {
-                        // on google app engine InitialContext is forbidden to use and GAE throws
+                        // On google app engine InitialContext is forbidden to use and GAE throws
                         // NoClassDefFoundError
-                        if (LOGGER.isLoggable(FINE)) {
-                            LOGGER.log(FINE, nde.toString(), nde);
-                        }
+                        LOGGER.log(FINE, nde, () -> nde.toString());
                     } catch (NamingException ne) {
-                        if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, ne.toString(), ne);
-                        }
+                        LOGGER.log(WARNING, ne, () -> ne.toString());
                     }
 
                     try {
                         Object validatorFactory = initialContext.lookup("java:comp/ValidatorFactory");
-                        if (null != validatorFactory) {
+                        if (validatorFactory != null) {
                             appMap.put(BeanValidator.VALIDATOR_FACTORY_KEY, validatorFactory);
                             result = true;
                         }
                     } catch (NamingException root) {
-                        if (LOGGER.isLoggable(FINE)) {
-                            LOGGER.fine("Could not build a default Bean Validator factory: " + root.getMessage());
-                        }
+                        LOGGER.fine(() -> "Could not build a default Bean Validator factory: " + root.getMessage());
                     }
 
                     if (!result) {
                         try {
                             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-                            Validator validator = factory.getValidator();
+                            factory.getValidator();
                             appMap.put(BeanValidator.VALIDATOR_FACTORY_KEY, factory);
                             result = true;
                         } catch (Throwable throwable) {
@@ -439,6 +431,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             } catch (Throwable t) { // CNFE or ValidationException or any other
                 LOGGER.fine("Unable to load Beans Validation");
             }
+
             appMap.put(beansValidationAvailabilityCacheKey, result);
         }
 
@@ -446,7 +439,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
     }
 
     private void setMessageBundle(Application application, Node messageBundle) {
-
         if (messageBundle != null) {
             String bundle = getNodeText(messageBundle);
             if (bundle != null) {
@@ -457,11 +449,9 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 application.setMessageBundle(bundle);
             }
         }
-
     }
 
     private void setDefaultRenderKitId(Application application, Node defaultId) {
-
         if (defaultId != null) {
             String id = getNodeText(defaultId);
             if (id != null) {
@@ -471,17 +461,15 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 application.setDefaultRenderKitId(id);
             }
         }
-
     }
 
-    private void addActionListener(ServletContext sc, FacesContext facesContext, Application application, Node actionListener) {
-
+    private void addActionListener(ServletContext servletContext, FacesContext facesContext, Application application, Node actionListener) {
         if (actionListener != null) {
 
             String listener = getNodeText(actionListener);
             if (listener != null) {
                 boolean[] didPerformInjection = { false };
-                ActionListener instance = (ActionListener) createInstance(sc, facesContext, listener, ActionListener.class, application.getActionListener(),
+                ActionListener instance = (ActionListener) createInstance(servletContext, facesContext, listener, ActionListener.class, application.getActionListener(),
                         actionListener, true, didPerformInjection);
 
                 if (instance != null) {
@@ -499,16 +487,15 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         }
     }
 
-    private void setNavigationHandler(ServletContext sc, FacesContext facesContext, Application application, Node navigationHandler) {
-
+    private void setNavigationHandler(ServletContext servletContext, FacesContext facesContext, Application application, Node navigationHandler) {
         if (navigationHandler != null) {
 
             String handler = getNodeText(navigationHandler);
             if (handler != null) {
-                Class<?> rootType = findRootType(sc, facesContext, handler, navigationHandler,
+                Class<?> rootType = findRootType(servletContext, facesContext, handler, navigationHandler,
                         new Class[] { ConfigurableNavigationHandler.class, NavigationHandler.class });
                 boolean[] didPerformInjection = { false };
-                NavigationHandler instance = (NavigationHandler) createInstance(sc, facesContext, handler,
+                NavigationHandler instance = (NavigationHandler) createInstance(servletContext, facesContext, handler,
                         rootType != null ? rootType : NavigationHandler.class, application.getNavigationHandler(), navigationHandler, true,
                         didPerformInjection);
 
@@ -520,6 +507,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, format("Calling Application.setNavigationHandlers({0})", handler));
                     }
+
                     application.setNavigationHandler(instance);
                 }
             }
@@ -527,13 +515,13 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     }
 
-    private void setStateManager(ServletContext sc, FacesContext facesContext, Application application, Node stateManager) {
-
+    private void setStateManager(ServletContext servletContext, FacesContext facesContext, Application application, Node stateManager) {
         if (stateManager != null) {
+
             String manager = getNodeText(stateManager);
             if (manager != null) {
                 boolean[] didPerformInjection = { false };
-                StateManager instance = (StateManager) createInstance(sc, facesContext, manager, StateManager.class, application.getStateManager(),
+                StateManager instance = (StateManager) createInstance(servletContext, facesContext, manager, StateManager.class, application.getStateManager(),
                         stateManager, true, didPerformInjection);
                 if (instance != null) {
                     if (didPerformInjection[0]) {
@@ -542,20 +530,20 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.log(Level.FINE, MessageFormat.format("Calling Application.setStateManagers({0})", manager));
                     }
+
                     application.setStateManager(instance);
                 }
             }
         }
-
     }
 
-    private void setViewHandler(ServletContext sc, FacesContext facesContext, Application application, Node viewHandler) {
-
+    private void setViewHandler(ServletContext servletContext, FacesContext facesContext, Application application, Node viewHandler) {
         if (viewHandler != null) {
+
             String handler = getNodeText(viewHandler);
             if (handler != null) {
                 boolean[] didPerformInjection = { false };
-                ViewHandler instance = (ViewHandler) createInstance(sc, facesContext, handler, ViewHandler.class, application.getViewHandler(), viewHandler,
+                ViewHandler instance = (ViewHandler) createInstance(servletContext, facesContext, handler, ViewHandler.class, application.getViewHandler(), viewHandler,
                         true, didPerformInjection);
 
                 if (instance != null) {
@@ -574,25 +562,25 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     }
 
-    private void addELResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node elResolver) {
-
+    private void addELResolver(ServletContext servletContext, FacesContext facesContext, ApplicationAssociate associate, Node elResolver) {
         if (elResolver != null) {
             if (associate != null) {
                 List<ELResolver> resolvers = associate.getELResolversFromFacesConfig();
                 if (resolvers == null) {
-                    // noinspection CollectionWithoutInitialCapacity
                     resolvers = new ArrayList<>();
                     associate.setELResolversFromFacesConfig(resolvers);
                 }
+
                 String elResolverClass = getNodeText(elResolver);
                 if (elResolverClass != null) {
                     boolean[] didPerformInjection = { false };
-                    ELResolver elRes = (ELResolver) createInstance(sc, facesContext, elResolverClass, ELResolver.class, null, elResolver, true,
+                    ELResolver elRes = (ELResolver) createInstance(servletContext, facesContext, elResolverClass, ELResolver.class, null, elResolver, true,
                             didPerformInjection);
                     if (elRes != null) {
                         if (didPerformInjection[0]) {
                             elResolvers.add(elRes);
                         }
+
                         if (LOGGER.isLoggable(FINE)) {
                             LOGGER.log(FINE, format("Adding ''{0}'' to ELResolver chain", elResolverClass));
                         }
@@ -602,11 +590,9 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 }
             }
         }
-
     }
 
     private void setSearchExpressionHandler(ServletContext sc, FacesContext facesContext, Application application, Node searchExpressionHandler) {
-
         if (searchExpressionHandler != null) {
 
             String handler = getNodeText(searchExpressionHandler);
@@ -630,12 +616,11 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 }
             }
         }
-
     }
 
     private void addSearchKeywordResolver(ServletContext sc, FacesContext facesContext, Application application, Node searchKeywordResolver) {
-
         if (searchKeywordResolver != null) {
+
             String searchKeywordResolverClass = getNodeText(searchKeywordResolver);
             if (searchKeywordResolverClass != null) {
                 boolean[] didPerformInjection = { false };
@@ -650,17 +635,17 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, format("Adding ''{0}'' to SearchKeywordResolver chain", searchKeywordResolverClass));
                     }
+
                     application.addSearchKeywordResolver(keywordResolver);
                 }
             }
         }
-
     }
 
     @SuppressWarnings("deprecation")
     private void addPropertyResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node propertyResolver) {
-
         if (propertyResolver != null) {
+
             if (associate != null) {
                 Object resolverImpl = associate.getLegacyPRChainHead();
                 if (resolverImpl == null) {
@@ -687,8 +672,8 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     @SuppressWarnings("deprecation")
     private void addVariableResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node variableResolver) {
-
         if (variableResolver != null) {
+
             if (associate != null) {
                 Object resolverImpl = associate.getLegacyVRChainHead();
                 if (resolverImpl == null) {
@@ -711,7 +696,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 }
             }
         }
-
     }
 
     private void setDefaultLocale(Application application, Node defaultLocale) {
@@ -749,8 +733,8 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
     }
 
     private void addResouceBundle(ApplicationAssociate associate, Node resourceBundle) {
-
         if (resourceBundle != null) {
+
             NodeList children = resourceBundle.getChildNodes();
             if (children != null) {
                 String baseName = null;
@@ -790,24 +774,22 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
     }
 
     private Set<Locale> getCurrentLocales(Application application) {
-
-        // noinspection CollectionWithoutInitialCapacity
         Set<Locale> supportedLocales = new HashSet<>();
         for (Iterator<Locale> i = application.getSupportedLocales(); i.hasNext();) {
             supportedLocales.add(i.next());
         }
-        return supportedLocales;
 
+        return supportedLocales;
     }
 
-    private void setResourceHandler(ServletContext sc, FacesContext facesContext, Application application, Node resourceHandler) {
-
+    private void setResourceHandler(ServletContext servletContext, FacesContext facesContext, Application application, Node resourceHandler) {
         if (resourceHandler != null) {
+
             String handler = getNodeText(resourceHandler);
             if (handler != null) {
                 boolean[] didPerformInjection = { false };
 
-                ResourceHandler instance = (ResourceHandler) createInstance(sc, facesContext, handler, ResourceHandler.class, application.getResourceHandler(),
+                ResourceHandler instance = (ResourceHandler) createInstance(servletContext, facesContext, handler, ResourceHandler.class, application.getResourceHandler(),
                         resourceHandler, true, didPerformInjection);
 
                 if (instance != null) {
@@ -824,8 +806,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         }
     }
 
-    private void addSystemEventListener(ServletContext sc, FacesContext facesContext, Application application, Node systemEventListener) {
-
+    private void addSystemEventListener(ServletContext servletContext, FacesContext facesContext, Application application, Node systemEventListener) {
         NodeList children = systemEventListener.getChildNodes();
         String listenerClass = null;
         String eventClass = null;
@@ -846,11 +827,11 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 }
             }
         }
+
         if (listenerClass != null) {
-            SystemEventListener selInstance = (SystemEventListener) createInstance(sc, facesContext, listenerClass, SystemEventListener.class, null,
-                    systemEventListener);
-            if (selInstance != null) {
-                systemEventListeners.add(selInstance);
+            SystemEventListener systemEventListenerInstance = (SystemEventListener) createInstance(servletContext, facesContext, listenerClass, SystemEventListener.class, null, systemEventListener);
+            if (systemEventListenerInstance != null) {
+                systemEventListeners.add(systemEventListenerInstance);
                 try {
                     // If there is an eventClass, use it, otherwise use
                     // SystemEvent.class
@@ -858,17 +839,17 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     Class<? extends SystemEvent> eventClazz;
 
                     if (eventClass != null) {
-                        eventClazz = (Class<? extends SystemEvent>) loadClass(sc, facesContext, eventClass, this, null);
+                        eventClazz = (Class<? extends SystemEvent>) loadClass(servletContext, facesContext, eventClass, this, null);
                     } else {
                         eventClazz = SystemEvent.class;
                     }
 
                     // If there is a sourceClass, use it, otherwise use null
                     Class<?> sourceClazz = sourceClass != null && sourceClass.length() != 0 ? Util.loadClass(sourceClass, this.getClass()) : null;
-                    application.subscribeToEvent(eventClazz, sourceClazz, selInstance);
+                    application.subscribeToEvent(eventClazz, sourceClazz, systemEventListenerInstance);
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.log(Level.FINE, "Subscribing for event {0} and source {1} using listener {2}", new Object[] { eventClazz.getName(),
-                                sourceClazz != null ? sourceClazz.getName() : "ANY", selInstance.getClass().getName() });
+                                sourceClazz != null ? sourceClazz.getName() : "ANY", systemEventListenerInstance.getClass().getName() });
                     }
                 } catch (ClassNotFoundException cnfe) {
                     throw new ConfigurationException(cnfe);
@@ -877,9 +858,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         }
     }
 
-    private void processViewHandlers(ServletContext servletContext, FacesContext facesContext, Application application,
-            LinkedHashMap<String, Node> viewHandlers) {
-
+    private void processViewHandlers(ServletContext servletContext, FacesContext facesContext, Application application, LinkedHashMap<String, Node> viewHandlers) {
         if (viewHandlers.containsKey("com.sun.facelets.FaceletViewHandler")) {
             LOGGER.log(SEVERE, "jsf.application.legacy_facelet_viewhandler_detected", "com.sun.facelets.FaceletViewHandler");
             throw new FacesException("Use of com.sun.facelets.FaceletViewHandler is no longer supported");
