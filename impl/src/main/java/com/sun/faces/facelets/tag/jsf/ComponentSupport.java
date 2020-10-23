@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,24 +16,7 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.context.StateContext;
-import com.sun.faces.facelets.tag.jsf.core.FacetHandler;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
-import com.sun.faces.util.Util;
-
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.Tag;
-import javax.faces.event.PhaseId;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,8 +28,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.sun.faces.RIConstants;
+import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.tag.jsf.core.FacetHandler;
+import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -58,48 +59,44 @@ public final class ComponentSupport {
     // Expando boolean attribute used to identify parent components that have had
     // a dynamic child addition or removal.
     public final static String MARK_CHILDREN_MODIFIED = "com.sun.faces.facelets.MARK_CHILDREN_MODIFIED";
-    
+
     // Expando Collection<String> attribute used to identify tagIds of child components that
     // have been removed from a parent component.
     public final static String REMOVED_CHILDREN = "com.sun.faces.facelets.REMOVED_CHILDREN";
 
     // Expando attribute used to mark dynamic UIComponents that have had their
     // ComponentSupport.MARK_CREATED expando removed.
-    public static final String MARK_CREATED_REMOVED =  StateContext.class.getName() + "_MARK_CREATED_REMOVED";
-    
+    public static final String MARK_CREATED_REMOVED = StateContext.class.getName() + "_MARK_CREATED_REMOVED";
+
     private final static String IMPLICIT_PANEL = "com.sun.faces.facelets.IMPLICIT_PANEL";
-    
+
     /**
-     * Key to a FacesContext scoped Map where the keys are UIComponent instances and the
-     * values are Tag instances.
+     * Key to a FacesContext scoped Map where the keys are UIComponent instances and the values are Tag instances.
      */
     public static final String COMPONENT_TO_TAG_MAP_NAME = "com.sun.faces.facelets.COMPONENT_TO_LOCATION_MAP";
-    
-    public static boolean handlerIsResourceRelated(ComponentHandler handler){
-      ComponentConfig config = handler.getComponentConfig();
-      if ( !"javax.faces.Output".equals(config.getComponentType()) ) {
-        return false;
-      }
- 
-      String rendererType = config.getRendererType();
-      return ("javax.faces.resource.Script".equals(rendererType) ||
-                               "javax.faces.resource.Stylesheet".equals(rendererType));
+
+    public static boolean handlerIsResourceRelated(ComponentHandler handler) {
+        ComponentConfig config = handler.getComponentConfig();
+        if (!"jakarta.faces.Output".equals(config.getComponentType())) {
+            return false;
+        }
+
+        String rendererType = config.getRendererType();
+        return "jakarta.faces.resource.Script".equals(rendererType) || "jakarta.faces.resource.Stylesheet".equals(rendererType);
     }
-    
-    public static boolean isBuildingNewComponentTree(FacesContext context){
-      return !context.isPostback() || context.getCurrentPhaseId().equals(PhaseId.RESTORE_VIEW);
+
+    public static boolean isBuildingNewComponentTree(FacesContext context) {
+        return !context.isPostback() || context.getCurrentPhaseId().equals(PhaseId.RESTORE_VIEW);
     }
- 
-    public static boolean isImplicitPanel(UIComponent component){
-      return component.getAttributes().containsKey(IMPLICIT_PANEL);
+
+    public static boolean isImplicitPanel(UIComponent component) {
+        return component.getAttributes().containsKey(IMPLICIT_PANEL);
     }
-    
+
     /**
-     * Used in conjunction with markForDeletion where any UIComponent marked
-     * will be removed.
-     * 
-     * @param c
-     *            UIComponent to finalize
+     * Used in conjunction with markForDeletion where any UIComponent marked will be removed.
+     *
+     * @param c UIComponent to finalize
      */
     public static void finalizeForDeletion(UIComponent c) {
         // remove any existing marks of deletion
@@ -130,13 +127,11 @@ public final class ComponentSupport {
                 Map<String, Object> attrs = fc.getAttributes();
                 if (attrs.containsKey(MARK_DELETED)) {
                     itr.remove();
-               } else if (UIComponent.COMPOSITE_FACET_NAME.equals(curEntry.getKey()) ||
-                          (attrs.containsKey(IMPLICIT_PANEL) &&
-                           !curEntry.getKey().equals(UIViewRoot.METADATA_FACET_NAME))) {
+                } else if (UIComponent.COMPOSITE_FACET_NAME.equals(curEntry.getKey())
+                        || attrs.containsKey(IMPLICIT_PANEL) && !curEntry.getKey().equals(UIViewRoot.METADATA_FACET_NAME)) {
                     List<UIComponent> implicitPanelChildren = fc.getChildren();
                     UIComponent innerChild;
-                    for (Iterator<UIComponent> innerItr = implicitPanelChildren.iterator();
-                         innerItr.hasNext();) {
+                    for (Iterator<UIComponent> innerItr = implicitPanelChildren.iterator(); innerItr.hasNext();) {
                         innerChild = innerItr.next();
                         if (innerChild.getAttributes().containsKey(MARK_DELETED)) {
                             innerItr.remove();
@@ -151,36 +146,31 @@ public final class ComponentSupport {
     public static Tag setTagForComponent(FacesContext context, UIComponent c, Tag t) {
         Map<Object, Object> contextMap = context.getAttributes();
         Map<Integer, Tag> componentToTagMap;
-        componentToTagMap = (Map<Integer, Tag>)
-                contextMap.get(COMPONENT_TO_TAG_MAP_NAME);
+        componentToTagMap = (Map<Integer, Tag>) contextMap.get(COMPONENT_TO_TAG_MAP_NAME);
         if (null == componentToTagMap) {
             componentToTagMap = new HashMap<>();
             contextMap.put(COMPONENT_TO_TAG_MAP_NAME, componentToTagMap);
         }
-        return componentToTagMap.put((Integer) System.identityHashCode(c), t);
+        return componentToTagMap.put(System.identityHashCode(c), t);
     }
 
     public static Tag getTagForComponent(FacesContext context, UIComponent c) {
         Tag result = null;
         Map<Object, Object> contextMap = context.getAttributes();
         Map<Integer, Tag> componentToTagMap;
-        componentToTagMap = (Map<Integer, Tag>)
-                contextMap.get(COMPONENT_TO_TAG_MAP_NAME);
+        componentToTagMap = (Map<Integer, Tag>) contextMap.get(COMPONENT_TO_TAG_MAP_NAME);
         if (null != componentToTagMap) {
-            result = componentToTagMap.get((Integer) System.identityHashCode(c));
+            result = componentToTagMap.get(System.identityHashCode(c));
         }
 
         return result;
     }
-    
 
     /**
      * A lighter-weight version of UIComponent's findChild.
-     * 
-     * @param parent
-     *            parent to start searching from
-     * @param id
-     *            to match to
+     *
+     * @param parent parent to start searching from
+     * @param id to match to
      * @return UIComponent found or null
      */
     public static UIComponent findChild(UIComponent parent, String id) {
@@ -197,21 +187,21 @@ public final class ComponentSupport {
         }
         return null;
     }
-    
-    // Obvious performance optimization.  First, assume this method
-    // is only called from UIInstructionHandler.apply().  With that assumption
+
+    // Obvious performance optimization. First, assume this method
+    // is only called from UIInstructionHandler.apply(). With that assumption
     // in place a few optimizations can be had on the cheap.
-    
-    // If this method is called on an initial page 
-    // render it will always return null, so we can just return 
-    // null in that case without any iteration.  
-    
+
+    // If this method is called on an initial page
+    // render it will always return null, so we can just return
+    // null in that case without any iteration.
+
     // If this method is called during RestoreView, it will always return null
-    // so we can just return null in that case without any iteration.  
-    
+    // so we can just return null in that case without any iteration.
+
     // If PartialStateSaving is false, the UIInstruction components will
     // never be in the tree at this point, so we can return null and skip iterating.
-    
+
     public static UIComponent findUIInstructionChildByTagId(FacesContext context, UIComponent parent, String id) {
         UIComponent result = null;
         if (isBuildingNewComponentTree(context)) {
@@ -219,18 +209,17 @@ public final class ComponentSupport {
         }
         Map<Object, Object> attrs = context.getAttributes();
         if (attrs.containsKey(PartialStateSaving)) {
-            if ((Boolean)attrs.get(PartialStateSaving)) {
+            if ((Boolean) attrs.get(PartialStateSaving)) {
                 result = findChildByTagId(context, parent, id);
             }
         }
 
-        
         return result;
     }
-    
+
     /**
      * By TagId, find Child
-     * 
+     *
      * @param parent the parent UI component
      * @param id the id
      * @return the UI component
@@ -238,22 +227,21 @@ public final class ComponentSupport {
     public static UIComponent findChildByTagId(FacesContext context, UIComponent parent, String id) {
         UIComponent c = null;
         UIViewRoot root = context.getViewRoot();
-        boolean hasDynamicComponents = (null != root && 
-                root.getAttributes().containsKey(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS));
+        boolean hasDynamicComponents = null != root && root.getAttributes().containsKey(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS);
         String cid = null;
         List<UIComponent> components;
         String facetName = getFacetName(parent);
         if (null != facetName) {
             c = parent.getFacet(facetName);
             // We will have a facet name, but no corresponding facet in the
-            // case of facets with composite components.  In this case,
+            // case of facets with composite components. In this case,
             // we must do the brute force search.
             if (null != c) {
                 cid = (String) c.getAttributes().get(MARK_CREATED);
                 if (id.equals(cid)) {
                     return c;
                 }
-            } 
+            }
         }
         if (0 < parent.getFacetCount()) {
             components = new ArrayList<>();
@@ -280,10 +268,8 @@ public final class ComponentSupport {
             }
             if (hasDynamicComponents) {
                 /*
-                 * Make sure we look for the child recursively it might have moved
-                 * into a different parent in the parent hierarchy. Note currently
-                 * we are only looking down the tree. Maybe it would be better
-                 * to use the VisitTree API instead.
+                 * Make sure we look for the child recursively it might have moved into a different parent in the parent hierarchy. Note
+                 * currently we are only looking down the tree. Maybe it would be better to use the VisitTree API instead.
                  */
                 UIComponent foundChild = findChildByTagId(context, c, id);
                 if (foundChild != null) {
@@ -294,21 +280,17 @@ public final class ComponentSupport {
 
         return null;
     }
-    
+
     /**
-     * According to JSF 1.2 tag specs, this helper method will use the
-     * TagAttribute passed in determining the Locale intended.
-     * 
-     * @param ctx
-     *            FaceletContext to evaluate from
-     * @param attr
-     *            TagAttribute representing a Locale
+     * According to JSF 1.2 tag specs, this helper method will use the TagAttribute passed in determining the Locale
+     * intended.
+     *
+     * @param ctx FaceletContext to evaluate from
+     * @param attr TagAttribute representing a Locale
      * @return Locale found
-     * @throws TagAttributeException
-     *             if the Locale cannot be determined
+     * @throws TagAttributeException if the Locale cannot be determined
      */
-    public static Locale getLocale(FaceletContext ctx, TagAttribute attr)
-            throws TagAttributeException {
+    public static Locale getLocale(FaceletContext ctx, TagAttribute attr) throws TagAttributeException {
         Object obj = attr.getObject(ctx);
         if (obj instanceof Locale) {
             return (Locale) obj;
@@ -317,28 +299,23 @@ public final class ComponentSupport {
             String s = (String) obj;
             try {
                 return Util.getLocaleFromString(s);
-            }
-            catch(IllegalArgumentException iae) {
+            } catch (IllegalArgumentException iae) {
                 throw new TagAttributeException(attr, "Invalid Locale Specified: " + s);
             }
         } else {
-            throw new TagAttributeException(attr,
-                    "Attribute did not evaluate to a String or Locale: " + obj);
+            throw new TagAttributeException(attr, "Attribute did not evaluate to a String or Locale: " + obj);
         }
     }
 
     /**
-     * Tries to walk up the parent to find the UIViewRoot, if not found, then go
-     * to FaceletContext's FacesContext for the view root.
-     * 
-     * @param ctx
-     *            FaceletContext
-     * @param parent
-     *            UIComponent to search from
+     * Tries to walk up the parent to find the UIViewRoot, if not found, then go to FaceletContext's FacesContext for the
+     * view root.
+     *
+     * @param ctx FaceletContext
+     * @param parent UIComponent to search from
      * @return UIViewRoot instance for this evaluation
      */
-    public static UIViewRoot getViewRoot(FaceletContext ctx,
-            UIComponent parent) {
+    public static UIViewRoot getViewRoot(FaceletContext ctx, UIComponent parent) {
         UIComponent c = parent;
         do {
             if (c instanceof UIViewRoot) {
@@ -352,10 +329,9 @@ public final class ComponentSupport {
 
     /**
      * Marks all direct children and Facets with an attribute for deletion.
-     * 
+     *
      * @see #finalizeForDeletion(UIComponent)
-     * @param c
-     *            UIComponent to mark
+     * @param c UIComponent to mark
      */
     public static void markForDeletion(UIComponent c) {
         // flag this component as deleted
@@ -379,15 +355,15 @@ public final class ComponentSupport {
             Set col = c.getFacets().entrySet();
             UIComponent fc;
             for (Iterator itr = col.iterator(); itr.hasNext();) {
-               Map.Entry entry = (Map.Entry) itr.next();
-               String facet = (String) entry.getKey();
+                Map.Entry entry = (Map.Entry) itr.next();
+                String facet = (String) entry.getKey();
                 fc = (UIComponent) entry.getValue();
                 Map<String, Object> attrs = fc.getAttributes();
                 if (attrs.containsKey(MARK_CREATED)) {
                     attrs.put(MARK_DELETED, Boolean.TRUE);
                 } else if (UIComponent.COMPOSITE_FACET_NAME.equals(facet)) {
-                   // mark the inner pannel components to be deleted
-                   sz = fc.getChildCount();
+                    // mark the inner pannel components to be deleted
+                    sz = fc.getChildCount();
                     if (sz > 0) {
                         UIComponent cc = null;
                         List cl = fc.getChildren();
@@ -396,7 +372,7 @@ public final class ComponentSupport {
                             cc.getAttributes().put(MARK_DELETED, Boolean.TRUE);
                         }
                     }
-               } else if (attrs.containsKey(IMPLICIT_PANEL)) {
+                } else if (attrs.containsKey(IMPLICIT_PANEL)) {
                     List<UIComponent> implicitPanelChildren = fc.getChildren();
                     Map<String, Object> innerAttrs = null;
                     for (UIComponent cur : implicitPanelChildren) {
@@ -409,9 +385,8 @@ public final class ComponentSupport {
             }
         }
     }
-    
-    public static void encodeRecursive(FacesContext context,
-            UIComponent viewToRender) throws IOException, FacesException {
+
+    public static void encodeRecursive(FacesContext context, UIComponent viewToRender) throws IOException, FacesException {
         if (viewToRender.isRendered()) {
             viewToRender.encodeBegin(context);
             if (viewToRender.getRendersChildren()) {
@@ -426,15 +401,14 @@ public final class ComponentSupport {
             viewToRender.encodeEnd(context);
         }
     }
-    
+
     public static void removeTransient(UIComponent c) {
         UIComponent d, e;
         if (c.getChildCount() > 0) {
             for (Iterator itr = c.getChildren().iterator(); itr.hasNext();) {
                 d = (UIComponent) itr.next();
                 if (d.getFacets().size() > 0) {
-                    for (Iterator jtr = d.getFacets().values().iterator(); jtr
-                            .hasNext();) {
+                    for (Iterator jtr = d.getFacets().values().iterator(); jtr.hasNext();) {
                         e = (UIComponent) jtr.next();
                         if (e.isTransient()) {
                             jtr.remove();
@@ -451,8 +425,7 @@ public final class ComponentSupport {
             }
         }
         if (c.getFacets().size() > 0) {
-            for (Iterator itr = c.getFacets().values().iterator(); itr
-                    .hasNext();) {
+            for (Iterator itr = c.getFacets().values().iterator(); itr.hasNext();) {
                 d = (UIComponent) itr.next();
                 if (d.isTransient()) {
                     itr.remove();
@@ -464,10 +437,11 @@ public final class ComponentSupport {
     }
 
     /**
-     * <p class="changed_added_2_0">Add the child component to the parent. If the parent is a facet,
-     * check to see whether the facet is already defined. If it is, wrap the existing component
-     * in a panel group, if it's not already, then add the child to the panel group. If the facet
-     * does not yet exist, make the child the facet.</p>
+     * <p class="changed_added_2_0">
+     * Add the child component to the parent. If the parent is a facet, check to see whether the facet is already defined.
+     * If it is, wrap the existing component in a panel group, if it's not already, then add the child to the panel group.
+     * If the facet does not yet exist, make the child the facet.
+     * </p>
      */
     public static void addComponent(FaceletContext ctx, UIComponent parent, UIComponent child) {
 
@@ -479,7 +453,7 @@ public final class ComponentSupport {
                     parent.getChildren().add(child);
                 } else {
                     parent.getChildren().add(childIndex, child);
-                }                
+                }
             } else {
                 parent.getChildren().add(child);
             }
@@ -526,26 +500,25 @@ public final class ComponentSupport {
         return false;
 
     }
-    
+
     public static void copyPassthroughAttributes(FaceletContext ctx, UIComponent c, Tag t) {
-        
+
         if (null == c || null == t) {
             return;
         }
-        
+
         TagAttribute[] passthroughAttrs = t.getAttributes().getAll(PassThroughAttributeLibrary.Namespace);
         if (null != passthroughAttrs && 0 < passthroughAttrs.length) {
             Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
             Object attrValue = null;
             for (TagAttribute cur : passthroughAttrs) {
-                attrValue = (cur.isLiteral()) ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
+                attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
                 componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
             }
         }
     }
 
     // --------------------------------------------------------- private classes
-
 
 //    private static UIViewRoot getViewRoot(FacesContext ctx, UIComponent parent) {
 //

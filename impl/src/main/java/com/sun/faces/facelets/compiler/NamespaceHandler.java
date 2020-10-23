@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,26 +16,27 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.el.CompositeFunctionMapper;
-import com.sun.faces.facelets.tag.TagLibrary;
-import com.sun.faces.el.ELContextImpl;
-
-import javax.el.FunctionMapper;
-import javax.el.ELContext;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import com.sun.faces.el.ELContextImpl;
+import com.sun.faces.facelets.el.CompositeFunctionMapper;
+import com.sun.faces.facelets.tag.TagLibrary;
+
+import jakarta.el.ELContext;
+import jakarta.el.FunctionMapper;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
 
     private final TagLibrary library;
     private final Map ns;
     private FaceletHandler next;
-    
+
     public NamespaceHandler(FaceletHandler next, TagLibrary library, Map ns) {
         this.library = library;
         this.ns = ns;
@@ -43,8 +44,7 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         FunctionMapper orig = ctx.getFunctionMapper();
         pushMapper(ctx.getFacesContext(), this);
         ctx.setFunctionMapper(new CompositeFunctionMapper(this, orig));
@@ -57,16 +57,14 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
 
     @Override
     public Method resolveFunction(String prefix, String localName) {
-        String uri = (String) this.ns.get(prefix);
+        String uri = (String) ns.get(prefix);
         if (uri != null) {
-            return this.library.createFunction(uri, localName);
+            return library.createFunction(uri, localName);
         }
         return null;
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private void pushMapper(FacesContext ctx, FunctionMapper mapper) {
 

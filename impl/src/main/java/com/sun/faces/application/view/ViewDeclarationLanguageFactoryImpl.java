@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,8 +20,8 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 
 /**
  * Default implementation of {@link ViewDeclarationLanguageFactory}.
@@ -35,24 +35,22 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     private ViewHandlingStrategyManager viewHandlingStrategyManager;
     private List<ViewDeclarationLanguage> allViewDeclarationLanguages;
 
-
     // ------------------------------------ Methods from ViewDeclarationLanguageFactory
 
-
     /**
-     * @see javax.faces.view.ViewDeclarationLanguageFactory#getViewDeclarationLanguage(String)
+     * @see jakarta.faces.view.ViewDeclarationLanguageFactory#getViewDeclarationLanguage(String)
      */
     @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage(String viewId) {
         return getViewHandlingStrategyManager().getStrategy(viewId);
     }
-    
+
     /**
-     * @see javax.faces.view.ViewDeclarationLanguageFactory#getAllViewDeclarationLanguages()
+     * @see jakarta.faces.view.ViewDeclarationLanguageFactory#getAllViewDeclarationLanguages()
      */
     @Override
     public List<ViewDeclarationLanguage> getAllViewDeclarationLanguages() {
-        
+
         if (allViewDeclarationLanguages == null) {
             allViewDeclarationLanguages = asList(getViewHandlingStrategyManager().getViewHandlingStrategies());
         }
@@ -60,16 +58,14 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         return allViewDeclarationLanguages;
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private ViewHandlingStrategyManager getViewHandlingStrategyManager() {
 
         if (viewHandlingStrategyManager == null) {
             viewHandlingStrategyManager = new ViewHandlingStrategyManager();
         }
-        
+
         return viewHandlingStrategyManager;
     }
 

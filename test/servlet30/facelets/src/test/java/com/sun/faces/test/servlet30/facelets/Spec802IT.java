@@ -42,6 +42,6 @@ public class Spec802IT {
     @Test
     public void testInputFile1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/inputFile1.xhtml");
-        assertTrue(page.asXml().contains("javax.faces.ViewState"));
+        assertTrue(page.asXml().contains("jakarta.faces.ViewState"));
     }
 }

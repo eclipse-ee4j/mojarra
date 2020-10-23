@@ -1,7 +1,7 @@
-javax.faces.component.UIForm
-javax.faces.component.UIOutput
-javax.faces.component.UICommand
-javax.faces.component.UISelectBoolean
-javax.faces.component.UITextEntry
-javax.faces.component.UISelectOne
-javax.faces.component.UISelectOne
+jakarta.faces.component.UIForm
+jakarta.faces.component.UIOutput
+jakarta.faces.component.UICommand
+jakarta.faces.component.UISelectBoolean
+jakarta.faces.component.UITextEntry
+jakarta.faces.component.UISelectOne
+jakarta.faces.component.UISelectOne

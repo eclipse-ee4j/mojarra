@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,16 +28,15 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.FacesException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+
 /**
- * This steam converts byte content to character. This implementation allows us to query whether or
- * not the writer has been flushed or closed. This is necessary to better mimic the actual Servlet
- * response.
+ * This steam converts byte content to character. This implementation allows us to query whether or not the writer has
+ * been flushed or closed. This is necessary to better mimic the actual Servlet response.
  */
 class ByteArrayWebOutputStream extends ServletOutputStream {
 
@@ -73,8 +72,7 @@ class ByteArrayWebOutputStream extends ServletOutputStream {
     }
 
     /**
-     * Converts the buffered bytes into chars based on the specified encoding and writes them to the
-     * provided Writer.
+     * Converts the buffered bytes into chars based on the specified encoding and writes them to the provided Writer.
      *
      * @param writer target Writer
      * @param encoding character encoding

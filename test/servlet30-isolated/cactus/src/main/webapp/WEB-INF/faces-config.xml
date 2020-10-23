@@ -44,7 +44,7 @@
       <system-event-listener>
           <system-event-listener-class>com.sun.faces.SystemEventListener1</system-event-listener-class>
           <system-event-class>com.sun.faces.CustomSystemEvent</system-event-class>
-          <source-class>javax.faces.component.UIOutput</source-class>
+          <source-class>jakarta.faces.component.UIOutput</source-class>
       </system-event-listener>
       <system-event-listener>
           <system-event-listener-class>com.sun.faces.SystemEventListener2</system-event-listener-class>
@@ -96,7 +96,7 @@
     <description>User Interface Command Component</description>
     <display-name>User Interface Command</display-name>
     <component-type>Command</component-type>
-    <component-class>javax.faces.component.UICommand</component-class>
+    <component-class>jakarta.faces.component.UICommand</component-class>
   </component>
 
 

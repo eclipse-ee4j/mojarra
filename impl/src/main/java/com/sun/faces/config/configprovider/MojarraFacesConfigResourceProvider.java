@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,39 +16,35 @@
 
 package com.sun.faces.config.configprovider;
 
-import com.sun.faces.spi.ConfigurationResourceProvider;
-
 import java.net.URI;
-import java.net.URL;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.faces.FacesException;
 
-import javax.servlet.ServletContext;
+import com.sun.faces.spi.ConfigurationResourceProvider;
+
+import jakarta.faces.FacesException;
+import jakarta.servlet.ServletContext;
 
 /**
  *
  */
-public class MojarraFacesConfigResourceProvider implements
-      ConfigurationResourceProvider {
+public class MojarraFacesConfigResourceProvider implements ConfigurationResourceProvider {
 
-    private static final String JSF_RI_CONFIG =
-         "com/sun/faces/jsf-ri-runtime.xml";
-
+    private static final String JSF_RI_CONFIG = "com/sun/faces/jsf-ri-runtime.xml";
 
     // ------------------------------ Methods from ConfigurationResourceProvider
 
-
     /**
-     * @see ConfigurationResourceProvider#getResources(javax.servlet.ServletContext)
+     * @see ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
      */
     @Override
     public Collection<URI> getResources(ServletContext context) {
 
         List<URI> list = new ArrayList<>(1);
-        // Don't use Util.getCurrentLoader().  This config resource should
+        // Don't use Util.getCurrentLoader(). This config resource should
         // be available from the same classloader that loaded this instance.
         // Doing so allows us to be more OSGi friendly.
         ClassLoader loader = this.getClass().getClassLoader();

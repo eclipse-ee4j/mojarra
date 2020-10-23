@@ -26,8 +26,8 @@ import java.util.List;
 
 /**
  * <p>
- * Backing file bean for <code>ResultSet</code> com.sun.javaee.blueprints.simpleuicomponentsonents.
- * </p>
+ * Backing file bean for <code>ResultSet</code>
+ * com.sun.javaee.blueprints.simpleuicomponentsonents.</p>
  */
 public class ResultSetBean {
 
@@ -41,7 +41,9 @@ public class ResultSetBean {
         if (list == null) {
             list = new ArrayList();
             for (int i = 0; i < 1000; i++) {
-                list.add(new CustomerBean(Integer.toString(i), "name_" + Integer.toString(i), "symbol_" + Integer.toString(i), i));
+                list.add(new CustomerBean(Integer.toString(i),
+                        "name_" + Integer.toString(i),
+                        "symbol_" + Integer.toString(i), i));
             }
         }
         return list;
@@ -54,8 +56,7 @@ public class ResultSetBean {
     // -------------------------------------------------------- Bound Components
     /**
      * <p>
-     * The <code>UIData</code> component representing the entire table.
-     * </p>
+     * The <code>UIData</code> component representing the entire table.</p>
      */
     private UIData data = null;
 
@@ -70,8 +71,7 @@ public class ResultSetBean {
     // ---------------------------------------------------------- Action Methods
     /**
      * <p>
-     * Scroll directly to the first page.
-     * </p>
+     * Scroll directly to the first page.</p>
      */
     public String first() {
         scroll(0);
@@ -81,8 +81,7 @@ public class ResultSetBean {
 
     /**
      * <p>
-     * Scroll directly to the last page.
-     * </p>
+     * Scroll directly to the last page.</p>
      */
     public String last() {
         scroll(data.getRowCount() - 1);
@@ -92,8 +91,7 @@ public class ResultSetBean {
 
     /**
      * <p>
-     * Scroll forwards to the next page.
-     * </p>
+     * Scroll forwards to the next page.</p>
      */
     public String next() {
         int first = data.getFirst();
@@ -104,8 +102,7 @@ public class ResultSetBean {
 
     /**
      * <p>
-     * Scroll backwards to the previous page.
-     * </p>
+     * Scroll backwards to the previous page.</p>
      */
     public String previous() {
         int first = data.getFirst();
@@ -116,8 +113,7 @@ public class ResultSetBean {
 
     /**
      * <p>
-     * Scroll to the page that contains the specified row number.
-     * </p>
+     * Scroll to the page that contains the specified row number.</p>
      *
      * @param row Desired row number
      */
@@ -138,8 +134,8 @@ public class ResultSetBean {
     }
 
     /**
-     * Handles the ActionEvent generated as a result of clicking on a link that points a particular page
-     * in the result-set.
+     * Handles the ActionEvent generated as a result of clicking on a link that
+     * points a particular page in the result-set.
      */
     public void processScrollEvent(ActionEvent event) {
         int currentRow = 1;

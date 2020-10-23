@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +16,17 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.FunctionMapper;
 import java.lang.reflect.Method;
 
+import jakarta.el.FunctionMapper;
+
 /**
- * Composite FunctionMapper that attempts to load the Method from the first
- * FunctionMapper, then the second if <code>null</code>.
- * 
- * @see javax.el.FunctionMapper
+ * Composite FunctionMapper that attempts to load the Method from the first FunctionMapper, then the second if
+ * <code>null</code>.
+ *
+ * @see jakarta.el.FunctionMapper
  * @see java.lang.reflect.Method
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -41,13 +42,13 @@ public final class CompositeFunctionMapper extends FunctionMapper {
     }
 
     /**
-     * @see javax.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
+     * @see jakarta.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
      */
     @Override
     public Method resolveFunction(String prefix, String name) {
-        Method m = this.fn0.resolveFunction(prefix, name);
+        Method m = fn0.resolveFunction(prefix, name);
         if (m == null) {
-            return this.fn1.resolveFunction(prefix, name);
+            return fn1.resolveFunction(prefix, name);
         }
         return m;
     }

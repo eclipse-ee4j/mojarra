@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2005-2007 The Apache Software Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,51 +30,46 @@ import java.net.URLStreamHandler;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Roland Huss
- * 
+ *
  */
 public final class Resource {
 
     protected final static Logger LOGGER = FacesLogger.FACELETS_FACTORY.getLogger();
 
     /**
-     * Get an URL of an internal resource. 
-     * 
+     * Get an URL of an internal resource.
+     *
      * <p>
-     * First, {@link javax.faces.context.ExternalContext#getResource(String)} is
-     * checked for an non-null URL return value. In the case of a null return
-     * value (as it is the case for Weblogic 8.1 for a packed war), a URL with a
-     * special URL handler is constructed, which can be used for
-     * <em>opening</em> a servlet resource later. 
-     * 
+     * First, {@link jakarta.faces.context.ExternalContext#getResource(String)} is checked for an non-null URL return value.
+     * In the case of a null return value (as it is the case for Weblogic 8.1 for a packed war), a URL with a special URL
+     * handler is constructed, which can be used for <em>opening</em> a servlet resource later.
+     *
      * <p>
-     * Internally, this special URL handler will call {@link ServletContext#getResourceAsStream(String)} 
-     * when an inputstream is requested. This even works on Weblogic 8.1
-     * 
-     * @param ctx
-     *            the faces context from which to retrieve the resource
-     * @param path
-     *            an URL path
-     * 
-     * @return an url representing the URL and on which getInputStream() can be
-     *         called to get the resource
+     * Internally, this special URL handler will call {@link ServletContext#getResourceAsStream(String)} when an inputstream
+     * is requested. This even works on Weblogic 8.1
+     *
+     * @param ctx the faces context from which to retrieve the resource
+     * @param path an URL path
+     *
+     * @return an url representing the URL and on which getInputStream() can be called to get the resource
      * @throws MalformedURLException
      */
     static URL getResourceUrl(FacesContext ctx, String path) throws MalformedURLException {
         ExternalContext externalContext = ctx.getExternalContext();
         URL url = externalContext.getResource(path);
-        
+
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine("Resource-Url from external context: " + url);
         }
-        
+
         // This might happen on a Servlet container which does not return anything
         // for getResource() (like weblogic 8.1 for packaged wars) we are trying
         // to use an own URL protocol in order to use ServletContext.getResourceAsStream()
@@ -82,11 +77,10 @@ public final class Resource {
         if (url == null && resourceExist(externalContext, path)) {
             url = getUrlForResourceAsStream(externalContext, path);
         }
-        
+
         return url;
     }
-    
-  
+
     static Set<String> getViewResourcePaths(FacesContext ctx, String path) {
         return ctx.getExternalContext().getResourcePaths(path);
     }
@@ -98,7 +92,7 @@ public final class Resource {
             // The root context exists always
             return true;
         }
-        
+
         Object ctx = externalContext.getContext();
         if (ctx instanceof ServletContext) {
             ServletContext servletContext = (ServletContext) ctx;
@@ -114,7 +108,7 @@ public final class Resource {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -122,12 +116,12 @@ public final class Resource {
     // ServletContext.getResourceAsStream()
     private static URL getUrlForResourceAsStream(final ExternalContext externalContext, String path) throws MalformedURLException {
         URLStreamHandler handler = new URLStreamHandler() {
-           
+
             @Override
             protected URLConnection openConnection(URL u) throws IOException {
                 final String file = u.getFile();
                 return new URLConnection(u) {
-                    
+
                     @Override
                     public void connect() throws IOException {
                     }
@@ -150,16 +144,13 @@ public final class Resource {
                             }
                             return stream;
                         } else {
-                            throw new IOException(
-                                    "Cannot open resource for an context of "
-                                            + (ctx != null ? ctx.getClass()
-                                                    : null));
+                            throw new IOException("Cannot open resource for an context of " + (ctx != null ? ctx.getClass() : null));
                         }
                     }
                 };
             }
         };
-        
+
         return new URL("internal", null, 0, path, handler);
     }
 }

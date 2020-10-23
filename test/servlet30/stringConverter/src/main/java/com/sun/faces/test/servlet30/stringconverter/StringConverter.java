@@ -25,19 +25,20 @@ import javax.faces.convert.Converter;
  * @author edburns
  */
 public class StringConverter implements Converter {
-
+    
     /** Creates a new instance of StringConverter */
     public StringConverter() {
     }
-
-    @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+    
+    public Object getAsObject(FacesContext context, UIComponent component,
+            String value) {
         return "String_" + value;
     }
 
-    @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
+    public String getAsString(FacesContext context, UIComponent component,
+                              Object value) {
         return "String_" + value.toString();
     }
 
+    
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,17 +16,17 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import javax.faces.component.UIInput;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRule;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
 import java.util.Map;
 
-public final class RenderPropertyRule extends MetaRule {
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
+public final class RenderPropertyRule extends MetaRule {
 
     final static class HideNoSelectionLiteralMetadata extends Metadata {
         private final String hideOption;
@@ -42,7 +42,6 @@ public final class RenderPropertyRule extends MetaRule {
         }
     }
 
-
     final static class HideNoSelectionExpressionMetadata extends Metadata {
         private final TagAttribute attr;
 
@@ -52,17 +51,14 @@ public final class RenderPropertyRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueExpression("hideNoSelectionOption",
-                                                        attr.getValueExpression(ctx, Boolean.class));
+            ((UIComponent) instance).setValueExpression("hideNoSelectionOption", attr.getValueExpression(ctx, Boolean.class));
         }
     }
 
     public final static RenderPropertyRule Instance = new RenderPropertyRule();
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-                              MetadataTarget meta) {
-
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
 
         if ("hideNoSelectionOption".equals(name)) {
             if (attribute.isLiteral()) {

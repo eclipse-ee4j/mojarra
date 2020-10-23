@@ -39,14 +39,14 @@ public class Issue1830IT {
     }
 
     /**
-     * This test verifies that using a null value for the value of outputFormat works. It should just
-     * display nothing.
+     * This test verifies that using a null value for the value of outputFormat
+     * works. It should just display nothing.
      */
     @Test
     public void testNullValueForOutputFormat() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue1830.xhtml");
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i=0; i<10; i++) {
+            for(int j=0; j<10; j++) {
                 HtmlElement element = page.getHtmlElementById("form:repeat:" + i + ":table:" + j + ":row");
                 assertNotNull(element);
             }

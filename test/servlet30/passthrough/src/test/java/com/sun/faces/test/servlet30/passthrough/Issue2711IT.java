@@ -17,15 +17,17 @@
 package com.sun.faces.test.servlet30.passthrough;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlFieldSet;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Issue2711IT {
-
+    
     /**
      * Stores the web URL.
      */
@@ -67,6 +69,6 @@ public class Issue2711IT {
         assertTrue(xml.contains("type=\"" + "text" + "\""));
         assertTrue(xml.contains("name=\"" + "input1" + "\""));
         assertTrue(xml.contains("placeholder=\"" + "Enter text here" + "\""));
-    }
+    } 
 
 }

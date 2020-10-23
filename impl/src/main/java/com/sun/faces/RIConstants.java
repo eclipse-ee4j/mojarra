@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,11 +16,11 @@
 
 package com.sun.faces;
 
-import javax.faces.render.RenderKitFactory;
-
 import com.sun.faces.facelets.tag.jsf.core.CoreLibrary;
 import com.sun.faces.facelets.tag.jsf.html.HtmlLibrary;
 import com.sun.faces.facelets.tag.ui.UILibrary;
+
+import jakarta.faces.render.RenderKitFactory;
 
 /**
  * This class contains literal strings used throughout the Faces RI.
@@ -44,7 +44,7 @@ public class RIConstants {
      */
     public static final String TLV_RESOURCE_LOCATION = FACES_PREFIX + "resources.Resources";
 
-    public static final Object NO_VALUE = "";
+    public static final String NO_VALUE = "";
 
     public static final String CORE_NAMESPACE = CoreLibrary.Namespace;
     public static final String HTML_NAMESPACE = HtmlLibrary.Namespace;
@@ -78,9 +78,8 @@ public class RIConstants {
     public static final String FACES_INITIALIZER_MAPPINGS_ADDED = FACES_PREFIX + "facesInitializerMappingsAdded";
 
     public static final String VIEWID_KEY_NAME = FACES_PREFIX + "viewId";
-    
-    public static final String PUSH_RESOURCE_URLS_KEY_NAME = FACES_PREFIX + "resourceUrls";
 
+    public static final String PUSH_RESOURCE_URLS_KEY_NAME = FACES_PREFIX + "resourceUrls";
 
     /**
      * Marker used when saving the list of component adds and removes.

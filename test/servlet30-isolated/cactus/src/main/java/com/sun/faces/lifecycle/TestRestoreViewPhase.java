@@ -98,14 +98,14 @@ public class TestRestoreViewPhase extends ServletFacesTestCase {
 
     public void beginReconstituteRequestSubmit(WebRequest theRequest) {
 //        theRequest.setURL(localHostPath, null, null, TEST_URI, null);
-//	theRequest.addParameter("javax.faces.ViewState",
+//	theRequest.addParameter("jakarta.faces.ViewState",
 //				"j_id1:j_id2");
     }
 
 
     public void beginRegisterListeners(WebRequest theRequest) {
 //        theRequest.setURL(localHostPath, null, null, TEST_URI, null);
-//	theRequest.addParameter("javax.faces.ViewState",
+//	theRequest.addParameter("jakarta.faces.ViewState",
 //				"j_id1:j_id2");
     }
 
@@ -253,7 +253,7 @@ public class TestRestoreViewPhase extends ServletFacesTestCase {
 
     public void beginRestoreViewExpired(WebRequest theRequest) {
 //        theRequest.setURL(localHostPath, null, null, TEST_URI, null);
-//        theRequest.addParameter("javax.faces.ViewState",
+//        theRequest.addParameter("jakarta.faces.ViewState",
 //                                "j_id1:j_id2");
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,17 +19,18 @@ package com.sun.faces.ext.component;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Locale;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
-import javax.faces.el.CompositeComponentExpressionHolder;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
+import jakarta.faces.el.CompositeComponentExpressionHolder;
 
 /**
- * Analyzes a {@link ValueExpression} and provides access to the base object and property
- * name to which the expression maps via the getReference() method.
+ * Analyzes a {@link ValueExpression} and provides access to the base object and property name to which the expression
+ * maps via the getReference() method.
  */
 class ValueExpressionAnalyzer {
     private ValueExpression expression;
@@ -51,7 +52,7 @@ class ValueExpressionAnalyzer {
             if (base instanceof CompositeComponentExpressionHolder) {
                 ValueExpression ve = ((CompositeComponentExpressionHolder) base).getExpression(reference.getProperty());
                 if (ve != null) {
-                    this.expression = ve;
+                    expression = ve;
                     reference = getReference(elContext);
                 }
             }
@@ -145,7 +146,6 @@ class ValueExpressionAnalyzer {
         public Class<?> getType(ELContext context, Object base, Object property) {
             return delegate.getType(context, base, property);
         }
-
 
         @Override
         public boolean isReadOnly(ELContext context, Object base, Object property) {

@@ -48,11 +48,11 @@ public class Spec790IT {
 
         HtmlPage page = webClient.getPage(webUrl + "spec790.xhtml");
         HtmlForm form1 = (HtmlForm) page.getHtmlElementById("form1");
-        HtmlInput form1ViewState = (HtmlInput) form1.getInputByName("javax.faces.ViewState");
+        HtmlInput form1ViewState = (HtmlInput) form1.getInputByName("jakarta.faces.ViewState");
         HtmlForm form2 = (HtmlForm) page.getHtmlElementById("form2");
-        HtmlInput form2ViewState = (HtmlInput) form2.getInputByName("javax.faces.ViewState");
+        HtmlInput form2ViewState = (HtmlInput) form2.getInputByName("jakarta.faces.ViewState");
         HtmlForm form3 = (HtmlForm) page.getHtmlElementById("form3");
-        HtmlInput form3ViewState = (HtmlInput) form3.getInputByName("javax.faces.ViewState");
+        HtmlInput form3ViewState = (HtmlInput) form3.getInputByName("jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
         assertTrue(!form3ViewState.getValueAttribute().isEmpty());
@@ -61,11 +61,11 @@ public class Spec790IT {
         page = form1Button.click();
         webClient.waitForBackgroundJavaScript(60000);
         form1 = (HtmlForm) page.getHtmlElementById("form1");
-        form1ViewState = (HtmlInput) form1.getInputByName("javax.faces.ViewState");
+        form1ViewState = (HtmlInput) form1.getInputByName("jakarta.faces.ViewState");
         form2 = (HtmlForm) page.getHtmlElementById("form2");
-        form2ViewState = (HtmlInput) form2.getInputByName("javax.faces.ViewState");
+        form2ViewState = (HtmlInput) form2.getInputByName("jakarta.faces.ViewState");
         form3 = (HtmlForm) page.getHtmlElementById("form3");
-        form3ViewState = (HtmlInput) form3.getInputByName("javax.faces.ViewState");
+        form3ViewState = (HtmlInput) form3.getInputByName("jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
         assertTrue(!form3ViewState.getValueAttribute().isEmpty());
@@ -74,11 +74,11 @@ public class Spec790IT {
         page = form2Link.click();
         webClient.waitForBackgroundJavaScript(60000);
         form1 = (HtmlForm) page.getHtmlElementById("form1");
-        form1ViewState = (HtmlInput) form1.getInputByName("javax.faces.ViewState");
+        form1ViewState = (HtmlInput) form1.getInputByName("jakarta.faces.ViewState");
         form2 = (HtmlForm) page.getHtmlElementById("form2");
-        form2ViewState = (HtmlInput) form2.getInputByName("javax.faces.ViewState");
+        form2ViewState = (HtmlInput) form2.getInputByName("jakarta.faces.ViewState");
         form3 = (HtmlForm) page.getHtmlElementById("form3");
-        form3ViewState = (HtmlInput) form3.getInputByName("javax.faces.ViewState");
+        form3ViewState = (HtmlInput) form3.getInputByName("jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
         assertTrue(!form3ViewState.getValueAttribute().isEmpty());
@@ -87,11 +87,11 @@ public class Spec790IT {
         page = form3Link.click();
         webClient.waitForBackgroundJavaScript(60000);
         form1 = (HtmlForm) page.getHtmlElementById("form1");
-        form1ViewState = (HtmlInput) form1.getInputByName("javax.faces.ViewState");
+        form1ViewState = (HtmlInput) form1.getInputByName("jakarta.faces.ViewState");
         form2 = (HtmlForm) page.getHtmlElementById("form2");
-        form2ViewState = (HtmlInput) form2.getInputByName("javax.faces.ViewState");
+        form2ViewState = (HtmlInput) form2.getInputByName("jakarta.faces.ViewState");
         form3 = (HtmlForm) page.getHtmlElementById("form3");
-        form3ViewState = (HtmlInput) form3.getInputByName("javax.faces.ViewState");
+        form3ViewState = (HtmlInput) form3.getInputByName("jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
         assertTrue(!form3ViewState.getValueAttribute().isEmpty());
@@ -104,16 +104,16 @@ public class Spec790IT {
 
         HtmlPage page = webClient.getPage(webUrl + "spec790AjaxNavigation.xhtml");
         HtmlForm form = (HtmlForm) page.getHtmlElementById("form");
-        HtmlInput formViewState = (HtmlInput) form.getInputByName("javax.faces.ViewState");
+        HtmlInput formViewState = (HtmlInput) form.getInputByName("jakarta.faces.ViewState");
         assertTrue(!formViewState.getValueAttribute().isEmpty());
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
         HtmlForm form1 = (HtmlForm) page.getHtmlElementById("form1");
-        HtmlInput form1ViewState = (HtmlInput) form1.getInputByName("javax.faces.ViewState");
+        HtmlInput form1ViewState = (HtmlInput) form1.getInputByName("jakarta.faces.ViewState");
         HtmlForm form2 = (HtmlForm) page.getHtmlElementById("form2");
-        HtmlInput form2ViewState = (HtmlInput) form2.getInputByName("javax.faces.ViewState");
+        HtmlInput form2ViewState = (HtmlInput) form2.getInputByName("jakarta.faces.ViewState");
         assertTrue(!form1ViewState.getValueAttribute().isEmpty());
         assertTrue(!form2ViewState.getValueAttribute().isEmpty());
     }

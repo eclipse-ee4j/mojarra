@@ -20,10 +20,10 @@ import javax.faces.component.UIComponentBase;
 
 public class TestComponent extends UIComponentBase {
 
-    @Override
     public String getFamily() {
         return "TestFamily";
     }
+
 
     public String getComponentType() {
         return "TestComponent";

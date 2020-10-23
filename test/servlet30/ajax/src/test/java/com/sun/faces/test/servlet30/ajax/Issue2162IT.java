@@ -19,6 +19,7 @@ package com.sun.faces.test.servlet30.ajax;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.XHtmlPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,9 +54,9 @@ public class Issue2162IT {
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
         page = button.click();
-
-        webClient.waitForBackgroundJavaScriptStartingBefore(60000);
-
+ 
+        webClient.waitForBackgroundJavaScriptStartingBefore(60000); 
+        
         assertTrue(page.asXml().indexOf("Init called\nInit called\n") != -1);
         assertFalse(page.asXml().indexOf("Init called\nInit called\nInit called") != -1);
     }

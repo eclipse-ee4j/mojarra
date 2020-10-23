@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,43 +16,40 @@
 
 package com.sun.faces.util;
 
-import static javax.faces.validator.BeanValidator.VALIDATOR_FACTORY_KEY;
-import static javax.validation.Validation.buildDefaultValidatorFactory;
+import static jakarta.faces.validator.BeanValidator.VALIDATOR_FACTORY_KEY;
+import static jakarta.validation.Validation.buildDefaultValidatorFactory;
 
 import java.util.Locale;
 
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.validation.MessageInterpolator;
-import javax.validation.ValidationException;
-import javax.validation.Validator;
-import javax.validation.ValidatorContext;
-import javax.validation.ValidatorFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorContext;
+import jakarta.validation.ValidatorFactory;
 
 /**
- * Various utility methods for use with the BeanValidation API in JSF.
+ * Various utility methods for use with the Jakarta Bean Validation API in Jakarta Faces.
  *
  */
 public class BeanValidation {
 
     public static Validator getBeanValidator(FacesContext context) {
         ValidatorFactory validatorFactory = getValidatorFactory(context);
-        
+
         ValidatorContext validatorContext = validatorFactory.usingContext();
         MessageInterpolator jsfMessageInterpolator = new JsfAwareMessageInterpolator(context, validatorFactory.getMessageInterpolator());
         validatorContext.messageInterpolator(jsfMessageInterpolator);
-        
+
         return validatorContext.getValidator();
     }
-    
+
     public static ValidatorFactory getValidatorFactory(FacesContext context) {
         ValidatorFactory validatorFactory = null;
-        
-        Object cachedObject = context.getExternalContext()
-                                     .getApplicationMap()
-                                     .get(VALIDATOR_FACTORY_KEY);
-        
-        
+
+        Object cachedObject = context.getExternalContext().getApplicationMap().get(VALIDATOR_FACTORY_KEY);
+
         if (cachedObject instanceof ValidatorFactory) {
             validatorFactory = (ValidatorFactory) cachedObject;
         } else {
@@ -61,12 +58,10 @@ public class BeanValidation {
             } catch (ValidationException e) {
                 throw new FacesException("Could not build a default Bean Validator factory", e);
             }
-            
-            context.getExternalContext()
-                   .getApplicationMap()
-                   .put(VALIDATOR_FACTORY_KEY, validatorFactory);
+
+            context.getExternalContext().getApplicationMap().put(VALIDATOR_FACTORY_KEY, validatorFactory);
         }
-        
+
         return validatorFactory;
     }
 
@@ -94,5 +89,5 @@ public class BeanValidation {
             return delegate.interpolate(message, context, locale);
         }
     }
-    
+
 }

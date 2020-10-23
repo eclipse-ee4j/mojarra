@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,22 +16,24 @@
 
 package com.sun.faces.flow;
 
-import com.sun.faces.flow.builder.FlowBuilderImpl;
-import com.sun.faces.RIConstants;
 import java.io.Serializable;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.builder.FlowBuilder;
-import javax.faces.flow.builder.FlowBuilderParameter;
-import javax.inject.Named;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.flow.builder.FlowBuilderImpl;
+
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.builder.FlowBuilder;
+import jakarta.faces.flow.builder.FlowBuilderParameter;
+import jakarta.inject.Named;
 
 /*
  * This is an application scoped bean named with a well-defined,
  * but Mojarra private, name.  ApplicationAssociate.loadFlowsFromJars()
- * uses this class to cause any flows defined in this way to be 
+ * uses this class to cause any flows defined in this way to be
  * built using the FlowBuilder API.
- * 
+ *
  * A better way is to @Inject the extension directly but this doesn't
  * seem to work in the version of weld we have.
  */
@@ -39,17 +41,18 @@ import javax.inject.Named;
 @Named(RIConstants.FLOW_DISCOVERY_CDI_HELPER_BEAN_NAME)
 @Dependent
 public class FlowDiscoveryCDIHelper implements Serializable {
-    
-private static final long serialVersionUID = 6217421203074690365L;
 
-public FlowDiscoveryCDIHelper() {
+    private static final long serialVersionUID = 6217421203074690365L;
+
+    public FlowDiscoveryCDIHelper() {
     }
-    
-    @Produces @FlowBuilderParameter
+
+    @Produces
+    @FlowBuilderParameter
     FlowBuilder createFlowBuilder() {
         FacesContext context = FacesContext.getCurrentInstance();
         FlowBuilder result = new FlowBuilderImpl(context);
         return result;
     }
-    
+
 }

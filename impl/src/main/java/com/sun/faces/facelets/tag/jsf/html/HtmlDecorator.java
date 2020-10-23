@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,11 +18,10 @@ package com.sun.faces.facelets.tag.jsf.html;
 
 import com.sun.faces.facelets.tag.TagAttributesImpl;
 
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributes;
-import javax.faces.view.facelets.TagDecorator;
-
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributes;
+import jakarta.faces.view.facelets.TagDecorator;
 
 /**
  * @author Jacob Hookom
@@ -32,9 +31,9 @@ public final class HtmlDecorator implements TagDecorator {
     public final static String XhtmlNamespace = "http://www.w3.org/1999/xhtml";
 
     public final static HtmlDecorator Instance = new HtmlDecorator();
-    
+
     /**
-     * 
+     *
      */
     public HtmlDecorator() {
         super();
@@ -42,7 +41,7 @@ public final class HtmlDecorator implements TagDecorator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagDecorator#decorate(com.sun.facelets.tag.Tag)
      */
     @Override
@@ -50,12 +49,10 @@ public final class HtmlDecorator implements TagDecorator {
         if (XhtmlNamespace.equals(tag.getNamespace())) {
             String n = tag.getLocalName();
             if ("a".equals(n)) {
-                return new Tag(tag.getLocation(), HtmlLibrary.Namespace,
-                        "commandLink", tag.getQName(), tag.getAttributes());
+                return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "commandLink", tag.getQName(), tag.getAttributes());
             }
             if ("form".equals(n)) {
-                return new Tag(tag.getLocation(), HtmlLibrary.Namespace,
-                        "form", tag.getQName(), tag.getAttributes());
+                return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "form", tag.getQName(), tag.getAttributes());
             }
             if ("input".equals(n)) {
                 TagAttribute attr = tag.getAttributes().get("type");
@@ -63,29 +60,19 @@ public final class HtmlDecorator implements TagDecorator {
                     String t = attr.getValue();
                     TagAttributes na = removeType(tag.getAttributes());
                     if ("text".equals(t)) {
-                        return new Tag(tag.getLocation(),
-                                HtmlLibrary.Namespace, "inputText", tag
-                                        .getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputText", tag.getQName(), na);
                     }
                     if ("password".equals(t)) {
-                        return new Tag(tag.getLocation(),
-                                HtmlLibrary.Namespace, "inputSecret", tag
-                                        .getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputSecret", tag.getQName(), na);
                     }
                     if ("hidden".equals(t)) {
-                        return new Tag(tag.getLocation(),
-                                HtmlLibrary.Namespace, "inputHidden", tag
-                                        .getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputHidden", tag.getQName(), na);
                     }
                     if ("submit".equals(t)) {
-                        return new Tag(tag.getLocation(),
-                                HtmlLibrary.Namespace, "commandButton", tag
-                                        .getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "commandButton", tag.getQName(), na);
                     }
                     if ("file".equals(t)) {
-                        return new Tag(tag.getLocation(),
-                                HtmlLibrary.Namespace, "inputFile", tag
-                                        .getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputFile", tag.getQName(), na);
                     }
                 }
             }

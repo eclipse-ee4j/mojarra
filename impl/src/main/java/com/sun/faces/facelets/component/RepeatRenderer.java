@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,14 @@
 
 package com.sun.faces.facelets.component;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.Renderer;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
 
 public class RepeatRenderer extends Renderer {
 
@@ -33,7 +33,7 @@ public class RepeatRenderer extends Renderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-        
+
     }
 
     @Override
@@ -56,14 +56,14 @@ public class RepeatRenderer extends Renderer {
                     }
                 }
             }
-            
+
             Iterator itr = component.getChildren().iterator();
             UIComponent c;
             while (itr.hasNext()) {
                 c = (UIComponent) itr.next();
                 c.encodeAll(context);
             }
-            
+
             if (tag != null) {
                 context.getResponseWriter().endElement(tag);
             }
@@ -72,9 +72,9 @@ public class RepeatRenderer extends Renderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-      
+
     }
-    
+
     @Override
     public boolean getRendersChildren() {
         return true;

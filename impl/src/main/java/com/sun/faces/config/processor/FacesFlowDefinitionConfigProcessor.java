@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,27 +28,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowHandlerFactory;
-import javax.faces.flow.FlowNode;
-import javax.faces.flow.Parameter;
-import javax.faces.flow.builder.FlowBuilder;
-import javax.faces.flow.builder.FlowCallBuilder;
-import javax.faces.flow.builder.MethodCallBuilder;
-import javax.faces.flow.builder.NavigationCaseBuilder;
-import javax.faces.flow.builder.SwitchBuilder;
-import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -75,10 +54,31 @@ import com.sun.faces.flow.ParameterImpl;
 import com.sun.faces.flow.builder.FlowBuilderImpl;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowHandlerFactory;
+import jakarta.faces.flow.FlowNode;
+import jakarta.faces.flow.Parameter;
+import jakarta.faces.flow.builder.FlowBuilder;
+import jakarta.faces.flow.builder.FlowCallBuilder;
+import jakarta.faces.flow.builder.MethodCallBuilder;
+import jakarta.faces.flow.builder.NavigationCaseBuilder;
+import jakarta.faces.flow.builder.SwitchBuilder;
+import jakarta.servlet.ServletContext;
+
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/flow-definition</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/flow-definition</code>.
  * </p>
  */
 public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor {
@@ -89,7 +89,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
      * <code>/faces-config/flow-definition</code>
      */
     private static final String FACES_FLOW_DEFINITION = "flow-definition";
-    
+
     private static final String flowDefinitionListKey = RIConstants.FACES_PREFIX + "FacesFlowDefinitions";
 
     public FacesFlowDefinitionConfigProcessor() {
@@ -110,11 +110,11 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     /*
      * Implement the requirements of 11.4.3.3
-     * 
+     *
      * @param uri
-     * 
+     *
      * @param toPopulate
-     * 
+     *
      * @return
      */
     public static Document synthesizeEmptyFlowDefinition(URI uri) throws ParserConfigurationException {
@@ -194,9 +194,6 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     }
 
-
-    
-
     private void saveFlowDefinition(FacesContext context, URI definingDocumentURI, Document flowDefinitions) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
         List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
@@ -210,7 +207,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     private List<FlowDefinitionDocument> getSavedFlowDefinitions(FacesContext context) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
         List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
-        return (null != def) ? def : Collections.EMPTY_LIST;
+        return null != def ? def : Collections.EMPTY_LIST;
     }
 
     private void clearSavedFlowDefinitions(FacesContext context) {
@@ -235,8 +232,8 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         }
 
         public void clear() {
-            this.definingDocumentURI = null;
-            this.flowDefinitions = null;
+            definingDocumentURI = null;
+            flowDefinitions = null;
         }
 
     }
@@ -251,19 +248,17 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         @Override
         public void processEvent(SystemEvent event) throws AbortProcessingException {
             FacesContext facesContext = event.getFacesContext();
-            
-            for (FlowDefinitionDocument flowDefinition : FacesFlowDefinitionConfigProcessor.this.getSavedFlowDefinitions(facesContext)) {
+
+            for (FlowDefinitionDocument flowDefinition : getSavedFlowDefinitions(facesContext)) {
                 try {
-                    FacesFlowDefinitionConfigProcessor.this.processFacesFlowDefinitions(
-                        facesContext,
-                        flowDefinition.definingDocumentURI, 
-                        flowDefinition.flowDefinitions);
+                    processFacesFlowDefinitions(facesContext, flowDefinition.definingDocumentURI,
+                            flowDefinition.flowDefinitions);
                 } catch (XPathExpressionException ex) {
                     throw new FacesException(ex);
                 }
             }
-            
-            FacesFlowDefinitionConfigProcessor.this.clearSavedFlowDefinitions(facesContext);
+
+            clearSavedFlowDefinitions(facesContext);
         }
     }
 
@@ -274,10 +269,10 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         if (flowDefinitions.getLength() == 0) {
             return;
         }
-        
+
         Application application = context.getApplication();
         FlowHandler flowHandler = application.getFlowHandler();
-        
+
         if (flowHandler == null) {
             FlowHandlerFactory flowHandlerFactory = (FlowHandlerFactory) FactoryFinder.getFactory(FactoryFinder.FLOW_HANDLER_FACTORY);
             application.setFlowHandler(flowHandler = flowHandlerFactory.createFlowHandler(context));
@@ -291,7 +286,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         if (null != nameList && 1 < nameList.getLength()) {
             throw new XPathExpressionException("<faces-config> must have at most one <name> element.");
         }
-        
+
         if (null != nameList && 1 == nameList.getLength()) {
             nameStr = nameList.item(0).getNodeValue().trim();
             if (0 < nameStr.length()) {
@@ -701,7 +696,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     protected String getAttribute(Node node, String attrName) {
         notNull("flow definition element", node);
-        
+
         String result = null;
         NamedNodeMap attrs = node.getAttributes();
 
@@ -717,7 +712,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     protected String getIdAttribute(Node node) throws XPathExpressionException {
         notNull("flow definition element", node);
-        
+
         String result = null;
         NamedNodeMap attrs = node.getAttributes();
         String localName = "";

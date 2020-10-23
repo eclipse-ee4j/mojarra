@@ -16,24 +16,21 @@
 
 package com.sun.faces.test.servlet30.nestedloadbundles;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import static java.util.Collections.list;
+import org.junit.After;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <p>
- * Make sure loadBundle works as expected in JSF 1.2
- * </p>
+ * Make sure loadBundle works as expected in JSF 1.2</p>
  */
-@Ignore("Probably not going to work with Facelets")
 public class NestedLoadBundlesIT {
 
     private String webUrl;
@@ -52,14 +49,11 @@ public class NestedLoadBundlesIT {
 
     @Test
     public void testNestedLoadBundles() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/index.jsp");
         HtmlSubmitInput button;
 
         String pageText = page.asText();
         assertNotNull(pageText);
-
-        System.out.println("\n" + page.asXml() + "\n");
-
         assertTrue(-1 != pageText.indexOf("Output 01 from bundle: Bundle A"));
         assertTrue(-1 != pageText.indexOf("Output 02 from bundle: Bundle B"));
         assertTrue(-1 != pageText.indexOf("Output 03 from bundle: Bundle C"));

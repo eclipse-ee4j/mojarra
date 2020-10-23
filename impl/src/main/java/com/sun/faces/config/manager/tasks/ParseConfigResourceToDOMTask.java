@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -32,7 +32,6 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -58,10 +57,12 @@ import com.sun.faces.config.processor.FacesFlowDefinitionConfigProcessor;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Timer;
 
+import jakarta.servlet.ServletContext;
+
 /**
  * <p>
  * This <code>Callable</code> will be used by
- * {@link ConfigManager#getXMLDocuments(javax.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
+ * {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
  * It represents a single configuration resource to be parsed into a DOM.
  * </p>
  */
@@ -77,6 +78,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     private static final String JAVAEE_SCHEMA_LEGACY_DEFAULT_NS = "http://java.sun.com/xml/ns/javaee";
     private static final String JAVAEE_SCHEMA_DEFAULT_NS = "http://xmlns.jcp.org/xml/ns/javaee";
+    private static final String JAKARTAEE_SCHEMA_DEFAULT_NS = "https://jakarta.ee/xml/ns/jakartaee";
     private static final String EMPTY_FACES_CONFIG = "com/sun/faces/empty-faces-config.xml";
     private static final String FACES_CONFIG_TAGNAME = "faces-config";
     private static final String FACELET_TAGLIB_TAGNAME = "facelet-taglib";
@@ -99,7 +101,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     private URI documentURI;
     private DocumentBuilderFactory factory;
     private boolean validating;
-    
+
 
     // --------------------------------------------------------
     // Constructors
@@ -154,7 +156,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                     format("Unable to parse document ''{0}'': {1}", documentURI.toURL().toExternalForm(), e.getMessage()), e);
         }
     }
-    
+
 
     // ----------------------------------------------------- Private
     // Methods
@@ -249,6 +251,35 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                             schema = DbfFactory.getSchema(servletContext, DbfFactory.FacesSchema.FACELET_TAGLIB_22);
                         } else {
                             schema = DbfFactory.getSchema(servletContext, DbfFactory.FacesSchema.FACES_23);
+                        }
+                        break;
+                    default:
+                        throw new ConfigurationException("Unknown Schema version: " + versionStr);
+                    }
+                    DocumentBuilder builder = getBuilderForSchema(schema);
+                    if (builder.isValidating()) {
+                        builder.getSchema().newValidator().validate(domSource);
+                        returnDoc = ((Document) domSource.getNode());
+                    } else {
+                        returnDoc = ((Document) domSource.getNode());
+                    }
+                } else {
+                    // this shouldn't happen, but...
+                    throw new ConfigurationException("No document version available.");
+                }
+                break;
+            }
+            case JAKARTAEE_SCHEMA_DEFAULT_NS: {
+                Attr version = (Attr) documentElement.getAttributes().getNamedItem("version");
+                Schema schema;
+                if (version != null) {
+                    String versionStr = version.getValue();
+                    switch (versionStr) {
+                    case "3.0":
+                        if ("facelet-taglib".equals(documentElement.getLocalName())) {
+                            schema = DbfFactory.getSchema(servletContext, DbfFactory.FacesSchema.FACELET_TAGLIB_22);
+                        } else {
+                            schema = DbfFactory.getSchema(servletContext, DbfFactory.FacesSchema.FACES_30);
                         }
                         break;
                     default:

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -29,21 +29,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.jstl.core.Config;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
@@ -53,13 +38,28 @@ import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.jstl.core.Config;
+
 /**
  * <p>
  * This is the default implementation for JSF 1.2.
  * </p>
  * <p>
- * While this class isn't used by the 2.0 runtime, it's kept for binary compatibility with those
- * that extend from this class directly.
+ * While this class isn't used by the 2.0 runtime, it's kept for binary compatibility with those that extend from this
+ * class directly.
  * </p>
  *
  * @deprecated Refer to {@link com.sun.faces.application.view.MultiViewHandler}
@@ -85,12 +85,10 @@ public class ViewHandlerImpl extends ViewHandler {
     }
 
     /**
-     * Do not call the default implementation of
-     * {@link ViewHandler#initView(javax.faces.context.FacesContext)} if the
-     * {@link javax.faces.context.ExternalContext#getRequestCharacterEncoding()} returns a
-     * <code>non-null</code> result.
+     * Do not call the default implementation of {@link ViewHandler#initView(jakarta.faces.context.FacesContext)} if the
+     * {@link jakarta.faces.context.ExternalContext#getRequestCharacterEncoding()} returns a <code>non-null</code> result.
      *
-     * @see ViewHandler#initView(javax.faces.context.FacesContext)
+     * @see ViewHandler#initView(jakarta.faces.context.FacesContext)
      */
     @Override
     public void initView(FacesContext context) throws FacesException {
@@ -198,8 +196,7 @@ public class ViewHandlerImpl extends ViewHandler {
      * </p>
      *
      * <p>
-     * Create a new ResponseWriter around this response's Writer. Set it into the FacesContext,
-     * saving the old one aside.
+     * Create a new ResponseWriter around this response's Writer. Set it into the FacesContext, saving the old one aside.
      * </p>
      *
      * <p>
@@ -362,14 +359,12 @@ public class ViewHandlerImpl extends ViewHandler {
     }
 
     /**
-     * Execute the target view. If the HTTP status code range is not 2xx, then return true to
-     * indicate the response should be immediately flushed by the caller so that conditions such as
-     * 404 are properly handled.
-     * 
+     * Execute the target view. If the HTTP status code range is not 2xx, then return true to indicate the response should
+     * be immediately flushed by the caller so that conditions such as 404 are properly handled.
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param viewToExecute the view to build
-     * @return <code>true</code> if the response should be immediately flushed to the client,
-     *         otherwise <code>false</code>
+     * @return <code>true</code> if the response should be immediately flushed to the client, otherwise <code>false</code>
      * @throws IOException if an error occurs executing the page
      */
     private boolean executePageToBuildView(FacesContext context, UIViewRoot viewToExecute) throws IOException {
@@ -493,9 +488,9 @@ public class ViewHandlerImpl extends ViewHandler {
     }
 
     /**
-     * Attempts to find a matching locale based on <code>pref</code> and list of supported locales,
-     * using the matching algorithm as described in JSTL 8.3.2.
-     * 
+     * Attempts to find a matching locale based on <code>pref</code> and list of supported locales, using the matching
+     * algorithm as described in JSTL 8.3.2.
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param pref the preferred locale
      * @return the Locale based on pref and the matching alogritm specified in JSTL 8.3.2
@@ -595,25 +590,25 @@ public class ViewHandlerImpl extends ViewHandler {
 
         // If no mapping can be identified, just return a server-relative path
         if (mapping == null) {
-            return (contextPath + viewId);
+            return contextPath + viewId;
         }
 
         // Deal with prefix mapping
         if (Util.isPrefixMapped(mapping)) {
             if (mapping.equals("/*")) {
-                return (contextPath + viewId);
+                return contextPath + viewId;
             } else {
-                return (contextPath + mapping + viewId);
+                return contextPath + mapping + viewId;
             }
         }
 
         // Deal with extension mapping
         for (String extension : configuredExtensions) {
             if (viewId.endsWith(extension)) {
-                return (contextPath + viewId.substring(0, viewId.lastIndexOf('.')) + mapping);
+                return contextPath + viewId.substring(0, viewId.lastIndexOf('.')) + mapping;
             }
         }
-        return (contextPath + viewId);
+        return contextPath + viewId;
 
     }
 
@@ -621,7 +616,7 @@ public class ViewHandlerImpl extends ViewHandler {
     public String getResourceURL(FacesContext context, String path) {
         ExternalContext extContext = context.getExternalContext();
         if (path.charAt(0) == '/' && !path.startsWith(extContext.getRequestContextPath())) {
-            return (extContext.getRequestContextPath() + path);
+            return extContext.getRequestContextPath() + path;
         } else {
             return path;
         }
@@ -635,11 +630,10 @@ public class ViewHandlerImpl extends ViewHandler {
 
     /**
      * <p>
-     * if the specified mapping is a prefix mapping, and the provided request URI (usually the value
-     * from <code>ExternalContext.getRequestServletPath()</code>) starts with
-     * <code>mapping + '/'</code>, prune the mapping from the URI and return it, otherwise, return
-     * the original URI.
-     * 
+     * if the specified mapping is a prefix mapping, and the provided request URI (usually the value from
+     * <code>ExternalContext.getRequestServletPath()</code>) starts with <code>mapping + '/'</code>, prune the mapping from
+     * the URI and return it, otherwise, return the original URI.
+     *
      * @param uri the servlet request path
      * @param mapping the FacesServlet mapping used for this request
      * @return the URI without additional FacesServlet mappings
@@ -761,10 +755,10 @@ public class ViewHandlerImpl extends ViewHandler {
 
         public WriteBehindStateWriter(Writer out, FacesContext context, int bufSize) {
             this.out = out;
-            this.orig = out;
+            orig = out;
             this.context = context;
             this.bufSize = bufSize;
-            this.buf = new char[bufSize];
+            buf = new char[bufSize];
             CUR_WRITER.set(this);
         }
 
@@ -817,7 +811,7 @@ public class ViewHandlerImpl extends ViewHandler {
 
         public void writingState() {
             if (!stateWritten) {
-                this.stateWritten = true;
+                stateWritten = true;
                 out = fWriter = new FastStringWriter(1024);
             }
         }
@@ -830,7 +824,7 @@ public class ViewHandlerImpl extends ViewHandler {
          * <p>
          * Write directly from our FastStringWriter to the provided writer.
          * </p>
-         * 
+         *
          * @throws IOException if an error occurs
          */
         public void flushToWriter() throws IOException {
@@ -839,7 +833,7 @@ public class ViewHandlerImpl extends ViewHandler {
             // multiple forms.
             StateManager stateManager = Util.getStateManager(context);
             ResponseWriter origWriter = context.getResponseWriter();
-            FastStringWriter state = new FastStringWriter((stateManager.isSavingStateInClient(context)) ? bufSize : 128);
+            FastStringWriter state = new FastStringWriter(stateManager.isSavingStateInClient(context) ? bufSize : 128);
             context.setResponseWriter(origWriter.cloneWithWriter(state));
             stateManager.writeState(context, stateManager.saveView(context));
             context.setResponseWriter(origWriter);
@@ -852,16 +846,16 @@ public class ViewHandlerImpl extends ViewHandler {
             int tildeIdx = getNextDelimiterIndex(builder, pos);
             while (pos < totalLen) {
                 if (tildeIdx != -1) {
-                    if (tildeIdx > pos && (tildeIdx - pos) > bufSize) {
+                    if (tildeIdx > pos && tildeIdx - pos > bufSize) {
                         // there's enough content before the first ~
                         // to fill the entire buffer
-                        builder.getChars(pos, (pos + bufSize), buf, 0);
+                        builder.getChars(pos, pos + bufSize, buf, 0);
                         orig.write(buf);
                         pos += bufSize;
                     } else {
                         // write all content up to the first '~'
                         builder.getChars(pos, tildeIdx, buf, 0);
-                        int len = (tildeIdx - pos);
+                        int len = tildeIdx - pos;
                         orig.write(buf, 0, len);
                         // now check to see if the state saving string is
                         // at the begining of pos, if so, write our
@@ -870,13 +864,13 @@ public class ViewHandlerImpl extends ViewHandler {
                             // buf is effectively zero'd out at this point
                             int statePos = 0;
                             while (statePos < stateLen) {
-                                if ((stateLen - statePos) > bufSize) {
+                                if (stateLen - statePos > bufSize) {
                                     // enough state to fill the buffer
-                                    stateBuilder.getChars(statePos, (statePos + bufSize), buf, 0);
+                                    stateBuilder.getChars(statePos, statePos + bufSize, buf, 0);
                                     orig.write(buf);
                                     statePos += bufSize;
                                 } else {
-                                    int slen = (stateLen - statePos);
+                                    int slen = stateLen - statePos;
                                     stateBuilder.getChars(statePos, stateLen, buf, 0);
                                     orig.write(buf, 0, slen);
                                     statePos += slen;
@@ -884,7 +878,7 @@ public class ViewHandlerImpl extends ViewHandler {
 
                             }
                             // push us past the last '~' at the end of the marker
-                            pos += (len + STATE_MARKER_LEN);
+                            pos += len + STATE_MARKER_LEN;
                             tildeIdx = getNextDelimiterIndex(builder, pos);
                         } else {
                             pos = tildeIdx;
@@ -897,15 +891,15 @@ public class ViewHandlerImpl extends ViewHandler {
                     // finish writing content
                     if (totalLen - pos > bufSize) {
                         // there's enough content to fill the buffer
-                        builder.getChars(pos, (pos + bufSize), buf, 0);
+                        builder.getChars(pos, pos + bufSize, buf, 0);
                         orig.write(buf);
                         pos += bufSize;
                     } else {
                         // we're near the end of the response
                         builder.getChars(pos, totalLen, buf, 0);
-                        int len = (totalLen - pos);
+                        int len = totalLen - pos;
                         orig.write(buf, 0, len);
-                        pos += (len + 1);
+                        pos += len + 1;
                     }
                 }
             }

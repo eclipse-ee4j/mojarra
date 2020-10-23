@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -42,7 +42,7 @@ import com.sun.faces.util.Timer;
 
 /**
  * This class is used by the config system to order <code>faces-config</code> documents found on the classpath or
- * configured explicitly via the <code>javax.faces.CONFIG_FILES</code> context init parameter.
+ * configured explicitly via the <code>jakarta.faces.CONFIG_FILES</code> context init parameter.
  */
 public class DocumentOrderingWrapper {
 
@@ -128,7 +128,7 @@ public class DocumentOrderingWrapper {
      * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document<code>.
      */
     public DocumentOrderingWrapper(DocumentInfo document) {
-        this.documentInfo = document;
+        documentInfo = document;
         init();
     }
 
@@ -219,11 +219,9 @@ public class DocumentOrderingWrapper {
 
     /**
      * Sort the provided array of <code>Document</code>s per the order specified in the List represented by absoluteOrder.
-     * 
-     * @param documents
-     *            Documents to sort
-     * @param absoluteOrder
-     *            the absolute order as specified in the /WEB-INF/faces-config.xml
+     *
+     * @param documents Documents to sort
+     * @param absoluteOrder the absolute order as specified in the /WEB-INF/faces-config.xml
      * @return an array of DocumentOrderingWrappers that may be smaller than the input array of wrappers.
      */
     public static DocumentOrderingWrapper[] sort(DocumentOrderingWrapper[] documents, List<String> absoluteOrder) {
@@ -284,7 +282,7 @@ public class DocumentOrderingWrapper {
         } catch (CircularDependencyException re) {
             String msg = "Circular dependencies detected!\nDocument Info\n==================\n";
             for (DocumentOrderingWrapper w : documents) {
-                msg += ("  " + w.toString() + '\n');
+                msg += "  " + w.toString() + '\n';
             }
             throw new ConfigurationException(msg);
         }
@@ -328,8 +326,8 @@ public class DocumentOrderingWrapper {
                 }
                 if (documents[i].isBefore(documentId)) {
                     if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.log(Level.FINE, "done: " + documentId + " should be after " + documents[i].getDocumentId()
-                                + " given that it should be before: " + Arrays.asList(documents[i].getBeforeIds()));
+                        LOGGER.log(Level.FINE, "done: " + documentId + " should be after " + documents[i].getDocumentId() + " given that it should be before: "
+                                + Arrays.asList(documents[i].getBeforeIds()));
                     }
 
                     // we have a document that is out of order, and his index is ii, he belongs at index i, and all the documents in between
@@ -359,7 +357,7 @@ public class DocumentOrderingWrapper {
     }
 
     public static LinkedList<String> getIds(DocumentOrderingWrapper[] documents) {
-        LinkedList<String> ids = new LinkedList<String>();
+        LinkedList<String> ids = new LinkedList<>();
         for (int i = 0; i < documents.length; i++) {
             ids.add(documents[i].getDocumentId());
         }
@@ -377,7 +375,7 @@ public class DocumentOrderingWrapper {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     String msg = "Exceeded maximum number of attempts to sort the application's faces-config documents.\nDocument Info\n==================";
                     for (DocumentOrderingWrapper w : documents) {
-                        msg += ("  " + w.toString() + '\n');
+                        msg += "  " + w.toString() + '\n';
                     }
                     LOGGER.severe(msg);
                 }
@@ -523,16 +521,14 @@ public class DocumentOrderingWrapper {
 
     /**
      * Simple helper method around <code>Arrays.binarySearch()</code>.
-     * 
-     * @param ids
-     *            an array of IDs
-     * @param id
-     *            the ID to search for
+     *
+     * @param ids an array of IDs
+     * @param id the ID to search for
      * @return true if <code>ids</code> contains <code>id</code>
      */
     private static boolean search(String[] ids, String id) {
 
-        return (Arrays.binarySearch(ids, id) >= 0);
+        return Arrays.binarySearch(ids, id) >= 0;
 
     }
 
@@ -566,8 +562,8 @@ public class DocumentOrderingWrapper {
                 }
             }
         }
-        this.beforeIds = ((beforeIds != null) ? beforeIds.toArray(new String[beforeIds.size()]) : new String[0]);
-        this.afterIds = ((afterIds != null) ? afterIds.toArray(new String[afterIds.size()]) : new String[0]);
+        this.beforeIds = beforeIds != null ? beforeIds.toArray(new String[beforeIds.size()]) : new String[0];
+        this.afterIds = afterIds != null ? afterIds.toArray(new String[afterIds.size()]) : new String[0];
         Arrays.sort(this.beforeIds);
         Arrays.sort(this.afterIds);
 
@@ -603,8 +599,7 @@ public class DocumentOrderingWrapper {
 
         for (String id : source) {
             if (search(searchTarget, id)) {
-                String msg = MessageFormat.format("Document {0} is specified to come before and after {1}.",
-                        documentInfo.getDocument().getDocumentURI(), id);
+                String msg = MessageFormat.format("Document {0} is specified to come before and after {1}.", documentInfo.getDocument().getDocumentURI(), id);
                 throw new ConfigurationException(msg);
             }
         }
@@ -652,12 +647,12 @@ public class DocumentOrderingWrapper {
             }
         }
 
-        return ((res != null && res.length() != 0) ? res : null);
+        return res != null && res.length() != 0 ? res : null;
 
     }
 
     public static HashMap<String, DocumentOrderingWrapper> getDocumentHashMap(DocumentOrderingWrapper[] documents) {
-        HashMap<String, DocumentOrderingWrapper> configMap = new HashMap<String, DocumentOrderingWrapper>();
+        HashMap<String, DocumentOrderingWrapper> configMap = new HashMap<>();
 
         for (DocumentOrderingWrapper document : documents) {
             String name = document.id;
@@ -670,8 +665,8 @@ public class DocumentOrderingWrapper {
     }
 
     public static void preSort(DocumentOrderingWrapper[] documents) {
-        List<DocumentOrderingWrapper> anonymousAndUnorderedList = new ArrayList<DocumentOrderingWrapper>();
-        Map<Integer, Integer> linkedMap = new LinkedHashMap<Integer, Integer>();
+        List<DocumentOrderingWrapper> anonymousAndUnorderedList = new ArrayList<>();
+        Map<Integer, Integer> linkedMap = new LinkedHashMap<>();
 
         DocumentOrderingWrapper[] copyOfDocuments = new DocumentOrderingWrapper[documents.length];
         System.arraycopy(documents, 0, copyOfDocuments, 0, documents.length);
@@ -683,7 +678,7 @@ public class DocumentOrderingWrapper {
             String[] afs = w.getAfterIds();
             int knowledge = bfs.length + afs.length;
 
-            if ((w.id == null || "".equals(w.id)) && (!w.isOrdered())) {
+            if ((w.id == null || "".equals(w.id)) && !w.isOrdered()) {
                 anonymousAndUnorderedList.add(w);
             } else {
                 linkedMap.put(i, knowledge);
@@ -707,15 +702,10 @@ public class DocumentOrderingWrapper {
     }
 
     public static <K, V extends Comparable<? super V>> Map<K, V> descendingByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            @Override
-            public int compare(Map.Entry<K, V> a, Map.Entry<K, V> b) {
-                return (b.getValue()).compareTo(a.getValue());
-            }
-        });
+        List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
+        Collections.sort(list, (a, b) -> b.getValue().compareTo(a.getValue()));
 
-        Map<K, V> result = new LinkedHashMap<K, V>();
+        Map<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {
             result.put(entry.getKey(), entry.getValue());
         }
@@ -768,6 +758,11 @@ public class DocumentOrderingWrapper {
     private static final class CircularDependencyException extends Exception {
 
         // -------------------------------------------------------- Constructors
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 739253127985795440L;
 
         public CircularDependencyException() {
             super();

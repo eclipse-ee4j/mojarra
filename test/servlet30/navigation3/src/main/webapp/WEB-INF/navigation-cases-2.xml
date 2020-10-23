@@ -48,18 +48,27 @@
 
 <tests>
 
-    <!-- ============ Tests From /login.xhtml view Identifier ================= -->
+  <!-- ============ Tests From /login.jsp view Identifier ================= -->
 
 
-    <!-- Positive tests that should match specific rules -->
+  <!-- Positive tests that should match specific rules -->
 
-    <test fromViewId="/login.xhtml" fromAction="#{userBean.login}" fromOutcome="success" toViewId="/home.xhtml" />
+  <test fromViewId="/login.jsp"
+     fromAction="#{userBean.login}"
+    fromOutcome="success"
+          toViewId="/home.jsp"/>
 
-    <test fromViewId="/login.xhtml" fromAction="#{userBean.login}" fromOutcome="success" if="#{true}"
-        toViewId="/home.xhtml" />
+  <test fromViewId="/login.jsp"
+     fromAction="#{userBean.login}"
+    fromOutcome="success"
+                    if="#{true}"
+          toViewId="/home.jsp"/>
 
-    <test fromViewId="/login.xhtml" fromAction="#{userBean.login}" fromOutcome="failure" if="#{false}"
-        toViewId="/loginFailed.xhtml" /> <!-- pulled from next navigation case -->
+  <test fromViewId="/login.jsp"
+     fromAction="#{userBean.login}"
+    fromOutcome="failure"
+                    if="#{false}"
+       toViewId="/loginFailed.jsp"/> <!-- pulled from next navigation case -->
 
 
 </tests>

@@ -22,11 +22,6 @@ import javax.faces.event.PhaseId;
 
 public class MyPhaseListener implements PhaseListener {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
     @Override
     public void afterPhase(PhaseEvent event) {
         event.getFacesContext().getExternalContext().getRequestMap().put("message", "MyPhaseListener called");
@@ -34,14 +29,16 @@ public class MyPhaseListener implements PhaseListener {
 
     @Override
     public void beforePhase(PhaseEvent event) {
-
+        
     }
 
     @Override
     public PhaseId getPhaseId() {
         PhaseId result = PhaseId.ANY_PHASE;
-
+        
         return result;
     }
-
+    
+    
+    
 }

@@ -42,8 +42,8 @@ public class Issue3144IT {
     @Test
     public void testDuplicateId() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/formDuplicateId.xhtml");
-        assertTrue(page.asXml().contains("j_id1:javax.faces.ViewState:0"));
-        assertTrue(page.asXml().contains("j_id1:javax.faces.ViewState:1"));
-        assertTrue(page.asXml().contains("j_id1:javax.faces.ViewState:2"));
+        assertTrue(page.asXml().contains("j_id1:jakarta.faces.ViewState:0"));
+        assertTrue(page.asXml().contains("j_id1:jakarta.faces.ViewState:1"));
+        assertTrue(page.asXml().contains("j_id1:jakarta.faces.ViewState:2"));
     }
 }

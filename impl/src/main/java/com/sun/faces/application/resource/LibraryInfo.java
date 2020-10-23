@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,8 +18,8 @@ package com.sun.faces.application.resource;
 
 /**
  * <p>
- * <code>LibraryInfo</code> is a simple wrapper class for information pertinent to building
- * a complete resource path using a Library and/or Contract.
+ * <code>LibraryInfo</code> is a simple wrapper class for information pertinent to building a complete resource path
+ * using a Library and/or Contract.
  * <p>
  */
 public class LibraryInfo {
@@ -34,6 +34,7 @@ public class LibraryInfo {
 
     /**
      * Constructs a new <code>LibraryInfo</code> using the specified details.
+     *
      * @param name the name of the library
      * @param version the version of the library, if any
      * @param contract
@@ -47,17 +48,17 @@ public class LibraryInfo {
         this.helper = helper;
         initPath();
     }
-    
+
     LibraryInfo(LibraryInfo other, boolean copyLocalePrefix) {
-        this.name = other.name;
-        this.version = other.version;
+        name = other.name;
+        version = other.version;
         if (copyLocalePrefix) {
-            this.contract = other.contract;
-            
+            contract = other.contract;
+
             // http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-548 http://java.net/jira/browse/JAVASERVERFACES-2348
-            this.localePrefix = other.localePrefix;
+            localePrefix = other.localePrefix;
         }
-        this.helper = other.helper;
+        helper = other.helper;
         initPath();
     }
 
@@ -73,19 +74,19 @@ public class LibraryInfo {
             return true;
         }
         final LibraryInfo other = (LibraryInfo) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+        if (name == null ? other.name != null : !name.equals(other.name)) {
             return false;
         }
-        if (this.version != other.version && (this.version == null || !this.version.equals(other.version))) {
+        if (version != other.version && (version == null || !version.equals(other.version))) {
             return false;
         }
-        if ((this.localePrefix == null) ? (other.localePrefix != null) : !this.localePrefix.equals(other.localePrefix)) {
+        if (localePrefix == null ? other.localePrefix != null : !localePrefix.equals(other.localePrefix)) {
             return false;
         }
-        if ((this.contract == null) ? (other.contract != null) : !this.contract.equals(other.contract)) {
+        if (contract == null ? other.contract != null : !contract.equals(other.contract)) {
             return false;
         }
-        if ((this.path == null) ? (other.path != null) : !this.path.equals(other.path)) {
+        if (path == null ? other.path != null : !path.equals(other.path)) {
             return false;
         }
         return true;
@@ -94,15 +95,13 @@ public class LibraryInfo {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 37 * hash + (this.version != null ? this.version.hashCode() : 0);
-        hash = 37 * hash + (this.localePrefix != null ? this.localePrefix.hashCode() : 0);
-        hash = 37 * hash + (this.contract != null ? this.contract.hashCode() : 0);
-        hash = 37 * hash + (this.path != null ? this.path.hashCode() : 0);
+        hash = 37 * hash + (name != null ? name.hashCode() : 0);
+        hash = 37 * hash + (version != null ? version.hashCode() : 0);
+        hash = 37 * hash + (localePrefix != null ? localePrefix.hashCode() : 0);
+        hash = 37 * hash + (contract != null ? contract.hashCode() : 0);
+        hash = 37 * hash + (path != null ? path.hashCode() : 0);
         return hash;
     }
-
-
 
     /**
      * @return return the library name.
@@ -112,8 +111,7 @@ public class LibraryInfo {
     }
 
     /**
-     * @return return the version of the library, or <code>null</code>
-     *  if the library isn't versioned.
+     * @return return the version of the library, or <code>null</code> if the library isn't versioned.
      */
     public VersionInfo getVersion() {
         return version;
@@ -132,7 +130,7 @@ public class LibraryInfo {
     public String getPath() {
         return path;
     }
-    
+
     public String getPath(String localePrefix) {
         String result = null;
         if (null == localePrefix) {
@@ -142,42 +140,36 @@ public class LibraryInfo {
         }
         return result;
     }
-    
+
     /**
      * @return the Locale prefix, if any.
      */
     public String getLocalePrefix() {
         return localePrefix;
     }
-    
+
     /**
      * @return active contract or null
      */
     public String getContract() {
-		return contract;
-	}
+        return contract;
+    }
 
     @Override
     public String toString() {
-        return "LibraryInfo{" +
-               "name='" + (name != null ? name : "NONE") + '\'' +
-               ", version=" + ((version != null) ? version : "NONE") + '\'' +
-               ", localePrefix='" + ((localePrefix != null) ? localePrefix : "NONE") + '\'' +
-               ", contract='" + ((contract != null) ? contract : "NONE") + '\'' +
-               ", path='" + path + '\'' +
-               '}';
+        return "LibraryInfo{" + "name='" + (name != null ? name : "NONE") + '\'' + ", version=" + (version != null ? version : "NONE") + '\''
+                + ", localePrefix='" + (localePrefix != null ? localePrefix : "NONE") + '\'' + ", contract='" + (contract != null ? contract : "NONE")
+                + '\'' + ", path='" + path + '\'' + '}';
     }
 
     // --------------------------------------------------------- Private Methods
-
 
     /**
      * Construct the full path to the base directory of the library's resources.
      */
     private void initPath() {
 
-        StringBuilder builder = new StringBuilder(64),
-                      noLocaleBuilder = new StringBuilder(64);
+        StringBuilder builder = new StringBuilder(64), noLocaleBuilder = new StringBuilder(64);
 
         appendBasePath(builder);
         appendBasePath(noLocaleBuilder);
@@ -186,8 +178,8 @@ public class LibraryInfo {
             builder.append('/').append(localePrefix);
         }
         if (name != null) {
-	        builder.append('/').append(name);
-	        noLocaleBuilder.append('/').append(name);
+            builder.append('/').append(name);
+            noLocaleBuilder.append('/').append(name);
         }
         if (version != null) {
             builder.append('/').append(version.getVersion());

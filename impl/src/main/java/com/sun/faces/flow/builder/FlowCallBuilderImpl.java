@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,25 +16,26 @@
 
 package com.sun.faces.flow.builder;
 
+import java.util.Map;
+
 import com.sun.faces.flow.FlowCallNodeImpl;
 import com.sun.faces.flow.ParameterImpl;
 import com.sun.faces.util.Util;
-import java.util.Map;
-import javax.el.ValueExpression;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.builder.FlowCallBuilder;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.builder.FlowCallBuilder;
 
 public class FlowCallBuilderImpl extends FlowCallBuilder {
-    
+
     private FlowBuilderImpl root;
     private String flowCallNodeId;
     private String flowDocumentId;
     private String flowId;
-    
 
     public FlowCallBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;
-        this.flowCallNodeId = id;
+        flowCallNodeId = id;
     }
 
     @Override
@@ -46,12 +47,12 @@ public class FlowCallBuilderImpl extends FlowCallBuilder {
         getFlowCall();
         return this;
     }
-    
+
     private FlowCallNodeImpl getFlowCall() {
         Util.notNull("flowCallNodeId", flowCallNodeId);
         Util.notNull("flowwDocumentId", flowDocumentId);
         Util.notNull("flowId", flowId);
-        
+
         Map<String, FlowCallNode> flowCalls = root._getFlow()._getFlowCalls();
         FlowCallNodeImpl flowCall = (FlowCallNodeImpl) flowCalls.get(flowCallNodeId);
         if (null == flowCall) {
@@ -85,7 +86,5 @@ public class FlowCallBuilderImpl extends FlowCallBuilder {
         root._getFlow().setStartNodeId(flowCallNodeId);
         return this;
     }
-    
-    
-    
+
 }

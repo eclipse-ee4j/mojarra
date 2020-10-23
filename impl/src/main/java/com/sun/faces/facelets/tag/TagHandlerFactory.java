@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,14 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.el.ELException;
+import jakarta.faces.FacesException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 /**
  * Delegate class for TagLibraries
- * 
+ *
  * @see TagLibrary
  * @author Jacob Hookom
  * @version $Id$
@@ -31,13 +31,11 @@ import javax.faces.view.facelets.TagHandler;
 interface TagHandlerFactory {
     /**
      * A new TagHandler instantiated with the passed TagConfig
-     * 
-     * @param cfg
-     *            TagConfiguration information
+     *
+     * @param cfg TagConfiguration information
      * @return a new TagHandler
      * @throws FacesException
      * @throws ELException
      */
-    public TagHandler createHandler(TagConfig cfg) throws FacesException,
-            ELException;
+    TagHandler createHandler(TagConfig cfg) throws FacesException, ELException;
 }

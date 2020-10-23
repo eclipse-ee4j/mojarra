@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,14 +17,15 @@
 package com.sun.faces.ext.taglib;
 
 import com.sun.faces.ext.validator.CreditCardValidator;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.webapp.ValidatorELTag;
 
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.webapp.ValidatorELTag;
 
 /**
  * Tag for the Regular Expression Validator.
+ *
  * @author driscoll
  */
 public class CreditCardValidatorTag extends ValidatorELTag {
@@ -33,10 +34,9 @@ public class CreditCardValidatorTag extends ValidatorELTag {
 
     @Override
     protected Validator createValidator() {
-        
+
         Application app = FacesContext.getCurrentInstance().getApplication();
-        CreditCardValidator validator =
-                (CreditCardValidator) app.createValidator("com.sun.faces.ext.validator.CreditCardValidator");
+        CreditCardValidator validator = (CreditCardValidator) app.createValidator("com.sun.faces.ext.validator.CreditCardValidator");
         return validator;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,9 +24,9 @@ import static com.sun.faces.util.BeanValidation.getBeanValidator;
 import static com.sun.faces.util.ReflectionUtils.setProperties;
 import static com.sun.faces.util.Util.getValueExpressionNullSafe;
 import static com.sun.faces.util.copier.CopierUtils.getCopier;
-import static javax.faces.component.visit.VisitContext.createVisitContext;
-import static javax.faces.component.visit.VisitResult.ACCEPT;
-import static javax.faces.validator.BeanValidator.MESSAGE_ID;
+import static jakarta.faces.component.visit.VisitContext.createVisitContext;
+import static jakarta.faces.component.visit.VisitResult.ACCEPT;
+import static jakarta.faces.validator.BeanValidator.MESSAGE_ID;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -35,77 +35,70 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIInput;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
-import javax.validation.ConstraintViolation;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
+import jakarta.validation.ConstraintViolation;
 
 class WholeBeanValidator implements Validator<Object> {
 
-    private static final Logger LOGGER
-            = Logger.getLogger("javax.faces.validator", "javax.faces.LogStrings");    
-    
-    private static final String ERROR_MISSING_FORM
-            = "f:validateWholeBean must be nested directly in an UIForm.";
-    
+    private static final Logger LOGGER = Logger.getLogger("jakarta.faces.validator", "jakarta.faces.LogStrings");
+
+    private static final String ERROR_MISSING_FORM = "f:validateWholeBean must be nested directly in an UIForm.";
+
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         validate(context, (UIValidateWholeBean) component, value);
     }
 
-    public void validate(FacesContext context, UIValidateWholeBean component, Object value) throws ValidatorException {        
+    public void validate(FacesContext context, UIValidateWholeBean component, Object value) throws ValidatorException {
 
-        // Get parent and check if the parent of this f:validateWholeBean is a form                  
+        // Get parent and check if the parent of this f:validateWholeBean is a form
         UIForm form = getParentForm(component);
 
         ValueExpression wholeBeanVE = getValueExpressionNullSafe(component, "value");
 
         // The "whole" bean that we're going to validate at the class level
         Object wholeBean = wholeBeanVE.getValue(context.getELContext());
-        
+
         // A shortened or fully qualified class name, or EL expression pointing
         // to a type that copies the target bean for validation
         String copierType = (String) component.getAttributes().get("copierType");
-        
+
         // Inspect the status of field level validation
         if (hasAnyBeanPropertyFailedValidation(context, wholeBean)) {
             return;
         }
 
         AddRemainingCandidateFieldsCallback addRemainingCandidateFieldsCallback = new AddRemainingCandidateFieldsCallback(context, wholeBean);
-        
-        form.visitTree(
-            createVisitContext(context), 
-            addRemainingCandidateFieldsCallback);
-        
+
+        form.visitTree(createVisitContext(context), addRemainingCandidateFieldsCallback);
+
         Map<String, Map<String, Object>> validationCandidate = addRemainingCandidateFieldsCallback.getCandidate();
 
         if (validationCandidate.isEmpty()) {
             return;
         }
-        
+
         // Perform the actual bean validation on a copy of the whole bean
-        Set<ConstraintViolation<?>> violations = doBeanValidation(
-            getBeanValidator(context), 
-            copyBeanAndPopulateWithCandidateValues(
-                context, wholeBeanVE, wholeBean, copierType, validationCandidate), 
-            component.getValidationGroupsArray(), 
-            wholeBeanVE);
-        
-        // If there are any violations, transform them into a JSF validator exception
+        Set<ConstraintViolation<?>> violations = doBeanValidation(getBeanValidator(context),
+                copyBeanAndPopulateWithCandidateValues(context, wholeBeanVE, wholeBean, copierType, validationCandidate), component.getValidationGroupsArray(),
+                wholeBeanVE);
+
+        // If there are any violations, transform them into a Faces validator exception
         if (violations != null && !violations.isEmpty()) {
             ValidatorException toThrow;
-            
+
             if (violations.size() == 1) {
                 ConstraintViolation<?> violation = violations.iterator().next();
                 toThrow = new ValidatorException(getMessage(context, MESSAGE_ID, violation.getMessage(), getLabel(context, component)));
@@ -116,34 +109,34 @@ class WholeBeanValidator implements Validator<Object> {
                 }
                 toThrow = new ValidatorException(messages);
             }
-            
+
             // Mark the components as invalid to prevent them from receiving
             // values during updateModelValues
             for (Entry<String, Map<String, Object>> validationCandidateEntry : validationCandidate.entrySet()) {
                 invalidateComponent(validationCandidateEntry);
             }
-            
+
             throw toThrow;
         }
     }
-    
+
     private UIForm getParentForm(UIComponent component) {
         UIComponent parent = component.getParent();
         if (!(parent instanceof UIForm)) {
             throw new IllegalArgumentException(ERROR_MISSING_FORM);
         }
-        
+
         return (UIForm) parent;
     }
-    
+
     private boolean isFailedFieldLevelValidation(Entry<String, Map<String, Object>> wholeBeanPropertyEntry) {
         return FAILED_FIELD_LEVEL_VALIDATION.equals(wholeBeanPropertyEntry.getValue().get("value"));
     }
-    
+
     private void invalidateComponent(Entry<String, Map<String, Object>> wholeBeanPropertyEntry) {
         ((EditableValueHolder) wholeBeanPropertyEntry.getValue().get("component")).setValid(false);
     }
-    
+
     private boolean hasAnyBeanPropertyFailedValidation(FacesContext context, Object wholeBean) {
         Map<Object, Map<String, Map<String, Object>>> validationCandidates = getMultiFieldValidationCandidates(context, false);
 
@@ -159,12 +152,12 @@ class WholeBeanValidator implements Validator<Object> {
                 }
             }
         }
-        
+
         return false;
     }
 
-    private Object copyBeanAndPopulateWithCandidateValues(FacesContext context, ValueExpression wholeBeanVE,
-            Object wholeBean, String copierType, Map<String, Map<String, Object>> candidate) {
+    private Object copyBeanAndPopulateWithCandidateValues(FacesContext context, ValueExpression wholeBeanVE, Object wholeBean, String copierType,
+            Map<String, Map<String, Object>> candidate) {
 
         // Populate the bean copy with the validated values from the candidate
         Map<String, Object> propertiesToSet = new HashMap<>();
@@ -174,36 +167,34 @@ class WholeBeanValidator implements Validator<Object> {
 
         // Copy the whole bean so that class-level validation can be performed
         // without corrupting the real whole bean
-        
-        Object wholeBeanCopy = getCopier(context, copierType)
-                                    .copy(wholeBean);
+
+        Object wholeBeanCopy = getCopier(context, copierType).copy(wholeBean);
 
         if (wholeBeanCopy == null) {
             throw new FacesException("Unable to copy bean from " + wholeBeanVE.getExpressionString());
         }
 
         setProperties(wholeBeanCopy, propertiesToSet);
-        
+
         return wholeBeanCopy;
     }
-    
-    private Set<ConstraintViolation<?>> doBeanValidation(javax.validation.Validator beanValidator, Object wholeBeanCopy, Class<?>[] validationGroupArray, ValueExpression wholeBeanVE) {
-        
+
+    private Set<ConstraintViolation<?>> doBeanValidation(jakarta.validation.Validator beanValidator, Object wholeBeanCopy, Class<?>[] validationGroupArray,
+            ValueExpression wholeBeanVE) {
+
         @SuppressWarnings("rawtypes")
         Set violationsRaw = null;
-        
-        try {            
-            violationsRaw = beanValidator.validate(wholeBeanCopy, validationGroupArray);            
+
+        try {
+            violationsRaw = beanValidator.validate(wholeBeanCopy, validationGroupArray);
         } catch (IllegalArgumentException iae) {
-            LOGGER.fine(
-                "Unable to validate expression " + wholeBeanVE.getExpressionString() + 
-                " using Bean Validation.  Unable to get value of expression. " + 
-                " Message from Bean Validation: " + iae.getMessage());
+            LOGGER.fine("Unable to validate expression " + wholeBeanVE.getExpressionString() + " using Bean Validation.  Unable to get value of expression. "
+                    + " Message from Bean Validation: " + iae.getMessage());
         }
-        
+
         @SuppressWarnings("unchecked")
         Set<ConstraintViolation<?>> violations = violationsRaw;
-        
+
         return violations;
     }
 
@@ -223,31 +214,30 @@ class WholeBeanValidator implements Validator<Object> {
         }
 
         @Override
-        public VisitResult visit(VisitContext visitContext, UIComponent component) {            
+        public VisitResult visit(VisitContext visitContext, UIComponent component) {
             if (component instanceof EditableValueHolder && component.isRendered() && !(component instanceof UIValidateWholeBean)) {
-                ValueExpression valueExpression = component.getValueExpression("value");                
-                
+                ValueExpression valueExpression = component.getValueExpression("value");
+
                 if (valueExpression != null) {
 
-                    ValueReference valueReference = new ValueExpressionAnalyzer(valueExpression)
-                                                            .getReference(context.getELContext());                
+                    ValueReference valueReference = new ValueExpressionAnalyzer(valueExpression).getReference(context.getELContext());
 
                     if (valueReference != null && valueReference.getBase().equals(base)) {
                         Map<String, Object> tuple = new HashMap<>();
                         tuple.put("component", component);
                         tuple.put("value", getComponentValue(component));
-                        
+
                         candidate.put(valueReference.getProperty(), tuple);
                     }
                 }
             }
-            
+
             return ACCEPT;
         }
-        
+
         private static Object getComponentValue(UIComponent component) {
             UIInput inputComponent = (UIInput) component;
-            
+
             return inputComponent.getSubmittedValue() != null ? inputComponent.getSubmittedValue() : inputComponent.getLocalValue();
         }
     }

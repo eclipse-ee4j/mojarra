@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,12 +19,11 @@ package com.sun.faces.renderkit;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.faces.context.FacesContext;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-
 import com.sun.faces.util.MessageUtils;
 
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
 public class RenderKitFactoryImpl extends RenderKitFactory {
 
@@ -33,7 +32,7 @@ public class RenderKitFactoryImpl extends RenderKitFactory {
 //
     protected String renderKitId;
     protected String className;
-    protected ConcurrentHashMap<String,RenderKit> renderKits;
+    protected ConcurrentHashMap<String, RenderKit> renderKits;
 
 //
 // Class Variables
@@ -55,46 +54,40 @@ public class RenderKitFactoryImpl extends RenderKitFactory {
         addRenderKit(HTML_BASIC_RENDER_KIT, new RenderKitImpl());
     }
 
-
     @Override
     public void addRenderKit(String renderKitId, RenderKit renderKit) {
 
         if (renderKitId == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "renderKitId");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "renderKitId");
             throw new NullPointerException(message);
         }
         if (renderKit == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "renderKit");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "renderKit");
             throw new NullPointerException(message);
         }
-        
-        renderKits.put(renderKitId, renderKit);
-       
-    }
 
+        renderKits.put(renderKitId, renderKit);
+
+    }
 
     @Override
     public RenderKit getRenderKit(FacesContext context, String renderKitId) {
 
         if (renderKitId == null) {
-            String message = MessageUtils.getExceptionMessageString
-                (MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "renderKitId");
+            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "renderKitId");
             throw new NullPointerException(message);
         }
-        //PENDING (rogerk) do something with FacesContext ...
+        // PENDING (rogerk) do something with FacesContext ...
         //
         // If an instance already exists, return it.
-        //       
+        //
 
         return renderKits.get(renderKitId);
     }
 
-
     @Override
     public Iterator<String> getRenderKitIds() {
-        return (renderKits.keySet().iterator());
+        return renderKits.keySet().iterator();
     }
 
 }

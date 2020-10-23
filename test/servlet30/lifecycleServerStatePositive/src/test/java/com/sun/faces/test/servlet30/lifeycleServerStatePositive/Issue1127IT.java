@@ -21,6 +21,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import org.junit.*;
+import static org.junit.Assert.*;
 
 public class Issue1127IT {
 
@@ -44,6 +45,6 @@ public class Issue1127IT {
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
         button.click();
-
+        
     }
 }

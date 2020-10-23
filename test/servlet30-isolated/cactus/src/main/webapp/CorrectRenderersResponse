@@ -1,7 +1,7 @@
 
 <form id="formRenderer0" name="formRenderer0" method="post" action="/test-servlet30_isolated-cactus/JspRedirector/root;jsessionid=44a17d17a443941dbe0e14cfee42">
 <input type="hidden" name="formRenderer0" value="formRenderer0" />
-<input type="hidden" name="formRenderer0:javax.faces.Token" value="ad5f9af9e7a6dd356e0a2fc26e4edee0" />
+<input type="hidden" name="formRenderer0:jakarta.faces.Token" value="ad5f9af9e7a6dd356e0a2fc26e4edee0" />
 ~com.sun.faces.saveStateFieldMarker~
 
 
@@ -9,7 +9,7 @@
 
 <form id="formRenderer1" name="formRenderer1" method="post" action="/test-servlet30_isolated-cactus/JspRedirector/root;jsessionid=44a17d17a443941dbe0e14cfee42">
 <input type="hidden" name="formRenderer1" value="formRenderer1" />
-<input type="hidden" name="formRenderer1:javax.faces.Token" value="ad5f9af9e7a6dd356e0a2fc26e4edee0" />
+<input type="hidden" name="formRenderer1:jakarta.faces.Token" value="ad5f9af9e7a6dd356e0a2fc26e4edee0" />
 ~com.sun.faces.saveStateFieldMarker~
 
 
@@ -46,7 +46,7 @@
 <a id="linkImage2" name="linkImage2" href="hrefValue;jsessionid=44a17d17a443941dbe0e14cfee42"><img src="resduke.gif;jsessionid=44a17d17a443941dbe0e14cfee42" /></a>
 <a id="paramLink" name="paramLink" href="hrefValue;jsessionid=44a17d17a443941dbe0e14cfee42?parameter1=param_value1&amp;parameter2=param_value2"><img src="resduke.gif;jsessionid=44a17d17a443941dbe0e14cfee42" /></a>
 
-<script type="text/javascript" src="/test-servlet30_isolated-cactus/JspRedirector/javax.faces.resource/jsf.js?ln=javax.faces&amp;stage=UnitTest"></script>
+<script type="text/javascript" src="/test-servlet30_isolated-cactus/JspRedirector/jakarta.faces.resource/jsf.js?ln=jakarta.faces&amp;stage=UnitTest"></script>
 <a id="j_id2:labelLink1" href="#" onclick="mojarra.jsfcljs(document.getElementById('j_id2'),{'j_id2:labelLink1':'j_id2:labelLink1'},'');return false">PASSED</a>
 <a id="j_id2:labelLink2" href="#" onclick="mojarra.jsfcljs(document.getElementById('j_id2'),{'j_id2:labelLink2':'j_id2:labelLink2'},'');return false">model label</a>
 <a id="j_id2:labelLink3" href="#" onclick="mojarra.jsfcljs(document.getElementById('j_id2'),{'j_id2:labelLink3':'j_id2:labelLink3'},'');return false">RES-BUNDLE PASSED</a>

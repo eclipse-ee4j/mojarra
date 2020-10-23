@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +16,17 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import com.sun.faces.facelets.el.ELText;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.facelets.util.FastWriter;
 
-import javax.el.ELException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.view.facelets.FaceletContext;
-import java.io.IOException;
-import java.io.Writer;
+import jakarta.el.ELException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * @author Jacob Hookom
@@ -34,58 +35,56 @@ import java.io.Writer;
 final class UITextHandler extends AbstractUIHandler {
 
     private final ELText txt;
-    
+
     private final String alias;
-    
+
     private final int length;
 
     public UITextHandler(String alias, ELText txt) {
         this.alias = alias;
         this.txt = txt;
-        this.length = txt.toString().length();
+        length = txt.toString().length();
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-    throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
             try {
-                ELText nt = this.txt.apply(ctx.getExpressionFactory(), ctx);
-                UIComponent c = new UIText(this.alias, nt);
+                ELText nt = txt.apply(ctx.getExpressionFactory(), ctx);
+                UIComponent c = new UIText(alias, nt);
                 String uid;
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
-                if (null != ancestorNamingContainer &&
-                        ancestorNamingContainer instanceof UniqueIdVendor) {
+                if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), null);
                 } else {
                     uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId();
                 }
-                
+
                 c.setId(uid);
-                this.addComponent(ctx, parent, c);
+                addComponent(ctx, parent, c);
             } catch (Exception e) {
-                throw new ELException(this.alias + ": "+ e.getMessage(), e.getCause());
+                throw new ELException(alias + ": " + e.getMessage(), e.getCause());
             }
         }
     }
 
     @Override
     public String toString() {
-        return this.txt.toString();
+        return txt.toString();
     }
 
     @Override
     public String getText() {
-        return this.txt.toString();
+        return txt.toString();
     }
 
     @Override
     public String getText(FaceletContext ctx) {
-        Writer writer = new FastWriter(this.length);
+        Writer writer = new FastWriter(length);
         try {
-            this.txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
+            txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
         } catch (IOException e) {
-            throw new ELException(this.alias + ": "+ e.getMessage(), e.getCause());
+            throw new ELException(alias + ": " + e.getMessage(), e.getCause());
         }
         return writer.toString();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,15 +16,16 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
-import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import java.io.IOException;
+import jakarta.el.ELException;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * @author Jacob Hookom
@@ -40,19 +41,18 @@ public final class IfHandler extends TagHandlerImpl {
      */
     public IfHandler(TagConfig config) {
         super(config);
-        this.test = this.getRequiredAttribute("test");
-        this.var = this.getAttribute("var");
+        test = getRequiredAttribute("test");
+        var = getAttribute("var");
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException, FacesException, ELException {
-        boolean b = this.test.getBoolean(ctx);
-        if (this.var != null) {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException {
+        boolean b = test.getBoolean(ctx);
+        if (var != null) {
             ctx.setAttribute(var.getValue(ctx), b);
         }
         if (b) {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         }
     }
 

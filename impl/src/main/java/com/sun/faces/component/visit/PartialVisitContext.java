@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,7 +16,6 @@
 
 package com.sun.faces.component.visit;
 
-import javax.faces.component.visit.*;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,45 +27,47 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.NamingContainer;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
 
 /**
  *
- * <p class="changed_added_2_0">A VisitContext implementation that is
- * used when performing a partial component tree visit.</p>
+ * <p class="changed_added_2_0">
+ * A VisitContext implementation that is used when performing a partial component tree visit.
+ * </p>
  *
  * RELEASE_PENDING
+ *
  * @since 2.0
  */
 public class PartialVisitContext extends VisitContext {
 
     /**
      * Creates a PartialVisitorContext instance.
+     *
      * @param facesContext the FacesContext for the current request
      * @param clientIds the client ids of the components to visit
-     * @throws NullPointerException  if {@code facesContext}
-     *                               is {@code null}
-     */    
-    public PartialVisitContext(FacesContext facesContext,
-                               Collection<String> clientIds) {
+     * @throws NullPointerException if {@code facesContext} is {@code null}
+     */
+    public PartialVisitContext(FacesContext facesContext, Collection<String> clientIds) {
         this(facesContext, clientIds, null);
     }
 
     /**
      * Creates a PartialVisitorContext instance with the specified hints.
+     *
      * @param facesContext the FacesContext for the current request
      * @param clientIds the client ids of the components to visit
      * @param hints a the VisitHints for this visit
-     * @throws NullPointerException  if {@code facesContext}
-     *                               is {@code null}
-     */    
-    public PartialVisitContext(FacesContext facesContext,
-                               Collection<String> clientIds,
-                               Set<VisitHint> hints) {
+     * @throws NullPointerException if {@code facesContext} is {@code null}
+     */
+    public PartialVisitContext(FacesContext facesContext, Collection<String> clientIds, Set<VisitHint> hints) {
         if (facesContext == null) {
             throw new NullPointerException();
         }
@@ -77,9 +78,7 @@ public class PartialVisitContext extends VisitContext {
         initializeCollections(clientIds);
 
         // Copy and store hints - ensure unmodifiable and non-empty
-        EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty()))
-                                          ? EnumSet.noneOf(VisitHint.class)
-                                          : EnumSet.copyOf(hints);
+        EnumSet<VisitHint> hintsEnumSet = hints == null || hints.isEmpty() ? EnumSet.noneOf(VisitHint.class) : EnumSet.copyOf(hints);
 
         this.hints = Collections.unmodifiableSet(hintsEnumSet);
     }
@@ -106,7 +105,7 @@ public class PartialVisitContext extends VisitContext {
     @Override
     public Collection<String> getIdsToVisit() {
 
-        // We just return our clientIds collection.  This is
+        // We just return our clientIds collection. This is
         // the modifiable (but proxied) collection of all of
         // the client ids to visit.
         return clientIds;
@@ -130,18 +129,18 @@ public class PartialVisitContext extends VisitContext {
         String clientId = component.getClientId();
         Collection<String> ids = subtreeClientIds.get(clientId);
 
-        if (ids == null)
-          return Collections.emptyList();
+        if (ids == null) {
+            return Collections.emptyList();
+        }
 
-        return Collections.unmodifiableCollection(ids);     
+        return Collections.unmodifiableCollection(ids);
     }
 
     /**
      * @see VisitContext#invokeVisitCallback VisitContext.invokeVisitCallback()
      */
     @Override
-    public VisitResult invokeVisitCallback(UIComponent component, 
-                                           VisitCallback callback) {
+    public VisitResult invokeVisitCallback(UIComponent component, VisitCallback callback) {
 
         // First sure that we should visit this component - ie.
         // that this component is represented in our id set.
@@ -163,10 +162,11 @@ public class PartialVisitContext extends VisitContext {
 
         // If the unvisited collection is now empty, we are done.
         // Return VisitResult.COMPLETE to terminate the visit.
-        if (unvisitedClientIds.isEmpty())
+        if (unvisitedClientIds.isEmpty()) {
             return VisitResult.COMPLETE;
+        }
 
-        // Otherwise, just return the callback's result 
+        // Otherwise, just return the callback's result
         return result;
     }
 
@@ -192,7 +192,7 @@ public class PartialVisitContext extends VisitContext {
     private void idRemoved(String clientId) {
 
         // An id to visit has been removed, update our other
-        // collections to reflect this.  Note that we don't
+        // collections to reflect this. Note that we don't
         // update the ids collection, since we ids (non-client ids)
         // may not be unique.
 
@@ -210,14 +210,14 @@ public class PartialVisitContext extends VisitContext {
         //
         // 1. clientIds: contains all of the client ids to visit
         // 2. ids: contains just ids (not client ids) to visit.
-        //    We use this to optimize our check to see whether a
-        //    particular component is in the visit set (ie. to
-        //    avoid having to compute the client id).
+        // We use this to optimize our check to see whether a
+        // particular component is in the visit set (ie. to
+        // avoid having to compute the client id).
         // 3. subtreeClientIds: contains client ids to visit broken
-        //    out by naming container subtree.  (Needed by
-        //    getSubtreeIdsToVisit()).
+        // out by naming container subtree. (Needed by
+        // getSubtreeIdsToVisit()).
         // 4. unvisitedClientIds: contains the client ids to visit that
-        //    have not yet been visited.
+        // have not yet been visited.
         //
         // We populate these now.
         //
@@ -225,50 +225,49 @@ public class PartialVisitContext extends VisitContext {
         // perhaps we could pick more intelligent defaults.
 
         // Initialize unvisitedClientIds collection
-        this.unvisitedClientIds = new HashSet<>();
+        unvisitedClientIds = new HashSet<>();
 
         // Initialize ids collection
-        this.ids = new HashSet<>();
+        ids = new HashSet<>();
 
         // Intialize subtreeClientIds collection
-        this.subtreeClientIds = new HashMap<>();
+        subtreeClientIds = new HashMap<>();
 
-        // Initialize the clientIds collection.  Note that we proxy 
-        // this collection so that we can trap adds/removes and sync 
+        // Initialize the clientIds collection. Note that we proxy
+        // this collection so that we can trap adds/removes and sync
         // up all of the other collections.
         this.clientIds = new CollectionProxy<>(new HashSet<>());
 
-        // Finally, populate the clientIds collection.  This has the
-        // side effect of populating all of the other collections.       
+        // Finally, populate the clientIds collection. This has the
+        // side effect of populating all of the other collections.
         this.clientIds.addAll(clientIds);
     }
 
     // Tests whether the specified component should be visited.
-    // If so, returns its client id.  If not, returns null.
+    // If so, returns its client id. If not, returns null.
     private String getVisitId(UIComponent component) {
 
         // We first check to see whether the component's id
-        // is in our id collection.  We do this before checking
+        // is in our id collection. We do this before checking
         // for the full client id because getting the full client id
         // is more expensive than just getting the local id.
         String id = component.getId();
-        if ((id != null) && !ids.contains(id))
+        if (id != null && !ids.contains(id)) {
             return null;
+        }
 
         // The id was a match - now check the client id.
         // note that client id should never be null (should be
         // generated even if id is null, so asserting this.)
         String clientId = component.getClientId();
-        assert(clientId != null);
+        assert clientId != null;
 
         return clientIds.contains(clientId) ? clientId : null;
     }
 
-
     // Converts an client id into a plain old id by ripping
     // out the trailing id segmetn.
-    private String getIdFromClientId(String clientId)
-    {
+    private String getIdFromClientId(String clientId) {
         FacesContext facesContext = getFacesContext();
         char separator = UINamingContainer.getSeparatorChar(facesContext);
         int lastIndex = clientId.lastIndexOf(separator);
@@ -277,10 +276,10 @@ public class PartialVisitContext extends VisitContext {
 
         if (lastIndex < 0) {
             id = clientId;
-        } else if (lastIndex < (clientId.length() - 1)) {
-            id = clientId.substring(lastIndex + 1);              
+        } else if (lastIndex < clientId.length() - 1) {
+            id = clientId.substring(lastIndex + 1);
         }
- 
+
         return id;
     }
 
@@ -291,9 +290,8 @@ public class PartialVisitContext extends VisitContext {
         FacesContext facesContext = getFacesContext();
         char separator = UINamingContainer.getSeparatorChar(facesContext);
 
-
         // Loop over the client id and find the substring corresponding to
-        // each ancestor NamingContainer client id.  For each ancestor
+        // each ancestor NamingContainer client id. For each ancestor
         // NamingContainer, add an entry into the map for the full client
         // id.
 
@@ -303,12 +301,12 @@ public class PartialVisitContext extends VisitContext {
 
             if (clientId.charAt(i) == separator) {
 
-                // We found an ancestor NamingContainer client id - add 
+                // We found an ancestor NamingContainer client id - add
                 // an entry to the map.
                 String namingContainerClientId = clientId.substring(0, i);
 
                 // Check to see whether we've already ids under this
-                // NamingContainer client id.  If not, create the 
+                // NamingContainer client id. If not, create the
                 // Collection for this NamingContainer client id and
                 // stash it away in our map
                 Collection<String> c = subtreeClientIds.get(namingContainerClientId);
@@ -338,19 +336,17 @@ public class PartialVisitContext extends VisitContext {
 
                 // If the clientId starts with the key, we should
                 // have an entry for this clientId in the corresponding
-                // collection.  Remove it.
+                // collection. Remove it.
                 Collection<String> ids = subtreeClientIds.get(key);
                 ids.remove(clientId);
             }
         }
     }
 
-
-    // Little proxy collection implementation.  We proxy the id
+    // Little proxy collection implementation. We proxy the id
     // collection so that we can detect modifications and update
     // our internal state when ids to visit are added or removed.
-    private class CollectionProxy<E extends String> extends 
-        AbstractCollection<E> {
+    private class CollectionProxy<E extends String> extends AbstractCollection<E> {
 
         private CollectionProxy(Collection<E> wrapped) {
             this.wrapped = wrapped;
@@ -368,13 +364,13 @@ public class PartialVisitContext extends VisitContext {
 
         @Override
         public boolean add(E o) {
-          boolean added = wrapped.add(o);
+            boolean added = wrapped.add(o);
 
-          if (added) {
-              idAdded(o);
-          }
+            if (added) {
+                idAdded(o);
+            }
 
-          return added;
+            return added;
         }
 
         private Collection<E> wrapped;
@@ -424,10 +420,10 @@ public class PartialVisitContext extends VisitContext {
     private Collection<String> unvisitedClientIds;
 
     // This map contains the information needed by getSubtreeIdsToVisit().
-    // The keys in this map are NamingContainer client ids.  The values
+    // The keys in this map are NamingContainer client ids. The values
     // are collections containing all of the client ids to visit within
     // corresponding naming container.
-    private Map<String,Collection<String>> subtreeClientIds;
+    private Map<String, Collection<String>> subtreeClientIds;
 
     // The FacesContext for this request
     private FacesContext facesContext;

@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -60,7 +60,7 @@ function faceletstoggle(id) {
 </script>
 </head>
 <body>
-<div id="javax.faces.error.xhtml">
+<div id="jakarta.faces.error.xhtml">
 <h1>An Error Occurred:</h1>
 <div id="error" class="grayBox" style="border: 1px solid #900;">@@message@@</div>
 <h2><a href="#" onclick="faceletstoggle('trace'); return false;"><span id="traceOff">+</span><span id="traceOn" style="display: none;">-</span> Stack Trace</a></h2>

@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax;
+package com.sun.faces.test.servlet30.ajax; 
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -44,16 +44,17 @@ public class Issue2674IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies ajax behavior was programmatically attached to input text component.
+     * This test verifies ajax behavior was programmatically attached to input text component. 
      */
     @Test
     public void testProgrammaticAjaxBehavior() throws Exception {
-        String expectedString = "<input id=" + '"' + "form:input1" + '"' + " type=" + '"' + "text" + '"' + " name=" + '"' + "form:input1"
-                + '"' + " value=" + '"' + "hi" + '"' + " onfocus=" + '"' + "mojarra.ab(this,event,'focus',0,0)" + '"';
-        HtmlPage page = webClient.getPage(webUrl + "faces/issue2674.xhtml");
+        String expectedString = "<input id="+'"'+"form:input1"+'"'+" type="+'"'+"text"+'"'+" name="+'"'+"form:input1"+'"'+" value="+'"'+"hi"+'"'+" onfocus="+'"'+"mojarra.ab(this,event,'focus',0,0)"+'"';
+        HtmlPage page = webClient.getPage(webUrl+"faces/issue2674.xhtml");
         assertTrue(page.asXml().contains(expectedString));
     }
 }
+

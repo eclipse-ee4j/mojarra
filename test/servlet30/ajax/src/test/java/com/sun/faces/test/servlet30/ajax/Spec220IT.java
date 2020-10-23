@@ -24,6 +24,7 @@ import static junit.framework.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class Spec220IT {
 
@@ -48,7 +49,7 @@ public class Spec220IT {
         HtmlPage page = webClient.getPage(webUrl + "faces/viewState1.xhtml");
         HtmlTextInput textField = (HtmlTextInput) page.getElementById("firstName");
         textField.setValueAttribute("ajaxFirstName");
-
+        
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("submitAjax");
         page = button.click();
         Thread.sleep(2000);
@@ -57,7 +58,7 @@ public class Spec220IT {
 
         textField = (HtmlTextInput) page.getElementById("firstName");
         textField.setValueAttribute("nonAjaxFirstName");
-
+        
         button = (HtmlSubmitInput) page.getElementById("submitNonAjax");
         page = button.click();
         Thread.sleep(2000);

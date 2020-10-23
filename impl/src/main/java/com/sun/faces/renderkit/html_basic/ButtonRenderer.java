@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,30 +26,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionEvent;
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionEvent;
+
 /**
- * <B>ButtonRenderer</B> is a class that renders the current value of
- * <code>UICommand<code> as a Button.
+ * <B>ButtonRenderer</B> is a class that renders the current value of <code>UICommand<code> as a Button.
  */
 
 public class ButtonRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -66,20 +63,15 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             component.queueEvent(new ActionEvent(context, component));
 
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("This command resulted in form submission " +
-                            " ActionEvent queued.");
-                logger.log(Level.FINE,
-                           "End decoding component {0}",
-                           component.getId());
+                logger.fine("This command resulted in form submission " + " ActionEvent queued.");
+                logger.log(Level.FINE, "End decoding component {0}", component.getId());
             }
         }
 
     }
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -91,7 +83,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         String type = getButtonType(component);
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
 
         String label = "";
         Object value = ((UICommand) component).getValue();
@@ -100,18 +92,15 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         }
 
         /*
-         * If we have any parameters and the button type is submit or button, 
-         * then render Javascript to use later.
-         * RELEASE_PENDING this logic is slightly wrong - we should buffer the user onclick, and use it later.
-         * Leaving it for when we decide how to do script injection.
+         * If we have any parameters and the button type is submit or button, then render Javascript to use later.
+         * RELEASE_PENDING this logic is slightly wrong - we should buffer the user onclick, and use it later. Leaving it for
+         * when we decide how to do script injection.
          */
 
         Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
-        if ( !params.isEmpty() && (type.equals("submit") || type.equals("button"))) {
-           RenderKitUtils.renderJsfJsIfNecessary(context);
+        if (!params.isEmpty() && (type.equals("submit") || type.equals("button"))) {
+            RenderKitUtils.renderJsfJsIfNecessary(context);
         }
-
-
 
         String imageSrc = (String) component.getAttributes().get("image");
         writer.startElement("input", component);
@@ -127,79 +116,66 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             writer.writeAttribute("value", label, "value");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES,
-                                                getNonOnClickBehaviors(component));
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickBehaviors(component));
 
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        String styleClass = (String)
-              component.getAttributes().get("styleClass");
+        String styleClass = (String) component.getAttributes().get("styleClass");
         if (styleClass != null && styleClass.length() > 0) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 
-        RenderKitUtils.renderOnclick(context, 
-                                     component, 
-                                     params,
-                                     null,
-                                     false);
+        RenderKitUtils.renderOnclick(context, component, params, null, false);
 
-        // PENDING(edburns): Prior to i_spec_1111, this element 
+        // PENDING(edburns): Prior to i_spec_1111, this element
         // was rendered unconditionally
 
-        if(component.getChildCount() == 0) {
+        if (component.getChildCount() == 0) {
             writer.endElement("input");
         }
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
-        // PENDING(edburns): Prior to i_spec_1111, this element 
+        // PENDING(edburns): Prior to i_spec_1111, this element
         // was rendered unconditionally
 
-        if(component.getChildCount() > 0) {
+        if (component.getChildCount() > 0) {
             context.getResponseWriter().endElement("input");
         }
     }
 
     // --------------------------------------------------------- Private Methods
 
-
     /**
-     * <p>Determine if this component was activated on the client side.</p>
+     * <p>
+     * Determine if this component was activated on the client side.
+     * </p>
      *
      * @param context the <code>FacesContext</code> for the current request
      * @param component the component of interest
      * @param clientId the client id, if it has been retrieved, otherwise null
-     * @return <code>true</code> if this component was in fact activated,
-     *  otherwise <code>false</code>
+     * @return <code>true</code> if this component was in fact activated, otherwise <code>false</code>
      */
-    private static boolean wasClicked(FacesContext context,
-                                      UIComponent component,
-                                      String clientId) {
+    private static boolean wasClicked(FacesContext context, UIComponent component, String clientId) {
 
         // Was our command the one that caused this submission?
         // we don' have to worry about getting the value from request parameter
         // because we just need to know if this command caused the submission. We
         // can get the command name by calling currentValue. This way we can
         // get around the IE bug.
-        
+
         if (clientId == null) {
             clientId = component.getClientId(context);
         }
 
-        if (context.getPartialViewContext().isAjaxRequest()){
-            return BEHAVIOR_SOURCE_PARAM.getValue(context).contains(clientId);
+        if (context.getPartialViewContext().isAjaxRequest()) {
+            return BEHAVIOR_SOURCE_PARAM.getValue(context).equals(clientId);
         } else {
-            Map<String, String> requestParameterMap = context.getExternalContext()
-                  .getRequestParameterMap();
+            Map<String, String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
 
             if (requestParameterMap.get(clientId) == null) {
 
@@ -213,8 +189,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
                 String xValue = builder.append(".x").toString();
                 builder.setLength(clientId.length());
                 String yValue = builder.append(".y").toString();
-                return (requestParameterMap.get(xValue) != null
-                        && requestParameterMap.get(yValue) != null);
+                return requestParameterMap.get(xValue) != null && requestParameterMap.get(yValue) != null;
             }
             return true;
         }
@@ -222,27 +197,26 @@ public class ButtonRenderer extends HtmlBasicRenderer {
 
     /**
      * @param component the component of interest
-     * @return <code>true</code> if the button represents a <code>reset</code>
-     *  button, otherwise <code>false</code>
+     * @return <code>true</code> if the button represents a <code>reset</code> button, otherwise <code>false</code>
      */
     private static boolean isReset(UIComponent component) {
 
-        return ("reset".equals(component.getAttributes().get("type")));
+        return "reset".equals(component.getAttributes().get("type"));
 
     }
 
     /**
-     * <p>If the component's type attribute is null or not equal
-     * to <code>reset</code>, <code>submit</code> or <code>button</code>,
-     * default to <code>submit</code>.
+     * <p>
+     * If the component's type attribute is null or not equal to <code>reset</code>, <code>submit</code> or
+     * <code>button</code>, default to <code>submit</code>.
+     *
      * @param component the component of interest
      * @return the type for this button
      */
     private static String getButtonType(UIComponent component) {
 
         String type = (String) component.getAttributes().get("type");
-        if (type == null || (!"reset".equals(type) &&
-                !"submit".equals(type) && !"button".equals(type))) {
+        if (type == null || !"reset".equals(type) && !"submit".equals(type) && !"button".equals(type)) {
             type = "submit";
             // This is needed in the decode method
             component.getAttributes().put("type", type);
@@ -252,9 +226,9 @@ public class ButtonRenderer extends HtmlBasicRenderer {
     }
 
     // Returns the Behaviors map, but only if it contains some entry other
-    // than those handled by renderOnclick().  This helps us optimize
+    // than those handled by renderOnclick(). This helps us optimize
     // renderPassThruAttributes() in the very common case where the
-    // button only contains an "action" (or "click") Behavior.  In that
+    // button only contains an "action" (or "click") Behavior. In that
     // we pass a null Behaviors map into renderPassThruAttributes(),
     // which allows us to take a more optimized code path.
     private static Map<String, List<ClientBehavior>> getNonOnClickBehaviors(UIComponent component) {

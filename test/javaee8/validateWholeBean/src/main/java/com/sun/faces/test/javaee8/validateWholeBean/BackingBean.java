@@ -17,6 +17,7 @@
 package com.sun.faces.test.javaee8.validateWholeBean;
 
 import java.io.Serializable;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
@@ -29,12 +30,9 @@ public class BackingBean implements Serializable {
     
     private String password1;
     private String password2;
-
-    public BackingBean() {
-        password1="";
-        password2="";
-    }   
     
+    private User user = new User();
+
     public String getPassword1() {
         return password1;
     }
@@ -50,4 +48,8 @@ public class BackingBean implements Serializable {
     public void setPassword2(String password2) {
         this.password2 = password2;
     }
+    
+    public User getUser() {
+		return user;
+	}
 }

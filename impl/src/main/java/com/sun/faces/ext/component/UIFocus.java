@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,19 +16,19 @@
 
 package com.sun.faces.ext.component;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 /**
  * Component to set a focus on a given field.
- * 
+ *
  * @author driscoll
  */
 public class UIFocus extends UIComponentBase {
-    
+
     private static final String FAMILY = "FocusFamily";
-            
+
     @Override
     public String getFamily() {
         return FAMILY;
     }
-}  
+}

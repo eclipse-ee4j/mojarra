@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -41,14 +41,16 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.Expression;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.util.Util;
+
+import jakarta.el.Expression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.ValueBinding;
 
 /**
  * <p>
@@ -56,8 +58,8 @@ import com.sun.faces.util.Util;
  * </p>
  *
  * <p>
- * The public static methods of this class are exposed as EL functions under
- * the namespace <code>http://java.sun.com/mojarra/private/functions</code>
+ * The public static methods of this class are exposed as EL functions under the namespace
+ * <code>http://java.sun.com/mojarra/private/functions</code>
  * </p>
  *
  *
@@ -79,52 +81,46 @@ public final class DevTools {
 
     private static String[] DEBUG_PARTS;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     private DevTools() {
         throw new IllegalStateException();
     }
 
-
     // ---------------------------------------------------------- Public Methods
 
+    public static void debugHtml(Writer writer, FacesContext faces, Throwable e) throws IOException {
 
-     public static void debugHtml(Writer writer, FacesContext faces, Throwable e) throws IOException {
-
-         init();
-         Date now = new Date();
-         for (String ERROR_PART : ERROR_PARTS) {
-             if (null != ERROR_PART) {
-                 switch (ERROR_PART) {
-                     case "message":
-                         writeMessage(writer, e);
-                         break;
-                     case "trace":
-                         writeException(writer, e);
-                         break;
-                     case "now":
-                         writer.write(DateFormat.getDateTimeInstance().format(now));
-                         break;
-                     case "tree":
-                         writeComponent(writer, faces.getViewRoot());
-                         break;
-                     case "vars":
-                         writeVariables(writer, faces);
-                         break;
-                     default:
-                         writer.write(ERROR_PART);
-                         break;
-                 }
-             }
-         }
+        init();
+        Date now = new Date();
+        for (String ERROR_PART : ERROR_PARTS) {
+            if (null != ERROR_PART) {
+                switch (ERROR_PART) {
+                case "message":
+                    writeMessage(writer, e);
+                    break;
+                case "trace":
+                    writeException(writer, e);
+                    break;
+                case "now":
+                    writer.write(DateFormat.getDateTimeInstance().format(now));
+                    break;
+                case "tree":
+                    writeComponent(writer, faces.getViewRoot());
+                    break;
+                case "vars":
+                    writeVariables(writer, faces);
+                    break;
+                default:
+                    writer.write(ERROR_PART);
+                    break;
+                }
+            }
+        }
 
     }
 
-
-    public static void writeMessage(Writer writer, Throwable e)
-    throws IOException {
+    public static void writeMessage(Writer writer, Throwable e) throws IOException {
 
         if (e != null) {
             String msg = e.getMessage();
@@ -137,9 +133,7 @@ public final class DevTools {
 
     }
 
-
-    public static void writeException(Writer writer, Throwable e)
-    throws IOException {
+    public static void writeException(Writer writer, Throwable e) throws IOException {
 
         if (e != null) {
             StringWriter str = new StringWriter(256);
@@ -151,41 +145,37 @@ public final class DevTools {
 
     }
 
-
-    public static void debugHtml(Writer writer, FacesContext faces)
-    throws IOException {
+    public static void debugHtml(Writer writer, FacesContext faces) throws IOException {
 
         // PENDING - this and debugHtml(Writer, FacesContext, Exception) should
-        //           be refactored to share code.
+        // be refactored to share code.
         init();
         Date now = new Date();
         for (String DEBUG_PART : DEBUG_PARTS) {
             if (null != DEBUG_PART) {
                 switch (DEBUG_PART) {
-                    case "message":
-                        writer.write(faces.getViewRoot().getViewId());
-                        break;
-                    case "now":
-                        writer.write(DateFormat.getDateTimeInstance().format(now));
-                        break;
-                    case "tree":
-                        writeComponent(writer, faces.getViewRoot());
-                        break;
-                    case "vars":
-                        writeVariables(writer, faces);
-                        break;
-                    default:
-                        writer.write(DEBUG_PART);
-                        break;
+                case "message":
+                    writer.write(faces.getViewRoot().getViewId());
+                    break;
+                case "now":
+                    writer.write(DateFormat.getDateTimeInstance().format(now));
+                    break;
+                case "tree":
+                    writeComponent(writer, faces.getViewRoot());
+                    break;
+                case "vars":
+                    writeVariables(writer, faces);
+                    break;
+                default:
+                    writer.write(DEBUG_PART);
+                    break;
                 }
             }
         }
 
     }
 
-
-    public static void writeVariables(Writer writer, FacesContext faces)
-    throws IOException {
+    public static void writeVariables(Writer writer, FacesContext faces) throws IOException {
 
         ExternalContext ctx = faces.getExternalContext();
         writeVariables(writer, ctx.getRequestParameterMap(), "Request Parameters");
@@ -194,10 +184,10 @@ public final class DevTools {
             if (viewMap != null) {
                 writeVariables(writer, viewMap, "View Attributes");
             } else {
-                writeVariables(writer, Collections.<String,Object>emptyMap(), "View Attributes");
+                writeVariables(writer, Collections.<String, Object>emptyMap(), "View Attributes");
             }
         } else {
-            writeVariables(writer, Collections.<String,Object>emptyMap(), "View Attributes");
+            writeVariables(writer, Collections.<String, Object>emptyMap(), "View Attributes");
         }
         writeVariables(writer, ctx.getRequestMap(), "Request Attributes");
         Flash flash = ctx.getFlash();
@@ -211,22 +201,21 @@ public final class DevTools {
         if (flash != null) {
             writeVariables(writer, flash, "Flash Attributes");
         } else {
-            writeVariables(writer, Collections.<String,Object>emptyMap(), "Flash Attributes");
+            writeVariables(writer, Collections.<String, Object>emptyMap(), "Flash Attributes");
         }
         if (ctx.getSession(false) != null) {
             writeVariables(writer, ctx.getSessionMap(), "Session Attributes");
         } else {
-            writeVariables(writer, Collections.<String,Object>emptyMap(), "Session Attributes");
+            writeVariables(writer, Collections.<String, Object>emptyMap(), "Session Attributes");
         }
         writeVariables(writer, ctx.getApplicationMap(), "Application Attributes");
 
     }
 
+    public static void writeComponent(Writer writer, UIComponent c) throws IOException {
 
-    public static void writeComponent(Writer writer, UIComponent c)
-    throws IOException {
-
-        writer.write("<dl style=\"color: #006;\"><dt style=\"border: 1px solid #DDD; padding: 4px; border-left: 2px solid #666; font-family: 'Courier New', Courier, mono; font-size: small;");
+        writer.write(
+                "<dl style=\"color: #006;\"><dt style=\"border: 1px solid #DDD; padding: 4px; border-left: 2px solid #666; font-family: 'Courier New', Courier, mono; font-size: small;");
         if (c != null) {
             if (isText(c)) {
                 writer.write("color: #999;");
@@ -244,10 +233,8 @@ public final class DevTools {
         if (hasChildren) {
             if (c.getFacets().size() > 0) {
                 for (Map.Entry entry : c.getFacets().entrySet()) {
-                    writer.write(
-                          "<dd style=\"margin-top: 2px; margin-bottom: 2px;\">");
-                    writer.write(
-                          "<span style=\"font-family: 'Trebuchet MS', Verdana, Arial, Sans-Serif; font-size: small;\">");
+                    writer.write("<dd style=\"margin-top: 2px; margin-bottom: 2px;\">");
+                    writer.write("<span style=\"font-family: 'Trebuchet MS', Verdana, Arial, Sans-Serif; font-size: small;\">");
                     writer.write((String) entry.getKey());
                     writer.write("</span>");
                     writeComponent(writer, (UIComponent) entry.getValue());
@@ -256,13 +243,13 @@ public final class DevTools {
             }
             if (c.getChildCount() > 0) {
                 for (UIComponent child : c.getChildren()) {
-                    writer.write(
-                          "<dd style=\"margin-top: 2px; margin-bottom: 2px;\">");
+                    writer.write("<dd style=\"margin-top: 2px; margin-bottom: 2px;\">");
                     writeComponent(writer, child);
                     writer.write("</dd>");
                 }
             }
-            writer.write("<dt style=\"border: 1px solid #DDD; padding: 4px; border-left: 2px solid #666; font-family: 'Courier New', Courier, mono; font-size: small;\">");
+            writer.write(
+                    "<dt style=\"border: 1px solid #DDD; padding: 4px; border-left: 2px solid #666; font-family: 'Courier New', Courier, mono; font-size: small;\">");
             writeEnd(writer, c);
             writer.write("</dt>");
         }
@@ -270,9 +257,7 @@ public final class DevTools {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private static void init() throws IOException {
 
@@ -285,7 +270,6 @@ public final class DevTools {
         }
 
     }
-
 
     private static String[] splitTemplate(String rsc) throws IOException {
 
@@ -317,29 +301,23 @@ public final class DevTools {
 
     }
 
+    private static void writeVariables(Writer writer, Map<String, ?> vars, String caption) throws IOException {
 
-
-
-
-    private static void writeVariables(Writer writer, Map<String,?> vars, String caption) throws IOException {
-
-        writer.write("<table style=\"border: 1px solid #CCC; border-collapse: collapse; border-spacing: 0px; width: 100%; text-align: left;\"><caption style=\"text-align: left; padding: 10px 0; font-size: large;\">");
+        writer.write(
+                "<table style=\"border: 1px solid #CCC; border-collapse: collapse; border-spacing: 0px; width: 100%; text-align: left;\"><caption style=\"text-align: left; padding: 10px 0; font-size: large;\">");
         writer.write(caption);
-        writer.write("</caption><thead stype=\"padding: 2px; color: #030; background-color: #F9F9F9;\"><tr style=\"padding: 2px; color: #030; background-color: #F9F9F9;\"><th style=\"padding: 2px; color: #030; background-color: #F9F9F9;width: 10%; \">Name</th><th style=\"padding: 2px; color: #030; background-color: #F9F9F9;width: 90%; \">Value</th></tr></thead><tbody style=\"padding: 10px 6px;\">");
+        writer.write(
+                "</caption><thead stype=\"padding: 2px; color: #030; background-color: #F9F9F9;\"><tr style=\"padding: 2px; color: #030; background-color: #F9F9F9;\"><th style=\"padding: 2px; color: #030; background-color: #F9F9F9;width: 10%; \">Name</th><th style=\"padding: 2px; color: #030; background-color: #F9F9F9;width: 90%; \">Value</th></tr></thead><tbody style=\"padding: 10px 6px;\">");
         boolean written = false;
         if (!vars.isEmpty()) {
-            SortedMap<String,Object> map = new TreeMap<>(vars);
-            for (Map.Entry<String,Object> entry : map.entrySet()) {
+            SortedMap<String, Object> map = new TreeMap<>(vars);
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String key = entry.getKey();
                 if (key.indexOf('.') == -1) {
-                    writer.write(
-                          "<tr style=\"padding: 10px 6px;\"><td style=\"padding: 10px 6px;\">");
+                    writer.write("<tr style=\"padding: 10px 6px;\"><td style=\"padding: 10px 6px;\">");
                     writer.write(key.replaceAll("<", TS));
                     writer.write("</td><td>");
-                    writer.write(entry.getValue() == null
-                                 ? "null"
-                                 : entry.getValue().toString()
-                                       .replaceAll("<", TS));
+                    writer.write(entry.getValue() == null ? "null" : entry.getValue().toString().replaceAll("<", TS));
                     writer.write("</td></tr>");
                     written = true;
                 }
@@ -351,8 +329,6 @@ public final class DevTools {
         writer.write("</tbody></table>");
 
     }
-
-
 
     private static void writeEnd(Writer writer, UIComponent c) throws IOException {
 
@@ -373,15 +349,12 @@ public final class DevTools {
             BeanInfo info = Introspector.getBeanInfo(c.getClass());
             PropertyDescriptor[] pd = info.getPropertyDescriptors();
             for (PropertyDescriptor aPd : pd) {
-                if (aPd.getWriteMethod() != null
-                    && Arrays.binarySearch(IGNORE, aPd.getName()) < 0) {
+                if (aPd.getWriteMethod() != null && Arrays.binarySearch(IGNORE, aPd.getName()) < 0) {
                     Method m = aPd.getReadMethod();
                     try {
                         Object v = m.invoke(c);
                         if (v != null) {
-                            if (v instanceof Collection
-                                || v instanceof Map
-                                || v instanceof Iterator) {
+                            if (v instanceof Collection || v instanceof Map || v instanceof Iterator) {
                                 continue;
                             }
                             writer.write(" ");
@@ -390,6 +363,10 @@ public final class DevTools {
                             String str;
                             if (v instanceof Expression) {
                                 str = ((Expression) v).getExpressionString();
+                            } else if (v instanceof ValueBinding) {
+                                str = ((ValueBinding) v).getExpressionString();
+                            } else if (v instanceof MethodBinding) {
+                                str = ((MethodBinding) v).getExpressionString();
                             } else {
                                 str = v.toString();
                             }
@@ -408,7 +385,13 @@ public final class DevTools {
                 }
             }
 
-        } catch (IntrospectionException e) {
+            ValueBinding binding = c.getValueBinding("binding");
+            if (binding != null) {
+                writer.write(" binding=\"");
+                writer.write(binding.getExpressionString().replaceAll("<", TS));
+                writer.write("\"");
+            }
+        } catch (IntrospectionException | IOException e) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "Error writing out attributes", e);
             }
@@ -443,7 +426,7 @@ public final class DevTools {
 
     private static boolean isText(UIComponent c) {
 
-        return (c.getClass().getName().startsWith("com.sun.faces.facelets.compiler"));
+        return c.getClass().getName().startsWith("com.sun.faces.facelets.compiler");
 
     }
 

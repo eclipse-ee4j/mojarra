@@ -16,15 +16,14 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 public class Issue3473IT {
 
@@ -49,10 +48,8 @@ public class Issue3473IT {
         HtmlPage page = webClient.getPage(webUrl + "faces/ajaxScriptError.xhtml");
         HtmlElement button = page.getHtmlElementById("form:commandButton");
         webClient.waitForBackgroundJavaScript(60000);
-
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-
         assertTrue(page.asXml().contains("Error from form:commandButton"));
     }
 }

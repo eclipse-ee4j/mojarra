@@ -18,9 +18,9 @@ package com.sun.faces.test.servlet40.facelets;
 
 import java.util.Iterator;
 
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
 
-@Named
+@ManagedBean
 public class IterableBean {
 
     public Iterable<Integer> getIterable() {

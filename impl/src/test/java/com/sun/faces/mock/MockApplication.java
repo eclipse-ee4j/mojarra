@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -35,33 +35,32 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.el.ELContextListener;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.event.SystemEventListenerHolder;
-import javax.faces.validator.Validator;
-import javax.servlet.ServletContext;
-
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.servlet.ServletContext;
 import com.sun.el.ExpressionFactoryImpl;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.*;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.event.SystemEventListenerHolder;
+import jakarta.faces.validator.Validator;
 
 public class MockApplication extends Application {
 
@@ -71,16 +70,16 @@ public class MockApplication extends Application {
 
     public MockApplication() {
         addComponent("TestNamingContainer",
-                "javax.faces.webapp.TestNamingContainer");
-        addComponent("TestComponent", "javax.faces.webapp.TestComponent");
-        addComponent("TestInput", "javax.faces.component.UIInput");
-        addComponent("TestOutput", "javax.faces.component.UIOutput");
-        addConverter("Integer", "javax.faces.convert.IntegerConverter");
-        addConverter("javax.faces.Number",
-                "javax.faces.convert.NumberConverter");
-        addConverter("javax.faces.Long",
-                "javax.faces.convert.LongConverter");
-        addValidator("Length", "javax.faces.validator.LengthValidator");
+                "jakarta.faces.webapp.TestNamingContainer");
+        addComponent("TestComponent", "jakarta.faces.webapp.TestComponent");
+        addComponent("TestInput", "jakarta.faces.component.UIInput");
+        addComponent("TestOutput", "jakarta.faces.component.UIOutput");
+        addConverter("Integer", "jakarta.faces.convert.IntegerConverter");
+        addConverter("jakarta.faces.Number",
+                "jakarta.faces.convert.NumberConverter");
+        addConverter("jakarta.faces.Long",
+                "jakarta.faces.convert.LongConverter");
+        addValidator("Length", "jakarta.faces.validator.LengthValidator");
         servletContext = new MockServletContext();
     }
 
@@ -88,18 +87,15 @@ public class MockApplication extends Application {
     private ActionListener actionListener = null;
     private static boolean processActionCalled = false;
 
-    @Override
     public ActionListener getActionListener() {
         if (null == actionListener) {
             actionListener = new ActionListener() {
-                @Override
                 public void processAction(ActionEvent e) {
                     processActionCalled = true;
                 }
 
                 // see if the other object is the same as our
                 // anonymous inner class implementation.
-                @Override
                 public boolean equals(Object otherObj) {
                     if (!(otherObj instanceof ActionListener)) {
                         return false;
@@ -118,19 +114,16 @@ public class MockApplication extends Application {
         return (this.actionListener);
     }
 
-    @Override
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
     }
 
     private NavigationHandler navigationHandler = null;
 
-    @Override
     public NavigationHandler getNavigationHandler() {
         return (this.navigationHandler);
     }
 
-    @Override
     public void setNavigationHandler(NavigationHandler navigationHandler) {
         this.navigationHandler = navigationHandler;
     }
@@ -147,21 +140,46 @@ public class MockApplication extends Application {
         this.resourceHandler = resourceHandler;
     }
 
+    private PropertyResolver propertyResolver = null;
+
+    public PropertyResolver getPropertyResolver() {
+        if (propertyResolver == null) {
+            propertyResolver = new MockPropertyResolver();
+        }
+        return (this.propertyResolver);
+    }
+
+    public void setPropertyResolver(PropertyResolver propertyResolver) {
+        this.propertyResolver = propertyResolver;
+    }
+
+    public MethodBinding createMethodBinding(String ref, Class params[]) {
+        if (ref == null) {
+            throw new NullPointerException();
+        } else {
+            return (new MockMethodBinding(this, ref, params));
+        }
+    }
+
+    public ValueBinding createValueBinding(String ref) {
+        if (ref == null) {
+            throw new NullPointerException();
+        } else {
+            return (new MockValueBinding(this, ref));
+        }
+    }
 
     // PENDING(edburns): implement
-    @Override
     public void addELResolver(ELResolver resolver) {
     }
 
     // PENDING(edburns): implement
-    @Override
     public ELResolver getELResolver() {
         return null;
     }
 
     private ExpressionFactory expressionFactory = null;
 
-    @Override
     public ExpressionFactory getExpressionFactory() {
         if (null == expressionFactory) {
             expressionFactory = new ExpressionFactoryImpl();
@@ -169,7 +187,6 @@ public class MockApplication extends Application {
         return expressionFactory;
     }
 
-    @Override
     public Object evaluateExpressionGet(FacesContext context,
             String expression,
             Class expectedType) throws ELException {
@@ -177,9 +194,21 @@ public class MockApplication extends Application {
         return ve.getValue(context.getELContext());
     }
 
+    private VariableResolver variableResolver = null;
+
+    public VariableResolver getVariableResolver() {
+        if (variableResolver == null) {
+            variableResolver = new MockVariableResolver();
+        }
+        return (this.variableResolver);
+    }
+
+    public void setVariableResolver(VariableResolver variableResolver) {
+        this.variableResolver = variableResolver;
+    }
+
     private ViewHandler viewHandler = null;
 
-    @Override
     public ViewHandler getViewHandler() {
         if (null == viewHandler) {
             viewHandler = new MockViewHandler();
@@ -187,14 +216,12 @@ public class MockApplication extends Application {
         return (this.viewHandler);
     }
 
-    @Override
     public void setViewHandler(ViewHandler viewHandler) {
         this.viewHandler = viewHandler;
     }
 
     private StateManager stateManager = null;
 
-    @Override
     public StateManager getStateManager() {
         if (null == stateManager) {
             stateManager = new MockStateManager();
@@ -202,19 +229,16 @@ public class MockApplication extends Application {
         return (this.stateManager);
     }
 
-    @Override
     public void setStateManager(StateManager stateManager) {
         this.stateManager = stateManager;
     }
 
     private Map components = new HashMap();
 
-    @Override
     public void addComponent(String componentType, String componentClass) {
         components.put(componentType, componentClass);
     }
 
-    @Override
     public UIComponent createComponent(String componentType) {
         String componentClass = (String) components.get(componentType);
         try {
@@ -225,7 +249,13 @@ public class MockApplication extends Application {
         }
     }
 
-    @Override
+    public UIComponent createComponent(ValueBinding componentBinding,
+            FacesContext context,
+            String componentType)
+            throws FacesException {
+        throw new FacesException(new UnsupportedOperationException());
+    }
+
     public UIComponent createComponent(ValueExpression componentExpression,
             FacesContext context,
             String componentType)
@@ -233,24 +263,20 @@ public class MockApplication extends Application {
         throw new FacesException(new UnsupportedOperationException());
     }
 
-    @Override
     public Iterator getComponentTypes() {
         return (components.keySet().iterator());
     }
 
     private Map converters = new HashMap();
 
-    @Override
     public void addConverter(String converterId, String converterClass) {
         converters.put(converterId, converterClass);
     }
 
-    @Override
     public void addConverter(Class targetClass, String converterClass) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public Converter createConverter(String converterId) {
         String converterClass = (String) converters.get(converterId);
         try {
@@ -261,41 +287,34 @@ public class MockApplication extends Application {
         }
     }
 
-    @Override
     public Converter createConverter(Class targetClass) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public Iterator getConverterIds() {
         return (converters.keySet().iterator());
     }
 
-    @Override
     public Iterator getConverterTypes() {
         throw new UnsupportedOperationException();
     }
 
     private String messageBundle = null;
 
-    @Override
     public void setMessageBundle(String messageBundle) {
         this.messageBundle = messageBundle;
     }
 
-    @Override
     public String getMessageBundle() {
         return messageBundle;
     }
 
     private Map validators = new HashMap();
 
-    @Override
     public void addValidator(String validatorId, String validatorClass) {
         validators.put(validatorId, validatorClass);
     }
 
-    @Override
     public Validator createValidator(String validatorId) {
         String validatorClass = (String) validators.get(validatorId);
         try {
@@ -306,56 +325,45 @@ public class MockApplication extends Application {
         }
     }
 
-    @Override
     public Iterator getValidatorIds() {
         return (validators.keySet().iterator());
     }
 
-    @Override
     public Iterator getSupportedLocales() {
         return Collections.EMPTY_LIST.iterator();
     }
 
-    @Override
     public void setSupportedLocales(Collection newLocales) {
     }
 
-    @Override
     public void addELContextListener(ELContextListener listener) {
         // PENDING(edburns): maybe implement
     }
 
-    @Override
     public void removeELContextListener(ELContextListener listener) {
         // PENDING(edburns): maybe implement
     }
 
-    @Override
     public ELContextListener[] getELContextListeners() {
         // PENDING(edburns): maybe implement
         return (ELContextListener[]) java.lang.reflect.Array.newInstance(ELContextListener.class,
                 0);
     }
 
-    @Override
     public Locale getDefaultLocale() {
         return Locale.getDefault();
     }
 
-    @Override
     public void setDefaultLocale(Locale newLocale) {
     }
 
-    @Override
     public String getDefaultRenderKitId() {
         return null;
     }
 
-    @Override
     public void setDefaultRenderKitId(String renderKitId) {
     }
 
-    @Override
     public ResourceBundle getResourceBundle(FacesContext ctx, String name) {
         return null;
     }
@@ -383,8 +391,8 @@ public class MockApplication extends Application {
      *
      * <li><p>
      * If the <code>source</code> argument implements {@link
-     * javax.faces.event.SystemEventListenerHolder}, call {@link
-     * javax.faces.event.SystemEventListenerHolder#getListenersForEventClass} on
+     * jakarta.faces.event.SystemEventListenerHolder}, call {@link
+     * jakarta.faces.event.SystemEventListenerHolder#getListenersForEventClass} on
      * it, passing the <code>systemEventClass</code> argument. If the list is
      * not empty, perform algorithm
      * <em>traverseListenerList</em> on the list.</p></li>
@@ -393,20 +401,20 @@ public class MockApplication extends Application {
      * If any <code>Application</code> level listeners have been installed by
      * previous calls to {@link
      * #subscribeToEvent(Class, Class,
-     *     javax.faces.event.SystemEventListener)}, perform algorithm
+     *     jakarta.faces.event.SystemEventListener)}, perform algorithm
      * <em>traverseListenerList</em> on the list.</p></li>
      *
      * <li><p>
      * If any <code>Application</code> level listeners have been installed by
      * previous calls to {@link
-     * #subscribeToEvent(Class, javax.faces.event.SystemEventListener)}, perform
+     * #subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)}, perform
      * algorithm <em>traverseListenerList</em> on the list.</p></li>
      *
      * </ul>
      *
      * <p>
      * If the act of invoking the <code>processListener</code> method causes an
-     * {@link javax.faces.event.AbortProcessingException} to be thrown,
+     * {@link jakarta.faces.event.AbortProcessingException} to be thrown,
      * processing of the listeners must be aborted.</p>
      *
      * RELEASE_PENDING (edburns,rogerk) it may be prudent to specify how the
@@ -420,7 +428,7 @@ public class MockApplication extends Application {
      *
      * <li><p>
      * Call {@link
-     * javax.faces.event.SystemEventListener#isListenerForSource}, passing the
+     * jakarta.faces.event.SystemEventListener#isListenerForSource}, passing the
      * <code>source</code> argument. If this returns <code>false</code>, take no
      * action on the listener.</p></li>
      *
@@ -432,12 +440,12 @@ public class MockApplication extends Application {
      * listener instances.</p></li>
      *
      * <li><p>
-     * Call {@link javax.faces.event.SystemEvent#isAppropriateListener}, passing
+     * Call {@link jakarta.faces.event.SystemEvent#isAppropriateListener}, passing
      * the listener instance as the argument. If this returns
      * <code>false</code>, take no action on the listener.</p></li>
      *
      * <li><p>
-     * Call {@link javax.faces.event.SystemEvent#processListener}, passing the
+     * Call {@link jakarta.faces.event.SystemEvent#processListener}, passing the
      * listener instance. </p></li>
      *
      * </ul>
@@ -453,7 +461,6 @@ public class MockApplication extends Application {
      *
      * @since 2.0
      */
-    @Override
     public void publishEvent(FacesContext context,
             Class<? extends SystemEvent> systemEventClass,
             Object source) {
@@ -504,12 +511,12 @@ public class MockApplication extends Application {
      * to store the argument <code>listener</code> in the application in such a
      * way that the <code>listener</code> can be quickly looked up by the
      * implementation of
-     * {@link javax.faces.application.Application#publishEvent} given
+     * {@link jakarta.faces.application.Application#publishEvent} given
      * <code>systemEventClass</code> and an instance of the <code>Class</code>
      * referenced by <code>sourceClass</code>. If argument
      * <code>sourceClass</code> is <code>null</code>, the <code>listener</code>
      * must be discoverable by the implementation of
-     * {@link javax.faces.application.Application#publishEvent} given only
+     * {@link jakarta.faces.application.Application#publishEvent} given only
      * <code>systemEventClass</code>.
      * </p>
      *
@@ -523,8 +530,8 @@ public class MockApplication extends Application {
      * <code>null</code>.
      *
      * @param listener the implementation of {@link
-     * javax.faces.event.SystemEventListener} whose {@link
-     * javax.faces.event.SystemEventListener#processEvent} method must be called
+     * jakarta.faces.event.SystemEventListener} whose {@link
+     * jakarta.faces.event.SystemEventListener#processEvent} method must be called
      * when events of type <code>systemEventClass</code> are fired.
      *
      * @throws <code>NullPointerException</code> if any combination of
@@ -533,7 +540,6 @@ public class MockApplication extends Application {
      *
      * @since 2.0
      */
-    @Override
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass,
             Class<?> sourceClass,
             SystemEventListener listener) {
@@ -556,15 +562,15 @@ public class MockApplication extends Application {
      * argument <code>listener</code> into application as a listener for events
      * of type <code>systemEventClass</code>. The default implementation simply
      * calls through to
-     * {@link #subscribeToEvent(Class, Class, javax.faces.event.SystemEventListener)}
+     * {@link #subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)}
      * passing <code>null</code> as the <code>sourceClass</code> argument</p>
      *
      * @param systemEventClass the <code>Class</code> of event for which
      * <code>listener</code> must be fired.
      *
      * @param listener the implementation of {@link
-     * javax.faces.event.SystemEventListener} whose {@link
-     * javax.faces.event.SystemEventListener#processEvent} method must be called
+     * jakarta.faces.event.SystemEventListener} whose {@link
+     * jakarta.faces.event.SystemEventListener#processEvent} method must be called
      * when events of type <code>systemEventClass</code> are fired.
      *
      * @throws <code>NullPointerException</code> if any combination of
@@ -573,7 +579,6 @@ public class MockApplication extends Application {
      *
      * @since 2.0
      */
-    @Override
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass,
             SystemEventListener listener) {
 
@@ -587,7 +592,7 @@ public class MockApplication extends Application {
      * events of type <code>systemEventClass</code> that originate from objects
      * of type <code>sourceClass</code>. See {@link
      * #subscribeToEvent(Class, Class,
-     * javax.faces.event.SystemEventListener)} for the specification of how the
+     * jakarta.faces.event.SystemEventListener)} for the specification of how the
      * listener is stored, and therefore, how it must be removed.</p>
      *
      * @param systemEventClass the <code>Class</code> of event for which
@@ -598,14 +603,13 @@ public class MockApplication extends Application {
      * <code>null</code>.
      *
      * @param listener the implementation of {@link
-     * javax.faces.event.SystemEventListener} to remove from the internal data
+     * jakarta.faces.event.SystemEventListener} to remove from the internal data
      * structure.
      *
      * @throws <code>NullPointerException</code> if any combination of
      * <code>context</code>, <code>systemEventClass</code>, or
      * <code>listener</code> are <code>null</code>.
      */
-    @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass,
             Class<?> sourceClass,
             SystemEventListener listener) {
@@ -630,21 +634,20 @@ public class MockApplication extends Application {
      * argument <code>listener</code> from the application as a listener for
      * events of type <code>systemEventClass</code>. The default implementation
      * simply calls through to
-     * {@link #unsubscribeFromEvent(Class, javax.faces.event.SystemEventListener)}
+     * {@link #unsubscribeFromEvent(Class, jakarta.faces.event.SystemEventListener)}
      * passing <code>null</code> as the <code>sourceClass</code> argument</p>
      *
      * @param systemEventClass the <code>Class</code> of event for which
      * <code>listener</code> must be fired.
      *
      * @param listener the implementation of {@link
-     * javax.faces.event.SystemEventListener} to remove from the internal data
+     * jakarta.faces.event.SystemEventListener} to remove from the internal data
      * structure.
      *
      * @throws <code>NullPointerException</code> if any combination of
      * <code>context</code>, <code>systemEventClass</code>, or
      * <code>listener</code> are <code>null</code>.
      */
-    @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass,
             SystemEventListener listener) {
 
@@ -695,7 +698,7 @@ public class MockApplication extends Application {
      * Traverse the <code>List</code> of listeners and invoke any that are
      * relevent for the specified source.
      *
-     * @throws javax.faces.event.AbortProcessingException propagated from the
+     * @throws jakarta.faces.event.AbortProcessingException propagated from the
      * listener invocation
      */
     private SystemEvent invokeListenersFor(Class<? extends SystemEvent> systemEventClass,
@@ -756,7 +759,6 @@ public class MockApplication extends Application {
             systemEventInfoCache
                     = new Cache<Class<? extends SystemEvent>, SystemEventInfo>(
                             new Factory<Class<? extends SystemEvent>, SystemEventInfo>() {
-                                @Override
                                 public SystemEventInfo newInstance(final Class<? extends SystemEvent> arg)
                                 throws InterruptedException {
                                     return new SystemEventInfo(arg);
@@ -793,7 +795,7 @@ public class MockApplication extends Application {
     } // END SystemEventHelper
 
     /**
-     * Utility class for dealing with {@link javax.faces.component.UIComponent}
+     * Utility class for dealing with {@link jakarta.faces.component.UIComponent}
      * events.
      */
     private static class ComponentSystemEventHelper {
@@ -807,13 +809,11 @@ public class MockApplication extends Application {
             // ~generics++
             Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> eventCacheFactory
                     = new Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>>() {
-                        @Override
                         public Cache<Class<? extends SystemEvent>, EventInfo> newInstance(
                                 final Class<?> sourceClass)
                         throws InterruptedException {
                             Factory<Class<? extends SystemEvent>, EventInfo> eventInfoFactory
                             = new Factory<Class<? extends SystemEvent>, EventInfo>() {
-                                @Override
                                 public EventInfo newInstance(final Class<? extends SystemEvent> systemEventClass)
                                 throws InterruptedException {
                                     return new EventInfo(systemEventClass, sourceClass);
@@ -847,7 +847,6 @@ public class MockApplication extends Application {
 
         private Cache<Class<?>, EventInfo> cache = new Cache<Class<?>, EventInfo>(
                 new Factory<Class<?>, EventInfo>() {
-                    @Override
                     public EventInfo newInstance(Class<?> arg)
                     throws InterruptedException {
                         return new EventInfo(systemEvent, arg);
@@ -1021,7 +1020,6 @@ public class MockApplication extends Application {
                 Future<V> f = cache.get(key);
                 if (f == null) {
                     Callable<V> callable = new Callable<V>() {
-                        @Override
                         public V call() throws Exception {
                             return factory.newInstance(key);
                         }
@@ -1064,20 +1062,20 @@ public class MockApplication extends Application {
         }
 
     } // END Cache
-
+    
     private SearchExpressionHandler searchExpressionHandler;
     private SearchKeywordResolver searchKeywordResolver;
-
+    
     @Override
     public SearchExpressionHandler getSearchExpressionHandler() {
         return searchExpressionHandler;
     }
-
+    
     @Override
     public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler) {
         this.searchExpressionHandler = searchExpressionHandler;
     }
-
+    
     @Override
     public SearchKeywordResolver getSearchKeywordResolver() {
         return searchKeywordResolver;

@@ -16,25 +16,32 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "issue2500Bean")
 @SessionScoped
-public class Issue2500Bean implements Serializable {
+public class Issue2500Bean {
 
-    private static final long serialVersionUID = 1L;
+    
+    public Issue2500Bean() {
+    }
 
-    private boolean visible;
-    private String msg;
+    private boolean visible = false;
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public boolean getVisible() {
+        return visible;
+    }
 
     public void toggle(ActionEvent ae) {
         if (visible) {
@@ -46,35 +53,7 @@ public class Issue2500Bean implements Serializable {
         determineViewStateValueOccurences();
     }
 
-    private void determineViewStateValueOccurences() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        Map<String, String[]> requestParams = context.getExternalContext().getRequestParameterValuesMap();
-        Set<Entry<String, String[]>> s = requestParams.entrySet();
-        Iterator<Entry<String, String[]>> it = s.iterator();
-        while (it.hasNext()) {
-            Entry<String, String[]> m = it.next();
-            String key = m.getKey();
-            String[] values = m.getValue();
-            if (key.equals("javax.faces.ViewState")) {
-                if (null != values) {
-                    if (values.length > 1) {
-                        msg = "javax.faces.ViewState Has More than One Value";
-                    } else if (values.length == 1) {
-                        msg = "javax.faces.ViewState Has One Value";
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public boolean getVisible() {
-        return visible;
-    }
+    public String msg = null;
 
     public void setMsg(String msg) {
         this.msg = msg;
@@ -83,4 +62,26 @@ public class Issue2500Bean implements Serializable {
     public String getMsg() {
         return msg;
     }
+
+    private void determineViewStateValueOccurences() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map <String, String[]>requestParams = context.getExternalContext().getRequestParameterValuesMap();
+        Set s = requestParams.entrySet();
+        Iterator it = s.iterator();
+        while (it.hasNext()) {
+            Map.Entry m = (Map.Entry)it.next();
+            String key = (String)m.getKey();
+            String[] values = (String[])m.getValue();
+            if (key.equals("jakarta.faces.ViewState")) {
+                if (null != values) {
+                    if (values.length > 1) {
+                        msg = "jakarta.faces.ViewState Has More than One Value";
+                    } else if (values.length == 1) {
+                        msg = "jakarta.faces.ViewState Has One Value";
+                    }
+                } 
+               break;
+           }
+        }
+    } 
 }

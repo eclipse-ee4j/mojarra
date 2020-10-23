@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,10 +16,12 @@
 
 package com.sun.faces.util;
 
+import java.security.InvalidKeyException;
+import jakarta.xml.bind.DatatypeConverter;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class ByteArrayGuardAESCTRTest {
@@ -31,7 +33,7 @@ public class ByteArrayGuardAESCTRTest {
 	// simulated flash value
         String value = "1fX_2vX";
         String encrypted = guard.encrypt(value);
-        assertTrue(encrypted.length() < 15);
+        assertTrue(encrypted.length() < 33);
         
         String decryptedValue = guard.decrypt(encrypted);
         assertEquals(decryptedValue, value);
@@ -39,5 +41,16 @@ public class ByteArrayGuardAESCTRTest {
         
     }
     
+    @Test(expected = InvalidKeyException.class)
+    public void testDecryptValueWithoutIvBytes() throws InvalidKeyException {
+        ByteArrayGuardAESCTR sut = new ByteArrayGuardAESCTR();
+        
+        String value = "noIV";
+        byte[] bytes = DatatypeConverter.parseBase64Binary(value);
+        assertTrue(bytes.length < 16);
+
+        sut.decrypt(value);
+    }
+
 }
 

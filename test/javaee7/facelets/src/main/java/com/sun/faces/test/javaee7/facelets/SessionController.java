@@ -19,7 +19,7 @@ package com.sun.faces.test.javaee7.facelets;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.security.PermitAll;
+import jakarta.annotation.security.PermitAll;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 

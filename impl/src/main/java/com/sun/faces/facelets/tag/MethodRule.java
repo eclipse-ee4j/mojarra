@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,17 +16,19 @@
 
 package com.sun.faces.facelets.tag;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.el.MethodExpression;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRule;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
+import com.sun.faces.facelets.el.LegacyMethodBinding;
+
+import jakarta.el.MethodExpression;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
 
 /**
  * Optional Rule for binding Method[Binding|Expression] properties
@@ -49,20 +51,54 @@ public final class MethodRule extends MetaRule {
     }
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta) {
-        if (!name.equals(this.methodName))
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
+        if (!name.equals(methodName)) {
             return null;
+        }
 
-       if (MethodExpression.class.equals(meta.getPropertyType(name))) {
+        if (MethodBinding.class.equals(meta.getPropertyType(name))) {
             Method method = meta.getWriteMethod(name);
             if (method != null) {
-                return new MethodExpressionMetadata(method, attribute,
-                        this.returnTypeClass, this.params);
+                return new MethodBindingMetadata(method, attribute, returnTypeClass, params);
+            }
+        } else if (MethodExpression.class.equals(meta.getPropertyType(name))) {
+            Method method = meta.getWriteMethod(name);
+            if (method != null) {
+                return new MethodExpressionMetadata(method, attribute, returnTypeClass, params);
             }
         }
 
         return null;
+    }
+
+    private static class MethodBindingMetadata extends Metadata {
+        private final Method _method;
+
+        private final TagAttribute _attribute;
+
+        private Class[] _paramList;
+
+        private Class _returnType;
+
+        public MethodBindingMetadata(Method method, TagAttribute attribute, Class returnType, Class[] paramList) {
+            _method = method;
+            _attribute = attribute;
+            _paramList = paramList;
+            _returnType = returnType;
+        }
+
+        @Override
+        public void applyMetadata(FaceletContext ctx, Object instance) {
+            MethodExpression expr = _attribute.getMethodExpression(ctx, _returnType, _paramList);
+
+            try {
+                _method.invoke(instance, new LegacyMethodBinding(expr));
+            } catch (InvocationTargetException e) {
+                throw new TagAttributeException(_attribute, e.getCause());
+            } catch (Exception e) {
+                throw new TagAttributeException(_attribute, e);
+            }
+        }
     }
 
     private static class MethodExpressionMetadata extends Metadata {
@@ -74,8 +110,7 @@ public final class MethodRule extends MetaRule {
 
         private Class _returnType;
 
-        public MethodExpressionMetadata(Method method, TagAttribute attribute,
-                Class returnType, Class[] paramList) {
+        public MethodExpressionMetadata(Method method, TagAttribute attribute, Class returnType, Class[] paramList) {
             _method = method;
             _attribute = attribute;
             _paramList = paramList;
@@ -84,11 +119,10 @@ public final class MethodRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            MethodExpression expr = _attribute.getMethodExpression(ctx,
-                    _returnType, _paramList);
+            MethodExpression expr = _attribute.getMethodExpression(ctx, _returnType, _paramList);
 
             try {
-                _method.invoke(instance, expr );
+                _method.invoke(instance, expr);
             } catch (InvocationTargetException e) {
                 throw new TagAttributeException(_attribute, e.getCause());
             } catch (IllegalAccessException | IllegalArgumentException e) {

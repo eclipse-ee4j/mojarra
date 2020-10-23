@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.nowebxml;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class NoWebXMLIT {
 
@@ -41,18 +39,18 @@ public class NoWebXMLIT {
     public void tearDown() {
         webClient.close();
     }
-
+    
     @Test
     public void testNoWebXML() throws Exception {
 
-        HtmlPage page = webClient.getPage(webUrl + "hello.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/hello.xhtml");
 
         HtmlSubmitInput button = page.getHtmlElementById("form:command");
         page = (HtmlPage) button.click();
         String pageAsText = page.asText();
         assertTrue(pageAsText.contains("Good Morning"));
         String pageText = page.asXml();
-        assertTrue(pageText.contains("<input type=\"hidden\" name=\"javax.faces.ViewState\" id="));
+        assertTrue(pageText.contains("<input type=\"hidden\" name=\"jakarta.faces.ViewState\" id="));
 
         page = webClient.getPage(webUrl + "hello.jsf");
 
@@ -61,15 +59,15 @@ public class NoWebXMLIT {
         pageAsText = page.asText();
         assertTrue(pageAsText.contains("Good Morning"));
         pageText = page.asXml();
-        assertTrue(pageText.contains("<input type=\"hidden\" name=\"javax.faces.ViewState\" id="));
+        assertTrue(pageText.contains("<input type=\"hidden\" name=\"jakarta.faces.ViewState\" id="));
 
         page = webClient.getPage(webUrl + "hello.faces");
 
         button = page.getHtmlElementById("form:command");
         page = (HtmlPage) button.click();
         pageAsText = page.asText();
-        assertTrue(pageAsText.contains("Good Morning"));
+        assertTrue(pageAsText.contains("Good Morning"));        
         pageText = page.asXml();
-        assertTrue(pageText.contains("<input type=\"hidden\" name=\"javax.faces.ViewState\" id="));
+        assertTrue(pageText.contains("<input type=\"hidden\" name=\"jakarta.faces.ViewState\" id="));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,22 +21,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UIWebsocket;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.push.Push;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UIWebsocket;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.push.Push;
 
 /**
  * <p class="changed_added_2_3">
- * This JSF listener for {@link UIViewRoot} ensures that the necessary JavaScript code to open or close the
+ * This Faces listener for {@link UIViewRoot} ensures that the necessary JavaScript code to open or close the
  * <code>WebSocket</code> is properly rendered depending on <code>rendered</code> and <code>connected</code> attributes.
  *
  * @author Bauke Scholtz
@@ -76,10 +76,10 @@ public class WebsocketFacesListener implements SystemEventListener {
     }
 
     /**
-     * If the websocket has just switched its <code>rendered</code> or <code>connected</code> attribute, then
-     * render either the <code>open()</code> script or the <code>close()</code> script. During an ajax request with
-     * partial rendering, it's added as <code>&lt;eval&gt;</code> by partial response writer, else it's just added
-     * as a script component with <code>target="body"</code>.
+     * If the websocket has just switched its <code>rendered</code> or <code>connected</code> attribute, then render either
+     * the <code>open()</code> script or the <code>close()</code> script. During an ajax request with partial rendering,
+     * it's added as <code>&lt;eval&gt;</code> by partial response writer, else it's just added as a script component with
+     * <code>target="body"</code>.
      */
     @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
@@ -88,8 +88,13 @@ public class WebsocketFacesListener implements SystemEventListener {
         }
 
         FacesContext context = ((ComponentSystemEvent) event).getFacesContext();
+        Map<String, Boolean> initializedWebsockets = getInitializedWebsockets(context);
 
-        for (Entry<String, Boolean> initializedWebsocket : getInitializedWebsockets(context).entrySet()) {
+        if (!context.getPartialViewContext().isAjaxRequest()) {
+            initializedWebsockets.clear();
+        }
+
+        for (Entry<String, Boolean> initializedWebsocket : initializedWebsockets.entrySet()) {
             String clientId = initializedWebsocket.getKey();
             UIWebsocket websocket = (UIWebsocket) context.getViewRoot().findComponent(clientId);
             boolean connected = websocket.isRendered() && websocket.isConnected();
@@ -101,10 +106,9 @@ public class WebsocketFacesListener implements SystemEventListener {
 
                 if (pvc.isAjaxRequest() && !pvc.isRenderAll()) {
                     context.getPartialViewContext().getEvalScripts().add(script);
-                }
-                else {
+                } else {
                     UIOutput outputScript = new UIOutput();
-                    outputScript.setRendererType("javax.faces.resource.Script");
+                    outputScript.setRendererType("jakarta.faces.resource.Script");
                     UIOutput content = new UIOutput();
                     content.setValue(script);
                     outputScript.getChildren().add(content);

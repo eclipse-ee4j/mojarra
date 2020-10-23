@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class LocaleConfigIT {
-
+    
     private String webUrl;
     private WebClient webClient;
 

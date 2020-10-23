@@ -16,19 +16,24 @@
 
 package com.sun.faces.test.servlet30.compositecomponentforattribute;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-
 import javax.faces.application.FacesMessage;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ValueChangeEvent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeListener;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.AbortProcessingException;
 
 public class TestValueChangeListener implements ValueChangeListener {
 
+    public TestValueChangeListener() {
+    }
+
     @Override
-    public void processValueChange(ValueChangeEvent vce) throws AbortProcessingException {
-        vce.getFacesContext().addMessage(vce.getComponent().getClientId(vce.getFacesContext()),
-                new FacesMessage(SEVERITY_ERROR, vce.getComponent().getId() + " value was changed", null));
+    public void processValueChange(ValueChangeEvent vce)
+            throws AbortProcessingException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(vce.getComponent().getClientId(context),
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        vce.getComponent().getId() + " value was changed", null));
     }
 
 }

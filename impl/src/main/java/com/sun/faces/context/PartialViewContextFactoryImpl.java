@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,9 +16,9 @@
 
 package com.sun.faces.context;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.PartialViewContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.PartialViewContextFactory;
 
 /**
  * <p>
@@ -33,9 +33,8 @@ public class PartialViewContextFactoryImpl extends PartialViewContextFactory {
 
     // ---------------------------------- Methods from PartialViewContextFactory
 
-
     /**
-     * @see PartialViewContextFactory#getPartialViewContext(javax.faces.context.FacesContext)
+     * @see PartialViewContextFactory#getPartialViewContext(jakarta.faces.context.FacesContext)
      */
     @Override
     public PartialViewContext getPartialViewContext(FacesContext context) {
@@ -43,5 +42,5 @@ public class PartialViewContextFactoryImpl extends PartialViewContextFactory {
         return new PartialViewContextImpl(context);
 
     }
-    
+
 }

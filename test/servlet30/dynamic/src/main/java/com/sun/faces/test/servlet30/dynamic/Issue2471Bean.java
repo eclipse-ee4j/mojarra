@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,31 +16,28 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * The managed bean for issue #2471.
  */
-@Named
+@ManagedBean(name = "issue2471Bean")
 @RequestScoped
 public class Issue2471Bean {
-
-    @Inject
-    private FacesContext context;
 
     /**
      * Remove the component resources.
      */
     public void removeComponentResources() {
+        FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot viewRoot = context.getViewRoot();
 
         for (UIComponent componentResource : viewRoot.getComponentResources(context, "head")) {
             viewRoot.removeComponentResource(context, componentResource, "head");
         }
-    }
+     }
 }

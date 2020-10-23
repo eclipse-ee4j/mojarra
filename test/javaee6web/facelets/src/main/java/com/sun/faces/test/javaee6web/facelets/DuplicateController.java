@@ -16,26 +16,28 @@
 
 package com.sun.faces.test.javaee6web.facelets;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlDataTable;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(
+    name = "duplicateController"
+)
 @ViewScoped
-public class DuplicateController implements Serializable {
-
+public class DuplicateController {
     private static final long serialVersionUID = 1L;
-
-    private List<String> itemsList = new ArrayList<>();
+    private List<String> itemsList = new ArrayList();
     private HtmlDataTable dataTable;
 
+    public DuplicateController() {
+    }
+
     public void createNewRow() {
-        incRows();
-        itemsList.add(0, "new:" + (new Object()).hashCode());
+        this.incRows();
+        String s = "new:" + (new Object()).hashCode();
+        this.itemsList.add(0, s);
     }
 
     private void incRows() {
@@ -44,7 +46,7 @@ public class DuplicateController implements Serializable {
     }
 
     public HtmlDataTable getDataTable() {
-        return dataTable;
+        return this.dataTable;
     }
 
     public void setDataTable(HtmlDataTable dataTable) {
@@ -52,10 +54,11 @@ public class DuplicateController implements Serializable {
     }
 
     public List<String> getItemsList() {
-        return itemsList;
+        return this.itemsList;
     }
 
     public void setItemsList(List<String> itemsList) {
         this.itemsList = itemsList;
     }
 }
+

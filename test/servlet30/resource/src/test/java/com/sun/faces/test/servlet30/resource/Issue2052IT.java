@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.resource;
+package com.sun.faces.test.servlet30.resource; 
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -41,7 +41,7 @@ public class Issue2052IT {
 
     @Test
     public void testResourceWithAndWithoutLibrary() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/resourceNPE.xhtml");
+        HtmlPage page = webClient.getPage(webUrl+"faces/resourceNPE.xhtml");
         assertTrue(page.asText().contains("Library Exists: false"));
     }
 }

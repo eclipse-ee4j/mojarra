@@ -28,8 +28,8 @@
     
 <form id="helloForm" name="helloForm" method="post" action="/test/faces/greeting.jsp;jsessionid=4509bdf1499e8126e1de0a127e40" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="helloForm" value="helloForm" />
-<input type="hidden" name="helloForm:javax.faces.Token" value="75f135210eaa3ee88466008edc114306" />
-<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+<input type="hidden" name="helloForm:jakarta.faces.Token" value="75f135210eaa3ee88466008edc114306" />
+<input type="hidden" name="jakarta.faces.ViewState" id="jakarta.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
 <input id="helloForm:userNo" type="text" name="helloForm:userNo" value="NUMBER" />
   	 <BR>
 

@@ -16,21 +16,13 @@
 
 package com.sun.faces.test.servlet30.charactercombat;
 
-/**
- * <p>
- * SpeciesBean represents the data associated with a species type
- * </p>
- */
+/** <p>SpeciesBean represents the data associated with a species type</p> */
 public class SpeciesBean {
 
-    String type;
-    String language;
-    boolean immortal;
+    String type = null;
 
     /**
-     * <p>
-     * Get the species type
-     * </p>
+     * <p>Get the species type</p>
      *
      * @return species type String
      */
@@ -39,9 +31,7 @@ public class SpeciesBean {
     }
 
     /**
-     * <p>
-     * Set the species type
-     * </p>
+     * <p>Set the species type</p>
      *
      * @param type - species type
      */
@@ -49,10 +39,10 @@ public class SpeciesBean {
         this.type = type;
     }
 
+    String language = null;
+
     /**
-     * <p>
-     * Get the language associated with the species
-     * </p>
+     * <p>Get the language associated with the species</p>
      *
      * @return species language String
      */
@@ -61,9 +51,7 @@ public class SpeciesBean {
     }
 
     /**
-     * <p>
-     * Set the language associated with the species
-     * </p>
+     * <p>Set the language associated with the species</p>
      *
      * @param language - species language
      */
@@ -71,10 +59,10 @@ public class SpeciesBean {
         this.language = language;
     }
 
+    boolean immortal = false;
+
     /**
-     * <p>
-     * Get the immortal state associated with the species
-     * </p>
+     * <p>Get the immortal state associated with the species</p>
      *
      * @return species immortal boolean
      */
@@ -83,9 +71,7 @@ public class SpeciesBean {
     }
 
     /**
-     * <p>
-     * Set the immortal state associated with the species
-     * </p>
+     * <p>Set the immortal state associated with the species</p>
      *
      * @param immortal - is the species immortal
      */

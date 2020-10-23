@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -29,11 +29,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import javax.faces.FacesException;
-import javax.servlet.ServletContext;
-
 import com.sun.faces.facelets.util.Classpath;
 import com.sun.faces.spi.ConfigurationResourceProvider;
+
+import jakarta.faces.FacesException;
+import jakarta.servlet.ServletContext;
 
 /**
  *
@@ -46,12 +46,8 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
     /**
      * Array of taglib.xml files included with Facelets 1.1.x. If they are on the classpath, we don't want to process them.
      */
-    private static final String[] FACELET_CONFIG_FILES = { 
-            "META-INF/jsf-core.taglib.xml", 
-            "META-INF/jsf-html.taglib.xml",
-            "META-INF/jsf-ui.taglib.xml", 
-            "META-INF/jstl-core.taglib.xml", 
-            "META-INF/jstl-fn.taglib.xml" };
+    private static final String[] FACELET_CONFIG_FILES = { "META-INF/jsf-core.taglib.xml", "META-INF/jsf-html.taglib.xml", "META-INF/jsf-ui.taglib.xml",
+            "META-INF/jstl-core.taglib.xml", "META-INF/jstl-fn.taglib.xml" };
 
     private static final String[] BUILT_IN_TAGLIB_XML_FILES = { "META-INF/mojarra_ext.taglib.xml"
 
@@ -66,11 +62,11 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
             URL[] externalTaglibUrls = Classpath.search(getCurrentLoader(this), "META-INF/", SUFFIX);
             URL[] builtInTaglibUrls = new URL[BUILT_IN_TAGLIB_XML_FILES.length];
             ClassLoader runtimeClassLoader = this.getClass().getClassLoader();
-            
+
             for (int i = 0; i < BUILT_IN_TAGLIB_XML_FILES.length; i++) {
                 builtInTaglibUrls[i] = runtimeClassLoader.getResource(BUILT_IN_TAGLIB_XML_FILES[i]);
             }
-            
+
             URL[] urls = new URL[externalTaglibUrls.length + builtInTaglibUrls.length];
             arraycopy(externalTaglibUrls, 0, urls, 0, externalTaglibUrls.length);
             arraycopy(builtInTaglibUrls, 0, urls, externalTaglibUrls.length, builtInTaglibUrls.length);
@@ -95,7 +91,7 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
                     }
                 }
             }
-            
+
             return urlsList;
         } catch (IOException ioe) {
             throw new FacesException("Error searching classpath from facelet-taglib documents", ioe);
@@ -118,12 +114,12 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
                         break;
                     }
                 }
-                
+
                 if (!found) {
                     if (ret == null) {
                         ret = new ArrayList<>();
                     }
-                    
+
                     try {
                         ret.add(new URI(url.toExternalForm().replaceAll(" ", "%20")));
                     } catch (URISyntaxException ex) {
@@ -136,7 +132,7 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
         if (ret == null) {
             ret = emptyList();
         }
-        
+
         return ret;
     }
 

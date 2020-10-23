@@ -99,32 +99,32 @@ public class TestResourceImpl extends ServletFacesTestCase {
 
         Resource resource = handler.createResource("duke-nv.gif");
         assertTrue (resource != null);
-        String expectedURI = "/test-servlet30_isolated-cactus/faces/javax.faces.resource/duke-nv.gif";
+        String expectedURI = "/test-servlet30_isolated-cactus/faces/jakarta.faces.resource/duke-nv.gif";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke-nv.gif", "nvLibrary");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/faces/javax.faces.resource/duke-nv.gif?ln=nvLibrary";
+        expectedURI = "/test-servlet30_isolated-cactus/faces/jakarta.faces.resource/duke-nv.gif?ln=nvLibrary";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke.gif");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/faces/javax.faces.resource/duke.gif?v=1_1";
+        expectedURI = "/test-servlet30_isolated-cactus/faces/jakarta.faces.resource/duke.gif?v=1_1";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke.gif", "nvLibrary");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/faces/javax.faces.resource/duke.gif?ln=nvLibrary&v=1_1";
+        expectedURI = "/test-servlet30_isolated-cactus/faces/jakarta.faces.resource/duke.gif?ln=nvLibrary&v=1_1";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke.gif", "vLibrary");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/faces/javax.faces.resource/duke.gif?ln=vLibrary&v=2_01_1";
+        expectedURI = "/test-servlet30_isolated-cactus/faces/jakarta.faces.resource/duke.gif?ln=vLibrary&v=2_01_1";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke-nv.gif", "vLibrary");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/faces/javax.faces.resource/duke-nv.gif?ln=vLibrary&v=2_0";
+        expectedURI = "/test-servlet30_isolated-cactus/faces/jakarta.faces.resource/duke-nv.gif?ln=vLibrary&v=2_0";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
     }
@@ -147,32 +147,32 @@ public class TestResourceImpl extends ServletFacesTestCase {
 
         Resource resource = handler.createResource("duke-nv.gif");
         assertTrue (resource != null);
-        String expectedURI = "/test-servlet30_isolated-cactus/javax.faces.resource/duke-nv.gif.faces";
+        String expectedURI = "/test-servlet30_isolated-cactus/jakarta.faces.resource/duke-nv.gif.faces";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke-nv.gif", "nvLibrary");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/javax.faces.resource/duke-nv.gif.faces?ln=nvLibrary";
+        expectedURI = "/test-servlet30_isolated-cactus/jakarta.faces.resource/duke-nv.gif.faces?ln=nvLibrary";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke.gif");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/javax.faces.resource/duke.gif.faces?v=1_1";
+        expectedURI = "/test-servlet30_isolated-cactus/jakarta.faces.resource/duke.gif.faces?v=1_1";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke.gif", "nvLibrary");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/javax.faces.resource/duke.gif.faces?ln=nvLibrary&v=1_1";
+        expectedURI = "/test-servlet30_isolated-cactus/jakarta.faces.resource/duke.gif.faces?ln=nvLibrary&v=1_1";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke.gif", "vLibrary");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/javax.faces.resource/duke.gif.faces?ln=vLibrary&v=2_01_1";
+        expectedURI = "/test-servlet30_isolated-cactus/jakarta.faces.resource/duke.gif.faces?ln=vLibrary&v=2_01_1";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
         resource = handler.createResource("duke-nv.gif", "vLibrary");
         assertTrue(resource != null);
-        expectedURI = "/test-servlet30_isolated-cactus/javax.faces.resource/duke-nv.gif.faces?ln=vLibrary&v=2_0";
+        expectedURI = "/test-servlet30_isolated-cactus/jakarta.faces.resource/duke-nv.gif.faces?ln=vLibrary&v=2_0";
         assertTrue(expectedURI.equals(resource.getRequestPath()));
 
     }

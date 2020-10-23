@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,11 +16,12 @@
 
 package com.sun.faces.facelets;
 
-import com.sun.faces.facelets.FaceletCache.InstanceFactory;
 import java.io.IOException;
 import java.net.URL;
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletCache.MemberFactory;
+
+import com.sun.faces.facelets.FaceletCache.InstanceFactory;
+
+import jakarta.faces.view.facelets.FaceletCache;
 
 public class PrivateApiFaceletCacheAdapter<V> extends FaceletCache<V> {
 
@@ -54,24 +55,9 @@ public class PrivateApiFaceletCacheAdapter<V> extends FaceletCache<V> {
     private MemberFactory<V> metadataMemberFactory;
 
     @Override
-    public void setMemberFactories(final MemberFactory<V> faceletFactory, 
-            final MemberFactory<V> viewMetadataFaceletFactory) {
-        InstanceFactory<V> instanceFactory = new InstanceFactory<V>() {
-
-            @Override
-            public V newInstance(URL key) throws IOException {
-                return faceletFactory.newInstance(key);
-            }
-
-        };
-        InstanceFactory<V> metadataInstanceFactory = new InstanceFactory<V>() {
-
-            @Override
-            public V newInstance(URL key) throws IOException {
-                return viewMetadataFaceletFactory.newInstance(key);
-            }
-
-        };
+    public void setMemberFactories(final MemberFactory<V> faceletFactory, final MemberFactory<V> viewMetadataFaceletFactory) {
+        InstanceFactory<V> instanceFactory = key -> faceletFactory.newInstance(key);
+        InstanceFactory<V> metadataInstanceFactory = key -> viewMetadataFaceletFactory.newInstance(key);
 
         privateApi.init(instanceFactory, metadataInstanceFactory);
     }
@@ -85,7 +71,5 @@ public class PrivateApiFaceletCacheAdapter<V> extends FaceletCache<V> {
     public MemberFactory<V> getMetadataMemberFactory() {
         return metadataMemberFactory;
     }
-
-
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,45 +17,73 @@
 package com.sun.faces.application.applicationimpl;
 
 import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
+import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
+import static com.sun.faces.util.Util.canSetAppArtifact;
 import static com.sun.faces.util.Util.getCdiBeanManager;
+import static com.sun.faces.util.Util.notNull;
+import static java.util.logging.Level.FINE;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELContextListener;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.FacesContext;
-
+import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
+import com.sun.faces.application.ValueBindingValueExpressionAdapter;
+import com.sun.faces.el.ELUtils;
 import com.sun.faces.el.FacesCompositeELResolver;
+import com.sun.faces.el.PropertyResolverImpl;
+import com.sun.faces.el.VariableResolverImpl;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
 
 public class ExpressionLanguage {
+
+    private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     private static final ELContextListener[] EMPTY_EL_CTX_LIST_ARRAY = {};
 
     private final ApplicationAssociate associate;
 
+    private volatile PropertyResolverImpl propertyResolver;
+    private volatile VariableResolverImpl variableResolver;
 
     private List<ELContextListener> elContextListeners;
     private CompositeELResolver elResolvers;
-    private FacesCompositeELResolver compositeELResolver;
+    private volatile FacesCompositeELResolver compositeELResolver;
 
     private Version version = new Version();
 
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
 
+        propertyResolver = new PropertyResolverImpl();
+        variableResolver = new VariableResolverImpl();
         elContextListeners = new CopyOnWriteArrayList<>();
         elResolvers = new CompositeELResolver();
     }
 
     /**
-     * @see javax.faces.application.Application#addELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#addELContextListener(jakarta.el.ELContextListener)
      */
     public void addELContextListener(ELContextListener listener) {
         if (listener != null) {
@@ -64,7 +92,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#removeELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#removeELContextListener(jakarta.el.ELContextListener)
      */
     public void removeELContextListener(ELContextListener listener) {
         if (listener != null) {
@@ -73,7 +101,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#getELContextListeners()
+     * @see jakarta.faces.application.Application#getELContextListeners()
      */
     public ELContextListener[] getELContextListeners() {
         if (!elContextListeners.isEmpty()) {
@@ -84,19 +112,23 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#getELResolver()
+     * @see jakarta.faces.application.Application#getELResolver()
      */
     public ELResolver getELResolver() {
 
         if (compositeELResolver == null) {
-            performOneTimeELInitialization();
+            synchronized (this) {
+                if (compositeELResolver == null) {
+                    performOneTimeELInitialization();
+                }
+            }
         }
 
         return compositeELResolver;
     }
 
     /**
-     * @see javax.faces.application.Application#addELResolver(javax.el.ELResolver)
+     * @see jakarta.faces.application.Application#addELResolver(jakarta.el.ELResolver)
      */
     public void addELResolver(ELResolver resolver) {
 
@@ -118,15 +150,14 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#getExpressionFactory()
+     * @see jakarta.faces.application.Application#getExpressionFactory()
      */
     public ExpressionFactory getExpressionFactory() {
         return associate.getExpressionFactory();
     }
 
     /**
-     * @see javax.faces.application.Application#evaluateExpressionGet(javax.faces.context.FacesContext,
-     *      String, Class)
+     * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)
      */
     @SuppressWarnings("unchecked")
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
@@ -145,9 +176,6 @@ public class ExpressionLanguage {
         this.compositeELResolver = compositeELResolver;
     }
 
-
-
-
     private void performOneTimeELInitialization() {
         if (compositeELResolver != null) {
             throw new IllegalStateException("Class invariant invalidated: " + "The Application instance's ELResolver is not null " + "and it should be.");
@@ -155,5 +183,118 @@ public class ExpressionLanguage {
         associate.initializeELResolverChains();
     }
 
+    /**
+     * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
+     */
+    @Deprecated
+    public PropertyResolver getPropertyResolver() {
+        if (compositeELResolver == null) {
+            performOneTimeELInitialization();
+        }
+
+        return propertyResolver;
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
+     */
+    @Deprecated
+    public void setPropertyResolver(PropertyResolver resolver) {
+
+        // Throw Illegal State Exception if a PropertyResolver is set after
+        // a request has been processed.
+        if (associate.hasRequestBeenServiced()) {
+            throw new IllegalStateException(getExceptionMessageString(ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID, "PropertyResolver"));
+        }
+
+        if (resolver == null) {
+            String message = getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "resolver");
+            throw new NullPointerException(message);
+        }
+
+        propertyResolver.setDelegate(ELUtils.getDelegatePR(associate, true));
+        associate.setLegacyPropertyResolver(resolver);
+        propertyResolver = new PropertyResolverImpl();
+
+        if (LOGGER.isLoggable(FINE)) {
+            LOGGER.fine(MessageFormat.format("set PropertyResolver Instance to ''{0}''", resolver.getClass().getName()));
+        }
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#createMethodBinding(String, Class[])
+     */
+    @Deprecated
+    public MethodBinding createMethodBinding(String ref, Class<?> params[]) {
+
+        Util.notNull("ref", ref);
+
+        if (!(ref.startsWith("#{") && ref.endsWith("}"))) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine(MessageFormat.format("Expression ''{0}'' does not follow the syntax #{...}", ref));
+            }
+            throw new ReferenceSyntaxException(ref);
+        }
+        FacesContext context = FacesContext.getCurrentInstance();
+        MethodExpression result;
+        try {
+            // return a MethodBinding that wraps a MethodExpression.
+            if (null == params) {
+                params = RIConstants.EMPTY_CLASS_ARGS;
+            }
+            result = getExpressionFactory().createMethodExpression(context.getELContext(), ref, null, params);
+        } catch (ELException elex) {
+            throw new ReferenceSyntaxException(elex);
+        }
+        return new MethodBindingMethodExpressionAdapter(result);
+
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#createValueBinding(String)
+     */
+    @Deprecated
+    public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException {
+
+        notNull("ref", ref);
+        ValueExpression result;
+        FacesContext context = FacesContext.getCurrentInstance();
+        // return a ValueBinding that wraps a ValueExpression.
+        try {
+            result = getExpressionFactory().createValueExpression(context.getELContext(), ref, Object.class);
+        } catch (ELException elex) {
+            throw new ReferenceSyntaxException(elex);
+        }
+        return new ValueBindingValueExpressionAdapter(result);
+
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#getVariableResolver()
+     */
+    @Deprecated
+    public VariableResolver getVariableResolver() {
+        if (compositeELResolver == null) {
+            performOneTimeELInitialization();
+        }
+
+        return variableResolver;
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#setVariableResolver(jakarta.faces.el.VariableResolver)
+     */
+    @Deprecated
+    public void setVariableResolver(VariableResolver resolver) {
+        notNull("variableResolver", resolver);
+        canSetAppArtifact(associate, "VariableResolver");
+
+        variableResolver.setDelegate(ELUtils.getDelegateVR(associate, true));
+        associate.setLegacyVariableResolver(resolver);
+
+        if (LOGGER.isLoggable(FINE)) {
+            LOGGER.fine(MessageFormat.format("set VariableResolver Instance to ''{0}''", variableResolver.getClass().getName()));
+        }
+    }
 
 }

@@ -16,17 +16,15 @@
 
 package com.sun.faces.test.servlet30.configLowercase;
 
-import static org.junit.Assert.assertTrue;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.*;
 
 public class Issue2067IT {
-
+    
     private String webUrl;
     private WebClient webClient;
 
@@ -44,9 +42,8 @@ public class Issue2067IT {
     @Test
     public void testCamelCaseFalseConfig() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/index.xhtml");
-        int index1 = page.asXml().indexOf("javax.faces.ViewState");
+        int index1 = page.asXml().indexOf("jakarta.faces.ViewState");
         int index2 = page.asXml().indexOf("HELLO");
-
         assertTrue(index1 != -1);
         assertTrue(index2 != -1);
         assertTrue(index1 < index2);

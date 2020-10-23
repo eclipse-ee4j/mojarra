@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,12 +19,12 @@ package com.sun.faces.application;
 import static com.sun.faces.application.SharedUtils.evaluateExpressions;
 import static com.sun.faces.flow.FlowHandlerImpl.FLOW_RETURN_DEPTH_PARAM_NAME;
 import static com.sun.faces.util.Util.notNull;
+import static jakarta.faces.component.UIViewAction.isProcessingBroadcast;
+import static jakarta.faces.flow.FlowHandler.FLOW_ID_REQUEST_PARAM_NAME;
+import static jakarta.faces.flow.FlowHandler.NULL_FLOW;
+import static jakarta.faces.flow.FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME;
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.FINE;
-import static javax.faces.component.UIViewAction.isProcessingBroadcast;
-import static javax.faces.flow.FlowHandler.FLOW_ID_REQUEST_PARAM_NAME;
-import static javax.faces.flow.FlowHandler.NULL_FLOW;
-import static javax.faces.flow.FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME;
 
 import java.util.AbstractCollection;
 import java.util.AbstractMap;
@@ -32,7 +32,6 @@ import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -46,30 +45,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.context.PartialViewContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowNode;
-import javax.faces.flow.MethodCallNode;
-import javax.faces.flow.Parameter;
-import javax.faces.flow.ReturnNode;
-import javax.faces.flow.SwitchCase;
-import javax.faces.flow.SwitchNode;
-import javax.faces.flow.ViewNode;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.flow.FlowHandlerImpl;
@@ -79,23 +54,44 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowNode;
+import jakarta.faces.flow.MethodCallNode;
+import jakarta.faces.flow.Parameter;
+import jakarta.faces.flow.ReturnNode;
+import jakarta.faces.flow.SwitchCase;
+import jakarta.faces.flow.SwitchNode;
+import jakarta.faces.flow.ViewNode;
+
 /**
  * <p>
- * <strong>NavigationHandlerImpl</strong> is the class that implements default navigation handling.
- * Refer to section 7.4.2 of the specification for more details. PENDING: Make independent of
- * ApplicationAssociate.
+ * <strong>NavigationHandlerImpl</strong> is the class that implements default navigation handling. Refer to section
+ * 7.4.2 of the specification for more details. PENDING: Make independent of ApplicationAssociate.
  */
 
 public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     // Private Constants
-    private static final String RESET_FLOW_HANDLER_STATE_KEY = NavigationHandlerImpl.class.getName() +
-        "_RESET_FLOW_HANDLER_STATE_KEY";
+    private static final String RESET_FLOW_HANDLER_STATE_KEY = NavigationHandlerImpl.class.getName() + "_RESET_FLOW_HANDLER_STATE_KEY";
 
     public static boolean isResetFlowHandlerState(FacesContext facesContext) {
 
-        Boolean obtainingNavigationCase = (Boolean) FacesContext.getCurrentInstance().getAttributes()
-            .get(RESET_FLOW_HANDLER_STATE_KEY);
+        Boolean obtainingNavigationCase = (Boolean) FacesContext.getCurrentInstance().getAttributes().get(RESET_FLOW_HANDLER_STATE_KEY);
         return obtainingNavigationCase != null && obtainingNavigationCase;
     }
 
@@ -129,8 +125,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     // ------------------------------------------------------------ Constructors
 
     /**
-     * This constructor uses the current <code>ApplicationAssociate</code> instance to obtain the
-     * navigation mappings used to make navigational decisions.
+     * This constructor uses the current <code>ApplicationAssociate</code> instance to obtain the navigation mappings used
+     * to make navigational decisions.
      */
     public NavigationHandlerImpl() {
 
@@ -150,8 +146,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     // ------------------------------ Methods from ConfigurableNavigationHandler
 
     /**
-     * @see javax.faces.application.ConfigurableNavigationHandler#getNavigationCase(javax.faces.context.FacesContext,
-     *      String, String)
+     * @see jakarta.faces.application.ConfigurableNavigationHandler#getNavigationCase(jakarta.faces.context.FacesContext,
+     * String, String)
      */
     @Override
     public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome) {
@@ -171,14 +167,13 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             }
 
             return null;
-        }
-        finally {
+        } finally {
             unsetResetFlowHandlerState(context);
         }
     }
 
     /**
-     * @see javax.faces.application.ConfigurableNavigationHandler#getNavigationCases()
+     * @see jakarta.faces.application.ConfigurableNavigationHandler#getNavigationCases()
      */
     @Override
     public Map<String, Set<NavigationCase>> getNavigationCases() {
@@ -188,8 +183,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             Map<String, Set<NavigationCase>> result = getNavigationMap(context);
 
             return result;
-        }
-        finally {
+        } finally {
             unsetResetFlowHandlerState(context);
         }
     }
@@ -207,9 +201,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /*
-     * The Flow.equals() method alone is insufficient because we need to account for the case where
-     * one or the other or both operands may be null.
-     * 
+     * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both
+     * operands may be null.
+     *
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
         boolean result = false;
@@ -233,16 +227,16 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
         if (caseStruct != null) {
             ExternalContext extContext = context.getExternalContext();
             ViewHandler viewHandler = Util.getViewHandler(context);
-            assert (null != viewHandler);
+            assert null != viewHandler;
             Flash flash = extContext.getFlash();
             boolean isUIViewActionBroadcastAndViewdsDiffer = false;
 
             if (isProcessingBroadcast(context)) {
                 flash.setKeepMessages(true);
                 String viewIdBefore = context.getViewRoot().getViewId();
-                viewIdBefore = (null == viewIdBefore) ? "" : viewIdBefore;
+                viewIdBefore = null == viewIdBefore ? "" : viewIdBefore;
                 String viewIdAfter = caseStruct.navCase.getToViewId(context);
-                viewIdAfter = (null == viewIdAfter) ? "" : viewIdAfter; // NOPMD
+                viewIdAfter = null == viewIdAfter ? "" : viewIdAfter; // NOPMD
                 isUIViewActionBroadcastAndViewdsDiffer = !viewIdBefore.equals(viewIdAfter);
             }
 
@@ -422,7 +416,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     private NavigationInfo getNavigationInfo(FacesContext context, String toFlowDocumentId, String flowId) {
         NavigationInfo result = null;
-        assert (null != navigationMaps);
+        assert null != navigationMaps;
         result = navigationMaps.get(toFlowDocumentId + flowId);
         if (null == result) {
             FlowHandler fh = context.getApplication().getFlowHandler();
@@ -459,7 +453,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             // PENDING: When JAVASERVERFACES-2580 is done, the eager case will
             // no longer be necessary and can be removed.
 
-            assert (null != navigationMaps);
+            assert null != navigationMaps;
             initializeNavigationFromFlowThreadSafe(toInspect);
         }
 
@@ -502,8 +496,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * Calls <code>clear()</code> on the ViewMap (if available) if the view ID of the UIViewRoot
-     * differs from <code>newId</code>
+     * Calls <code>clear()</code> on the ViewMap (if available) if the view ID of the UIViewRoot differs from
+     * <code>newId</code>
      */
     private void clearViewMapIfNecessary(FacesContext facesContext, String newId) {
         UIViewRoot root = facesContext.getViewRoot();
@@ -528,8 +522,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method uses helper methods to determine the new <code>view</code> identifier. Refer to
-     * section 7.4.2 of the specification for more details.
+     * This method uses helper methods to determine the new <code>view</code> identifier. Refer to section 7.4.2 of the
+     * specification for more details.
      *
      * @param ctx the @{link FacesContext} for the current request
      * @param fromAction The action reference string
@@ -546,7 +540,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         UIViewRoot root = ctx.getViewRoot();
 
-        String viewId = (root != null ? root.getViewId() : null);
+        String viewId = root != null ? root.getViewId() : null;
 
         // if viewIdToTest is not null, use its value to find
         // a navigation match, otherwise look for a match
@@ -570,7 +564,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
         // If the preceding steps found a match, but it was a flow call...
         if (null != caseStruct && caseStruct.isFlowEntryFromExplicitRule) {
             // Override the toFlowDocumentId with the value from the navigation-case, if present
-            toFlowDocumentId = (null != caseStruct.navCase.getToFlowDocumentId()) ? caseStruct.navCase.getToFlowDocumentId() : toFlowDocumentId;
+            toFlowDocumentId = null != caseStruct.navCase.getToFlowDocumentId() ? caseStruct.navCase.getToFlowDocumentId() : toFlowDocumentId;
             // and try to call into the flow
             caseStruct = findFacesFlowCallMatch(ctx, fromAction, convertToViewIdToFlowOrNodeId(ctx, caseStruct), toFlowDocumentId);
         } else if (null != caseStruct && fh != null && fh.getCurrentFlow() != null) {
@@ -652,10 +646,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method finds the List of cases for the current <code>view</code> identifier. After the
-     * cases are found, the <code>from-action</code> and <code>from-outcome</code> values are
-     * evaluated to determine the new <code>view</code> identifier. Refer to section 7.4.2 of the
-     * specification for more details.
+     * This method finds the List of cases for the current <code>view</code> identifier. After the cases are found, the
+     * <code>from-action</code> and <code>from-outcome</code> values are evaluated to determine the new <code>view</code>
+     * identifier. Refer to section 7.4.2 of the specification for more details.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param viewId The current <code>view</code> identifier.
@@ -692,9 +685,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method traverses the wild card match List (containing <code>from-view-id</code> strings
-     * and finds the List of cases for each <code>from-view-id</code> string. Refer to section 7.4.2
-     * of the specification for more details.
+     * This method traverses the wild card match List (containing <code>from-view-id</code> strings and finds the List of
+     * cases for each <code>from-view-id</code> string. Refer to section 7.4.2 of the specification for more details.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param viewId The current <code>view</code> identifier.
@@ -755,8 +747,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method will extract the cases for which a <code>from-view-id</code> is an asterisk "*".
-     * Refer to section 7.4.2 of the specification for more details.
+     * This method will extract the cases for which a <code>from-view-id</code> is an asterisk "*". Refer to section 7.4.2
+     * of the specification for more details.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param fromAction The action reference string.
@@ -839,7 +831,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
         String queryString;
         if (-1 != questionMark) {
             int viewIdLen = viewIdToTest.length();
-            if (viewIdLen <= (questionMark + 1)) {
+            if (viewIdLen <= questionMark + 1) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "jsf.navigation_invalid_query_string", viewIdToTest);
                 }
@@ -1193,7 +1185,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                         String startNodeId = newFlow.getStartNodeId();
                         result = synthesizeCaseStruct(context, newFlow, fromAction, startNodeId);
                         if (null == result) {
-                            assert (null != currentFlow);
+                            assert null != currentFlow;
                             // If no CaseStruct can be synthesized, we must execute the
                             // navigation handler algorithm to try to find the CaseStruct
                             // for the start node. However, in order to do that, we
@@ -1224,7 +1216,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 String startNodeId = newFlow.getStartNodeId();
                 result = synthesizeCaseStruct(context, newFlow, fromAction, startNodeId);
                 if (null == result) {
-                    assert (null == currentFlow);
+                    assert null == currentFlow;
                     // If no CaseStruct can be synthesized, we must execute the
                     // navigation handler algorithm to try to find the CaseStruct
                     // for the start node. However, in order to do that, we
@@ -1345,9 +1337,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * This method will attempt to find the <code>view</code> identifier based on action reference
-     * and outcome. Refer to section 7.4.2 of the specification for more details.
-     * 
+     * This method will attempt to find the <code>view</code> identifier based on action reference and outcome. Refer to
+     * section 7.4.2 of the specification for more details.
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param caseSet The list of navigation cases.
      * @param fromAction The action reference string.
@@ -1365,13 +1357,13 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             boolean cncHasCondition = cnc.hasCondition();
             String cncToViewId = cnc.getToViewId(ctx);
 
-            if ((cncFromAction != null && cncFromAction.equals(fromAction)) && (cncFromOutcome != null && cncFromOutcome.equals(outcome))) {
+            if (cncFromAction != null && cncFromAction.equals(fromAction) && cncFromOutcome != null && cncFromOutcome.equals(outcome)) {
                 match = true;
-            } else if ((cncFromAction == null) && (cncFromOutcome != null && cncFromOutcome.equals(outcome))) {
+            } else if (cncFromAction == null && cncFromOutcome != null && cncFromOutcome.equals(outcome)) {
                 match = true;
-            } else if ((cncFromAction != null && cncFromAction.equals(fromAction)) && (cncFromOutcome == null) && (outcome != null || cncHasCondition)) {
+            } else if (cncFromAction != null && cncFromAction.equals(fromAction) && cncFromOutcome == null && (outcome != null || cncHasCondition)) {
                 match = true;
-            } else if ((cncFromAction == null) && (cncFromOutcome == null) && (outcome != null || cncHasCondition)) {
+            } else if (cncFromAction == null && cncFromOutcome == null && (outcome != null || cncHasCondition)) {
                 match = true;
             }
 
@@ -1381,7 +1373,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 if (cncHasCondition && Boolean.FALSE.equals(cnc.getCondition(ctx))) {
                     match = false;
                 } else {
-                    toFlowDocumentId = (null != cnc.getToFlowDocumentId()) ? cnc.getToFlowDocumentId() : toFlowDocumentId;
+                    toFlowDocumentId = null != cnc.getToFlowDocumentId() ? cnc.getToFlowDocumentId() : toFlowDocumentId;
                     if (null != toFlowDocumentId) {
                         FlowHandler fh = ctx.getApplication().getFlowHandler();
                         if (null != outcome) {
@@ -1398,7 +1390,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     /**
      * To look for the Flow or Node by the id, the '/' in the id got from navCase should be trimmed.
-     * 
+     *
      * @param ctx the {@link FacesContext} for the current request
      * @param caseStruct the {@link CaseStruct} to look for the to view id
      * @return id of possible Node or Flow without '/' in the string
@@ -1427,12 +1419,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     private static final class NavigationMap extends AbstractMap<String, Set<NavigationCase>> {
 
         private HashMap<String, Set<NavigationCase>> mapToLookForNavCase = new HashMap<>();
-        private TreeSet<String> wildcardMatchList = new TreeSet<>(new Comparator<String>() {
-            @Override
-            public int compare(String fromViewId1, String fromViewId2) {
-                return -(fromViewId1.compareTo(fromViewId2));
-            }
-        });
+        private TreeSet<String> wildcardMatchList = new TreeSet<>((fromViewId1, fromViewId2) -> -fromViewId1.compareTo(fromViewId2));
 
         // ---------------------------------------------------- Methods from Map
 

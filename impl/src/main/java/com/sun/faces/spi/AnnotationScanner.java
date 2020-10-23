@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,21 +21,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  *
  */
 public interface AnnotationScanner {
 
-    public abstract Map<String, List<ScannedAnnotation>> getAnnotatedClassesInCurrentModule(ServletContext extContext)
-    throws InjectionProviderException;
+    Map<String, List<ScannedAnnotation>> getAnnotatedClassesInCurrentModule(ServletContext extContext) throws InjectionProviderException;
 
     public interface ScannedAnnotation {
 
-        public Collection<URI> getDefiningURIs();
+        Collection<URI> getDefiningURIs();
 
-        public String getFullyQualifiedClassName();
+        String getFullyQualifiedClassName();
 
     }
 }

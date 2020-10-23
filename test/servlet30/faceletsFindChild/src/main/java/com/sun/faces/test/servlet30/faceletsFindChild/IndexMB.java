@@ -17,18 +17,15 @@
 package com.sun.faces.test.servlet30.faceletsFindChild;
 
 import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
-@Named
+@ManagedBean
 @SessionScoped
 public class IndexMB implements Serializable {
 
-    private static final long serialVersionUID = 8003465818820146415L;
-
     public void dummyAction() {
-        // no action
+        //no action
     }
 
     private boolean rendered = true;

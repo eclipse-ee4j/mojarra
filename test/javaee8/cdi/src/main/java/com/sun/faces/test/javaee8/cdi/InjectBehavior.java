@@ -16,9 +16,9 @@
 
 package com.sun.faces.test.javaee8.cdi;
 
-import javax.faces.component.behavior.ClientBehaviorBase;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.FacesBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorBase;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.FacesBehavior;
 
 @FacesBehavior(value = "injectBehavior", managed = true)
 public class InjectBehavior extends ClientBehaviorBase {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,47 +16,43 @@
 
 package com.sun.faces.el;
 
-
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
-import java.util.Map;
-import java.util.HashMap;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 
 /**
- * Concrete implementation of {@link javax.el.ELContext}.
- * ELContext's constructor is protected to control creation of ELContext
- * objects through their appropriate factory methods.  This version of
- * ELContext forces construction through FacesContextImpl.
+ * Concrete implementation of {@link jakarta.el.ELContext}. ELContext's constructor is protected to control creation of
+ * ELContext objects through their appropriate factory methods. This version of ELContext forces construction through
+ * FacesContextImpl.
  *
  */
 public class ELContextImpl extends ELContext {
-    
+
     private FunctionMapper functionMapper = new NoopFunctionMapper();
     private VariableMapper variableMapper;
     private ELResolver resolver;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Constructs a new ELContext associated with the given ELResolver.
-     * @param resolver the ELResolver to return from {@link #getELResolver()} 
+     *
+     * @param resolver the ELResolver to return from {@link #getELResolver()}
      */
     public ELContextImpl(ELResolver resolver) {
         this.resolver = resolver;
     }
 
-
     // -------------------------------------------------- Methods from ELContext
 
-
     @Override
-    public FunctionMapper getFunctionMapper() {        
+    public FunctionMapper getFunctionMapper() {
         return functionMapper;
     }
 
@@ -73,9 +69,7 @@ public class ELContextImpl extends ELContext {
         return resolver;
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     public void setFunctionMapper(FunctionMapper functionMapper) {
 
@@ -83,17 +77,15 @@ public class ELContextImpl extends ELContext {
 
     }
 
-
     // ----------------------------------------------------------- Inner Classes
-
 
     private static class VariableMapperImpl extends VariableMapper {
 
-        private Map<String,ValueExpression> variables;
+        private Map<String, ValueExpression> variables;
 
         public VariableMapperImpl() {
 
-            //noinspection CollectionWithoutInitialCapacity
+            // noinspection CollectionWithoutInitialCapacity
             variables = new HashMap<>();
 
         }
@@ -105,10 +97,9 @@ public class ELContextImpl extends ELContext {
 
         @Override
         public ValueExpression setVariable(String s, ValueExpression valueExpression) {
-            return (variables.put(s, valueExpression));
+            return variables.put(s, valueExpression);
         }
     }
-
 
     private static class NoopFunctionMapper extends FunctionMapper {
 

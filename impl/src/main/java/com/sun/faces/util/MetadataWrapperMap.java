@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -37,41 +37,40 @@ public abstract class MetadataWrapperMap<K, V> implements Map<K, V> {
 
     @Override
     public void clear() {
-	this.wrapped.clear();
+        this.wrapped.clear();
     }
 
-    @SuppressWarnings(value="")
+    @SuppressWarnings(value = "")
     @Override
     public boolean containsKey(Object key) {
-	return this.wrapped.containsKey(key);
+        return this.wrapped.containsKey(key);
     }
 
-    @SuppressWarnings(value="")
+    @SuppressWarnings(value = "")
     @Override
     public boolean containsValue(Object value) {
-	return this.wrapped.containsValue(value);
+        return this.wrapped.containsValue(value);
     }
 
     @Override
-    public Set<Map.Entry<K,V>> entrySet() {
-	return this.wrapped.entrySet();
+    public Set<Map.Entry<K, V>> entrySet() {
+        return this.wrapped.entrySet();
     }
 
-    @SuppressWarnings(value="")
+    @SuppressWarnings(value = "")
     @Override
     public V get(Object key) {
-	return this.wrapped.get(key);
+        return this.wrapped.get(key);
     }
-
 
     @Override
     public boolean isEmpty() {
-	return this.wrapped.isEmpty();
+        return this.wrapped.isEmpty();
     }
 
     @Override
     public Set<K> keySet() {
-	return this.wrapped.keySet();
+        return this.wrapped.keySet();
     }
 
     @Override
@@ -84,24 +83,23 @@ public abstract class MetadataWrapperMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map m) {
-	this.wrapped.putAll(m);
+        this.wrapped.putAll(m);
     }
 
-    @SuppressWarnings(value="")
+    @SuppressWarnings(value = "")
     @Override
     public V remove(Object key) {
-	return this.wrapped.remove(key);
+        return this.wrapped.remove(key);
     }
 
     @Override
     public int size() {
-	return this.wrapped.size();
+        return this.wrapped.size();
     }
 
     @Override
     public Collection<V> values() {
-	return this.wrapped.values();
+        return this.wrapped.values();
     }
-
 
 }

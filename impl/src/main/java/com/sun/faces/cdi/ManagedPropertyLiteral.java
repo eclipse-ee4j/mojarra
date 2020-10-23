@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,27 +15,28 @@
  */
 
 package com.sun.faces.cdi;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.ManagedProperty;
+
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.faces.annotation.ManagedProperty;
 
 /**
  * An annotation literal for {@link ManagedProperty}
- * 
+ *
  */
 @SuppressWarnings("all")
 class ManagedPropertyLiteral extends AnnotationLiteral<ManagedProperty> implements ManagedProperty {
     private static final long serialVersionUID = 1L;
-    
+
     private final String value;
-    
+
     public ManagedPropertyLiteral() {
         this("");
     }
-    
+
     public ManagedPropertyLiteral(String value) {
         this.value = value;
     }
-    
+
     @Override
     public String value() {
         return value;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -40,6 +38,9 @@ import org.w3c.dom.NodeList;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProcessor {
 
@@ -73,7 +74,7 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, MessageFormat.format("Processing factory elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList resourceLibraryContracts = document.getDocumentElement().getElementsByTagNameNS(namespace, RESOURCE_LIBRARY_CONTRACTS);
@@ -133,8 +134,7 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                                                     list.add(contractStrings[k]);
                                                 } else {
                                                     /*
-                                                     * We found the contract again in the list for
-                                                     * the specified url-pattern.
+                                                     * We found the contract again in the list for the specified url-pattern.
                                                      */
                                                     if (LOGGER.isLoggable(INFO)) {
                                                         LOGGER.log(INFO, "Duplicate contract: {0} found for url-pattern: {1}",
@@ -152,16 +152,15 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                                         map.put(urlPattern, list);
                                     } else {
                                         /*
-                                         * The list was empty, log there were no contracts
-                                         * specified.
+                                         * The list was empty, log there were no contracts specified.
                                          */
-                                         LOGGER.log(INFO, "No contracts found for url-pattern: {0}", urlPattern);
+                                        LOGGER.log(INFO, "No contracts found for url-pattern: {0}", urlPattern);
                                     }
                                 } else {
                                     /*
                                      * Otherwise log there is a duplicate url-pattern found.
                                      */
-                                     LOGGER.log(INFO, "Duplicate url-patern found: {0}, ignoring it", urlPattern);
+                                    LOGGER.log(INFO, "Duplicate url-patern found: {0}, ignoring it", urlPattern);
                                 }
                             }
                         }
@@ -169,11 +168,10 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                 }
             } catch (XPathExpressionException exception) {
                 /*
-                 * This particular exception will never happen since the above valid XPath
-                 * expressions never change, but the XPath runtime defines it as a checked exception
-                 * so we have to deal with it.
+                 * This particular exception will never happen since the above valid XPath expressions never change, but the XPath
+                 * runtime defines it as a checked exception so we have to deal with it.
                  */
-                 LOGGER.log(FINEST, "Unable to parse XPath expression", exception);
+                LOGGER.log(FINEST, "Unable to parse XPath expression", exception);
             }
         }
     }

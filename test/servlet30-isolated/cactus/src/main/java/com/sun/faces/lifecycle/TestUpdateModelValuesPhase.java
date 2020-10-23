@@ -196,12 +196,12 @@ public class TestUpdateModelValuesPhase extends ServletFacesTestCase {
 //        //assertions for our default update failed message
 //        assertTrue(true == (getFacesContext().getMessages("form:userName3").hasNext()));
 //        java.util.Iterator iter = getFacesContext().getMessages("form:userName3");
-//        javax.faces.application.FacesMessage msg = null;
-//        javax.faces.application.FacesMessage expectedMsg = 
-//            com.sun.faces.util.MessageFactory.getMessage(getFacesContext(), "javax.faces.component.UIInput.UPDATE",
+//        jakarta.faces.application.FacesMessage msg = null;
+//        jakarta.faces.application.FacesMessage expectedMsg = 
+//            com.sun.faces.util.MessageFactory.getMessage(getFacesContext(), "jakarta.faces.component.UIInput.UPDATE",
 //            new Object[] {com.sun.faces.util.MessageFactory.getLabel(getFacesContext(), userName3)}); 
 //        while (iter.hasNext()) {
-//            msg = (javax.faces.application.FacesMessage)iter.next();
+//            msg = (jakarta.faces.application.FacesMessage)iter.next();
 //        }    
 //        assertTrue(msg.getSummary().equals(expectedMsg.getSummary()));
     }

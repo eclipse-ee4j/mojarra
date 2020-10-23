@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+    version="2.1">
+    <tlib-version>1.1</tlib-version>
+
+    <short-name>mj</short-name>
+    <uri>http://mojarra.dev.java.net/mojarra_ext</uri>
+    <tag>
+         <description>
+            A validator that uses the pattern attribute to validate the wrapping
+            component.  The entire pattern is matched against the String value
+            of the component.  If it matches, it's valid.
+        </description>
+        <name>regexValidator</name>
+        <tag-class>com.sun.faces.taglib.jsf_core.RegexValidatorTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>
+                A regular expression pattern.  Remember that, like in all Java
+                strings, backslash must be escaped with another backslash.
+                Additionally, to use #{ in a regex, it must also be escaped, since
+                it will otherwise be interpreted as an EL expression.
+            </description>
+            <name>pattern</name>
+            <required>true</required>
+            <deferred-value>
+                <type>java.lang.String</type>
+            </deferred-value>
+
+        </attribute>
+    </tag>
+    <tag>
+        <description>
+            A validator that checks a credit card number to see that it's valid,
+            using the Luhn Algorithm.  The credit card number may only have numbers,
+            as well as dashes and spaces, which are ignored.
+        </description>
+        <name>creditcardValidator</name>
+        <tag-class>com.sun.faces.ext.taglib.CreditCardValidatorTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+    <tag>
+        <description>
+            A tag to set the focus on a specified field.  Place it within a form
+            tag, and set the for attribute to point to the field that should receive
+            the focus.
+        </description>
+        <name>focus</name>
+        <tag-class>com.sun.faces.ext.taglib.FocusTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>A value binding that points to a bean property</description>
+            <name>binding</name>
+        </attribute>
+        <attribute>
+            <description>The client id of this component</description>
+            <name>id</name>
+        </attribute>
+        <attribute>
+            <description>Is this component rendered?</description>
+            <name>rendered</name>
+        </attribute>
+        <attribute>
+            <description>component ID that should receive the focus</description>
+            <name>for</name>
+            <required>true</required>
+            <deferred-value>
+                <type>java.lang.String</type>
+            </deferred-value>
+        </attribute>
+    </tag>
+</taglib>

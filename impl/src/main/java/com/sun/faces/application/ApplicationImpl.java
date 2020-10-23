@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,32 +25,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELContextListener;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.event.ActionListener;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.flow.FlowHandler;
-import javax.faces.validator.Validator;
-
 import com.sun.faces.application.applicationimpl.Events;
 import com.sun.faces.application.applicationimpl.ExpressionLanguage;
 import com.sun.faces.application.applicationimpl.InstanceFactory;
@@ -60,11 +34,42 @@ import com.sun.faces.application.applicationimpl.Stage;
 import com.sun.faces.el.FacesCompositeELResolver;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.validator.Validator;
+
 /**
  * <p>
- * <strong>Application</strong> represents a per-web-application singleton object where applications
- * based on JavaServer Faces (or implementations wishing to provide extended functionality) can
- * register application-wide singletons that provide functionality required by JavaServer Faces.
+ * <strong>Application</strong> represents a per-web-application singleton object where applications based on JavaServer
+ * Faces (or implementations wishing to provide extended functionality) can register application-wide singletons that
+ * provide functionality required by JavaServer Faces.
  */
 public class ApplicationImpl extends Application {
 
@@ -82,7 +87,6 @@ public class ApplicationImpl extends Application {
     private final InstanceFactory instanceFactory;
     private final SearchExpression searchExpression;
     private final Stage stage;
-
 
     /**
      * Constructor
@@ -102,12 +106,10 @@ public class ApplicationImpl extends Application {
         }
     }
 
-
     // ----------------------------------------------------------- Events
 
-
     /**
-     * @see javax.faces.application.Application#publishEvent(FacesContext, Class, Object)
+     * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
      */
     @Override
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source) {
@@ -115,7 +117,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#publishEvent(FacesContext, Class, Object)
+     * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
      */
     @Override
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source) {
@@ -123,7 +125,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see Application#subscribeToEvent(Class, javax.faces.event.SystemEventListener)
+     * @see Application#subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)
      */
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
@@ -131,7 +133,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see Application#subscribeToEvent(Class, Class, javax.faces.event.SystemEventListener)
+     * @see Application#subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)
      */
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
@@ -139,7 +141,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see Application#unsubscribeFromEvent(Class, javax.faces.event.SystemEventListener)
+     * @see Application#unsubscribeFromEvent(Class, jakarta.faces.event.SystemEventListener)
      */
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
@@ -147,20 +149,17 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see Application#unsubscribeFromEvent(Class, Class, javax.faces.event.SystemEventListener)
+     * @see Application#unsubscribeFromEvent(Class, Class, jakarta.faces.event.SystemEventListener)
      */
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
-       events.unsubscribeFromEvent(systemEventClass, sourceClass, listener);
+        events.unsubscribeFromEvent(systemEventClass, sourceClass, listener);
     }
-
-
 
     // ----------------------------------------------------------- Expression language
 
-
     /**
-     * @see javax.faces.application.Application#addELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#addELContextListener(jakarta.el.ELContextListener)
      */
     @Override
     public void addELContextListener(ELContextListener listener) {
@@ -168,7 +167,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#removeELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#removeELContextListener(jakarta.el.ELContextListener)
      */
     @Override
     public void removeELContextListener(ELContextListener listener) {
@@ -176,7 +175,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getELContextListeners()
+     * @see jakarta.faces.application.Application#getELContextListeners()
      */
     @Override
     public ELContextListener[] getELContextListeners() {
@@ -184,7 +183,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getExpressionFactory()
+     * @see jakarta.faces.application.Application#getExpressionFactory()
      */
     @Override
     public ExpressionFactory getExpressionFactory() {
@@ -192,16 +191,15 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#evaluateExpressionGet(javax.faces.context.FacesContext,
-     *      String, Class)
+     * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)
      */
     @Override
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
-       return expressionLanguage.evaluateExpressionGet(context, expression, expectedType);
+        return expressionLanguage.evaluateExpressionGet(context, expression, expectedType);
     }
 
     /**
-     * @see javax.faces.application.Application#getELResolver()
+     * @see jakarta.faces.application.Application#getELResolver()
      */
     @Override
     public ELResolver getELResolver() {
@@ -209,7 +207,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#addELResolver(javax.el.ELResolver)
+     * @see jakarta.faces.application.Application#addELResolver(jakarta.el.ELResolver)
      */
     @Override
     public void addELResolver(ELResolver resolver) {
@@ -228,13 +226,10 @@ public class ApplicationImpl extends Application {
         expressionLanguage.setCompositeELResolver(compositeELResolver);
     }
 
-
-
     // ----------------------------------------------------------- Singletons
 
-
     /**
-     * @see javax.faces.application.Application#getViewHandler()
+     * @see jakarta.faces.application.Application#getViewHandler()
      */
     @Override
     public ViewHandler getViewHandler() {
@@ -242,7 +237,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#setViewHandler(javax.faces.application.ViewHandler)
+     * @see jakarta.faces.application.Application#setViewHandler(jakarta.faces.application.ViewHandler)
      */
     @Override
     public void setViewHandler(ViewHandler viewHandler) {
@@ -250,7 +245,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getResourceHandler()
+     * @see jakarta.faces.application.Application#getResourceHandler()
      */
     @Override
     public ResourceHandler getResourceHandler() {
@@ -258,7 +253,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#setResourceHandler(javax.faces.application.ResourceHandler)
+     * @see jakarta.faces.application.Application#setResourceHandler(jakarta.faces.application.ResourceHandler)
      */
     @Override
     public void setResourceHandler(ResourceHandler resourceHandler) {
@@ -266,7 +261,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getStateManager()
+     * @see jakarta.faces.application.Application#getStateManager()
      */
     @Override
     public StateManager getStateManager() {
@@ -274,7 +269,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#setStateManager(javax.faces.application.StateManager)
+     * @see jakarta.faces.application.Application#setStateManager(jakarta.faces.application.StateManager)
      */
     @Override
     public void setStateManager(StateManager stateManager) {
@@ -282,7 +277,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getActionListener()
+     * @see jakarta.faces.application.Application#getActionListener()
      */
     @Override
     public ActionListener getActionListener() {
@@ -290,7 +285,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see Application#setActionListener(javax.faces.event.ActionListener)
+     * @see Application#setActionListener(jakarta.faces.event.ActionListener)
      */
     @Override
     public void setActionListener(ActionListener actionListener) {
@@ -298,7 +293,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getNavigationHandler()
+     * @see jakarta.faces.application.Application#getNavigationHandler()
      */
     @Override
     public NavigationHandler getNavigationHandler() {
@@ -306,7 +301,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#setNavigationHandler(javax.faces.application.NavigationHandler)
+     * @see jakarta.faces.application.Application#setNavigationHandler(jakarta.faces.application.NavigationHandler)
      */
     @Override
     public void setNavigationHandler(NavigationHandler navigationHandler) {
@@ -324,15 +319,15 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getSupportedLocales()
+     * @see jakarta.faces.application.Application#getSupportedLocales()
      */
     @Override
     public Iterator<Locale> getSupportedLocales() {
-      return singletons.getSupportedLocales();
+        return singletons.getSupportedLocales();
     }
 
     /**
-     * @see javax.faces.application.Application#setSupportedLocales(java.util.Collection)
+     * @see jakarta.faces.application.Application#setSupportedLocales(java.util.Collection)
      */
     @Override
     public void setSupportedLocales(Collection<Locale> newLocales) {
@@ -340,7 +335,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getDefaultLocale()
+     * @see jakarta.faces.application.Application#getDefaultLocale()
      */
     @Override
     public Locale getDefaultLocale() {
@@ -348,7 +343,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#setDefaultLocale(java.util.Locale)
+     * @see jakarta.faces.application.Application#setDefaultLocale(java.util.Locale)
      */
     @Override
     public void setDefaultLocale(Locale locale) {
@@ -356,24 +351,23 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#setMessageBundle(String)
+     * @see jakarta.faces.application.Application#setMessageBundle(String)
      */
     @Override
     public void setMessageBundle(String messageBundle) {
-      singletons.setMessageBundle(messageBundle);
+        singletons.setMessageBundle(messageBundle);
     }
 
     /**
-     * @see javax.faces.application.Application#getMessageBundle()
+     * @see jakarta.faces.application.Application#getMessageBundle()
      */
     @Override
     public String getMessageBundle() {
         return singletons.getMessageBundle();
     }
 
-
     /**
-     * @see javax.faces.application.Application#getDefaultRenderKitId()
+     * @see jakarta.faces.application.Application#getDefaultRenderKitId()
      */
     @Override
     public String getDefaultRenderKitId() {
@@ -381,7 +375,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#setDefaultRenderKitId(String)
+     * @see jakarta.faces.application.Application#setDefaultRenderKitId(String)
      */
     @Override
     public void setDefaultRenderKitId(String renderKitId) {
@@ -389,29 +383,25 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getResourceBundle(javax.faces.context.FacesContext,
-     *      String)
+     * @see jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public ResourceBundle getResourceBundle(FacesContext context, String var) {
         return singletons.getResourceBundle(context, var);
     }
 
-
-
     // ----------------------------------------------------------- Instance factory
 
-
     /**
-     * @see javax.faces.application.Application#addBehavior(String, String)
+     * @see jakarta.faces.application.Application#addBehavior(String, String)
      */
     @Override
     public void addBehavior(String behaviorId, String behaviorClass) {
-       instanceFactory.addBehavior(behaviorId, behaviorClass);
+        instanceFactory.addBehavior(behaviorId, behaviorClass);
     }
 
     /**
-     * @see javax.faces.application.Application#createBehavior(String)
+     * @see jakarta.faces.application.Application#createBehavior(String)
      */
     @Override
     public Behavior createBehavior(String behaviorId) throws FacesException {
@@ -419,7 +409,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getBehaviorIds()
+     * @see jakarta.faces.application.Application#getBehaviorIds()
      */
     @Override
     public Iterator<String> getBehaviorIds() {
@@ -432,7 +422,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#addComponent(java.lang.String, java.lang.String)
+     * @see jakarta.faces.application.Application#addComponent(java.lang.String, java.lang.String)
      */
     @Override
     public void addComponent(String componentType, String componentClass) {
@@ -459,8 +449,14 @@ public class ApplicationImpl extends Application {
         return instanceFactory.createComponent(context, componentResource, getExpressionFactory());
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException {
+        return instanceFactory.createComponent(componentBinding, context, componentType);
+    }
+
     /**
-     * @see javax.faces.application.Application#getComponentTypes()
+     * @see jakarta.faces.application.Application#getComponentTypes()
      */
     @Override
     public Iterator<String> getComponentTypes() {
@@ -468,7 +464,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#addConverter(String, String)
+     * @see jakarta.faces.application.Application#addConverter(String, String)
      */
     @Override
     public void addConverter(String converterId, String converterClass) {
@@ -476,15 +472,15 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#addConverter(Class, String)
+     * @see jakarta.faces.application.Application#addConverter(Class, String)
      */
     @Override
     public void addConverter(Class<?> targetClass, String converterClass) {
-       instanceFactory.addConverter(targetClass, converterClass);
+        instanceFactory.addConverter(targetClass, converterClass);
     }
 
     /**
-     * @see javax.faces.application.Application#createConverter(String)
+     * @see jakarta.faces.application.Application#createConverter(String)
      */
     @Override
     public Converter<?> createConverter(String converterId) {
@@ -492,7 +488,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#createConverter(Class)
+     * @see jakarta.faces.application.Application#createConverter(Class)
      */
     @Override
     public Converter<?> createConverter(Class<?> targetClass) {
@@ -500,7 +496,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getConverterIds()
+     * @see jakarta.faces.application.Application#getConverterIds()
      */
     @Override
     public Iterator<String> getConverterIds() {
@@ -508,7 +504,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getConverterTypes()
+     * @see jakarta.faces.application.Application#getConverterTypes()
      */
     @Override
     public Iterator<Class<?>> getConverterTypes() {
@@ -516,15 +512,15 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#addValidator(String, String)
+     * @see jakarta.faces.application.Application#addValidator(String, String)
      */
     @Override
     public void addValidator(String validatorId, String validatorClass) {
-      instanceFactory.addValidator(validatorId, validatorClass);
+        instanceFactory.addValidator(validatorId, validatorClass);
     }
 
     /**
-     * @see javax.faces.application.Application#createValidator(String)
+     * @see jakarta.faces.application.Application#createValidator(String)
      */
     @Override
     public Validator<?> createValidator(String validatorId) throws FacesException {
@@ -532,7 +528,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getValidatorIds()
+     * @see jakarta.faces.application.Application#getValidatorIds()
      */
     @Override
     public Iterator<String> getValidatorIds() {
@@ -540,7 +536,7 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#addDefaultValidatorId(String)
+     * @see jakarta.faces.application.Application#addDefaultValidatorId(String)
      */
     @Override
     public void addDefaultValidatorId(String validatorId) {
@@ -548,28 +544,24 @@ public class ApplicationImpl extends Application {
     }
 
     /**
-     * @see javax.faces.application.Application#getDefaultValidatorInfo()
+     * @see jakarta.faces.application.Application#getDefaultValidatorInfo()
      */
     @Override
     public Map<String, String> getDefaultValidatorInfo() {
         return instanceFactory.getDefaultValidatorInfo();
     }
 
-
     // ----------------------------------------------------------- Instance factory
 
     /**
-     * @see javax.faces.application.Application#getProjectStage()
+     * @see jakarta.faces.application.Application#getProjectStage()
      */
     @Override
     public ProjectStage getProjectStage() {
         return stage.getProjectStage(this);
     }
 
-
-
     // ----------------------------------------------------------- Search expression
-
 
     @Override
     public SearchExpressionHandler getSearchExpressionHandler() {
@@ -578,7 +570,7 @@ public class ApplicationImpl extends Application {
 
     @Override
     public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler) {
-       searchExpression.setSearchExpressionHandler(searchExpressionHandler);
+        searchExpression.setSearchExpressionHandler(searchExpressionHandler);
     }
 
     @Override
@@ -591,5 +583,60 @@ public class ApplicationImpl extends Application {
         return searchExpression.getSearchKeywordResolver();
     }
 
+    // ----------------------------------------------------------- Deprecated methods
+
+    /**
+     * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
+     */
+    @Override
+    @Deprecated
+    public PropertyResolver getPropertyResolver() {
+        return expressionLanguage.getPropertyResolver();
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
+     */
+    @Override
+    @Deprecated
+    public void setPropertyResolver(PropertyResolver resolver) {
+        expressionLanguage.setPropertyResolver(resolver);
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#createMethodBinding(String, Class[])
+     */
+    @Override
+    @Deprecated
+    public MethodBinding createMethodBinding(String ref, Class<?> params[]) {
+        return expressionLanguage.createMethodBinding(ref, params);
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#createValueBinding(String)
+     */
+    @Override
+    @Deprecated
+    public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException {
+        return expressionLanguage.createValueBinding(ref);
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#getVariableResolver()
+     */
+    @Override
+    @Deprecated
+    public VariableResolver getVariableResolver() {
+        return expressionLanguage.getVariableResolver();
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#setVariableResolver(jakarta.faces.el.VariableResolver)
+     */
+    @Override
+    @Deprecated
+    public void setVariableResolver(VariableResolver resolver) {
+        expressionLanguage.setVariableResolver(resolver);
+    }
 
 }

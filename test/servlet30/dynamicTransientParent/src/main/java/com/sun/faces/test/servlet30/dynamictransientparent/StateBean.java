@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,16 +16,18 @@
 
 package com.sun.faces.test.servlet30.dynamictransientparent;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+
+import java.io.Serializable;
+
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.event.ActionEvent;
-import javax.inject.Named;
 
-@Named
-@ApplicationScoped
-public class StateBean {
+@ManagedBean
+public class StateBean
+        implements Serializable {
 
     public void temporaryMoveComponent(ActionEvent ae) {
         UIComponent button = ae.getComponent();
@@ -51,6 +51,7 @@ public class StateBean {
         text.setValue("transient parent");
         transientRoot.getChildren().add(text);
         addto.getChildren().add(transientRoot);
+
     }
 
 }

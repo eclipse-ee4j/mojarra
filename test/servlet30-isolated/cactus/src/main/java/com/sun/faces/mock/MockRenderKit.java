@@ -46,17 +46,17 @@ public class MockRenderKit extends RenderKit {
 
     public MockRenderKit() {
         addRenderer(UIData.COMPONENT_FAMILY, 
-		    "javax.faces.Table", new TestRenderer(true));
+		    "jakarta.faces.Table", new TestRenderer(true));
 	addRenderer(UIInput.COMPONENT_FAMILY, 
 		    "TestRenderer", new TestRenderer());
         addRenderer(UIInput.COMPONENT_FAMILY, 
-		    "javax.faces.Text", new TestRenderer());
+		    "jakarta.faces.Text", new TestRenderer());
 	addRenderer(UIOutput.COMPONENT_FAMILY, 
 		    "TestRenderer", new TestRenderer());
         addRenderer(UIOutput.COMPONENT_FAMILY, 
-		    "javax.faces.Text", new TestRenderer());
+		    "jakarta.faces.Text", new TestRenderer());
         addRenderer(UIPanel.COMPONENT_FAMILY, 
-		    "javax.faces.Grid", new TestRenderer(true));
+		    "jakarta.faces.Grid", new TestRenderer(true));
         responseStateManager = new MockResponseStateManager();
     }
 

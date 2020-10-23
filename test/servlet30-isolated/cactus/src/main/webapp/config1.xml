@@ -37,7 +37,7 @@
 
    <component>
      <component-type>tree</component-type>
-     <component-class>javax.faces.component.UICommand</component-class>
+     <component-class>jakarta.faces.component.UICommand</component-class>
    </component>
    <render-kit>
      <renderer>

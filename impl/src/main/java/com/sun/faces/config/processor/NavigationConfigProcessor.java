@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -29,11 +29,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
@@ -44,10 +39,15 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/managed-bean</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/managed-bean</code>.
  * </p>
  */
 public class NavigationConfigProcessor extends AbstractConfigProcessor {
@@ -176,7 +176,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
      */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
@@ -186,7 +186,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing navigation-rule elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
-            
+
             Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList navigationRules = document.getDocumentElement().getElementsByTagNameNS(namespace, NAVIGATION_RULE);
@@ -204,7 +204,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
 
         for (int i = 0, size = navigationRules.getLength(); i < size; i++) {
             Node navigationRule = navigationRules.item(i);
-            if ((!("flow-definition".equals(navigationRule.getParentNode().getLocalName()))) && (navigationRule.getNodeType() == Node.ELEMENT_NODE)) {
+            if (!"flow-definition".equals(navigationRule.getParentNode().getLocalName()) && navigationRule.getNodeType() == Node.ELEMENT_NODE) {
                 NodeList children = navigationRule.getChildNodes();
                 String fromViewId = FROM_VIEW_ID_DEFAULT;
                 List<Node> navigationCases = null;
@@ -214,7 +214,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                         switch (n.getLocalName()) {
                         case FROM_VIEW_ID:
                             String t = getNodeText(n);
-                            fromViewId = ((t == null) ? FROM_VIEW_ID_DEFAULT : t);
+                            fromViewId = t == null ? FROM_VIEW_ID_DEFAULT : t;
                             if (!fromViewId.equals(FROM_VIEW_ID_DEFAULT) && fromViewId.charAt(0) != '/') {
                                 if (LOGGER.isLoggable(Level.WARNING)) {
                                     LOGGER.log(Level.WARNING, "jsf.config.navigation.from_view_id_leading_slash", new String[] { fromViewId });

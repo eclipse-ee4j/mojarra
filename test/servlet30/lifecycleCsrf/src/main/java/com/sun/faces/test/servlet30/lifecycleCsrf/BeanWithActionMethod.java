@@ -18,20 +18,20 @@ package com.sun.faces.test.servlet30.lifecycleCsrf;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
-@Named
+@ManagedBean
 @SessionScoped
 public class BeanWithActionMethod extends Object implements Serializable {
     private static final long serialVersionUID = -1211401608447731923L;
     private final AtomicInteger invokeCount = new AtomicInteger();
-
+    
     public String incrementAction() {
         invokeCount.incrementAndGet();
         return "i_spec_869_war_protected2";
     }
-
+    
     public String getInvokeCount() {
         return invokeCount.toString();
     }

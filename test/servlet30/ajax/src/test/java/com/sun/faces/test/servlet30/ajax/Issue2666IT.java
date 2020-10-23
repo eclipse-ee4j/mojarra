@@ -23,6 +23,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 public class Issue2666IT {
 
@@ -49,7 +50,7 @@ public class Issue2666IT {
         page = button.click();
         webClient.waitForBackgroundJavaScript(120000);
 
-        // Assert the page does not display the request parameter name 'button' that
+        // Assert the page does not display the request parameter name 'button' that 
         // is in the page without a 'name' attribute.
         assertTrue(page.asText().contains("Request parameter name 'button' does not exist"));
     }

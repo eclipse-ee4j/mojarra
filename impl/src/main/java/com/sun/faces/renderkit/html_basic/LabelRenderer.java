@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,41 +19,41 @@
 package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.logging.Level;
-
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
-import java.util.EnumSet;
-import java.util.Set;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHint;
 
-/** <p><B>LabelRenderer</B> renders Label element.<p>. */
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
+/**
+ * <p>
+ * <B>LabelRenderer</B> renders Label element.
+ * <p>
+ * .
+ */
 public class LabelRenderer extends HtmlBasicInputRenderer {
 
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLABEL);
 
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLABEL);
-
-
-    private static final String RENDER_END_ELEMENT =
-          "com.sun.faces.RENDER_END_ELEMENT";
+    private static final String RENDER_END_ELEMENT = "com.sun.faces.RENDER_END_ELEMENT";
 
     // ---------------------------------------------------------- Public Methods
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT, SearchExpressionHint.IGNORE_NO_RESULT);
-    
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT,
+            SearchExpressionHint.IGNORE_NO_RESULT);
+
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -62,17 +62,14 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
 
         String forClientId = null;
         String forValue = (String) component.getAttributes().get("for");
         if (forValue != null) {
-            SearchExpressionContext searchExpressionContext =
-                    SearchExpressionContext.createSearchExpressionContext(context, component,
-                            EXPRESSION_HINTS, null);
-        
-            forClientId = context.getApplication().getSearchExpressionHandler().resolveClientId(
-                searchExpressionContext, forValue);
+            SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(context, component, EXPRESSION_HINTS, null);
+
+            forClientId = context.getApplication().getSearchExpressionHandler().resolveClientId(searchExpressionContext, forValue);
 
             if (forClientId == null) {
                 // it could that the component hasn't been created yet. So
@@ -90,12 +87,8 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("for", forClientId, "for");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
-        String styleClass = (String)
-            component.getAttributes().get("styleClass");
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
+        String styleClass = (String) component.getAttributes().get("styleClass");
         if (null != styleClass) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
@@ -107,7 +100,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
         if (value != null && value.length() != 0) {
             Object val = component.getAttributes().get("escape");
-            boolean escape = (val != null) && Boolean.valueOf(val.toString());
+            boolean escape = val != null && Boolean.valueOf(val.toString());
 
             if (escape) {
                 writer.writeText(value, component, "value");
@@ -119,10 +112,8 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -131,12 +122,11 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
 
         // render label end element if RENDER_END_ELEMENT is set.
-        String render = (String) component.getAttributes().get(
-              RENDER_END_ELEMENT);
+        String render = (String) component.getAttributes().get(RENDER_END_ELEMENT);
         if ("yes".equals(render)) {
             component.getAttributes().remove(RENDER_END_ELEMENT);
             ResponseWriter writer = context.getResponseWriter();
-            assert(writer != null);
+            assert writer != null;
             writer.endElement("label");
         }
 
@@ -144,22 +134,17 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
 
     // ------------------------------------------------------- Private Methods
 
-
     /**
-     * Builds and returns the clientId of the component that is
-     * represented by the forValue. Since the component has not been created
-     * yet, invoking <code>getClientId(context)</code> is not possible.
+     * Builds and returns the clientId of the component that is represented by the forValue. Since the component has not
+     * been created yet, invoking <code>getClientId(context)</code> is not possible.
      *
      * @param component UIComponent that represents the label
-     * @param context   FacesContext for this request
-     * @param forValue  String representing the "id" of the component
-     *                  that this label represents.
+     * @param context FacesContext for this request
+     * @param forValue String representing the "id" of the component that this label represents.
      *
      * @return String clientId of the component represented by the forValue.
      */
-    protected String getForComponentClientId(UIComponent component,
-                                             FacesContext context,
-                                             String forValue) {
+    protected String getForComponentClientId(UIComponent component, FacesContext context, String forValue) {
 
         String result = null;
         // ASSUMPTION: The component for which this acts as the label

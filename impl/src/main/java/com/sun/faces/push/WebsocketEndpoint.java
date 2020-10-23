@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,19 +16,19 @@
 
 package com.sun.faces.push;
 
-import static javax.faces.push.PushContext.URI_PREFIX;
-import static javax.websocket.CloseReason.CloseCodes.GOING_AWAY;
-import static javax.websocket.CloseReason.CloseCodes.VIOLATED_POLICY;
+import static jakarta.faces.push.PushContext.URI_PREFIX;
+import static jakarta.websocket.CloseReason.CloseCodes.GOING_AWAY;
+import static jakarta.websocket.CloseReason.CloseCodes.VIOLATED_POLICY;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.push.Push;
-import javax.websocket.CloseReason;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Session;
+import jakarta.faces.push.Push;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.Session;
 
 /**
  * <p class="changed_added_2_3">
@@ -57,6 +57,7 @@ public class WebsocketEndpoint extends Endpoint {
     /**
      * Add given web socket session to the {@link WebocketSessionManager}. If web socket session is not accepted (i.e. the
      * channel identifier is unknown), then immediately close with reason VIOLATED_POLICY (close code 1008).
+     *
      * @param session The opened web socket session.
      * @param config The endpoint configuration.
      */
@@ -64,12 +65,10 @@ public class WebsocketEndpoint extends Endpoint {
     public void onOpen(Session session, EndpointConfig config) {
         if (WebsocketSessionManager.getInstance().add(session)) { // @Inject in Endpoint doesn't work in Tomcat+Weld/OWB.
             session.setMaxIdleTimeout(0);
-        }
-        else {
+        } else {
             try {
                 session.close(REASON_UNKNOWN_CHANNEL);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 onError(session, e);
             }
         }
@@ -77,6 +76,7 @@ public class WebsocketEndpoint extends Endpoint {
 
     /**
      * Delegate exception to onClose.
+     *
      * @param session The errored web socket session.
      * @param throwable The cause.
      */
@@ -88,15 +88,17 @@ public class WebsocketEndpoint extends Endpoint {
     }
 
     /**
-     * Remove given web socket session from the {@link WebsocketSessionManager}. If there is any exception from onError which was
-     * not caused by GOING_AWAY, then log it. Tomcat &lt;= 8.0.30 is known to throw an unnecessary exception when client
-     * abruptly disconnects, see also <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=57489">issue 57489</a>.
+     * Remove given web socket session from the {@link WebsocketSessionManager}. If there is any exception from onError
+     * which was not caused by GOING_AWAY, then log it. Tomcat &lt;= 8.0.30 is known to throw an unnecessary exception when
+     * client abruptly disconnects, see also <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=57489">issue 57489</a>.
+     *
      * @param session The closed web socket session.
      * @param reason The close reason.
      */
     @Override
     public void onClose(Session session, CloseReason reason) {
-        WebsocketSessionManager.getInstance().remove(session, reason); // @Inject in Endpoint doesn't work in Tomcat+Weld/OWB and CDI.current() during WS close doesn't work in WildFly.
+        WebsocketSessionManager.getInstance().remove(session, reason); // @Inject in Endpoint doesn't work in Tomcat+Weld/OWB and CDI.current() during WS close
+                                                                       // doesn't work in WildFly.
 
         Throwable throwable = (Throwable) session.getUserProperties().remove(Throwable.class.getName());
 

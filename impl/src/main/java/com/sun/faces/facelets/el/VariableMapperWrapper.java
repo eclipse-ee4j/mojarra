@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,17 +16,17 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
+
 /**
- * Utility class for wrapping another VariableMapper with a new context,
- * represented by a {@link java.util.Map Map}. Modifications occur to the Map
- * instance, but resolve against the wrapped VariableMapper if the Map doesn't
- * contain the ValueExpression requested.
+ * Utility class for wrapping another VariableMapper with a new context, represented by a {@link java.util.Map Map}.
+ * Modifications occur to the Map instance, but resolve against the wrapped VariableMapper if the Map doesn't contain
+ * the ValueExpression requested.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -42,44 +42,40 @@ public class VariableMapperWrapper extends VariableMapper {
      */
     public VariableMapperWrapper(VariableMapper orig) {
         super();
-        this.target = orig;
+        target = orig;
     }
 
     /**
-     * First tries to resolve agains the inner Map, then the wrapped
-     * ValueExpression.
+     * First tries to resolve agains the inner Map, then the wrapped ValueExpression.
      *
-     * @see javax.el.VariableMapper#resolveVariable(java.lang.String)
+     * @see jakarta.el.VariableMapper#resolveVariable(java.lang.String)
      */
     @Override
     public ValueExpression resolveVariable(String variable) {
         ValueExpression ve = null;
         try {
-            if (this.vars != null) {
-                ve = (ValueExpression) this.vars.get(variable);
+            if (vars != null) {
+                ve = (ValueExpression) vars.get(variable);
             }
             if (ve == null) {
-                return this.target.resolveVariable(variable);
+                return target.resolveVariable(variable);
             }
             return ve;
         } catch (StackOverflowError e) {
-            throw new ELException("Could not Resolve Variable [Overflow]: "
-                                  + variable, e);
+            throw new ELException("Could not Resolve Variable [Overflow]: " + variable, e);
         }
     }
 
     /**
      * Set the ValueExpression on the inner Map instance.
      *
-     * @see javax.el.VariableMapper#setVariable(java.lang.String,
-     *      javax.el.ValueExpression)
+     * @see jakarta.el.VariableMapper#setVariable(java.lang.String, jakarta.el.ValueExpression)
      */
     @Override
-    public ValueExpression setVariable(String variable,
-                                       ValueExpression expression) {
-        if (this.vars == null) {
-            this.vars = new HashMap();
+    public ValueExpression setVariable(String variable, ValueExpression expression) {
+        if (vars == null) {
+            vars = new HashMap();
         }
-        return (ValueExpression) this.vars.put(variable, expression);
-	}
+        return (ValueExpression) vars.put(variable, expression);
+    }
 }

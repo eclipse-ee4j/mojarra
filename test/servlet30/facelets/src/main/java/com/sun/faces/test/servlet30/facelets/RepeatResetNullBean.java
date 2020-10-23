@@ -16,58 +16,45 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import static java.util.Arrays.asList;
-
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import javax.faces.bean.ManagedBean;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-
-@Named
-@RequestScoped
-public class RepeatResetNullBean {
-
-    private List<TestHolder> testList = asList(new TestHolder("myString"));
+@ManagedBean(name = "repeatResetNullBean")
+public class RepeatResetNullBean implements Serializable {
+    private List<TestHolder> testList = Arrays.asList(new TestHolder("myString"));
     private TestHolder element = new TestHolder("myStringElement");
-
     public List<TestHolder> getTestList() {
         return testList;
     }
-
     public TestHolder getElement() {
         return element;
     }
-
     public void setElement(TestHolder element) {
         this.element = element;
     }
-
     public void setTestList(List<TestHolder> testList) {
         this.testList = testList;
     }
-
     public boolean isElementNullSet() {
         return element.getValue() == null;
     }
-
     public boolean isNullOrEmptySet() {
-        return (testList.get(0).getValue() == null) || (testList.get(0).getValue().length() == 0);
+        return (testList.get(0).getValue() == null) ||
+            (testList.get(0).getValue().length() == 0);
     }
 
-    public void action() {
-    }
-
-    public class TestHolder {
+    public void action(){}
+    
+    public class TestHolder implements Serializable{
         private String value;
-
         public TestHolder(String value) {
             this.value = value;
         }
-
         public String getValue() {
             return value;
         }
-
         public void setValue(String value) {
             this.value = value;
         }

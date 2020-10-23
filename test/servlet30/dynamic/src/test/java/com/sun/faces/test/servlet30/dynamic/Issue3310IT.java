@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class Issue3310IT {
 
@@ -46,12 +44,13 @@ public class Issue3310IT {
     public void testMoveComponent() throws Exception {
 
         HtmlPage page = webClient.getPage(webUrl + "faces/transientFirstChild.xhtml");
-        HtmlElement button = page.getHtmlElementById("form:add");
+        HtmlElement button = (HtmlElement) page.getHtmlElementById("form:add");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
         button = page.getHtmlElementById("form:reload");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.asXml().indexOf("transient first child") < page.asXml().indexOf("dynamically added; now perform a reload"));
+        assertTrue(page.asXml().indexOf("transient first child") < 
+                page.asXml().indexOf("dynamically added; now perform a reload"));
     }
 }

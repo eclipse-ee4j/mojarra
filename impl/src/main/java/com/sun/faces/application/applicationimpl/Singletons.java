@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -31,50 +31,50 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionListener;
-import javax.faces.flow.FlowHandler;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.flow.FlowHandler;
+
 public class Singletons {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
     private static final String CONTEXT = "context";
-    
+
     private final ApplicationAssociate associate;
-    
+
     private volatile ActionListener actionListener;
     private volatile NavigationHandler navigationHandler;
     private volatile ViewHandler viewHandler;
     private volatile ResourceHandler resourceHandler;
     private volatile StateManager stateManager;
-    
+
     private volatile ArrayList<Locale> supportedLocales;
     private volatile Locale defaultLocale;
     private volatile String messageBundle;
-    
+
     private String defaultRenderKitId;
-    
+
     public Singletons(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
     }
-    
+
     /**
-     * @see javax.faces.application.Application#getViewHandler()
+     * @see jakarta.faces.application.Application#getViewHandler()
      */
     public ViewHandler getViewHandler() {
         return viewHandler;
     }
 
     /**
-     * @see javax.faces.application.Application#setViewHandler(javax.faces.application.ViewHandler)
+     * @see jakarta.faces.application.Application#setViewHandler(jakarta.faces.application.ViewHandler)
      */
     public synchronized void setViewHandler(ViewHandler viewHandler) {
 
@@ -87,16 +87,16 @@ public class Singletons {
             LOGGER.log(FINE, MessageFormat.format("set ViewHandler Instance to ''{0}''", viewHandler.getClass().getName()));
         }
     }
-    
+
     /**
-     * @see javax.faces.application.Application#getResourceHandler()
+     * @see jakarta.faces.application.Application#getResourceHandler()
      */
     public ResourceHandler getResourceHandler() {
         return resourceHandler;
     }
 
     /**
-     * @see javax.faces.application.Application#setResourceHandler(javax.faces.application.ResourceHandler)
+     * @see jakarta.faces.application.Application#setResourceHandler(jakarta.faces.application.ResourceHandler)
      */
     public synchronized void setResourceHandler(ResourceHandler resourceHandler) {
 
@@ -104,21 +104,21 @@ public class Singletons {
         notRequestServiced("ResourceHandler");
 
         this.resourceHandler = resourceHandler;
-        
+
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.log(FINE, "set ResourceHandler Instance to ''{0}''", resourceHandler.getClass().getName());
         }
     }
-    
+
     /**
-     * @see javax.faces.application.Application#getStateManager()
+     * @see jakarta.faces.application.Application#getStateManager()
      */
     public StateManager getStateManager() {
         return stateManager;
     }
 
     /**
-     * @see javax.faces.application.Application#setStateManager(javax.faces.application.StateManager)
+     * @see jakarta.faces.application.Application#setStateManager(jakarta.faces.application.StateManager)
      */
     public synchronized void setStateManager(StateManager stateManager) {
 
@@ -131,16 +131,16 @@ public class Singletons {
             LOGGER.log(FINE, MessageFormat.format("set StateManager Instance to ''{0}''", stateManager.getClass().getName()));
         }
     }
-    
+
     /**
-     * @see javax.faces.application.Application#getActionListener()
+     * @see jakarta.faces.application.Application#getActionListener()
      */
     public ActionListener getActionListener() {
         return actionListener;
     }
-    
+
     /**
-     * @see Application#setActionListener(javax.faces.event.ActionListener)
+     * @see Application#setActionListener(jakarta.faces.event.ActionListener)
      */
     public synchronized void setActionListener(ActionListener actionListener) {
 
@@ -152,16 +152,16 @@ public class Singletons {
             LOGGER.fine(MessageFormat.format("set ActionListener Instance to ''{0}''", actionListener.getClass().getName()));
         }
     }
-    
+
     /**
-     * @see javax.faces.application.Application#getNavigationHandler()
+     * @see jakarta.faces.application.Application#getNavigationHandler()
      */
     public NavigationHandler getNavigationHandler() {
         return navigationHandler;
     }
 
     /**
-     * @see javax.faces.application.Application#setNavigationHandler(javax.faces.application.NavigationHandler)
+     * @see jakarta.faces.application.Application#setNavigationHandler(jakarta.faces.application.NavigationHandler)
      */
     public synchronized void setNavigationHandler(NavigationHandler navigationHandler) {
 
@@ -173,7 +173,7 @@ public class Singletons {
             LOGGER.fine(MessageFormat.format("set NavigationHandler Instance to ''{0}''", navigationHandler.getClass().getName()));
         }
     }
-    
+
     public FlowHandler getFlowHandler() {
         return associate.getFlowHandler();
     }
@@ -188,16 +188,16 @@ public class Singletons {
             LOGGER.fine(MessageFormat.format("set FlowHandler Instance to ''{0}''", flowHandler.getClass().getName()));
         }
     }
-    
+
     /**
-     * @see javax.faces.application.Application#getSupportedLocales()
+     * @see jakarta.faces.application.Application#getSupportedLocales()
      */
     public Iterator<Locale> getSupportedLocales() {
         return coalesce(supportedLocales, Collections.<Locale>emptyList()).iterator();
     }
 
     /**
-     * @see javax.faces.application.Application#setSupportedLocales(java.util.Collection)
+     * @see jakarta.faces.application.Application#setSupportedLocales(java.util.Collection)
      */
     public synchronized void setSupportedLocales(Collection<Locale> newLocales) {
 
@@ -212,14 +212,14 @@ public class Singletons {
     }
 
     /**
-     * @see javax.faces.application.Application#getDefaultLocale()
+     * @see jakarta.faces.application.Application#getDefaultLocale()
      */
     public Locale getDefaultLocale() {
         return defaultLocale;
     }
 
     /**
-     * @see javax.faces.application.Application#setDefaultLocale(java.util.Locale)
+     * @see jakarta.faces.application.Application#setDefaultLocale(java.util.Locale)
      */
     public synchronized void setDefaultLocale(Locale locale) {
 
@@ -231,9 +231,9 @@ public class Singletons {
             LOGGER.log(FINE, MessageFormat.format("set defaultLocale ''{0}''", defaultLocale.getClass().getName()));
         }
     }
-    
+
     /**
-     * @see javax.faces.application.Application#setMessageBundle(String)
+     * @see jakarta.faces.application.Application#setMessageBundle(String)
      */
     public synchronized void setMessageBundle(String messageBundle) {
         notNull("messageBundle", messageBundle);
@@ -246,29 +246,28 @@ public class Singletons {
     }
 
     /**
-     * @see javax.faces.application.Application#getMessageBundle()
+     * @see jakarta.faces.application.Application#getMessageBundle()
      */
     public String getMessageBundle() {
         return messageBundle;
     }
 
     /**
-     * @see javax.faces.application.Application#getDefaultRenderKitId()
+     * @see jakarta.faces.application.Application#getDefaultRenderKitId()
      */
     public String getDefaultRenderKitId() {
         return defaultRenderKitId;
     }
 
     /**
-     * @see javax.faces.application.Application#setDefaultRenderKitId(String)
+     * @see jakarta.faces.application.Application#setDefaultRenderKitId(String)
      */
     public void setDefaultRenderKitId(String renderKitId) {
         defaultRenderKitId = renderKitId;
     }
-    
+
     /**
-     * @see javax.faces.application.Application#getResourceBundle(javax.faces.context.FacesContext,
-     *      String)
+     * @see jakarta.faces.application.Application#getResourceBundle(jakarta.faces.context.FacesContext, String)
      */
     public ResourceBundle getResourceBundle(FacesContext context, String var) {
 
@@ -277,10 +276,7 @@ public class Singletons {
 
         return associate.getResourceBundle(context, var);
     }
-    
-    
-    
-    
+
     private void notRequestServiced(String artifactId) {
         if (associate.hasRequestBeenServiced()) {
             throw new IllegalStateException(getExceptionMessageString(ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID, artifactId));
