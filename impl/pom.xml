@@ -363,9 +363,9 @@
                         </Require-Capability>
                         <Provide-Capability>
                             osgi.extender;osgi.extender="jsp.taglib";uri="http://java.sun.com/jsf/html";
-                                version:Version="2.3",
+                                version:Version="3.0",
                             osgi.extender;osgi.extender="jsp.taglib";uri="http://java.sun.com/jsf/core";
-                                version:Version="2.3"
+                                version:Version="3.0"
                         </Provide-Capability>
                     </instructions>
                 </configuration>
@@ -384,70 +384,6 @@
                         <exclude>**/*.java</exclude>
                         <exclude>**/*.html</exclude>
                     </excludes>
-                </configuration>
-            </plugin>
-            
-            
-            <!-- ###  V A L I D A T I O N  ### --> 
-            
-            <!-- A number of basic Java language code checks -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <targetJdk>1.8</targetJdk>
-                    <excludes>
-                        <exclude>com/sun/faces/taglib/html_basic/**/*.java</exclude>
-                        <exclude>jakarta/faces/component/html/**/*.java</exclude>
-                    </excludes>
-                    <rulesets>
-                        <ruleset>${project.build.directory}/../src/main/pmd/ruleset.xml</ruleset>
-                    </rulesets>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.sourceforge.pmd</groupId>
-                        <artifactId>pmd</artifactId>
-                        <version>5.1.2</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            
-            <!-- Another number of basic Java language code checks -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.4</version>
-                <configuration>
-                    <threshold>High</threshold>
-                    <excludeFilterFile>${project.build.directory}/../src/main/findbugs/exclude.xml</excludeFilterFile>
-                </configuration>
-            </plugin>
-            
-            <!-- Validate that the various XML files are well formed and match their schema-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>xml-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>validate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <basedir>src/main/resources/com/sun/faces</basedir>
-                    <validationSets>
-                        <validationSet>
-                            <dir>src/main/resources/com/sun/faces</dir>
-                            <includes>
-                                <include>*.xsd</include>
-                                <include>standard-html-renderkit.xml</include>
-                            </includes>
-                        </validationSet>
-                    </validationSets>
                 </configuration>
             </plugin>
             
@@ -487,9 +423,9 @@
             </plugin>
         </plugins>
         
+        
         <pluginManagement>
             <plugins>
-            
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -520,61 +456,5 @@
             </plugins>
         </pluginManagement>
     </build>
-    
-    
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.9.1</version>
-                <configuration>
-                    <includes>jakarta/**/*.java</includes>
-                    <configLocation>${project.build.directory}/../checkstyle-config.xml</configLocation>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>checkstyle</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.5</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <targetJdk>1.8</targetJdk>
-                    <excludes>
-                        <exclude>com/sun/faces/taglib/html_basic/**/*.java</exclude>
-                        <exclude>jakarta/faces/component/html/**/*.java</exclude>
-                    </excludes>
-                    <rulesets>
-                        <ruleset>${project.build.directory}/../src/main/pmd/ruleset.xml</ruleset>
-                    </rulesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.4</version>
-                <configuration>
-                    <threshold>High</threshold>
-                    <excludeFilterFile>${project.build.directory}/../src/main/findbugs/exclude.xml</excludeFilterFile>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>taglist-maven-plugin</artifactId>
-                <version>2.4</version>
-            </plugin>
-        </plugins>
-    </reporting>
     
 </project>
