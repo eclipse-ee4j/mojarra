@@ -917,13 +917,10 @@ public class WebConfiguration {
         EnableJSStyleHiding("com.sun.faces.enableJSStyleHiding", false), EnableScriptInAttributeValue("com.sun.faces.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("com.sun.faces.writeStateAtFormEnd", true), EnableLazyBeanValidation("com.sun.faces.enableLazyBeanValidation", true),
         EnableLoadBundle11Compatibility("com.sun.faces.enabledLoadBundle11Compatibility", false),
-        EnableRestoreView11Compatibility("com.sun.faces.enableRestoreView11Compatibility", false),
         SerializeServerState(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, false),
         SerializeServerStateDeprecated("com.sun.faces.serializeServerState", false, true, SerializeServerState),
         EnableViewStateIdRendering("com.sun.faces.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("com.sun.faces.registerConverterPropertyEditors", false),
-        DisableFaceletJSFViewHandler(ViewHandler.DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME, false),
-        DisableFaceletJSFViewHandlerDeprecated("DISABLE_FACELET_JSF_VIEWHANDLER", false, true, DisableFaceletJSFViewHandler),
         DisableDefaultBeanValidator(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME, false),
         DateTimeConverterUsesSystemTimezone(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME, false),
         EnableHttpMethodRestrictionPhaseListener("com.sun.faces.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
@@ -1084,8 +1081,7 @@ public class WebConfiguration {
 
         @Override
         public boolean shouldBeLogged(WebConfiguration configuration) {
-            return !configuration.isOptionEnabled(BooleanWebContextInitParameter.DisableFaceletJSFViewHandler)
-                    && !configuration.isOptionEnabled(BooleanWebContextInitParameter.DisableFaceletJSFViewHandlerDeprecated);
+            return true;
         }
 
     } // END FaceletsConfigParamLoggingStrategy

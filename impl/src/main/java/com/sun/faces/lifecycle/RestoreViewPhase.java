@@ -39,7 +39,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
@@ -172,19 +171,8 @@ public class RestoreViewPhase extends Phase {
                 // try to restore the view
                 viewRoot = viewHandler.restoreView(facesContext, viewId);
                 if (viewRoot == null) {
-                    if (is11CompatEnabled(facesContext)) {
-                        // 1.1 -> create a new view and flag that the response should
-                        // be immediately rendered
-                        if (LOGGER.isLoggable(FINE)) {
-                            LOGGER.fine("Postback: recreating a view for " + viewId);
-                        }
-                        viewRoot = viewHandler.createView(facesContext, viewId);
-                        facesContext.renderResponse();
-
-                    } else {
-                        Object[] params = { viewId };
-                        throw new ViewExpiredException(getExceptionMessageString(RESTORE_VIEW_ERROR_MESSAGE_ID, params), viewId);
-                    }
+                    Object[] params = { viewId };
+                    throw new ViewExpiredException(getExceptionMessageString(RESTORE_VIEW_ERROR_MESSAGE_ID, params), viewId);
                 }
 
                 facesContext.setViewRoot(viewRoot);
@@ -473,21 +461,6 @@ public class RestoreViewPhase extends Phase {
     private static boolean isErrorPage(FacesContext context) {
 
         return context.getExternalContext().getRequestMap().get(WEBAPP_ERROR_PAGE_MARKER) != null;
-
-    }
-
-    private WebConfiguration getWebConfig(FacesContext context) {
-
-        if (webConfig == null) {
-            webConfig = WebConfiguration.getInstance(context.getExternalContext());
-        }
-        return webConfig;
-
-    }
-
-    private boolean is11CompatEnabled(FacesContext context) {
-
-        return getWebConfig(context).isOptionEnabled(BooleanWebContextInitParameter.EnableRestoreView11Compatibility);
 
     }
 
