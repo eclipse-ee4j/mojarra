@@ -593,34 +593,6 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             faces_configElement.appendChild(validatorElement);
         }
         {
-            Element validatorElement = toPopulate.createElementNS(ns, "validator");
-            {
-                Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("com.sun.faces.ext.validator.CreditCardValidator"));
-                validatorElement.appendChild(validator_idElement);
-            }
-            {
-                Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.ext.validator.CreditCardValidator"));
-                validatorElement.appendChild(validator_classElement);
-            }
-            faces_configElement.appendChild(validatorElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("com.sun.faces.ext.focus"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.ext.component.UIFocus"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
@@ -710,25 +682,6 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
                 Element render_kit_idElement = toPopulate.createElementNS(ns, "render-kit-id");
                 render_kit_idElement.appendChild(toPopulate.createTextNode("HTML_BASIC"));
                 render_kitElement.appendChild(render_kit_idElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("FocusFamily"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("com.sun.faces.ext.render.FocusHTMLRenderer"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.ext.render.FocusHTMLRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
             }
             {
                 Element rendererElement = toPopulate.createElementNS(ns, "renderer");
