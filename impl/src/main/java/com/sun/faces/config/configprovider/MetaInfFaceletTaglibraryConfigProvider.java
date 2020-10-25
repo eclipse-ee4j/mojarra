@@ -17,7 +17,6 @@
 package com.sun.faces.config.configprovider;
 
 import static com.sun.faces.util.Util.getCurrentLoader;
-import static java.lang.System.arraycopy;
 import static java.util.Collections.emptyList;
 
 import java.io.IOException;
@@ -49,9 +48,6 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
     private static final String[] FACELET_CONFIG_FILES = { "META-INF/jsf-core.taglib.xml", "META-INF/jsf-html.taglib.xml", "META-INF/jsf-ui.taglib.xml",
             "META-INF/jstl-core.taglib.xml", "META-INF/jstl-fn.taglib.xml" };
 
-    private static final String[] BUILT_IN_TAGLIB_XML_FILES = { "META-INF/mojarra_ext.taglib.xml"
-
-    };
 
     // -------------------------------------------- Methods from ConfigProcessor
 
@@ -60,23 +56,13 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
 
         try {
             URL[] externalTaglibUrls = Classpath.search(getCurrentLoader(this), "META-INF/", SUFFIX);
-            URL[] builtInTaglibUrls = new URL[BUILT_IN_TAGLIB_XML_FILES.length];
-            ClassLoader runtimeClassLoader = this.getClass().getClassLoader();
-
-            for (int i = 0; i < BUILT_IN_TAGLIB_XML_FILES.length; i++) {
-                builtInTaglibUrls[i] = runtimeClassLoader.getResource(BUILT_IN_TAGLIB_XML_FILES[i]);
-            }
-
-            URL[] urls = new URL[externalTaglibUrls.length + builtInTaglibUrls.length];
-            arraycopy(externalTaglibUrls, 0, urls, 0, externalTaglibUrls.length);
-            arraycopy(builtInTaglibUrls, 0, urls, externalTaglibUrls.length, builtInTaglibUrls.length);
 
             // Perform some 'correctness' checking. If the user has
             // removed the FaceletViewHandler from their configuration,
             // but has left the jsf-facelets.jar in the classpath, we
             // need to ignore the default configuration resouces from
             // that JAR.
-            List<URI> urlsList = pruneURLs(urls);
+            List<URI> urlsList = pruneURLs(externalTaglibUrls);
 
             // Special case for finding taglib files in WEB-INF/classes/META-INF
             Set<String> paths = context.getResourcePaths(WEB_INF_CLASSES);
