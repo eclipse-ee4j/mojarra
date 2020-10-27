@@ -54,10 +54,8 @@ import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.model.IterableDataModel;
 import jakarta.faces.model.ListDataModel;
-import jakarta.faces.model.ResultDataModel;
 import jakarta.faces.model.ResultSetDataModel;
 import jakarta.faces.model.ScalarDataModel;
-import jakarta.servlet.jsp.jstl.sql.Result;
 
 // ------------------------------------------------------------- Private Classes
 // Private class to represent saved state information
@@ -1747,8 +1745,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             setDataModel(new ArrayDataModel((Object[]) current));
         } else if (current instanceof ResultSet) {
             setDataModel(new ResultSetDataModel((ResultSet) current));
-        } else if (current instanceof Result) {
-            setDataModel(new ResultDataModel((Result) current));
         } else if (current instanceof Collection) {
             setDataModel(new CollectionDataModel((Collection) current));
         } else if (current instanceof Iterable) {
