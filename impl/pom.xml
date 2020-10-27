@@ -95,22 +95,6 @@
         </dependency>
         
         <dependency>
-            <groupId>jakarta.servlet.jsp</groupId>
-            <artifactId>jakarta.servlet.jsp-api</artifactId>
-            <version>3.0.0</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        
-        <dependency>
-            <groupId>jakarta.servlet.jsp.jstl</groupId>
-            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-            <version>2.0.0</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        
-        <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
             <version>2.0.0</version>
@@ -361,12 +345,6 @@
                             resolution:=optional;cardinality:=multiple,
                             osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional
                         </Require-Capability>
-                        <Provide-Capability>
-                            osgi.extender;osgi.extender="jsp.taglib";uri="http://java.sun.com/jsf/html";
-                                version:Version="3.0",
-                            osgi.extender;osgi.extender="jsp.taglib";uri="http://java.sun.com/jsf/core";
-                                version:Version="3.0"
-                        </Provide-Capability>
                     </instructions>
                 </configuration>
             </plugin>
