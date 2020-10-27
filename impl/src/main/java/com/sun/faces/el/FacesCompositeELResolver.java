@@ -27,15 +27,11 @@ public abstract class FacesCompositeELResolver extends CompositeELResolver {
 
     /**
      * <p>
-     * <b>JSP</b> indicates this CompositeELResolver instance is the Jakarta Server Pages chain, specified in section 5.6.1 of the spec.
-     * </p>
-     *
-     * <p>
      * <b>Faces</b> indicates this CompositeELResolver instance is the Faces chain, specified in section 5.6.2 of the spec.
      * </p>
      */
     public enum ELResolverChainType {
-        JSP, Faces
+        Faces
     }
 
     public abstract ELResolverChainType getChainType();

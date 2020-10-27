@@ -102,6 +102,9 @@ public class FacesInitializer implements ServletContainerInitializer {
                     handleMappingConcerns(servletContext);
                 }
                 // Other concerns also handled if there is an existing Faces Servlet mapping
+
+                // The Configure listener will do the bulk of initializing (configuring) Faces in a later phase.
+                servletContext.addListener(ConfigureListener.class);
                 handleWebSocketConcerns(servletContext);
             } finally {
                 // Bug 20458755: The InitFacesContext was not being cleaned up, resulting in
@@ -116,12 +119,11 @@ public class FacesInitializer implements ServletContainerInitializer {
     // --------------------------------------------------------- Private Methods
 
     private boolean appMayHaveSomeJsfContent(Set<Class<?>> classes, ServletContext context) {
-
         if (!isEmpty(classes)) {
             return true;
         }
 
-        // No JSF specific classes found, check for a WEB-INF/faces-config.xml
+        // No Faces specific classes found, check for a WEB-INF/faces-config.xml
         try {
             if (context.getResource("/WEB-INF/faces-config.xml") != null) {
                 return true;
@@ -138,10 +140,8 @@ public class FacesInitializer implements ServletContainerInitializer {
                 cdi = CDI.current();
 
                 if (cdi != null) {
-
                     Instance<CdiExtension> extension = cdi.select(CdiExtension.class);
-
-                    if (!extension.isAmbiguous() && !extension.isUnsatisfied()) {
+                    if (extension.isResolvable()) {
                         return extension.get().isAddBeansForJSFImplicitObjects();
                     }
                 }
@@ -158,36 +158,21 @@ public class FacesInitializer implements ServletContainerInitializer {
     }
 
     private void handleMappingConcerns(ServletContext servletContext) throws ServletException {
-
         ServletRegistration existingFacesServletRegistration = getExistingFacesServletRegistration(servletContext);
         if (existingFacesServletRegistration != null) {
-            // FacesServlet has already been defined, so we're
-            // not going to add additional mappings;
-            if (isADFApplication()) {
-                // For Bug 21114997 and 21322338 add additional mappings
-                existingFacesServletRegistration.addMapping("*.xhtml", "*.jsf");
-            }
+            // FacesServlet has already been defined, so we're not going to add additional mappings;
             return;
         }
 
-        ServletRegistration reg = servletContext.addServlet("FacesServlet", "jakarta.faces.webapp.FacesServlet");
+        ServletRegistration newFacesServletRegistration = servletContext.addServlet("FacesServlet", "jakarta.faces.webapp.FacesServlet");
 
         if ("true".equalsIgnoreCase(servletContext.getInitParameter("jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML"))) {
-            reg.addMapping("/faces/*", "*.jsf", "*.faces");
+            newFacesServletRegistration.addMapping("/faces/*", "*.jsf", "*.faces");
         } else {
-            reg.addMapping("/faces/*", "*.jsf", "*.faces", "*.xhtml");
+            newFacesServletRegistration.addMapping("/faces/*", "*.jsf", "*.faces", "*.xhtml");
         }
 
         servletContext.setAttribute(FACES_INITIALIZER_MAPPINGS_ADDED, TRUE);
-
-        // The following line is temporary until we can solve an ordering
-        // issue in V3. Right now the JSP container looks for a mapping
-        // of the FacesServlet in the web.xml. If it's not present, then
-        // it assumes that the application isn't a faces application. In this
-        // case the JSP container will not register the ConfigureListener
-        // definition from our TLD nor will it parse cause or JSP TLDs to
-        // be parsed.
-        servletContext.addListener(com.sun.faces.config.ConfigureListener.class);
     }
 
     private ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
@@ -236,24 +221,6 @@ public class FacesInitializer implements ServletContainerInitializer {
             throw new ServletException(ex);
         }
 
-    }
-
-    private boolean isADFApplication() {
-
-        boolean hasResource = false;
-        try {
-            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            if (contextClassLoader != null) {
-                hasResource = contextClassLoader.getResource("oracle/adf/view/rich/context/AdfFacesContext.class") != null;
-            }
-        } catch (Exception e) {
-            // Intentionally swallow exception. This should be logged
-            // but for the comment at the top stating that Loggins should
-            // not be used for this class. I assume that means Logging, and
-            // not Kenny Loggins.
-        }
-
-        return hasResource;
     }
 
 }

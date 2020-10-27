@@ -16,15 +16,22 @@
 
 package com.sun.faces.el;
 
+import static com.sun.faces.el.ELUtils.getDefaultExpressionFactory;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.faces.config.InitFacesContext;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
 import jakarta.el.FunctionMapper;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Concrete implementation of {@link jakarta.el.ELContext}. ELContext's constructor is protected to control creation of
@@ -47,6 +54,24 @@ public class ELContextImpl extends ELContext {
      */
     public ELContextImpl(ELResolver resolver) {
         this.resolver = resolver;
+    }
+
+    public ELContextImpl(FacesContext facesContext) {
+        this(facesContext.getApplication().getELResolver());
+
+        putContext(FacesContext.class, facesContext);
+
+        ExpressionFactory expressionFactory = getDefaultExpressionFactory(facesContext);
+        if (expressionFactory != null) {
+            putContext(ExpressionFactory.class, expressionFactory);
+        }
+
+        if (facesContext instanceof InitFacesContext == false) {
+            UIViewRoot root = facesContext.getViewRoot();
+            if (root != null) {
+                setLocale(root.getLocale());
+            }
+        }
     }
 
     // -------------------------------------------------- Methods from ELContext
@@ -72,9 +97,7 @@ public class ELContextImpl extends ELContext {
     // ---------------------------------------------------------- Public Methods
 
     public void setFunctionMapper(FunctionMapper functionMapper) {
-
         this.functionMapper = functionMapper;
-
     }
 
     // ----------------------------------------------------------- Inner Classes
@@ -84,20 +107,17 @@ public class ELContextImpl extends ELContext {
         private Map<String, ValueExpression> variables;
 
         public VariableMapperImpl() {
-
-            // noinspection CollectionWithoutInitialCapacity
             variables = new HashMap<>();
-
         }
 
         @Override
-        public ValueExpression resolveVariable(String s) {
-            return variables.get(s);
+        public ValueExpression resolveVariable(String variable) {
+            return variables.get(variable);
         }
 
         @Override
-        public ValueExpression setVariable(String s, ValueExpression valueExpression) {
-            return variables.put(s, valueExpression);
+        public ValueExpression setVariable(String variable, ValueExpression valueExpression) {
+            return variables.put(variable, valueExpression);
         }
     }
 

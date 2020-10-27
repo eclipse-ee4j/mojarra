@@ -25,7 +25,6 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.VerifyFacesConfigObjects;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
-import static com.sun.faces.el.ELUtils.getDefaultExpressionFactory;
 import static com.sun.faces.push.WebsocketEndpoint.URI_TEMPLATE;
 import static java.lang.Boolean.TRUE;
 import static java.text.MessageFormat.format;
@@ -64,28 +63,20 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.WebappLifecycleListener;
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
-import com.sun.faces.el.ChainTypeCompositeELResolver;
 import com.sun.faces.el.ELContextImpl;
-import com.sun.faces.el.ELContextListenerImpl;
 import com.sun.faces.el.ELUtils;
-import com.sun.faces.el.FacesCompositeELResolver;
 import com.sun.faces.mgbean.BeanBuilder;
 import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.push.WebsocketEndpoint;
 import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.MojarraThreadFactory;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Timer;
 import com.sun.faces.util.Util;
 
-import jakarta.el.ELContext;
-import jakarta.el.ExpressionFactory;
+import jakarta.el.ELManager;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.ApplicationFactory;
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.servlet.ServletContext;
@@ -102,8 +93,6 @@ import jakarta.servlet.http.HttpSessionAttributeListener;
 import jakarta.servlet.http.HttpSessionBindingEvent;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
-import jakarta.servlet.jsp.JspApplicationContext;
-import jakarta.servlet.jsp.JspFactory;
 import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpointConfig;
 
@@ -127,49 +116,47 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     // ------------------------------------------ ServletContextListener Methods
 
     @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        ServletContext context = sce.getServletContext();
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        ServletContext servletContext = servletContextEvent.getServletContext();
 
         Timer timer = Timer.getInstance();
         if (timer != null) {
             timer.startTiming();
         }
 
-        ConfigManager configManager = ConfigManager.getInstance(context);
+        ConfigManager configManager = ConfigManager.getInstance(servletContext);
         if (configManager == null) {
-            configManager = ConfigManager.createInstance(context);
+            configManager = ConfigManager.createInstance(servletContext);
         }
 
-        if (configManager.hasBeenInitialized(context)) {
+        if (configManager.hasBeenInitialized(servletContext)) {
             return;
         }
 
-        InitFacesContext initContext = new InitFacesContext(context);
+        InitFacesContext initFacesContext = new InitFacesContext(servletContext);
 
-        if (LOGGER.isLoggable(FINE)) {
-            LOGGER.log(FINE, format("ConfigureListener.contextInitialized({0})", getServletContextIdentifier(context)));
-        }
+        LOGGER.log(FINE, () -> format("ConfigureListener.contextInitialized({0})", getServletContextIdentifier(servletContext)));
 
-        webConfig = WebConfiguration.getInstance(context);
+        webConfig = WebConfiguration.getInstance(servletContext);
 
         // Check to see if the FacesServlet is present in the
         // web.xml. If it is, perform faces configuration as normal,
         // otherwise, simply return.
-        Object mappingsAdded = context.getAttribute(FACES_INITIALIZER_MAPPINGS_ADDED);
+        Object mappingsAdded = servletContext.getAttribute(FACES_INITIALIZER_MAPPINGS_ADDED);
         if (mappingsAdded != null) {
-            context.removeAttribute(FACES_INITIALIZER_MAPPINGS_ADDED);
+            servletContext.removeAttribute(FACES_INITIALIZER_MAPPINGS_ADDED);
         }
 
-        WebXmlProcessor webXmlProcessor = new WebXmlProcessor(context);
+        WebXmlProcessor webXmlProcessor = new WebXmlProcessor(servletContext);
         if (mappingsAdded == null) {
             if (!webXmlProcessor.isFacesServletPresent()) {
                 if (!webConfig.isOptionEnabled(ForceLoadFacesConfigFiles)) {
                     LOGGER.log(FINE, "No FacesServlet found in deployment descriptor - bypassing configuration");
 
-                    WebConfiguration.clear(context);
-                    configManager.destroy(context, initContext);
-                    ConfigManager.removeInstance(context);
-                    InitFacesContext.cleanupInitMaps(context);
+                    WebConfiguration.clear(servletContext);
+                    configManager.destroy(servletContext, initFacesContext);
+                    ConfigManager.removeInstance(servletContext);
+                    InitFacesContext.cleanupInitMaps(servletContext);
 
                     return;
                 }
@@ -180,19 +167,18 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         if (webXmlProcessor.isDistributablePresent()) {
             webConfig.setOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable, true);
-            context.setAttribute(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable.getQualifiedName(), TRUE);
+            servletContext.setAttribute(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable.getQualifiedName(), TRUE);
         }
 
         // Bootstrap of faces required
-        webAppListener = new WebappLifecycleListener(context);
-        webAppListener.contextInitialized(sce);
+        webAppListener = new WebappLifecycleListener(servletContext);
+        webAppListener.contextInitialized(servletContextEvent);
         ReflectionUtils.initCache(Thread.currentThread().getContextClassLoader());
         Throwable caughtThrowable = null;
 
         try {
-
             if (LOGGER.isLoggable(INFO)) {
-                LOGGER.log(INFO, "jsf.config.listener.version", getServletContextIdentifier(context));
+                LOGGER.log(INFO, "jsf.config.listener.version", getServletContextIdentifier(servletContext));
             }
 
             if (webConfig.isOptionEnabled(VerifyFacesConfigObjects)) {
@@ -203,10 +189,10 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 Verifier.setCurrentInstance(new Verifier());
             }
 
-            configManager.initialize(context, initContext);
+            configManager.initialize(servletContext, initFacesContext);
 
             if (shouldInitConfigMonitoring()) {
-                initConfigMonitoring(context);
+                initConfigMonitoring(servletContext);
             }
 
             // Step 7, verify that all the configured factories are available
@@ -221,36 +207,32 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 LOGGER.severe(sb.toString());
             }
 
-            registerELResolverAndListenerWithJsp(context, false);
-            ApplicationAssociate associate = ApplicationAssociate.getInstance(context);
-            ELContext elContext = new ELContextImpl(initContext.getApplication().getELResolver());
-            elContext.putContext(FacesContext.class, initContext);
-            ExpressionFactory exFactory = getDefaultExpressionFactory(associate, initContext);
-            if (exFactory != null) {
-                elContext.putContext(ExpressionFactory.class, exFactory);
+            ApplicationAssociate associate = ApplicationAssociate.getInstance(servletContext);
+            if (associate != null) {
+                associate.setExpressionFactory(ELManager.getExpressionFactory());
             }
 
-            initContext.setELContext(elContext);
+            initFacesContext.setELContext(new ELContextImpl(initFacesContext));
 
             if (associate != null) {
-                associate.setContextName(getServletContextIdentifier(context));
+                associate.setContextName(getServletContextIdentifier(servletContext));
                 BeanManager manager = associate.getBeanManager();
                 List<String> eagerBeans = manager.getEagerBeanNames();
                 if (!eagerBeans.isEmpty()) {
                     for (String name : eagerBeans) {
-                        manager.create(name, initContext);
+                        manager.create(name, initFacesContext);
                     }
                 }
 
                 boolean isErrorPagePresent = webXmlProcessor.isErrorPagePresent();
                 associate.setErrorPagePresent(isErrorPagePresent);
-                context.setAttribute(ERROR_PAGE_PRESENT_KEY_NAME, isErrorPagePresent);
+                servletContext.setAttribute(ERROR_PAGE_PRESENT_KEY_NAME, isErrorPagePresent);
             }
 
             // Register websocket endpoint if explicitly enabled.
             // Note: websocket channel filter is registered in FacesInitializer.
             if (webConfig.isOptionEnabled(EnableWebsocketEndpoint)) {
-                ServerContainer serverContainer = (ServerContainer) context.getAttribute(ServerContainer.class.getName());
+                ServerContainer serverContainer = (ServerContainer) servletContext.getAttribute(ServerContainer.class.getName());
 
                 if (serverContainer == null) {
                     throw new UnsupportedOperationException("Cannot enable f:websocket."
@@ -268,7 +250,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             caughtThrowable = t;
 
         } finally {
-            sce.getServletContext().removeAttribute(ANNOTATED_CLASSES);
+            servletContextEvent.getServletContext().removeAttribute(ANNOTATED_CLASSES);
 
             Verifier.setCurrentInstance(null);
 
@@ -276,7 +258,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             if (timer != null) {
                 timer.stopTiming();
-                timer.logResult("Initialization of context " + getServletContextIdentifier(context));
+                timer.logResult("Initialization of context " + getServletContextIdentifier(servletContext));
             }
 
             if (caughtThrowable != null) {
@@ -286,7 +268,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             // Bug 20458755: The InitFacesContext was not being cleaned up, resulting in
             // a partially constructed FacesContext being made available
             // to other code that re-uses this Thread at init time.
-            initContext.releaseCurrentInstance();
+            initFacesContext.releaseCurrentInstance();
         }
     }
 
@@ -298,10 +280,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         // The additional check for a WebConfiguration instance was added at the request of JBoss
         if (configManager == null && WebConfiguration.getInstanceWithoutCreating(context) != null) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING,
-                        "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
-            }
+            LOGGER.log(WARNING,
+               "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
         }
 
         InitFacesContext initContext = null;
@@ -330,14 +310,12 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 return;
             }
 
-            ELContext elContext = new ELContextImpl(initContext.getApplication().getELResolver());
-            elContext.putContext(FacesContext.class, initContext);
-            ExpressionFactory exFactory = ELUtils.getDefaultExpressionFactory(initContext);
-            if (null != exFactory) {
-                elContext.putContext(ExpressionFactory.class, exFactory);
+            ApplicationAssociate associate = ApplicationAssociate.getInstance(context);
+            if (associate != null) {
+                associate.setExpressionFactory(ELManager.getExpressionFactory());
             }
 
-            initContext.setELContext(elContext);
+            initContext.setELContext(new ELContextImpl(initContext));
             Application application = initContext.getApplication();
 
             application.publishEvent(initContext, PreDestroyApplicationEvent.class, Application.class, application);
@@ -577,7 +555,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 LOGGER.log(SEVERE, "Unexpected state during reload: no ConfigManager instance in current ServletContext but one is expected to exist.");
             }
 
-            registerELResolverAndListenerWithJsp(servletContext, true);
             ApplicationAssociate associate = ApplicationAssociate.getInstance(servletContext);
 
             if (associate != null) {
@@ -609,109 +586,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 return context.getServletContextName();
             }
         }
-    }
-
-    private static boolean isJspTwoOne(ServletContext context) {
-
-        // The following try/catch is a hack to work around
-        // a bug in Tomcat 6 where JspFactory.getDefaultFactory() will
-        // return null unless JspRuntimeContext has been loaded.
-        try {
-            Class.forName("org.apache.jasper.compiler.JspRuntimeContext");
-        } catch (ClassNotFoundException ignored) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.log(Level.FINEST, "Dected JSP 2.1", ignored);
-            }
-        }
-
-        if (JspFactory.getDefaultFactory() == null) {
-            return false;
-        }
-        try {
-            JspFactory.class.getMethod("getJspApplicationContext", ServletContext.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            return false;
-        }
-        try {
-            JspFactory.getDefaultFactory().getJspApplicationContext(context);
-        } catch (Throwable e) {
-            return false;
-        }
-        return true;
-
-    }
-
-    public void registerELResolverAndListenerWithJsp(ServletContext context, boolean reloaded) {
-
-        if (webConfig.isSet(WebContextInitParameter.ExpressionFactory) || !isJspTwoOne(context)) {
-
-            // first try to load a factory defined in web.xml
-            if (!installExpressionFactory(context, webConfig.getOptionValue(WebContextInitParameter.ExpressionFactory))) {
-
-                throw new ConfigurationException(MessageUtils.getExceptionMessageString(MessageUtils.INCORRECT_JSP_VERSION_ID,
-                        WebContextInitParameter.ExpressionFactory.getDefaultValue(), WebContextInitParameter.ExpressionFactory.getQualifiedName()));
-
-            }
-
-        } else {
-
-            // JSP 2.1 specific check
-            if (JspFactory.getDefaultFactory().getJspApplicationContext(context) == null) {
-                return;
-            }
-
-            // register an empty resolver for now. It will be populated after the
-            // first request is serviced.
-            FacesCompositeELResolver compositeELResolverForJsp = new ChainTypeCompositeELResolver(FacesCompositeELResolver.ELResolverChainType.JSP);
-            ApplicationAssociate associate = ApplicationAssociate.getInstance(context);
-            if (associate != null) {
-                associate.setFacesELResolverForJsp(compositeELResolverForJsp);
-            }
-
-            // get JspApplicationContext.
-            JspApplicationContext jspAppContext = JspFactory.getDefaultFactory().getJspApplicationContext(context);
-
-            // cache the ExpressionFactory instance in ApplicationAssociate
-            if (associate != null) {
-                associate.setExpressionFactory(jspAppContext.getExpressionFactory());
-            }
-
-            // register compositeELResolver with JSP
-            try {
-                jspAppContext.addELResolver(compositeELResolverForJsp);
-            } catch (IllegalStateException e) {
-                ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-                Application app = factory.getApplication();
-                if (app.getProjectStage() != ProjectStage.UnitTest && !reloaded) {
-                    throw e;
-                }
-            }
-
-            // register JSF ELContextListenerImpl with Jsp
-            ELContextListenerImpl elContextListener = new ELContextListenerImpl();
-            jspAppContext.addELContextListener(elContextListener);
-        }
-    }
-
-    private boolean installExpressionFactory(ServletContext sc, String elFactoryType) {
-
-        if (elFactoryType == null) {
-            return false;
-        }
-        try {
-            ExpressionFactory factory = (ExpressionFactory) Util.loadClass(elFactoryType, this).newInstance();
-            ApplicationAssociate associate = ApplicationAssociate.getInstance(sc);
-            if (associate != null) {
-                associate.setExpressionFactory(factory);
-            }
-            return true;
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(MessageFormat.format("Unable to instantiate ExpressionFactory ''{0}''", elFactoryType));
-            }
-            return false;
-        }
-
     }
 
     private InitFacesContext getInitFacesContext(ServletContext context) {

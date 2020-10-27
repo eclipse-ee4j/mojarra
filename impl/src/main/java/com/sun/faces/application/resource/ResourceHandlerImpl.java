@@ -537,8 +537,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * <li>.class</li>
      * <li>.properties</li>
      * <li>.xhtml</li>
-     * <li>.jsp</li>
-     * <li>.jspx</li>
      * <ul>
      * will be used.
      */

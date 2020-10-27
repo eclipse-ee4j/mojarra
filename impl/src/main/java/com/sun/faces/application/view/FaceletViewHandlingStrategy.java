@@ -102,7 +102,6 @@ import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Resource;
-import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.ActionSource2;
@@ -167,7 +166,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private int responseBufferSize;
     private boolean responseBufferSizeSet;
-    private boolean isTrinidadStateManager;
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
@@ -487,24 +485,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     @Override
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId) {
-        StateManagementStrategy result;
-
-        StateContext stateCtx = StateContext.getStateContext(context);
-        if (stateCtx.isPartialStateSaving(context, viewId)) {
-            result = new FaceletPartialStateManagementStrategy(context);
-        } else {
-            // Spec for this method says:
-
-            // Implementations that provide the VDL for Facelets for JSF 2.0
-            // and later must return non-null from this method.
-
-            // Limit the specification violating change to the case where
-            // we are running in Trinidad.
-            //
-            result = isTrinidadStateManager ? null : new JspStateManagementStrategy(context);
+        if (getStateContext(context).isPartialStateSaving(context, viewId)) {
+            return new FaceletPartialStateManagementStrategy(context);
         }
 
-        return result;
+        return new FaceletFullStateManagementStrategy(context);
     }
 
     /**
@@ -903,8 +888,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             if (isViewIdExactMappedToFacesServlet(viewId)) {
                 // If the Facelets VDL is reached, no other ViewDeclarationLanguage has declared
                 // to handle the view (via ViewExists()), so we handle it if the viewId happens to be exact
-                // mapped to the FacesServlet. The JSP ViewDeclarationLanguage still comes after us,
-                // but we don't support that.
+                // mapped to the FacesServlet.
                 return true;
             }
         }
@@ -918,8 +902,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         }
 
         // If there's no extensions array or prefixes array, then assume defaults.
-        // .xhtml extension is handled by the FaceletViewHandler and .jsp will be handled by
-        // the JSP view handler
+        // .xhtml extension is handled by the FaceletViewHandler
         if (extensionsArray == null && prefixesArray == null) {
             return isMatchedWithFaceletsSuffix(viewId) ? true : viewId.endsWith(DEFAULT_FACELETS_SUFFIX);
         }
@@ -954,10 +937,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * Initialize the core Facelets runtime.
      */
     protected void initialize() {
-
-        if (LOGGER.isLoggable(FINE)) {
-            LOGGER.fine("Initializing FaceletViewHandlingStrategy");
-        }
+        LOGGER.fine("Initializing FaceletViewHandlingStrategy");
 
         initializeMappings();
 
@@ -973,9 +953,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             responseBufferSize = Integer.parseInt(FaceletsBufferSize.getDefaultValue());
         }
 
-        if (LOGGER.isLoggable(FINE)) {
-            LOGGER.fine("Initialization Successful");
-        }
+        LOGGER.fine("Initialization Successful");
 
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
 
@@ -993,13 +971,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 cur.getValue().clear();
             }
             contractDataStructure.clear();
-        }
-
-        if (context != null) {
-            StateManager stateManager = Util.getStateManager(context);
-            if (stateManager != null) {
-                isTrinidadStateManager = stateManager.getClass().getName().contains("trinidad");
-            }
         }
     }
 
@@ -2023,10 +1994,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 return FLOW_DEFINITION_ID_SUFFIX;
             }
 
-            // If there's no extensions array or prefixes array, then
-            // assume defaults. .xhtml extension is handled by
-            // the FaceletViewHandler and .jsp will be handled by
-            // the JSP view handler
+            // If there's no extensions array or prefixes array, then assume defaults.
+            // .xhtml extension is handled by the FaceletViewHandler
             if (extensionsArray == null && prefixesArray == null) {
                 String suffix = getMatchedWithFaceletsSuffix(viewId);
                 if (suffix != null) {

@@ -74,7 +74,7 @@ import jakarta.faces.view.ViewMetadata;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * This {@link ViewHandler} implementation handles both JSP-based and Facelets/PDL-based views.
+ * This {@link ViewHandler} implementation handles the Facelets VDL-based views.
  */
 public class MultiViewHandler extends ViewHandler {
 
@@ -120,7 +120,6 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId) {
-
         notNull("context", context);
 
         String physicalViewId = derivePhysicalViewId(context, viewId, false);
@@ -138,7 +137,6 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public UIViewRoot createView(FacesContext context, String viewId) {
-
         notNull("context", context);
 
         String physicalViewId = derivePhysicalViewId(context, viewId, false);
@@ -157,7 +155,6 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
-
         notNull("context", context);
         notNull("viewToRender", viewToRender);
 
@@ -173,7 +170,6 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public Locale calculateLocale(FacesContext context) {
-
         notNull("context", context);
 
         Locale result = null;
@@ -210,7 +206,6 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public String calculateRenderKitId(FacesContext context) {
-
         notNull("context", context);
 
         String result = RENDER_KIT_ID_PARAM.getValue(context);
@@ -233,7 +228,6 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public void writeState(FacesContext context) throws IOException {
-
         notNull("context", context);
 
         if (!context.getPartialViewContext().isAjaxRequest()) {
