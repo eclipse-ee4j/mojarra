@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.el.ELContextImpl;
-import com.sun.faces.el.ELUtils;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
@@ -37,7 +36,6 @@ import com.sun.faces.util.Util;
 import jakarta.el.ELContext;
 import jakarta.el.ELContextEvent;
 import jakarta.el.ELContextListener;
-import jakarta.el.ExpressionFactory;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
@@ -214,20 +212,11 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public ELContext getELContext() {
         assertNotReleased();
+
         if (elContext == null) {
-            Application app = getApplication();
-            elContext = new ELContextImpl(app.getELResolver());
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            elContext.putContext(FacesContext.class, facesContext);
-            ExpressionFactory exFactory = ELUtils.getDefaultExpressionFactory(facesContext);
-            if (null != exFactory) {
-                elContext.putContext(ExpressionFactory.class, exFactory);
-            }
-            UIViewRoot root = getViewRoot();
-            if (null != root) {
-                elContext.setLocale(root.getLocale());
-            }
-            ELContextListener[] listeners = app.getELContextListeners();
+            elContext = new ELContextImpl(FacesContext.getCurrentInstance());
+
+            ELContextListener[] listeners = getApplication().getELContextListeners();
             if (listeners.length > 0) {
                 ELContextEvent event = new ELContextEvent(elContext);
                 for (ELContextListener listener : listeners) {
@@ -235,8 +224,8 @@ public class FacesContextImpl extends FacesContext {
                 }
             }
         }
-        return elContext;
 
+        return elContext;
     }
 
     /**

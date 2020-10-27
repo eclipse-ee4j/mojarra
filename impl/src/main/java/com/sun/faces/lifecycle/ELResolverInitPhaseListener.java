@@ -17,16 +17,10 @@
 package com.sun.faces.lifecycle;
 
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.el.FacesCompositeELResolver;
-import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
@@ -54,9 +48,7 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 public class ELResolverInitPhaseListener implements PhaseListener {
 
     private static final long serialVersionUID = -1430099294315211489L;
-    private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
     private boolean postInitCompleted;
-
     private boolean preInitCompleted;
 
     // ---------------------------------------------- Methods From PhaseListener
@@ -72,17 +64,18 @@ public class ELResolverInitPhaseListener implements PhaseListener {
      */
     @Override
     public synchronized void afterPhase(PhaseEvent event) {
-
         if (!postInitCompleted && PhaseId.RENDER_RESPONSE.equals(event.getPhaseId())) {
             ApplicationAssociate associate = ApplicationAssociate.getInstance(event.getFacesContext().getExternalContext());
             associate.setRequestServiced();
             LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            // remove ourselves from the list of listeners maintained by
+
+            // Remove ourselves from the list of listeners maintained by
             // the lifecycle instances
             for (Iterator<String> i = factory.getLifecycleIds(); i.hasNext();) {
                 Lifecycle lifecycle = factory.getLifecycle(i.next());
                 lifecycle.removePhaseListener(this);
             }
+
             postInitCompleted = true;
         }
 
@@ -127,47 +120,16 @@ public class ELResolverInitPhaseListener implements PhaseListener {
      */
     @Override
     public PhaseId getPhaseId() {
-
         return PhaseId.ANY_PHASE;
-
     }
 
     // ------------------------------------------------------- Protected Methods
 
-    /**
-     * Populate the FacesCompositeELResolver stack registered with JSP if a request is being processed for the very first
-     * time. At the application initialiazation time, an empty CompositeELResolver is registered with JSP because
-     * ELResolvers can be added until the first request is serviced.
-     *
-     * @param context - the <code>FacesContext</code> for the current request
-     */
-    protected void populateFacesELResolverForJsp(FacesContext context) {
-
-        ApplicationAssociate appAssociate = ApplicationAssociate.getInstance(context.getExternalContext());
-        populateFacesELResolverForJsp(context.getApplication(), appAssociate);
-
-    }
-
-    public static void populateFacesELResolverForJsp(Application app, ApplicationAssociate appAssociate) {
-        FacesCompositeELResolver compositeELResolverForJsp = appAssociate.getFacesELResolverForJsp();
-        if (compositeELResolverForJsp == null) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.log(Level.INFO, "jsf.lifecycle.initphaselistener.resolvers_not_registered", new Object[] { appAssociate.getContextName() });
-            }
-            return;
-        }
-
-        ELUtils.buildJSPResolver(compositeELResolverForJsp, appAssociate);
-
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, "jsf.lifecycle.initphaselistener.resolvers_registered", new Object[] { appAssociate.getContextName() });
-        }
-
-    }
 
     public static void removeELResolverInitPhaseListener() {
         LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        // remove ourselves from the list of listeners maintained by
+
+        // Remove ourselves from the list of listeners maintained by
         // the lifecycle instances
         for (Iterator<String> i = factory.getLifecycleIds(); i.hasNext();) {
             Lifecycle lifecycle = factory.getLifecycle(i.next());
@@ -180,4 +142,4 @@ public class ELResolverInitPhaseListener implements PhaseListener {
 
     }
 
-} // END InitializingPhaseListener
+}

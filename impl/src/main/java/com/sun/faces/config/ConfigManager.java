@@ -76,7 +76,6 @@ import com.sun.faces.config.processor.RenderKitConfigProcessor;
 import com.sun.faces.config.processor.ResourceLibraryContractsConfigProcessor;
 import com.sun.faces.config.processor.ValidatorConfigProcessor;
 import com.sun.faces.el.ELContextImpl;
-import com.sun.faces.el.ELUtils;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 import com.sun.faces.spi.ConfigurationResourceProviderFactory;
 import com.sun.faces.spi.HighAvailabilityEnabler;
@@ -88,12 +87,10 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.el.ELContext;
 import jakarta.el.ELContextEvent;
 import jakarta.el.ELContextListener;
-import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationConfigurationPopulator;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.servlet.ServletContext;
@@ -409,17 +406,7 @@ public class ConfigManager {
         Application application = facesContext.getApplication();
 
         if (((InitFacesContext) facesContext).getELContext() == null) {
-            ELContext elContext = new ELContextImpl(application.getELResolver());
-            elContext.putContext(FacesContext.class, facesContext);
-            ExpressionFactory exFactory = ELUtils.getDefaultExpressionFactory(facesContext);
-            if (null != exFactory) {
-                elContext.putContext(ExpressionFactory.class, exFactory);
-            }
-
-            UIViewRoot root = facesContext.getViewRoot();
-            if (null != root) {
-                elContext.setLocale(root.getLocale());
-            }
+            ELContext elContext = new ELContextImpl(facesContext);
 
             ELContextListener[] listeners = application.getELContextListeners();
             if (listeners.length > 0) {

@@ -19,7 +19,6 @@ package com.sun.faces.el;
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.Faces;
-import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.JSP;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.ReflectionUtils.lookupMethod;
@@ -60,9 +59,6 @@ import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.PropertyResolver;
 import jakarta.faces.el.ReferenceSyntaxException;
 import jakarta.faces.el.VariableResolver;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.jsp.JspApplicationContext;
-import jakarta.servlet.jsp.JspFactory;
 
 /**
  * <p>
@@ -131,8 +127,6 @@ public class ELUtils {
     public static final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
 
     public static final FacesResourceBundleELResolver FACES_BUNDLE_RESOLVER = new FacesResourceBundleELResolver();
-
-    public static final ImplicitObjectELResolverForJsp IMPLICIT_JSP_RESOLVER = new ImplicitObjectELResolverForJsp();
 
     public static final ImplicitObjectELResolver IMPLICIT_RESOLVER = new ImplicitObjectELResolver();
 
@@ -210,34 +204,6 @@ public class ELUtils {
         composite.addPropertyELResolver(ARRAY_RESOLVER);
         composite.addPropertyELResolver(BEAN_RESOLVER);
         composite.addRootELResolver(SCOPED_RESOLVER);
-    }
-
-    /**
-     * <p>
-     * Create the <code>ELResolver</code> chain for JSP.
-     * </p>
-     *
-     * @param composite a <code>CompositeELResolver</code>
-     * @param associate our ApplicationAssociate
-     */
-    public static void buildJSPResolver(FacesCompositeELResolver composite, ApplicationAssociate associate) {
-
-        checkNotNull(composite, associate);
-
-        if (!tryAddCDIELResolver(composite)) {
-            // The CDI ELResolver that among others takes care of handling the implicit objects
-            // was not added. Add the old native implicit JSP resolver.
-            composite.addRootELResolver(IMPLICIT_JSP_RESOLVER);
-        }
-
-        composite.add(FLASH_RESOLVER);
-        composite.addRootELResolver(MANAGED_BEAN_RESOLVER);
-        composite.addPropertyELResolver(RESOURCE_RESOLVER);
-        composite.addRootELResolver(FACES_BUNDLE_RESOLVER);
-        addELResolvers(composite, associate.getELResolversFromFacesConfig());
-        addVariableResolvers(composite, JSP, associate);
-        addPropertyResolvers(composite, associate);
-        composite.add(associate.getApplicationELResolvers());
     }
 
     private static void checkNotNull(FacesCompositeELResolver composite, ApplicationAssociate associate) {
@@ -577,11 +543,7 @@ public class ELUtils {
         if (vr != null) {
             VariableResolverChainWrapper vrChainWrapper = new VariableResolverChainWrapper(vr);
             target.addRootELResolver(vrChainWrapper);
-            if (chainType == FacesCompositeELResolver.ELResolverChainType.JSP) {
-                associate.setLegacyVRChainHeadWrapperForJsp(vrChainWrapper);
-            } else {
-                associate.setLegacyVRChainHeadWrapperForFaces(vrChainWrapper);
-            }
+            associate.setLegacyVRChainHeadWrapperForFaces(vrChainWrapper);
         }
 
     }
@@ -757,53 +719,27 @@ public class ELUtils {
     }
 
     /*
-     * First look in the ApplicationAssociate. If that fails, try the Jsp engine. If that fails, return null;
+     * First look in the ApplicationAssociate. If that fails, return null;
      *
      */
     public static ExpressionFactory getDefaultExpressionFactory(FacesContext facesContext) {
-        ExpressionFactory result;
-        if (null == facesContext) {
+        if (facesContext == null) {
             return null;
         }
+
         ExternalContext extContext = facesContext.getExternalContext();
-        if (null == extContext) {
+        if (extContext == null) {
             return null;
         }
 
-        ApplicationAssociate associate = ApplicationAssociate.getInstance(extContext);
-        result = getDefaultExpressionFactory(associate, facesContext);
-
-        return result;
+        return getDefaultExpressionFactory(ApplicationAssociate.getInstance(extContext), facesContext);
     }
 
     public static ExpressionFactory getDefaultExpressionFactory(ApplicationAssociate associate, FacesContext facesContext) {
-        ExpressionFactory result = null;
-
-        if (null != associate) {
-            result = associate.getExpressionFactory();
+        if (associate == null) {
+            return null;
         }
 
-        if (null == result) {
-            if (null == facesContext) {
-                return null;
-            }
-            ExternalContext extContext = facesContext.getExternalContext();
-            if (null == extContext) {
-                return null;
-            }
-
-            Object servletContext = extContext.getContext();
-            if (null != servletContext) {
-                if (servletContext instanceof ServletContext) {
-                    ServletContext sc = (ServletContext) servletContext;
-                    JspApplicationContext jspAppContext = JspFactory.getDefaultFactory().getJspApplicationContext(sc);
-                    if (null != jspAppContext) {
-                        result = jspAppContext.getExpressionFactory();
-                    }
-                }
-            }
-        }
-
-        return result;
+        return associate.getExpressionFactory();
     }
 }
