@@ -70,7 +70,6 @@ import com.sun.faces.component.search.SearchExpressionHandlerImpl;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.DemuxCompositeELResolver;
-import com.sun.faces.el.FacesCompositeELResolver;
 import com.sun.faces.el.VariableResolverChainWrapper;
 import com.sun.faces.facelets.PrivateApiFaceletCacheAdapter;
 import com.sun.faces.facelets.compiler.Compiler;
@@ -168,8 +167,6 @@ public class ApplicationAssociate {
     @SuppressWarnings("deprecation")
     private VariableResolver legacyVRChainHead;
 
-    private VariableResolverChainWrapper legacyVRChainHeadWrapperForJsp;
-
     private VariableResolverChainWrapper legacyVRChainHeadWrapperForFaces;
 
     @SuppressWarnings("deprecation")
@@ -181,7 +178,6 @@ public class ApplicationAssociate {
 
     @SuppressWarnings("deprecation")
     private VariableResolver legacyVariableResolver;
-    private FacesCompositeELResolver facesELResolverForJsp;
 
     private InjectionProvider injectionProvider;
     private ResourceCache resourceCache;
@@ -216,6 +212,52 @@ public class ApplicationAssociate {
     private Map<String, List<String>> resourceLibraryContracts;
 
     Map<String, ApplicationResourceBundle> resourceBundles = new HashMap<>();
+
+
+    public static void setCurrentInstance(ApplicationAssociate associate) {
+        if (associate == null) {
+            instance.remove();
+        } else {
+            instance.set(associate);
+        }
+    }
+
+    public static ApplicationAssociate getCurrentInstance() {
+        ApplicationAssociate associate = instance.get();
+        if (associate == null) {
+            // Fallback to ExternalContext lookup
+            return getInstance();
+        }
+
+        return associate;
+    }
+
+    public static ApplicationAssociate getInstance() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null) {
+           return null;
+        }
+
+        return ApplicationAssociate.getInstance(facesContext.getExternalContext());
+    }
+
+    public static ApplicationAssociate getInstance(ExternalContext externalContext) {
+        if (externalContext == null) {
+            return null;
+        }
+
+        return (ApplicationAssociate) externalContext.getApplicationMap().get(ASSOCIATE_KEY);
+    }
+
+    public static ApplicationAssociate getInstance(ServletContext context) {
+        if (context == null) {
+            return null;
+        }
+
+        return (ApplicationAssociate) context.getAttribute(ASSOCIATE_KEY);
+    }
+
+
 
     public ApplicationAssociate(ApplicationImpl appImpl) {
         applicationImpl = appImpl;
@@ -334,49 +376,8 @@ public class ApplicationAssociate {
         faceletFactory = createFaceletFactory(ctx, compiler, webConfig);
     }
 
-    public static ApplicationAssociate getInstance(ExternalContext externalContext) {
-        if (externalContext == null) {
-            return null;
-        }
-
-        return (ApplicationAssociate) externalContext.getApplicationMap().get(ASSOCIATE_KEY);
-    }
-
     public long getTimeOfInstantiation() {
         return timeOfInstantiation;
-    }
-
-    public static ApplicationAssociate getInstance(ServletContext context) {
-        if (context == null) {
-            return null;
-        }
-
-        return (ApplicationAssociate) context.getAttribute(ASSOCIATE_KEY);
-    }
-
-    public static void setCurrentInstance(ApplicationAssociate associate) {
-        if (associate == null) {
-            instance.remove();
-        } else {
-            instance.set(associate);
-        }
-    }
-
-    public static ApplicationAssociate getCurrentInstance() {
-
-        ApplicationAssociate associate = instance.get();
-        if (associate == null) {
-            // Fallback to ExternalContext lookup
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            if (facesContext != null) {
-                ExternalContext extContext = facesContext.getExternalContext();
-                if (extContext != null) {
-                    return ApplicationAssociate.getInstance(extContext);
-                }
-            }
-        }
-
-        return associate;
     }
 
     public ApplicationStateInfo getApplicationStateInfo() {
@@ -462,7 +463,6 @@ public class ApplicationAssociate {
         // Ensure custom resolvers are inserted at the correct place.
         VariableResolver variableResolver = getLegacyVariableResolver();
         if (variableResolver != null) {
-            getLegacyVRChainHeadWrapperForJsp().setWrapped(variableResolver);
             getLegacyVRChainHeadWrapperForFaces().setWrapped(variableResolver);
         }
     }
@@ -500,14 +500,6 @@ public class ApplicationAssociate {
         return legacyVRChainHead;
     }
 
-    public VariableResolverChainWrapper getLegacyVRChainHeadWrapperForJsp() {
-        return legacyVRChainHeadWrapperForJsp;
-    }
-
-    public void setLegacyVRChainHeadWrapperForJsp(VariableResolverChainWrapper legacyVRChainHeadWrapper) {
-        legacyVRChainHeadWrapperForJsp = legacyVRChainHeadWrapper;
-    }
-
     public VariableResolverChainWrapper getLegacyVRChainHeadWrapperForFaces() {
         return legacyVRChainHeadWrapperForFaces;
     }
@@ -532,10 +524,6 @@ public class ApplicationAssociate {
         return legacyPRChainHead;
     }
 
-    public FacesCompositeELResolver getFacesELResolverForJsp() {
-        return facesELResolverForJsp;
-    }
-
     public FlowHandler getFlowHandler() {
         return flowHandler;
     }
@@ -550,10 +538,6 @@ public class ApplicationAssociate {
 
     public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler) {
         this.searchExpressionHandler = searchExpressionHandler;
-    }
-
-    public void setFacesELResolverForJsp(FacesCompositeELResolver celr) {
-        facesELResolverForJsp = celr;
     }
 
     public void setELResolversFromFacesConfig(List<ELResolver> resolvers) {

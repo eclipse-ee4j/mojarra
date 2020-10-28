@@ -21,7 +21,6 @@ import java.util.Iterator;
 import com.sun.faces.application.ApplicationAssociate;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
@@ -81,30 +80,15 @@ public class ELResolverInitPhaseListener implements PhaseListener {
 
     }
 
-    /**
-     * <p>
-     * Handle a notification that the processing for a particular phase of the request processing lifecycle is about to
-     * begin.
-     * </p>
-     *
-     * <p>
-     * The implementation of this method currently calls through to
-     * {@link #populateFacesELResolverForJsp(jakarta.faces.context.FacesContext)}.
-     * <p/>
-     */
-
     @Override
     public synchronized void beforePhase(PhaseEvent event) {
-
         if (!preInitCompleted) {
-            ApplicationAssociate associate = ApplicationAssociate.getInstance(FacesContext.getCurrentInstance().getExternalContext());
+            ApplicationAssociate associate = ApplicationAssociate.getInstance();
             associate.setRequestServiced();
             associate.initializeELResolverChains();
             associate.installProgrammaticallyAddedResolvers();
             preInitCompleted = true;
-
         }
-
     }
 
     /**

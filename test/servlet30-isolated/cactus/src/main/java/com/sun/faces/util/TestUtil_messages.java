@@ -123,7 +123,6 @@ public class TestUtil_messages extends ServletFacesTestCase {
         {MessageUtils.APPLICATION_ASSOCIATE_CTOR_WRONG_CALLSTACK_ID, "0"},
         {MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID, "0"},
         {MessageUtils.OBJECT_IS_READONLY, "1"},
-        {MessageUtils.INCORRECT_JSP_VERSION_ID, "1"},
         {MessageUtils.EL_OUT_OF_BOUNDS_ERROR_ID, "1"},
         {MessageUtils.EL_PROPERTY_TYPE_ERROR_ID, "1"},
         {MessageUtils.EL_SIZE_OUT_OF_BOUNDS_ERROR_ID,"2"},

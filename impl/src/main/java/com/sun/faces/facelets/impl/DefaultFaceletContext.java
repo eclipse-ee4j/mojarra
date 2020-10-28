@@ -48,7 +48,6 @@ import jakarta.faces.view.facelets.FaceletContext;
  *
  * A single FaceletContext is used for all Facelets involved in an invocation of
  * {@link com.sun.faces.facelets.Facelet#apply(FacesContext, UIComponent) Facelet#apply(FacesContext, UIComponent)}.
- * This means that included Facelets are treated the same as the JSP include directive.
  *
  * @author Jacob Hookom
  * @version $Id: DefaultFaceletContext.java,v 1.4.4.3 2006/03/25 01:01:53 jhook Exp $

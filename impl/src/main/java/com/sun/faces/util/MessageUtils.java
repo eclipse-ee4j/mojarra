@@ -75,7 +75,6 @@ public class MessageUtils {
     public static final String ILLEGAL_IDENTIFIER_LVALUE_MODE_ID = "com.sun.faces.ILLEGAL_IDENTIFIER_LVALUE_MODE";
     public static final String ILLEGAL_MODEL_REFERENCE_ID = "com.sun.faces.ILLEGAL_MODEL_REFERENCE";
     public static final String ILLEGAL_VIEW_ID_ID = "com.sun.faces.ILLEGAL_VIEW_ID";
-    public static final String INCORRECT_JSP_VERSION_ID = "com.sun.faces.INCORRECT_JSP_VERSION";
     public static final String INVALID_EXPRESSION_ID = "com.sun.faces.INVALID_EXPRESSION";
     public static final String INVALID_INIT_PARAM_ERROR_MESSAGE_ID = "com.sun.faces.INVALID_INIT_PARAM";
     public static final String INVALID_MESSAGE_SEVERITY_IN_CONFIG_ID = "com.sun.faces.INVALID_MESSAGE_SEVERITY_IN_CONFIG";

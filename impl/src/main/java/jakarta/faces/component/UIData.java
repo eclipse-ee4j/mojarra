@@ -702,7 +702,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <li>Arrays</li>
      * <li><code>java.util.List</code></li>
      * <li><code>java.sql.ResultSet</code></li>
-     * <li><code>jakarta.servlet.jsp.jstl.sql.Result</code>
      * <li class="changed_added_2_2"><code>java.util.Collection</code></li>
      * </ul>
      * <p>
@@ -713,9 +712,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @return the object for the value.
      */
     public Object getValue() {
-
         return getStateHelper().eval(PropertyKeys.value);
-
     }
 
     /**
@@ -729,7 +726,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     public void setValue(Object value) {
         setDataModel(null);
         getStateHelper().put(PropertyKeys.value, value);
-
     }
 
     // ----------------------------------------------------- UIComponent Methods

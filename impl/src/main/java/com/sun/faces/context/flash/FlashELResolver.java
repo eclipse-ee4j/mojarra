@@ -67,7 +67,7 @@ import jakarta.faces.context.FlashFactory;
  * <p/>
  * <li>
  * <p>
- * Using an Expression Language Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a Jakarta Server Pages page.
+ * Using an Expression Language Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a page.
  * </p>
  * </li>
  * <p/>
@@ -280,7 +280,7 @@ public class FlashELResolver extends ELResolver {
      * <p/>
      * <p>
      * In other words, do not call this method directly to set a value into the flash! The only way to access the flash is
-     * either through JSP or via the EL API.
+     * via the EL API.
      * </p>
      *
      * @throws PropertyNotFoundException if <code>base</code> is <code>null</code> and <code>property</code> is
@@ -288,21 +288,21 @@ public class FlashELResolver extends ELResolver {
      * @throws PropertyNotWritableException if <code>base</code> is <code>null</code> and <code>property</code> is the
      * literal string "flash".
      */
-
     @Override
     public void setValue(ELContext elContext, Object base, Object property, Object value) {
-        if (null != base) {
+        if (base != null) {
             return;
         }
-        if (null == property) {
+
+        if (property == null) {
             String message = " base " + base + " property " + property;
             throw new PropertyNotFoundException(message);
         }
+
         if (property.toString().equals(FLASH_VARIABLE_NAME)) {
             elContext.setPropertyResolved(true);
             throw new PropertyNotWritableException(property.toString());
         }
-
     }
 
     /**
