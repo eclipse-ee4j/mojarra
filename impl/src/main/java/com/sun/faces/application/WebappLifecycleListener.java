@@ -364,7 +364,6 @@ public class WebappLifecycleListener {
     // --------------------------------------------------------- Private Methods
 
     private ApplicationAssociate getAssociate() {
-
         if (applicationAssociate == null) {
             applicationAssociate = ApplicationAssociate.getInstance(servletContext);
         }

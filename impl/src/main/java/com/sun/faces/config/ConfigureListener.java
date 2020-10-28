@@ -536,9 +536,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             WebConfiguration.clear(servletContext);
         }
 
-        // Bring the application back up, avoid re-registration of certain JSP
-        // artifacts. No verification will be performed either to make this
-        // light weight.
+        // Bring the application back up.
+        // No verification will be performed either to make this light weight.
 
         // init a new WebAppLifecycleListener so that the cached ApplicationAssociate
         // is removed.

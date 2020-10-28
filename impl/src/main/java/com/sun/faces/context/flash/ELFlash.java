@@ -629,7 +629,7 @@ public class ELFlash extends Flash {
      * </p>
      *
      * <p>
-     * Scenario 3: extContext.flushBuffer(): As far as I can tell, this is only called in the JSP case, but it's good to
+     * Scenario 3: extContext.flushBuffer(): As far as I can tell, this was only called in the JSP case, but it's good to
      * call it from there anyway, because we need to write our cookie before the response is committed.
      * outgoingResponseIsRedirect is false.
      * </p>
@@ -640,7 +640,6 @@ public class ELFlash extends Flash {
      * point. outgoingResponseIsRedirect is false.
      * </p>
      */
-
     public void doLastPhaseActions(FacesContext context, boolean outgoingResponseIsRedirect) {
         Map<Object, Object> contextMap = context.getAttributes();
         PreviousNextFlashInfoManager flashManager = getCurrentFlashManager(contextMap, false);

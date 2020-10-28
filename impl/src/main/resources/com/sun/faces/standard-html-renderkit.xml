@@ -23118,9 +23118,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
      <div class="changed_added_2_0">
      <p>The following new renderers have been
-     added in this release of the specification.  The default
-     implementation of the spec must not expose these renderers to JSP
-     based views.</p>
+     added in this release of the specification.</p>
 
 <dl>
 <dt>jakarta.faces.Output</dt>
@@ -23988,8 +23986,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
       <p><code>document.forms['CLIENT_ID'].target='TARGET';</code></p>
 
-      <p>Where TARGET is the value of the target attribute on the JSP
-      tag.</p>
+      <p>Where TARGET is the value of the target attribute on the tag.</p>
 
       </ul>
 
@@ -24557,7 +24554,6 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
       <renderer-extension>
         <renders-children>false</renders-children>
-        <jsp-ignore>true</jsp-ignore>
       </renderer-extension>
     </renderer>
     <renderer>
@@ -30264,7 +30260,6 @@ attributes on the "span".</p>
       <renderer-extension>
         <renders-children>true</renders-children>
         <body-tag>true</body-tag>
-        <jsp-ignore>true</jsp-ignore>
         <tag-name>link</tag-name>
       </renderer-extension>
     </renderer>
@@ -30828,7 +30823,6 @@ this application, and passing the result through the
       <renderer-extension>
         <renders-children>true</renders-children>
         <body-tag>true</body-tag>
-        <jsp-ignore>true</jsp-ignore>
         <tag-name>button</tag-name>
       </renderer-extension>
     </renderer>
@@ -32640,7 +32634,6 @@ this application, and passing the result through the
         <attribute-class>boolean</attribute-class>
         <attribute-extension>
           <value-expression-enabled>true</value-expression-enabled>
-          <jsp-ignore>true</jsp-ignore>
         </attribute-extension>
       </attribute>
 
@@ -33242,7 +33235,6 @@ this application, and passing the result through the
         <attribute-class>boolean</attribute-class>
         <attribute-extension>
           <value-expression-enabled>true</value-expression-enabled>
-          <jsp-ignore>true</jsp-ignore>
         </attribute-extension>
       </attribute>
 
@@ -33702,7 +33694,6 @@ this application, and passing the result through the
         <attribute-class>boolean</attribute-class>
         <attribute-extension>
           <value-expression-enabled>true</value-expression-enabled>
-          <jsp-ignore>true</jsp-ignore>
         </attribute-extension>
       </attribute>
 
@@ -34155,7 +34146,6 @@ this application, and passing the result through the
         <attribute-class>boolean</attribute-class>
         <attribute-extension>
           <value-expression-enabled>true</value-expression-enabled>
-          <jsp-ignore>true</jsp-ignore>
         </attribute-extension>
       </attribute>
 
@@ -34598,7 +34588,6 @@ this application, and passing the result through the
         <attribute-class>boolean</attribute-class>
         <attribute-extension>
           <value-expression-enabled>true</value-expression-enabled>
-          <jsp-ignore>true</jsp-ignore>
         </attribute-extension>
       </attribute>
 
@@ -35125,7 +35114,6 @@ this application, and passing the result through the
         <attribute-class>boolean</attribute-class>
         <attribute-extension>
           <value-expression-enabled>true</value-expression-enabled>
-          <jsp-ignore>true</jsp-ignore>
         </attribute-extension>
       </attribute>
 
@@ -35484,7 +35472,6 @@ href="../../javadocs/jakarta/faces/component/UIViewRoot.html#addComponentResourc
         </attribute-extension>
       </attribute>
       <renderer-extension>
-        <jsp-ignore>true</jsp-ignore>
         <renders-children>true</renders-children>
       </renderer-extension>
     </renderer>
@@ -35600,7 +35587,6 @@ the literal string "<code>head</code>" as the last argument.</p>
         </attribute-extension>
       </attribute>
       <renderer-extension>
-        <jsp-ignore>true</jsp-ignore>
         <renders-children>true</renders-children>
       </renderer-extension>
     </renderer>
@@ -35695,7 +35681,6 @@ must be ignored.</p>
       </attribute>
 
       <renderer-extension>
-        <jsp-ignore>true</jsp-ignore>
         <tag-name>doctype</tag-name>
       </renderer-extension>
     </renderer>
@@ -35818,7 +35803,6 @@ unmodified to the rendered output.</p>
       </attribute>
 
       <renderer-extension>
-        <jsp-ignore>true</jsp-ignore>
         <tag-name>head</tag-name>
       </renderer-extension>
     </renderer>
@@ -36159,36 +36143,34 @@ unmodified to the rendered output.</p>
         </attribute-extension>
       </attribute>
       <renderer-extension>
-        <jsp-ignore>true</jsp-ignore>
         <tag-name>body</tag-name>
       </renderer-extension>
     </renderer>
-    <renderer>
-      <description><![CDATA[
+    
+        <renderer>
+            <description><![CDATA[
 <div class="changed_added_2_3">                       
-                    <p>
-                        Render a JavaScript function that invokes <code>jsf.push.init()</code> function.
-                    </p>
+    <p>
+        Render a JavaScript function that invokes <code>jsf.push.init()</code> function.
+    </p>
 
-                    <h3>Encode Behavior</h3>
-                    <p>
-                        Render an HTML <code>script</code> element with an "id" attribute.
-                        Render JavaScript function which invokes <code>jsf.push.init()</code> function with data provided by
-                        <code>onopen</code>, <code>onmessage</code>, <code>onclose</code> and <code>connected</code>
-                        arguments, if any. 
-                    </p>
-   </div>                    
+    <h3>Encode Behavior</h3>
+    <p>
+        Render an HTML <code>script</code> element with an "id" attribute.
+        Render JavaScript function which invokes <code>jsf.push.init()</code> function with data provided by
+        <code>onopen</code>, <code>onmessage</code>, <code>onclose</code> and <code>connected</code>
+        arguments, if any. 
+    </p>
+</div>                    
                 ]]></description>
-      <component-family>jakarta.faces.Script</component-family>
-      <renderer-type>jakarta.faces.Websocket</renderer-type>
-      <renderer-class>
-        com.sun.faces.renderkit.html_basic.WebsocketRenderer
-    </renderer-class>
-      <renderer-extension>
-        <renders-children>false</renders-children>
-        <jsp-ignore>true</jsp-ignore>
-      </renderer-extension>
-    </renderer>
-  </render-kit>
+            <component-family>jakarta.faces.Script</component-family>
+            <renderer-type>jakarta.faces.Websocket</renderer-type>
+            <renderer-class>com.sun.faces.renderkit.html_basic.WebsocketRenderer</renderer-class>
+            <renderer-extension>
+                <renders-children>false</renders-children>
+            </renderer-extension>
+        </renderer>
+    
+    </render-kit>
 
 </faces-config>

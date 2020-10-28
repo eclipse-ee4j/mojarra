@@ -20,7 +20,6 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.logging.Level;
 
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -98,12 +97,10 @@ public class MessageRenderer extends HtmlBasicRenderer {
         UIMessage message = (UIMessage) component;
 
         String clientId = message.getFor();
-        // "for" attribute required for Message. Should be taken care of
-        // by TLD in JSP case, but need to cover non-JSP case.
+
+        // "for" attribute required for Message.
         if (clientId == null) {
-            if (logger.isLoggable(Level.WARNING)) {
-                logger.warning("'for' attribute cannot be null");
-            }
+            logger.warning("'for' attribute cannot be null");
             return;
         }
 

@@ -1194,12 +1194,11 @@ public abstract class Application {
      * @since 2.0
      */
     public Map<String, String> getDefaultValidatorInfo() {
-
         if (defaultApplication != null) {
             return defaultApplication.getDefaultValidatorInfo();
         }
-        return Collections.emptyMap();
 
+        return Collections.emptyMap();
     }
 
     /**
@@ -1209,8 +1208,8 @@ public abstract class Application {
      * </p>
      *
      * <p>
-     * The implementation must return the <code>ExpressionFactory</code> from the Jakarta Server Pages container by calling
-     * <code>JspFactory.getDefaultFactory().getJspApplicationContext(servletContext).getExpressionFactory()</code>.
+     * The implementation must return the <code>ExpressionFactory</code> from the Expression Language container by calling
+     * <code>jakarta.el.ELManager.getExpressionFactory()</code>.
      * </p>
      *
      * <p>
@@ -1220,15 +1219,12 @@ public abstract class Application {
      * @return the expression factory.
      * @since 1.2
      */
-
     public ExpressionFactory getExpressionFactory() {
-
         if (defaultApplication != null) {
             return defaultApplication.getExpressionFactory();
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -1253,12 +1249,11 @@ public abstract class Application {
      * @return the result of the evaluation.
      */
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
-
         if (defaultApplication != null) {
             return defaultApplication.evaluateExpressionGet(context, expression, expectedType);
         }
-        throw new UnsupportedOperationException();
 
+        throw new UnsupportedOperationException();
     }
 
     /**

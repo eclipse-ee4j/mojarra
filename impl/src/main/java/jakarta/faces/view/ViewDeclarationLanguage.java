@@ -46,18 +46,8 @@ import jakarta.faces.context.FacesContext;
  * </div>
  *
  * @since 2.0
- *
  */
 public abstract class ViewDeclarationLanguage {
-
-    /**
-     * <p class="changed_added_2_0">
-     * Identifier for the Jakarta Server Pages view declaration language.
-     * </p>
-     *
-     * @since 2.1
-     */
-    public final static String JSP_VIEW_DECLARATION_LANGUAGE_ID = "java.faces.JSP";
 
     /**
      * <p class="changed_added_2_0">
@@ -87,8 +77,7 @@ public abstract class ViewDeclarationLanguage {
      * <p class="changed_added_2_0">
      * Return a reference to the view metadata for the view represented by the argument <code>viewId</code>, or
      * <code>null</code> if the metadata cannot be found. See section JSF.7.7.2 for the specification of the default
-     * implementation. Facelets for Jakarta Server Faces 2 implementation must return non-<code>null</code>. Jakarta Server
-     * Pages implementations must return <code>null</code>.
+     * implementation. Facelets implementation must return non-<code>null</code>.
      * </p>
      *
      * @param context The <code>FacesContext</code> for this request.

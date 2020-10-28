@@ -40,7 +40,7 @@ public class RequestStateManager {
     public static final String AFTER_VIEW_CONTENT = RIConstants.FACES_PREFIX + "AFTER_VIEW_CONTENT";
 
     /**
-     * Attribute describing the current ELResolver chain type (either JSP or Faces)
+     * Attribute describing the current ELResolver chain type
      */
     public static final String EL_RESOLVER_CHAIN_TYPE_NAME = RIConstants.FACES_PREFIX + "ELResolverChainType";
 
