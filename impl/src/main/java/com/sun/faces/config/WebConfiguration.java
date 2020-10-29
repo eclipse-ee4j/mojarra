@@ -33,6 +33,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -328,14 +329,14 @@ public class WebConfiguration {
      *
      * @return merged suffixes including both default suffixes and the facelet suffixes.
      */
-    public String[] getConfiguredExtensions() {
+    public List<String> getConfiguredExtensions() {
         String[] defaultSuffix = getOptionValue(DefaultSuffix, " ");
         String[] faceletsSuffix = getOptionValue(FaceletsSuffix, " ");
 
-        List<String> mergedList = new ArrayList<>(asList(defaultSuffix));
-        mergedList.addAll(asList(faceletsSuffix));
+        Set<String> mergedSet = new LinkedHashSet<>(asList(defaultSuffix));
+        mergedSet.addAll(asList(faceletsSuffix));
 
-        return mergedList.toArray(new String[0]);
+        return new ArrayList<>(mergedSet);
     }
 
     public void overrideContextInitParameter(WebContextInitParameter param, String value) {

@@ -81,7 +81,7 @@ public class MultiViewHandler extends ViewHandler {
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private String[] configuredExtensions;
+    private List<String> configuredExtensions;
     private Set<String> protectedViews;
     private boolean extensionsSet; // For legacy JSF 1.2 support
 
@@ -843,7 +843,7 @@ public class MultiViewHandler extends ViewHandler {
         // extension. If jakarta.faces.DEFAULT_SUFFIX is not explicitly set,
         // we honor the default 1.2 behavior and use ".jsp" as the suffix.
 
-        String extension = extensionsSet && !(configuredExtensions.length == 0) ? configuredExtensions[0] : ".jsp";
+        String extension = extensionsSet && !configuredExtensions.isEmpty() ? configuredExtensions.get(0) : ".xhtml";
 
         if (viewId.endsWith(extension)) {
             return viewId;

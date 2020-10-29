@@ -23,6 +23,7 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Face
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsViewMappings;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.StateSavingMethod;
 import static com.sun.faces.context.StateContext.getStateContext;
+import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.RequestStateManager.FACELET_FACTORY;
@@ -102,7 +103,6 @@ import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Resource;
-import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.EditableValueHolder;
@@ -120,7 +120,6 @@ import jakarta.faces.event.MethodExpressionValueChangeListener;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.render.RenderKit;
-import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.validator.MethodExpressionValidator;
 import jakarta.faces.view.ActionSource2AttachedObjectHandler;
 import jakarta.faces.view.ActionSource2AttachedObjectTarget;
@@ -182,6 +181,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         return context.getAttributes().containsKey(IS_BUILDING_METADATA);
     }
 
+
     // ------------------------------------ Methods from ViewDeclarationLanguage
 
     /**
@@ -201,20 +201,13 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             context.getApplication().createComponent(COMPONENT_TYPE);
         }
 
-        UIViewRoot viewRoot;
+        // Check if we are stateless
 
-        /*
-         * Check if we are stateless.
-         */
-        ViewHandler outerViewHandler = context.getApplication().getViewHandler();
-        String renderKitId = outerViewHandler.calculateRenderKitId(context);
-        ResponseStateManager rsm = RenderKitUtils.getResponseStateManager(context, renderKitId);
-
-        if (rsm.isStateless(context, viewId)) {
+        if (isStateless(context, viewId)) {
             try {
                 context.setProcessingEvents(true);
                 ViewDeclarationLanguage vdl = vdlFactory.getViewDeclarationLanguage(viewId);
-                viewRoot = vdl.createView(context, viewId);
+                UIViewRoot viewRoot = vdl.createView(context, viewId);
                 context.setViewRoot(viewRoot);
                 vdl.buildView(context, viewRoot);
 
@@ -232,12 +225,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             try {
                 context.setProcessingEvents(false);
                 ViewDeclarationLanguage vdl = vdlFactory.getViewDeclarationLanguage(viewId);
-                viewRoot = vdl.getViewMetadata(context, viewId).createMetadataView(context);
+                UIViewRoot viewRoot = vdl.getViewMetadata(context, viewId).createMetadataView(context);
                 context.setViewRoot(viewRoot);
-                outerViewHandler = context.getApplication().getViewHandler();
-                renderKitId = outerViewHandler.calculateRenderKitId(context);
-                rsm = RenderKitUtils.getResponseStateManager(context, renderKitId);
-                Object[] rawState = (Object[]) rsm.getState(context, viewId);
+                Object[] rawState = (Object[]) RenderKitUtils.getResponseStateManager(context, context.getApplication().getViewHandler().calculateRenderKitId(context)).getState(context, viewId);
 
                 if (rawState != null) {
                     @SuppressWarnings("unchecked")
@@ -262,12 +252,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         UIViewRoot root = super.restoreView(context, viewId);
 
-        ViewHandler viewHandler = context.getApplication().getViewHandler();
-        ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(context, viewId);
-        context.setResourceLibraryContracts(vdl.calculateResourceLibraryContracts(context, viewId));
-
-        StateContext stateCtx = StateContext.getStateContext(context);
-        stateCtx.startTrackViewModifications(context, root);
+        setResourceLibraryContracts(context, viewId);
+        startTrackViewModifications(context, root);
 
         return root;
     }
@@ -280,9 +266,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         return new ViewMetadataImpl(viewId);
     }
 
-    /**
-     * @see ViewDeclarationLanguage#createView(jakarta.faces.context.FacesContext, java.lang.String)
-     */
     @Override
     public UIViewRoot createView(FacesContext ctx, String viewId) {
         notNull("context", ctx);
@@ -295,10 +278,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         }
 
         UIViewRoot result = super.createView(ctx, viewId);
-        ViewHandler viewHandler = ctx.getApplication().getViewHandler();
-        ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(ctx, viewId);
-
-        ctx.setResourceLibraryContracts(vdl.calculateResourceLibraryContracts(ctx, viewId));
+        setResourceLibraryContracts(ctx, viewId);
 
         return result;
     }
@@ -330,15 +310,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         view.setViewId(view.getViewId());
 
-        if (LOGGER.isLoggable(FINE)) {
-            LOGGER.fine("Building View: " + view.getViewId());
-        }
+        LOGGER.log(FINE, () -> "Building View: " + view.getViewId());
 
         if (faceletFactory == null) {
-            ApplicationAssociate associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
-            faceletFactory = associate.getFaceletFactory();
-            assert faceletFactory != null;
+            faceletFactory = ApplicationAssociate.getInstance(ctx.getExternalContext()).getFaceletFactory();
         }
+
         RequestStateManager.set(ctx, FACELET_FACTORY, faceletFactory);
         Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
 
@@ -366,7 +343,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 reapplyDynamicActions(ctx);
             }
 
-            doPostBuildActions(ctx, view);
+            startTrackViewModifications(ctx, view);
         } finally {
             ctx.getAttributes().remove(IS_BUILDING_INITIAL_STATE);
         }
@@ -524,85 +501,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         return metadataCache.get(ccResource);
     }
 
-    public BeanInfo createComponentMetadata(FacesContext context, Resource ccResource) {
-
-        // PENDING this implementation is terribly wasteful.
-        // Must find a better way.
-        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(FACELET_CONTEXT_KEY);
-        DefaultFaceletFactory factory = (DefaultFaceletFactory) RequestStateManager.get(context, FACELET_FACTORY);
-        VariableMapper orig = faceletContext.getVariableMapper();
-
-        // Create tmp and facetComponent
-        UIComponent tmp = context.getApplication().createComponent("jakarta.faces.NamingContainer");
-        UIPanel facetComponent = (UIPanel) context.getApplication().createComponent("jakarta.faces.Panel");
-
-        // PENDING I think this can be skipped because we don't render
-        // this component instance.
-        facetComponent.setRendererType("jakarta.faces.Group");
-
-        // PENDING This could possibly be skipped too. However, I think
-        // this is important because other tag handlers, within
-        // <cc:interface> expect it will be there.
-        tmp.getFacets().put(COMPOSITE_FACET_NAME, facetComponent);
-
-        // We have to put the resource in here just so the classes that eventually
-        // get called by facelets have access to it.
-        tmp.getAttributes().put(COMPONENT_RESOURCE_KEY, ccResource);
-
-        Facelet facelet;
-
-        try {
-            facelet = factory.getFacelet(context, ccResource.getURL());
-            VariableMapper wrapper = new VariableMapperWrapper(orig) {
-
-                @Override
-                public ValueExpression resolveVariable(String variable) {
-                    return super.resolveVariable(variable);
-                }
-
-            };
-
-            faceletContext.setVariableMapper(wrapper);
-            context.getAttributes().put(IS_BUILDING_METADATA, TRUE);
-
-            // Because mojarra currently requires a <cc:interface>
-            // element within the compcomp markup, we can rely on the
-            // fact that its tag handler, InterfaceHandler.apply(), is
-            // called. In this method, we first imbue facetComponent
-            // with any config information present on the <cc:interface>
-            // element.
-
-            // Then we do the normal facelet thing:
-            // this.nextHandler.apply(). This causes any child tag
-            // handlers of the <cc:interface> to be called. The
-            // compcomp spec says each such tag handler is responsible
-            // for adding to the compcomp metadata, referenced from the
-            // facetComponent parent.
-
-            facelet.apply(context, facetComponent);
-
-            // When facelet.apply() returns (and therefore
-            // InterfaceHandler.apply() returns), the compcomp metadata
-            // pointed to by facetComponent is fully populated.
-
-        } catch (Exception e) {
-            if (e instanceof FacesException) {
-                throw (FacesException) e;
-            } else {
-                throw new FacesException(e);
-            }
-        } finally {
-            context.getAttributes().remove(IS_BUILDING_METADATA);
-            faceletContext.setVariableMapper(orig);
-        }
-
-        // we extract the compcomp metadata and return it, making sure
-        // to discard tmp and facetComponent. The compcomp metadata
-        // should be cacheable and shareable across threads, but this is
-        // not yet implemented.
-        return (CompositeComponentBeanInfo) tmp.getAttributes().get(BEANINFO_KEY);
-    }
-
     /**
      * @see jakarta.faces.view.ViewDeclarationLanguage#getScriptComponentResource(jakarta.faces.context.FacesContext,
      * jakarta.faces.application.Resource)
@@ -699,10 +597,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         }
     }
 
-    /**
-     * @see ViewHandlingStrategy#retargetMethodExpressions(jakarta.faces.context.FacesContext,
-     * jakarta.faces.component.UIComponent)
-     */
     @Override
     public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent) {
         notNull("context", context);
@@ -869,6 +763,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         return mapIfNeeded(super.getViews(context, path, maxDepth).filter(viewId -> handlesViewId(viewId)), options);
     }
 
+
+
     // --------------------------------------- Methods from ViewHandlingStrategy
 
     /**
@@ -890,36 +786,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 // to handle the view (via ViewExists()), so we handle it if the viewId happens to be exact
                 // mapped to the FacesServlet.
                 return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean handlesByPrefixOrSuffix(String viewId) {
-        if (viewId.endsWith(FLOW_DEFINITION_ID_SUFFIX)) {
-            return true;
-        }
-
-        // If there's no extensions array or prefixes array, then assume defaults.
-        // .xhtml extension is handled by the FaceletViewHandler
-        if (extensionsArray == null && prefixesArray == null) {
-            return isMatchedWithFaceletsSuffix(viewId) ? true : viewId.endsWith(DEFAULT_FACELETS_SUFFIX);
-        }
-
-        if (extensionsArray != null) {
-            for (String extension : extensionsArray) {
-                if (viewId.endsWith(extension)) {
-                    return true;
-                }
-            }
-        }
-
-        if (prefixesArray != null) {
-            for (String prefix : prefixesArray) {
-                if (viewId.startsWith(prefix)) {
-                    return true;
-                }
             }
         }
 
@@ -1188,8 +1054,133 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     // --------------------------------------------------------- Private Methods
 
-    private String getCompositeComponentName(UIComponent compositeComponent) {
+    private boolean isStateless(FacesContext context, String viewId) {
+        return
+            getResponseStateManager(
+                    context,
+                    context.getApplication()
+                           .getViewHandler()
+                           .calculateRenderKitId(context))
+                .isStateless(context, viewId);
+    }
 
+    private void setResourceLibraryContracts(FacesContext ctx, String viewId) {
+        ViewDeclarationLanguage vdl = ctx.getApplication().getViewHandler().getViewDeclarationLanguage(ctx, viewId);
+        if (vdl != null) {
+            ctx.setResourceLibraryContracts(vdl.calculateResourceLibraryContracts(ctx, viewId));
+        }
+    }
+
+    private BeanInfo createComponentMetadata(FacesContext context, Resource ccResource) {
+
+        // PENDING this implementation is terribly wasteful.
+        // Must find a better way.
+        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(FACELET_CONTEXT_KEY);
+        DefaultFaceletFactory factory = (DefaultFaceletFactory) RequestStateManager.get(context, FACELET_FACTORY);
+        VariableMapper orig = faceletContext.getVariableMapper();
+
+        // Create tmp and facetComponent
+        UIComponent tmp = context.getApplication().createComponent("jakarta.faces.NamingContainer");
+        UIPanel facetComponent = (UIPanel) context.getApplication().createComponent("jakarta.faces.Panel");
+
+        // PENDING I think this can be skipped because we don't render
+        // this component instance.
+        facetComponent.setRendererType("jakarta.faces.Group");
+
+        // PENDING This could possibly be skipped too. However, I think
+        // this is important because other tag handlers, within
+        // <cc:interface> expect it will be there.
+        tmp.getFacets().put(COMPOSITE_FACET_NAME, facetComponent);
+
+        // We have to put the resource in here just so the classes that eventually
+        // get called by facelets have access to it.
+        tmp.getAttributes().put(COMPONENT_RESOURCE_KEY, ccResource);
+
+        Facelet facelet;
+
+        try {
+            facelet = factory.getFacelet(context, ccResource.getURL());
+            VariableMapper wrapper = new VariableMapperWrapper(orig) {
+
+                @Override
+                public ValueExpression resolveVariable(String variable) {
+                    return super.resolveVariable(variable); // PENDING is this needed?
+                }
+
+            };
+
+            faceletContext.setVariableMapper(wrapper);
+            context.getAttributes().put(IS_BUILDING_METADATA, TRUE);
+
+            // Because mojarra currently requires a <cc:interface>
+            // element within the compcomp markup, we can rely on the
+            // fact that its tag handler, InterfaceHandler.apply(), is
+            // called. In this method, we first imbue facetComponent
+            // with any config information present on the <cc:interface>
+            // element.
+
+            // Then we do the normal facelet thing:
+            // this.nextHandler.apply(). This causes any child tag
+            // handlers of the <cc:interface> to be called. The
+            // compcomp spec says each such tag handler is responsible
+            // for adding to the compcomp metadata, referenced from the
+            // facetComponent parent.
+
+            facelet.apply(context, facetComponent);
+
+            // When facelet.apply() returns (and therefore
+            // InterfaceHandler.apply() returns), the compcomp metadata
+            // pointed to by facetComponent is fully populated.
+
+        } catch (Exception e) {
+            if (e instanceof FacesException) {
+                throw (FacesException) e;
+            } else {
+                throw new FacesException(e);
+            }
+        } finally {
+            context.getAttributes().remove(IS_BUILDING_METADATA);
+            faceletContext.setVariableMapper(orig);
+        }
+
+        // we extract the compcomp metadata and return it, making sure
+        // to discard tmp and facetComponent. The compcomp metadata
+        // should be cacheable and shareable across threads, but this is
+        // not yet implemented.
+        return (CompositeComponentBeanInfo) tmp.getAttributes().get(BEANINFO_KEY);
+    }
+
+    private boolean handlesByPrefixOrSuffix(String viewId) {
+        if (viewId.endsWith(FLOW_DEFINITION_ID_SUFFIX)) {
+            return true;
+        }
+
+        // If there's no extensions array or prefixes array, then assume defaults.
+        // .xhtml extension is handled by the FaceletViewHandler
+        if (extensionsArray == null && prefixesArray == null) {
+            return isMatchedWithFaceletsSuffix(viewId) ? true : viewId.endsWith(DEFAULT_FACELETS_SUFFIX);
+        }
+
+        if (extensionsArray != null) {
+            for (String extension : extensionsArray) {
+                if (viewId.endsWith(extension)) {
+                    return true;
+                }
+            }
+        }
+
+        if (prefixesArray != null) {
+            for (String prefix : prefixesArray) {
+                if (viewId.startsWith(prefix)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private String getCompositeComponentName(UIComponent compositeComponent) {
         Resource resource = (Resource) compositeComponent.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
         String name = resource.getResourceName();
         String library = resource.getLibraryName();
@@ -1202,12 +1193,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     }
 
-    private void doPostBuildActions(FacesContext ctx, UIViewRoot root) {
-        StateContext stateCtx = StateContext.getStateContext(ctx);
-//        if (stateCtx.isPartialStateSaving(ctx, root.getViewId())) {
-        // lu4242 root.markInitialState();
-        // }
-        stateCtx.startTrackViewModifications(ctx, root);
+    private void startTrackViewModifications(FacesContext ctx, UIViewRoot root) {
+        StateContext.getStateContext(ctx)
+                    .startTrackViewModifications(ctx, root);
     }
 
     private void markInitialState(FacesContext ctx, UIViewRoot root) {
