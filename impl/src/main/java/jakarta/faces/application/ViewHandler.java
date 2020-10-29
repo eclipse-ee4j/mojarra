@@ -96,7 +96,7 @@ public abstract class ViewHandler {
      * The value to use for the default extension if the webapp is using url extension mapping.
      * </p>
      */
-    public static final String DEFAULT_SUFFIX = ".xhtml .view.xml";
+    public static final String DEFAULT_SUFFIX = ".xhtml";
 
     /**
      * <p class="changed_added_2_2">
