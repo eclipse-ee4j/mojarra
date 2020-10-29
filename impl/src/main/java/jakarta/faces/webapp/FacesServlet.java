@@ -413,8 +413,6 @@ public final class FacesServlet implements Servlet {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        requestStart(request.getRequestURI()); // V3 Probe hook
-
         if (!isHttpMethodValid(request)) {
             response.sendError(SC_BAD_REQUEST);
             return;
@@ -439,8 +437,6 @@ public final class FacesServlet implements Servlet {
             // Release the FacesContext instance for this request
             context.release();
         }
-
-        requestEnd(); // V3 Probe hook
     }
 
     /**
@@ -737,18 +733,6 @@ public final class FacesServlet implements Servlet {
         }
 
         return result;
-    }
-
-    /**
-     * DO NOT REMOVE. Necessary for V3 probe monitoring.
-     */
-    private void requestStart(String requestUri) {
-    }
-
-    /**
-     * DO NOT REMOVE. Necessary for V3 probe monitoring.
-     */
-    private void requestEnd() {
     }
 
 }
