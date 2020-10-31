@@ -54,59 +54,32 @@ public class AnnotationManager {
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
     private static final Scanner RESOURCE_DEPENDENCY_SCANNER = new ResourceDependencyScanner();
     private static final Scanner LISTENER_FOR_SCANNER = new ListenerForScanner();
-    /*
-     * This code is the prototype implementation for @EJB, @Resource, ..... support.
-     *
-     * private static final Scanner EJB_SCANNER = new DelegatedEJBScanner(); private static final Scanner RESOURCE_SCANNER =
-     * new DelegatedResourceScanner(); private static final Scanner WEBSERVICE_REF_SCANNER = new
-     * DelegatedWebServiceRefScanner(); private static final Scanner PERSISTENCE_UNIT_SCANNER = new
-     * DelegatedPersistenceUnitScanner(); private static final Scanner PERSISTENCE_CONTEXT_SCANNER = new
-     * DelegatedPersistenceContextScanner();
-     */
 
     /**
      * {@link Scanner} instances to be used against {@link Behavior} classes.
      */
-    private static final Scanner[] BEHAVIOR_SCANNERS = {
-            RESOURCE_DEPENDENCY_SCANNER /*
-                                         * , EJB_SCANNER, RESOURCE_SCANNER, WEBSERVICE_REF_SCANNER, PERSISTENCE_UNIT_SCANNER, PERSISTENCE_CONTEXT_SCANNER
-                                         */
-    };
+    private static final Scanner[] BEHAVIOR_SCANNERS = { RESOURCE_DEPENDENCY_SCANNER };
 
     /**
      * {@link Scanner} instances to be used against {@link ClientBehaviorRenderer} classes.
      */
-    private static final Scanner[] CLIENT_BEHAVIOR_RENDERER_SCANNERS = {
-            RESOURCE_DEPENDENCY_SCANNER /*
-                                         * , EJB_SCANNER, RESOURCE_SCANNER, WEBSERVICE_REF_SCANNER, PERSISTENCE_UNIT_SCANNER, PERSISTENCE_CONTEXT_SCANNER
-                                         */
-    };
+    private static final Scanner[] CLIENT_BEHAVIOR_RENDERER_SCANNERS = { RESOURCE_DEPENDENCY_SCANNER };
 
     /**
      * {@link Scanner} instances to be used against {@link UIComponent} classes.
      */
-    private static final Scanner[] UICOMPONENT_SCANNERS = { RESOURCE_DEPENDENCY_SCANNER,
-            LISTENER_FOR_SCANNER /*
-                                  * , EJB_SCANNER, RESOURCE_SCANNER, WEBSERVICE_REF_SCANNER, PERSISTENCE_UNIT_SCANNER, PERSISTENCE_CONTEXT_SCANNER
-                                  */
-    };
+    private static final Scanner[] UICOMPONENT_SCANNERS = { RESOURCE_DEPENDENCY_SCANNER, LISTENER_FOR_SCANNER };
 
     /**
      * {@link Scanner} instances to be used against {@link Validator} classes.
      */
-    private static final Scanner[] VALIDATOR_SCANNERS = {
-            RESOURCE_DEPENDENCY_SCANNER /*
-                                         * , EJB_SCANNER, RESOURCE_SCANNER, WEBSERVICE_REF_SCANNER, PERSISTENCE_UNIT_SCANNER, PERSISTENCE_CONTEXT_SCANNER
-                                         */
-    };
+    private static final Scanner[] VALIDATOR_SCANNERS = { RESOURCE_DEPENDENCY_SCANNER };
 
     /**
      * {@link Scanner} instances to be used against {@link Converter} classes.
      */
-    private static final Scanner[] CONVERTER_SCANNERS = {
-            RESOURCE_DEPENDENCY_SCANNER /*
-                                         * , EJB_SCANNER, RESOURCE_SCANNER, WEBSERVICE_REF_SCANNER, PERSISTENCE_UNIT_SCANNER, PERSISTENCE_CONTEXT_SCANNER
-                                         */
+    private static final Scanner[] CONVERTER_SCANNERS = { RESOURCE_DEPENDENCY_SCANNER
+
     };
 
     /**
@@ -120,10 +93,15 @@ public class AnnotationManager {
      * Enum of the different processing targets and their associated {@link Scanner}s
      */
     private enum ProcessingTarget {
-        Behavior(BEHAVIOR_SCANNERS), ClientBehaviorRenderer(CLIENT_BEHAVIOR_RENDERER_SCANNERS), UIComponent(UICOMPONENT_SCANNERS),
-        Validator(VALIDATOR_SCANNERS), Converter(CONVERTER_SCANNERS), Renderer(RENDERER_SCANNERS), SystemEvent(EVENTS_SCANNERS);
 
-        @SuppressWarnings({ "NonSerializableFieldInSerializableClass" })
+        Behavior(BEHAVIOR_SCANNERS),
+        ClientBehaviorRenderer(CLIENT_BEHAVIOR_RENDERER_SCANNERS),
+        UIComponent(UICOMPONENT_SCANNERS),
+        Validator(VALIDATOR_SCANNERS),
+        Converter(CONVERTER_SCANNERS),
+        Renderer(RENDERER_SCANNERS),
+        SystemEvent(EVENTS_SCANNERS);
+
         private Scanner[] scanners;
 
         ProcessingTarget(Scanner[] scanners) {
@@ -143,9 +121,7 @@ public class AnnotationManager {
      * Construct a new AnnotationManager instance.
      */
     public AnnotationManager() {
-
         cache = new ConcurrentHashMap<>(40, .75f, 32);
-
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -160,19 +136,19 @@ public class AnnotationManager {
      * annotations
      */
     public void applyConfigAnnotations(FacesContext ctx, Class<? extends Annotation> annotationType, Set<? extends Class> annotatedClasses) {
-
         if (annotatedClasses != null && !annotatedClasses.isEmpty()) {
             ConfigAnnotationHandler handler = getConfigAnnotationHandlers().get(annotationType);
             if (handler == null) {
                 throw new IllegalStateException("Internal Error: No ConfigAnnotationHandler for type: " + annotationType);
             }
+
             for (Class<?> clazz : annotatedClasses) {
                 handler.collect(clazz, clazz.getAnnotation(annotationType));
             }
+
             // metadata collected, now push the configuration to the system
             handler.push(ctx);
         }
-
     }
 
     /**
@@ -182,7 +158,6 @@ public class AnnotationManager {
      * @param b the target <code>Behavior</code> to process
      */
     public void applyBehaviorAnnotations(FacesContext ctx, Behavior b) {
-
         applyAnnotations(ctx, b.getClass(), ProcessingTarget.Behavior, b);
         if (b instanceof ClientBehaviorBase) {
             ClientBehaviorBase clientBehavior = (ClientBehaviorBase) b;
@@ -205,9 +180,7 @@ public class AnnotationManager {
      * @param b the target <code>ClientBehaviorRenderer</code> to process
      */
     public void applyClientBehaviorRendererAnnotations(FacesContext ctx, ClientBehaviorRenderer b) {
-
         applyAnnotations(ctx, b.getClass(), ProcessingTarget.ClientBehaviorRenderer, b);
-
     }
 
     /**
@@ -217,9 +190,7 @@ public class AnnotationManager {
      * @param c the target <code>UIComponent</code> to process
      */
     public void applyComponentAnnotations(FacesContext ctx, UIComponent c) {
-
         applyAnnotations(ctx, c.getClass(), ProcessingTarget.UIComponent, c);
-
     }
 
     /**
@@ -229,9 +200,7 @@ public class AnnotationManager {
      * @param v the target <code>Validator</code> to process
      */
     public void applyValidatorAnnotations(FacesContext ctx, Validator v) {
-
         applyAnnotations(ctx, v.getClass(), ProcessingTarget.Validator, v);
-
     }
 
     /**
@@ -241,9 +210,7 @@ public class AnnotationManager {
      * @param c the target <code>Converter</code> to process
      */
     public void applyConverterAnnotations(FacesContext ctx, Converter c) {
-
         applyAnnotations(ctx, c.getClass(), ProcessingTarget.Converter, c);
-
     }
 
     /**
@@ -254,9 +221,7 @@ public class AnnotationManager {
      * @param c the <code>UIComponent</code> instances that is associated with this <code>Renderer</code>
      */
     public void applyRendererAnnotations(FacesContext ctx, Renderer r, UIComponent c) {
-
         applyAnnotations(ctx, r.getClass(), ProcessingTarget.Renderer, r, c);
-
     }
 
     public void applySystemEventAnnotations(FacesContext ctx, SystemEvent e) {
@@ -271,9 +236,14 @@ public class AnnotationManager {
      * new <code>ConfigAnnotationhandler</code> instances as they are not thread safe.
      */
     private Map<Class<? extends Annotation>, ConfigAnnotationHandler> getConfigAnnotationHandlers() {
+        ConfigAnnotationHandler[] handlers = {
+                new ComponentConfigHandler(),
+                new ConverterConfigHandler(),
+                new ValidatorConfigHandler(),
+                new BehaviorConfigHandler(),
+                new RenderKitConfigHandler(),
+                new NamedEventConfigHandler() };
 
-        ConfigAnnotationHandler[] handlers = { new ComponentConfigHandler(), new ConverterConfigHandler(), new ValidatorConfigHandler(),
-                new BehaviorConfigHandler(), new RenderKitConfigHandler(), new ManagedBeanConfigHandler(), new NamedEventConfigHandler() };
         Map<Class<? extends Annotation>, ConfigAnnotationHandler> handlerMap = new HashMap<>();
         for (ConfigAnnotationHandler handler : handlers) {
             Collection<Class<? extends Annotation>> handledClasses = handler.getHandledAnnotations();
@@ -283,7 +253,6 @@ public class AnnotationManager {
         }
 
         return handlerMap;
-
     }
 
     /**
@@ -295,14 +264,12 @@ public class AnnotationManager {
      * @param params one or more parameters to be passed to each {@link RuntimeAnnotationHandler}
      */
     private void applyAnnotations(FacesContext ctx, Class<?> targetClass, ProcessingTarget processingTarget, Object... params) {
-
         Map<Class<? extends Annotation>, RuntimeAnnotationHandler> map = getHandlerMap(targetClass, processingTarget);
         if (map != null && !map.isEmpty()) {
             for (RuntimeAnnotationHandler handler : map.values()) {
                 handler.apply(ctx, params);
             }
         }
-
     }
 
     /**

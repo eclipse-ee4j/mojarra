@@ -64,9 +64,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.WebappLifecycleListener;
 import com.sun.faces.el.ELContextImpl;
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.mgbean.BeanBuilder;
-import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.push.WebsocketEndpoint;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MojarraThreadFactory;
@@ -216,13 +213,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             if (associate != null) {
                 associate.setContextName(getServletContextIdentifier(servletContext));
-                BeanManager manager = associate.getBeanManager();
-                List<String> eagerBeans = manager.getEagerBeanNames();
-                if (!eagerBeans.isEmpty()) {
-                    for (String name : eagerBeans) {
-                        manager.create(name, initFacesContext);
-                    }
-                }
 
                 boolean isErrorPagePresent = webXmlProcessor.isErrorPagePresent();
                 associate.setErrorPagePresent(isErrorPagePresent);
@@ -484,7 +474,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         // tear down the application
         try {
             // this will only be true in the automated test usage scenario
-            if (null != webAppListener) {
+            if (webAppListener != null) {
                 List<HttpSession> sessions = webAppListener.getActiveSessions();
                 if (sessions != null) {
                     for (HttpSession session : sessions) {
@@ -495,21 +485,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     }
                 }
             }
-            ApplicationAssociate associate = ApplicationAssociate.getInstance(servletContext);
-            if (associate != null) {
-                BeanManager manager = associate.getBeanManager();
-                for (Map.Entry<String, BeanBuilder> entry : manager.getRegisteredBeans().entrySet()) {
-                    String name = entry.getKey();
-                    BeanBuilder bean = entry.getValue();
-                    if (ELUtils.Scope.APPLICATION.toString().equals(bean.getScope())) {
-                        if (LOGGER.isLoggable(Level.INFO)) {
-                            LOGGER.log(Level.INFO, "Removing application scoped managed bean: {0}", name);
-                        }
-                        servletContext.removeAttribute(name);
-                    }
 
-                }
-            }
             // Release any allocated application resources
             FactoryFinder.releaseFactories();
         } catch (Exception e) {

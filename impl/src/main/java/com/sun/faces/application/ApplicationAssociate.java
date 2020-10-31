@@ -13,14 +13,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
 package com.sun.faces.application;
 
 import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
 import static com.sun.faces.RIConstants.FACES_PREFIX;
 import static com.sun.faces.config.ConfigManager.getAnnotatedClasses;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableFaceletsResourceResolverResolveCompositeComponents;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.FaceletsSkipComments;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletCache;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDecorators;
@@ -87,7 +85,6 @@ import com.sun.faces.facelets.tag.ui.UILibrary;
 import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.facelets.util.FunctionLibrary;
 import com.sun.faces.facelets.util.ReflectionUtil;
-import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
 
@@ -106,8 +103,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.PropertyResolver;
 import jakarta.faces.el.VariableResolver;
 import jakarta.faces.event.PostConstructApplicationEvent;
-import jakarta.faces.event.PreDestroyCustomScopeEvent;
-import jakarta.faces.event.ScopeContext;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.flow.FlowHandler;
@@ -186,7 +181,6 @@ public class ApplicationAssociate {
     private boolean requestServiced;
     private boolean errorPagePresent;
 
-    private BeanManager beanManager;
     private AnnotationManager annotationManager;
     private boolean devModeEnabled;
     private boolean hasPushBuilder;
@@ -280,11 +274,7 @@ public class ApplicationAssociate {
         navigationMap = new ConcurrentHashMap<>();
         injectionProvider = (InjectionProvider) facesContext.getAttributes().get(ConfigManager.INJECTION_PROVIDER_KEY);
         webConfig = WebConfiguration.getInstance(externalContext);
-        beanManager = new BeanManager(injectionProvider, webConfig.isOptionEnabled(EnableLazyBeanValidation));
 
-        // Install the bean manager as a system event listener for custom
-        // scopes being destoryed.
-        applicationImpl.subscribeToEvent(PreDestroyCustomScopeEvent.class, ScopeContext.class, beanManager);
         annotationManager = new AnnotationManager();
 
         devModeEnabled = appImpl.getProjectStage() == Development;
@@ -445,10 +435,6 @@ public class ApplicationAssociate {
         }
 
         servletContext.removeAttribute(ASSOCIATE_KEY);
-    }
-
-    public BeanManager getBeanManager() {
-        return beanManager;
     }
 
     public void initializeELResolverChains() {
