@@ -16,6 +16,9 @@
 
 package com.sun.faces.el;
 
+import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
+import static com.sun.faces.util.Util.getFeatureDescriptor;
+
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,10 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
@@ -42,21 +42,23 @@ public class ScopedAttributeELResolver extends ELResolver {
     }
 
     @Override
-    public Object getValue(ELContext context, Object base, Object property) throws ELException {
+    public Object getValue(ELContext elContext, Object base, Object property) throws ELException {
         if (base != null) {
             return null;
         }
+
         if (property == null) {
-            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
+            String message = getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
             throw new PropertyNotFoundException(message);
         }
-        context.setPropertyResolved(true);
+
+        elContext.setPropertyResolved(true);
         String attribute = property.toString();
-        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        ExternalContext ec = facesContext.getExternalContext();
+        FacesContext facesContext = (FacesContext) elContext.getContext(FacesContext.class);
+        ExternalContext externalContext = facesContext.getExternalContext();
 
         // check request
-        Object result = ec.getRequestMap().get(attribute);
+        Object result = externalContext.getRequestMap().get(attribute);
         if (result != null) {
             return result;
         }
@@ -74,31 +76,18 @@ public class ScopedAttributeELResolver extends ELResolver {
         }
 
         // check session
-        result = ec.getSessionMap().get(attribute);
+        result = externalContext.getSessionMap().get(attribute);
         if (result != null) {
             return result;
         }
 
         // check application
-        result = ec.getApplicationMap().get(attribute);
+        result = externalContext.getApplicationMap().get(attribute);
         if (result != null) {
             return result;
         }
 
-        // if we get to this point, nothing was found in the standard scopes.
-        // If the attribute refers to an entity handled by the BeanManager
-        // try getting the value from there as the value may be in a custom
-        // scope.
-        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-        if (associate != null) {
-            BeanManager manager = associate.getBeanManager();
-            if (manager != null && manager.isManaged(attribute)) {
-                return manager.getBeanFromScope(attribute, facesContext);
-            }
-        }
-
         return null;
-
     }
 
     @Override
@@ -106,6 +95,7 @@ public class ScopedAttributeELResolver extends ELResolver {
         if (base != null) {
             return null;
         }
+
         if (property == null) {
             String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
             throw new PropertyNotFoundException(message);
@@ -129,19 +119,19 @@ public class ScopedAttributeELResolver extends ELResolver {
 
         String attribute = (String) property;
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        ExternalContext ec = facesContext.getExternalContext();
-        if (ec.getRequestMap().get(attribute) != null) {
-            ec.getRequestMap().put(attribute, val);
+        ExternalContext externalContext = facesContext.getExternalContext();
+        if (externalContext.getRequestMap().get(attribute) != null) {
+            externalContext.getRequestMap().put(attribute, val);
         } else if (facesContext.getViewRoot() != null && facesContext.getViewRoot().getViewMap().get(attribute) != null) {
             facesContext.getViewRoot().getViewMap().put(attribute, val);
-        } else if (ec.getSessionMap().get(attribute) != null) {
-            ec.getSessionMap().put(attribute, val);
-        } else if (ec.getApplicationMap().get(attribute) != null) {
-            ec.getApplicationMap().put(attribute, val);
+        } else if (externalContext.getSessionMap().get(attribute) != null) {
+            externalContext.getSessionMap().put(attribute, val);
+        } else if (externalContext.getApplicationMap().get(attribute) != null) {
+            externalContext.getApplicationMap().put(attribute, val);
         } else {
             // if the property doesn't exist in any of the scopes, put it in
             // request scope.
-            ec.getRequestMap().put(attribute, val);
+            externalContext.getRequestMap().put(attribute, val);
         }
 
     }
@@ -151,28 +141,29 @@ public class ScopedAttributeELResolver extends ELResolver {
         if (base != null) {
             return false;
         }
+
         if (property == null) {
             String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "base and property"); // ?????
             throw new PropertyNotFoundException(message);
         }
+
         context.setPropertyResolved(true);
         return false;
     }
 
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-
         ArrayList<FeatureDescriptor> list = new ArrayList<>();
 
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        ExternalContext ec = facesContext.getExternalContext();
+        ExternalContext externalContext = facesContext.getExternalContext();
 
         // add attributes in request scope.
-        Set<Entry<String, Object>> attrs = ec.getRequestMap().entrySet();
+        Set<Entry<String, Object>> attrs = externalContext.getRequestMap().entrySet();
         for (Entry<String, Object> entry : attrs) {
             String attrName = entry.getKey();
             Object attrValue = entry.getValue();
-            list.add(Util.getFeatureDescriptor(attrName, attrName, "request scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
+            list.add(getFeatureDescriptor(attrName, attrName, "request scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
         }
 
         // add attributes in view scope.
@@ -184,25 +175,25 @@ public class ScopedAttributeELResolver extends ELResolver {
                 for (Entry<String, Object> entry : attrs) {
                     String attrName = entry.getKey();
                     Object attrValue = entry.getValue();
-                    list.add(Util.getFeatureDescriptor(attrName, attrName, "view scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
+                    list.add(getFeatureDescriptor(attrName, attrName, "view scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
                 }
             }
         }
 
         // add attributes in session scope.
-        attrs = ec.getSessionMap().entrySet();
+        attrs = externalContext.getSessionMap().entrySet();
         for (Entry<String, Object> entry : attrs) {
             String attrName = entry.getKey();
             Object attrValue = entry.getValue();
-            list.add(Util.getFeatureDescriptor(attrName, attrName, "session scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
+            list.add(getFeatureDescriptor(attrName, attrName, "session scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
         }
 
         // add attributes in application scope.
-        attrs = ec.getApplicationMap().entrySet();
+        attrs = externalContext.getApplicationMap().entrySet();
         for (Entry<String, Object> entry : attrs) {
             String attrName = entry.getKey();
             Object attrValue = entry.getValue();
-            list.add(Util.getFeatureDescriptor(attrName, attrName, "application scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
+            list.add(getFeatureDescriptor(attrName, attrName, "application scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
         }
 
         return list.iterator();
@@ -213,6 +204,7 @@ public class ScopedAttributeELResolver extends ELResolver {
         if (base != null) {
             return null;
         }
+
         return Object.class;
     }
 

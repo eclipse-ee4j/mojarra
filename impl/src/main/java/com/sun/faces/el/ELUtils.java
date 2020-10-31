@@ -13,7 +13,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
 package com.sun.faces.el;
 
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
@@ -38,7 +37,6 @@ import java.util.regex.Pattern;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.cdi.CdiExtension;
 import com.sun.faces.context.flash.FlashELResolver;
-import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.MessageUtils;
 
 import jakarta.el.ArrayELResolver;
@@ -51,6 +49,7 @@ import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -119,31 +118,18 @@ public class ELUtils {
         public String toString() {
             return scope;
         }
-
     }
 
     public static final ArrayELResolver ARRAY_RESOLVER = new ArrayELResolver();
-
     public static final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
-
     public static final FacesResourceBundleELResolver FACES_BUNDLE_RESOLVER = new FacesResourceBundleELResolver();
-
     public static final ImplicitObjectELResolver IMPLICIT_RESOLVER = new ImplicitObjectELResolver();
-
     public static final FlashELResolver FLASH_RESOLVER = new FlashELResolver();
-
     public static final ListELResolver LIST_RESOLVER = new ListELResolver();
-
-    public static final ManagedBeanELResolver MANAGED_BEAN_RESOLVER = new ManagedBeanELResolver();
-
     public static final MapELResolver MAP_RESOLVER = new MapELResolver();
-
     public static final ResourceBundleELResolver BUNDLE_RESOLVER = new ResourceBundleELResolver();
-
     public static final ScopedAttributeELResolver SCOPED_RESOLVER = new ScopedAttributeELResolver();
-
     public static final ResourceELResolver RESOURCE_RESOLVER = new ResourceELResolver();
-
     public static final CompositeComponentAttributesELResolver COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER = new CompositeComponentAttributesELResolver();
 
     // ------------------------------------------------------------ Constructors
@@ -179,7 +165,6 @@ public class ELUtils {
      * @param associate our ApplicationAssociate
      */
     public static void buildFacesResolver(FacesCompositeELResolver composite, ApplicationAssociate associate) {
-
         checkNotNull(composite, associate);
 
         if (!tryAddCDIELResolver(composite)) {
@@ -194,7 +179,6 @@ public class ELUtils {
         addVariableResolvers(composite, Faces, associate);
         addPropertyResolvers(composite, associate);
         composite.add(associate.getApplicationELResolvers());
-        composite.addRootELResolver(MANAGED_BEAN_RESOLVER);
         composite.addPropertyELResolver(RESOURCE_RESOLVER);
         composite.addPropertyELResolver(BUNDLE_RESOLVER);
         composite.addRootELResolver(FACES_BUNDLE_RESOLVER);
@@ -219,7 +203,7 @@ public class ELUtils {
     private static boolean tryAddCDIELResolver(FacesCompositeELResolver composite) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
-        jakarta.enterprise.inject.spi.BeanManager beanManager = getCdiBeanManager(facesContext);
+        BeanManager beanManager = getCdiBeanManager(facesContext);
 
         if (beanManager == null) {
             // TODO: use version enum and >=
@@ -654,15 +638,11 @@ public class ELUtils {
         String[] firstSegment = new String[1];
         ELUtils.Scope valueScope = ELUtils.getScope(value, firstSegment);
 
-        if (null == valueScope) {
+        if (valueScope == null) {
             // Perhaps the bean hasn't been created yet. See what its
             // scope would be when it is created.
             if (firstSegment[0] != null) {
-                BeanManager manager = ApplicationAssociate.getCurrentInstance().getBeanManager();
 
-                if (manager.isManaged(firstSegment[0])) {
-                    valueScope = ELUtils.getScope(manager.getBuilder(firstSegment[0]).getScope());
-                }
             } else {
                 // we are referring to a bean that doesn't exist in the
                 // configuration file. Give it a wide scope...

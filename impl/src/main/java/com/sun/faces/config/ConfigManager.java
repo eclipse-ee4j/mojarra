@@ -13,7 +13,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
 package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.FACES_PREFIX;
@@ -69,7 +68,6 @@ import com.sun.faces.config.processor.FacesConfigExtensionProcessor;
 import com.sun.faces.config.processor.FacesFlowDefinitionConfigProcessor;
 import com.sun.faces.config.processor.FactoryConfigProcessor;
 import com.sun.faces.config.processor.LifecycleConfigProcessor;
-import com.sun.faces.config.processor.ManagedBeanConfigProcessor;
 import com.sun.faces.config.processor.NavigationConfigProcessor;
 import com.sun.faces.config.processor.ProtectedViewsConfigProcessor;
 import com.sun.faces.config.processor.RenderKitConfigProcessor;
@@ -133,10 +131,20 @@ public class ConfigManager {
     private List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
 
     private final List<ConfigProcessor> configProcessors = unmodifiableList(
-            asList(new FactoryConfigProcessor(), new LifecycleConfigProcessor(), new ApplicationConfigProcessor(), new ComponentConfigProcessor(),
-                    new ConverterConfigProcessor(), new ValidatorConfigProcessor(), new ManagedBeanConfigProcessor(), new RenderKitConfigProcessor(),
-                    new NavigationConfigProcessor(), new BehaviorConfigProcessor(), new FacesConfigExtensionProcessor(), new ProtectedViewsConfigProcessor(),
-                    new FacesFlowDefinitionConfigProcessor(), new ResourceLibraryContractsConfigProcessor()));
+            asList(
+                new FactoryConfigProcessor(),
+                new LifecycleConfigProcessor(),
+                new ApplicationConfigProcessor(),
+                new ComponentConfigProcessor(),
+                new ConverterConfigProcessor(),
+                new ValidatorConfigProcessor(),
+                new RenderKitConfigProcessor(),
+                new NavigationConfigProcessor(),
+                new BehaviorConfigProcessor(),
+                new FacesConfigExtensionProcessor(),
+                new ProtectedViewsConfigProcessor(),
+                new FacesFlowDefinitionConfigProcessor(),
+                new ResourceLibraryContractsConfigProcessor()));
 
     /**
      * <p>

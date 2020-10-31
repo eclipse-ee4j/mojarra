@@ -34,7 +34,6 @@
         <module>absoluteOrdering</module>
         <module>ajax</module>
         <module>ajaxNamespace</module>
-        <module>annotationRestrictions</module>
         <module>application</module>
         <module>appUsingJarWithExactlyTwoContracts</module>
         <module>bogusRenderKitId</module>
@@ -45,7 +44,7 @@
         <module>component</module>
         <module>composite</module>
         <module>composite2</module>
-	<module>composite2Jar</module>
+	    <module>composite2Jar</module>
         <module>compositeComponentForAttribute</module>
         <module>configBasic</module>
         <module>configEmbed</module>

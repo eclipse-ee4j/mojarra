@@ -19,11 +19,9 @@ package com.sun.faces.application;
 import static com.sun.faces.application.view.ViewScopeManager.ACTIVE_VIEW_MAPS;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.application.view.ViewScopeManager;
@@ -31,8 +29,6 @@ import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.flow.FlowCDIContext;
-import com.sun.faces.io.FastStringWriter;
-import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.renderkit.StateHelper;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
@@ -303,31 +299,8 @@ public class WebappLifecycleListener {
 
     private void handleAttributeEvent(String beanName, Object bean, ELUtils.Scope scope) {
 
-        ApplicationAssociate associate = getAssociate();
-        try {
-            if (associate != null) {
-                BeanManager beanManager = associate.getBeanManager();
-                if (beanManager != null && beanManager.isManaged(beanName)) {
-                    beanManager.destroy(beanName, bean);
-                }
-            }
-        } catch (Exception e) {
-            String className = e.getClass().getName();
-            String message = e.getMessage();
-            if (message == null) {
-                message = "";
-            }
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.log(Level.INFO, "jsf.config.listener.predestroy.error", new Object[] { className, beanName, scope, message });
-            }
-            if (LOGGER.isLoggable(Level.FINE)) {
-                FastStringWriter writer = new FastStringWriter(128);
-                e.printStackTrace(new PrintWriter(writer));
-                LOGGER.fine(writer.toString());
-            }
-        }
 
-    } // END handleAttributeEvent
+    }
 
     /**
      * Notification that the web application initialization process is starting. All ServletContextListeners are notified of
@@ -377,25 +350,6 @@ public class WebappLifecycleListener {
      * @param request the current <code>ServletRequest</code>
      */
     private void syncSessionScopedBeans(ServletRequest request) {
-
-        if (request instanceof HttpServletRequest) {
-            HttpSession session = ((HttpServletRequest) request).getSession(false);
-            if (session != null) {
-                ApplicationAssociate associate = getAssociate();
-                if (associate == null) {
-                    return;
-                }
-                BeanManager manager = associate.getBeanManager();
-                if (manager != null) {
-                    for (Enumeration e = session.getAttributeNames(); e.hasMoreElements();) {
-                        String name = (String) e.nextElement();
-                        if (manager.isManaged(name)) {
-                            session.setAttribute(name, session.getAttribute(name));
-                        }
-                    }
-                }
-            }
-        }
 
     }
 
