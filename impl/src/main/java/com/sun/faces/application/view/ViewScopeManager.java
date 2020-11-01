@@ -17,15 +17,16 @@
 package com.sun.faces.application.view;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.FINEST;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.WARNING;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.LRUMap;
 
@@ -86,16 +87,11 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         try {
             contextManager = new ViewScopeContextManager();
         } catch (Throwable throwable) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.log(Level.INFO, "CDI @ViewScoped bean functionality unavailable");
-            }
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "CDI @ViewScoped manager unavailable", throwable);
-            }
+            LOGGER.log(INFO, "CDI @ViewScoped bean functionality unavailable");
+            LOGGER.log(FINE, "CDI @ViewScoped manager unavailable", throwable);
         }
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isOptionEnabled(EnableDistributable);
-
     }
 
     /**
@@ -104,15 +100,11 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @param facesContext the Faces context.
      */
     public void clear(FacesContext facesContext) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Clearing @ViewScoped beans from current view map");
-        }
+        LOGGER.log(FINEST, "Clearing @ViewScoped beans from current view map");
 
         if (contextManager != null) {
             contextManager.clear(facesContext);
         }
-
-        destroyBeans(facesContext, facesContext.getViewRoot().getViewMap(false));
     }
 
     /**
@@ -122,40 +114,10 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @param viewMap the view map.
      */
     public void clear(FacesContext facesContext, Map<String, Object> viewMap) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Clearing @ViewScoped beans from view map: {0}", viewMap);
-        }
+        LOGGER.log(FINEST, "Clearing @ViewScoped beans from view map: {0}", viewMap);
 
         if (contextManager != null) {
             contextManager.clear(facesContext, viewMap);
-        }
-
-        destroyBeans(facesContext, viewMap);
-    }
-
-    /**
-     * Destroy the managed beans from the given view map.
-     *
-     * @param applicationAssociate the application associate.
-     * @param viewMap the view map.
-     */
-    private void destroyBeans(ApplicationAssociate applicationAssociate, Map<String, Object> viewMap) {
-
-    }
-
-    /**
-     * Destroy the managed beans from the given view map.
-     *
-     * @param facesContext the Faces Context.
-     * @param viewMap the view map.
-     */
-    public void destroyBeans(FacesContext facesContext, Map<String, Object> viewMap) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Destroying @ViewScoped beans from view map: {0}", viewMap);
-        }
-        ApplicationAssociate applicationAssociate = ApplicationAssociate.getInstance(facesContext.getExternalContext());
-        if (applicationAssociate != null) {
-            destroyBeans(applicationAssociate, viewMap);
         }
     }
 
@@ -194,31 +156,29 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     /**
      * Process the system event.
      *
-     * @param se the system event.
+     * @param systemEvent the system event.
      * @throws AbortProcessingException when processing needs to be aborter.
      */
     @Override
-    public void processEvent(SystemEvent se) throws AbortProcessingException {
-        if (se instanceof PreDestroyViewMapEvent) {
-            processPreDestroyViewMap(se);
+    public void processEvent(SystemEvent systemEvent) throws AbortProcessingException {
+        if (systemEvent instanceof PreDestroyViewMapEvent) {
+            processPreDestroyViewMap(systemEvent);
         }
 
-        if (se instanceof PostConstructViewMapEvent) {
-            processPostConstructViewMap(se);
+        if (systemEvent instanceof PostConstructViewMapEvent) {
+            processPostConstructViewMap(systemEvent);
         }
     }
 
     /**
      * Process the PostConstructViewMap system event.
      *
-     * @param se the system event.
+     * @param systemEvent the system event.
      */
-    private void processPostConstructViewMap(SystemEvent se) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Handling PostConstructViewMapEvent");
-        }
+    private void processPostConstructViewMap(SystemEvent systemEvent) {
+        LOGGER.log(FINEST, "Handling PostConstructViewMapEvent");
 
-        UIViewRoot viewRoot = (UIViewRoot) se.getSource();
+        UIViewRoot viewRoot = (UIViewRoot) systemEvent.getSource();
         Map<String, Object> viewMap = viewRoot.getViewMap(false);
 
         if (viewMap != null) {
@@ -229,9 +189,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                         "@ViewScoped beans are not supported on stateless views");
                 facesContext.addMessage(viewRoot.getClientId(facesContext), message);
 
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "@ViewScoped beans are not supported on stateless views");
-                }
+                LOGGER.log(WARNING, "@ViewScoped beans are not supported on stateless views");
             }
 
             Object session = facesContext.getExternalContext().getSession(true);
@@ -270,7 +228,8 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                         sessionMap.put(ACTIVE_VIEW_MAPS, viewMaps);
                     }
                 }
-                if (null != contextManager) {
+
+                if (contextManager != null) {
                     contextManager.fireInitializedEvent(facesContext, viewRoot);
                 }
             }
@@ -283,8 +242,8 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @param se the system event.
      */
     private void processPreDestroyViewMap(SystemEvent se) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Handling PreDestroyViewMapEvent");
+        if (LOGGER.isLoggable(FINEST)) {
+            LOGGER.log(FINEST, "Handling PreDestroyViewMapEvent");
         }
 
         UIViewRoot viewRoot = (UIViewRoot) se.getSource();
@@ -297,9 +256,6 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 contextManager.clear(facesContext, viewMap);
                 contextManager.fireDestroyedEvent(facesContext, viewRoot);
             }
-
-            destroyBeans(facesContext, viewMap);
-
         }
     }
 
@@ -310,36 +266,29 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      */
     @Override
     public void sessionCreated(HttpSessionEvent se) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Creating session for @ViewScoped beans");
+        if (LOGGER.isLoggable(FINEST)) {
+            LOGGER.log(FINEST, "Creating session for @ViewScoped beans");
         }
     }
 
     /**
      * Destroy the associated data in the session.
      *
-     * @param hse the HTTP session event.
+     * @param httpSessionEvent the HTTP session event.
      */
     @Override
-    public void sessionDestroyed(HttpSessionEvent hse) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Cleaning up session for @ViewScoped beans");
+    public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
+        if (LOGGER.isLoggable(FINEST)) {
+            LOGGER.log(FINEST, "Cleaning up session for @ViewScoped beans");
         }
 
         if (contextManager != null) {
-            contextManager.sessionDestroyed(hse);
+            contextManager.sessionDestroyed(httpSessionEvent);
         }
 
-        HttpSession session = hse.getSession();
+        HttpSession session = httpSessionEvent.getSession();
         Map<String, Object> activeViewMaps = (Map<String, Object>) session.getAttribute(ACTIVE_VIEW_MAPS);
         if (activeViewMaps != null) {
-            Iterator<Object> activeViewMapsIterator = activeViewMaps.values().iterator();
-            ApplicationAssociate applicationAssociate = ApplicationAssociate.getInstance(hse.getSession().getServletContext());
-            while (activeViewMapsIterator.hasNext()) {
-                Map<String, Object> viewMap = (Map<String, Object>) activeViewMapsIterator.next();
-                destroyBeans(applicationAssociate, viewMap);
-            }
-
             activeViewMaps.clear();
             session.removeAttribute(ACTIVE_VIEW_MAPS);
             session.removeAttribute(ACTIVE_VIEW_MAPS_SIZE);
@@ -352,14 +301,12 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @param eldestViewMap the eldest view map.
      */
     private void removeEldestViewMap(FacesContext facesContext, Map<String, Object> eldestViewMap) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Removing eldest view map: {0}", eldestViewMap);
+        if (LOGGER.isLoggable(FINEST)) {
+            LOGGER.log(FINEST, "Removing eldest view map: {0}", eldestViewMap);
         }
 
         if (contextManager != null) {
             contextManager.clear(facesContext, eldestViewMap);
         }
-
-        destroyBeans(facesContext, eldestViewMap);
     }
 }

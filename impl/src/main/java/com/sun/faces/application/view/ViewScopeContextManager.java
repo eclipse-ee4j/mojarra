@@ -61,7 +61,7 @@ public class ViewScopeContextManager {
 
     public ViewScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        isCdiOneOneOrGreater = Util.isCdiOneOneOrLater(facesContext);
+        isCdiOneOneOrGreater = true;
         try {
             viewScopedCDIEventFireHelperImplClass = Class.forName("com.sun.faces.application.view.ViewScopedCDIEventFireHelperImpl");
         } catch (ClassNotFoundException ex) {

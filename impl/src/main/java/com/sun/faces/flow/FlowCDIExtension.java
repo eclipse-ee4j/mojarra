@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
 import com.sun.faces.util.cdi11.CDIUtil;
 
 import jakarta.enterprise.context.spi.Contextual;
@@ -46,7 +45,7 @@ public class FlowCDIExtension implements Extension {
 
     public FlowCDIExtension() {
         flowScopedBeanFlowIds = new ConcurrentHashMap<>();
-        isCdiOneOneOrGreater = Util.isCdiOneOneOrLater(null);
+        isCdiOneOneOrGreater = true;
     }
 
     public void processBean(@Observes ProcessBean<?> event) {

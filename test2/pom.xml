@@ -27,6 +27,7 @@
     <name>Mojarra ${project.version} - Test2</name>
 
     <modules>
+        <module>faces22</module>
         <module>faces23</module>
     </modules>
 
@@ -114,30 +115,28 @@
             <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
-    
-        <!-- Java SE replacements  -->
-        <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
-            <version>1.3.5</version>
-            <scope>provided</scope>
+        
+
+        <!-- Test dependencies which can be used in sub-modules -->
+        
+         <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>2.3.2</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.2</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
-        
-        
-
-        <!-- Test dependencies which can be used in sub-modules -->
 
         <dependency>
             <groupId>junit</groupId>

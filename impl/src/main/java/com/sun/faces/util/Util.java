@@ -1569,35 +1569,4 @@ public class Util {
         return result;
     }
 
-    /**
-     * Is CDI 1.1 or later
-     *
-     * @param facesContext the Faces context.
-     * @return true if CDI 1.1 or later, false otherwise.
-     */
-    public static boolean isCdiOneOneOrLater(FacesContext facesContext) {
-        boolean result = false;
-
-        if (facesContext != null && facesContext.getAttributes().containsKey(RIConstants.CDI_1_1_OR_LATER)) {
-            result = (Boolean) facesContext.getAttributes().get(RIConstants.CDI_1_1_OR_LATER);
-        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_1_1_OR_LATER)) {
-            result = facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_1_1_OR_LATER);
-        } else {
-            try {
-                Class.forName("jakarta.enterprise.context.Initialized");
-                result = true;
-            } catch (ClassNotFoundException ignored) {
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.log(Level.FINEST, "Detected CDI 1.0", ignored);
-                }
-            }
-
-            if (facesContext != null) {
-                facesContext.getAttributes().put(RIConstants.CDI_1_1_OR_LATER, result);
-                facesContext.getExternalContext().getApplicationMap().put(RIConstants.CDI_1_1_OR_LATER, result);
-            }
-        }
-
-        return result;
-    }
 }
