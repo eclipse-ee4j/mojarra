@@ -347,24 +347,22 @@ public class FlowCDIContext implements Context, Serializable {
 
         mapHelper.updateSession();
 
-        if (Util.isCdiOneOneOrLater(facesContext)) {
-            Class flowCDIEventFireHelperImplClass = null;
-            try {
-                flowCDIEventFireHelperImplClass = Class.forName("com.sun.faces.flow.FlowCDIEventFireHelperImpl");
-            } catch (ClassNotFoundException ex) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "CDI 1.1 events not enabled", ex);
-                }
+        Class flowCDIEventFireHelperImplClass = null;
+        try {
+            flowCDIEventFireHelperImplClass = Class.forName("com.sun.faces.flow.FlowCDIEventFireHelperImpl");
+        } catch (ClassNotFoundException ex) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, "CDI 1.1 events not enabled", ex);
             }
+        }
 
-            if (null != flowCDIEventFireHelperImplClass) {
-                Set<Bean<?>> availableBeans = beanManager.getBeans(flowCDIEventFireHelperImplClass);
-                if (null != availableBeans && !availableBeans.isEmpty()) {
-                    Bean<?> bean = beanManager.resolve(availableBeans);
-                    CreationalContext<?> creationalContext = beanManager.createCreationalContext(null);
-                    FlowCDIEventFireHelper eventHelper = (FlowCDIEventFireHelper) beanManager.getReference(bean, bean.getBeanClass(), creationalContext);
-                    eventHelper.fireDestroyedEvent(currentFlow);
-                }
+        if (null != flowCDIEventFireHelperImplClass) {
+            Set<Bean<?>> availableBeans = beanManager.getBeans(flowCDIEventFireHelperImplClass);
+            if (null != availableBeans && !availableBeans.isEmpty()) {
+                Bean<?> bean = beanManager.resolve(availableBeans);
+                CreationalContext<?> creationalContext = beanManager.createCreationalContext(null);
+                FlowCDIEventFireHelper eventHelper = (FlowCDIEventFireHelper) beanManager.getReference(bean, bean.getBeanClass(), creationalContext);
+                eventHelper.fireDestroyedEvent(currentFlow);
             }
         }
     }
@@ -376,31 +374,25 @@ public class FlowCDIContext implements Context, Serializable {
 
         getCurrentFlowScopeAndUpdateSession(mapHelper);
 
-        if (Util.isCdiOneOneOrLater(facesContext)) {
-            Class flowCDIEventFireHelperImplClass = null;
-            try {
-                flowCDIEventFireHelperImplClass = Class.forName("com.sun.faces.flow.FlowCDIEventFireHelperImpl");
-            } catch (ClassNotFoundException ex) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "CDI 1.1 events not enabled", ex);
-                }
+        Class flowCDIEventFireHelperImplClass = null;
+        try {
+            flowCDIEventFireHelperImplClass = Class.forName("com.sun.faces.flow.FlowCDIEventFireHelperImpl");
+        } catch (ClassNotFoundException ex) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, "CDI 1.1 events not enabled", ex);
             }
-            if (null != flowCDIEventFireHelperImplClass) {
-                BeanManager beanManager = Util.getCdiBeanManager(facesContext);
-                Set<Bean<?>> availableBeans = beanManager.getBeans(flowCDIEventFireHelperImplClass);
-                if (null != availableBeans && !availableBeans.isEmpty()) {
-                    Bean<?> bean = beanManager.resolve(availableBeans);
-                    CreationalContext<?> creationalContext = beanManager.createCreationalContext(null);
-                    FlowCDIEventFireHelper eventHelper = (FlowCDIEventFireHelper) beanManager.getReference(bean, bean.getBeanClass(), creationalContext);
-                    eventHelper.fireInitializedEvent(getCurrentFlow(facesContext));
-                }
+        }
+        if (null != flowCDIEventFireHelperImplClass) {
+            BeanManager beanManager = Util.getCdiBeanManager(facesContext);
+            Set<Bean<?>> availableBeans = beanManager.getBeans(flowCDIEventFireHelperImplClass);
+            if (null != availableBeans && !availableBeans.isEmpty()) {
+                Bean<?> bean = beanManager.resolve(availableBeans);
+                CreationalContext<?> creationalContext = beanManager.createCreationalContext(null);
+                FlowCDIEventFireHelper eventHelper = (FlowCDIEventFireHelper) beanManager.getReference(bean, bean.getBeanClass(), creationalContext);
+                eventHelper.fireInitializedEvent(getCurrentFlow(facesContext));
             }
         }
     }
-
-// </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="spi.Context implementation">
 
     @Override
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creational) {

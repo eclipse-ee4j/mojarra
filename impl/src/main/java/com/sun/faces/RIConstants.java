@@ -124,11 +124,6 @@ public class RIConstants {
     public static final String CDI_BEAN_MANAGER = FACES_PREFIX + "cdi.BeanManager";
 
     /**
-     * Convenience key to determine if CDI is version 1.1 or later.
-     */
-    public static final String CDI_1_1_OR_LATER = FACES_PREFIX + "cdi.OneOneOrLater";
-
-    /**
      * Convenience key in App map and FacesContext map for spec version of faces-config.xml
      */
     public static final String FACES_CONFIG_VERSION = FACES_PREFIX + "facesConfigVersion";

@@ -46,6 +46,10 @@ class ViewScopeContextObject implements Serializable {
         return passivationCapableId;
     }
 
+    public void setPassivationCapableId(String passivationCapableId) {
+        this.passivationCapableId = passivationCapableId;
+    }
+
     /*
      * Get the name.
      *
@@ -53,10 +57,6 @@ class ViewScopeContextObject implements Serializable {
      */
     public String getName() {
         return name;
-    }
-
-    public void setPassivationCapableId(String passivationCapableId) {
-        this.passivationCapableId = passivationCapableId;
     }
 
     /**

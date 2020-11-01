@@ -16,12 +16,12 @@
 
 package com.sun.faces.application.view;
 
+import static java.util.logging.Level.SEVERE;
+
 import java.util.ServiceLoader;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
 import com.sun.faces.util.cdi11.CDIUtil;
 
 import jakarta.enterprise.event.Observes;
@@ -38,8 +38,7 @@ import jakarta.faces.view.ViewScoped;
  */
 public class ViewScopeExtension implements Extension {
 
-    private boolean isCdiOneOneOrGreater = false;
-    private CDIUtil cdiUtil = null;
+    private CDIUtil cdiUtil;
 
     /**
      * Stores the logger.
@@ -50,10 +49,11 @@ public class ViewScopeExtension implements Extension {
      * Constructor.
      */
     public ViewScopeExtension() {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("Constructor @ViewScoped CDI Extension called");
-        }
-        isCdiOneOneOrGreater = Util.isCdiOneOneOrLater(null);
+        LOGGER.finest("Constructor @ViewScoped CDI Extension called");
+    }
+
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
+        event.addScope(ViewScoped.class, true, true);
     }
 
     /**
@@ -63,14 +63,10 @@ public class ViewScopeExtension implements Extension {
      */
     public void processBean(@Observes ProcessBean<?> event) {
         ViewScoped viewScoped = event.getAnnotated().getAnnotation(ViewScoped.class);
-        if (viewScoped != null && LOGGER.isLoggable(Level.FINEST)) {
+        if (viewScoped != null) {
             LOGGER.finest("Processing occurrence of @ViewScoped");
         }
 
-    }
-
-    public void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager) {
-        event.addScope(ViewScoped.class, true, true);
     }
 
     /**
@@ -78,42 +74,26 @@ public class ViewScopeExtension implements Extension {
      *
      * @param event the event.
      */
-    public void afterBeanDiscovery(@Observes final AfterBeanDiscovery event, BeanManager beanManager) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("Adding @ViewScoped context to CDI runtime");
-        }
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
+        LOGGER.finest("Adding @ViewScoped context to CDI runtime");
         event.addContext(new ViewScopeContext());
 
-        if (isCdiOneOneOrGreater) {
-            Class clazz = null;
-            try {
-                clazz = Class.forName("com.sun.faces.application.view.ViewScopedCDIEventFireHelperImpl");
-            } catch (ClassNotFoundException ex) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "CDI 1.1 events not enabled", ex);
+        if (cdiUtil == null) {
+            ServiceLoader<CDIUtil> oneCdiUtil = ServiceLoader.load(CDIUtil.class);
+            for (CDIUtil oneAndOnly : oneCdiUtil) {
+                if (cdiUtil != null) {
+                    String message = "Must only have one implementation of CDIUtil available";
+                    LOGGER.log(SEVERE, message);
+                    throw new IllegalStateException(message);
                 }
-                return;
+                cdiUtil = oneAndOnly;
             }
 
-            if (null == cdiUtil) {
-                ServiceLoader<CDIUtil> oneCdiUtil = ServiceLoader.load(CDIUtil.class);
-                for (CDIUtil oneAndOnly : oneCdiUtil) {
-                    if (null != cdiUtil) {
-                        String message = "Must only have one implementation of CDIUtil available";
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE, message);
-                        }
-                        throw new IllegalStateException(message);
-                    }
-                    cdiUtil = oneAndOnly;
-                }
-            }
-
-            if (null != cdiUtil) {
-                Bean bean = cdiUtil.createHelperBean(beanManager, clazz);
+            if (cdiUtil != null) {
+                Bean bean = cdiUtil.createHelperBean(beanManager, ViewScopedCDIEventFireHelperImpl.class);
                 event.addBean(bean);
-            } else if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "Unable to obtain CDI 1.1 utilities for Mojarra");
+            } else if (LOGGER.isLoggable(SEVERE)) {
+                LOGGER.log(SEVERE, "Unable to obtain CDI 1.1 utilities for Mojarra");
             }
         }
 

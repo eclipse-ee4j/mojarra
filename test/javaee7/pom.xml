@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -39,7 +39,6 @@
        
     <modules>
         <module>cdiBeanValidator</module>
-        <module>cdiInitDestroyEvent</module>
         <module>cdiMethodValidation</module>
         <module>cdiMultiTenantJspSetsTccl</module>
         <module>cdiMultiTenantSetsTccl</module>
@@ -47,7 +46,6 @@
         <module>el</module>
         <module>facelets</module>
         <module>multiFieldValidation</module>
-        <module>viewActionCdiViewScoped</module>
         <module>protectedView</module>
   </modules>
 </project>

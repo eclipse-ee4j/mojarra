@@ -16,9 +16,11 @@
 
 package com.sun.faces.application.view;
 
+import static java.util.logging.Level.FINEST;
+import static java.util.logging.Level.SEVERE;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.enterprise.context.ContextNotActiveException;
@@ -38,6 +40,7 @@ public class ViewScopeContext implements Context, Serializable {
      * Stores the logger.
      */
     private static final Logger LOGGER = Logger.getLogger(ViewScopeContext.class.getName());
+
     /**
      * Stores the serial version UID.
      */
@@ -47,20 +50,15 @@ public class ViewScopeContext implements Context, Serializable {
      * Constructor.
      */
     public ViewScopeContext() {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Creating ViewScope CDI context");
-        }
+        LOGGER.log(FINEST, "Creating ViewScope CDI context");
     }
 
     /**
      * Assert the context is active, otherwise throw ContextNotActiveException.
      */
-    @SuppressWarnings({ "FinalPrivateMethod" })
     private final void assertNotReleased() {
         if (!isActive()) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "Trying to access ViewScope CDI context while it is not active");
-            }
+            LOGGER.log(SEVERE, "Trying to access ViewScope CDI context while it is not active");
             throw new ContextNotActiveException();
         }
     }
