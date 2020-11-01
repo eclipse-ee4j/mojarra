@@ -77,31 +77,21 @@ import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextAttributeEvent;
-import jakarta.servlet.ServletContextAttributeListener;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.ServletRequestAttributeEvent;
-import jakarta.servlet.ServletRequestAttributeListener;
 import jakarta.servlet.ServletRequestEvent;
 import jakarta.servlet.ServletRequestListener;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionAttributeListener;
-import jakarta.servlet.http.HttpSessionBindingEvent;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpointConfig;
 
 /**
- * <p>
- * Parse all relevant JavaServer Faces configuration resources, and configure the Reference Implementation runtime
+ * Parse all relevant Faces configuration resources, and configure the Mojarra runtime
  * environment.
- * </p>
- * <p/>
  */
-public class ConfigureListener implements ServletRequestListener, HttpSessionListener, ServletRequestAttributeListener, HttpSessionAttributeListener,
-        ServletContextAttributeListener, ServletContextListener {
+public class ConfigureListener implements ServletRequestListener, HttpSessionListener, ServletContextListener {
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
 
@@ -366,68 +356,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
     }
 
-    // ---------------------------- Methods from ServletRequestAttributeListener
 
-    @Override
-    public void attributeAdded(ServletRequestAttributeEvent event) {
-        // ignored
-    }
-
-    @Override
-    public void attributeRemoved(ServletRequestAttributeEvent event) {
-        if (webAppListener != null) {
-            webAppListener.attributeRemoved(event);
-        }
-    }
-
-    @Override
-    public void attributeReplaced(ServletRequestAttributeEvent event) {
-        if (webAppListener != null) {
-            webAppListener.attributeReplaced(event);
-        }
-    }
-
-    // ------------------------------- Methods from HttpSessionAttributeListener
-
-    @Override
-    public void attributeAdded(HttpSessionBindingEvent event) {
-        // ignored
-    }
-
-    @Override
-    public void attributeRemoved(HttpSessionBindingEvent event) {
-        if (webAppListener != null) {
-            webAppListener.attributeRemoved(event);
-        }
-    }
-
-    @Override
-    public void attributeReplaced(HttpSessionBindingEvent event) {
-        if (webAppListener != null) {
-            webAppListener.attributeReplaced(event);
-        }
-    }
-
-    // ---------------------------- Methods from ServletContextAttributeListener
-
-    @Override
-    public void attributeAdded(ServletContextAttributeEvent event) {
-        // ignored
-    }
-
-    @Override
-    public void attributeRemoved(ServletContextAttributeEvent event) {
-        if (webAppListener != null) {
-            webAppListener.attributeRemoved(event);
-        }
-    }
-
-    @Override
-    public void attributeReplaced(ServletContextAttributeEvent event) {
-        if (webAppListener != null) {
-            webAppListener.attributeReplaced(event);
-        }
-    }
 
     // --------------------------------------------------------- Private Methods
 
