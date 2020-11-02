@@ -37,22 +37,16 @@ import jakarta.inject.Named;
  * A better way is to @Inject the extension directly but this doesn't
  * seem to work in the version of weld we have.
  */
-
 @Named(RIConstants.FLOW_DISCOVERY_CDI_HELPER_BEAN_NAME)
 @Dependent
 public class FlowDiscoveryCDIHelper implements Serializable {
 
     private static final long serialVersionUID = 6217421203074690365L;
 
-    public FlowDiscoveryCDIHelper() {
-    }
-
     @Produces
     @FlowBuilderParameter
     FlowBuilder createFlowBuilder() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        FlowBuilder result = new FlowBuilderImpl(context);
-        return result;
+        return new FlowBuilderImpl(FacesContext.getCurrentInstance());
     }
 
 }

@@ -16,19 +16,16 @@
 
 package com.sun.faces.flow;
 
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.cdi11.CDIUtil;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.sun.faces.flow.FlowCDIContext.FlowBeanInfo;
 
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
@@ -37,68 +34,32 @@ import jakarta.faces.flow.FlowScoped;
 
 public class FlowCDIExtension implements Extension {
 
-    private Map<Contextual<?>, FlowCDIContext.FlowBeanInfo> flowScopedBeanFlowIds;
-    private boolean isCdiOneOneOrGreater = false;
-    private CDIUtil cdiUtil = null;
+    private Map<Contextual<?>, FlowCDIContext.FlowBeanInfo> flowScopedBeanFlowIds = new ConcurrentHashMap<>();
 
-    private static final Logger LOGGER = FacesLogger.FLOW.getLogger();
-
-    public FlowCDIExtension() {
-        flowScopedBeanFlowIds = new ConcurrentHashMap<>();
-        isCdiOneOneOrGreater = true;
+    /**
+     * Before bean discovery.
+     *
+     * @param beforeBeanDiscovery the before bean discovery.
+     * @param beanManager the bean manager.
+     */
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
+        addAnnotatedTypes(beforeBeanDiscovery, beanManager, FlowCDIEventFireHelperImpl.class);
+        beforeBeanDiscovery.addScope(FlowScoped.class, true, true);
     }
 
     public void processBean(@Observes ProcessBean<?> event) {
         FlowScoped flowScoped = event.getAnnotated().getAnnotation(FlowScoped.class);
-        if (null != flowScoped) {
-            FlowCDIContext.FlowBeanInfo fbi = new FlowCDIContext.FlowBeanInfo();
-            fbi.definingDocumentId = flowScoped.definingDocumentId();
-            fbi.id = flowScoped.value();
-            flowScopedBeanFlowIds.put(event.getBean(), fbi);
-        }
-    }
 
-    public void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager) {
-        event.addScope(FlowScoped.class, true, true);
+        if (flowScoped != null) {
+            flowScopedBeanFlowIds.put(
+                event.getBean(),
+                new FlowBeanInfo(flowScoped.definingDocumentId(), flowScoped.value()));
+        }
     }
 
     void afterBeanDiscovery(@Observes final AfterBeanDiscovery event, BeanManager beanManager) {
         event.addContext(new FlowCDIContext(flowScopedBeanFlowIds));
         flowScopedBeanFlowIds.clear();
-
-        if (isCdiOneOneOrGreater) {
-            Class clazz = null;
-            try {
-                clazz = Class.forName("com.sun.faces.flow.FlowCDIEventFireHelperImpl");
-            } catch (ClassNotFoundException ex) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "CDI 1.1 events not enabled", ex);
-                }
-                return;
-            }
-            if (null == cdiUtil) {
-                ServiceLoader<CDIUtil> oneCdiUtil = ServiceLoader.load(CDIUtil.class);
-                for (CDIUtil oneAndOnly : oneCdiUtil) {
-                    if (null != cdiUtil) {
-                        String message = "Must only have one implementation of CDIUtil available";
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE, message);
-                        }
-                        throw new IllegalStateException(message);
-                    }
-                    cdiUtil = oneAndOnly;
-                }
-
-            }
-            if (null != cdiUtil) {
-                Bean bean = cdiUtil.createHelperBean(beanManager, clazz);
-                event.addBean(bean);
-            } else if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "Unable to obtain CDI 1.1 utilities for Mojarra");
-            }
-
-        }
-
     }
 
 }

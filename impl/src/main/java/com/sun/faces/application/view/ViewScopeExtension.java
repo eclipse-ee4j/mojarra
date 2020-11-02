@@ -16,17 +16,14 @@
 
 package com.sun.faces.application.view;
 
-import static java.util.logging.Level.SEVERE;
+import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 
-import java.util.ServiceLoader;
 import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.cdi11.CDIUtil;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
@@ -38,18 +35,20 @@ import jakarta.faces.view.ViewScoped;
  */
 public class ViewScopeExtension implements Extension {
 
-    private CDIUtil cdiUtil;
-
-    /**
-     * Stores the logger.
-     */
     private static final Logger LOGGER = FacesLogger.APPLICATION_VIEW.getLogger();
 
-    /**
-     * Constructor.
-     */
     public ViewScopeExtension() {
         LOGGER.finest("Constructor @ViewScoped CDI Extension called");
+    }
+
+    /**
+     * Before bean discovery.
+     *
+     * @param beforeBeanDiscovery the before bean discovery.
+     * @param beanManager the bean manager.
+     */
+    public void beforeBean(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
+        addAnnotatedTypes(beforeBeanDiscovery, beanManager, ViewScopedCDIEventFireHelperImpl.class);
     }
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
@@ -66,7 +65,6 @@ public class ViewScopeExtension implements Extension {
         if (viewScoped != null) {
             LOGGER.finest("Processing occurrence of @ViewScoped");
         }
-
     }
 
     /**
@@ -77,26 +75,6 @@ public class ViewScopeExtension implements Extension {
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         LOGGER.finest("Adding @ViewScoped context to CDI runtime");
         event.addContext(new ViewScopeContext());
-
-        if (cdiUtil == null) {
-            ServiceLoader<CDIUtil> oneCdiUtil = ServiceLoader.load(CDIUtil.class);
-            for (CDIUtil oneAndOnly : oneCdiUtil) {
-                if (cdiUtil != null) {
-                    String message = "Must only have one implementation of CDIUtil available";
-                    LOGGER.log(SEVERE, message);
-                    throw new IllegalStateException(message);
-                }
-                cdiUtil = oneAndOnly;
-            }
-
-            if (cdiUtil != null) {
-                Bean bean = cdiUtil.createHelperBean(beanManager, ViewScopedCDIEventFireHelperImpl.class);
-                event.addBean(bean);
-            } else if (LOGGER.isLoggable(SEVERE)) {
-                LOGGER.log(SEVERE, "Unable to obtain CDI 1.1 utilities for Mojarra");
-            }
-        }
-
     }
 
 }
