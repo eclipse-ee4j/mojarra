@@ -75,7 +75,6 @@ public class FilterClassesFromFacesInitializerAnnotationProvider extends Annotat
      * @param annotatedSet
      */
     private Map<Class<? extends Annotation>, Set<Class<?>>> createAnnotatedMap(Set<Class<?>> annotatedSet) {
-
         HashMap<Class<? extends Annotation>, Set<Class<?>>> annotatedMap = new HashMap<>();
 
         if (isEmpty(annotatedSet)) {

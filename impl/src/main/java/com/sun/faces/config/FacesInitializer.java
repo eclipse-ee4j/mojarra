@@ -34,7 +34,6 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
-import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.FacesBehavior;
@@ -72,7 +71,7 @@ import jakarta.websocket.server.ServerEndpoint;
  */
 @HandlesTypes({ Converter.class, Endpoint.class, FaceletsResourceResolver.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class,
         FacesConverter.class, FacesConfig.class, // Should actually be check for enabled bean, but difficult to guarantee, see SERVLET_SPEC-79
-        FacesValidator.class, ListenerFor.class, ListenersFor.class, ManagedBean.class, NamedEvent.class, PhaseListener.class, Renderer.class, Resource.class,
+        FacesValidator.class, ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Renderer.class, Resource.class,
         ResourceDependencies.class, ResourceDependency.class, ServerApplicationConfig.class, ServerEndpoint.class, UIComponent.class, Validator.class })
 public class FacesInitializer implements ServletContainerInitializer {
 
