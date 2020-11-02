@@ -356,16 +356,6 @@ public abstract class ExternalContext {
      * operations must take the appropriate action on the underlying data structure.
      * </p>
      *
-     * <p>
-     * For any of the <code>Map</code> methods that cause an element to be removed from the underlying data structure, the
-     * following action regarding managed-beans must be taken. If the element to be removed is a managed-bean, and it has
-     * one or more public no-argument void return methods annotated with <code>jakarta.annotation.PreDestroy</code>, each
-     * such method must be called before the element is removed from the underlying data structure. Elements that are not
-     * managed-beans, but do happen to have methods with that annotation must not have those methods called on removal. Any
-     * exception thrown by the <code>PreDestroy</code> annotated methods must by caught and not rethrown. The exception may
-     * be logged.
-     * </p>
-     *
      * <p class="changed_added_2_0">
      * It is valid to call this method during application startup or shutdown. If called at startup or shutdown time, this
      * method returns a <code>Map</code> that is backed by the same container context instance (<code>ServletContext</code>
@@ -940,16 +930,6 @@ public abstract class ExternalContext {
      * set of request scope attributes. Particularly the <code>clear()</code>, <code>remove()</code>, <code>put()</code>,
      * <code>putAll()</code>, and <code>get()</code> operations must take the appropriate action on the underlying data
      * structure.
-     * </p>
-     *
-     * <p>
-     * For any of the <code>Map</code> methods that cause an element to be removed from the underlying data structure, the
-     * following action regarding managed-beans must be taken. If the element to be removed is a managed-bean, and it has
-     * one or more public no-argument void return methods annotated with <code>jakarta.annotation.PreDestroy</code>, each
-     * such method must be called before the element is removed from the underlying data structure. Elements that are not
-     * managed-beans, but do happen to have methods with that annotation must not have those methods called on removal. Any
-     * exception thrown by the <code>PreDestroy</code> annotated methods must by caught and not rethrown. The exception may
-     * be logged.
      * </p>
      *
      * <p>
@@ -1548,16 +1528,6 @@ public abstract class ExternalContext {
      * and <code>get()</code> operations must take the appropriate action on the underlying data structure. Accessing
      * attributes via this <code>Map</code> must cause the creation of a session associated with the current request, if
      * such a session does not already exist.
-     * </p>
-     *
-     * <p>
-     * For any of the <code>Map</code> methods that cause an element to be removed from the underlying data structure, the
-     * following action regarding managed-beans must be taken. If the element to be removed is a managed-bean, and it has
-     * one or more public no-argument void return methods annotated with <code>jakarta.annotation.PreDestroy</code>, each
-     * such method must be called before the element is removed from the underlying data structure. Elements that are not
-     * managed-beans, but do happen to have methods with that annotation must not have those methods called on removal. Any
-     * exception thrown by the <code>PreDestroy</code> annotated methods must by caught and not rethrown. The exception may
-     * be logged.
      * </p>
      *
      * <p>
