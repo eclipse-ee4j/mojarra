@@ -339,8 +339,6 @@
                             resolution:=optional;cardinality:=multiple,
                             osgi.serviceloader;filter:="(osgi.serviceloader=com.sun.faces.spi.FacesConfigResourceProvider)";
                             resolution:=optional;cardinality:=multiple,
-                            osgi.serviceloader;filter:="(osgi.serviceloader=com.sun.faces.util.cdi11.CDIUtil)";
-                            resolution:=optional;cardinality:=multiple,
                             osgi.serviceloader;filter:="(osgi.serviceloader=jakarta.faces.application.ApplicationConfigurationPopulator)";
                             resolution:=optional;cardinality:=multiple,
                             osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional

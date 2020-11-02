@@ -25,12 +25,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.sun.faces.cdi.CdiUtils;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.flow.FlowDiscoveryCDIExtension;
 import com.sun.faces.util.FacesLogger;
 
-import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Producer;
 import jakarta.faces.context.FacesContext;
@@ -45,9 +44,8 @@ class JavaFlowLoaderHelper {
     synchronized void loadFlows(FacesContext context, FlowHandler flowHandler) throws IOException {
         BeanManager beanManager = getCdiBeanManager(context);
 
-        Bean<?> extensionImpl = beanManager.resolve(beanManager.getBeans(FlowDiscoveryCDIExtension.class));
-
-        if (extensionImpl == null) {
+        FlowDiscoveryCDIExtension flowDiscoveryCDIExtension = CdiUtils.getBeanReference(beanManager, FlowDiscoveryCDIExtension.class);
+        if (flowDiscoveryCDIExtension == null) {
             if (LOGGER.isLoggable(SEVERE)) {
                 LOGGER.log(SEVERE, "Unable to obtain {0} from CDI implementation.  Flows described with {1} are unavailable.",
                         new String[] { FlowDiscoveryCDIExtension.class.getName(), FlowDefinition.class.getName() });
@@ -55,19 +53,15 @@ class JavaFlowLoaderHelper {
             return;
         }
 
-        CreationalContext<?> creationalContext = beanManager.createCreationalContext(extensionImpl);
-        FlowDiscoveryCDIExtension myExtension = (FlowDiscoveryCDIExtension) beanManager.getReference(extensionImpl, FlowDiscoveryCDIExtension.class,
-                creationalContext);
-
-        List<Producer<Flow>> flowProducers = myExtension.getFlowProducers();
-        WebConfiguration config = WebConfiguration.getInstance();
+        List<Producer<Flow>> flowProducers = flowDiscoveryCDIExtension.getFlowProducers();
         if (!flowProducers.isEmpty()) {
             enableClientWindowModeIfNecessary(context);
         }
 
+        WebConfiguration config = WebConfiguration.getInstance();
         for (Producer<Flow> flowProducer : flowProducers) {
             Flow toAdd = flowProducer.produce(beanManager.<Flow>createCreationalContext(null));
-            if (null == toAdd) {
+            if (toAdd == null) {
                 LOGGER.log(SEVERE, "Flow producer method {0}() returned null.  Ignoring.", flowProducer.toString());
             } else {
                 flowHandler.addFlow(context, toAdd);
@@ -77,7 +71,6 @@ class JavaFlowLoaderHelper {
     }
 
     private void enableClientWindowModeIfNecessary(FacesContext context) {
-
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
 
         String optionValue = config.getOptionValue(ClientWindowMode);

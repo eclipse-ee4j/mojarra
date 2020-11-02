@@ -32,6 +32,7 @@ public class FlowCDIEventFireHelperImpl implements Serializable, FlowCDIEventFir
     @Inject
     @Initialized(FlowScoped.class)
     Event<Flow> flowInitializedEvent;
+
     @Inject
     @Destroyed(FlowScoped.class)
     Event<Flow> flowDestroyedEvent;

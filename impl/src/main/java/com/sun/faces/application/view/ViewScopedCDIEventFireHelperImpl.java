@@ -32,6 +32,7 @@ public class ViewScopedCDIEventFireHelperImpl implements Serializable, ViewScope
     @Inject
     @Initialized(ViewScoped.class)
     Event<UIViewRoot> viewScopeInitializedEvent;
+
     @Inject
     @Destroyed(ViewScoped.class)
     Event<UIViewRoot> viewScopeDestroyedEvent;

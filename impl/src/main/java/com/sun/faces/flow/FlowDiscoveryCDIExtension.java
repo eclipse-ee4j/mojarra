@@ -16,15 +16,16 @@
 
 package com.sun.faces.flow;
 
+import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
+import static java.util.logging.Level.FINE;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
@@ -36,15 +37,13 @@ import jakarta.faces.flow.builder.FlowDefinition;
 /*
  *  This is the hook into the bootstrapping of the entire feature.
  *
- *  Use the CDI anntation scanning feature to find all beans annotated
- *  with @FlowDefinition.  The scanning work done here is leveraged
+ *  Use the CDI annotation scanning feature to find all beans annotated
+ *  with @FlowDefinition. The scanning work done here is leveraged
  *  in FlowDiscoveryCDIHelper.discoverFlows().
  *
- *  Use BeforeBeanDiscovery to manually register an application scoped
- *  bean FlowDiscoveryCDIHelper.  I would rather not do this, but I
- *  couldn't get the system to find this bean in any other way.  I think
- *  this may have something to do with CDI being told not to scan within
- *  jakarta.faces.jar, or something like that.
+ *  Use BeforeBeanDiscovery to manually register the  bean FlowDiscoveryCDIHelper.
+ *  This is needed since CDI doesn't scan archives that contain extensions,
+ *  such as the Mojarra jar
  *
  *  Use AfterBeanDiscovery to add a custom Context.  This is necessary
  *  because it was the only way I found that actually worked that let me
@@ -59,33 +58,25 @@ import jakarta.faces.flow.builder.FlowDefinition;
  */
 public class FlowDiscoveryCDIExtension implements Extension {
 
-    // Log instance for this class
     private static final Logger LOGGER = FacesLogger.FLOW.getLogger();
-    private List<Producer<Flow>> flowProducers;
+    private List<Producer<Flow>> flowProducers = new CopyOnWriteArrayList<>();
 
-    public FlowDiscoveryCDIExtension() {
-        flowProducers = new CopyOnWriteArrayList<>();
 
+    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
+        addAnnotatedTypes(beforeBeanDiscovery, beanManager, FlowDiscoveryCDIHelper.class);
+    }
+
+    void findFlowDefiners(@Observes ProcessProducer<?, Flow> processProducer) {
+        if (processProducer.getAnnotatedMember().isAnnotationPresent(FlowDefinition.class)) {
+            flowProducers.add(processProducer.getProducer());
+            if (LOGGER.isLoggable(FINE)) {
+                LOGGER.log(FINE, "Discovered Flow Producer {0}", processProducer.getProducer().toString());
+            }
+        }
     }
 
     public List<Producer<Flow>> getFlowProducers() {
         return flowProducers;
-    }
-
-    void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager) {
-        AnnotatedType flowDiscoveryHelper = beanManager.createAnnotatedType(FlowDiscoveryCDIHelper.class);
-        event.addAnnotatedType(flowDiscoveryHelper);
-
-    }
-
-    <T> void findFlowDefiners(@Observes ProcessProducer<T, Flow> pp) {
-        if (pp.getAnnotatedMember().isAnnotationPresent(FlowDefinition.class)) {
-            flowProducers.add(pp.getProducer());
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "Discovered Flow Producer {0}", pp.getProducer().toString());
-            }
-
-        }
     }
 
 }

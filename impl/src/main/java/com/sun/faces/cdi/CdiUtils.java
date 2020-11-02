@@ -179,6 +179,10 @@ public final class CdiUtils {
         return type.cast(getBeanReferenceByType(Util.getCdiBeanManager(FacesContext.getCurrentInstance()), type, qualifiers));
     }
 
+    public static <T> T getBeanReference(FacesContext facesContext, Class<T> type, Annotation... qualifiers) {
+        return type.cast(getBeanReferenceByType(Util.getCdiBeanManager(facesContext), type, qualifiers));
+    }
+
     /**
      * @param beanManager the bean manager
      * @param type the required bean type the reference must have
