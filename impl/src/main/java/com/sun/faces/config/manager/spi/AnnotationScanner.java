@@ -17,6 +17,9 @@
 package com.sun.faces.config.manager.spi;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.AnnotationScanPackages;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableSet;
+import static java.util.logging.Level.WARNING;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -34,7 +37,6 @@ import com.sun.faces.spi.AnnotationProvider;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
-import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.convert.FacesConverter;
@@ -55,7 +57,6 @@ import jakarta.servlet.ServletContext;
  * <li>jakarta.faces.convert.FacesConverter</li>
  * <li>jakarta.faces.validator.FacesValidator</li>
  * <li>jakarta.faces.render.FacesRenderer</li>
- * <li>jakarta.faces.bean.ManagedBean</li>
  * <li>jakarta.faces.event.NamedEvent</li>
  * <li>jakarta.faces.view.facelets.FaceletsResourceResolver</li>
  * </ul>
@@ -65,28 +66,27 @@ public abstract class AnnotationScanner extends AnnotationProvider {
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String WILDCARD = "*";
 
-    protected static final Set<String> FACES_ANNOTATIONS;
-    protected static final Set<Class<? extends Annotation>> FACES_ANNOTATION_TYPE;
+    protected static final Set<String> FACES_ANNOTATIONS = unmodifiableSet(new HashSet<>(asList(
+            "Ljakarta/faces/component/FacesComponent;", "Ljakarta/faces/convert/FacesConverter;",
+            "Ljakarta/faces/validator/FacesValidator;", "Ljakarta/faces/render/FacesRenderer;",
+            "Ljakarta/faces/event/NamedEvent;", "Ljakarta/faces/component/behavior/FacesBehavior;",
+            "Ljakarta/faces/render/FacesBehaviorRenderer;",
+            "Ljakarta/faces/view/facelets/FaceletsResourceResolver;",
 
-    static {
-        HashSet<String> annotations = new HashSet<>(8, 1.0f);
-        // JAVASERVERFACES-1835 this collection has the same information twice.
-        // Once in javap -s format, and once as fully qualified Java class names.
-        Collections.addAll(annotations, "Ljakarta/faces/component/FacesComponent;", "Ljakarta/faces/convert/FacesConverter;",
-                "Ljakarta/faces/validator/FacesValidator;", "Ljakarta/faces/render/FacesRenderer;", "Ljakarta/faces/bean/ManagedBean;",
-                "Ljakarta/faces/event/NamedEvent;", "Ljakarta/faces/component/behavior/FacesBehavior;", "Ljakarta/faces/render/FacesBehaviorRenderer;",
-                "Ljakarta/faces/view/facelets/FaceletsResourceResolver;", "jakarta.faces.component.FacesComponent", "jakarta.faces.convert.FacesConverter",
-                "jakarta.faces.validator.FacesValidator", "jakarta.faces.render.FacesRenderer", "jakarta.faces.bean.ManagedBean",
-                "jakarta.faces.event.NamedEvent", "jakarta.faces.component.behavior.FacesBehavior", "jakarta.faces.render.FacesBehaviorRenderer",
-                "jakarta.faces.view.facelets.FaceletsResourceResolver");
-        FACES_ANNOTATIONS = Collections.unmodifiableSet(annotations);
-        HashSet<Class<? extends Annotation>> annotationInstances = new HashSet<>(8, 1.0f);
-        Collections.addAll(annotationInstances, FacesComponent.class, FacesConverter.class, FacesValidator.class, FacesRenderer.class, ManagedBean.class,
-                NamedEvent.class, FacesBehavior.class, FacesBehaviorRenderer.class, FaceletsResourceResolver.class);
-        FACES_ANNOTATION_TYPE = Collections.unmodifiableSet(annotationInstances);
-    }
+            "jakarta.faces.component.FacesComponent", "jakarta.faces.convert.FacesConverter",
+            "jakarta.faces.validator.FacesValidator", "jakarta.faces.render.FacesRenderer",
+            "jakarta.faces.event.NamedEvent", "jakarta.faces.component.behavior.FacesBehavior",
+            "jakarta.faces.render.FacesBehaviorRenderer",
+            "jakarta.faces.view.facelets.FaceletsResourceResolver")));
 
-    private boolean isAnnotationScanPackagesSet = false;
+    protected static final Set<Class<? extends Annotation>> FACES_ANNOTATION_TYPE = unmodifiableSet(new HashSet<>(asList(
+            FacesComponent.class, FacesConverter.class,
+            FacesValidator.class, FacesRenderer.class,
+            NamedEvent.class, FacesBehavior.class,
+            FacesBehaviorRenderer.class,
+            FaceletsResourceResolver.class)));
+
+    private boolean isAnnotationScanPackagesSet;
     private String[] webInfClassesPackages;
     private Map<String, String[]> classpathPackages;
 
@@ -100,13 +100,13 @@ public abstract class AnnotationScanner extends AnnotationProvider {
 
         WebConfiguration webConfig = WebConfiguration.getInstance(sc);
         initializeAnnotationScanPackages(sc, webConfig);
-
     }
 
     private void initializeAnnotationScanPackages(ServletContext sc, WebConfiguration webConfig) {
         if (!webConfig.isSet(AnnotationScanPackages)) {
             return;
         }
+
         isAnnotationScanPackagesSet = true;
         classpathPackages = new HashMap<>(4);
         webInfClassesPackages = new String[0];
@@ -119,8 +119,8 @@ public abstract class AnnotationScanner extends AnnotationProvider {
             if (option.startsWith("jar:")) {
                 String[] parts = Util.split(sc, option, ":");
                 if (parts.length != 3) {
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, "jsf.annotation.scanner.configuration.invalid",
+                    if (LOGGER.isLoggable(WARNING)) {
+                        LOGGER.log(WARNING, "jsf.annotation.scanner.configuration.invalid",
                                 new String[] { AnnotationScanPackages.getQualifiedName(), option });
                     }
                 } else {
@@ -128,8 +128,8 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                         classpathPackages.clear();
                         classpathPackages.put(WILDCARD, normalizeJarPackages(Util.split(sc, parts[2], ",")));
                     } else if (WILDCARD.equals(parts[1]) && classpathPackages.containsKey(WILDCARD)) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING, "jsf.annotation.scanner.configuration.duplicate.wildcard",
+                        if (LOGGER.isLoggable(WARNING)) {
+                            LOGGER.log(WARNING, "jsf.annotation.scanner.configuration.duplicate.wildcard",
                                     new String[] { AnnotationScanPackages.getQualifiedName(), option });
                         }
                     } else {
@@ -153,10 +153,10 @@ public abstract class AnnotationScanner extends AnnotationProvider {
     }
 
     private String[] normalizeJarPackages(String[] packages) {
-
         if (packages.length == 0) {
             return packages;
         }
+
         List<String> normalizedPackages = new ArrayList<>(packages.length);
         for (String pkg : packages) {
             if (WILDCARD.equals(pkg)) {
@@ -167,8 +167,8 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                 normalizedPackages.add(pkg);
             }
         }
-        return normalizedPackages.toArray(new String[normalizedPackages.size()]);
 
+        return normalizedPackages.toArray(new String[normalizedPackages.size()]);
     }
 
     // --------------------------------------------------------- Protected Methods
@@ -186,7 +186,6 @@ public abstract class AnnotationScanner extends AnnotationProvider {
     }
 
     protected boolean processClass(String candidate, String[] packages) {
-
         if (packages == null) {
             return true;
         }
