@@ -989,7 +989,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
                 if (this instanceof UIViewParameter && considerEmptyStringNull(context)) {
                     // https://github.com/eclipse-ee4j/mojarra/issues/4550
                     // https://github.com/eclipse-ee4j/mojarra/issues/4716
-                    validateValue(context,  getConvertedValue(context, submittedValue));
+                    validateValue(context, submittedValue);
                 }
                 return;
             }
