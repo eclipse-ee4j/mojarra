@@ -47,7 +47,7 @@ import jakarta.servlet.ServletContext;
 
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/managed-bean</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/navigation-rule</code>.
  * </p>
  */
 public class NavigationConfigProcessor extends AbstractConfigProcessor {
