@@ -16,38 +16,25 @@
 
 package jakarta.faces.component;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.component.SelectItemsIterator;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIInput;
-import jakarta.faces.component.UIParameter;
-import jakarta.faces.component.UISelectItem;
-import jakarta.faces.component.UISelectItems;
-import jakarta.faces.component.UISelectOne;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
-
-import java.util.HashSet;
-import java.util.Collection;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * <p>
- * Unit tests for {@link UISelectOne}.</p>
+ * Unit tests for {@link UISelectOne}.
+ * </p>
  */
 public class UISelectOneTestCase extends UIInputTestCase {
 
@@ -73,7 +60,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(UISelectOneTestCase.class));
+        return new TestSuite(UISelectOneTestCase.class);
     }
 
     // ------------------------------------------------- Individual Test Methods
@@ -161,7 +148,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
 
     // Test validation of component with UISelectItems pointing to Set
     public void testValidation3() throws Exception {
-        Set<SelectItem> items = new HashSet<SelectItem>();
+        Set<SelectItem> items = new HashSet<>();
         items.add(new SelectItem("foo"));
         items.add(new SelectItem("bar"));
         items.add(new SelectItem("baz"));
@@ -171,7 +158,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
 
     // Test validation of component with UISelectItems pointing to List
     public void testValidation4() throws Exception {
-        List<SelectItem> items = new ArrayList<SelectItem>();
+        List<SelectItem> items = new ArrayList<>();
         items.add(new SelectItem("foo"));
         items.add(new SelectItem("bar"));
         items.add(new SelectItem("baz"));
@@ -186,11 +173,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
         root.getChildren().add(component);
 
         // Add valid options to the component under test
-        SelectItem[] itemsArray = {
-            new SelectItem("foo"),
-            new SelectItem("bar"),
-            new SelectItem("baz")
-        };
+        SelectItem[] itemsArray = { new SelectItem("foo"), new SelectItem("bar"), new SelectItem("baz") };
         UISelectItems items = new UISelectItems();
         items.setValue(itemsArray);
         UISelectOne selectOne = (UISelectOne) component;
@@ -209,10 +192,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
         assertTrue(!selectOne.isValid());
     }
 
-    private void testValidateWithCollection(Collection<SelectItem> selectItems,
-            String validValue,
-            String invalidValue)
-            throws Exception {
+    private void testValidateWithCollection(Collection<SelectItem> selectItems, String validValue, String invalidValue) throws Exception {
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
         root.getChildren().add(component);
 
@@ -234,11 +214,9 @@ public class UISelectOneTestCase extends UIInputTestCase {
         assertTrue(!selectOne.isValid());
     }
 
-    private String legalValues[]
-            = {"A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3"};
+    private String legalValues[] = { "A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3" };
 
-    private String illegalValues[]
-            = {"D1", "D2", "Group A", "Group B", "Group C"};
+    private String illegalValues[] = { "D1", "D2", "Group A", "Group B", "Group C" };
 
     // Test validation against a nested list of available options
     public void testValidateNested() throws Exception {
@@ -257,8 +235,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
             selectOne.setValid(true);
             selectOne.setSubmittedValue(legalValues[i]);
             selectOne.validate(facesContext);
-            assertTrue("Value '" + legalValues[i] + "' found",
-                    selectOne.isValid());
+            assertTrue("Value '" + legalValues[i] + "' found", selectOne.isValid());
             checkMessages(0);
         }
 
@@ -267,8 +244,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
             selectOne.setValid(true);
             selectOne.setSubmittedValue(illegalValues[i]);
             selectOne.validate(facesContext);
-            assertTrue("Value '" + illegalValues[i] + "' not found",
-                    !selectOne.isValid());
+            assertTrue("Value '" + illegalValues[i] + "' not found", !selectOne.isValid());
             checkMessages(i + 1);
         }
     }
@@ -305,27 +281,6 @@ public class UISelectOneTestCase extends UIInputTestCase {
         assertTrue(selectOne.isValid());
     }
 
-    // Test that appropriate properties are value binding enabled
-    public void PENDING_FIXME_testValueBindings() {
-        super.testValueBindings();
-        UISelectOne test = (UISelectOne) component;
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.setValue(null);
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.setValue(null);
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
-    }
-
     public void testSelectItemsIterator() {
         // sub test 1 : non-selectItem at end
         UISelectOne selectOne = (UISelectOne) component;
@@ -339,8 +294,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
         while (iter.hasNext()) {
             Object object = iter.next();
             assertTrue(object instanceof jakarta.faces.model.SelectItem);
-            assertTrue((((SelectItem) object).getValue().equals("orr"))
-                    || (((SelectItem) object).getValue().equals("esposito")));
+            assertTrue(((SelectItem) object).getValue().equals("orr") || ((SelectItem) object).getValue().equals("esposito"));
         }
 
         // sub test 2: non-selectitem in middle
@@ -352,8 +306,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
         while (iter.hasNext()) {
             Object object = iter.next();
             assertTrue(object instanceof jakarta.faces.model.SelectItem);
-            assertTrue((((SelectItem) object).getValue().equals("gretsky"))
-                    || (((SelectItem) object).getValue().equals("howe")));
+            assertTrue(((SelectItem) object).getValue().equals("gretsky") || ((SelectItem) object).getValue().equals("howe"));
         }
     }
 
@@ -363,7 +316,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
     protected UIComponent createComponent() {
         UIComponent component = new UISelectOne();
         component.setRendererType(null);
-        return (component);
+        return component;
     }
 
     @Override
@@ -379,19 +332,14 @@ public class UISelectOneTestCase extends UIInputTestCase {
     protected List setupOptions() {
         SelectItemGroup group, subgroup;
         subgroup = new SelectItemGroup("Group C");
-        subgroup.setSelectItems(new SelectItem[]{new SelectItem("C1"),
-            new SelectItem("C2"),
-            new SelectItem("C3")});
+        subgroup.setSelectItems(new SelectItem[] { new SelectItem("C1"), new SelectItem("C2"), new SelectItem("C3") });
         List options = new ArrayList();
         options.add(new SelectItem("A1"));
         group = new SelectItemGroup("Group B");
-        group.setSelectItems(new SelectItem[]{new SelectItem("B1"),
-            subgroup,
-            new SelectItem("B2"),
-            new SelectItem("B3")});
+        group.setSelectItems(new SelectItem[] { new SelectItem("B1"), subgroup, new SelectItem("B2"), new SelectItem("B3") });
         options.add(group);
         options.add(new SelectItem("A2"));
         options.add(new SelectItem("A3"));
-        return (options);
+        return options;
     }
 }

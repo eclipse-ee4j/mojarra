@@ -16,14 +16,14 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 
 /**
  * <p>
- * Test {@link ValueChangeListener} implementation.</p>
+ * Test {@link ValueChangeListener} implementation.
+ * </p>
  */
 public class ValueChangeListenerTestImpl implements ValueChangeListener, StateHolder {
 
@@ -43,7 +43,7 @@ public class ValueChangeListenerTestImpl implements ValueChangeListener, StateHo
 
     // ----------------------------------------------------------- Pubic Methods
     public String getId() {
-        return (this.id);
+        return this.id;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ValueChangeListenerTestImpl implements ValueChangeListener, StateHo
 
     // Retrieve the current trace log
     public static String trace() {
-        return (trace.toString());
+        return trace.toString();
     }
 
     // this needs to be named differently because other test methods
@@ -77,8 +77,7 @@ public class ValueChangeListenerTestImpl implements ValueChangeListener, StateHo
             return false;
         }
         ValueChangeListenerTestImpl other = (ValueChangeListenerTestImpl) otherObj;
-        if ((null != id && null == other.id)
-                || (null == id && null != other.id)) {
+        if (null != id && null == other.id || null == id && null != other.id) {
             return false;
         }
         boolean idsAreEqual = true;

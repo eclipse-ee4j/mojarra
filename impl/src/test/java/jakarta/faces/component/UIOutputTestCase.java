@@ -16,16 +16,13 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.convert.LongConverter;
-import jakarta.faces.convert.ShortConverter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * <p>
- * Unit tests for {@link UIOutput}.</p>
+ * Unit tests for {@link UIOutput}.
+ * </p>
  */
 public class UIOutputTestCase extends ValueHolderTestCaseBase {
 
@@ -52,7 +49,7 @@ public class UIOutputTestCase extends ValueHolderTestCaseBase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(UIOutputTestCase.class));
+        return new TestSuite(UIOutputTestCase.class);
     }
 
     // ------------------------------------------------- Individual Test Methods
@@ -97,50 +94,12 @@ public class UIOutputTestCase extends ValueHolderTestCaseBase {
 
     }
 
-    @Override
-    public void testValueBindings() {
-
-        super.testValueBindings();
-        UIOutput test = (UIOutput) component;
-
-        // "converter" property
-        request.setAttribute("foo", new LongConverter());
-        test.setConverter(null);
-        assertNull(test.getConverter());
-        test.setValueBinding("converter", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("converter"));
-        assertTrue(test.getConverter() instanceof LongConverter);
-        test.setConverter(new ShortConverter());
-        assertTrue(test.getConverter() instanceof ShortConverter);
-        test.setConverter(null);
-        assertTrue(test.getConverter() instanceof LongConverter);
-        test.setValueBinding("converter", null);
-        assertNull(test.getValueBinding("converter"));
-        assertNull(test.getConverter());
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.resetValue();
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.resetValue();
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
-
-    }
-
     // --------------------------------------------------------- Support Methods
     // Create a pristine component of the type to be used in state holder tests
     @Override
     protected UIComponent createComponent() {
         UIComponent component = new UIOutput();
         component.setRendererType(null);
-        return (component);
+        return component;
     }
 }

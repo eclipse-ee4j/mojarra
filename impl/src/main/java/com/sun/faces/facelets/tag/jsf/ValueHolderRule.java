@@ -16,8 +16,6 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import com.sun.faces.facelets.el.LegacyValueBinding;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectBoolean;
 import jakarta.faces.component.ValueHolder;
@@ -46,20 +44,6 @@ final class ValueHolderRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ValueHolder) instance).setConverter(ctx.getFacesContext().getApplication().createConverter(converterId));
-        }
-    }
-
-    final static class DynamicConverterMetadata extends Metadata {
-
-        private final TagAttribute attr;
-
-        public DynamicConverterMetadata(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueBinding("converter", new LegacyValueBinding(attr.getValueExpression(ctx, Converter.class)));
         }
     }
 
@@ -92,42 +76,26 @@ final class ValueHolderRule extends MetaRule {
         }
     }
 
-    final static class DynamicValueBindingMetadata extends Metadata {
-
-        private final TagAttribute attr;
-
-        public DynamicValueBindingMetadata(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueBinding("value", new LegacyValueBinding(attr.getValueExpression(ctx, Object.class)));
-        }
-    }
-
     public final static ValueHolderRule Instance = new ValueHolderRule();
 
     @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
-        if (meta.isTargetInstanceOf(ValueHolder.class)) {
-
-            if ("converter".equals(name)) {
-                if (attribute.isLiteral()) {
-                    return new LiteralConverterMetadata(attribute.getValue());
-                } else {
-                    return new DynamicConverterMetadata2(attribute);
-                }
-            }
-
-            if ("value".equals(name)) {
-                // if (attribute.isLiteral()) {
-                // return new LiteralValueMetadata(attribute.getValue());
-                // } else {
-                return new DynamicValueExpressionMetadata(attribute);
-                // }
-            }
+        if (!meta.isTargetInstanceOf(ValueHolder.class)) {
+            return null;
         }
+
+        if ("converter".equals(name)) {
+            if (attribute.isLiteral()) {
+                return new LiteralConverterMetadata(attribute.getValue());
+            }
+
+            return new DynamicConverterMetadata2(attribute);
+        }
+
+        if ("value".equals(name)) {
+            return new DynamicValueExpressionMetadata(attribute);
+        }
+
         return null;
     }
 

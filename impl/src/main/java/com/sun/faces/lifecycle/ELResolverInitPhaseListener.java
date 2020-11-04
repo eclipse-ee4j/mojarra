@@ -28,9 +28,7 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
- * <p>
  * This class is used to register the Faces <code>ELResolver</code> stack with the Jakarta Server Pages container.
- * </p>
  *
  * <p>
  * We overload it a bit to set a bit on the ApplicationAssociate stating we've processed a request to indicate the
@@ -86,7 +84,6 @@ public class ELResolverInitPhaseListener implements PhaseListener {
             ApplicationAssociate associate = ApplicationAssociate.getInstance();
             associate.setRequestServiced();
             associate.initializeELResolverChains();
-            associate.installProgrammaticallyAddedResolvers();
             preInitCompleted = true;
         }
     }
@@ -117,9 +114,9 @@ public class ELResolverInitPhaseListener implements PhaseListener {
         // the lifecycle instances
         for (Iterator<String> i = factory.getLifecycleIds(); i.hasNext();) {
             Lifecycle lifecycle = factory.getLifecycle(i.next());
-            for (PhaseListener cur : lifecycle.getPhaseListeners()) {
-                if (cur instanceof ELResolverInitPhaseListener) {
-                    lifecycle.removePhaseListener(cur);
+            for (PhaseListener phaseListener : lifecycle.getPhaseListeners()) {
+                if (phaseListener instanceof ELResolverInitPhaseListener) {
+                    lifecycle.removePhaseListener(phaseListener);
                 }
             }
         }

@@ -16,14 +16,13 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIColumn;
-import jakarta.faces.component.UIComponent;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * <p>
- * Unit tests for {@link UIColumn}.</p>
+ * Unit tests for {@link UIColumn}.
+ * </p>
  */
 public class UIColumnTestCase extends UIComponentBaseTestCase {
 
@@ -50,7 +49,7 @@ public class UIColumnTestCase extends UIComponentBaseTestCase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(UIColumnTestCase.class));
+        return new TestSuite(UIColumnTestCase.class);
     }
 
     // Tear down instance variables required by ths test case
@@ -99,6 +98,6 @@ public class UIColumnTestCase extends UIComponentBaseTestCase {
     protected UIComponent createComponent() {
         UIComponent component = new UIColumn();
         component.setRendererType(null);
-        return (component);
+        return component;
     }
 }

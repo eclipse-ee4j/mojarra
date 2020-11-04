@@ -16,10 +16,9 @@
 
 package jakarta.faces.component;
 
+import java.lang.reflect.Method;
+
 import com.sun.faces.mock.MockExternalContext;
-import junit.framework.TestCase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import com.sun.faces.mock.MockFacesContext;
 import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
@@ -27,16 +26,11 @@ import com.sun.faces.mock.MockLifecycle;
 import com.sun.faces.mock.MockServletContext;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.component.StateHolderSaver;
-import jakarta.faces.component.UIOutput;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;
-
-import java.lang.reflect.Method;
-
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class UIOutputAttachedObjectStateTestCase extends TestCase {
 
@@ -51,7 +45,7 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(UIOutputAttachedObjectStateTestCase.class));
+        return new TestSuite(UIOutputAttachedObjectStateTestCase.class);
     }
 
     @Override
@@ -68,8 +62,7 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         response = new MockHttpServletResponse();
 
         // Create something to stand-in as the InitFacesContext
-        new MockFacesContext(new MockExternalContext(servletContext, request, response),
-                new MockLifecycle());
+        new MockFacesContext(new MockExternalContext(servletContext, request, response), new MockLifecycle());
 
     }
 
@@ -113,9 +106,9 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         assertTrue(result instanceof Object[]);
         Object[] state = (Object[]) result;
 
-        // state should have a lenght of 2.  The first element
+        // state should have a lenght of 2. The first element
         // is the state from UIComponentBase, where the second
-        // is the converter state.  The first element in this
+        // is the converter state. The first element in this
         // case should be null
         assertTrue(state.length == 2);
         assertTrue(state[0] == null);
@@ -126,7 +119,7 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         output.setConverter(converter);
 
         // now validate what we've restored
-        // first, ensure converter is null.  This will
+        // first, ensure converter is null. This will
         // be the case when initialState has been marked
         // for the component.
         output.restoreState(facesContext, state);
@@ -135,7 +128,7 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
 
         // now validate the case where UIOutput has some event
         // that adds a converter *after* initial state has been
-        // marked.  This will cause the component to save full
+        // marked. This will cause the component to save full
         // state.
         output = new UIOutput();
         output.markInitialState();
@@ -147,7 +140,7 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         assertNotNull(result);
 
         // this time, both elements in the state array will not
-        // be null.  If we call retoreState() on a new component instance
+        // be null. If we call retoreState() on a new component instance
         // without setting a converter, we should have a new DateTimeConverter
         // *with* the expected pattern.
         assertTrue(result instanceof Object[]);

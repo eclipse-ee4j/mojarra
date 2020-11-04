@@ -78,7 +78,6 @@ import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;
-import jakarta.faces.el.ValueBinding;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.validator.Validator;
@@ -171,7 +170,6 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#addComponent(java.lang.String, java.lang.String)
      */
     public void addComponent(String componentType, String componentClass) {
-
         notNull(COMPONENT_TYPE, componentType);
         notNull(COMPONENT_CLASS, componentClass);
 
@@ -188,7 +186,6 @@ public class InstanceFactory {
     }
 
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) throws FacesException {
-
         notNull(COMPONENT_EXPRESSION, componentExpression);
         notNull(CONTEXT, context);
         notNull(COMPONENT_TYPE, componentType);
@@ -197,7 +194,6 @@ public class InstanceFactory {
     }
 
     public UIComponent createComponent(String componentType) throws FacesException {
-
         notNull(COMPONENT_TYPE, componentType);
 
         return createComponentApplyAnnotations(FacesContext.getCurrentInstance(), componentType, null, true);
@@ -296,37 +292,11 @@ public class InstanceFactory {
     }
 
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType) {
-
         notNull(COMPONENT_EXPRESSION, componentExpression);
         notNull(CONTEXT, context);
         notNull(COMPONENT_TYPE, componentType);
 
         return createComponentApplyAnnotations(context, componentExpression, componentType, rendererType, true);
-    }
-
-    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException {
-
-        notNull("componentBinding", componentBinding);
-        notNull(CONTEXT, context);
-        notNull(COMPONENT_TYPE, componentType);
-
-        Object result;
-        boolean createOne = false;
-        try {
-            result = componentBinding.getValue(context);
-            if (result != null) {
-                createOne = !(result instanceof UIComponent);
-            }
-
-            if (result == null || createOne) {
-                result = createComponentApplyAnnotations(context, componentType, null, false);
-                componentBinding.setValue(context, result);
-            }
-        } catch (Exception ex) {
-            throw new FacesException(ex);
-        }
-
-        return (UIComponent) result;
     }
 
     /**
@@ -340,7 +310,6 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#addBehavior(String, String)
      */
     public void addBehavior(String behaviorId, String behaviorClass) {
-
         notNull("behaviorId", behaviorId);
         notNull("behaviorClass", behaviorClass);
 
@@ -360,7 +329,6 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#createBehavior(String)
      */
     public Behavior createBehavior(String behaviorId) throws FacesException {
-
         notNull("behaviorId", behaviorId);
 
         Behavior behavior = createCDIBehavior(behaviorId);
@@ -389,7 +357,6 @@ public class InstanceFactory {
     }
 
     public void addConverter(String converterId, String converterClass) {
-
         notNull("converterId", converterId);
         notNull("converterClass", converterClass);
 
@@ -418,7 +385,6 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#addConverter(Class, String)
      */
     public void addConverter(Class<?> targetClass, String converterClass) {
-
         notNull("targetClass", targetClass);
         notNull("converterClass", converterClass);
 
@@ -444,7 +410,6 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#createConverter(String)
      */
     public Converter<?> createConverter(String converterId) {
-
         notNull("converterId", converterId);
 
         Converter<?> converter = createCDIConverter(converterId);
@@ -473,8 +438,7 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#createConverter(Class)
      */
     public Converter createConverter(Class<?> targetClass) {
-
-        Util.notNull("targetClass", targetClass);
+        notNull("targetClass", targetClass);
         Converter returnVal = null;
 
         if (version.isJsf23()) {
@@ -554,9 +518,8 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#addValidator(String, String)
      */
     public void addValidator(String validatorId, String validatorClass) {
-
-        Util.notNull("validatorId", validatorId);
-        Util.notNull("validatorClass", validatorClass);
+        notNull("validatorId", validatorId);
+        notNull("validatorClass", validatorClass);
 
         if (LOGGER.isLoggable(Level.FINE) && validatorMap.containsKey(validatorId)) {
             LOGGER.log(Level.FINE, "validatorId {0} has already been registered.  Replacing existing validator class type {1} with {2}.",
@@ -575,7 +538,6 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#createValidator(String)
      */
     public Validator<?> createValidator(String validatorId) throws FacesException {
-
         notNull("validatorId", validatorId);
 
         Validator<?> validator = createCDIValidator(validatorId);
@@ -607,7 +569,6 @@ public class InstanceFactory {
      * @see jakarta.faces.application.Application#addDefaultValidatorId(String)
      */
     public synchronized void addDefaultValidatorId(String validatorId) {
-
         notNull("validatorId", validatorId);
 
         defaultValidatorInfo = null;

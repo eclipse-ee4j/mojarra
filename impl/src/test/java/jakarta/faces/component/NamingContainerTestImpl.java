@@ -16,13 +16,10 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.NamingContainer;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UINamingContainer;
-
 /**
  * <p>
- * Test {@link NamingContainer} implementation with tracing.</p>
+ * Test {@link NamingContainer} implementation with tracing.
+ * </p>
  */
 public class NamingContainerTestImpl extends UINamingContainer {
 
@@ -36,7 +33,7 @@ public class NamingContainerTestImpl extends UINamingContainer {
 
         trace(getId());
         trace(expr);
-        return (super.findComponent(expr));
+        return super.findComponent(expr);
 
     }
 
@@ -56,6 +53,6 @@ public class NamingContainerTestImpl extends UINamingContainer {
 
     // Retrieve the current trace log
     public static String trace() {
-        return (trace.toString());
+        return trace.toString();
     }
 }

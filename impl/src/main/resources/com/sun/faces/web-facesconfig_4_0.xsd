@@ -497,36 +497,6 @@
           </xsd:documentation>
         </xsd:annotation>
       </xsd:element>
-      <xsd:element name="property-resolver"
-                   type="jakartaee:fully-qualified-classType">
-        <xsd:annotation>
-          <xsd:documentation>
-            <![CDATA[
-            <p> The "property-resolver" element contains the fully
-            qualified class name of the concrete
-            PropertyResolver implementation class that will
-            be used during the processing of value binding
-            expressions.</p>
-            
-            ]]>
-          </xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-      <xsd:element name="variable-resolver"
-                   type="jakartaee:fully-qualified-classType">
-        <xsd:annotation>
-          <xsd:documentation>
-            <![CDATA[
-            <p> The "variable-resolver" element contains the fully
-            qualified class name of the concrete
-            VariableResolver implementation class that will
-            be used during the processing of value binding
-            expressions.</p>
-            
-            ]]>
-          </xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
       <xsd:element name="resource-handler"
                    type="jakartaee:fully-qualified-classType">
         <xsd:annotation>

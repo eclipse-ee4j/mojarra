@@ -18,14 +18,11 @@ package jakarta.faces.component;
 
 import java.util.Map;
 
-import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
-
 import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.FacesContextWrapper;
-import jakarta.faces.el.MethodBinding;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
@@ -176,58 +173,6 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
         }
 
         return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.2
-     */
-    @Deprecated
-    @Override
-    public MethodBinding getAction() {
-        MethodBinding result = null;
-        MethodExpression me;
-
-        if (null != (me = getActionExpression())) {
-            result = new MethodBindingMethodExpressionAdapter(me);
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.2
-     */
-    @Deprecated
-    @SuppressWarnings("deprecation")
-    @Override
-    public void setAction(final MethodBinding action) {
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.2
-     */
-    @Deprecated
-    @SuppressWarnings("deprecation")
-    @Override
-    public MethodBinding getActionListener() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.2
-     */
-    @Deprecated
-    @SuppressWarnings("deprecation")
-    @Override
-    public void setActionListener(final MethodBinding actionListener) {
-        throw new UnsupportedOperationException("Not supported.");
     }
 
     /**
@@ -532,7 +477,6 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      */
     @Override
     public void broadcast(final FacesEvent event) throws AbortProcessingException {
-
         super.broadcast(event);
 
         FacesContext context = event.getFacesContext();

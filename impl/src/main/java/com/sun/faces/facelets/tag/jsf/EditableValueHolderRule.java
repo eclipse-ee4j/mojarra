@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import com.sun.faces.facelets.el.LegacyMethodBinding;
 
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
@@ -64,19 +63,6 @@ public final class EditableValueHolderRule extends MetaRule {
         }
     }
 
-    final static class ValueChangedBindingMetadata extends Metadata {
-        private final TagAttribute attr;
-
-        public ValueChangedBindingMetadata(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance).setValueChangeListener(new LegacyMethodBinding(attr.getMethodExpression(ctx, null, VALUECHANGE_SIG)));
-        }
-    }
-
     final static class ValidatorExpressionMetadata extends Metadata {
         private final TagAttribute attr;
 
@@ -87,19 +73,6 @@ public final class EditableValueHolderRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((EditableValueHolder) instance).addValidator(new MethodExpressionValidator(attr.getMethodExpression(ctx, null, VALIDATOR_SIG)));
-        }
-    }
-
-    final static class ValidatorBindingMetadata extends Metadata {
-        private final TagAttribute attr;
-
-        public ValidatorBindingMetadata(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance).setValidator(new LegacyMethodBinding(attr.getMethodExpression(ctx, null, VALIDATOR_SIG)));
         }
     }
 
@@ -117,9 +90,9 @@ public final class EditableValueHolderRule extends MetaRule {
             if ("validator".equals(name)) {
                 if (attribute.isLiteral()) {
                     return new LiteralValidatorMetadata(attribute.getValue());
-                } else {
-                    return new ValidatorExpressionMetadata(attribute);
                 }
+
+                return new ValidatorExpressionMetadata(attribute);
             }
 
             if ("valueChangeListener".equals(name)) {

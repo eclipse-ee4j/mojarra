@@ -17,7 +17,6 @@
 package jakarta.faces.component;
 
 import jakarta.el.ValueExpression;
-import jakarta.faces.el.ValueBinding;
 
 /**
  * <p>
@@ -138,63 +137,6 @@ public class UISelectBoolean extends UIInput {
             super.setValueExpression("value", binding);
         } else {
             super.setValueExpression(name, binding);
-        }
-    }
-
-    // ------------------------------------------------------------ Deprecated methods
-
-    /**
-     * <p>
-     * Return any {@link ValueBinding} set for <code>value</code> if a {@link ValueBinding} for <code>selected</code> is
-     * requested; otherwise, perform the default superclass processing for this method.
-     * </p>
-     *
-     * <p>
-     * Rely on the superclass implementation to wrap the returned <code>ValueExpression</code> in a
-     * <code>ValueBinding</code>.
-     * </p>
-     *
-     * @param name Name of the attribute or property for which to retrieve a {@link ValueBinding}
-     *
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
-     *
-     * @deprecated This has been replaced by {@link #getValueExpression}.
-     */
-    @Deprecated
-    @Override
-    public ValueBinding getValueBinding(String name) {
-        if ("selected".equals(name)) {
-            return super.getValueBinding("value");
-        }
-
-        return super.getValueBinding(name);
-    }
-
-    /**
-     * <p>
-     * Store any {@link ValueBinding} specified for <code>selected</code> under <code>value</code> instead; otherwise,
-     * perform the default superclass processing for this method.
-     * </p>
-     *
-     * <p>
-     * Rely on the superclass implementation to wrap the argument <code>ValueBinding</code> in a
-     * <code>ValueExpression</code>.
-     * </p>
-     *
-     * @param name Name of the attribute or property for which to set a {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code> to remove any currently set {@link ValueBinding}
-     *
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
-     *
-     * @deprecated This has been replaced by {@link #setValueExpression}.
-     */
-    @Deprecated
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-        if ("selected".equals(name)) {
-            super.setValueBinding("value", binding);
-        } else {
-            super.setValueBinding(name, binding);
         }
     }
 

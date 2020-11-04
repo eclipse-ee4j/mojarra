@@ -16,23 +16,22 @@
 
 package jakarta.faces.component;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.reflect.Whitebox;
-
-import jakarta.faces.component.UIData;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.render.RenderKit;
-
 import static jakarta.faces.component.NamingContainer.SEPARATOR_CHAR;
 import static jakarta.faces.component.UINamingContainer.SEPARATOR_CHAR_PARAM_NAME;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
-import static org.powermock.api.easymock.PowerMock.createNicePartialMock;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.powermock.api.easymock.PowerMock.createNicePartialMockAndInvokeDefaultConstructor;
+
+import org.junit.Test;
+import org.powermock.reflect.Whitebox;
+
+import jakarta.faces.context.FacesContext;
 
 /**
  * @author Manfred Riem (manfred.riem@oracle.com)
@@ -94,7 +93,8 @@ public class UIDataTest {
         // simple way. otherwise, we have to mock the renderkit and whatever.
         Whitebox.setInternalState(data, "clientId", data.getId());
 
-        data.invokeOnComponent(context, "differentId", (contextInLambda, target) -> {});
+        data.invokeOnComponent(context, "differentId", (contextInLambda, target) -> {
+        });
 
         assertThat(context.getAttributes().get("setRowIndexCalled"), is(nullValue()));
     }

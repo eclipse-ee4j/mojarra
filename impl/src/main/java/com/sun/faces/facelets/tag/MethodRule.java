@@ -19,10 +19,7 @@ package com.sun.faces.facelets.tag;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.sun.faces.facelets.el.LegacyMethodBinding;
-
 import jakarta.el.MethodExpression;
-import jakarta.faces.el.MethodBinding;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRule;
 import jakarta.faces.view.facelets.Metadata;
@@ -56,12 +53,7 @@ public final class MethodRule extends MetaRule {
             return null;
         }
 
-        if (MethodBinding.class.equals(meta.getPropertyType(name))) {
-            Method method = meta.getWriteMethod(name);
-            if (method != null) {
-                return new MethodBindingMetadata(method, attribute, returnTypeClass, params);
-            }
-        } else if (MethodExpression.class.equals(meta.getPropertyType(name))) {
+        if (MethodExpression.class.equals(meta.getPropertyType(name))) {
             Method method = meta.getWriteMethod(name);
             if (method != null) {
                 return new MethodExpressionMetadata(method, attribute, returnTypeClass, params);
@@ -69,36 +61,6 @@ public final class MethodRule extends MetaRule {
         }
 
         return null;
-    }
-
-    private static class MethodBindingMetadata extends Metadata {
-        private final Method _method;
-
-        private final TagAttribute _attribute;
-
-        private Class[] _paramList;
-
-        private Class _returnType;
-
-        public MethodBindingMetadata(Method method, TagAttribute attribute, Class returnType, Class[] paramList) {
-            _method = method;
-            _attribute = attribute;
-            _paramList = paramList;
-            _returnType = returnType;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            MethodExpression expr = _attribute.getMethodExpression(ctx, _returnType, _paramList);
-
-            try {
-                _method.invoke(instance, new LegacyMethodBinding(expr));
-            } catch (InvocationTargetException e) {
-                throw new TagAttributeException(_attribute, e.getCause());
-            } catch (Exception e) {
-                throw new TagAttributeException(_attribute, e);
-            }
-        }
     }
 
     private static class MethodExpressionMetadata extends Metadata {

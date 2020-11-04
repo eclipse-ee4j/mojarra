@@ -49,19 +49,14 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
-import jakarta.faces.el.MethodBinding;
-import jakarta.faces.el.ValueBinding;
 
 /**
- * <p>
  * Utility class for displaying Facelet error/debug information.
- * </p>
  *
  * <p>
  * The public static methods of this class are exposed as EL functions under the namespace
  * <code>http://java.sun.com/mojarra/private/functions</code>
  * </p>
- *
  *
  */
 public final class DevTools {
@@ -363,10 +358,6 @@ public final class DevTools {
                             String str;
                             if (v instanceof Expression) {
                                 str = ((Expression) v).getExpressionString();
-                            } else if (v instanceof ValueBinding) {
-                                str = ((ValueBinding) v).getExpressionString();
-                            } else if (v instanceof MethodBinding) {
-                                str = ((MethodBinding) v).getExpressionString();
                             } else {
                                 str = v.toString();
                             }
@@ -385,22 +376,13 @@ public final class DevTools {
                 }
             }
 
-            ValueBinding binding = c.getValueBinding("binding");
-            if (binding != null) {
-                writer.write(" binding=\"");
-                writer.write(binding.getExpressionString().replaceAll("<", TS));
-                writer.write("\"");
-            }
-        } catch (IntrospectionException | IOException e) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.log(Level.FINEST, "Error writing out attributes", e);
-            }
+        } catch (IntrospectionException e) {
+            LOGGER.log(Level.FINEST, e, () -> "Error writing out attributes");
         }
 
     }
 
     private static void writeStart(Writer writer, UIComponent c, boolean children) throws IOException {
-
         if (isText(c)) {
             String str = c.toString().trim();
             writer.write(str.replaceAll("<", TS));
@@ -417,17 +399,14 @@ public final class DevTools {
 
     }
 
-    private static String getName(UIComponent c) {
-
-        String nm = c.getClass().getName();
-        return nm.substring(nm.lastIndexOf('.') + 1);
+    private static String getName(UIComponent component) {
+        String componentName = component.getClass().getName();
+        return componentName.substring(componentName.lastIndexOf('.') + 1);
 
     }
 
     private static boolean isText(UIComponent c) {
-
         return c.getClass().getName().startsWith("com.sun.faces.facelets.compiler");
-
     }
 
 }

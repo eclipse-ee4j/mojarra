@@ -57,7 +57,6 @@ import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.ValueBinding;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
@@ -1515,7 +1514,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @since 2.0
      */
     public void pushComponentToEL(FacesContext context, UIComponent component) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -2440,29 +2438,12 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         return resourceBundle != null ? result : null;
     }
 
-    // ------------------------------------------- Deprecated code
-
     /**
      * <p class="changed_added_2_0">
-     * <span class="changed_deleted_2_2">The</span> key to which the <code>UIComponent</code> currently being processed will
-     * be associated with within the {@link FacesContext} attributes map. <span class="changed_deleted_2_2">The use of this
-     * constant is deprecated. Please see {@link #HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} to enable its use.</span>
-     * </p>
-     *
-     * @see jakarta.faces.context.FacesContext#getAttributes()
-     *
-     * @since 2.0
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public static final String CURRENT_COMPONENT = "jakarta.faces.component.CURRENT_COMPONENT";
-
-    /**
-     * <p class="changed_added_2_0">
-     * <span class="changed_deleted_2_2">The</span> key to which the <em>composite</em> <code>UIComponent</code> currently
-     * being processed will be associated with within the {@link FacesContext} attributes map.
-     * <span class="changed_deleted_2_2">The use of this constant is deprecated. Please see
+     * <span class="changed_deleted_2_2">The</span> key to which the
+     * <code>UIComponent</code> currently being processed will be associated with within
+     * the {@link FacesContext} attributes map. <span class="changed_deleted_2_2">The use
+     * of this constant is deprecated. Please see
      * {@link #HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} to enable its use.</span>
      * </p>
      *
@@ -2473,41 +2454,25 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @deprecated
      */
     @Deprecated
-    public static final String CURRENT_COMPOSITE_COMPONENT = "jakarta.faces.component.CURRENT_COMPOSITE_COMPONENT";
+    public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
 
     /**
-     *
-     * <p>
-     * Call through to {@link #getValueExpression} and examine the result. If the result is an instance of the wrapper class
-     * mandated in {@link #setValueBinding}, extract the <code>ValueBinding</code> instance and return it. Otherwise, wrap
-     * the result in an implementation of <code>ValueBinding</code>, and return it.
+     * <p class="changed_added_2_0">
+     * <span class="changed_deleted_2_2">The</span> key to which the <em>composite</em>
+     * <code>UIComponent</code> currently being processed will be associated with within
+     * the {@link FacesContext} attributes map. <span class="changed_deleted_2_2">The use
+     * of this constant is deprecated. Please see
+     * {@link #HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} to enable its use.</span>
      * </p>
      *
-     * @param name Name of the attribute or property for which to retrieve a {@link ValueBinding}
-     * @return the value binding.
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
+     * @see jakarta.faces.context.FacesContext#getAttributes()
      *
-     * @deprecated This has been replaced by {@link #getValueExpression}.
+     * @since 2.0
+     *
+     * @deprecated
      */
     @Deprecated
-    public abstract ValueBinding getValueBinding(String name);
-
-    /**
-     * <p>
-     * Wrap the argument <code>binding</code> in an implementation of {@link ValueExpression} and call through to
-     * {@link #setValueExpression}.
-     * </p>
-     *
-     * @param name Name of the attribute or property for which to set a {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code> to remove any currently set {@link ValueBinding}
-     *
-     * @throws IllegalArgumentException if <code>name</code> is one of <code>id</code> or <code>parent</code>
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
-     *
-     * @deprecated This has been replaced by {@link #setValueExpression}.
-     */
-    @Deprecated
-    public abstract void setValueBinding(String name, ValueBinding binding);
+    public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
 
     // The set of ValueExpressions for this component, keyed by property
     // name This collection is lazily instantiated

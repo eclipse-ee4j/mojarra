@@ -17,14 +17,13 @@
 package com.sun.faces.mock;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.event.PhaseId;
-
-import java.util.List;
-import java.util.HashMap;
 
 /**
  * MockPartialViewContext implementation.
@@ -37,7 +36,6 @@ public class MockPartialViewContext extends PartialViewContext {
 
     // ------------------------------------------------------------ Constructors
     public MockPartialViewContext() {
-
         attributes = new HashMap<Object, Object>();
 
     }
@@ -74,14 +72,17 @@ public class MockPartialViewContext extends PartialViewContext {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public PartialResponseWriter getPartialResponseWriter() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isAjaxRequest() {
         return false;
     }
 
+    @Override
     public boolean isPartialRequest() {
         return partial;
     }
@@ -90,14 +91,17 @@ public class MockPartialViewContext extends PartialViewContext {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isExecuteAll() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isRenderAll() {
         return renderAll;
     }
 
+    @Override
     public void setRenderAll(boolean renderAll) {
         this.renderAll = renderAll;
     }
@@ -110,10 +114,12 @@ public class MockPartialViewContext extends PartialViewContext {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void processPartial(PhaseId phaseId) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void release() {
         // no-op
     }

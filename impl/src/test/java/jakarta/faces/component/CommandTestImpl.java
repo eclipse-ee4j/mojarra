@@ -16,11 +16,10 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UICommand;
-
 /**
  * <p>
- * Test {@link UICommand} subclass.</p>
+ * Test {@link UICommand} subclass.
+ * </p>
  */
 public class CommandTestImpl extends UICommand {
 

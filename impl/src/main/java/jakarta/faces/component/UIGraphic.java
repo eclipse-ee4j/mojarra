@@ -17,7 +17,6 @@
 package jakarta.faces.component;
 
 import jakarta.el.ValueExpression;
-import jakarta.faces.el.ValueBinding;
 
 /**
  * <p>
@@ -30,7 +29,6 @@ import jakarta.faces.el.ValueBinding;
  * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
-
 public class UIGraphic extends UIComponentBase {
 
     /**
@@ -70,10 +68,8 @@ public class UIGraphic extends UIComponentBase {
      * </p>
      */
     public UIGraphic() {
-
         super();
         setRendererType("jakarta.faces.Image");
-
     }
 
     // ------------------------------------------------------ Instance Variables
@@ -84,9 +80,7 @@ public class UIGraphic extends UIComponentBase {
 
     @Override
     public String getFamily() {
-
         return COMPONENT_FAMILY;
-
     }
 
     /**
@@ -97,9 +91,7 @@ public class UIGraphic extends UIComponentBase {
      * @return the url.
      */
     public String getUrl() {
-
         return (String) getValue();
-
     }
 
     /**
@@ -110,9 +102,7 @@ public class UIGraphic extends UIComponentBase {
      * @param url The new image URL
      */
     public void setUrl(String url) {
-
         setValue(url);
-
     }
 
     /**
@@ -123,9 +113,7 @@ public class UIGraphic extends UIComponentBase {
      * @return the value.
      */
     public Object getValue() {
-
         return getStateHelper().eval(PropertyKeys.value);
-
     }
 
     /**
@@ -136,62 +124,11 @@ public class UIGraphic extends UIComponentBase {
      * @param value the new value
      */
     public void setValue(Object value) {
-
         getStateHelper().put(PropertyKeys.value, value);
-
     }
 
     // ---------------------------------------------------------------- Bindings
 
-    /**
-     * <p>
-     * Return any {@link ValueBinding} set for <code>value</code> if a {@link ValueBinding} for <code>url</code> is
-     * requested; otherwise, perform the default superclass processing for this method.
-     * </p>
-     *
-     * @param name Name of the attribute or property for which to retrieve a {@link ValueBinding}
-     * @return the value binding, or <code>null</code>.
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
-     *
-     * @deprecated This has been replaced by {@link #getValueExpression(java.lang.String)}.
-     */
-    @Deprecated
-    @Override
-    public ValueBinding getValueBinding(String name) {
-
-        if ("url".equals(name)) {
-            return super.getValueBinding("value");
-        } else {
-            return super.getValueBinding(name);
-        }
-
-    }
-
-    /**
-     * <p>
-     * Store any {@link ValueBinding} specified for <code>url</code> under <code>value</code> instead; otherwise, perform
-     * the default superclass processing for this method. In all cases, the superclass is relied on to convert the
-     * <code>ValueBinding</code> to a <code>ValueExpression</code>.
-     * </p>
-     *
-     * @param name Name of the attribute or property for which to set a {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code> to remove any currently set {@link ValueBinding}
-     *
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
-     *
-     * @deprecated This has been replaced by {@link #setValueExpression}.
-     */
-    @Deprecated
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-
-        if ("url".equals(name)) {
-            super.setValueBinding("value", binding);
-        } else {
-            super.setValueBinding(name, binding);
-        }
-
-    }
 
     /**
      * <p>
@@ -206,13 +143,11 @@ public class UIGraphic extends UIComponentBase {
      */
     @Override
     public ValueExpression getValueExpression(String name) {
-
         if ("url".equals(name)) {
             return super.getValueExpression("value");
         } else {
             return super.getValueExpression(name);
         }
-
     }
 
     /**
@@ -230,13 +165,11 @@ public class UIGraphic extends UIComponentBase {
      */
     @Override
     public void setValueExpression(String name, ValueExpression binding) {
-
         if ("url".equals(name)) {
             super.setValueExpression("value", binding);
         } else {
             super.setValueExpression(name, binding);
         }
-
     }
 
     // ----------------------------------------------------- StateHolder Methods

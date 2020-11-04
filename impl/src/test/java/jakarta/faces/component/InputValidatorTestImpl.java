@@ -16,13 +16,13 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 
 /**
  * <p>
- * Test implementation of {@link Validator}.</p>
+ * Test implementation of {@link Validator}.
+ * </p>
  */
 public class InputValidatorTestImpl implements Validator {
 
@@ -53,6 +53,6 @@ public class InputValidatorTestImpl implements Validator {
 
     // Retrieve the current trace log
     public static String trace() {
-        return (trace.toString());
+        return trace.toString();
     }
 }

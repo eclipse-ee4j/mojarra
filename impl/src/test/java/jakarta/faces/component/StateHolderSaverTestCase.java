@@ -16,7 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIInput;
 import jakarta.faces.convert.IntegerConverter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -33,7 +32,7 @@ public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
     // ---------------------------------------------------- Overall Test Methods
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(StateHolderSaverTestCase.class));
+        return new TestSuite(StateHolderSaverTestCase.class);
     }
 
     // ------------------------------------------------- Individual Test Methods
@@ -53,18 +52,9 @@ public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
     public void testComponentRemoval() {
     }
 
-    @Override
-    public void testStateHolder() throws Exception {
-    }
-
-    @Override
-    public void testValueBindings() {
-    }
-
     public void testImplementsStateHolder() throws Exception {
         StateHolderSaver saver = null;
-        UIInput postSave,
-                preSave = new UIInput();
+        UIInput postSave, preSave = new UIInput();
         preSave.setId("id1");
         preSave.setRendererType(null);
 
@@ -85,8 +75,7 @@ public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
 
     public void testImplementsNeither() throws Exception {
         StateHolderSaver saver = null;
-        IntegerConverter preSave = new IntegerConverter(),
-                postSave = null;
+        IntegerConverter preSave = new IntegerConverter(), postSave = null;
 
         saver = new StateHolderSaver(facesContext, preSave);
         postSave = (IntegerConverter) saver.restore(facesContext);

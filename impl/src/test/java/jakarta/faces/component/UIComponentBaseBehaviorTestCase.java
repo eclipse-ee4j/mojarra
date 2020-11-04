@@ -17,21 +17,21 @@
 package jakarta.faces.component;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIInput;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.BehaviorEvent;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * <p class="changed_added_2_0">
@@ -50,7 +50,9 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
 
     public static class BehaviorComponent extends UIComponentBase implements ClientBehaviorHolder {
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         *
          * @see jakarta.faces.component.UIComponent#getFamily()
          */
         @Override
@@ -73,8 +75,12 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
     @SuppressWarnings("serial")
     public static class TestBehavior implements ClientBehavior, Serializable {
 
-        private static final Set<ClientBehaviorHint> HINTS
-                = Collections.unmodifiableSet(EnumSet.of(ClientBehaviorHint.SUBMITTING));
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        private static final Set<ClientBehaviorHint> HINTS = Collections.unmodifiableSet(EnumSet.of(ClientBehaviorHint.SUBMITTING));
 
         private static int sequence = 0;
 
@@ -143,13 +149,12 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
     }
 
     /**
-     * Test method for
-     * {@link jakarta.faces.component.UIComponentBase#saveState(jakarta.faces.context.FacesContext)}.
+     * Test method for {@link jakarta.faces.component.UIComponentBase#saveState(jakarta.faces.context.FacesContext)}.
      */
     public void testSaveState() {
         BehaviorComponent comp = new BehaviorComponent();
         // Cast component to the interface, to be sure about method definition.
-        ClientBehaviorHolder holder = (ClientBehaviorHolder) comp;
+        ClientBehaviorHolder holder = comp;
         TestBehavior behavior = new TestBehavior();
         holder.addClientBehavior(ONCLICK, behavior);
         TestBehavior behavior2 = new TestBehavior();
@@ -165,8 +170,8 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         assertTrue(behaviors.containsKey(ONCHANGE));
         assertFalse(behaviors.containsKey(ONTEST));
         assertEquals(2, behaviors.entrySet().size());
-        assertEquals(2, behaviors.keySet().size());
-        assertEquals(2, behaviors.values().size());
+        assertEquals(2, behaviors.size());
+        assertEquals(2, behaviors.size());
         assertEquals(2, behaviors.get(ONCLICK).size());
         assertEquals(1, behaviors.get(ONCHANGE).size());
         assertEquals(behavior3, behaviors.get(ONCHANGE).get(0));
@@ -191,7 +196,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
     public void testAddBehavior() {
         BehaviorComponent comp = new BehaviorComponent();
         // Cast component to the interface, to be sure about method definition.
-        ClientBehaviorHolder holder = (ClientBehaviorHolder) comp;
+        ClientBehaviorHolder holder = comp;
         holder.addClientBehavior(ONCLICK, new TestBehavior());
         holder.addClientBehavior(ONCLICK, new TestBehavior());
         holder.addClientBehavior(ONCHANGE, new TestBehavior());
@@ -204,23 +209,21 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
     }
 
     /**
-     * Test method for
-     * {@link jakarta.faces.component.UIComponentBase#getEventNames()}.
+     * Test method for {@link jakarta.faces.component.UIComponentBase#getEventNames()}.
      */
     public void testGetEventNames() {
         BehaviorComponent comp = new BehaviorComponent();
-        ClientBehaviorHolder holder = (ClientBehaviorHolder) comp;
+        ClientBehaviorHolder holder = comp;
         assertEquals(EVENTS, holder.getEventNames());
     }
 
     /**
-     * Test method for
-     * {@link jakarta.faces.component.UIComponentBase#getClientBehaviors()}.
+     * Test method for {@link jakarta.faces.component.UIComponentBase#getClientBehaviors()}.
      */
     public void testGetBehaviors() {
         BehaviorComponent comp = new BehaviorComponent();
         // Cast component to the interface, to be sure about method definition.
-        ClientBehaviorHolder holder = (ClientBehaviorHolder) comp;
+        ClientBehaviorHolder holder = comp;
         Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
         assertTrue(behaviors.isEmpty());
         assertFalse(behaviors.containsKey(ONCLICK));
@@ -234,24 +237,23 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         assertTrue(behaviors.containsKey(ONCHANGE));
         assertFalse(behaviors.containsKey(ONTEST));
         assertEquals(2, behaviors.entrySet().size());
-        assertEquals(2, behaviors.keySet().size());
-        assertEquals(2, behaviors.values().size());
+        assertEquals(2, behaviors.size());
+        assertEquals(2, behaviors.size());
         assertEquals(2, behaviors.get(ONCLICK).size());
         assertEquals(1, behaviors.get(ONCHANGE).size());
     }
 
     /**
-     * Test method for
-     * {@link jakarta.faces.component.UIComponentBase#getDefaultEventName()}.
+     * Test method for {@link jakarta.faces.component.UIComponentBase#getDefaultEventName()}.
      */
     public void testGetDefaultEventName() {
         BehaviorComponent comp = new BehaviorComponent();
         // Cast component to the interface, to be sure about method definition.
-        ClientBehaviorHolder holder = (ClientBehaviorHolder) comp;
+        ClientBehaviorHolder holder = comp;
         assertEquals(ONTEST, holder.getDefaultEventName());
     }
 
     public static <T> Set<T> set(T... ts) {
-        return new HashSet<T>(Arrays.asList(ts));
+        return new HashSet<>(Arrays.asList(ts));
     }
 }
